@@ -52,16 +52,3 @@ python -m causal_chain2.timeline_highlights \
 | `causal_chain2/_checkpoints/gnn.pt` | 预训练 LiteGCN 权重 |
 | `eval/eval_a3.jsonl` | 评估集（800 条 A3 仿真链） |
 | `causal_chain/examples/external_task2_timeline.json` | 示例拆条时间线 |
-
-## 未纳入本仓库的内容
-
-训练数据生成（Qwen LLM）、`train.py`、PPT 脚本等仍在完整工程 `mllms_know` 主仓；本仓仅保证上述 **test** 与 **timeline_highlights** 可独立运行。
-
-## 推送到 GitHub（[LinPengyue](https://github.com/LinPengyue)）
-
-仓库名：**`migu-causal-chain`**
-
-```bash
-git remote set-url origin https://github.com/LinPengyue/migu-causal-chain.git
-git push -u origin main
-```
