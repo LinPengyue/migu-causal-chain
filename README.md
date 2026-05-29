@@ -59,17 +59,9 @@ python -m causal_chain2.timeline_highlights \
 
 ## 推送到 GitHub（[LinPengyue](https://github.com/LinPengyue)）
 
-本地仓库路径：`/data2/lpy1/causal-chain2`（已 `git init` 并完成首次 commit）。
-
-1. 在 GitHub 新建空仓库（建议名 **`causal-chain2`**，不要勾选 README）。
-2. 推送：
+仓库名：**`migu-causal-chain`**
 
 ```bash
-cd /data2/lpy1/causal-chain2
-git remote set-url origin https://github.com/LinPengyue/causal-chain2.git
+git remote set-url origin https://github.com/LinPengyue/migu-causal-chain.git
 git push -u origin main
 ```
-
-若使用 SSH：`git remote set-url origin git@github.com:LinPengyue/causal-chain2.git`
-
-纳入文件清单见 `MANIFEST.txt`（共 19 个文件，约 1.2MB）。
