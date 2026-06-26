@@ -1,4 +1,4 @@
-# 本仓库纳入 git 的文件清单（test + timeline_highlights 最小依赖）
+# 本仓库纳入 git 的文件清单（拆条分类 test + 集锦因果链 causal_chain3）
 
 causal_chain2/__init__.py
 causal_chain2/test.py
@@ -12,9 +12,29 @@ causal_chain2/model.py
 causal_chain2/graph_pack.py
 causal_chain2/chain_graph_convert.py
 causal_chain2/chain_schema.py
+causal_chain2/chain_rules.py
+causal_chain2/llm_json.py
+causal_chain2/llm_qwen.py
+causal_chain2/prompts_classify.py
+causal_chain2/llm_classify.py
+causal_chain2/agent_tools.py
+causal_chain2/prompts_agent.py
+causal_chain2/agent_classify.py
+causal_chain2/filter_eval_jsonl.py
 causal_chain2/_checkpoints/gnn.pt
+causal_chain3/__init__.py
+causal_chain3/schema.py
+causal_chain3/io.py
+causal_chain3/discover.py
+causal_chain3/extract_chain.py
+causal_chain3/refine.py
+causal_chain3/assemble_reel.py
+causal_chain3/build_highlights.py
+causal_chain3/viz.py
 eval/eval_a3.jsonl
+eval/eval_a3_clean.jsonl
 causal_chain/examples/external_task2_timeline.json
+causal_chain/examples/full_match_timeline.json
 README.md
 requirements.txt
 .gitignore

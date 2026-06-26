@@ -1,8 +1,8 @@
 """
-整场时间线 → 锚点/滑窗几何分段 → GNN 窗级打分 → margin 过滤 → 集锦片段列表。
+整场时间线 → 锚点/滑窗几何分段 → 窗级分类打分（LLM 或 GNN）→ margin 过滤 → 集锦片段列表。
 
 设计要点（与用户需求对齐）：
-- 分段只用几何 (t0/t1/i0/i1/types)，不用 causal_chain 模版 pred_template；
+- 分段只用几何 (t0/t1/i0/i1/types)，不用模版 pred_template；
 - 集锦主选锚点窗；滑窗仅作召回补充（与已选锚点段时间 IoU 过高则丢弃）；
 - 同模版 + 时间 IoU 高只保留最高 top1 概率的一条；
 - 阈值用 margin = p_top1 - p_top2。
@@ -21,11 +21,28 @@ import torch.nn.functional as F
 
 from causal_chain2.chain_schema import CHAIN_TEMPLATES
 from causal_chain2.graph_pack import TEMPLATE_TO_IX, pack_from_events_list
+from causal_chain2.agent_classify import classify_events_agent
+from causal_chain2.llm_classify import ClassifyResult, classify_events, label_zh
 from causal_chain2.model import LiteGCN
 from causal_chain2.segmentation_geom import GeoSegment, segment_anchor_geom, segment_sliding_geom
 from causal_chain2.timeline_io import load_timeline_json
 
 IX_TO_TEMPLATE: Dict[int, str] = {v: k for k, v in TEMPLATE_TO_IX.items()}
+
+
+@dataclass
+class SegmentScorer:
+    backend: str  # "agent" | "llm" | "gnn"
+    device: torch.device
+    gnn_model: Optional[LiteGCN] = None
+    llm_model: Any = None
+    llm_processor: Any = None
+    max_new_tokens: int = 512
+    optional_max_skip: int = 2
+    two_stage: bool = True
+    skip_critic_llm: bool = False
+    full_llm: bool = False
+    ambiguous_margin: float = 0.12
 
 
 @dataclass
@@ -91,8 +108,26 @@ def load_gnn(ckpt_path: Path, device: torch.device) -> LiteGCN:
     return model
 
 
+def _classify_result_to_scored(seg: GeoSegment, result: ClassifyResult) -> ScoredSegment:
+    tid = result.chain_template_id
+    return ScoredSegment(
+        t0_ms=seg.t0_ms,
+        t1_ms=seg.t1_ms,
+        i0=seg.i0,
+        i1=seg.i1,
+        event_types=seg.types,
+        source=seg.source,
+        pred_chain_template_id=tid,
+        pred_chain_label_zh=label_zh(tid),
+        prob_top1=result.confidence,
+        prob_top2=result.prob_top2,
+        margin=result.margin,
+        probs=dict(result.probs),
+    )
+
+
 @torch.no_grad()
-def score_segment(
+def score_segment_gnn(
     model: LiteGCN,
     events: List[Dict[str, Any]],
     seg: GeoSegment,
@@ -127,6 +162,48 @@ def score_segment(
         prob_top2=p2,
         margin=p1 - p2,
         probs=prob_map,
+    )
+
+
+def score_segment(
+    scorer: SegmentScorer,
+    events: List[Dict[str, Any]],
+    seg: GeoSegment,
+    *,
+    max_events: int | None,
+) -> ScoredSegment:
+    evs = slice_events(events, seg, max_events=max_events)
+    if scorer.backend == "agent":
+        result = classify_events_agent(
+            scorer.llm_model,
+            scorer.llm_processor,
+            evs,
+            device=str(scorer.device),
+            max_new_tokens=scorer.max_new_tokens,
+            skip_critic_llm=scorer.skip_critic_llm,
+            full_llm=scorer.full_llm,
+            ambiguous_margin=scorer.ambiguous_margin,
+        )
+        return _classify_result_to_scored(seg, result)
+    if scorer.backend == "llm":
+        result = classify_events(
+            scorer.llm_model,
+            scorer.llm_processor,
+            evs,
+            device=str(scorer.device),
+            max_new_tokens=scorer.max_new_tokens,
+            two_stage=scorer.two_stage,
+        )
+        return _classify_result_to_scored(seg, result)
+    if scorer.gnn_model is None:
+        raise ValueError("gnn backend requires gnn_model")
+    return score_segment_gnn(
+        scorer.gnn_model,
+        events,
+        seg,
+        scorer.device,
+        max_events=max_events,
+        optional_max_skip=scorer.optional_max_skip,
     )
 
 
@@ -233,8 +310,7 @@ def scored_to_clip_dict(s: ScoredSegment, proposal_id: str = "") -> Dict[str, An
 def run_timeline_highlights(
     *,
     timeline_path: Path,
-    ckpt_path: Path,
-    device: torch.device,
+    scorer: SegmentScorer,
     pre_ms: int,
     post_ms: int,
     window_ms: int,
@@ -244,12 +320,10 @@ def run_timeline_highlights(
     iou_dedupe_thresh: float,
     iou_recall_thresh: float,
     max_events: Optional[int],
-    optional_max_skip: int,
     use_sliding_recall: bool,
     template_whitelist: Optional[List[str]],
 ) -> Dict[str, Any]:
     events = load_timeline_json(timeline_path)
-    model = load_gnn(ckpt_path, device)
 
     anchor_geom = segment_anchor_geom(
         events, pre_ms=pre_ms, post_ms=post_ms
@@ -263,12 +337,10 @@ def run_timeline_highlights(
     for i, g in enumerate(anchor_geom):
         pid = f"a{i:02d}"
         sc = score_segment(
-            model,
+            scorer,
             events,
             g,
-            device,
             max_events=max_events,
-            optional_max_skip=optional_max_skip,
         )
         anchor_scored.append(sc)
         anchor_scored_out.append(
@@ -310,12 +382,10 @@ def run_timeline_highlights(
         for i, g in enumerate(slide_geom):
             pid = f"s{i:02d}"
             sc = score_segment(
-                model,
+                scorer,
                 events,
                 g,
-                device,
                 max_events=max_events,
-                optional_max_skip=optional_max_skip,
             )
             slide_scored.append(sc)
             slide_scored_out.append(
@@ -362,6 +432,9 @@ def run_timeline_highlights(
         "input_file": str(timeline_path.resolve()),
         "event_count": len(events),
         "config": {
+            "backend": scorer.backend,
+            "two_stage": scorer.two_stage if scorer.backend == "llm" else None,
+            "skip_critic_llm": scorer.skip_critic_llm if scorer.backend == "agent" else None,
             "pre_ms": pre_ms,
             "post_ms": post_ms,
             "window_ms": window_ms,
@@ -396,12 +469,46 @@ def run_timeline_highlights(
 
 def main() -> None:
     ap = argparse.ArgumentParser(
-        description="时间线 → 锚点分段 + GNN 打分 + margin 集锦选段"
+        description="时间线 → 锚点分段 + 分类打分 + margin 集锦选段"
     )
     ap.add_argument("--timeline-json", type=Path, required=True)
-    ap.add_argument("--ckpt", type=Path, required=True)
+    ap.add_argument(
+        "--backend",
+        choices=["agent", "llm", "gnn"],
+        default="llm",
+        help="agent=方案C（慢，离线精修）；llm=两阶段（默认）",
+    )
+    ap.add_argument(
+        "--model-path",
+        type=str,
+        default=None,
+        help="--backend llm/agent 时 Qwen2.5-VL 权重目录",
+    )
+    ap.add_argument(
+        "--ckpt",
+        type=Path,
+        default=None,
+        help="--backend gnn 时 LiteGCN checkpoint",
+    )
     ap.add_argument("--out", type=Path, required=True)
-    ap.add_argument("--device", default="cpu")
+    ap.add_argument("--device", default="cuda")
+    ap.add_argument("--max-new-tokens", type=int, default=512)
+    ap.add_argument(
+        "--agent-full-llm",
+        action="store_true",
+        help="agent 后端：旧版 5 步全 LLM（不推荐）",
+    )
+    ap.add_argument(
+        "--agent-margin",
+        type=float,
+        default=0.12,
+        help="agent hybrid：规则分差阈值",
+    )
+    ap.add_argument(
+        "--single-stage",
+        action="store_true",
+        help="llm 后端：单阶段 18 类（默认两阶段）",
+    )
     ap.add_argument("--pre-ms", type=int, default=120_000)
     ap.add_argument("--post-ms", type=int, default=60_000)
     ap.add_argument("--window-ms", type=int, default=180_000)
@@ -434,9 +541,9 @@ def main() -> None:
         "--max-events",
         type=int,
         default=12,
-        help="GNN 打分前窗内最多保留事件数（围绕锚点或中心截断）",
+        help="打分前窗内最多保留事件数（围绕锚点或中心截断）",
     )
-    ap.add_argument("--optional-max-skip", type=int, default=2)
+    ap.add_argument("--optional-max-skip", type=int, default=2, help="仅 gnn 后端")
     ap.add_argument(
         "--no-sliding-recall",
         action="store_true",
@@ -452,23 +559,46 @@ def main() -> None:
         "--viz-dir",
         type=Path,
         default=None,
-        help="可选：输出可视化 PNG 目录（时间轴 + 每条 proposal 的 GNN 概率图）",
+        help="可选：输出可视化 PNG 目录（时间轴 + 每条 proposal 的分类概率图）",
     )
     args = ap.parse_args()
 
-    ckpt = args.ckpt.expanduser().resolve()
-    if not ckpt.is_file():
-        raise SystemExit(f"找不到 checkpoint: {ckpt}")
+    dev = torch.device(args.device)
+    if args.backend in ("llm", "agent"):
+        if not args.model_path:
+            raise SystemExit(f"--backend {args.backend} 需要 --model-path")
+        from causal_chain2.llm_qwen import load_qwen
 
+        llm_model, llm_processor = load_qwen(args.model_path, args.device)
+        scorer = SegmentScorer(
+            backend=args.backend,
+            device=dev,
+            llm_model=llm_model,
+            llm_processor=llm_processor,
+            max_new_tokens=args.max_new_tokens,
+            two_stage=not args.single_stage,
+            full_llm=args.agent_full_llm,
+            ambiguous_margin=args.agent_margin,
+        )
+    else:
+        if not args.ckpt:
+            raise SystemExit("--backend gnn 需要 --ckpt")
+        ckpt = args.ckpt.expanduser().resolve()
+        if not ckpt.is_file():
+            raise SystemExit(f"找不到 checkpoint: {ckpt}")
+        scorer = SegmentScorer(
+            backend="gnn",
+            device=dev,
+            gnn_model=load_gnn(ckpt, dev),
+            optional_max_skip=args.optional_max_skip,
+        )
     whitelist = None
     if args.templates and str(args.templates).strip():
         whitelist = [x.strip() for x in str(args.templates).split(",") if x.strip()]
 
-    dev = torch.device(args.device)
     result = run_timeline_highlights(
         timeline_path=args.timeline_json,
-        ckpt_path=ckpt,
-        device=dev,
+        scorer=scorer,
         pre_ms=args.pre_ms,
         post_ms=args.post_ms,
         window_ms=args.window_ms,
@@ -478,7 +608,6 @@ def main() -> None:
         iou_dedupe_thresh=args.iou_dedupe,
         iou_recall_thresh=args.iou_recall,
         max_events=args.max_events if args.max_events > 0 else None,
-        optional_max_skip=args.optional_max_skip,
         use_sliding_recall=not args.no_sliding_recall,
         template_whitelist=whitelist,
     )

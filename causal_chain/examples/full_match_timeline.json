@@ -1,0 +1,143 @@
+{
+  "match_id": "demo_2024_league_home_away",
+  "description": "90分钟完整比赛事件链样例：含角球进球、扑救、反击进球、点球、红牌、门线救险、VAR改判无效、门将脱手、中柱与快发定位球等多条因果链，供 causal_chain3 集锦建链检验。",
+  "duration_ms": 5400000,
+  "events": [
+    {"t_ms": 0, "type": "match_start"},
+    {"t_ms": 180000, "type": "pass"},
+    {"t_ms": 420000, "type": "successful_tackle"},
+    {"t_ms": 480000, "type": "pass"},
+    {"t_ms": 900000, "type": "throw_in"},
+    {"t_ms": 930000, "type": "corner"},
+    {"t_ms": 970000, "type": "cross"},
+    {"t_ms": 995000, "type": "header_shot"},
+    {"t_ms": 1020000, "type": "goal"},
+    {"t_ms": 1680000, "type": "pass"},
+    {"t_ms": 1720000, "type": "shot"},
+    {"t_ms": 1755000, "type": "keeper_save"},
+    {"t_ms": 2280000, "type": "interception"},
+    {"t_ms": 2310000, "type": "pass"},
+    {"t_ms": 2340000, "type": "cross"},
+    {"t_ms": 2375000, "type": "goal"},
+    {"t_ms": 3120000, "type": "foul"},
+    {"t_ms": 3180000, "type": "penalty"},
+    {"t_ms": 3240000, "type": "goal"},
+    {"t_ms": 3480000, "type": "foul"},
+    {"t_ms": 3510000, "type": "controversy"},
+    {"t_ms": 3540000, "type": "var"},
+    {"t_ms": 3600000, "type": "red_card"},
+    {"t_ms": 3900000, "type": "corner"},
+    {"t_ms": 3930000, "type": "header_shot"},
+    {"t_ms": 3960000, "type": "goal_line_clearance"},
+    {"t_ms": 4320000, "type": "shot"},
+    {"t_ms": 4350000, "type": "goal"},
+    {"t_ms": 4380000, "type": "controversy"},
+    {"t_ms": 4410000, "type": "var"},
+    {"t_ms": 4470000, "type": "disallowed_goal"},
+    {"t_ms": 4680000, "type": "cross"},
+    {"t_ms": 4710000, "type": "header_shot"},
+    {"t_ms": 4740000, "type": "keeper_save"},
+    {"t_ms": 4770000, "type": "shot"},
+    {"t_ms": 4980000, "type": "free_kick"},
+    {"t_ms": 5010000, "type": "shot"},
+    {"t_ms": 5040000, "type": "shot"},
+    {"t_ms": 5100000, "type": "throw_in"},
+    {"t_ms": 5130000, "type": "pass"},
+    {"t_ms": 5160000, "type": "cross"},
+    {"t_ms": 5190000, "type": "shot"},
+    {"t_ms": 5340000, "type": "substitution"},
+    {"t_ms": 5400000, "type": "match_end"}
+  ],
+  "ground_truth_chains": [
+    {
+      "clip_id": "gt01",
+      "chain_template_id": "corner_cross_goal",
+      "chain_label_zh": "角球传中进球链",
+      "t0_ms": 900000,
+      "t1_ms": 1020000,
+      "event_indices": [4, 5, 6, 7, 8],
+      "event_types": ["throw_in", "corner", "cross", "header_shot", "goal"]
+    },
+    {
+      "clip_id": "gt02",
+      "chain_template_id": "shot_save_chain",
+      "chain_label_zh": "射门扑救链",
+      "t0_ms": 1680000,
+      "t1_ms": 1755000,
+      "event_indices": [9, 10, 11],
+      "event_types": ["pass", "shot", "keeper_save"]
+    },
+    {
+      "clip_id": "gt03",
+      "chain_template_id": "turnover_counter_goal",
+      "chain_label_zh": "抢断/反击/失误造成进球链",
+      "t0_ms": 2280000,
+      "t1_ms": 2375000,
+      "event_indices": [12, 13, 14, 15],
+      "event_types": ["interception", "pass", "cross", "goal"]
+    },
+    {
+      "clip_id": "gt04",
+      "chain_template_id": "penalty_scored_chain",
+      "chain_label_zh": "点球命中链",
+      "t0_ms": 3120000,
+      "t1_ms": 3240000,
+      "event_indices": [16, 17, 18],
+      "event_types": ["foul", "penalty", "goal"]
+    },
+    {
+      "clip_id": "gt05",
+      "chain_template_id": "red_card_decision_chain",
+      "chain_label_zh": "红牌判罚链",
+      "t0_ms": 3480000,
+      "t1_ms": 3600000,
+      "event_indices": [19, 20, 21, 22],
+      "event_types": ["foul", "controversy", "var", "red_card"]
+    },
+    {
+      "clip_id": "gt06",
+      "chain_template_id": "goal_line_extreme_save_chain",
+      "chain_label_zh": "门线极限救险链",
+      "t0_ms": 3900000,
+      "t1_ms": 3960000,
+      "event_indices": [23, 24, 25],
+      "event_types": ["corner", "header_shot", "goal_line_clearance"]
+    },
+    {
+      "clip_id": "gt07",
+      "chain_template_id": "goal_disallowed_chain",
+      "chain_label_zh": "进球无效链",
+      "t0_ms": 4320000,
+      "t1_ms": 4470000,
+      "event_indices": [26, 27, 28, 29, 30],
+      "event_types": ["shot", "goal", "controversy", "var", "disallowed_goal"]
+    },
+    {
+      "clip_id": "gt08",
+      "chain_template_id": "keeper_spill_danger_chain",
+      "chain_label_zh": "门将脱手致险链",
+      "t0_ms": 4680000,
+      "t1_ms": 4770000,
+      "event_indices": [31, 32, 33, 34],
+      "event_types": ["cross", "header_shot", "keeper_save", "shot"]
+    },
+    {
+      "clip_id": "gt09",
+      "chain_template_id": "shot_post_bar_chain",
+      "chain_label_zh": "射门门柱/横梁链",
+      "t0_ms": 4980000,
+      "t1_ms": 5040000,
+      "event_indices": [35, 36, 37],
+      "event_types": ["free_kick", "shot", "shot"]
+    },
+    {
+      "clip_id": "gt10",
+      "chain_template_id": "throw_in_build_up_chain",
+      "chain_label_zh": "手抛球发动进攻链",
+      "t0_ms": 5100000,
+      "t1_ms": 5190000,
+      "event_indices": [38, 39, 40, 41],
+      "event_types": ["throw_in", "pass", "cross", "shot"]
+    }
+  ]
+}
