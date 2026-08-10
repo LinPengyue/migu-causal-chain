@@ -1,0 +1,29 @@
+{
+  "name": "oct10_causal2",
+  "description": "10月10日 causal(2)：业务骨架 + params_first；soft_other 认可「其他」子类",
+  "rules_mode": "annotation",
+  "mapping": "params_first+annotation_compat",
+  "classify": {
+    "backend": "chain4_agent",
+    "eval_filter": "none",
+    "agent_margin": 0.12,
+    "soft_other": true
+  },
+  "strip": {
+    "backend": "agent",
+    "agent_margin": 0.12,
+    "min_margin": 0.08,
+    "max_events": 12
+  },
+  "extract": {
+    "enabled": true,
+    "max_window": 12
+  },
+  "llm": {
+    "enabled": false,
+    "ambiguous_margin": 0.12
+  },
+  "vlm": {
+    "enabled": false
+  }
+}

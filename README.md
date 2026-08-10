@@ -93,9 +93,74 @@ CUDA_VISIBLE_DEVICES=2 python -m causal_chain3.build_highlights \
 | `causal_chain2/` | 拆条分类：schema / rules / agent hybrid / test / timeline_highlights |
 | `causal_chain2/_checkpoints/gnn.pt` | LiteGCN 权重（GNN 对照） |
 | `causal_chain3/` | 集锦因果链：discover → extract → refine → assemble → viz |
+| `causal_chain4/` | 分类 classify + 拆条 strip（标注 JSON 映射可配） |
 | `eval/eval_a3.jsonl` | 原始评测集（800 条） |
 | `eval/eval_a3_clean.jsonl` | 清洗评测集（654 条，序列唯一对应模板） |
 | `causal_chain/examples/` | 时间线 JSON 样例 |
+
+## 3）causal_chain4：分类 + 拆条
+
+与 `causal_chain2` **并列**；核心对齐 chain2 两条命令，并支持 **causal JSON 映射**（`profile` 配置）。
+
+| chain4 | 对齐 chain2 | 输入 |
+|--------|-------------|------|
+| **`classify`** | `causal_chain2.test` | A3 jsonl 或 `*_causal(2).json` |
+| **`strip`** | `causal_chain2.timeline_highlights` | 整场 `timeline.json` |
+
+评测只看 **template 准确率**；转移合法率仅在 `eval --show-transition-debug` 时出现。
+
+### 3.1 因果链分类
+
+默认后端 **`chain4_agent`**：使用 `causal_chain4/schema/skeletons.py` 业务骨架（长链、其他三子类），**不修改** `causal_chain2` 规则。
+
+```bash
+ROOT=/path/to/causal-chain2
+PY="$ROOT/causal_env/bin/python"
+MODEL="$ROOT/Qwen2.5-VL"
+cd "$ROOT" && export PYTHONPATH=.
+
+# 业务骨架分类（causal JSON；无 GPU 也可纯规则）
+"$PY" -m causal_chain4.classify \
+  --data causal_chain/examples/10月10日_2025世预赛欧洲区_哈萨克斯坦VS列支敦士登_英语_causal\(2\).json \
+  --profile oct10_causal2 \
+  --backend chain4_agent \
+  --device cpu \
+  --out-predictions eval/oct10_kz_chain4_skel_preds.jsonl
+
+# 带 Qwen hybrid（歧义时消歧）
+CUDA_VISIBLE_DEVICES=0 "$PY" -m causal_chain4.classify \
+  --data causal_chain/examples/..._causal\(2\).json \
+  --profile oct10_causal2 \
+  --model-path "$MODEL" \
+  --device cuda
+
+# 对照：复用 chain2 agent（旧 18 类短骨架）
+CUDA_VISIBLE_DEVICES=0 "$PY" -m causal_chain4.classify \
+  --data eval/eval_a3_clean.jsonl \
+  --backend agent --eval-filter clean \
+  --profile strict_chain2 \
+  --model-path "$MODEL" --device cuda
+```
+
+指标：`accuracy` 精确匹配；`soft_accuracy` 将「其他」与个人突破/团队配合/角球配合视为一致。
+
+骨架与长度见 `causal_chain4/schema/skeletons.py`、`SKELETONS.md`。
+
+### 3.2 拆条
+
+```bash
+CUDA_VISIBLE_DEVICES=0 "$PY" -m causal_chain4.strip \
+  --timeline-json causal_chain/examples/external_task2_timeline.json \
+  --model-path "$MODEL" \
+  --device cuda \
+  --profile production \
+  --out out/chain4_highlights.json \
+  --min-margin 0.08 \
+  --max-events 12 \
+  --viz-dir out/chain4_viz
+```
+
+可选：`pipeline` / `extract` / `eval` 为实验与标注对比子命令。
 
 ## 相关仓库
 

@@ -22,6 +22,7 @@ import torch.nn.functional as F
 from causal_chain2.chain_schema import CHAIN_TEMPLATES
 from causal_chain2.graph_pack import TEMPLATE_TO_IX, pack_from_events_list
 from causal_chain2.agent_classify import classify_events_agent
+from causal_chain2.event_io import events_for_output
 from causal_chain2.llm_classify import ClassifyResult, classify_events, label_zh
 from causal_chain2.model import LiteGCN
 from causal_chain2.segmentation_geom import GeoSegment, segment_anchor_geom, segment_sliding_geom
@@ -301,9 +302,16 @@ def scored_to_dict(
     }
 
 
-def scored_to_clip_dict(s: ScoredSegment, proposal_id: str = "") -> Dict[str, Any]:
+def scored_to_clip_dict(
+    s: ScoredSegment,
+    proposal_id: str = "",
+    *,
+    events: Optional[List[Dict[str, Any]]] = None,
+) -> Dict[str, Any]:
     d = scored_to_dict(s, proposal_id or "clip")
     d["in_final_clips"] = True
+    if events is not None:
+        d["events"] = events_for_output(events[s.i0 : s.i1 + 1])
     return d
 
 
@@ -426,7 +434,7 @@ def run_timeline_highlights(
 
     clip_dicts = []
     for i, s in enumerate(combined):
-        clip_dicts.append(scored_to_clip_dict(s, f"clip{i:02d}"))
+        clip_dicts.append(scored_to_clip_dict(s, f"clip{i:02d}", events=events))
 
     return {
         "input_file": str(timeline_path.resolve()),

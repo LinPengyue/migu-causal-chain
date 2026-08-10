@@ -98,6 +98,7 @@ def build_chain_from_window(
                     order=order,
                     type=ev["type"],
                     t_ms=int(ev["t_ms"]),
+                    event_id=str(ev.get("event_id", "")),
                     role=_role_for_event(
                         ev["type"], template_id, order, len(align_idx)
                     ),
@@ -112,6 +113,7 @@ def build_chain_from_window(
                     order=order,
                     type=ev["type"],
                     t_ms=int(ev["t_ms"]),
+                    event_id=str(ev.get("event_id", "")),
                     role=_role_for_event(
                         ev["type"], template_id, order, len(events_window)
                     ),
@@ -128,6 +130,7 @@ def build_chain_from_window(
                 order=local_i,
                 type=ev["type"],
                 t_ms=int(ev["t_ms"]),
+                event_id=str(ev.get("event_id", "")),
                 role="context",
                 global_index=i0 + local_i,
             )

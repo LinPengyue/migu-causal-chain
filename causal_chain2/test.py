@@ -14,13 +14,30 @@ from causal_chain2.dataset import (
     load_a3_jsonl,
     record_to_pack,
 )
+from causal_chain2.event_io import events_for_output
 from causal_chain2.agent_classify import AgentTrace, classify_record_agent
 from causal_chain2.llm_classify import classify_record
 from causal_chain2.llm_qwen import load_qwen
 from causal_chain2.model import LiteGCN
 
 
-def _eval_gnn(rows, ckpt_path: Path, device: torch.device) -> tuple[int, int]:
+def _prediction_row(rec, *, pred_template: str, pred_category: str, parse_ok: bool = True, **extra) -> dict:
+    row = {
+        "annotation_id": rec.annotation_id,
+        "match_id": rec.match_id,
+        "true_chain_template_id": rec.chain_template_id,
+        "pred_chain_template_id": pred_template,
+        "true_chain_category": rec.chain_category,
+        "pred_chain_category": pred_category,
+        "correct": pred_template == rec.chain_template_id,
+        "parse_ok": parse_ok,
+        "events": events_for_output(rec.events_normalized),
+        **extra,
+    }
+    return row
+
+
+def _eval_gnn(rows, ckpt_path: Path, device: torch.device, out_predictions: Path | None = None) -> tuple[int, int]:
     ck = torch.load(ckpt_path, map_location=device, weights_only=False)
     model = LiteGCN(
         int(ck["in_dim"]),
@@ -29,13 +46,37 @@ def _eval_gnn(rows, ckpt_path: Path, device: torch.device) -> tuple[int, int]:
     ).to(device)
     model.load_state_dict(ck["model"])
     model.eval()
+    from causal_chain2.graph_pack import TEMPLATE_TO_IX
+
+    ix_to_template = {v: k for k, v in TEMPLATE_TO_IX.items()}
     ok = 0
+    pred_lines: list[str] = []
     with torch.no_grad():
         for rec in rows:
             pack = record_to_pack(rec, device)
             logits, _ = model(pack.x, pack.edge_index)
-            if int(logits.argmax(-1).item()) == int(pack.y.item()):
+            pred_ix = int(logits.argmax(-1).item())
+            pred_tid = ix_to_template[pred_ix]
+            if pred_ix == int(pack.y.item()):
                 ok += 1
+            if out_predictions is not None:
+                from causal_chain2.chain_schema import CHAIN_TEMPLATES
+
+                meta = CHAIN_TEMPLATES.get(pred_tid, {})
+                pred_lines.append(
+                    json.dumps(
+                        _prediction_row(
+                            rec,
+                            pred_template=pred_tid,
+                            pred_category=meta.get("category", ""),
+                            backend="gnn",
+                        ),
+                        ensure_ascii=False,
+                    )
+                )
+    if out_predictions is not None:
+        out_predictions.parent.mkdir(parents=True, exist_ok=True)
+        out_predictions.write_text("\n".join(pred_lines) + ("\n" if pred_lines else ""), encoding="utf-8")
     return ok, len(rows)
 
 
@@ -46,10 +87,12 @@ def _eval_llm(
     device: str,
     max_new_tokens: int,
     two_stage: bool,
+    out_predictions: Path | None = None,
 ) -> tuple[int, int, int]:
     model, processor = load_qwen(model_path, device)
     ok = 0
     parse_fail = 0
+    pred_lines: list[str] = []
     for i, rec in enumerate(rows):
         result = classify_record(
             model,
@@ -63,8 +106,26 @@ def _eval_llm(
             parse_fail += 1
         if result.chain_template_id == rec.chain_template_id:
             ok += 1
+        if out_predictions is not None:
+            pred_lines.append(
+                json.dumps(
+                    _prediction_row(
+                        rec,
+                        pred_template=result.chain_template_id,
+                        pred_category=result.chain_category,
+                        parse_ok=result.parse_ok,
+                        backend="llm",
+                        confidence=result.confidence,
+                        margin=result.margin,
+                    ),
+                    ensure_ascii=False,
+                )
+            )
         if (i + 1) % 20 == 0 or i + 1 == len(rows):
             print(f"  progress {i + 1}/{len(rows)}  running_acc={ok / (i + 1):.4f}")
+    if out_predictions is not None:
+        out_predictions.parent.mkdir(parents=True, exist_ok=True)
+        out_predictions.write_text("\n".join(pred_lines) + ("\n" if pred_lines else ""), encoding="utf-8")
     return ok, len(rows), parse_fail
 
 
@@ -78,11 +139,13 @@ def _eval_agent(
     full_llm: bool = False,
     ambiguous_margin: float = 0.12,
     trace_dir: Path | None = None,
+    out_predictions: Path | None = None,
 ) -> tuple[int, int, int, int]:
     model, processor = load_qwen(model_path, device)
     ok = 0
     parse_fail = 0
     fast = 0
+    pred_lines: list[str] = []
     if trace_dir:
         trace_dir.mkdir(parents=True, exist_ok=True)
     for i, rec in enumerate(rows):
@@ -104,6 +167,23 @@ def _eval_agent(
             parse_fail += 1
         if result.chain_template_id == rec.chain_template_id:
             ok += 1
+        if out_predictions is not None:
+            pred_lines.append(
+                json.dumps(
+                    _prediction_row(
+                        rec,
+                        pred_template=result.chain_template_id,
+                        pred_category=result.chain_category,
+                        parse_ok=result.parse_ok,
+                        backend="agent",
+                        mode=tr.mode,
+                        fast_path=tr.fast_path,
+                        confidence=result.confidence,
+                        margin=result.margin,
+                    ),
+                    ensure_ascii=False,
+                )
+            )
         if trace_dir:
             trace_path = trace_dir / f"{i:04d}_{rec.annotation_id[:24]}.json"
             trace_path.write_text(
@@ -115,6 +195,7 @@ def _eval_agent(
                         "true_category": rec.chain_category,
                         "pred_category": result.chain_category,
                         "correct": result.chain_template_id == rec.chain_template_id,
+                        "events": events_for_output(rec.events_normalized),
                         "rationale": result.rationale,
                         "mode": tr.mode,
                         "fast_path": tr.fast_path,
@@ -132,6 +213,9 @@ def _eval_agent(
             )
         if (i + 1) % 10 == 0 or i + 1 == len(rows):
             print(f"  progress {i + 1}/{len(rows)}  running_acc={ok / (i + 1):.4f}")
+    if out_predictions is not None:
+        out_predictions.parent.mkdir(parents=True, exist_ok=True)
+        out_predictions.write_text("\n".join(pred_lines) + ("\n" if pred_lines else ""), encoding="utf-8")
     return ok, len(rows), parse_fail, fast
 
 
@@ -198,6 +282,12 @@ def main() -> None:
         help="agent 评估：每条样本写出审计 JSON",
     )
     ap.add_argument(
+        "--out-predictions",
+        type=Path,
+        default=None,
+        help="写出逐条预测 JSONL（含 events[].event_id）",
+    )
+    ap.add_argument(
         "--limit",
         type=int,
         default=0,
@@ -238,6 +328,7 @@ def main() -> None:
             full_llm=args.agent_full_llm,
             ambiguous_margin=args.agent_margin,
             trace_dir=args.agent_trace_dir,
+            out_predictions=args.out_predictions,
         )
         acc = ok / max(n, 1)
         mode = "full_llm" if args.agent_full_llm else "hybrid"
@@ -245,6 +336,8 @@ def main() -> None:
             f"backend=agent  mode={mode}  samples={n}  accuracy={acc:.4f}  "
             f"parse_fail={parse_fail}  fast_path={fast_n}/{n}"
         )
+        if args.out_predictions:
+            print(f"wrote predictions -> {args.out_predictions}")
         return
 
     if backend == "llm":
@@ -256,6 +349,7 @@ def main() -> None:
             device=args.device,
             max_new_tokens=args.max_new_tokens,
             two_stage=not args.single_stage,
+            out_predictions=args.out_predictions,
         )
         acc = ok / max(n, 1)
         stage = "two_stage" if not args.single_stage else "single_stage"
@@ -263,6 +357,8 @@ def main() -> None:
             f"backend=llm  mode={stage}  samples={n}  accuracy={acc:.4f}  "
             f"parse_fail={parse_fail}"
         )
+        if args.out_predictions:
+            print(f"wrote predictions -> {args.out_predictions}")
         return
 
     if backend != "gnn":
@@ -274,9 +370,11 @@ def main() -> None:
     if not ckpt_path.is_file():
         raise SystemExit(f"找不到 checkpoint: {ckpt_path}")
     dev = torch.device(args.device)
-    ok, n = _eval_gnn(rows, ckpt_path, dev)
+    ok, n = _eval_gnn(rows, ckpt_path, dev, out_predictions=args.out_predictions)
     acc = ok / max(n, 1)
     print(f"backend=gnn  eval_filter={args.eval_filter}  samples={n}  accuracy={acc:.4f}")
+    if args.out_predictions:
+        print(f"wrote predictions -> {args.out_predictions}")
 
 
 if __name__ == "__main__":

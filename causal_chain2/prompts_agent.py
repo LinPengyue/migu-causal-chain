@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from typing import Any, Dict, List
 
+from causal_chain2.event_io import compact_event
 from causal_chain2.prompts_classify import (
     DECISION_TREE,
     FEW_SHOT_SHOT_GOAL,
@@ -16,10 +17,7 @@ SYSTEM_AGENT = """你是足球因果链分类智能体。每步只输出合法 J
 
 
 def _compact_events(events: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    return [
-        {"order": e.get("order", i), "type": e.get("type"), "t_ms": e.get("t_ms")}
-        for i, e in enumerate(events)
-    ]
+    return [compact_event(e, order=i) for i, e in enumerate(events)]
 
 
 def _types_chain(events: List[Dict[str, Any]]) -> str:

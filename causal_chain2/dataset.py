@@ -10,6 +10,7 @@ from typing import Dict, List, Set, Tuple
 import torch
 
 from causal_chain2.a3_schema import A3Record, events_for_graph
+from causal_chain2.event_io import ensure_event_ids
 from causal_chain2.graph_pack import GraphPack, pack_from_normalized_events
 
 
@@ -83,7 +84,10 @@ def load_a3_jsonl(path: Path) -> List[A3Record]:
         line = line.strip()
         if not line:
             continue
-        rows.append(A3Record.from_json_obj(json.loads(line)))
+        rec = A3Record.from_json_obj(json.loads(line))
+        prefix = rec.annotation_id or rec.match_id or "ann"
+        rec.events_normalized = ensure_event_ids(rec.events_normalized, prefix=prefix)
+        rows.append(rec)
     return rows
 
 

@@ -21,11 +21,13 @@ class ChainEvent:
     order: int
     type: str
     t_ms: int
+    event_id: str = ""
     role: str = "event"  # build_up | set_piece | shot | outcome | correction | ...
     global_index: int = -1
 
     def to_dict(self) -> Dict[str, Any]:
         d: Dict[str, Any] = {
+            "event_id": self.event_id,
             "order": self.order,
             "type": self.type,
             "t_ms": self.t_ms,

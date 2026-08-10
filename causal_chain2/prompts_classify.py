@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from typing import Any, Dict, List
 
+from causal_chain2.event_io import compact_event
 from causal_chain2.chain_rules import CANONICAL_SEQUENCES
 from causal_chain2.chain_schema import ALL_TEMPLATE_IDS, CHAIN_TEMPLATES, EVENT_TYPES
 
@@ -88,10 +89,7 @@ def build_category_table() -> str:
 
 
 def _compact_events(events: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    return [
-        {"order": e.get("order", i), "type": e.get("type"), "t_ms": e.get("t_ms")}
-        for i, e in enumerate(events)
-    ]
+    return [compact_event(e, order=i) for i, e in enumerate(events)]
 
 
 def user_prompt_category(events: List[Dict[str, Any]]) -> str:

@@ -14,6 +14,7 @@ class A3Record:
     """单条训练/推理样本（图级标签为 chain_template_id）。
 
     ``validation`` 常含 ``mode``、``tier``（strict|relaxed|rejected）、``normalized`` 等；构图仅用 ``events_normalized``。
+    推荐 ``events_normalized`` 每条含 ``event_id``、``order``、``type``、``t_ms``。
     """
 
     annotation_id: str
