@@ -1,0 +1,116 @@
+{
+  "stats": {
+    "rule": "rule4_t1_plus_t2",
+    "half_ms": 2700000,
+    "n_t0": 0,
+    "n_t1_pool": 4,
+    "n_t2_pool": 6,
+    "n_selected": 5,
+    "n_t0_selected": 0,
+    "n_t1_selected": 2,
+    "n_t2_selected": 0,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "no_t2",
+    "n_selected_after_drop_t2": 2,
+    "n_labeled_by_annotation": 2,
+    "n_heuristic": 0
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "2022年11月23日 法国vs澳大利亚",
+      "chain_category": "outcome",
+      "t0_ms": 6745350,
+      "t1_ms": 6758350,
+      "anchor_t_ms": 6753350,
+      "first_event": "corner",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000284",
+          "type": "corner",
+          "t_ms": 6751950,
+          "t0_ms": 6748850,
+          "t1_ms": 6759520,
+          "order": 283
+        },
+        {
+          "event_id": "event_000285",
+          "type": "shot",
+          "t_ms": 6753350,
+          "t0_ms": 6748850,
+          "t1_ms": 6759520,
+          "order": 284
+        },
+        {
+          "event_id": "event_000286",
+          "type": "keeper_save",
+          "t_ms": 6754100,
+          "t0_ms": 6748850,
+          "t1_ms": 6759520,
+          "order": 285
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    },
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "2022年11月23日 法国vs澳大利亚",
+      "chain_category": "outcome",
+      "t0_ms": 6793240,
+      "t1_ms": 6812060,
+      "anchor_t_ms": 6801240,
+      "first_event": "shot",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000288",
+          "type": "shot",
+          "t_ms": 6801240,
+          "t0_ms": 6800250,
+          "t1_ms": 6810010,
+          "order": 287
+        },
+        {
+          "event_id": "event_000289",
+          "type": "keeper_save",
+          "t_ms": 6803250,
+          "t0_ms": 6800250,
+          "t1_ms": 6810010,
+          "order": 288
+        },
+        {
+          "event_id": "event_000290",
+          "type": "shot",
+          "t_ms": 6807060,
+          "t0_ms": 6800250,
+          "t1_ms": 6810010,
+          "order": 289
+        },
+        {
+          "event_id": "event_000291",
+          "type": "keeper_save",
+          "t_ms": 6808840,
+          "t0_ms": 6800250,
+          "t1_ms": 6810010,
+          "order": 290
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner|merged",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    }
+  ]
+}

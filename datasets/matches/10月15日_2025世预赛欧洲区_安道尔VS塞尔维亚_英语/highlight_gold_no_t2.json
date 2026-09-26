@@ -1,0 +1,135 @@
+{
+  "stats": {
+    "rule": "rule4_t1_plus_t2",
+    "half_ms": 2700000,
+    "n_t0": 0,
+    "n_t1_pool": 4,
+    "n_t2_pool": 1,
+    "n_selected": 4,
+    "n_t0_selected": 0,
+    "n_t1_selected": 3,
+    "n_t2_selected": 0,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "no_t2",
+    "n_selected_after_drop_t2": 3,
+    "n_labeled_by_annotation": 2,
+    "n_heuristic": 1
+  },
+  "chains": [
+    {
+      "annotation_id": "select:10月15日_2025世预赛欧洲区_安道尔VS塞尔维亚_英语:3586180:T1",
+      "match_id": "10月15日_2025世预赛欧洲区_安道尔VS塞尔维亚_英语",
+      "chain_category": "danger",
+      "t0_ms": 3578180,
+      "t1_ms": 3591180,
+      "anchor_t_ms": 3586180,
+      "first_event": "free_kick",
+      "last_event": "free_kick",
+      "events": [
+        {
+          "event_id": "event_000011",
+          "type": "free_kick",
+          "t_ms": 3586180,
+          "t0_ms": 3581640,
+          "t1_ms": 3591970,
+          "order": 10
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "fk_then_shot",
+      "window_aligned": "select_moments",
+      "label_source": "timeline_heuristic",
+      "label_score": 0.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    },
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "10月15日_2025世预赛欧洲区_安道尔VS塞尔维亚_英语",
+      "chain_category": "outcome",
+      "t0_ms": 4789840,
+      "t1_ms": 4802840,
+      "anchor_t_ms": 4797840,
+      "first_event": "throw_in",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000016",
+          "type": "throw_in",
+          "t_ms": 4794810,
+          "t0_ms": 4792490,
+          "t1_ms": 4803940,
+          "order": 15
+        },
+        {
+          "event_id": "event_000017",
+          "type": "shot",
+          "t_ms": 4797840,
+          "t0_ms": 4792490,
+          "t1_ms": 4803940,
+          "order": 16
+        },
+        {
+          "event_id": "event_000018",
+          "type": "keeper_save",
+          "t_ms": 4800050,
+          "t0_ms": 4792490,
+          "t1_ms": 4803940,
+          "order": 17
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    },
+    {
+      "annotation_id": "ann_0004",
+      "match_id": "10月15日_2025世预赛欧洲区_安道尔VS塞尔维亚_英语",
+      "chain_category": "outcome",
+      "t0_ms": 4894480,
+      "t1_ms": 4907480,
+      "anchor_t_ms": 4902480,
+      "first_event": "pass",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000021",
+          "type": "pass",
+          "t_ms": 4895410,
+          "t0_ms": 4883220,
+          "t1_ms": 4908570,
+          "order": 20
+        },
+        {
+          "event_id": "event_000022",
+          "type": "shot",
+          "t_ms": 4902480,
+          "t0_ms": 4883220,
+          "t1_ms": 4908570,
+          "order": 21
+        },
+        {
+          "event_id": "event_000023",
+          "type": "keeper_save",
+          "t_ms": 4904090,
+          "t0_ms": 4883220,
+          "t1_ms": 4908570,
+          "order": 22
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 140.02,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    }
+  ]
+}

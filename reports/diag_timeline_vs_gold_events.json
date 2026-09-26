@@ -1,0 +1,631 @@
+{
+  "core": {
+    "gold_events": {
+      "stream_strict": 74.37,
+      "stream_precision": 80.92,
+      "B": 81.46,
+      "n_tracks": 325,
+      "offline": 90.62
+    },
+    "timeline": {
+      "stream_strict": 1.14,
+      "stream_precision": 1.42,
+      "B_no_fill": 0.0,
+      "B_empty_slice": 392,
+      "B_legacy_with_gold_fallback": 75.06,
+      "n_tracks": 351,
+      "offline": 90.62,
+      "B_detail": {
+        "n_gold": 437,
+        "strict_complete": 0,
+        "strict_rate": 0.0,
+        "aux_time_cat_complete": 2,
+        "aux_time_cat_rate": 0.46
+      }
+    }
+  },
+  "alignment_all_gold": {
+    "partial_missing": 122,
+    "no_events_near": 197,
+    "no_matching_types_near": 110,
+    "time_shift_oracle_empty": 7,
+    "timeline_events_basically_complete": 1
+  },
+  "alignment_samples": {
+    "partial_missing": [
+      {
+        "safe": "01_1_9月29日_25-26赛季西甲第7轮_巴塞罗那VS皇家社会_4K国语__convert",
+        "ann": "ann_0003",
+        "cat": "danger",
+        "found": 2,
+        "n_gold": 4,
+        "n_slice": 0,
+        "gold_types": [
+          "corner",
+          "pass",
+          "shot",
+          "keeper_save"
+        ]
+      },
+      {
+        "safe": "01_1_9月29日_25-26赛季西甲第7轮_巴塞罗那VS皇家社会_4K国语__convert",
+        "ann": "ann_0008",
+        "cat": "danger",
+        "found": 2,
+        "n_gold": 4,
+        "n_slice": 0,
+        "gold_types": [
+          "pass",
+          "pass",
+          "goal_line_clearance",
+          "shot"
+        ]
+      },
+      {
+        "safe": "02_2_11月1日_25-26赛季英超第10轮_诺丁汉森林VS曼联_4K国语__convert",
+        "ann": "ann_0001",
+        "cat": "outcome",
+        "found": 2,
+        "n_gold": 5,
+        "n_slice": 0,
+        "gold_types": [
+          "pass",
+          "pass",
+          "assist",
+          "shot",
+          "goal"
+        ]
+      },
+      {
+        "safe": "02_2_11月1日_25-26赛季英超第10轮_诺丁汉森林VS曼联_4K国语__convert",
+        "ann": "ann_0004",
+        "cat": "outcome",
+        "found": 6,
+        "n_gold": 8,
+        "n_slice": 0,
+        "gold_types": [
+          "pass",
+          "pass",
+          "pass",
+          "pass",
+          "pass",
+          "aerial_won",
+          "shot",
+          "goal"
+        ]
+      },
+      {
+        "safe": "02_2_11月1日_25-26赛季英超第10轮_诺丁汉森林VS曼联_4K国语__convert",
+        "ann": "ann_0007",
+        "cat": "danger",
+        "found": 1,
+        "n_gold": 5,
+        "n_slice": 0,
+        "gold_types": [
+          "pass",
+          "dribble_past",
+          "successful_tackle",
+          "shot",
+          "keeper_save"
+        ]
+      }
+    ],
+    "no_events_near": [
+      {
+        "safe": "01_1_9月29日_25-26赛季西甲第7轮_巴塞罗那VS皇家社会_4K国语__convert",
+        "ann": "ann_0006",
+        "cat": "outcome",
+        "found": 0,
+        "n_gold": 4,
+        "n_slice": 0,
+        "gold_types": [
+          "pass",
+          "dribble_past",
+          "pass",
+          "goal"
+        ]
+      },
+      {
+        "safe": "01_2_10月5日_25-26赛季意甲第6轮_国际米兰VS克雷莫内塞_4K国语__conver",
+        "ann": "ann_0005",
+        "cat": "outcome",
+        "found": 0,
+        "n_gold": 5,
+        "n_slice": 0,
+        "gold_types": [
+          "pass",
+          "pass",
+          "shot",
+          "keeper_save",
+          "goal"
+        ]
+      },
+      {
+        "safe": "01_2_10月5日_25-26赛季意甲第6轮_国际米兰VS克雷莫内塞_4K国语__conver",
+        "ann": "ann_0010",
+        "cat": "danger",
+        "found": 0,
+        "n_gold": 5,
+        "n_slice": 0,
+        "gold_types": [
+          "pass",
+          "shot",
+          "goal_line_clearance",
+          "pass",
+          "pass"
+        ]
+      },
+      {
+        "safe": "01_2_10月5日_25-26赛季意甲第6轮_国际米兰VS克雷莫内塞_4K国语__conver",
+        "ann": "ann_0011",
+        "cat": "danger",
+        "found": 0,
+        "n_gold": 5,
+        "n_slice": 0,
+        "gold_types": [
+          "pass",
+          "pass",
+          "pass",
+          "shot",
+          "goal_line_clearance"
+        ]
+      },
+      {
+        "safe": "01_2_10月5日_25-26赛季意甲第6轮_国际米兰VS克雷莫内塞_4K国语__conver",
+        "ann": "ann_0015",
+        "cat": "outcome",
+        "found": 1,
+        "n_gold": 6,
+        "n_slice": 0,
+        "gold_types": [
+          "pass",
+          "pass",
+          "pass",
+          "aerial_won",
+          "shot",
+          "goal"
+        ]
+      }
+    ],
+    "no_matching_types_near": [
+      {
+        "safe": "01_2_10月5日_25-26赛季意甲第6轮_国际米兰VS克雷莫内塞_4K国语__conver",
+        "ann": "ann_0001",
+        "cat": "danger",
+        "found": 0,
+        "n_gold": 2,
+        "n_slice": 0,
+        "gold_types": [
+          "shot",
+          "goal_line_clearance"
+        ]
+      },
+      {
+        "safe": "01_2_10月5日_25-26赛季意甲第6轮_国际米兰VS克雷莫内塞_4K国语__conver",
+        "ann": "ann_0002",
+        "cat": "outcome",
+        "found": 0,
+        "n_gold": 5,
+        "n_slice": 1,
+        "gold_types": [
+          "successful_tackle",
+          "pass",
+          "shot",
+          "keeper_save",
+          "goal"
+        ]
+      },
+      {
+        "safe": "01_2_10月5日_25-26赛季意甲第6轮_国际米兰VS克雷莫内塞_4K国语__conver",
+        "ann": "ann_0014",
+        "cat": "danger",
+        "found": 0,
+        "n_gold": 3,
+        "n_slice": 0,
+        "gold_types": [
+          "pass",
+          "shot",
+          "keeper_save"
+        ]
+      },
+      {
+        "safe": "05_1_4月19日_25-26赛季英超第33轮_曼城VS阿森纳_4K国语__converted",
+        "ann": "ann_0009",
+        "cat": "danger",
+        "found": 0,
+        "n_gold": 5,
+        "n_slice": 0,
+        "gold_types": [
+          "pass",
+          "aerial_won",
+          "shot",
+          "keeper_save",
+          "pass"
+        ]
+      },
+      {
+        "safe": "05_2_4月19日_25-26赛季英超第33轮_切尔西VS曼联_4K国语__converted",
+        "ann": "ann_0001",
+        "cat": "danger",
+        "found": 0,
+        "n_gold": 4,
+        "n_slice": 0,
+        "gold_types": [
+          "aerial_won",
+          "pass",
+          "keeper_save",
+          "throw_in"
+        ]
+      }
+    ],
+    "time_shift_oracle_empty": [
+      {
+        "safe": "03_1_8月25日_25-26赛季西甲第2轮_皇家奥维耶多VS皇家马德里_4K国语__conv",
+        "ann": "ann_0001",
+        "cat": "danger",
+        "found": 3,
+        "n_gold": 3,
+        "n_slice": 0,
+        "gold_types": [
+          "dribble_past",
+          "shot",
+          "goal_line_clearance"
+        ]
+      },
+      {
+        "safe": "05_2_4月19日_25-26赛季英超第33轮_切尔西VS曼联_4K国语__converted",
+        "ann": "ann_0013",
+        "cat": "danger",
+        "found": 1,
+        "n_gold": 1,
+        "n_slice": 0,
+        "gold_types": [
+          "successful_tackle"
+        ]
+      },
+      {
+        "safe": "09_2_9月14日_25-26赛季意甲第3轮_尤文图斯VS国际米兰_4K国语__convert",
+        "ann": "ann_0026",
+        "cat": "danger",
+        "found": 2,
+        "n_gold": 2,
+        "n_slice": 0,
+        "gold_types": [
+          "shot",
+          "keeper_save"
+        ]
+      },
+      {
+        "safe": "10月10日_2025世预赛欧洲区_哈萨克斯坦VS列支敦士登_英语",
+        "ann": "ann_0014",
+        "cat": "special",
+        "found": 4,
+        "n_gold": 4,
+        "n_slice": 0,
+        "gold_types": [
+          "throw_in",
+          "pass",
+          "shot",
+          "successful_tackle"
+        ]
+      },
+      {
+        "safe": "10月12日_2025世预赛亚洲区_伊拉克VS印度尼西亚_国语",
+        "ann": "ann_0001",
+        "cat": "danger",
+        "found": 7,
+        "n_gold": 7,
+        "n_slice": 0,
+        "gold_types": [
+          "shot",
+          "goal_line_clearance",
+          "shot",
+          "goal_line_clearance",
+          "pass",
+          "pass",
+          "pass"
+        ]
+      }
+    ],
+    "timeline_events_basically_complete": [
+      {
+        "safe": "28月28日_25-26赛季英联杯第2轮_格林斯比VS曼联_英语",
+        "ann": "ann_0011",
+        "cat": "outcome",
+        "found": 5,
+        "n_gold": 5,
+        "n_slice": 2,
+        "gold_types": [
+          "pass",
+          "pass",
+          "pass",
+          "pass",
+          "shot"
+        ]
+      }
+    ]
+  },
+  "compare_flags": {
+    "n_common": 437,
+    "ge_ok_tl_ok": 3,
+    "ge_ok_tl_fail": 322,
+    "ge_fail_tl_ok": 2,
+    "ge_matched": 325,
+    "tl_matched": 5
+  },
+  "attribution_ge_ok_tl_fail": {
+    "upstream_miss": 149,
+    "type_error": 70,
+    "upstream_partial_miss": 99,
+    "time_shift": 4
+  },
+  "attribution_samples": [
+    {
+      "safe": "2022-11-25_葡萄牙vs加纳",
+      "ann": "ann_0049",
+      "cat": "outcome",
+      "align_bucket": "no_events_near",
+      "reason": "upstream_miss",
+      "gold_types": [
+        "pass",
+        "pass",
+        "assist",
+        "shot",
+        "goal"
+      ]
+    },
+    {
+      "safe": "2022-12-01_沙特阿拉伯vs墨西哥",
+      "ann": "ann_0038",
+      "cat": "danger",
+      "align_bucket": "no_events_near",
+      "reason": "upstream_miss",
+      "gold_types": [
+        "free_kick",
+        "keeper_save",
+        "successful_tackle"
+      ]
+    },
+    {
+      "safe": "10月4日_25-26赛季西甲第8轮_皇家奥维耶多VS莱万特_国语",
+      "ann": "ann_0001",
+      "cat": "danger",
+      "align_bucket": "no_matching_types_near",
+      "reason": "type_error",
+      "gold_types": [
+        "successful_tackle",
+        "shot",
+        "goal_line_clearance",
+        "corner",
+        "aerial_won"
+      ]
+    },
+    {
+      "safe": "2022-12-01_波兰vs阿根廷",
+      "ann": "ann_0002",
+      "cat": "danger",
+      "align_bucket": "no_events_near",
+      "reason": "upstream_miss",
+      "gold_types": [
+        "successful_tackle",
+        "successful_tackle",
+        "pass",
+        "shot",
+        "keeper_save"
+      ]
+    },
+    {
+      "safe": "10月15日_2025世预赛欧洲区_西班牙VS保加利亚_国语",
+      "ann": "ann_0001",
+      "cat": "danger",
+      "align_bucket": "partial_missing",
+      "reason": "upstream_partial_miss",
+      "gold_types": [
+        "pass",
+        "pass",
+        "pass",
+        "dribble_past",
+        "shot",
+        "keeper_save"
+      ]
+    },
+    {
+      "safe": "2022-11-30_澳大利亚vs丹麦",
+      "ann": "ann_0005",
+      "cat": "danger",
+      "align_bucket": "no_events_near",
+      "reason": "upstream_miss",
+      "gold_types": [
+        "pass",
+        "pass",
+        "successful_tackle",
+        "throw_in",
+        "pass",
+        "shot",
+        "keeper_save"
+      ]
+    },
+    {
+      "safe": "28月28日_25-26赛季英联杯第2轮_格林斯比VS曼联_英语",
+      "ann": "ann_0043",
+      "cat": "outcome",
+      "align_bucket": "no_events_near",
+      "reason": "upstream_miss",
+      "gold_types": [
+        "shot",
+        "goal"
+      ]
+    },
+    {
+      "safe": "29月25日_25-26赛季联赛杯第3轮_维尔港VS阿森纳_英语",
+      "ann": "ann_0010",
+      "cat": "danger",
+      "align_bucket": "partial_missing",
+      "reason": "upstream_partial_miss",
+      "gold_types": [
+        "pass",
+        "pass",
+        "pass",
+        "goal_line_clearance",
+        "goal_line_clearance"
+      ]
+    },
+    {
+      "safe": "2022-11-28_克罗地亚vs加拿大",
+      "ann": "ann_0012",
+      "cat": "danger",
+      "align_bucket": "partial_missing",
+      "reason": "upstream_partial_miss",
+      "gold_types": [
+        "keeper_save",
+        "pass",
+        "shot",
+        "dribble_past"
+      ]
+    },
+    {
+      "safe": "2022-12-18_阿根廷vs法国",
+      "ann": "ann_0002",
+      "cat": "danger",
+      "align_bucket": "partial_missing",
+      "reason": "upstream_partial_miss",
+      "gold_types": [
+        "aerial_won",
+        "successful_tackle",
+        "successful_tackle",
+        "shot",
+        "goal_line_clearance"
+      ]
+    },
+    {
+      "safe": "2022-11-28_克罗地亚vs加拿大",
+      "ann": "ann_0013",
+      "cat": "danger",
+      "align_bucket": "no_matching_types_near",
+      "reason": "type_error",
+      "gold_types": [
+        "keeper_save",
+        "pass",
+        "pass"
+      ]
+    },
+    {
+      "safe": "15_2_11月24日_25-26赛季意甲第12轮_国际米兰VSAC米兰_4K国语__conve",
+      "ann": "ann_0014",
+      "cat": "danger",
+      "align_bucket": "partial_missing",
+      "reason": "upstream_partial_miss",
+      "gold_types": [
+        "shot",
+        "goal_line_clearance"
+      ]
+    },
+    {
+      "safe": "2022-12-01_波兰vs阿根廷",
+      "ann": "ann_0004",
+      "cat": "outcome",
+      "align_bucket": "no_events_near",
+      "reason": "upstream_miss",
+      "gold_types": [
+        "pass",
+        "pass",
+        "assist",
+        "shot",
+        "goal"
+      ]
+    },
+    {
+      "safe": "2022-11-28_西班牙vs德国",
+      "ann": "ann_0004",
+      "cat": "danger",
+      "align_bucket": "no_events_near",
+      "reason": "upstream_miss",
+      "gold_types": [
+        "pass",
+        "pass",
+        "pass",
+        "shot",
+        "keeper_save"
+      ]
+    },
+    {
+      "safe": "2022-12-01_加拿大vs摩洛哥",
+      "ann": "ann_0006",
+      "cat": "outcome",
+      "align_bucket": "no_matching_types_near",
+      "reason": "type_error",
+      "gold_types": [
+        "assist",
+        "shot",
+        "goal"
+      ]
+    },
+    {
+      "safe": "1月10日_25-26赛季足总杯第3轮_维尔港VS福利特伍德_国语",
+      "ann": "ann_0001",
+      "cat": "danger",
+      "align_bucket": "no_events_near",
+      "reason": "upstream_miss",
+      "gold_types": [
+        "pass",
+        "pass",
+        "pass",
+        "shot",
+        "keeper_save"
+      ]
+    },
+    {
+      "safe": "19月24日_25-26赛季联赛杯第3轮_利物浦VS南安普顿_英语",
+      "ann": "ann_0003",
+      "cat": "danger",
+      "align_bucket": "partial_missing",
+      "reason": "upstream_partial_miss",
+      "gold_types": [
+        "pass",
+        "pass",
+        "pass",
+        "shot",
+        "keeper_save"
+      ]
+    },
+    {
+      "safe": "10月10日_2025世预赛欧洲区_哈萨克斯坦VS列支敦士登_英语",
+      "ann": "ann_0007",
+      "cat": "outcome",
+      "align_bucket": "partial_missing",
+      "reason": "upstream_partial_miss",
+      "gold_types": [
+        "dribble_past",
+        "shot",
+        "goal"
+      ]
+    },
+    {
+      "safe": "2022-12-01_沙特阿拉伯vs墨西哥",
+      "ann": "ann_0026",
+      "cat": "outcome",
+      "align_bucket": "no_events_near",
+      "reason": "upstream_miss",
+      "gold_types": [
+        "assist",
+        "shot",
+        "goal"
+      ]
+    },
+    {
+      "safe": "05_1_4月19日_25-26赛季英超第33轮_曼城VS阿森纳_4K国语__converted",
+      "ann": "ann_0001",
+      "cat": "danger",
+      "align_bucket": "partial_missing",
+      "reason": "upstream_partial_miss",
+      "gold_types": [
+        "successful_tackle",
+        "pass",
+        "shot",
+        "successful_tackle",
+        "shot"
+      ]
+    }
+  ],
+  "note": "主评测 timeline 不做时间平移/补事件；B 已改为无 gold 回退。"
+}

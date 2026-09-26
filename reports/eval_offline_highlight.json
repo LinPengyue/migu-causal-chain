@@ -1,0 +1,63 @@
+{
+  "task": "offline_highlight",
+  "config": {
+    "profile": "production",
+    "pipeline": "select_moments→classify/refine→clips (logic); strip→P5 graph (structural only)",
+    "use_llm": false,
+    "limit_matches": 0
+  },
+  "total_gold": 172,
+  "strict_matched": 105,
+  "logic_complete_rate": 61.05,
+  "precision": 61.05,
+  "latency_p50": null,
+  "latency_p90": null,
+  "over_45s_rate": null,
+  "structural": {
+    "structural_pass_rate": 100.0,
+    "node_loss": 0,
+    "duplicate": 0,
+    "cycle": 0,
+    "ordering": 0,
+    "correction": 0,
+    "n_pass": 63,
+    "n_fail": 0,
+    "note": "P5 graph structural regression only; not logic_complete_rate"
+  },
+  "n_matches": 63,
+  "data_sources": {
+    "events": "timeline.json",
+    "highlight_gold_priority": [
+      "highlight_gold_no_t2.json",
+      "highlight_gold.json",
+      "highlight_gold_with_t2.json"
+    ],
+    "n_matches_with_nonempty_highlight_gold": 61,
+    "gold_file_counts": {
+      "highlight_gold_no_t2.json": 51,
+      "highlight_gold_with_t2.json": 10
+    },
+    "label_source_counts": {
+      "annotation": 114,
+      "timeline_heuristic": 58
+    }
+  },
+  "note": "logic_complete_rate = highlight clips vs highlight gold one-to-one strict; P5 nodes excluded",
+  "by_label_source": {
+    "all": {
+      "total_gold": 172,
+      "strict_matched": 105,
+      "logic_complete_rate": 61.05
+    },
+    "annotation_only": {
+      "total_gold": 114,
+      "strict_matched": 65,
+      "logic_complete_rate": 57.02
+    },
+    "timeline_heuristic_only": {
+      "total_gold": 58,
+      "strict_matched": 40,
+      "logic_complete_rate": 68.97
+    }
+  }
+}

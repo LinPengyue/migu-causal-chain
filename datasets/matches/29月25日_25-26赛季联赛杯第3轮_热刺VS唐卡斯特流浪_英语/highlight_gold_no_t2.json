@@ -1,0 +1,266 @@
+{
+  "stats": {
+    "rule": "rule3_t0_3_fill_t1",
+    "half_ms": 2700000,
+    "n_t0": 3,
+    "n_t1_pool": 32,
+    "n_t2_pool": 18,
+    "n_selected": 4,
+    "n_t0_selected": 1,
+    "n_t1_selected": 3,
+    "n_t2_selected": 0,
+    "has_goal": true,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "no_t2",
+    "n_selected_after_drop_t2": 4,
+    "n_labeled_by_annotation": 4,
+    "n_heuristic": 0
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "29月25日_25-26赛季联赛杯第3轮_热刺VS唐卡斯特流浪_英语",
+      "chain_category": "outcome",
+      "t0_ms": 113450,
+      "t1_ms": 152720,
+      "anchor_t_ms": 125450,
+      "first_event": "pass",
+      "last_event": "goal",
+      "events": [
+        {
+          "event_id": "event_000011",
+          "type": "pass",
+          "t_ms": 114720,
+          "t0_ms": 113050,
+          "t1_ms": 128320,
+          "order": 10
+        },
+        {
+          "event_id": "event_000012",
+          "type": "shot",
+          "t_ms": 116280,
+          "t0_ms": 113050,
+          "t1_ms": 128320,
+          "order": 11
+        },
+        {
+          "event_id": "event_000013",
+          "type": "corner",
+          "t_ms": 121300,
+          "t0_ms": 113050,
+          "t1_ms": 128320,
+          "order": 12
+        },
+        {
+          "event_id": "event_000014",
+          "type": "keeper_save",
+          "t_ms": 123160,
+          "t0_ms": 113050,
+          "t1_ms": 128320,
+          "order": 13
+        },
+        {
+          "event_id": "event_000015",
+          "type": "goal_line_clearance",
+          "t_ms": 123780,
+          "t0_ms": 113050,
+          "t1_ms": 128320,
+          "order": 14
+        },
+        {
+          "event_id": "event_000016",
+          "type": "goal",
+          "t_ms": 125450,
+          "t0_ms": 113050,
+          "t1_ms": 128320,
+          "order": 15
+        },
+        {
+          "event_id": "event_000017",
+          "type": "keeper_save",
+          "t_ms": 136220,
+          "t0_ms": 130990,
+          "t1_ms": 140220,
+          "order": 16
+        },
+        {
+          "event_id": "event_000018",
+          "type": "goal_line_clearance",
+          "t_ms": 136960,
+          "t0_ms": 130990,
+          "t1_ms": 140220,
+          "order": 17
+        },
+        {
+          "event_id": "event_000019",
+          "type": "goal",
+          "t_ms": 138940,
+          "t0_ms": 130990,
+          "t1_ms": 140220,
+          "order": 18
+        },
+        {
+          "event_id": "event_000020",
+          "type": "corner",
+          "t_ms": 143440,
+          "t0_ms": 141740,
+          "t1_ms": 151860,
+          "order": 19
+        },
+        {
+          "event_id": "event_000021",
+          "type": "keeper_save",
+          "t_ms": 146020,
+          "t0_ms": 141740,
+          "t1_ms": 151860,
+          "order": 20
+        },
+        {
+          "event_id": "event_000022",
+          "type": "goal_line_clearance",
+          "t_ms": 146720,
+          "t0_ms": 141740,
+          "t1_ms": 151860,
+          "order": 21
+        },
+        {
+          "event_id": "event_000023",
+          "type": "goal",
+          "t_ms": 148720,
+          "t0_ms": 141740,
+          "t1_ms": 151860,
+          "order": 22
+        }
+      ],
+      "tier": "T0",
+      "tier_reason": "t0_goal|merged|merged",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 70.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    },
+    {
+      "annotation_id": "ann_0002",
+      "match_id": "29月25日_25-26赛季联赛杯第3轮_热刺VS唐卡斯特流浪_英语",
+      "chain_category": "danger",
+      "t0_ms": 2722100,
+      "t1_ms": 2735100,
+      "anchor_t_ms": 2730100,
+      "first_event": "pass",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000433",
+          "type": "pass",
+          "t_ms": 2728120,
+          "t0_ms": 2724170,
+          "t1_ms": 2733800,
+          "order": 432
+        },
+        {
+          "event_id": "event_000434",
+          "type": "shot",
+          "t_ms": 2730100,
+          "t0_ms": 2724170,
+          "t1_ms": 2733800,
+          "order": 433
+        },
+        {
+          "event_id": "event_000435",
+          "type": "keeper_save",
+          "t_ms": 2730910,
+          "t0_ms": 2724170,
+          "t1_ms": 2733800,
+          "order": 434
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    },
+    {
+      "annotation_id": "ann_0002",
+      "match_id": "29月25日_25-26赛季联赛杯第3轮_热刺VS唐卡斯特流浪_英语",
+      "chain_category": "danger",
+      "t0_ms": 2806360,
+      "t1_ms": 2819360,
+      "anchor_t_ms": 2814360,
+      "first_event": "pass",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000437",
+          "type": "pass",
+          "t_ms": 2811750,
+          "t0_ms": 2810570,
+          "t1_ms": 2821110,
+          "order": 436
+        },
+        {
+          "event_id": "event_000438",
+          "type": "shot",
+          "t_ms": 2814360,
+          "t0_ms": 2810570,
+          "t1_ms": 2821110,
+          "order": 437
+        },
+        {
+          "event_id": "event_000439",
+          "type": "keeper_save",
+          "t_ms": 2815220,
+          "t0_ms": 2810570,
+          "t1_ms": 2821110,
+          "order": 438
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    },
+    {
+      "annotation_id": "ann_0002",
+      "match_id": "29月25日_25-26赛季联赛杯第3轮_热刺VS唐卡斯特流浪_英语",
+      "chain_category": "danger",
+      "t0_ms": 3006310,
+      "t1_ms": 3019310,
+      "anchor_t_ms": 3014310,
+      "first_event": "shot",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000462",
+          "type": "shot",
+          "t_ms": 3014310,
+          "t0_ms": 3012190,
+          "t1_ms": 3021950,
+          "order": 461
+        },
+        {
+          "event_id": "event_000463",
+          "type": "keeper_save",
+          "t_ms": 3015800,
+          "t0_ms": 3012190,
+          "t1_ms": 3021950,
+          "order": 462
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    }
+  ]
+}

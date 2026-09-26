@@ -1,0 +1,193 @@
+{
+  "stats": {
+    "rule": "rule3_t0_2_fill_t1",
+    "half_ms": 2700000,
+    "n_t0": 2,
+    "n_t1_pool": 3,
+    "n_t2_pool": 9,
+    "n_selected": 4,
+    "n_t0_selected": 2,
+    "n_t1_selected": 2,
+    "n_t2_selected": 0,
+    "has_goal": true,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "with_t2",
+    "n_labeled_by_annotation": 4,
+    "n_heuristic": 0
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0003",
+      "match_id": "2022-11-22 美国vs威尔士 4K 下半场",
+      "chain_category": "danger",
+      "t0_ms": 1220520,
+      "t1_ms": 1233520,
+      "anchor_t_ms": 1228520,
+      "first_event": "shot",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000099",
+          "type": "shot",
+          "t_ms": 1228520,
+          "t0_ms": 1226520,
+          "t1_ms": 1238510,
+          "order": 98
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 259.62,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0003",
+      "match_id": "2022-11-22 美国vs威尔士 4K 下半场",
+      "chain_category": "danger",
+      "t0_ms": 1503980,
+      "t1_ms": 1516980,
+      "anchor_t_ms": 1511980,
+      "first_event": "free_kick",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000121",
+          "type": "free_kick",
+          "t_ms": 1504670,
+          "t0_ms": 1502320,
+          "t1_ms": 1514520,
+          "order": 120
+        },
+        {
+          "event_id": "event_000122",
+          "type": "aerial_won",
+          "t_ms": 1508050,
+          "t0_ms": 1502320,
+          "t1_ms": 1514520,
+          "order": 121
+        },
+        {
+          "event_id": "event_000123",
+          "type": "successful_tackle",
+          "t_ms": 1510010,
+          "t0_ms": 1502320,
+          "t1_ms": 1514520,
+          "order": 122
+        },
+        {
+          "event_id": "event_000124",
+          "type": "shot",
+          "t_ms": 1511980,
+          "t0_ms": 1502320,
+          "t1_ms": 1514520,
+          "order": 123
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0012",
+      "match_id": "2022-11-22 美国vs威尔士 4K 下半场",
+      "chain_category": "danger",
+      "t0_ms": 2611850,
+      "t1_ms": 2627850,
+      "anchor_t_ms": 2623850,
+      "first_event": "shot",
+      "last_event": "goal",
+      "events": [
+        {
+          "event_id": "event_000214",
+          "type": "shot",
+          "t_ms": 2622380,
+          "t0_ms": 2617190,
+          "t1_ms": 2629170,
+          "order": 213
+        },
+        {
+          "event_id": "event_000215",
+          "type": "goal",
+          "t_ms": 2623850,
+          "t0_ms": 2617190,
+          "t1_ms": 2629170,
+          "order": 214
+        }
+      ],
+      "tier": "T0",
+      "tier_reason": "t0_goal",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 174.66,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0021",
+      "match_id": "2022-11-22 美国vs威尔士 4K 下半场",
+      "chain_category": "danger",
+      "t0_ms": 3356370,
+      "t1_ms": 3372370,
+      "anchor_t_ms": 3368370,
+      "first_event": "foul",
+      "last_event": "foul",
+      "events": [
+        {
+          "event_id": "event_000284",
+          "type": "foul",
+          "t_ms": 3357590,
+          "t0_ms": 3345570,
+          "t1_ms": 3359490,
+          "order": 283
+        },
+        {
+          "event_id": "event_000285",
+          "type": "receive_a_card",
+          "t_ms": 3361710,
+          "t0_ms": 3359940,
+          "t1_ms": 3373670,
+          "order": 284
+        },
+        {
+          "event_id": "event_000286",
+          "type": "shot",
+          "t_ms": 3366810,
+          "t0_ms": 3363510,
+          "t1_ms": 3376200,
+          "order": 285
+        },
+        {
+          "event_id": "event_000287",
+          "type": "goal",
+          "t_ms": 3368370,
+          "t0_ms": 3363510,
+          "t1_ms": 3376200,
+          "order": 286
+        },
+        {
+          "event_id": "event_000288",
+          "type": "foul",
+          "t_ms": 3369710,
+          "t0_ms": 3359940,
+          "t1_ms": 3373670,
+          "order": 287
+        }
+      ],
+      "tier": "T0",
+      "tier_reason": "t0_goal",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 187.57,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    }
+  ]
+}

@@ -1,167 +1,219 @@
 # migu-causal-chain
 
-咪咕视频因果链：**拆条因果链分类**（规则 + LLM Hybrid）+ **集锦因果链编排**（`causal_chain3`）。
-
-本仓库包含两条主命令所需的代码、评测数据与示例时间线。
+上游事件识别 → 拆条因果链（`causal_chain6`）+ 集锦因果链（`causal_chain8`）。  
+本 README 以**输入/输出约定**为主（同 `eval/DATA_IO.md`）。
 
 ## 环境
 
 ```bash
-cd causal-chain2
+cd migu-causal-chain
 pip install -r requirements.txt
+export PYTHONPATH=$PWD/algo:$PWD/eval
 ```
 
-需 Python 3.9+、PyTorch；GPU 推理将 `--device cuda`（示例使用 `CUDA_VISIBLE_DEVICES=2`）。  
-LLM 命令需本地 [Qwen2.5-VL](https://github.com/QwenLM/Qwen2.5-VL) 权重目录。
+---
 
-## 1）拆条因果链分类（`causal_chain2.test`）
+# 输入 / 输出约定
 
-**任务**：给定已切分的事件序列（`events_normalized`），判定其所属的 **18 类因果链模板**（如角球传中进球、VAR 改判无效、射门扑救等）。
+## 一、选哪个脚本
 
-**方法**：规则 Tool（CANONICAL 骨架 + 转移校验）排序 → 高置信 **Fast path**（不调 LLM）→ 歧义样本在 top-5 内 **Hybrid LLM 消歧**（0.35×LLM + 0.65×规则）。  
-在 clean 评测集（654 条）上模板准确率约 **82%**。
+| 你有什么输入 | 脚本 | 产出 |
+|--------------|------|------|
+| **只有**上游事件 json（无 `*_causal.json`） | `eval/run_e2e_infer.py` | 每场拆条 + 集锦；**无**完整率 |
+| 上游事件 + **成对** `*_causal.json` | `eval/run_e2e_eval.py` | 每场拆条 + 集锦 + **逻辑完整率** |
 
 ```bash
-CUDA_VISIBLE_DEVICES=2 python -m causal_chain2.test \
-  --data eval/eval_a3_clean.jsonl \
-  --eval-filter none \
-  --model-path /data2/lpy1/Qwen2.5-VL \
-  --device cuda
+cd migu-causal-chain
+export PYTHONPATH="$PWD/algo:$PWD/eval"
+
+# A. 仅推理
+python eval/run_e2e_infer.py --src-dir data/交付_out --limit-matches 2
+
+# B. 推理 + 评测（内部会先跑 build_datasets）
+python eval/run_e2e_eval.py --src-dir data/交付_out --limit-matches 2
 ```
 
-**输出示例**：
+`scripts/build_datasets.py` 仍可单独跑；`run_e2e_eval` 默认会调用它。
+
+---
+
+## 二、目录放哪里
+
+### 输入（两种脚本共用）
+
+默认：`migu-causal-chain/data/交付_out/`
+
+| 文件名 | 含义 |
+|--------|------|
+| `<比赛名>.json` | 上游事件识别输出（**无** causal） |
+| `<比赛名>_causal.json` | 因果链标注（仅评测需要） |
+
+配对规则：`foo.json` ↔ `foo_causal.json`（stem 完全一致）。
+
+也可 `--src-dir /任意目录`，结构相同。
+
+### 中间产物（仅评测脚本）
+
+`run_e2e_eval` → `scripts/build_datasets.py` 写入：
 
 ```
-eval_filter=none  samples=654
-backend=agent  mode=hybrid  samples=654  accuracy=0.8242  parse_fail=0  fast_path=527/654
+datasets/
+  index.json
+  matches/<safe_id>/
+    timeline.json          # 由 plain 转化
+    strip_gold.json        # 由 causal 转化
+    highlight_gold_no_t2.json
+    highlight_gold_with_t2.json
+    highlight_gold.json    # no_t2 别名
+    meta.json
 ```
 
-| 参数 | 说明 |
+### 输出
+
+| 脚本 | 目录 |
 |------|------|
-| `--data` | A3 评测 jsonl（推荐 `eval_a3_clean.jsonl`，已去歧义样本） |
-| `--eval-filter none` | 不再二次清洗（数据本身已是 clean 集） |
-| `--model-path` | Qwen2.5-VL 权重目录 |
-| `--backend` | 默认 `agent`（hybrid）；对照：`llm` / `gnn --ckpt ...` |
+| `run_e2e_infer` | `reports/e2e_infer/<safe_id>/{timeline,strip,highlight}.json` + `_manifest.json` |
+| `run_e2e_eval` | `reports/e2e_eval/<safe_id>/{strip,highlight}.json` + `_summary.json`（含完整率） |
 
-**可选**：
+---
 
-```bash
-# 写每条样本的预测审计 JSON
-python -m causal_chain2.test ... --agent-trace-dir out/agent_traces
+## 三、上游事件 json（无 causal）必填结构
 
-# GNN 对照（仅 --ckpt，自动选 gnn 后端）
-python -m causal_chain2.test \
-  --data eval/eval_a3_clean.jsonl \
-  --eval-filter none \
-  --ckpt causal_chain2/_checkpoints/gnn.pt \
-  --device cuda
+顶层：
+
+```json
+{
+  "match_id": "字符串，比赛标识",
+  "events": [ /* 见下 */ ]
+}
 ```
 
-## 2）集锦因果链（`causal_chain3.build_highlights`）
+可选：`schema_version` / `teams` / `video` / `annotation_scope` / `ignore_segments`（算法转化不依赖）。
 
-**任务**：输入 **整场拆条时间线**（事件 type + 时间戳），自动发现候选片段 → Hybrid 分类 → 抽取 **因果链结构**（events + edges + 叙事）→ 编排为集锦 reel。
+**每个 event 最少需要：**
 
-**输出**：集锦方案 JSON（非 MP4 成片），每条 clip 含起止时间、链内事件、因果边、中文叙事；样例含 `ground_truth_chains` 可算命中率。
+| 字段 | 说明 |
+|------|------|
+| `event_type` 或 `event_type_zh` 或 `comment_label` | 事件类型（英文/中文，会做归一化） |
+| `media_time.event_time_sec` | 事件时刻（秒）；若无则用 `start_time_sec` |
 
-```bash
-CUDA_VISIBLE_DEVICES=2 python -m causal_chain3.build_highlights \
-  --timeline-json causal_chain/examples/full_match_timeline.json \
-  --model-path /data2/lpy1/Qwen2.5-VL \
-  --device cuda \
-  --out out/reel_full_match.json \
-  --viz-dir out/reel_viz
+推荐一并提供：
+
+| 字段 | 说明 |
+|------|------|
+| `event_id` | 唯一 id |
+| `media_time.start_time_sec` / `end_time_sec` | 窗起止（秒） |
+
+示例：
+
+```json
+{
+  "match_id": "示例比赛",
+  "events": [
+    {
+      "event_id": "event_000001",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "media_time": {
+        "event_time_sec": 512.3,
+        "start_time_sec": 508.0,
+        "end_time_sec": 520.1
+      }
+    }
+  ]
+}
 ```
 
-**输出**：
+转化后写入 `timeline.json` 的内部事件形如：`{event_id, type, t_ms, t0_ms, t1_ms, order}`。
 
-| 路径 | 内容 |
+---
+
+## 四、标注 `*_causal.json` 必填结构（仅评测）
+
+顶层：
+
+```json
+{
+  "match_id": "与 plain 一致为佳",
+  "causal_chains": [ /* 见下 */ ]
+}
+```
+
+**每条 causal_chain：**
+
+| 字段 | 说明 |
 |------|------|
-| `out/reel_full_match.json` | `reel.clips[]`：每条因果链 + `ordering` + `stats`（含 `ground_truth_accuracy`） |
-| `out/reel_viz/` | 时间轴与各链事件条 PNG（需 `--viz-dir`） |
+| `chain_category` | 中文大类：`结果链` / `修正链` / `险情链` / `特殊链` |
+| `events` | 链内事件列表（见下） |
+| `is_replay` | `true` 的链会被丢掉 |
 
-**示例时间线**：
+推荐：`annotation_id`、`causal_chain_subtype`、`segment_time_sketch` / `segment_time_video`。
 
-| 文件 | 说明 |
+**链内每个 event：**
+
+| 字段 | 说明 |
 |------|------|
-| `causal_chain/examples/full_match_timeline.json` | 90 分钟完整比赛，43 事件，10 条标注因果链（检验用） |
-| `causal_chain/examples/external_task2_timeline.json` | 短样例（2 条链） |
+| `type` 或 `type_en` | 类型（中/英） |
+| `t_ms` | 时刻（**毫秒**） |
+| `order` | 链内顺序 |
 
-## 目录说明
+示例：
+
+```json
+{
+  "match_id": "示例比赛",
+  "causal_chains": [
+    {
+      "annotation_id": "ann_001",
+      "chain_category": "结果链",
+      "causal_chain_subtype": "射门进球链",
+      "is_replay": false,
+      "events": [
+        {"order": 0, "type": "传球", "type_en": "Pass", "t_ms": 512000},
+        {"order": 1, "type": "射门", "type_en": "Shot", "t_ms": 515000},
+        {"order": 2, "type": "进球", "type_en": "Goal", "t_ms": 516200}
+      ]
+    }
+  ]
+}
+```
+
+---
+
+## 五、完整率字段（仅 `run_e2e_eval` → `_summary.json`）
+
+`logic_complete_rates`：
+
+| 键 | 含义 |
+|----|------|
+| `strip_module` | 离线拆条模块口径（约 82%） |
+| `strip_online` | 在线拆条口径（约 71%） |
+| `strip_timeline` | 整场 timeline 预测再对 gold |
+| `highlight_offline` | 离线集锦口径（约 50%+） |
+
+每项含 `rate` / `matched` / `gold`。
+
+---
+
+## 六、注意
+
+1. **无 causal 不能报完整率**——没有 gold 分母。  
+2. 评测要求 plain 与 causal **成对**；只有 plain 的场次不会进 `build_datasets`。  
+3. 上游换新目录时，把同名 plain（及可选 causal）放进 `--src-dir` 即可。
+
+更完整说明见：`eval/DATA_IO.md`。
+
+---
+
+## 目录结构（包内）
 
 | 路径 | 说明 |
 |------|------|
-| `causal_chain2/` | 拆条分类：schema / rules / agent hybrid / test / timeline_highlights |
-| `causal_chain2/_checkpoints/gnn.pt` | LiteGCN 权重（GNN 对照） |
-| `causal_chain3/` | 集锦因果链：discover → extract → refine → assemble → viz |
-| `causal_chain4/` | 分类 classify + 拆条 strip（标注 JSON 映射可配） |
-| `eval/eval_a3.jsonl` | 原始评测集（800 条） |
-| `eval/eval_a3_clean.jsonl` | 清洗评测集（654 条，序列唯一对应模板） |
-| `causal_chain/examples/` | 时间线 JSON 样例 |
-
-## 3）causal_chain4：分类 + 拆条
-
-与 `causal_chain2` **并列**；核心对齐 chain2 两条命令，并支持 **causal JSON 映射**（`profile` 配置）。
-
-| chain4 | 对齐 chain2 | 输入 |
-|--------|-------------|------|
-| **`classify`** | `causal_chain2.test` | A3 jsonl 或 `*_causal(2).json` |
-| **`strip`** | `causal_chain2.timeline_highlights` | 整场 `timeline.json` |
-
-评测只看 **template 准确率**；转移合法率仅在 `eval --show-transition-debug` 时出现。
-
-### 3.1 因果链分类
-
-默认后端 **`chain4_agent`**：使用 `causal_chain4/schema/skeletons.py` 业务骨架（长链、其他三子类），**不修改** `causal_chain2` 规则。
-
-```bash
-ROOT=/path/to/causal-chain2
-PY="$ROOT/causal_env/bin/python"
-MODEL="$ROOT/Qwen2.5-VL"
-cd "$ROOT" && export PYTHONPATH=.
-
-# 业务骨架分类（causal JSON；无 GPU 也可纯规则）
-"$PY" -m causal_chain4.classify \
-  --data causal_chain/examples/10月10日_2025世预赛欧洲区_哈萨克斯坦VS列支敦士登_英语_causal\(2\).json \
-  --profile oct10_causal2 \
-  --backend chain4_agent \
-  --device cpu \
-  --out-predictions eval/oct10_kz_chain4_skel_preds.jsonl
-
-# 带 Qwen hybrid（歧义时消歧）
-CUDA_VISIBLE_DEVICES=0 "$PY" -m causal_chain4.classify \
-  --data causal_chain/examples/..._causal\(2\).json \
-  --profile oct10_causal2 \
-  --model-path "$MODEL" \
-  --device cuda
-
-# 对照：复用 chain2 agent（旧 18 类短骨架）
-CUDA_VISIBLE_DEVICES=0 "$PY" -m causal_chain4.classify \
-  --data eval/eval_a3_clean.jsonl \
-  --backend agent --eval-filter clean \
-  --profile strict_chain2 \
-  --model-path "$MODEL" --device cuda
-```
-
-指标：`accuracy` 精确匹配；`soft_accuracy` 将「其他」与个人突破/团队配合/角球配合视为一致。
-
-骨架与长度见 `causal_chain4/schema/skeletons.py`、`SKELETONS.md`。
-
-### 3.2 拆条
-
-```bash
-CUDA_VISIBLE_DEVICES=0 "$PY" -m causal_chain4.strip \
-  --timeline-json causal_chain/examples/external_task2_timeline.json \
-  --model-path "$MODEL" \
-  --device cuda \
-  --profile production \
-  --out out/chain4_highlights.json \
-  --min-margin 0.08 \
-  --max-events 12 \
-  --viz-dir out/chain4_viz
-```
-
-可选：`pipeline` / `extract` / `eval` 为实验与标注对比子命令。
-
-## 相关仓库
-
-GitHub：[LinPengyue/migu-causal-chain](https://github.com/LinPengyue/migu-causal-chain)
+| `algo/causal_chain6` | 拆条 |
+| `algo/causal_chain8` | 集锦 |
+| `eval/run_e2e_infer.py` | 仅推理 |
+| `eval/run_e2e_eval.py` | 推理 + 完整率 |
+| `scripts/build_datasets.py` | 交付_out → datasets |
+| `data/交付_out/` | 上游事件 + 可选 causal 标注 |
+| `datasets/` | 转化后的评测集 |
+| `reports/` | 运行输出 |

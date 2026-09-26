@@ -1,0 +1,68 @@
+{
+  "config": {
+    "n_matches": 63,
+    "stream_source": "gold_events",
+    "adapter": "online",
+    "note": "final selftest; no param/prompt/rule changes"
+  },
+  "stream_rule_only": {
+    "n_gold": 437,
+    "n_matched": 313,
+    "n_tracks": 430,
+    "strict_rate": 71.62,
+    "precision_rate": 72.79,
+    "latency_ms_p50": 60000.0,
+    "latency_ms_p90": 167404.0,
+    "pct_latency_gt_45s": 68.05,
+    "n_latency_gt_45s": 213,
+    "n_latency": 313
+  },
+  "stream_use_llm": {
+    "n_gold": 437,
+    "n_matched": 314,
+    "n_tracks": 434,
+    "strict_rate": 71.85,
+    "precision_rate": 72.35,
+    "latency_ms_p50": 60000.0,
+    "latency_ms_p90": 167404.0,
+    "pct_latency_gt_45s": 67.83,
+    "n_latency_gt_45s": 213,
+    "n_latency": 314
+  },
+  "qwen_vs_rule": {
+    "strict_delta_pp": 0.23,
+    "precision_delta_pp": -0.44,
+    "matched_delta": 1,
+    "tracks_delta": 4,
+    "qwen_improves_strict": true
+  },
+  "p5_highlight_chain": {
+    "n_matches": 63,
+    "n_pass": 63,
+    "nodes_complete": true,
+    "graph_acyclic": true,
+    "ordering_stable": true,
+    "totals": {
+      "same_sequence": 850,
+      "follow": 2003,
+      "correction_of": 8
+    },
+    "max_cc_global": 20,
+    "cc_outliers": [
+      {
+        "safe_id": "2022-11-27_比利时vs摩洛哥",
+        "max_cc": 20,
+        "n_nodes": 74,
+        "ss": 31
+      },
+      {
+        "safe_id": "2022-11-29_葡萄牙vs乌拉圭",
+        "max_cc": 18,
+        "n_nodes": 78,
+        "ss": 33
+      }
+    ],
+    "source_report": "reports/verify_p54_full_regression.json",
+    "note": "P5 not re-run; summarized from P5.4 full regression"
+  }
+}

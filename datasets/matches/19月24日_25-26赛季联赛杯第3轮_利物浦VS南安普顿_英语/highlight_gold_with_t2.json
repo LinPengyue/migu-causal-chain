@@ -1,0 +1,177 @@
+{
+  "stats": {
+    "rule": "rule4_t1_plus_t2",
+    "half_ms": 2700000,
+    "n_t0": 0,
+    "n_t1_pool": 1,
+    "n_t2_pool": 7,
+    "n_selected": 4,
+    "n_t0_selected": 0,
+    "n_t1_selected": 1,
+    "n_t2_selected": 3,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "with_t2",
+    "n_labeled_by_annotation": 4,
+    "n_heuristic": 0
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "19月24日_25-26赛季联赛杯第3轮_利物浦VS南安普顿_英语",
+      "chain_category": "danger",
+      "t0_ms": 563380,
+      "t1_ms": 573380,
+      "anchor_t_ms": 569380,
+      "first_event": "throw_in",
+      "last_event": "successful_tackle",
+      "events": [
+        {
+          "event_id": "event_000027",
+          "type": "throw_in",
+          "t_ms": 564730,
+          "t0_ms": 562780,
+          "t1_ms": 573690,
+          "order": 26
+        },
+        {
+          "event_id": "event_000028",
+          "type": "successful_tackle",
+          "t_ms": 569380,
+          "t0_ms": 562780,
+          "t1_ms": 573690,
+          "order": 27
+        },
+        {
+          "event_id": "event_000029",
+          "type": "successful_tackle",
+          "t_ms": 570340,
+          "t0_ms": 562780,
+          "t1_ms": 573690,
+          "order": 28
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "successful_tackle_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 150.68,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "19月24日_25-26赛季联赛杯第3轮_利物浦VS南安普顿_英语",
+      "chain_category": "danger",
+      "t0_ms": 612520,
+      "t1_ms": 622520,
+      "anchor_t_ms": 618520,
+      "first_event": "corner",
+      "last_event": "successful_tackle",
+      "events": [
+        {
+          "event_id": "event_000034",
+          "type": "corner",
+          "t_ms": 616880,
+          "t0_ms": 612640,
+          "t1_ms": 621920,
+          "order": 33
+        },
+        {
+          "event_id": "event_000035",
+          "type": "successful_tackle",
+          "t_ms": 618520,
+          "t0_ms": 612640,
+          "t1_ms": 621920,
+          "order": 34
+        },
+        {
+          "event_id": "event_000036",
+          "type": "successful_tackle",
+          "t_ms": 620180,
+          "t0_ms": 612640,
+          "t1_ms": 621920,
+          "order": 35
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "successful_tackle_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 223.82,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "19月24日_25-26赛季联赛杯第3轮_利物浦VS南安普顿_英语",
+      "chain_category": "danger",
+      "t0_ms": 1784410,
+      "t1_ms": 1797410,
+      "anchor_t_ms": 1792410,
+      "first_event": "shot",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000239",
+          "type": "shot",
+          "t_ms": 1792410,
+          "t0_ms": 1788690,
+          "t1_ms": 1799450,
+          "order": 238
+        },
+        {
+          "event_id": "event_000240",
+          "type": "keeper_save",
+          "t_ms": 1793020,
+          "t0_ms": 1788690,
+          "t1_ms": 1799450,
+          "order": 239
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "19月24日_25-26赛季联赛杯第3轮_利物浦VS南安普顿_英语",
+      "chain_category": "danger",
+      "t0_ms": 2956080,
+      "t1_ms": 2966080,
+      "anchor_t_ms": 2962080,
+      "first_event": "successful_tackle",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000266",
+          "type": "successful_tackle",
+          "t_ms": 2962080,
+          "t0_ms": 2956070,
+          "t1_ms": 2973850,
+          "order": 265
+        },
+        {
+          "event_id": "event_000267",
+          "type": "shot",
+          "t_ms": 2963590,
+          "t0_ms": 2956070,
+          "t1_ms": 2973850,
+          "order": 266
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "successful_tackle_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    }
+  ]
+}

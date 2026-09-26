@@ -1,0 +1,18 @@
+{
+  "name": "strict_chain2",
+  "description": "对照：仍可用 --backend agent 走 chain2 hybrid；骨架仍加载 chain4 表",
+  "rules_mode": "strict",
+  "mapping": "annotation_compat",
+  "classify": {
+    "backend": "agent",
+    "eval_filter": "clean",
+    "agent_margin": 0.12,
+    "soft_other": false
+  },
+  "strip": {
+    "backend": "agent",
+    "agent_margin": 0.12,
+    "min_margin": 0.08,
+    "max_events": 12
+  }
+}

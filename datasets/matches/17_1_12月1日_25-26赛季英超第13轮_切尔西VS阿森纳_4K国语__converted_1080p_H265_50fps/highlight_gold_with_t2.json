@@ -1,0 +1,260 @@
+{
+  "stats": {
+    "rule": "rule4_t1_plus_t2",
+    "half_ms": 2700000,
+    "n_t0": 0,
+    "n_t1_pool": 4,
+    "n_t2_pool": 4,
+    "n_selected": 5,
+    "n_t0_selected": 0,
+    "n_t1_selected": 3,
+    "n_t2_selected": 2,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "with_t2",
+    "n_labeled_by_annotation": 0,
+    "n_heuristic": 5
+  },
+  "chains": [
+    {
+      "annotation_id": "select:17_1 12月1日 25-26赛季英超第13轮 切尔西VS阿森纳 4K国语__converted_1080p_H265_50fps:1177110:T2",
+      "match_id": "17_1 12月1日 25-26赛季英超第13轮 切尔西VS阿森纳 4K国语__converted_1080p_H265_50fps",
+      "chain_category": "danger",
+      "t0_ms": 1171110,
+      "t1_ms": 1181110,
+      "anchor_t_ms": 1177110,
+      "first_event": "pass",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000124",
+          "type": "pass",
+          "t_ms": 1174150,
+          "t0_ms": 1153660,
+          "t1_ms": 1192480,
+          "order": 123
+        },
+        {
+          "event_id": "event_000125",
+          "type": "pass",
+          "t_ms": 1176480,
+          "t0_ms": 1153660,
+          "t1_ms": 1192480,
+          "order": 124
+        },
+        {
+          "event_id": "event_000126",
+          "type": "successful_tackle",
+          "t_ms": 1177110,
+          "t0_ms": 1153660,
+          "t1_ms": 1192480,
+          "order": 125
+        },
+        {
+          "event_id": "event_000127",
+          "type": "shot",
+          "t_ms": 1178570,
+          "t0_ms": 1153660,
+          "t1_ms": 1192480,
+          "order": 126
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "successful_tackle_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "timeline_heuristic",
+      "label_score": 0.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "select:17_1 12月1日 25-26赛季英超第13轮 切尔西VS阿森纳 4K国语__converted_1080p_H265_50fps:1759170:T2",
+      "match_id": "17_1 12月1日 25-26赛季英超第13轮 切尔西VS阿森纳 4K国语__converted_1080p_H265_50fps",
+      "chain_category": "danger",
+      "t0_ms": 1753170,
+      "t1_ms": 1763170,
+      "anchor_t_ms": 1759170,
+      "first_event": "free_kick",
+      "last_event": "successful_tackle",
+      "events": [
+        {
+          "event_id": "event_000202",
+          "type": "free_kick",
+          "t_ms": 1757580,
+          "t0_ms": 1744630,
+          "t1_ms": 1758400,
+          "order": 201
+        },
+        {
+          "event_id": "event_000203",
+          "type": "successful_tackle",
+          "t_ms": 1759170,
+          "t0_ms": 1758520,
+          "t1_ms": 1769350,
+          "order": 202
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "successful_tackle_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "timeline_heuristic",
+      "label_score": 0.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "select:17_1 12月1日 25-26赛季英超第13轮 切尔西VS阿森纳 4K国语__converted_1080p_H265_50fps:1797130:T1",
+      "match_id": "17_1 12月1日 25-26赛季英超第13轮 切尔西VS阿森纳 4K国语__converted_1080p_H265_50fps",
+      "chain_category": "danger",
+      "t0_ms": 1781440,
+      "t1_ms": 1802130,
+      "anchor_t_ms": 1797130,
+      "first_event": "dribble_past",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000206",
+          "type": "dribble_past",
+          "t_ms": 1787440,
+          "t0_ms": 1772920,
+          "t1_ms": 1787790,
+          "order": 205
+        },
+        {
+          "event_id": "event_000207",
+          "type": "throw_in",
+          "t_ms": 1791830,
+          "t0_ms": 1782580,
+          "t1_ms": 1793450,
+          "order": 206
+        },
+        {
+          "event_id": "event_000208",
+          "type": "pass",
+          "t_ms": 1795130,
+          "t0_ms": 1793630,
+          "t1_ms": 1803520,
+          "order": 207
+        },
+        {
+          "event_id": "event_000209",
+          "type": "shot",
+          "t_ms": 1797130,
+          "t0_ms": 1787870,
+          "t1_ms": 1797910,
+          "order": 208
+        },
+        {
+          "event_id": "event_000210",
+          "type": "keeper_save",
+          "t_ms": 1798120,
+          "t0_ms": 1798050,
+          "t1_ms": 1808310,
+          "order": 209
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner|merged",
+      "window_aligned": "select_moments",
+      "label_source": "timeline_heuristic",
+      "label_score": 0.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "select:17_1 12月1日 25-26赛季英超第13轮 切尔西VS阿森纳 4K国语__converted_1080p_H265_50fps:2075830:T1",
+      "match_id": "17_1 12月1日 25-26赛季英超第13轮 切尔西VS阿森纳 4K国语__converted_1080p_H265_50fps",
+      "chain_category": "danger",
+      "t0_ms": 2067830,
+      "t1_ms": 2080830,
+      "anchor_t_ms": 2075830,
+      "first_event": "foul",
+      "last_event": "controversy",
+      "events": [
+        {
+          "event_id": "event_000228",
+          "type": "foul",
+          "t_ms": 2071710,
+          "t0_ms": 2071239,
+          "t1_ms": 2114660,
+          "order": 227
+        },
+        {
+          "event_id": "event_000229",
+          "type": "shot",
+          "t_ms": 2075830,
+          "t0_ms": 2065659,
+          "t1_ms": 2076190,
+          "order": 228
+        },
+        {
+          "event_id": "event_000230",
+          "type": "keeper_save",
+          "t_ms": 2077320,
+          "t0_ms": 2076429,
+          "t1_ms": 2087420,
+          "order": 229
+        },
+        {
+          "event_id": "event_000231",
+          "type": "controversy",
+          "t_ms": 2077909,
+          "t0_ms": 2071239,
+          "t1_ms": 2114660,
+          "order": 230
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "timeline_heuristic",
+      "label_score": 0.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "select:17_1 12月1日 25-26赛季英超第13轮 切尔西VS阿森纳 4K国语__converted_1080p_H265_50fps:2623400:T1",
+      "match_id": "17_1 12月1日 25-26赛季英超第13轮 切尔西VS阿森纳 4K国语__converted_1080p_H265_50fps",
+      "chain_category": "danger",
+      "t0_ms": 2615400,
+      "t1_ms": 2628400,
+      "anchor_t_ms": 2623400,
+      "first_event": "shot",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000256",
+          "type": "shot",
+          "t_ms": 2623400,
+          "t0_ms": 2609700,
+          "t1_ms": 2623840,
+          "order": 255
+        },
+        {
+          "event_id": "event_000257",
+          "type": "keeper_save",
+          "t_ms": 2624380,
+          "t0_ms": 2623910,
+          "t1_ms": 2634440,
+          "order": 256
+        },
+        {
+          "event_id": "event_000258",
+          "type": "shot",
+          "t_ms": 2626070,
+          "t0_ms": 2623910,
+          "t1_ms": 2634440,
+          "order": 257
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "timeline_heuristic",
+      "label_score": 0.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    }
+  ]
+}

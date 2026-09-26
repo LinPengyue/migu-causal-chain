@@ -1,0 +1,2349 @@
+{
+  "schema_version": "1.0",
+  "annotation_version": "2026-08-08",
+  "match_id": "2022-11-27 日本vs哥斯达黎加",
+  "teams": {
+    "team_1": {
+      "name": "日本",
+      "color": "蓝色"
+    },
+    "team_2": {
+      "name": "哥斯达黎加",
+      "color": "红色"
+    }
+  },
+  "video": {
+    "file_name": "2022-11-27 日本vs哥斯达黎加.mp4",
+    "duration_sec": 8015.226,
+    "has_audio": true
+  },
+  "annotation_scope": {
+    "reviewed_start_time_sec": 510.49,
+    "reviewed_end_time_sec": 1790.2,
+    "is_reviewed_scope_complete": true,
+    "scope_note": "有效比赛事件识别范围为 510.49-1790.2 秒，0-510.49 秒为赛前/进场/广告，1790.2 秒之后为赛后内容，均不纳入事件识别",
+    "exhaustive_event_types": [
+      "Ball_possession",
+      "Corner_kick",
+      "Dribble_past",
+      "Foul_Being_fouled",
+      "Free_kick",
+      "Kick_off",
+      "Players_enter_the_pitch",
+      "Save",
+      "Shot",
+      "Throw_in",
+      "Win_an_aerial_duel"
+    ]
+  },
+  "events": [
+    {
+      "event_id": "event_000001",
+      "event_type_id": "soccer_players_enter_the_pitch",
+      "event_type": "Players_enter_the_pitch",
+      "event_type_zh": "队员入场",
+      "comment_label": "Players_enter_the_pitch",
+      "bz_id": "78feeb14-b978-488c-d62a-9a94886487d5-1783391211113",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 510.49,
+        "start_time_sec": 505.42,
+        "end_time_sec": 518.08
+      },
+      "attributes": {
+        "Shot_Type_Camera_Angle": [
+          "Wide_Shot"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 3.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 2.0,
+        "score_recognition": null,
+        "score_recognition_reason": "比分不可见/被遮挡"
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "队员入场"
+    },
+    {
+      "event_id": "event_000002",
+      "event_type_id": "soccer_kick_off",
+      "event_type": "Kick_off",
+      "event_type_zh": "开球",
+      "comment_label": "Kick_off",
+      "bz_id": "981a48c7-3f31-0f7b-a251-b931275ad180-1783391526343",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 891.75,
+        "start_time_sec": 881.03,
+        "end_time_sec": 896.41
+      },
+      "attributes": {
+        "Shot_Type_Camera_Angle": [
+          "Wide_Shot"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 1.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": null,
+        "score_recognition_reason": "比分不可见/被遮挡"
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "1队21号开球"
+    },
+    {
+      "event_id": "event_000003",
+      "event_type_id": "soccer_dribble_past",
+      "event_type": "Dribble_past",
+      "event_type_zh": "过人",
+      "comment_label": "Dribble_Break",
+      "bz_id": "125f7b5e-9e3a-5f9e-3187-984a88194798-1783391622767",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 925.83,
+        "start_time_sec": 921.18,
+        "end_time_sec": 933.55
+      },
+      "attributes": {
+        "Body_Part": [
+          "Leg"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Defensive_Third"
+        ],
+        "Related_Player": [
+          "team_1_player_24"
+        ],
+        "Result_Type": [
+          "Dribble_Break"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "BallController_team": [
+          "team_1"
+        ],
+        "BallController_player": [
+          "team_1_player_24"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 2.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 2.0,
+        "overall_score": 2.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "1队24号盘带突破"
+    },
+    {
+      "event_id": "event_000004",
+      "event_type_id": "soccer_corner_kick",
+      "event_type": "Corner_kick",
+      "event_type_zh": "角球",
+      "comment_label": "Corner_kick",
+      "bz_id": "50c8a20f-1249-95d8-2046-7fd2913ef9df-1783391721115",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 983.12,
+        "start_time_sec": 978.83,
+        "end_time_sec": 990.46
+      },
+      "attributes": {
+        "Body_Part": [
+          "Leg"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Defensive_Third"
+        ],
+        "Related_Player": [
+          "team_1_player_24"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "BallController_team": [
+          "team_1"
+        ],
+        "BallController_player": [
+          "team_1_player_24"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 1.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "1队24号发角球"
+    },
+    {
+      "event_id": "event_000005",
+      "event_type_id": "soccer_win_an_aerial_duel",
+      "event_type": "Win_an_aerial_duel",
+      "event_type_zh": "争顶成功",
+      "comment_label": "Win_an_aerial_duel",
+      "bz_id": "2533c25c-a686-208f-b375-466da97d0d69-1783391817581",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1005.06,
+        "start_time_sec": 1002.46,
+        "end_time_sec": 1016.05
+      },
+      "attributes": {
+        "Body_Part": [
+          "Other_Body_Parts"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Defensive_Third"
+        ],
+        "Related_Player": [
+          "team_1_player_5"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "BallController_team": [
+          "team_1"
+        ],
+        "BallController_player": [
+          "team_1_player_5"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 1.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "1队5号发界外球"
+    },
+    {
+      "event_id": "event_000006",
+      "event_type_id": "soccer_foul_being_fouled",
+      "event_type": "Foul_Being_fouled",
+      "event_type_zh": "犯规/被犯规",
+      "comment_label": "Dangerous_Play",
+      "bz_id": "2b621b06-d873-36b9-10c2-5765ebb85067-1783391988716",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1013.8,
+        "start_time_sec": 1002.46,
+        "end_time_sec": 1016.05
+      },
+      "attributes": {
+        "Active_Player": [
+          "1队5号"
+        ],
+        "Body_Part": [
+          "Other_Body_Parts"
+        ],
+        "Foul_Type": [
+          "Dangerous_Play"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Opponent_Player": [
+          "2队13"
+        ],
+        "Pitch_Area": [
+          "Defensive_Third"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "Time_Score_Recognition": [
+          "0:0"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 2.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 2.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "1队5号球员犯规"
+    },
+    {
+      "event_id": "event_000007",
+      "event_type_id": "soccer_free_kick",
+      "event_type": "Free_kick",
+      "event_type_zh": "任意球",
+      "comment_label": "Direct_Free_Kick",
+      "bz_id": "5fe9a1d9-bf27-13e9-69bb-b8adb4d1fa51-1783392085149",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1025.38,
+        "start_time_sec": 1021.65,
+        "end_time_sec": 1032.88
+      },
+      "attributes": {
+        "Body_Part": [
+          "Leg"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Defensive_Third"
+        ],
+        "Related_Player": [
+          "team_2_player_19"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "Sub_Type": [
+          "Direct_Free_Kick"
+        ],
+        "BallController_team": [
+          "team_2"
+        ],
+        "BallController_player": [
+          "team_2_player_19"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 1.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "2队19号发任意球"
+    },
+    {
+      "event_id": "event_000008",
+      "event_type_id": "soccer_shot",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "comment_label": "Regular_Shot",
+      "bz_id": "7edb14af-0438-b278-f799-eb0977d191ff-1783392396283",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1045.58,
+        "start_time_sec": 1041.04,
+        "end_time_sec": 1053.33
+      },
+      "attributes": {
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Defensive_Third"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "Shot_Power": [
+          "Powerful_Shot"
+        ],
+        "Shot_Result": [
+          "Shot_Wide"
+        ],
+        "Shot_Type": [
+          "Regular_Shot"
+        ],
+        "Tactical_Play_Prior_Key_Action": [
+          "Counter_Attack"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 2.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": null,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "1"
+    },
+    {
+      "event_id": "event_000009",
+      "event_type_id": "soccer_throw_in",
+      "event_type": "Throw_in",
+      "event_type_zh": "界外球",
+      "comment_label": "Throw_in",
+      "bz_id": "1add6f31-68f5-9f91-1e01-00d23be85130-1783392468236",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1058.46,
+        "start_time_sec": 1056.43,
+        "end_time_sec": 1067.74
+      },
+      "attributes": {
+        "Body_Part": [
+          "Leg"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Small_Box"
+        ],
+        "Related_Player": [
+          "team_2_player_1"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "BallController_team": [
+          "team_2"
+        ],
+        "BallController_player": [
+          "team_2_player_1"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 1.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "2队1号发界外球"
+    },
+    {
+      "event_id": "event_000010",
+      "event_type_id": "soccer_ball_possession",
+      "event_type": "Ball_possession",
+      "event_type_zh": "控球",
+      "comment_label": "Ball_possession",
+      "bz_id": "40005645-0c0b-e6e8-3666-f4ae016f3206-1783392565092",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1061.16,
+        "start_time_sec": 1056.43,
+        "end_time_sec": 1067.74
+      },
+      "attributes": {
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Penalty_Area"
+        ],
+        "Related_Player": [
+          "team_2_player_8"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "BallController_team": [
+          "team_2"
+        ],
+        "BallController_player": [
+          "team_2_player_8"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 1.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "2队8，15，1在后场控球"
+    },
+    {
+      "event_id": "event_000011",
+      "event_type_id": "soccer_foul_being_fouled",
+      "event_type": "Foul_Being_fouled",
+      "event_type_zh": "犯规/被犯规",
+      "comment_label": "Dangerous_Play",
+      "bz_id": "2b37b8bc-6522-efc0-bed2-879130637a4f-1783393122298",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1083.04,
+        "start_time_sec": 1077.81,
+        "end_time_sec": 1088.79
+      },
+      "attributes": {
+        "Active_Player": [
+          "1队13号"
+        ],
+        "Body_Part": [
+          "Leg"
+        ],
+        "Foul_Type": [
+          "Dangerous_Play"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Opponent_Player": [
+          "2队13号"
+        ],
+        "Pitch_Area": [
+          "Midfield_Third"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "Time_Score_Recognition": [
+          "0:0"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 2.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 2.0,
+        "overall_score": 2.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "1队13号犯规"
+    },
+    {
+      "event_id": "event_000012",
+      "event_type_id": "soccer_free_kick",
+      "event_type": "Free_kick",
+      "event_type_zh": "任意球",
+      "comment_label": "Direct_Free_Kick",
+      "bz_id": "c1b528ac-d584-40ea-1ad6-067cd45bf447-1783393219198",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1120.18,
+        "start_time_sec": 1116.68,
+        "end_time_sec": 1146.7
+      },
+      "attributes": {
+        "Body_Part": [
+          "Leg"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Defensive_Third"
+        ],
+        "Related_Player": [
+          "team_2_player_12"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "Sub_Type": [
+          "Direct_Free_Kick"
+        ],
+        "BallController_team": [
+          "team_2"
+        ],
+        "BallController_player": [
+          "team_2_player_12"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 1.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "2队12号发任意球"
+    },
+    {
+      "event_id": "event_000013",
+      "event_type_id": "soccer_foul_being_fouled",
+      "event_type": "Foul_Being_fouled",
+      "event_type_zh": "犯规/被犯规",
+      "comment_label": "Dangerous_Play",
+      "bz_id": "def426a8-8f9a-b75f-14b7-ffa913e3a3ae-1783393534165",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1131.35,
+        "start_time_sec": 1116.68,
+        "end_time_sec": 1146.7
+      },
+      "attributes": {
+        "Active_Player": [
+          "1队24号"
+        ],
+        "Body_Part": [
+          "Other_Body_Parts"
+        ],
+        "Foul_Type": [
+          "Dangerous_Play"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Opponent_Player": [
+          "2队13号"
+        ],
+        "Pitch_Area": [
+          "Midfield_Third"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Close_up"
+        ],
+        "Time_Score_Recognition": [
+          "0:0"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 2.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "1队24号犯规拽人"
+    },
+    {
+      "event_id": "event_000014",
+      "event_type_id": "soccer_free_kick",
+      "event_type": "Free_kick",
+      "event_type_zh": "任意球",
+      "comment_label": "Direct_Free_Kick",
+      "bz_id": "f8a754ac-d48e-6ee2-0ca6-20e4683a8d6c-1783393765624",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1143.77,
+        "start_time_sec": 1116.68,
+        "end_time_sec": 1146.7
+      },
+      "attributes": {
+        "Body_Part": [
+          "Leg"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Midfield_Third"
+        ],
+        "Related_Player": [
+          "team_2_player_19"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "Sub_Type": [
+          "Direct_Free_Kick"
+        ],
+        "BallController_team": [
+          "team_2"
+        ],
+        "BallController_player": [
+          "team_2_player_19"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 1.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "2队19号发任意球"
+    },
+    {
+      "event_id": "event_000015",
+      "event_type_id": "soccer_dribble_past",
+      "event_type": "Dribble_past",
+      "event_type_zh": "过人",
+      "comment_label": "Dribble_Break",
+      "bz_id": "e465d21a-8cbd-1a30-9bdf-72fa204c4313-1783393891375",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1163.32,
+        "start_time_sec": 1160.74,
+        "end_time_sec": 1198.73
+      },
+      "attributes": {
+        "Body_Part": [
+          "Leg"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Midfield_Third"
+        ],
+        "Related_Player": [
+          "team_2_player_7"
+        ],
+        "Result_Type": [
+          "Dribble_Break"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "BallController_team": [
+          "team_2"
+        ],
+        "BallController_player": [
+          "team_2_player_7"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 2.0,
+        "technical_difficulty_rating": 2.0,
+        "criticality_score": 1.0,
+        "overall_score": 2.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "2队7号转身过人"
+    },
+    {
+      "event_id": "event_000016",
+      "event_type_id": "soccer_foul_being_fouled",
+      "event_type": "Foul_Being_fouled",
+      "event_type_zh": "犯规/被犯规",
+      "comment_label": "Dangerous_Play",
+      "bz_id": "84684142-9ef5-b3ed-d4ff-cfab19a95148-1783394082453",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1168.74,
+        "start_time_sec": 1160.74,
+        "end_time_sec": 1198.73
+      },
+      "attributes": {
+        "Active_Player": [
+          "1队2号"
+        ],
+        "Body_Part": [
+          "Leg"
+        ],
+        "Foul_Type": [
+          "Dangerous_Play"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Opponent_Player": [
+          "2队7号"
+        ],
+        "Pitch_Area": [
+          "Midfield_Third"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "Time_Score_Recognition": [
+          "0:0"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 2.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "1队2号犯规"
+    },
+    {
+      "event_id": "event_000017",
+      "event_type_id": "soccer_free_kick",
+      "event_type": "Free_kick",
+      "event_type_zh": "任意球",
+      "comment_label": "Direct_Free_Kick",
+      "bz_id": "2023134d-ec55-6774-df0e-3116aa62e6ba-1783394459242",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1196.25,
+        "start_time_sec": 1160.74,
+        "end_time_sec": 1198.73
+      },
+      "attributes": {
+        "Body_Part": [
+          "Leg"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Midfield_Third"
+        ],
+        "Related_Player": [
+          "team_2_player_12"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "Sub_Type": [
+          "Direct_Free_Kick"
+        ],
+        "BallController_team": [
+          "team_2"
+        ],
+        "BallController_player": [
+          "team_2_player_12"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 1.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "2队12号发任意球"
+    },
+    {
+      "event_id": "event_000018",
+      "event_type_id": "soccer_foul_being_fouled",
+      "event_type": "Foul_Being_fouled",
+      "event_type_zh": "犯规/被犯规",
+      "comment_label": "Dangerous_Play",
+      "bz_id": "a948c6bc-f747-6cde-6820-b3369b53a742-1783394591382",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1209.92,
+        "start_time_sec": 1205.74,
+        "end_time_sec": 1309.45
+      },
+      "attributes": {
+        "Active_Player": [
+          "1队13号"
+        ],
+        "Body_Part": [
+          "Leg"
+        ],
+        "Foul_Type": [
+          "Dangerous_Play"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Opponent_Player": [
+          "2队12号"
+        ],
+        "Pitch_Area": [
+          "Defensive_Third"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "Time_Score_Recognition": [
+          "0:0"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 2.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 2.0,
+        "overall_score": 2.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "1队13号犯规"
+    },
+    {
+      "event_id": "event_000019",
+      "event_type_id": "soccer_free_kick",
+      "event_type": "Free_kick",
+      "event_type_zh": "任意球",
+      "comment_label": "Direct_Free_Kick",
+      "bz_id": "64511303-2a5e-ab10-d913-8cc94619a745-1783394896608",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1244.77,
+        "start_time_sec": 1205.74,
+        "end_time_sec": 1309.45
+      },
+      "attributes": {
+        "Body_Part": [
+          "Leg"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Defensive_Third"
+        ],
+        "Related_Player": [
+          "team_2_player_5"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "Sub_Type": [
+          "Direct_Free_Kick"
+        ],
+        "BallController_team": [
+          "team_2"
+        ],
+        "BallController_player": [
+          "team_2_player_5"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 1.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "2队5号发任意球"
+    },
+    {
+      "event_id": "event_000020",
+      "event_type_id": "soccer_save",
+      "event_type": "Save",
+      "event_type_zh": "扑救",
+      "comment_label": "Save",
+      "bz_id": "ae384835-e852-fcea-d1b0-8919b079e95a-1783395533654",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1246.94,
+        "start_time_sec": 1205.74,
+        "end_time_sec": 1309.45
+      },
+      "attributes": {
+        "Body_Part": [
+          "Other_Body_Parts"
+        ],
+        "Goalkeepers_Position_Pitch_Area": [
+          "Goalkeeper_Save"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 3.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 3.0,
+        "overall_score": 2.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "1队12号把球扑出来"
+    },
+    {
+      "event_id": "event_000021",
+      "event_type_id": "soccer_ball_possession",
+      "event_type": "Ball_possession",
+      "event_type_zh": "控球",
+      "comment_label": "Ball_possession",
+      "bz_id": "b6d67c9b-68b5-b217-dfa7-73d6729aaf73-1783395670003",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1281.45,
+        "start_time_sec": 1205.74,
+        "end_time_sec": 1309.45
+      },
+      "attributes": {
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Midfield_Third"
+        ],
+        "Related_Player": [
+          "team_1_player_4"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "BallController_team": [
+          "team_1"
+        ],
+        "BallController_player": [
+          "team_1_player_4"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 1.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "1队4，22，5控球"
+    },
+    {
+      "event_id": "event_000022",
+      "event_type_id": "soccer_ball_possession",
+      "event_type": "Ball_possession",
+      "event_type_zh": "控球",
+      "comment_label": "Ball_possession",
+      "bz_id": "5aa9691d-9885-13ee-6821-ba5a357306da-1783395870077",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1304.38,
+        "start_time_sec": 1205.74,
+        "end_time_sec": 1309.45
+      },
+      "attributes": {
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Midfield_Third"
+        ],
+        "Related_Player": [
+          "team_1_player_4"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "BallController_team": [
+          "team_1"
+        ],
+        "BallController_player": [
+          "team_1_player_4"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 1.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "1队22，4，5号控球"
+    },
+    {
+      "event_id": "event_000023",
+      "event_type_id": "soccer_foul_being_fouled",
+      "event_type": "Foul_Being_fouled",
+      "event_type_zh": "犯规/被犯规",
+      "comment_label": "Dangerous_Play",
+      "bz_id": "28debd8b-ce01-c170-79e7-33e4f843d25d-1783396017719",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1329.36,
+        "start_time_sec": 1325.88,
+        "end_time_sec": 1344.18
+      },
+      "attributes": {
+        "Active_Player": [
+          "2队4号"
+        ],
+        "Body_Part": [
+          "Leg"
+        ],
+        "Foul_Type": [
+          "Dangerous_Play"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Opponent_Player": [
+          "1队24号"
+        ],
+        "Pitch_Area": [
+          "Midfield_Third"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "Time_Score_Recognition": [
+          "0:0"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 2.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "2队4号犯规"
+    },
+    {
+      "event_id": "event_000024",
+      "event_type_id": "soccer_free_kick",
+      "event_type": "Free_kick",
+      "event_type_zh": "任意球",
+      "comment_label": "Direct_Free_Kick",
+      "bz_id": "8ed8472a-b175-ec18-e740-5bcec42a8a30-1783396183697",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1338.64,
+        "start_time_sec": 1325.88,
+        "end_time_sec": 1344.18
+      },
+      "attributes": {
+        "Body_Part": [
+          "Leg"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Midfield_Third"
+        ],
+        "Related_Player": [
+          "team_1_player_5"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Wide_Shot"
+        ],
+        "Sub_Type": [
+          "Direct_Free_Kick"
+        ],
+        "BallController_team": [
+          "team_1"
+        ],
+        "BallController_player": [
+          "team_1_player_5"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 1.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "1队5号发任意球"
+    },
+    {
+      "event_id": "event_000025",
+      "event_type_id": "soccer_throw_in",
+      "event_type": "Throw_in",
+      "event_type_zh": "界外球",
+      "comment_label": "Throw_in",
+      "bz_id": "3957f0c8-db9f-50d7-49ec-021c0bb4637e-1783396338599",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1444.54,
+        "start_time_sec": 1439.69,
+        "end_time_sec": 1452.95
+      },
+      "attributes": {
+        "Body_Part": [
+          "Other_Body_Parts"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Midfield_Third"
+        ],
+        "Related_Player": [
+          "team_1_player_2"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Close_up"
+        ],
+        "BallController_team": [
+          "team_1"
+        ],
+        "BallController_player": [
+          "team_1_player_2"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 1.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "1队2号发界外球  "
+    },
+    {
+      "event_id": "event_000026",
+      "event_type_id": "soccer_win_an_aerial_duel",
+      "event_type": "Win_an_aerial_duel",
+      "event_type_zh": "争顶成功",
+      "comment_label": "Win_an_aerial_duel",
+      "bz_id": "a556a318-4c18-20de-76e2-b81d2c684374-1783396426339",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1446.32,
+        "start_time_sec": 1439.69,
+        "end_time_sec": 1452.95
+      },
+      "attributes": {
+        "Body_Part": [
+          "Head"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Midfield_Third"
+        ],
+        "Related_Player": [
+          "team_2_player_15"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "BallController_team": [
+          "team_2"
+        ],
+        "BallController_player": [
+          "team_2_player_15"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 2.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 2.0,
+        "overall_score": 2.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "2队15号争顶成功"
+    },
+    {
+      "event_id": "event_000027",
+      "event_type_id": "soccer_win_an_aerial_duel",
+      "event_type": "Win_an_aerial_duel",
+      "event_type_zh": "争顶成功",
+      "comment_label": "Win_an_aerial_duel",
+      "bz_id": "6a64ba7c-9768-cd69-3d14-bc5f434c7882-1783396507426",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1448.46,
+        "start_time_sec": 1439.69,
+        "end_time_sec": 1452.95
+      },
+      "attributes": {
+        "Body_Part": [
+          "Head"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Midfield_Third"
+        ],
+        "Related_Player": [
+          "team_1_player_13"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "BallController_team": [
+          "team_1"
+        ],
+        "BallController_player": [
+          "team_1_player_13"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 2.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 2.0,
+        "overall_score": 2.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "1队13号争顶成功"
+    },
+    {
+      "event_id": "event_000028",
+      "event_type_id": "soccer_throw_in",
+      "event_type": "Throw_in",
+      "event_type_zh": "界外球",
+      "comment_label": "Throw_in",
+      "bz_id": "d3418acd-5b48-dd1a-569c-cd0ac97870e8-1783396593159",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1483.66,
+        "start_time_sec": 1480.23,
+        "end_time_sec": 1516.6
+      },
+      "attributes": {
+        "Body_Part": [
+          "Other_Body_Parts"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Defensive_Third"
+        ],
+        "Related_Player": [
+          "team_1_player_5"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "BallController_team": [
+          "team_1"
+        ],
+        "BallController_player": [
+          "team_1_player_5"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 1.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "1队5号发界外球"
+    },
+    {
+      "event_id": "event_000029",
+      "event_type_id": "soccer_throw_in",
+      "event_type": "Throw_in",
+      "event_type_zh": "界外球",
+      "comment_label": "Throw_in",
+      "bz_id": "18c40512-b02b-9400-de1c-8e0a99575832-1783396709360",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1513.2,
+        "start_time_sec": 1480.23,
+        "end_time_sec": 1516.6
+      },
+      "attributes": {
+        "Body_Part": [
+          "Other_Body_Parts"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Defensive_Third"
+        ],
+        "Related_Player": [
+          "team_2_player_4"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "BallController_team": [
+          "team_2"
+        ],
+        "BallController_player": [
+          "team_2_player_4"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 2.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "2队4号发界外球"
+    },
+    {
+      "event_id": "event_000030",
+      "event_type_id": "soccer_throw_in",
+      "event_type": "Throw_in",
+      "event_type_zh": "界外球",
+      "comment_label": "Throw_in",
+      "bz_id": "5b7ba717-4262-1ac8-a7d8-76103a827664-1783396786788",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1531.41,
+        "start_time_sec": 1528.86,
+        "end_time_sec": 1573.85
+      },
+      "attributes": {
+        "Body_Part": [
+          "Other_Body_Parts"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Midfield_Third"
+        ],
+        "Related_Player": [
+          "team_2_player_4"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Wide_Shot"
+        ],
+        "BallController_team": [
+          "team_2"
+        ],
+        "BallController_player": [
+          "team_2_player_4"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 2.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "2队4号发界外球"
+    },
+    {
+      "event_id": "event_000031",
+      "event_type_id": "soccer_throw_in",
+      "event_type": "Throw_in",
+      "event_type_zh": "界外球",
+      "comment_label": "Throw_in",
+      "bz_id": "5b99811d-e9bf-aaf0-2428-f39b08152436-1783396857089",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1550.19,
+        "start_time_sec": 1528.86,
+        "end_time_sec": 1573.85
+      },
+      "attributes": {
+        "Body_Part": [
+          "Other_Body_Parts"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Midfield_Third"
+        ],
+        "Related_Player": [
+          "team_1_player_5"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "BallController_team": [
+          "team_1"
+        ],
+        "BallController_player": [
+          "team_1_player_5"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 1.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "1队5号发界外球"
+    },
+    {
+      "event_id": "event_000032",
+      "event_type_id": "soccer_throw_in",
+      "event_type": "Throw_in",
+      "event_type_zh": "界外球",
+      "comment_label": "Throw_in",
+      "bz_id": "7d9b128f-95ee-cfbc-319d-bf5ab44beaac-1783396930907",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1566.38,
+        "start_time_sec": 1528.86,
+        "end_time_sec": 1573.85
+      },
+      "attributes": {
+        "Body_Part": [
+          "Other_Body_Parts"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Midfield_Third"
+        ],
+        "Related_Player": [
+          "2队球员"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 1.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "2队发界外球"
+    },
+    {
+      "event_id": "event_000033",
+      "event_type_id": "soccer_ball_possession",
+      "event_type": "Ball_possession",
+      "event_type_zh": "控球",
+      "comment_label": "Ball_possession",
+      "bz_id": "e2df5f8f-9c4d-31da-67fa-cacd1d0f238e-1783397190045",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1570.08,
+        "start_time_sec": 1528.86,
+        "end_time_sec": 1573.85
+      },
+      "attributes": {
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Defensive_Third"
+        ],
+        "Related_Player": [
+          "team_2_player_15"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "BallController_team": [
+          "team_2"
+        ],
+        "BallController_player": [
+          "team_2_player_15"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 1.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "2队15，19，6号控球"
+    },
+    {
+      "event_id": "event_000034",
+      "event_type_id": "soccer_ball_possession",
+      "event_type": "Ball_possession",
+      "event_type_zh": "控球",
+      "comment_label": "Ball_possession",
+      "bz_id": "adaa8e91-bcec-2309-f94b-fc5c4eb3b551-1783397368305",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1655.45,
+        "start_time_sec": 1651.33,
+        "end_time_sec": 1678.59
+      },
+      "attributes": {
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Midfield_Third"
+        ],
+        "Related_Player": [
+          "team_1_player_4"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "BallController_team": [
+          "team_1"
+        ],
+        "BallController_player": [
+          "team_1_player_4"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 1.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "1队4，22，5控球"
+    },
+    {
+      "event_id": "event_000035",
+      "event_type_id": "soccer_win_an_aerial_duel",
+      "event_type": "Win_an_aerial_duel",
+      "event_type_zh": "争顶成功",
+      "comment_label": "Win_an_aerial_duel",
+      "bz_id": "71c464e1-3b24-2a39-282c-d343c1272298-1783397457066",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1668.13,
+        "start_time_sec": 1651.33,
+        "end_time_sec": 1678.59
+      },
+      "attributes": {
+        "Body_Part": [
+          "Head"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Penalty_Area"
+        ],
+        "Related_Player": [
+          "team_2_player_8"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "BallController_team": [
+          "team_2"
+        ],
+        "BallController_player": [
+          "team_2_player_8"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 3.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 3.0,
+        "overall_score": 2.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "2队8号争顶成功"
+    },
+    {
+      "event_id": "event_000036",
+      "event_type_id": "soccer_throw_in",
+      "event_type": "Throw_in",
+      "event_type_zh": "界外球",
+      "comment_label": "Throw_in",
+      "bz_id": "7d3e436f-3cab-26f0-a5a2-b1b1239ba06d-1783397559960",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1706.49,
+        "start_time_sec": 1704.06,
+        "end_time_sec": 1741.79
+      },
+      "attributes": {
+        "Body_Part": [
+          "Other_Body_Parts"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Defensive_Third"
+        ],
+        "Related_Player": [
+          "team_2_player_19"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Wide_Shot"
+        ],
+        "BallController_team": [
+          "team_2"
+        ],
+        "BallController_player": [
+          "team_2_player_19"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 1.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "2队19号发界外球"
+    },
+    {
+      "event_id": "event_000037",
+      "event_type_id": "soccer_throw_in",
+      "event_type": "Throw_in",
+      "event_type_zh": "界外球",
+      "comment_label": "Throw_in",
+      "bz_id": "19862245-a3ee-3d02-ae1f-1d89f686803c-1783397637299",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1738.42,
+        "start_time_sec": 1704.06,
+        "end_time_sec": 1741.79
+      },
+      "attributes": {
+        "Body_Part": [
+          "Other_Body_Parts"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Defensive_Third"
+        ],
+        "Related_Player": [
+          "team_1_player_24"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "BallController_team": [
+          "team_1"
+        ],
+        "BallController_player": [
+          "team_1_player_24"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 1.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "1队24号发界外球"
+    },
+    {
+      "event_id": "event_000038",
+      "event_type_id": "soccer_throw_in",
+      "event_type": "Throw_in",
+      "event_type_zh": "界外球",
+      "comment_label": "Throw_in",
+      "bz_id": "9f42a998-a90f-1846-d349-6c8ae3b86a64-1783397752864",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1770.11,
+        "start_time_sec": 1767.74,
+        "end_time_sec": 1791.51
+      },
+      "attributes": {
+        "Body_Part": [
+          "Other_Body_Parts"
+        ],
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Defensive_Third"
+        ],
+        "Related_Player": [
+          "team_2_player_15"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Close_up"
+        ],
+        "BallController_team": [
+          "team_2"
+        ],
+        "BallController_player": [
+          "team_2_player_15"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 1.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "2队15号发界外球"
+    },
+    {
+      "event_id": "event_000039",
+      "event_type_id": "soccer_ball_possession",
+      "event_type": "Ball_possession",
+      "event_type_zh": "控球",
+      "comment_label": "Ball_possession",
+      "bz_id": "ab006313-b898-9fbd-03db-05791283791f-1783397852089",
+      "is_model_target": true,
+      "media_time": {
+        "event_time_sec": 1790.2,
+        "start_time_sec": 1767.74,
+        "end_time_sec": 1791.51
+      },
+      "attributes": {
+        "Match_Phase": [
+          "Regular_Time"
+        ],
+        "Pitch_Area": [
+          "Midfield_Third"
+        ],
+        "Related_Player": [
+          "team_1_player_4"
+        ],
+        "Score_Recognition": [
+          "0:0"
+        ],
+        "Shot_Type_Camera_Angle": [
+          "Medium_Shot"
+        ],
+        "BallController_team": [
+          "team_1"
+        ],
+        "BallController_player": [
+          "team_1_player_4"
+        ]
+      },
+      "video_context": {
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "emotional_heat_score": 1.0,
+        "technical_difficulty_rating": 1.0,
+        "criticality_score": 1.0,
+        "overall_score": 1.0,
+        "score_recognition": "0:0",
+        "score_recognition_reason": null
+      },
+      "annotation_quality": {
+        "annotator_confidence": 1.0
+      },
+      "notes": "1队4，22，5号控球"
+    }
+  ],
+  "ignore_segments": [
+    {
+      "start_time_sec": 0.0,
+      "end_time_sec": 505.42,
+      "reason": "PRE_MATCH"
+    },
+    {
+      "start_time_sec": 518.08,
+      "end_time_sec": 881.03,
+      "reason": "BETWEEN_SEGMENTS"
+    },
+    {
+      "start_time_sec": 896.41,
+      "end_time_sec": 921.18,
+      "reason": "BETWEEN_SEGMENTS"
+    },
+    {
+      "start_time_sec": 933.55,
+      "end_time_sec": 978.83,
+      "reason": "BETWEEN_SEGMENTS"
+    },
+    {
+      "start_time_sec": 990.46,
+      "end_time_sec": 1002.46,
+      "reason": "BETWEEN_SEGMENTS"
+    },
+    {
+      "start_time_sec": 1016.05,
+      "end_time_sec": 1021.65,
+      "reason": "BETWEEN_SEGMENTS"
+    },
+    {
+      "start_time_sec": 1032.88,
+      "end_time_sec": 1041.04,
+      "reason": "BETWEEN_SEGMENTS"
+    },
+    {
+      "start_time_sec": 1067.74,
+      "end_time_sec": 1077.81,
+      "reason": "BETWEEN_SEGMENTS"
+    },
+    {
+      "start_time_sec": 1088.79,
+      "end_time_sec": 1116.68,
+      "reason": "BETWEEN_SEGMENTS"
+    },
+    {
+      "start_time_sec": 1146.7,
+      "end_time_sec": 1160.74,
+      "reason": "BETWEEN_SEGMENTS"
+    },
+    {
+      "start_time_sec": 1198.73,
+      "end_time_sec": 1205.74,
+      "reason": "BETWEEN_SEGMENTS"
+    },
+    {
+      "start_time_sec": 1309.45,
+      "end_time_sec": 1325.88,
+      "reason": "BETWEEN_SEGMENTS"
+    },
+    {
+      "start_time_sec": 1344.18,
+      "end_time_sec": 1439.69,
+      "reason": "BETWEEN_SEGMENTS"
+    },
+    {
+      "start_time_sec": 1452.95,
+      "end_time_sec": 1480.23,
+      "reason": "BETWEEN_SEGMENTS"
+    },
+    {
+      "start_time_sec": 1516.6,
+      "end_time_sec": 1528.86,
+      "reason": "BETWEEN_SEGMENTS"
+    },
+    {
+      "start_time_sec": 1573.85,
+      "end_time_sec": 1651.33,
+      "reason": "BETWEEN_SEGMENTS"
+    },
+    {
+      "start_time_sec": 1678.59,
+      "end_time_sec": 1704.06,
+      "reason": "BETWEEN_SEGMENTS"
+    },
+    {
+      "start_time_sec": 1741.79,
+      "end_time_sec": 1767.74,
+      "reason": "BETWEEN_SEGMENTS"
+    },
+    {
+      "start_time_sec": 1791.51,
+      "end_time_sec": 1801.51,
+      "reason": "POST_MATCH"
+    }
+  ]
+}

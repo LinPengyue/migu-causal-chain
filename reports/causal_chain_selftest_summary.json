@@ -1,0 +1,275 @@
+{
+  "limit_matches": 0,
+  "n_matches": 63,
+  "rule_only": true,
+  "use_llm": false,
+  "stream_source": "gold_events",
+  "event_source": "gold_events",
+  "scripts": {
+    "offline_strip": "eval/eval_offline_strip.py",
+    "offline_highlight": "eval/eval_offline_highlight.py",
+    "online_strip": "eval/eval_online_strip.py",
+    "online_highlight": "eval/eval_online_highlight.py"
+  },
+  "summary_table": {
+    "offline_strip": {
+      "gold": 437,
+      "matched": 359,
+      "logic_rate": 82.15,
+      "precision": 93.01
+    },
+    "offline_highlight": {
+      "all": {
+        "gold": 172,
+        "matched": 105,
+        "logic_rate": 61.05,
+        "precision": 61.05
+      },
+      "annotation_only": {
+        "gold": 114,
+        "matched": 65,
+        "logic_rate": 57.02
+      },
+      "timeline_heuristic_only": {
+        "gold": 58,
+        "matched": 40,
+        "logic_rate": 68.97
+      },
+      "label_source_counts": {
+        "annotation": 114,
+        "timeline_heuristic": 58
+      }
+    },
+    "online_strip": {
+      "gold": 437,
+      "matched": 313,
+      "logic_rate": 71.62,
+      "precision": 72.79,
+      "latency_p50": 60000.0,
+      "latency_p90": 167404.0,
+      "over_45s_rate": 68.05
+    },
+    "online_highlight": {
+      "all": {
+        "gold": 164,
+        "matched": 0,
+        "logic_rate": 0.0,
+        "precision": 0.0
+      },
+      "annotation_only": {
+        "gold": 114,
+        "matched": 0,
+        "logic_rate": 0.0
+      },
+      "timeline_heuristic_only": {
+        "gold": 50,
+        "matched": 0,
+        "logic_rate": 0.0
+      },
+      "label_source_counts": {
+        "annotation": 114,
+        "timeline_heuristic": 50
+      }
+    },
+    "p5_structural": {
+      "offline": {
+        "n_matches": 63,
+        "pass_rate": 100.0,
+        "n_pass": 63,
+        "n_fail": 0,
+        "node_loss": 0,
+        "duplicate": 0,
+        "cycle": 0,
+        "ordering": 0,
+        "correction": 0
+      },
+      "online": {
+        "n_matches": 60,
+        "pass_rate": 100.0,
+        "n_pass": 60,
+        "n_fail": 0,
+        "node_loss": 0,
+        "duplicate": 0,
+        "cycle": 0,
+        "ordering": 0,
+        "correction": 0
+      }
+    }
+  },
+  "data_sources": {
+    "offline_strip": {
+      "gold": "strip_gold.json",
+      "event_source": "gold_events",
+      "clip_events": "gold.events → strip (module eval; not classify)",
+      "n_scorable": 437,
+      "n_unscorable": 0
+    },
+    "offline_highlight": {
+      "events": "timeline.json",
+      "highlight_gold_priority": [
+        "highlight_gold_no_t2.json",
+        "highlight_gold.json",
+        "highlight_gold_with_t2.json"
+      ],
+      "n_matches_with_nonempty_highlight_gold": 61,
+      "gold_file_counts": {
+        "highlight_gold_no_t2.json": 51,
+        "highlight_gold_with_t2.json": 10
+      },
+      "label_source_counts": {
+        "annotation": 114,
+        "timeline_heuristic": 58
+      }
+    },
+    "online_strip": {
+      "gold": "strip_gold.json",
+      "stream": "gold_events merged"
+    },
+    "online_highlight": {
+      "stream": "gold_events",
+      "highlight_gold_priority": [
+        "highlight_gold_no_t2.json",
+        "highlight_gold.json",
+        "highlight_gold_with_t2.json"
+      ],
+      "n_matches_with_nonempty_highlight_gold": 58,
+      "gold_file_counts": {
+        "highlight_gold_no_t2.json": 48,
+        "highlight_gold_with_t2.json": 10
+      },
+      "label_source_counts": {
+        "annotation": 114,
+        "timeline_heuristic": 50
+      }
+    }
+  },
+  "highlight_gold_coverage": {
+    "n_matches": 63,
+    "n_matches_with_highlight_gold_file": 63,
+    "n_matches_with_nonempty_highlight_gold": 61,
+    "highlight_gold_exists": true,
+    "gold_file_counts": {
+      "highlight_gold_no_t2.json": 51,
+      "highlight_gold_with_t2.json": 10
+    },
+    "label_source_counts": {
+      "annotation": 114,
+      "timeline_heuristic": 58
+    },
+    "note": "highlight_gold_* 为集锦片段级标注（category/first/last/t0/t1）；用于 highlight clips 一对一逻辑完整率；P5 graph 仅结构回归"
+  },
+  "results": {
+    "offline_strip": {
+      "task": "offline_strip",
+      "config": {
+        "profile": "production",
+        "adapter": "AlgoStripAdapter",
+        "mode": "per_gold_clip_strip_B",
+        "event_source": "gold_events",
+        "use_llm": false,
+        "limit_matches": 0
+      },
+      "total_gold": 437,
+      "strict_matched": 359,
+      "logic_complete_rate": 82.15,
+      "precision": 93.01,
+      "latency_p50": null,
+      "latency_p90": null,
+      "over_45s_rate": null,
+      "structural": null,
+      "n_matches": 63,
+      "data_sources": {
+        "gold": "strip_gold.json",
+        "event_source": "gold_events",
+        "clip_events": "gold.events → strip (module eval; not classify)",
+        "n_scorable": 437,
+        "n_unscorable": 0
+      },
+      "note": "B-style oracle clip strip; not offline classify; no silent timeline→gold.events fallback",
+      "n_pred_total": 386,
+      "n_scorable": 437,
+      "n_unscorable": 0
+    },
+    "offline_highlight": {
+      "total_gold": 172,
+      "strict_matched": 105,
+      "logic_complete_rate": 61.05,
+      "precision": 61.05,
+      "by_label_source": {
+        "all": {
+          "total_gold": 172,
+          "strict_matched": 105,
+          "logic_complete_rate": 61.05
+        },
+        "annotation_only": {
+          "total_gold": 114,
+          "strict_matched": 65,
+          "logic_complete_rate": 57.02
+        },
+        "timeline_heuristic_only": {
+          "total_gold": 58,
+          "strict_matched": 40,
+          "logic_complete_rate": 68.97
+        }
+      },
+      "structural": {
+        "structural_pass_rate": 100.0,
+        "node_loss": 0,
+        "duplicate": 0,
+        "cycle": 0,
+        "ordering": 0,
+        "correction": 0,
+        "n_pass": 63,
+        "n_fail": 0,
+        "note": "P5 graph structural regression only; not logic_complete_rate"
+      }
+    },
+    "online_strip": {
+      "total_gold": 437,
+      "strict_matched": 313,
+      "logic_complete_rate": 71.62,
+      "precision": 72.79,
+      "latency_p50": 60000.0,
+      "latency_p90": 167404.0,
+      "over_45s_rate": 68.05
+    },
+    "online_highlight": {
+      "total_gold": 164,
+      "strict_matched": 0,
+      "logic_complete_rate": 0.0,
+      "precision": 0.0,
+      "latency_p50": null,
+      "latency_p90": null,
+      "over_45s_rate": null,
+      "by_label_source": {
+        "all": {
+          "total_gold": 164,
+          "strict_matched": 0,
+          "logic_complete_rate": 0.0
+        },
+        "annotation_only": {
+          "total_gold": 114,
+          "strict_matched": 0,
+          "logic_complete_rate": 0.0
+        },
+        "timeline_heuristic_only": {
+          "total_gold": 50,
+          "strict_matched": 0,
+          "logic_complete_rate": 0.0
+        }
+      },
+      "structural": {
+        "structural_pass_rate": 100.0,
+        "node_loss": 0,
+        "duplicate": 0,
+        "cycle": 0,
+        "ordering": 0,
+        "correction": 0,
+        "n_pass": 60,
+        "n_fail": 0,
+        "incremental": true,
+        "note": "P5 graph structural regression only; not logic_complete_rate"
+      }
+    }
+  }
+}

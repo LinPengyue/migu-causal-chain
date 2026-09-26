@@ -1,0 +1,58 @@
+{
+  "stats": {
+    "rule": "rule4_t1_plus_t2",
+    "half_ms": 2700000,
+    "n_t0": 0,
+    "n_t1_pool": 1,
+    "n_t2_pool": 2,
+    "n_selected": 3,
+    "n_t0_selected": 0,
+    "n_t1_selected": 1,
+    "n_t2_selected": 0,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "no_t2",
+    "n_selected_after_drop_t2": 1,
+    "n_labeled_by_annotation": 0,
+    "n_heuristic": 1
+  },
+  "chains": [
+    {
+      "annotation_id": "select:2022-11-25 葡萄牙vs加纳:7715410:T1",
+      "match_id": "2022-11-25 葡萄牙vs加纳",
+      "chain_category": "danger",
+      "t0_ms": 7707410,
+      "t1_ms": 7720410,
+      "anchor_t_ms": 7715410,
+      "first_event": "free_kick",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000125",
+          "type": "free_kick",
+          "t_ms": 7715410,
+          "t0_ms": 7711070,
+          "t1_ms": 7721190,
+          "order": 124
+        },
+        {
+          "event_id": "event_000126",
+          "type": "keeper_save",
+          "t_ms": 7716830,
+          "t0_ms": 7711070,
+          "t1_ms": 7721190,
+          "order": 125
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "fk_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "timeline_heuristic",
+      "label_score": 0.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    }
+  ],
+  "note": "alias of highlight_gold_no_t2"
+}

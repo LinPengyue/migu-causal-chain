@@ -1,0 +1,141 @@
+{
+  "stats": {
+    "rule": "rule4_t1_plus_t2",
+    "half_ms": 2700000,
+    "n_t0": 0,
+    "n_t1_pool": 6,
+    "n_t2_pool": 20,
+    "n_selected": 5,
+    "n_t0_selected": 0,
+    "n_t1_selected": 2,
+    "n_t2_selected": 0,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "no_t2",
+    "n_selected_after_drop_t2": 2,
+    "n_labeled_by_annotation": 2,
+    "n_heuristic": 0
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "1月10日_25-26赛季足总杯第3轮_维尔港VS福利特伍德_国语",
+      "chain_category": "danger",
+      "t0_ms": 2192030,
+      "t1_ms": 2205030,
+      "anchor_t_ms": 2200030,
+      "first_event": "throw_in",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000208",
+          "type": "throw_in",
+          "t_ms": 2193620,
+          "t0_ms": 2189590,
+          "t1_ms": 2201640,
+          "order": 207
+        },
+        {
+          "event_id": "event_000209",
+          "type": "aerial_won",
+          "t_ms": 2197360,
+          "t0_ms": 2189590,
+          "t1_ms": 2201640,
+          "order": 208
+        },
+        {
+          "event_id": "event_000210",
+          "type": "shot",
+          "t_ms": 2200030,
+          "t0_ms": 2189590,
+          "t1_ms": 2201640,
+          "order": 209
+        },
+        {
+          "event_id": "event_000211",
+          "type": "keeper_save",
+          "t_ms": 2201100,
+          "t0_ms": 2189590,
+          "t1_ms": 2201640,
+          "order": 210
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    },
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "1月10日_25-26赛季足总杯第3轮_维尔港VS福利特伍德_国语",
+      "chain_category": "danger",
+      "t0_ms": 2221770,
+      "t1_ms": 2242600,
+      "anchor_t_ms": 2229770,
+      "first_event": "throw_in",
+      "last_event": "pass",
+      "events": [
+        {
+          "event_id": "event_000214",
+          "type": "throw_in",
+          "t_ms": 2223780,
+          "t0_ms": 2220860,
+          "t1_ms": 2234090,
+          "order": 213
+        },
+        {
+          "event_id": "event_000215",
+          "type": "aerial_won",
+          "t_ms": 2226600,
+          "t0_ms": 2220860,
+          "t1_ms": 2234090,
+          "order": 214
+        },
+        {
+          "event_id": "event_000216",
+          "type": "shot",
+          "t_ms": 2229770,
+          "t0_ms": 2220860,
+          "t1_ms": 2234090,
+          "order": 215
+        },
+        {
+          "event_id": "event_000217",
+          "type": "shot",
+          "t_ms": 2237600,
+          "t0_ms": 2234200,
+          "t1_ms": 2246170,
+          "order": 216
+        },
+        {
+          "event_id": "event_000218",
+          "type": "keeper_save",
+          "t_ms": 2238930,
+          "t0_ms": 2234200,
+          "t1_ms": 2246170,
+          "order": 217
+        },
+        {
+          "event_id": "event_000219",
+          "type": "pass",
+          "t_ms": 2242220,
+          "t0_ms": 2234200,
+          "t1_ms": 2246170,
+          "order": 218
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner|merged",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    }
+  ],
+  "note": "alias of highlight_gold_no_t2"
+}

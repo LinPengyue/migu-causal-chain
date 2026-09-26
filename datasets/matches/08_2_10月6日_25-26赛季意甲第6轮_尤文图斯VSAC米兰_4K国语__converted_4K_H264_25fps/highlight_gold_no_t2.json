@@ -1,0 +1,73 @@
+{
+  "stats": {
+    "rule": "rule4_t1_plus_t2",
+    "half_ms": 2700000,
+    "n_t0": 0,
+    "n_t1_pool": 2,
+    "n_t2_pool": 3,
+    "n_selected": 4,
+    "n_t0_selected": 0,
+    "n_t1_selected": 1,
+    "n_t2_selected": 0,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "no_t2",
+    "n_selected_after_drop_t2": 1,
+    "n_labeled_by_annotation": 0,
+    "n_heuristic": 1
+  },
+  "chains": [
+    {
+      "annotation_id": "select:08_2 10月6日 25-26赛季意甲第6轮 尤文图斯VSAC米兰 4K国语__converted_4K_H264_25fps:1884250:T1",
+      "match_id": "08_2 10月6日 25-26赛季意甲第6轮 尤文图斯VSAC米兰 4K国语__converted_4K_H264_25fps",
+      "chain_category": "danger",
+      "t0_ms": 1876250,
+      "t1_ms": 1889250,
+      "anchor_t_ms": 1884250,
+      "first_event": "free_kick",
+      "last_event": "successful_tackle",
+      "events": [
+        {
+          "event_id": "event_000117",
+          "type": "free_kick",
+          "t_ms": 1882760,
+          "t0_ms": 1878150,
+          "t1_ms": 1891540,
+          "order": 116
+        },
+        {
+          "event_id": "event_000118",
+          "type": "shot",
+          "t_ms": 1884250,
+          "t0_ms": 1878150,
+          "t1_ms": 1891540,
+          "order": 117
+        },
+        {
+          "event_id": "event_000119",
+          "type": "keeper_save",
+          "t_ms": 1885950,
+          "t0_ms": 1878150,
+          "t1_ms": 1891540,
+          "order": 118
+        },
+        {
+          "event_id": "event_000120",
+          "type": "successful_tackle",
+          "t_ms": 1888090,
+          "t0_ms": 1878150,
+          "t1_ms": 1891540,
+          "order": 119
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "timeline_heuristic",
+      "label_score": 0.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    }
+  ]
+}

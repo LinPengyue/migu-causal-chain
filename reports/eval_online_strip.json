@@ -1,0 +1,28 @@
+{
+  "task": "online_strip",
+  "config": {
+    "profile": "production",
+    "adapter": "OnlineStripAdapter",
+    "stream_source": "gold_events",
+    "use_llm": false,
+    "prefix_stride": 1,
+    "min_prefix": 2,
+    "limit_matches": 0
+  },
+  "total_gold": 437,
+  "strict_matched": 313,
+  "logic_complete_rate": 71.62,
+  "precision": 72.79,
+  "latency_p50": 60000.0,
+  "latency_p90": 167404.0,
+  "over_45s_rate": 68.05,
+  "structural": null,
+  "n_matches": 63,
+  "data_sources": {
+    "gold": "strip_gold.json",
+    "stream": "gold_events merged"
+  },
+  "note": "P3 online feed/advance_time; no future events; bipartite one-to-one",
+  "n_matched": 313,
+  "n_tracks": 430
+}

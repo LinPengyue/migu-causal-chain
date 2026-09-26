@@ -1,0 +1,212 @@
+{
+  "stats": {
+    "rule": "rule4_t1_plus_t2",
+    "half_ms": 2700000,
+    "n_t0": 0,
+    "n_t1_pool": 3,
+    "n_t2_pool": 7,
+    "n_selected": 5,
+    "n_t0_selected": 0,
+    "n_t1_selected": 2,
+    "n_t2_selected": 3,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "with_t2",
+    "n_labeled_by_annotation": 5,
+    "n_heuristic": 0
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0041",
+      "match_id": "2022-11-29 厄瓜多尔vs塞内加尔",
+      "chain_category": "special",
+      "t0_ms": 1211200,
+      "t1_ms": 1224200,
+      "anchor_t_ms": 1219200,
+      "first_event": "free_kick",
+      "last_event": "free_kick",
+      "events": [
+        {
+          "event_id": "event_000025",
+          "type": "free_kick",
+          "t_ms": 1219200,
+          "t0_ms": 1208330,
+          "t1_ms": 1221420,
+          "order": 24
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "fk_then_shot",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "2022-11-29 厄瓜多尔vs塞内加尔",
+      "chain_category": "danger",
+      "t0_ms": 1333780,
+      "t1_ms": 1343780,
+      "anchor_t_ms": 1339780,
+      "first_event": "dribble_past",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000035",
+          "type": "dribble_past",
+          "t_ms": 1339780,
+          "t0_ms": 1333030,
+          "t1_ms": 1345550,
+          "order": 34
+        },
+        {
+          "event_id": "event_000036",
+          "type": "shot",
+          "t_ms": 1341080,
+          "t0_ms": 1333030,
+          "t1_ms": 1345550,
+          "order": 35
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "dribble_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 73.31,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "2022-11-29 厄瓜多尔vs塞内加尔",
+      "chain_category": "danger",
+      "t0_ms": 1346460,
+      "t1_ms": 1356460,
+      "anchor_t_ms": 1352460,
+      "first_event": "dribble_past",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000037",
+          "type": "dribble_past",
+          "t_ms": 1352460,
+          "t0_ms": 1348250,
+          "t1_ms": 1362620,
+          "order": 36
+        },
+        {
+          "event_id": "event_000038",
+          "type": "shot",
+          "t_ms": 1356390,
+          "t0_ms": 1348250,
+          "t1_ms": 1362620,
+          "order": 37
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "dribble_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 85.99,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0003",
+      "match_id": "2022-11-29 厄瓜多尔vs塞内加尔",
+      "chain_category": "danger",
+      "t0_ms": 2079380,
+      "t1_ms": 2089380,
+      "anchor_t_ms": 2085380,
+      "first_event": "corner",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000064",
+          "type": "corner",
+          "t_ms": 2083850,
+          "t0_ms": 2074110,
+          "t1_ms": 2089630,
+          "order": 63
+        },
+        {
+          "event_id": "event_000065",
+          "type": "successful_tackle",
+          "t_ms": 2085380,
+          "t0_ms": 2074110,
+          "t1_ms": 2089630,
+          "order": 64
+        },
+        {
+          "event_id": "event_000066",
+          "type": "shot",
+          "t_ms": 2088290,
+          "t0_ms": 2074110,
+          "t1_ms": 2089630,
+          "order": 65
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "successful_tackle_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0005",
+      "match_id": "2022-11-29 厄瓜多尔vs塞内加尔",
+      "chain_category": "danger",
+      "t0_ms": 2809200,
+      "t1_ms": 2835260,
+      "anchor_t_ms": 2817200,
+      "first_event": "free_kick",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000090",
+          "type": "free_kick",
+          "t_ms": 2817200,
+          "t0_ms": 2811640,
+          "t1_ms": 2823060,
+          "order": 89
+        },
+        {
+          "event_id": "event_000091",
+          "type": "shot",
+          "t_ms": 2819150,
+          "t0_ms": 2811640,
+          "t1_ms": 2823060,
+          "order": 90
+        },
+        {
+          "event_id": "event_000092",
+          "type": "free_kick",
+          "t_ms": 2830260,
+          "t0_ms": 2826810,
+          "t1_ms": 2840970,
+          "order": 91
+        },
+        {
+          "event_id": "event_000093",
+          "type": "shot",
+          "t_ms": 2832340,
+          "t0_ms": 2826810,
+          "t1_ms": 2840970,
+          "order": 92
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "fk_then_shot|merged",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 162.86,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    }
+  ]
+}

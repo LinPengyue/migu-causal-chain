@@ -1,0 +1,64 @@
+{
+  "stats": {
+    "rule": "rule4_t1_plus_t2",
+    "half_ms": 1262485,
+    "n_t0": 0,
+    "n_t1_pool": 1,
+    "n_t2_pool": 0,
+    "n_selected": 1,
+    "n_t0_selected": 0,
+    "n_t1_selected": 1,
+    "n_t2_selected": 0,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "with_t2",
+    "n_labeled_by_annotation": 1,
+    "n_heuristic": 0
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0002",
+      "match_id": "10月25日_25-26赛季西甲第10轮_西班牙人VS埃尔切_国语",
+      "chain_category": "danger",
+      "t0_ms": 652580,
+      "t1_ms": 665580,
+      "anchor_t_ms": 660580,
+      "first_event": "pass",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000006",
+          "type": "pass",
+          "t_ms": 656710,
+          "t0_ms": 654360,
+          "t1_ms": 668810,
+          "order": 5
+        },
+        {
+          "event_id": "event_000007",
+          "type": "shot",
+          "t_ms": 660580,
+          "t0_ms": 654360,
+          "t1_ms": 668810,
+          "order": 6
+        },
+        {
+          "event_id": "event_000008",
+          "type": "keeper_save",
+          "t_ms": 662100,
+          "t0_ms": 654360,
+          "t1_ms": 668810,
+          "order": 7
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    }
+  ]
+}

@@ -1,0 +1,279 @@
+{
+  "stats": {
+    "rule": "rule4_t1_plus_t2",
+    "half_ms": 2700000,
+    "n_t0": 0,
+    "n_t1_pool": 15,
+    "n_t2_pool": 6,
+    "n_selected": 6,
+    "n_t0_selected": 0,
+    "n_t1_selected": 3,
+    "n_t2_selected": 3,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "with_t2",
+    "n_labeled_by_annotation": 4,
+    "n_heuristic": 2
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "10月1日_25-26赛季西甲第7轮_瓦伦西亚VS皇家奥维耶多_国语",
+      "chain_category": "outcome",
+      "t0_ms": 832710,
+      "t1_ms": 842710,
+      "anchor_t_ms": 838710,
+      "first_event": "pass",
+      "last_event": "pass",
+      "events": [
+        {
+          "event_id": "event_000067",
+          "type": "pass",
+          "t_ms": 832710,
+          "t0_ms": 824990,
+          "t1_ms": 836500,
+          "order": 66
+        },
+        {
+          "event_id": "event_000068",
+          "type": "dribble_past",
+          "t_ms": 838710,
+          "t0_ms": 837830,
+          "t1_ms": 848370,
+          "order": 67
+        },
+        {
+          "event_id": "event_000069",
+          "type": "pass",
+          "t_ms": 842130,
+          "t0_ms": 837830,
+          "t1_ms": 848370,
+          "order": 68
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "dribble_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 113.75,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "10月1日_25-26赛季西甲第7轮_瓦伦西亚VS皇家奥维耶多_国语",
+      "chain_category": "outcome",
+      "t0_ms": 1709210,
+      "t1_ms": 1719210,
+      "anchor_t_ms": 1715210,
+      "first_event": "dribble_past",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000233",
+          "type": "dribble_past",
+          "t_ms": 1715210,
+          "t0_ms": 1705670,
+          "t1_ms": 1716330,
+          "order": 232
+        },
+        {
+          "event_id": "event_000234",
+          "type": "shot",
+          "t_ms": 1718670,
+          "t0_ms": 1716670,
+          "t1_ms": 1728450,
+          "order": 233
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "dribble_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0005",
+      "match_id": "10月1日_25-26赛季西甲第7轮_瓦伦西亚VS皇家奥维耶多_国语",
+      "chain_category": "danger",
+      "t0_ms": 3092220,
+      "t1_ms": 3105220,
+      "anchor_t_ms": 3100220,
+      "first_event": "successful_tackle",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000314",
+          "type": "successful_tackle",
+          "t_ms": 3095710,
+          "t0_ms": 3092950,
+          "t1_ms": 3107150,
+          "order": 313
+        },
+        {
+          "event_id": "event_000315",
+          "type": "pass",
+          "t_ms": 3098290,
+          "t0_ms": 3092950,
+          "t1_ms": 3107150,
+          "order": 314
+        },
+        {
+          "event_id": "event_000316",
+          "type": "pass",
+          "t_ms": 3099530,
+          "t0_ms": 3092950,
+          "t1_ms": 3107150,
+          "order": 315
+        },
+        {
+          "event_id": "event_000317",
+          "type": "shot",
+          "t_ms": 3100220,
+          "t0_ms": 3092950,
+          "t1_ms": 3107150,
+          "order": 316
+        },
+        {
+          "event_id": "event_000318",
+          "type": "keeper_save",
+          "t_ms": 3100780,
+          "t0_ms": 3092950,
+          "t1_ms": 3107150,
+          "order": 317
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "select:10月1日_25-26赛季西甲第7轮_瓦伦西亚VS皇家奥维耶多_国语:3254420:T2",
+      "match_id": "10月1日_25-26赛季西甲第7轮_瓦伦西亚VS皇家奥维耶多_国语",
+      "chain_category": "danger",
+      "t0_ms": 3248420,
+      "t1_ms": 3258420,
+      "anchor_t_ms": 3254420,
+      "first_event": "successful_tackle",
+      "last_event": "pass",
+      "events": [
+        {
+          "event_id": "event_000323",
+          "type": "successful_tackle",
+          "t_ms": 3254420,
+          "t0_ms": 3245280,
+          "t1_ms": 3268420,
+          "order": 322
+        },
+        {
+          "event_id": "event_000324",
+          "type": "pass",
+          "t_ms": 3257610,
+          "t0_ms": 3245280,
+          "t1_ms": 3268420,
+          "order": 323
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "successful_tackle_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "timeline_heuristic",
+      "label_score": 0.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0005",
+      "match_id": "10月1日_25-26赛季西甲第7轮_瓦伦西亚VS皇家奥维耶多_国语",
+      "chain_category": "danger",
+      "t0_ms": 3828890,
+      "t1_ms": 3841890,
+      "anchor_t_ms": 3836890,
+      "first_event": "shot",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000381",
+          "type": "shot",
+          "t_ms": 3832730,
+          "t0_ms": 3824790,
+          "t1_ms": 3842350,
+          "order": 380
+        },
+        {
+          "event_id": "event_000382",
+          "type": "keeper_save",
+          "t_ms": 3833320,
+          "t0_ms": 3824790,
+          "t1_ms": 3842350,
+          "order": 381
+        },
+        {
+          "event_id": "event_000383",
+          "type": "shot",
+          "t_ms": 3836890,
+          "t0_ms": 3824790,
+          "t1_ms": 3842350,
+          "order": 382
+        },
+        {
+          "event_id": "event_000384",
+          "type": "keeper_save",
+          "t_ms": 3837690,
+          "t0_ms": 3824790,
+          "t1_ms": 3842350,
+          "order": 383
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "select:10月1日_25-26赛季西甲第7轮_瓦伦西亚VS皇家奥维耶多_国语:7172860:T1",
+      "match_id": "10月1日_25-26赛季西甲第7轮_瓦伦西亚VS皇家奥维耶多_国语",
+      "chain_category": "danger",
+      "t0_ms": 7164860,
+      "t1_ms": 7177860,
+      "anchor_t_ms": 7172860,
+      "first_event": "free_kick",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000523",
+          "type": "free_kick",
+          "t_ms": 7172860,
+          "t0_ms": 7163110,
+          "t1_ms": 7186950,
+          "order": 522
+        },
+        {
+          "event_id": "event_000524",
+          "type": "shot",
+          "t_ms": 7175590,
+          "t0_ms": 7163110,
+          "t1_ms": 7186950,
+          "order": 523
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "fk_then_shot",
+      "window_aligned": "select_moments",
+      "label_source": "timeline_heuristic",
+      "label_score": 0.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    }
+  ]
+}
