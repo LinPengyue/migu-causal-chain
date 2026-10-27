@@ -1,0 +1,62 @@
+{
+  "preflight_ok": true,
+  "http_requests_sent": false,
+  "billing_allowed": true,
+  "want_real": true,
+  "problems": [],
+  "targets": [
+    "equalizer_goal"
+  ],
+  "seed_windows": [
+    {
+      "target_id": "equalizer_goal",
+      "seed_center_sec": 3065.903,
+      "window": {
+        "start": 3059.903,
+        "end": 3071.903
+      },
+      "score_anchor_sec": 3145.98
+    }
+  ],
+  "request_models": {
+    "planner": "DeepSeek-V4-Pro-0813",
+    "vision": "Qwen3.6-Plus"
+  },
+  "official_video_rsi_models": {
+    "planner": "deepseek-v4-pro",
+    "vision": "qwen3.6-plus"
+  },
+  "endpoint_ready": {
+    "planner_configured": true,
+    "vision_configured": true,
+    "roles_required": [
+      "vision"
+    ],
+    "roles_ready": true
+  },
+  "vendor_compat": {
+    "token_param": "max_tokens",
+    "vision_base_url_set": true,
+    "vision_api_key_set": true,
+    "planner_base_url_set": true,
+    "planner_api_key_set": true,
+    "sends_both_token_params": false
+  },
+  "effective_caps": {
+    "max_calls": 3,
+    "max_cost_usd": 0.1,
+    "max_completion_tokens": 256,
+    "cost_is_estimate_not_invoice_cap": true
+  },
+  "run_profile": {
+    "max_rounds": 1,
+    "frames_per_round": 2,
+    "frame_budget": 4,
+    "max_api_calls_explicit": 3,
+    "max_completion_tokens_explicit": 256
+  },
+  "roles": [
+    "vision"
+  ],
+  "note": "Planner not required for vlm-only; vision role only"
+}

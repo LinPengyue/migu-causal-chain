@@ -16,6 +16,7 @@ import hashlib
 import json
 import logging
 import os
+import socket
 import threading
 import time
 import urllib.error
@@ -346,8 +347,88 @@ def _encode_image(path: Path) -> str:
     return f"data:{mime};base64,{b64}"
 
 
+def _sanitize_error_text(text: str, *, limit: int = 240) -> str:
+    """脱敏诊断文本：去掉 Key / Authorization / 图片 base64 / 代理凭证。"""
+    import re
+
+    s = str(text or "")
+    s = re.sub(r"(?i)(authorization\s*[:=]\s*bearer\s+)\S+", r"\1[REDACTED]", s)
+    s = re.sub(r"(?i)bearer\s+[A-Za-z0-9\-._~+/]+=*", "Bearer [REDACTED]", s)
+    s = re.sub(r"sk-[A-Za-z0-9_\-]{6,}", "[REDACTED_KEY]", s)
+    s = re.sub(
+        r"data:image/[a-zA-Z0-9.+-]+;base64,[A-Za-z0-9+/=\s]+",
+        "data:image/<redacted_base64>",
+        s,
+    )
+    # user:pass@host in proxy URLs
+    s = re.sub(
+        r"(://)([^/@:\s]+):([^/@\s]+)@",
+        r"\1[REDACTED_USER]:[REDACTED_PASS]@",
+        s,
+    )
+    s = re.sub(r"\s+", " ", s).strip()
+    return s[:limit]
+
+
+def _network_error_category(reason: Any) -> str:
+    """将 URLError.reason / 连接类异常归为 dns|tls|proxy|timeout|connection|urlerror。"""
+    if isinstance(reason, TimeoutError):
+        return "timeout"
+    text = str(reason or "").lower()
+    rtype = type(reason).__name__.lower() if reason is not None else ""
+    if (
+        isinstance(reason, socket.gaierror)
+        or "name resolution" in text
+        or "nodename nor servname" in text
+        or "name or service not known" in text
+        or rtype == "gaierror"
+    ):
+        return "dns"
+    if (
+        "tunnel connection failed" in text
+        or "proxy error" in text
+        or "proxy connection" in text
+        or "407" in text
+        or ("proxy" in text and ("403" in text or "failed" in text))
+    ):
+        return "proxy"
+    if (
+        "ssl" in text
+        or "tls" in text
+        or "certificate" in text
+        or "CERTIFICATE" in str(reason or "")
+        or "SSL" in type(reason).__name__
+    ):
+        return "tls"
+    if "timed out" in text or "timeout" in text or rtype.endswith("timeout"):
+        return "timeout"
+    if (
+        isinstance(reason, ConnectionError)
+        or "connection refused" in text
+        or "connection reset" in text
+        or "network is unreachable" in text
+    ):
+        return "connection"
+    return "urlerror"
+
+
+def _classify_urlerror(exc: urllib.error.URLError) -> Tuple[bool, int, str]:
+    reason = getattr(exc, "reason", None)
+    category = _network_error_category(reason)
+    reason_type = type(reason).__name__ if reason is not None else "None"
+    detail = _sanitize_error_text(str(reason) if reason is not None else str(exc))
+    msg = (
+        f"URLError category={category} reason_type={reason_type} detail={detail}"
+    )
+    return True, 0, msg
+
+
 def _failure_status_from_http(http_status: int, message: str, *, retryable: bool) -> str:
     msg = (message or "").lower()
+    # Prefer structured network categories from _classify_urlerror
+    for cat in ("dns", "proxy", "tls", "timeout", "connection"):
+        if f"category={cat}" in msg:
+            return f"network_{cat}"
     if http_status == 429 or "429" in msg:
         return "http_429"
     if "timeout" in msg or "timed out" in msg:
@@ -358,6 +439,8 @@ def _failure_status_from_http(http_status: int, message: str, *, retryable: bool
         return "http_5xx"
     if http_status >= 400:
         return f"http_{http_status}"
+    if "urlerror" in msg and "category=" in msg:
+        return "network_urlerror"
     if retryable:
         return "transient_error"
     return "api_error"
@@ -372,24 +455,28 @@ def failure_status_from_exc(exc: BaseException) -> str:
 
 def _classify_error(exc: BaseException) -> Tuple[bool, int, str]:
     if isinstance(exc, ApiCallError):
-        return exc.retryable, exc.http_status, str(exc)
+        return exc.retryable, exc.http_status, _sanitize_error_text(str(exc))
     if isinstance(exc, urllib.error.HTTPError):
         code = int(exc.code)
         return code in _RETRYABLE_HTTP, code, f"HTTP {code}"
-    if isinstance(exc, (TimeoutError, urllib.error.URLError, ConnectionError)):
-        return True, 0, type(exc).__name__
-    msg = str(exc)
+    if isinstance(exc, urllib.error.URLError):
+        return _classify_urlerror(exc)
+    if isinstance(exc, TimeoutError):
+        detail = _sanitize_error_text(str(exc) or "TimeoutError")
+        return True, 0, f"TimeoutError category=timeout detail={detail}"
+    if isinstance(exc, ConnectionError):
+        cat = _network_error_category(exc)
+        detail = _sanitize_error_text(str(exc))
+        return True, 0, f"ConnectionError category={cat} detail={detail}"
+    msg = _sanitize_error_text(str(exc))
     if "timed out" in msg.lower() or "timeout" in msg.lower():
         return True, 0, msg[:200]
     return False, 0, msg[:200]
 
 
 def _safe_log_error(role: str, message: str) -> None:
-    scrubbed = message
-    for token in ("Bearer ", "data:image"):
-        if token in scrubbed:
-            scrubbed = scrubbed.split(token, 1)[0] + token + "<redacted>"
-    logger.warning("api role=%s error=%s", role, scrubbed[:300])
+    scrubbed = _sanitize_error_text(message, limit=300)
+    logger.warning("api role=%s error=%s", role, scrubbed)
 
 
 class ApiProvider:

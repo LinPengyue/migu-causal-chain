@@ -1,0 +1,320 @@
+{
+  "real_api_executed": true,
+  "api_mode": "real",
+  "http_attempts": 3,
+  "est_cost_usd_real": 0,
+  "api_usage": {
+    "calls": 4,
+    "http_attempts": 3,
+    "real_requests": 3,
+    "real_ok": 0,
+    "real_failures": 3,
+    "cached_hits": 0,
+    "mock_calls": 0,
+    "degraded_calls": 1,
+    "ok": 0,
+    "failures": 4,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0,
+    "cached_tokens_reported": 0,
+    "est_cost_usd_real": 0,
+    "est_cost_usd_cached_replay": 0,
+    "cost_disclaimer": "est_cost_usd is a local estimate from configured unit prices (STORY_LLM_PRICE_*); it is NOT a billing guarantee or absolute invoice cap.",
+    "elapsed_sec_real": 2.8112,
+    "by_role": {
+      "vision": {
+        "http_attempts": 3,
+        "tokens": 0,
+        "est_cost_usd": 0
+      }
+    },
+    "records": [
+      {
+        "role": "vision",
+        "model": "Qwen3.6-Plus",
+        "ok": false,
+        "mode": "real",
+        "elapsed_sec": 0.016088203992694616,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
+        "est_cost_usd": 0.0,
+        "cached": false,
+        "error": "URLError",
+        "http_status": 0,
+        "retryable": true,
+        "http_attempt": true,
+        "attempt_index": 0,
+        "failure_status": "transient_error"
+      },
+      {
+        "role": "vision",
+        "model": "Qwen3.6-Plus",
+        "ok": false,
+        "mode": "real",
+        "elapsed_sec": 1.5954045839607716,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
+        "est_cost_usd": 0.0,
+        "cached": false,
+        "error": "URLError",
+        "http_status": 0,
+        "retryable": true,
+        "http_attempt": true,
+        "attempt_index": 1,
+        "failure_status": "transient_error"
+      },
+      {
+        "role": "vision",
+        "model": "Qwen3.6-Plus",
+        "ok": false,
+        "mode": "real",
+        "elapsed_sec": 1.1997135300189257,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
+        "est_cost_usd": 0.0,
+        "cached": false,
+        "error": "URLError",
+        "http_status": 0,
+        "retryable": true,
+        "http_attempt": true,
+        "attempt_index": 2,
+        "failure_status": "transient_error"
+      },
+      {
+        "role": "vision",
+        "model": "Qwen3.6-Plus",
+        "ok": false,
+        "mode": "degraded",
+        "elapsed_sec": 4.016856864094734,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
+        "est_cost_usd": 0.0,
+        "cached": false,
+        "error": "URLError",
+        "http_status": 0,
+        "retryable": true,
+        "http_attempt": false,
+        "attempt_index": 0,
+        "failure_status": "transient_error"
+      }
+    ]
+  },
+  "frame_budget": {
+    "max": 4,
+    "used": 2,
+    "per_gap_used": {
+      "verify_equalizer_goal_action": 2
+    }
+  },
+  "config": {
+    "mode": "vlm-only",
+    "force_mock": false,
+    "max_rounds": 1,
+    "frames_per_round": 2,
+    "frame_budget": 4,
+    "window_half_sec": 6.0,
+    "expand_sec": 8.0,
+    "shift_sec": 12.0,
+    "max_api_calls": 3,
+    "targets": [
+      "equalizer_goal"
+    ],
+    "promote_to_render_ready": false,
+    "allow_mock_window_adjust": true,
+    "billing_allowed": true,
+    "phase4a_real_enabled": true,
+    "api_enabled": true,
+    "smoke_enabled": true,
+    "official_video_rsi_models": {
+      "planner": "deepseek-v4-pro",
+      "vision": "qwen3.6-plus"
+    }
+  },
+  "preflight_caps": {
+    "max_calls": 3,
+    "max_cost_usd": 0.1,
+    "max_completion_tokens": 256,
+    "cap_sources": {
+      "max_calls": {
+        "env_name": "STORY_API_MAX_CALLS",
+        "env_value": "3",
+        "explicit_value": 3,
+        "effective": 3,
+        "policy": "min(explicit, env) when both set"
+      },
+      "max_cost_usd": {
+        "env_name": "STORY_API_MAX_COST_USD",
+        "env_value": "0.10",
+        "explicit_value": null,
+        "effective": 0.1,
+        "policy": "min(explicit, env) when both set"
+      },
+      "max_completion_tokens": {
+        "env_name": "STORY_API_MAX_COMPLETION_TOKENS",
+        "env_value": "256",
+        "explicit_value": null,
+        "effective": 256,
+        "policy": "min(explicit, env) when both set"
+      }
+    }
+  },
+  "comparison": {
+    "n_segments_v1": 6,
+    "n_segments_v2": 6,
+    "n_candidate_edl_v1": 6,
+    "n_candidate_edl_v2": 6,
+    "missing_or_blocked_v1": 1,
+    "missing_or_blocked_v2": 1,
+    "windows_changed": [],
+    "goals_adjusted": [],
+    "render_ready_v1": false,
+    "render_ready_v2": false,
+    "story_completeness_delta": 0
+  },
+  "v2_preview": {
+    "out_mp4": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4a_real_vlm1/croatia_preview_v2.mp4",
+    "n_cut": 5,
+    "n_placeholder": 1,
+    "error": null
+  },
+  "review_manifest": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4a_real_vlm1/review_v2/review_manifest.json",
+  "contact_sheet": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4a_real_vlm1/review_v2/contact_sheet.jpg",
+  "searches_summary": [
+    {
+      "target_id": "equalizer_goal",
+      "n_rounds": 1,
+      "seed_window": {
+        "start": 3059.903,
+        "end": 3071.903
+      },
+      "seed_center_sec": 3065.903,
+      "rounds": [
+        {
+          "round": 0,
+          "window": {
+            "start": 3059.903,
+            "end": 3071.903
+          },
+          "decision": {
+            "action": "expand",
+            "reason": "weak/unrelated; expand around seed",
+            "next_window": {
+              "start": 3051.903,
+              "end": 3079.903
+            },
+            "planner": "rule"
+          },
+          "labels": {
+            "labels": [
+              "uncertain"
+            ],
+            "primary": "uncertain",
+            "confidence": 0.0,
+            "uncertainty": 1.0,
+            "frame_ids": [],
+            "provider_mode": "degraded",
+            "description": "",
+            "observation_only": true,
+            "fact_verified": false
+          },
+          "frame_ids": [
+            "f_0000_3059953",
+            "f_0001_3071853"
+          ],
+          "frame_times": [
+            {
+              "frame_id": "f_0000_3059953",
+              "requested_media_sec": 3059.953,
+              "actual_media_sec": 3059.96
+            },
+            {
+              "frame_id": "f_0001_3071853",
+              "requested_media_sec": 3071.853,
+              "actual_media_sec": 3071.86
+            }
+          ],
+          "evidence_provider_mode": "degraded",
+          "evidence_failure": "transient_error",
+          "evidence_message": "URLError",
+          "observed_actions": null,
+          "story_relation": null,
+          "notes": null,
+          "usage": null,
+          "est_cost_usd": null,
+          "model": null,
+          "normalized_ok": false
+        }
+      ],
+      "best_labels": {
+        "labels": [
+          "uncertain"
+        ],
+        "primary": "uncertain",
+        "confidence": 0.0,
+        "uncertainty": 1.0,
+        "frame_ids": [],
+        "provider_mode": "degraded",
+        "description": "",
+        "observation_only": true,
+        "fact_verified": false
+      },
+      "best_window": {
+        "start": 3059.903,
+        "end": 3071.903
+      },
+      "best_evidence_mode": "degraded",
+      "best_failure": "transient_error"
+    }
+  ],
+  "render_ready": false,
+  "go_ahead_segments": [
+    {
+      "segment_id": "seg_go_ahead_scoreboard",
+      "role": "go_ahead_scoreboard_anchor",
+      "media_in": 3693.35,
+      "media_out": 3705.35,
+      "render_eligibility": "candidate_only",
+      "time_status": "score_path_only",
+      "blocking_reasons": [
+        "external_trust_stripped",
+        "score_path_only_not_render_ready"
+      ]
+    },
+    {
+      "segment_id": "seg_go_ahead_goal_pending",
+      "role": "go_ahead_goal_action",
+      "media_in": null,
+      "media_out": null,
+      "render_eligibility": "blocked",
+      "time_status": "pending_localization",
+      "blocking_reasons": [
+        "external_trust_stripped",
+        "missing_trusted_goal_action:go_ahead"
+      ]
+    }
+  ],
+  "equalizer_segment": {
+    "segment_id": "seg_equalizer_goal_action",
+    "role": "equalizer_goal_action",
+    "media_in": 3061.903,
+    "media_out": 3073.903,
+    "render_eligibility": "candidate_only",
+    "time_status": "linked_event_ms",
+    "blocking_reasons": [
+      "external_trust_stripped",
+      "goal_action_time_not_pipeline_verified"
+    ],
+    "time_provenance": {
+      "source": "linked_live_goal_event",
+      "t_sec": 3065.903,
+      "score_anchor_t_sec": 3145.98,
+      "pipeline_verified": false
+    },
+    "frame_ids": []
+  }
+}

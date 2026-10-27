@@ -1,0 +1,34 @@
+{
+  "mode": "full_network",
+  "python": "/home/anaconda3/bin/python3",
+  "proxy": {
+    "https_proxy": false,
+    "HTTPS_PROXY": false,
+    "ALL_PROXY": false
+  },
+  "proxy_redacted": {},
+  "checks": {
+    "dns": {
+      "ok": false,
+      "error_type": "gaierror",
+      "detail": "[Errno -3] Temporary failure in name resolution"
+    },
+    "tcp_443": {
+      "ok": false,
+      "error_type": "gaierror",
+      "detail": "[Errno -3] Temporary failure in name resolution"
+    },
+    "tls": {
+      "ok": false,
+      "error_type": "gaierror",
+      "detail": "[Errno -3] Temporary failure in name resolution"
+    },
+    "https_models": {
+      "ok": false,
+      "layer": "urlerror",
+      "reason_type": "gaierror",
+      "reason_detail": "[Errno -3] Temporary failure in name resolution"
+    }
+  },
+  "chat_completions_called": false
+}

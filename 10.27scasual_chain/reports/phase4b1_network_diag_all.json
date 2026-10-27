@@ -1,0 +1,34 @@
+{
+  "mode": "all_no_sandbox",
+  "python": "/home/anaconda3/bin/python3",
+  "proxy_present": {
+    "https_proxy": false,
+    "HTTPS_PROXY": false,
+    "ALL_PROXY": false,
+    "HTTP_PROXY": false
+  },
+  "proxy_redacted": {},
+  "checks": {
+    "dns": {
+      "ok": true,
+      "addrs": [
+        "115.190.35.43"
+      ]
+    },
+    "tcp_443": {
+      "ok": true
+    },
+    "tls": {
+      "ok": true,
+      "version": "TLSv1.3"
+    },
+    "https_models": {
+      "ok": true,
+      "http_status": 200,
+      "auth_appears_accepted": true,
+      "note": "NOT multimodal success"
+    }
+  },
+  "chat_completions_called": false,
+  "multimodal_inference_success": false
+}

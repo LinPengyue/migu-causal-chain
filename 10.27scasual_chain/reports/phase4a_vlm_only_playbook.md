@@ -26,10 +26,11 @@
 | Plan | `reports/story_compose_phase3a1_croatia.json` |
 | 模式 | `vlm-only` |
 | 目标 | **仅** `--targets equalizer_goal`（seed≈**3065.903s** 原始候选窗） |
-| 轮次/帧 | `--max-rounds 1 --frames-per-round 2 --frame-budget 4` |
+| 轮次/帧 | 建议 `--max-rounds 1 --frames-per-round 3 --frame-budget 4`（n=2 仅两端；n=3 含中心 **3065.903s**） |
 | HTTP | `STORY_API_MAX_CALLS=3`（含失败/429；与代码显式值取 **min**） |
 | 输出 Token | `STORY_API_MAX_COMPLETION_TOKENS=256` |
 | 费用 | 遵守用户 `STORY_API_MAX_COST_USD`；**仅为估算，≠ 账单绝对上限** |
+| 网络 | 须可 DNS 出网；Agent 沙箱/`full_network` 可能 `URLError`/`gaierror`（见 phase4b1 排障） |
 
 不指定 `--targets` 时默认 `equalizer_goal` + `go_ahead_goal`（向后兼容）。首次真实联调**必须**显式 `--targets equalizer_goal`，避免无关 HTTP。
 

@@ -1,0 +1,51 @@
+{
+  "python": "/home/anaconda3/bin/python3",
+  "python_version": "3.9.7",
+  "proxy_env_present": {
+    "http_proxy": true,
+    "https_proxy": true,
+    "HTTP_PROXY": true,
+    "HTTPS_PROXY": true,
+    "ALL_PROXY": true,
+    "all_proxy": true,
+    "NO_PROXY": true,
+    "no_proxy": true
+  },
+  "proxy_env_values_redacted": {
+    "http_proxy": "http://127.0.0.1:46069",
+    "https_proxy": "http://127.0.0.1:46069",
+    "HTTP_PROXY": "http://127.0.0.1:46069",
+    "HTTPS_PROXY": "http://127.0.0.1:46069",
+    "ALL_PROXY": "http://127.0.0.1:46069",
+    "all_proxy": "http://127.0.0.1:46069",
+    "NO_PROXY": "127.0.0.1,::1,localhost",
+    "no_proxy": "127.0.0.1,::1,localhost"
+  },
+  "base_url": "https://llmapi.paratera.com/v1",
+  "checks": {
+    "dns": {
+      "ok": false,
+      "error_type": "gaierror",
+      "detail": "[Errno -3] Temporary failure in name resolution"
+    },
+    "tcp_443": {
+      "ok": false,
+      "skipped": "dns_failed"
+    },
+    "tls": {
+      "ok": false,
+      "error_type": "gaierror",
+      "detail": "[Errno -3] Temporary failure in name resolution"
+    },
+    "https_models": {
+      "ok": false,
+      "layer": "urlerror",
+      "error_type": "URLError",
+      "reason_type": "OSError",
+      "reason_detail": "Tunnel connection failed: 403 Forbidden",
+      "note": "network layer failure before useful HTTP body"
+    }
+  },
+  "chat_completions_called": false,
+  "multimodal_inference_success": false
+}

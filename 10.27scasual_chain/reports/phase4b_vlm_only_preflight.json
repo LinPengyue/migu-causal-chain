@@ -1,0 +1,117 @@
+{
+  "dry_check": true,
+  "http_requests_sent": false,
+  "ok": true,
+  "mode": "vlm-only",
+  "force_mock": false,
+  "billing_allowed": true,
+  "want_real": true,
+  "problems": [],
+  "cost_disclaimer": "est_cost_usd is a local estimate from configured unit prices (STORY_LLM_PRICE_*); it is NOT a billing guarantee or absolute invoice cap.",
+  "dry_check_no_http": true,
+  "targets": [
+    "equalizer_goal"
+  ],
+  "seed_windows": [
+    {
+      "target_id": "equalizer_goal",
+      "seed_center_sec": 3065.903,
+      "window": {
+        "start": 3059.903,
+        "end": 3071.903
+      },
+      "score_anchor_sec": 3145.98
+    }
+  ],
+  "run_profile": {
+    "max_rounds": 1,
+    "frames_per_round": 2,
+    "frame_budget": 4,
+    "max_api_calls_explicit": 3,
+    "max_completion_tokens_explicit": 256
+  },
+  "first_real_vlm_only_recommended": {
+    "mode": "vlm-only",
+    "targets": [
+      "equalizer_goal"
+    ],
+    "seed_center_sec": 3065.903,
+    "max_rounds": 1,
+    "frames_per_round": 2,
+    "frame_budget": 4,
+    "max_api_calls": 3,
+    "max_completion_tokens": 256,
+    "cost_note": "STORY_API_MAX_COST_USD is an estimate soft cap, not an invoice hard limit"
+  },
+  "effective_caps": {
+    "max_calls": 3,
+    "max_cost_usd": 0.1,
+    "max_completion_tokens": 256,
+    "sources": {
+      "max_calls": {
+        "env_name": "STORY_API_MAX_CALLS",
+        "env_value": "3",
+        "explicit_value": 3,
+        "effective": 3,
+        "policy": "min(explicit, env) when both set"
+      },
+      "max_cost_usd": {
+        "env_name": "STORY_API_MAX_COST_USD",
+        "env_value": "0.10",
+        "explicit_value": null,
+        "effective": 0.1,
+        "policy": "min(explicit, env) when both set"
+      },
+      "max_completion_tokens": {
+        "env_name": "STORY_API_MAX_COMPLETION_TOKENS",
+        "env_value": "256",
+        "explicit_value": 256,
+        "effective": 256,
+        "policy": "min(explicit, env) when both set"
+      }
+    },
+    "note": "effective = min(code_explicit, env) when both set; cost is estimate only",
+    "cost_is_estimate_not_invoice_cap": true
+  },
+  "models": {
+    "planner": "DeepSeek-V4-Pro-0813",
+    "vision": "Qwen3.6-Plus"
+  },
+  "official_video_rsi_models": {
+    "planner": "deepseek-v4-pro",
+    "vision": "qwen3.6-plus"
+  },
+  "request_models": {
+    "planner": "DeepSeek-V4-Pro-0813",
+    "vision": "Qwen3.6-Plus"
+  },
+  "request_model_note": "official labels are Video-RSI dual-model names; actual request_model must be a vendor-available model id (STORY_LLM_MODEL / STORY_VLM_MODEL)",
+  "vendor_compat": {
+    "token_param": "max_tokens",
+    "planner_token_param": "max_tokens",
+    "vision_token_param": "max_tokens",
+    "planner_base_url_set": true,
+    "vision_base_url_set": true,
+    "planner_api_key_set": true,
+    "vision_api_key_set": true,
+    "planner_timeout_sec": 60.0,
+    "vision_timeout_sec": 60.0,
+    "planner_max_retries": 2,
+    "vision_max_retries": 2,
+    "sends_both_token_params": false,
+    "compat_note": "only one of max_tokens|max_completion_tokens|none is sent"
+  },
+  "endpoint_ready": {
+    "planner_configured": true,
+    "vision_configured": true,
+    "roles_required": [
+      "vision"
+    ],
+    "roles_ready": true
+  },
+  "verify_key_persistent": false,
+  "roles": [
+    "vision"
+  ],
+  "secrets_redacted": true
+}
