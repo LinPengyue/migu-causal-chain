@@ -23,6 +23,7 @@ from story_video_agent.api_provider import (
     ApiProvider,
     api_enabled,
     load_endpoint_configs,
+    resolve_effective_caps,
     smoke_enabled,
 )
 from story_video_agent.frames import FrameBudget, FrameBudgetExhausted, FrameStore, allocate_gap_caps
@@ -31,6 +32,7 @@ from story_video_agent.internal_verification import (
     apply_internal_verification,
     sanitize_plan_trust,
     strip_external_trust_flags,
+    verify_key_is_persistent,
 )
 from story_video_agent.media import MediaInfo, probe_video
 from story_video_agent.narrative_composer import compose_story_plan
@@ -77,6 +79,7 @@ def preflight_phase4a(
     video_path: Path,
     force_mock: bool,
     require_billing_caps: bool = True,
+    max_api_calls: Optional[int] = None,
 ) -> Dict[str, Any]:
     problems: List[str] = []
     if mode not in EXPERIMENT_MODES:
@@ -87,6 +90,8 @@ def preflight_phase4a(
         problems.append(f"video missing: {video_path}")
 
     want_real = not force_mock
+    configs = load_endpoint_configs()
+    roles = ["vision"] if mode == "vlm-only" else ["vision", "planner"]
     if want_real:
         if not api_enabled():
             problems.append("STORY_API_ENABLE=1 required for real Phase 4A")
@@ -94,8 +99,6 @@ def preflight_phase4a(
             problems.append("STORY_PHASE4A_REAL=1 required (explicit Phase 4A billing auth)")
         if not smoke_enabled():
             problems.append("STORY_API_SMOKE=1 required for billed Phase 4A")
-        configs = load_endpoint_configs()
-        roles = ["vision"] if mode == "vlm-only" else ["vision", "planner"]
         for role in roles:
             cfg = configs[role]
             if not cfg.base_url:
@@ -110,6 +113,10 @@ def preflight_phase4a(
             if not (os.environ.get("STORY_API_MAX_COST_USD") or "").strip():
                 problems.append("STORY_API_MAX_COST_USD required")
 
+    caps = resolve_effective_caps(max_calls=max_api_calls)
+    # 端点摘要：不含 API Key
+    endpoints = {r: configs[r].to_dict() for r in ("planner", "vision")}
+
     report = {
         "ok": not problems,
         "mode": mode,
@@ -118,6 +125,34 @@ def preflight_phase4a(
         "want_real": want_real,
         "problems": problems,
         "cost_disclaimer": COST_DISCLAIMER,
+        "effective_caps": {
+            "max_calls": caps["max_calls"],
+            "max_cost_usd": caps["max_cost_usd"],
+            "max_completion_tokens": caps["max_completion_tokens"],
+            "sources": caps["sources"],
+            "note": "effective = min(code_explicit, env) when both set",
+        },
+        "models": {
+            "planner": endpoints["planner"].get("model"),
+            "vision": endpoints["vision"].get("model"),
+        },
+        "vendor_compat": {
+            "token_param": caps["token_param"],
+            "planner_token_param": endpoints["planner"].get("token_param"),
+            "vision_token_param": endpoints["vision"].get("token_param"),
+            "planner_base_url_set": bool(endpoints["planner"].get("base_url")),
+            "vision_base_url_set": bool(endpoints["vision"].get("base_url")),
+            "planner_api_key_set": bool(endpoints["planner"].get("api_key_set")),
+            "vision_api_key_set": bool(endpoints["vision"].get("api_key_set")),
+            "planner_timeout_sec": endpoints["planner"].get("timeout_sec"),
+            "vision_timeout_sec": endpoints["vision"].get("timeout_sec"),
+            "planner_max_retries": endpoints["planner"].get("max_retries"),
+            "vision_max_retries": endpoints["vision"].get("max_retries"),
+        },
+        "verify_key_persistent": verify_key_is_persistent(),
+        "roles": roles,
+        # 明确不回传任何 key 明文
+        "secrets_redacted": True,
     }
     if problems and want_real:
         raise Phase4AError("; ".join(problems))
@@ -851,6 +886,7 @@ def run_phase4a(
         story_json=story_json,
         video_path=video_path,
         force_mock=cfg.force_mock,
+        max_api_calls=cfg.max_api_calls,
     )
 
     story = json.loads(story_json.read_text(encoding="utf-8"))
@@ -879,12 +915,20 @@ def run_phase4a(
         budget=FrameBudget(max_frames=cfg.frame_budget, per_gap_caps=caps),
     )
 
+    # max_calls：代码配置与 STORY_API_MAX_CALLS 取更严（ApiProvider 内合并）
     api = ApiProvider(
         force_mock=cfg.force_mock,
         require_real=not cfg.force_mock,
         required_roles=["vision"] if cfg.mode == "vlm-only" else ["vision", "planner"],
         max_calls=cfg.max_api_calls,
     )
+    # 记录真正生效的限额，便于审计
+    pf["api_status_caps"] = {
+        "max_calls": api.max_calls,
+        "max_cost_usd": api.max_cost_usd,
+        "max_completion_tokens": api.max_completion_tokens,
+        "cap_sources": api.cap_sources,
+    }
     vision = VisionProvider(api, force_mock=cfg.force_mock)
 
     t0 = time.perf_counter()
@@ -1047,6 +1091,7 @@ def main(argv: Optional[List[str]] = None) -> int:
                 story_json=args.story_json,
                 video_path=args.video_path,
                 force_mock=cfg.force_mock,
+                max_api_calls=cfg.max_api_calls,
             )
             print(json.dumps({"dry_check": True, **pf}, ensure_ascii=False, indent=2))
             return 0

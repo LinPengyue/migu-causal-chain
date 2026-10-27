@@ -134,9 +134,17 @@ class ForgedGrantTests(unittest.TestCase):
         media = _media()
         for seg in plan["segments"]:
             attest_semantic_result(
-                seg, media, status="passed", method="test", frame_ids=["f"], note="ok"
+                seg,
+                media,
+                status="passed",
+                method="test",
+                authority="unit_test",
+                frame_ids=["f"],
+                note="ok",
             )
-        good = apply_internal_verification(plan, media, promote_to_render_ready=True)
+        good = apply_internal_verification(
+            plan, media, promote_to_render_ready=True, allow_test_semantic=True
+        )
         self.assertTrue(good["render_ready"], good.get("diagnostics"))
         # 篡改 ledger MAC
         forged = copy.deepcopy(good)
@@ -157,14 +165,23 @@ class ForgedGrantTests(unittest.TestCase):
     def test_media_bounds_alone_does_not_promote(self) -> None:
         plan = _goal_plan()
         media = _media()
-        # 不签发语义 passed
-        out = apply_internal_verification(plan, media, promote_to_render_ready=True)
+        # 不签发语义 passed；允许测试路径以便走到语义门而非缺密钥早退
+        out = apply_internal_verification(
+            plan, media, promote_to_render_ready=True, allow_test_semantic=True
+        )
         self.assertFalse(out["render_ready"])
         self.assertEqual(out["render_ready_edl"], [])
         skips = (out.get("diagnostics") or {}).get("internal_time_verification", {}).get(
             "promote_skips"
         ) or []
-        self.assertTrue(any("semantic_" in str(s.get("reason")) for s in skips))
+        self.assertTrue(
+            any(
+                "semantic_" in str(s.get("reason"))
+                or "authority" in str(s.get("reason"))
+                or "observation_only" in str(s.get("reason"))
+                for s in skips
+            )
+        )
         # 但仍记录可裁切
         recs = (out.get("diagnostics") or {}).get("internal_time_verification", {}).get(
             "records"
@@ -182,10 +199,13 @@ class ForgedGrantTests(unittest.TestCase):
                 media,
                 status="failed",
                 method="wrong_goal_negative",
+                authority="unit_test",
                 frame_ids=["f_wrong"],
                 note="不是目标进球 / wrong_goal",
             )
-        out = apply_internal_verification(plan, media, promote_to_render_ready=True)
+        out = apply_internal_verification(
+            plan, media, promote_to_render_ready=True, allow_test_semantic=True
+        )
         self.assertFalse(out["render_ready"])
         skips = (out["diagnostics"]["internal_time_verification"].get("promote_skips") or [])
         self.assertTrue(any(s.get("reason") == "semantic_failed" for s in skips))
@@ -209,13 +229,57 @@ class ForgedGrantTests(unittest.TestCase):
             }
         ]
         out = apply_internal_verification(
-            plan, media, promote_to_render_ready=True, visual_evidence=vis
+            plan,
+            media,
+            promote_to_render_ready=True,
+            visual_evidence=vis,
+            allow_test_semantic=True,
         )
-        # 外部视觉 verified 不能自动 semantic passed / render
+        # 外部视觉 verified / 模型 goal 标签不能自动 semantic passed / render
         self.assertFalse(out["render_ready"])
         eq = next(s for s in out["segments"] if s["role"] == "equalizer_goal_action")
         sem = eq.get("semantic_verification") or {}
         self.assertNotEqual(sem.get("status"), "passed")
+        self.assertEqual(sem.get("authority"), "observation_only")
+
+    def test_model_goal_label_cannot_grant(self) -> None:
+        """模型 goal 标签即便写成 passed+observation 方法也不得生产授权。"""
+        from story_video_agent.internal_verification import VerificationConfigError
+
+        plan = _goal_plan()
+        media = _media()
+        with self.assertRaises(VerificationConfigError):
+            attest_semantic_result(
+                plan["segments"][0],
+                media,
+                status="passed",
+                method="vlm_goal_label",
+                authority="independent_verification_pipeline",
+                note="forged",
+            )
+
+    def test_production_promote_requires_persistent_key(self) -> None:
+        plan = _goal_plan()
+        media = _media()
+        for seg in plan["segments"]:
+            attest_semantic_result(
+                seg,
+                media,
+                status="passed",
+                method="independent_check",
+                authority="independent_verification_pipeline",
+                frame_ids=["f"],
+                note="prod-like",
+            )
+        # 无 STORY_INTERNAL_VERIFY_KEY → 拒绝生产授权
+        out = apply_internal_verification(
+            plan, media, promote_to_render_ready=True, allow_test_semantic=False
+        )
+        self.assertFalse(out["render_ready"])
+        blocked = (out.get("diagnostics") or {}).get("internal_time_verification", {}).get(
+            "promote_blocked"
+        )
+        self.assertTrue(blocked and "STORY_INTERNAL_VERIFY_KEY" in str(blocked))
 
     def test_assert_forged_without_ledger(self) -> None:
         plan = _goal_plan()
@@ -234,9 +298,17 @@ class ForgedGrantTests(unittest.TestCase):
         media = _media()
         for seg in plan["segments"]:
             attest_semantic_result(
-                seg, media, status="passed", method="test", frame_ids=["f"], note="ok"
+                seg,
+                media,
+                status="passed",
+                method="test",
+                authority="unit_test",
+                frame_ids=["f"],
+                note="ok",
             )
-        good = apply_internal_verification(plan, media, promote_to_render_ready=True)
+        good = apply_internal_verification(
+            plan, media, promote_to_render_ready=True, allow_test_semantic=True
+        )
         self.assertTrue(good["render_ready"])
         tampered = copy.deepcopy(good)
         # 篡改时间窗但保留旧 grant

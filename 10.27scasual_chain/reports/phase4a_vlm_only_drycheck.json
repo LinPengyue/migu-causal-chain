@@ -1,0 +1,61 @@
+{
+  "dry_check": true,
+  "ok": true,
+  "mode": "vlm-only",
+  "force_mock": true,
+  "billing_allowed": false,
+  "want_real": false,
+  "problems": [],
+  "cost_disclaimer": "est_cost_usd is a local estimate from configured unit prices (STORY_LLM_PRICE_*); it is NOT a billing guarantee or absolute invoice cap.",
+  "effective_caps": {
+    "max_calls": 3,
+    "max_cost_usd": 0.08,
+    "max_completion_tokens": 128,
+    "sources": {
+      "max_calls": {
+        "env_name": "STORY_API_MAX_CALLS",
+        "env_value": "3",
+        "explicit_value": 12,
+        "effective": 3,
+        "policy": "min(explicit, env) when both set"
+      },
+      "max_cost_usd": {
+        "env_name": "STORY_API_MAX_COST_USD",
+        "env_value": "0.08",
+        "explicit_value": null,
+        "effective": 0.08,
+        "policy": "min(explicit, env) when both set"
+      },
+      "max_completion_tokens": {
+        "env_name": "STORY_API_MAX_COMPLETION_TOKENS",
+        "env_value": "128",
+        "explicit_value": null,
+        "effective": 128,
+        "policy": "min(explicit, env) when both set"
+      }
+    },
+    "note": "effective = min(code_explicit, env) when both set"
+  },
+  "models": {
+    "planner": "",
+    "vision": ""
+  },
+  "vendor_compat": {
+    "token_param": "max_tokens",
+    "planner_token_param": "max_tokens",
+    "vision_token_param": "max_tokens",
+    "planner_base_url_set": false,
+    "vision_base_url_set": false,
+    "planner_api_key_set": false,
+    "vision_api_key_set": false,
+    "planner_timeout_sec": 60.0,
+    "vision_timeout_sec": 60.0,
+    "planner_max_retries": 2,
+    "vision_max_retries": 2
+  },
+  "verify_key_persistent": false,
+  "roles": [
+    "vision"
+  ],
+  "secrets_redacted": true
+}

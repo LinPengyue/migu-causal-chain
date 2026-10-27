@@ -213,6 +213,68 @@ def _resolve_token_param() -> str:
     return "max_tokens"
 
 
+def _stricter_int_cap(explicit: Optional[int], env_name: str) -> Optional[int]:
+    """代码显式上限与环境变量取更严（更小）；任一缺失则用另一方。"""
+    env_raw = _env(env_name, default="")
+    env_val: Optional[int] = int(env_raw) if env_raw else None
+    if explicit is None:
+        return env_val
+    if env_val is None:
+        return int(explicit)
+    return min(int(explicit), int(env_val))
+
+
+def _stricter_float_cap(explicit: Optional[float], env_name: str) -> Optional[float]:
+    env_raw = _env(env_name, default="")
+    env_val: Optional[float] = float(env_raw) if env_raw else None
+    if explicit is None:
+        return env_val
+    if env_val is None:
+        return float(explicit)
+    return min(float(explicit), float(env_val))
+
+
+def _cap_source_note(
+    explicit: Any, env_name: str, effective: Any
+) -> Dict[str, Any]:
+    env_raw = _env(env_name, default="") or None
+    return {
+        "env_name": env_name,
+        "env_value": env_raw,
+        "explicit_value": explicit,
+        "effective": effective,
+        "policy": "min(explicit, env) when both set",
+    }
+
+
+def resolve_effective_caps(
+    *,
+    max_calls: Optional[int] = None,
+    max_cost_usd: Optional[float] = None,
+    max_completion_tokens: Optional[int] = None,
+) -> Dict[str, Any]:
+    """供 dry-check / Phase4A 预检：报告真正生效的限额（不含 API Key）。"""
+    eff_calls = _stricter_int_cap(max_calls, "STORY_API_MAX_CALLS")
+    eff_cost = _stricter_float_cap(max_cost_usd, "STORY_API_MAX_COST_USD")
+    eff_tok = _stricter_int_cap(max_completion_tokens, "STORY_API_MAX_COMPLETION_TOKENS")
+    return {
+        "max_calls": eff_calls,
+        "max_cost_usd": eff_cost,
+        "max_completion_tokens": eff_tok,
+        "sources": {
+            "max_calls": _cap_source_note(max_calls, "STORY_API_MAX_CALLS", eff_calls),
+            "max_cost_usd": _cap_source_note(
+                max_cost_usd, "STORY_API_MAX_COST_USD", eff_cost
+            ),
+            "max_completion_tokens": _cap_source_note(
+                max_completion_tokens, "STORY_API_MAX_COMPLETION_TOKENS", eff_tok
+            ),
+        },
+        "cost_disclaimer": COST_DISCLAIMER,
+        "token_param": _resolve_token_param(),
+    }
+
+
 def load_endpoint_configs() -> Dict[str, EndpointConfig]:
     timeout = float(_env("STORY_LLM_TIMEOUT_SEC", default="60") or 60)
     retries = int(float(_env("STORY_LLM_MAX_RETRIES", default="2") or 2))
@@ -366,18 +428,23 @@ class ApiProvider:
         self._limiters = {role: _RateLimiter(cfg.rpm) for role, cfg in self.configs.items()}
         self.notes = INTEGRATION_NOTES
         self.cost_disclaimer = COST_DISCLAIMER
-        self.max_calls = max_calls
-        if self.max_calls is None:
-            raw = _env("STORY_API_MAX_CALLS", default="")
-            self.max_calls = int(raw) if raw else None
-        self.max_cost_usd = max_cost_usd
-        if self.max_cost_usd is None:
-            raw = _env("STORY_API_MAX_COST_USD", default="")
-            self.max_cost_usd = float(raw) if raw else None
-        self.max_completion_tokens = max_completion_tokens
-        if self.max_completion_tokens is None:
-            raw = _env("STORY_API_MAX_COMPLETION_TOKENS", default="")
-            self.max_completion_tokens = int(raw) if raw else None
+        # 显式参数与环境变量取更严上限，避免 Phase4A 默认 12 覆盖 STORY_API_MAX_CALLS=3
+        self.max_calls = _stricter_int_cap(max_calls, "STORY_API_MAX_CALLS")
+        self.max_cost_usd = _stricter_float_cap(max_cost_usd, "STORY_API_MAX_COST_USD")
+        self.max_completion_tokens = _stricter_int_cap(
+            max_completion_tokens, "STORY_API_MAX_COMPLETION_TOKENS"
+        )
+        self.cap_sources = {
+            "max_calls": _cap_source_note(max_calls, "STORY_API_MAX_CALLS", self.max_calls),
+            "max_cost_usd": _cap_source_note(
+                max_cost_usd, "STORY_API_MAX_COST_USD", self.max_cost_usd
+            ),
+            "max_completion_tokens": _cap_source_note(
+                max_completion_tokens,
+                "STORY_API_MAX_COMPLETION_TOKENS",
+                self.max_completion_tokens,
+            ),
+        }
         self._http_attempts = 0
 
     def status(self) -> Dict[str, Any]:
@@ -405,6 +472,8 @@ class ApiProvider:
             "max_calls": self.max_calls,
             "max_cost_usd": self.max_cost_usd,
             "max_completion_tokens": self.max_completion_tokens,
+            "cap_sources": dict(self.cap_sources),
+            "token_param": _resolve_token_param(),
             "http_attempts": self._http_attempts,
             "cost_disclaimer": self.cost_disclaimer,
             "notes": self.notes,

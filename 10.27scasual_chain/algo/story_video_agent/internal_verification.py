@@ -19,6 +19,7 @@ import json
 import os
 import time
 import uuid
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Set, Tuple
 
 from story_video_agent.media import MediaInfo
@@ -49,12 +50,77 @@ SEMANTIC_PASSED = "passed"
 SEMANTIC_FAILED = "failed"
 SEMANTIC_UNRESOLVED = "unresolved"
 
-# 进程级密钥：无 STORY_INTERNAL_VERIFY_KEY 时用启动时随机值 →
-# 仅把 JSON 里的 granted_by 字符串拷回来无法通过 MAC 校验
-_PROCESS_KEY = (
-    (os.environ.get("STORY_INTERNAL_VERIFY_KEY") or "").strip().encode("utf-8")
-    or hashlib.sha256(f"sva-ephemeral:{uuid.uuid4().hex}:{os.getpid()}".encode()).digest()
+# 生产语义权威（模型 goal 标签 / observation_heuristic 不在此列）
+PRODUCTION_SEMANTIC_AUTHORITIES = frozenset(
+    {
+        "human_audited_review",
+        "independent_verification_pipeline",
+    }
 )
+TEST_SEMANTIC_AUTHORITY = "unit_test"
+OBSERVATION_SEMANTIC_AUTHORITY = "observation_only"
+
+
+class VerificationConfigError(RuntimeError):
+    """生产核验密钥 / 权威配置错误。"""
+
+
+def verify_key_is_persistent() -> bool:
+    return bool((os.environ.get("STORY_INTERNAL_VERIFY_KEY") or "").strip())
+
+
+def _signing_key() -> bytes:
+    """持久密钥优先；否则 ephemeral（仅防同进程伪造字符串，不可用于生产授权）。"""
+    raw = (os.environ.get("STORY_INTERNAL_VERIFY_KEY") or "").strip()
+    if raw:
+        return raw.encode("utf-8")
+    # 注意：每次解释器启动不同 → JSON 跨进程无法复用（刻意）
+    return hashlib.sha256(
+        f"sva-ephemeral:{uuid.uuid4().hex}:{os.getpid()}".encode()
+    ).digest()
+
+
+# 模块加载时固定本进程 key（测试可在设 env 后 reload；生产须启动前设好）
+_PROCESS_KEY = _signing_key()
+_PROCESS_KEY_PERSISTENT = verify_key_is_persistent()
+
+
+def refresh_signing_key_from_env() -> None:
+    """测试辅助：在设置 STORY_INTERNAL_VERIFY_KEY 后刷新模块密钥。"""
+    global _PROCESS_KEY, _PROCESS_KEY_PERSISTENT
+    _PROCESS_KEY = _signing_key()
+    _PROCESS_KEY_PERSISTENT = verify_key_is_persistent()
+
+
+def _media_content_digest(media: MediaInfo) -> str:
+    """内容感知摘要：防止仅改文件内容、元数据不变时复用旧授权。
+
+    对大文件采样 head/mid/tail；虚拟路径则用 path|size|duration 合成。
+    """
+    path = Path(str(media.path))
+    h = hashlib.sha256()
+    h.update(str(media.path).encode("utf-8"))
+    h.update(str(int(media.size_bytes or 0)).encode("utf-8"))
+    h.update(f"{float(media.duration_sec):.6f}".encode("utf-8"))
+    if not path.is_file():
+        h.update(b"virtual-or-missing")
+        return h.hexdigest()
+    try:
+        size = path.stat().st_size
+        h.update(str(size).encode("utf-8"))
+        with path.open("rb") as fh:
+            head = fh.read(1024 * 256)
+            h.update(head)
+            if size > 1024 * 512:
+                mid = max(0, size // 2 - 128 * 1024)
+                fh.seek(mid)
+                h.update(fh.read(1024 * 256))
+                tail_off = max(0, size - 1024 * 256)
+                fh.seek(tail_off)
+                h.update(fh.read(1024 * 256))
+    except OSError:
+        h.update(b"unreadable")
+    return h.hexdigest()
 
 
 def _media_fingerprint(media: MediaInfo) -> Dict[str, Any]:
@@ -66,6 +132,7 @@ def _media_fingerprint(media: MediaInfo) -> Dict[str, Any]:
         "height": int(media.height or 0),
         "fps": round(float(media.fps or 0.0), 6),
         "video_codec": str(media.video_codec or ""),
+        "content_sha256": _media_content_digest(media),
     }
 
 
@@ -227,6 +294,7 @@ def _semantic_payload(
     media_out: Any,
     status: str,
     method: str,
+    authority: str,
     frame_ids: Sequence[str],
     media_fp: Dict[str, Any],
     note: str,
@@ -238,6 +306,7 @@ def _semantic_payload(
         "media_out": media_out,
         "status": status,
         "method": method,
+        "authority": authority,
         "evidence_frame_ids": list(frame_ids),
         "media_fingerprint": media_fp,
         "note": note,
@@ -251,17 +320,15 @@ def _verify_semantic_record(sem: Dict[str, Any], seg: Dict[str, Any]) -> bool:
     payload = _semantic_payload(
         segment_id=str(seg.get("segment_id")),
         role=str(seg.get("role") or sem.get("role") or ""),
-        media_in=seg.get("media_in") if seg.get("media_in") is not None else sem.get("media_in"),
-        media_out=seg.get("media_out") if seg.get("media_out") is not None else sem.get("media_out"),
+        media_in=sem.get("media_in"),
+        media_out=sem.get("media_out"),
         status=str(sem.get("status")),
         method=str(sem.get("method") or ""),
+        authority=str(sem.get("authority") or ""),
         frame_ids=list(sem.get("evidence_frame_ids") or []),
         media_fp=dict(sem.get("media_fingerprint") or {}),
         note=str(sem.get("note") or ""),
     )
-    # 允许 sem 内记录的 media_in/out 与签发时一致（窗口被篡改则失败）
-    payload["media_in"] = sem.get("media_in")
-    payload["media_out"] = sem.get("media_out")
     if float(sem.get("media_in") or -1) != float(seg.get("media_in") or -2):
         return False
     if float(sem.get("media_out") or -1) != float(seg.get("media_out") or -2):
@@ -278,10 +345,24 @@ def attest_semantic_result(
     method: str,
     frame_ids: Optional[Sequence[str]] = None,
     note: str = "",
+    authority: str = TEST_SEMANTIC_AUTHORITY,
 ) -> Dict[str, Any]:
-    """内部语义核验签发（非 JSON 字段伪造）。status=passed|failed|unresolved。"""
+    """语义结果签发函数（HMAC 绑定）——不等于完成视觉事实核验。
+
+    - status=passed 仅表示「签发方主张通过」，须配合合法 authority
+    - 生产成片授权仅接受 human_audited_review / independent_verification_pipeline
+    - 模型 goal 标签、observation_heuristic、unit_test 均不能单独触发生产授权
+    """
     if status not in (SEMANTIC_PASSED, SEMANTIC_FAILED, SEMANTIC_UNRESOLVED):
         raise ValueError(f"invalid semantic status: {status}")
+    # 禁止把模型标签方法伪装成生产权威
+    method_l = (method or "").lower()
+    if authority in PRODUCTION_SEMANTIC_AUTHORITIES and any(
+        x in method_l for x in ("vlm", "model_label", "mock", "observation_heuristic")
+    ):
+        raise VerificationConfigError(
+            "production semantic authority cannot use model/mock/observation methods"
+        )
     fp = _media_fingerprint(media)
     fids = list(frame_ids or seg.get("frame_ids") or [])
     payload = _semantic_payload(
@@ -291,6 +372,7 @@ def attest_semantic_result(
         media_out=seg.get("media_out"),
         status=status,
         method=method,
+        authority=authority,
         frame_ids=fids,
         media_fp=fp,
         note=note,
@@ -301,6 +383,10 @@ def attest_semantic_result(
         "mac": _mac_payload(payload),
         "axis": "semantic",
         "issued_at": time.time(),
+        "disclaimer": (
+            "attest_semantic_result signs a claim; it does not by itself prove "
+            "visual goal facts. Model goal labels must not grant render_ready."
+        ),
     }
     seg["semantic_verification"] = record
     return record
@@ -313,10 +399,9 @@ def evaluate_semantic_from_observations(
 ) -> Dict[str, Any]:
     """根据观察层证据给出语义结论（仍不授予 render）。
 
-    - 负向/无关/错误事件 → failed
-    - 无足够证据 → unresolved
-    - 正向且非 mock 伪造 verified → 仍默认 unresolved（真实语义通过须 attest）
-      本函数不自动 passed，避免 Mock/外部 JSON 抬升；测试用 attest_semantic_result。
+    - 负向/无关/错误事件 → failed（authority=observation_only）
+    - 否则 → unresolved
+    - 永不自动 passed；模型 goal 标签不能抬升成片
     """
     role = str(seg.get("role") or "")
     sid = str(seg.get("segment_id") or "")
@@ -359,14 +444,34 @@ def evaluate_semantic_from_observations(
             status = SEMANTIC_FAILED
             note = "visual_conflict"
             break
+        if "goal" in labels or "goal" in blob:
+            # 模型标签仅作观察，保持 unresolved
+            note = "model_goal_label_observation_only_not_fact"
+            status = SEMANTIC_UNRESOLVED
     return attest_semantic_result(
         seg,
         media,
         status=status,
         method="observation_heuristic",
+        authority=OBSERVATION_SEMANTIC_AUTHORITY,
         frame_ids=sorted(set(frames)),
         note=note,
     )
+
+
+def _semantic_authority_allows_grant(
+    sem: Dict[str, Any], *, allow_test_semantic: bool
+) -> Tuple[bool, str]:
+    auth = str(sem.get("authority") or "")
+    if auth in PRODUCTION_SEMANTIC_AUTHORITIES:
+        return True, "ok"
+    if allow_test_semantic and auth == TEST_SEMANTIC_AUTHORITY:
+        return True, "ok_test"
+    if auth == OBSERVATION_SEMANTIC_AUTHORITY:
+        return False, "observation_only_cannot_grant"
+    if auth == TEST_SEMANTIC_AUTHORITY:
+        return False, "unit_test_authority_requires_allow_test_semantic"
+    return False, f"unauthorized_semantic_authority:{auth or 'missing'}"
 
 
 def _grant_payload(
@@ -436,9 +541,9 @@ def _verify_grant_record(
     if record.get("granted_by") != GRANTED_BY:
         return False, "bad_granted_by"
     fp = _media_fingerprint(media)
-    # 媒体身份必须一致
+    # 媒体身份必须一致（含 content_sha256，防内容替换）
     rec_fp = dict(record.get("media_fingerprint") or {})
-    for k in ("path", "duration_sec", "size_bytes"):
+    for k in ("path", "duration_sec", "size_bytes", "content_sha256"):
         if rec_fp.get(k) != fp.get(k):
             return False, f"media_mismatch:{k}"
     if str(record.get("segment_id")) != str(seg.get("segment_id")):
@@ -547,12 +652,15 @@ def apply_internal_verification(
     required_roles: Optional[Sequence[str]] = None,
     visual_evidence: Optional[Sequence[Dict[str, Any]]] = None,
     require_semantic_pass: bool = True,
+    allow_test_semantic: bool = False,
 ) -> Dict[str, Any]:
     """内部核验。
 
     - 始终剥离外部信任，写入媒体时间轴记录（可裁切 ≠ 成片）
-    - promote=True 时：仅当 media_ok AND semantic_passed（签名记录）才签发 grant
-    - 伪造 granted_by 字符串无法绕过
+    - promote=True 时：media_ok AND semantic_passed AND 合法 authority AND
+      （生产）持久 STORY_INTERNAL_VERIFY_KEY
+    - 模型 goal 标签 / observation_only 不能授权
+    - allow_test_semantic=True 仅用于单元测试（authority=unit_test）
     """
     plan = sanitize_plan_trust(plan)
     records = verify_windows_against_media(plan.get("segments") or [], media)
@@ -564,6 +672,8 @@ def apply_internal_verification(
         "media_fingerprint": _media_fingerprint(media),
         "records": records,
         "promote_requested": bool(promote_to_render_ready),
+        "verify_key_persistent": bool(_PROCESS_KEY_PERSISTENT),
+        "allow_test_semantic": bool(allow_test_semantic),
         "axes": {
             "media_time": "bounds/cuttable only",
             "semantic": "separate; required for render grant",
@@ -587,6 +697,7 @@ def apply_internal_verification(
                     media,
                     status=SEMANTIC_UNRESOLVED,
                     method="no_observation",
+                    authority=OBSERVATION_SEMANTIC_AUTHORITY,
                     note="semantic_unresolved_pending_evidence",
                 )
 
@@ -595,6 +706,20 @@ def apply_internal_verification(
         plan["render_ready"] = False
         plan["verification_status"] = plan.get("verification_status") or "not_render_ready"
         plan["diagnostics"]["internal_grant_ledger"] = []
+        return plan
+
+    # 生产授权必须持久密钥；测试路径显式 allow_test_semantic
+    if not allow_test_semantic and not _PROCESS_KEY_PERSISTENT:
+        plan["render_ready"] = False
+        plan["render_ready_edl"] = []
+        plan["verification_status"] = "not_render_ready"
+        plan["diagnostics"]["internal_grant_ledger"] = []
+        plan["diagnostics"]["internal_time_verification"]["promote_blocked"] = (
+            "STORY_INTERNAL_VERIFY_KEY not set; refusing production render grants"
+        )
+        plan["diagnostics"]["internal_time_verification"]["render_problems"] = [
+            "missing_persistent_STORY_INTERNAL_VERIFY_KEY"
+        ]
         return plan
 
     need = set(
@@ -639,6 +764,12 @@ def apply_internal_verification(
                         "reason": f"semantic_{sem.get('status') or 'missing'}",
                     }
                 )
+                continue
+            ok_auth, auth_reason = _semantic_authority_allows_grant(
+                sem, allow_test_semantic=allow_test_semantic
+            )
+            if not ok_auth:
+                skip_log.append({"segment_id": sid, "reason": auth_reason})
                 continue
         # 签发正式授权记录
         grant = _issue_grant_record(

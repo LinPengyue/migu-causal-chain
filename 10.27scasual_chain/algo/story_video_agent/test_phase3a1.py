@@ -299,11 +299,12 @@ class Phase3A1Tests(unittest.TestCase):
                     media,
                     status="passed",
                     method="test_attestation",
+                    authority="unit_test",
                     frame_ids=list(seg.get("frame_ids") or ["f_test"]),
                     note="unit-test semantic pass",
                 )
         promoted = apply_internal_verification(
-            plan, media, promote_to_render_ready=True
+            plan, media, promote_to_render_ready=True, allow_test_semantic=True
         )
         self.assertTrue(promoted["render_ready"], promoted.get("diagnostics"))
         self.assertTrue(promoted["render_ready_edl"])

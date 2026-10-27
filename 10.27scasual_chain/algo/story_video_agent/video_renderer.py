@@ -391,9 +391,12 @@ def render_story_video(
 
     if mode == "final":
         if promote_for_final:
-            # 测试辅助：现场 promote（仍要求语义签发）
+            # 测试辅助：现场 promote（仍要求语义签发；允许 unit_test authority）
             plan = apply_internal_verification(
-                plan, media, promote_to_render_ready=True
+                plan,
+                media,
+                promote_to_render_ready=True,
+                allow_test_semantic=True,
             )
         else:
             # 重新验证 ledger+媒体绑定；JSON 字符串 granted_by 无效

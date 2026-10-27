@@ -411,11 +411,12 @@ class Phase3BRenderTests(unittest.TestCase):
                     media,
                     status="passed",
                     method="test_attestation",
+                    authority="unit_test",
                     frame_ids=["f_toy"],
                     note="unit-test",
                 )
         promoted = apply_internal_verification(
-            plan, media, promote_to_render_ready=True
+            plan, media, promote_to_render_ready=True, allow_test_semantic=True
         )
         self.assertTrue(promoted["render_ready"], promoted.get("diagnostics"))
         out = Path(self._tmpdir.name) / "final_ok.mp4"
