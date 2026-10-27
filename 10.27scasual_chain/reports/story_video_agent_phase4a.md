@@ -70,7 +70,7 @@ PYTHONPATH=algo python -m story_video_agent.phase4a_optimize \
 | 扳平窗 | 3061.9–3073.9 | **3059.9–3071.9**（观察后微调） |
 | render_ready | false | **false**（禁止模型 verified 提权） |
 
-go_ahead：仍无内部核验授予；占位「镜头待定位」保留。Mock 观察不得写成已核实进球。
+go_ahead：Mock 观察为 `shot`+`uncertain`（conf=0.28），未达调整阈值；仍 blocked/占位「镜头待定位」。Mock 观察不得写成已核实进球。
 
 ## 实现要点
 
