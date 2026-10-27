@@ -42,7 +42,9 @@ Story Video Agent remote API (Phase 2C.1):
   STORY_API_SMOKE=1                     explicit billed smoke entry only
   STORY_API_MAX_CALLS                   cap on real HTTP attempts (ok/fail/retry)
   STORY_API_MAX_COST_USD                soft estimate guard (not invoice hard limit)
-  STORY_API_MAX_COMPLETION_TOKENS       per-request max_tokens / max_completion_tokens
+  STORY_API_MAX_COMPLETION_TOKENS       per-request output token cap (if set)
+  STORY_API_TOKEN_PARAM                 max_tokens | max_completion_tokens | none
+                                        (default max_tokens; never send both)
 
 provider modes: mock | real | degraded | cache
 HTTP attempts (success+failure+retry) count toward MAX_CALLS; cache hits do not.
@@ -89,6 +91,8 @@ class EndpointConfig:
     timeout_sec: float = 60.0
     max_retries: int = 2
     rpm: float = 30.0
+    # 供应商差异：只发其中一个字段，避免同时发送
+    token_param: str = "max_tokens"  # max_tokens | max_completion_tokens | none
 
     def configured(self) -> bool:
         return bool(self.base_url and self.model and self.api_key)
@@ -102,10 +106,11 @@ class EndpointConfig:
             "max_retries": self.max_retries,
             "rpm": self.rpm,
             "api_key_set": bool(self.api_key),
+            "token_param": self.token_param,
         }
 
     def cache_fingerprint(self) -> str:
-        return f"{self.role}|{self.base_url}|{self.model}"
+        return f"{self.role}|{self.base_url}|{self.model}|{self.token_param}"
 
 
 @dataclass
@@ -201,10 +206,18 @@ def _env(*names: str, default: str = "") -> str:
     return default
 
 
+def _resolve_token_param() -> str:
+    raw = (_env("STORY_API_TOKEN_PARAM", default="max_tokens") or "max_tokens").strip()
+    if raw in ("max_tokens", "max_completion_tokens", "none"):
+        return raw
+    return "max_tokens"
+
+
 def load_endpoint_configs() -> Dict[str, EndpointConfig]:
     timeout = float(_env("STORY_LLM_TIMEOUT_SEC", default="60") or 60)
     retries = int(float(_env("STORY_LLM_MAX_RETRIES", default="2") or 2))
     rpm = float(_env("STORY_LLM_RPM", default="30") or 30)
+    token_param = _resolve_token_param()
     base = _env("STORY_LLM_BASE_URL", "OPENAI_BASE_URL").rstrip("/")
     key = _env("STORY_LLM_API_KEY", "OPENAI_API_KEY")
     planner_model = _env("STORY_LLM_MODEL", "OPENAI_MODEL")
@@ -220,6 +233,7 @@ def load_endpoint_configs() -> Dict[str, EndpointConfig]:
             timeout_sec=timeout,
             max_retries=retries,
             rpm=rpm,
+            token_param=token_param,
         ),
         "vision": EndpointConfig(
             role="vision",
@@ -229,6 +243,7 @@ def load_endpoint_configs() -> Dict[str, EndpointConfig]:
             timeout_sec=timeout,
             max_retries=retries,
             rpm=rpm,
+            token_param=token_param,
         ),
     }
 
@@ -606,9 +621,13 @@ class ApiProvider:
             "messages": list(messages),
         }
         if self.max_completion_tokens is not None:
-            # OpenAI-compatible：多数端点认 max_tokens；部分认 max_completion_tokens
-            body["max_tokens"] = int(self.max_completion_tokens)
-            body["max_completion_tokens"] = int(self.max_completion_tokens)
+            # 按供应商配置只发送一个字段，禁止默认同时发送
+            param = (cfg.token_param or "max_tokens").strip()
+            if param == "max_tokens":
+                body["max_tokens"] = int(self.max_completion_tokens)
+            elif param == "max_completion_tokens":
+                body["max_completion_tokens"] = int(self.max_completion_tokens)
+            # param == "none" → 不附加输出长度字段
         data = json.dumps(body).encode("utf-8")
         headers = {
             "Content-Type": "application/json",

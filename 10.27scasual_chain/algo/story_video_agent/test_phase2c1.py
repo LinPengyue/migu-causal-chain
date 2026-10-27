@@ -126,10 +126,12 @@ class Phase2C1Tests(unittest.TestCase):
         self.assertEqual(ctx.exception.failure_status, "budget_exhausted")
 
     def test_max_completion_tokens_in_request_body(self) -> None:
+        cfg = _cfg(True)
+        cfg["planner"].token_param = "max_tokens"
         api = ApiProvider(
             force_mock=False,
             require_real=True,
-            configs=_cfg(True),
+            configs=cfg,
             max_completion_tokens=128,
             required_roles=["planner"],
         )
@@ -161,7 +163,27 @@ class Phase2C1Tests(unittest.TestCase):
         with mock.patch("urllib.request.urlopen", side_effect=fake_urlopen):
             api.chat(role="planner", messages=[{"role": "user", "content": "hi"}])
         self.assertEqual(captured["body"]["max_tokens"], 128)
-        self.assertEqual(captured["body"]["max_completion_tokens"], 128)
+        self.assertNotIn("max_completion_tokens", captured["body"])
+
+        cfg2 = _cfg(True)
+        cfg2["planner"].token_param = "max_completion_tokens"
+        api2 = ApiProvider(
+            force_mock=False,
+            require_real=True,
+            configs=cfg2,
+            max_completion_tokens=64,
+            required_roles=["planner"],
+        )
+        captured2 = {}
+
+        def fake_urlopen2(req, timeout=0):
+            captured2["body"] = json.loads(req.data.decode())
+            return _Resp()
+
+        with mock.patch("urllib.request.urlopen", side_effect=fake_urlopen2):
+            api2.chat(role="planner", messages=[{"role": "user", "content": "hi"}])
+        self.assertEqual(captured2["body"]["max_completion_tokens"], 64)
+        self.assertNotIn("max_tokens", captured2["body"])
 
     def test_failure_status_timeout_and_empty_json(self) -> None:
         err = ApiCallError("timed out", retryable=True, http_status=0)

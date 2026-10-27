@@ -1,8 +1,7 @@
-"""CLI：dry-run / media-only / perception。
+"""CLI：dry-run / media-only / perception / compose（Phase 3A）。
 
   python -m story_video_agent --story-json ... --dry-run
-  python -m story_video_agent --story-json ... --media-only --video-path ...
-  python -m story_video_agent --story-json ... --perception --video-path ... --france-focus
+  python -m story_video_agent --story-json ... --compose [--causal-json ...] [--out ...]
 """
 
 from __future__ import annotations
@@ -11,11 +10,13 @@ import argparse
 import json
 from pathlib import Path
 
+from story_video_agent.narrative_composer import compose_from_paths
 from story_video_agent.runner import run_story_json
+from story_video_agent.story_output_schema import render_narrative_report
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="T01 Story Video Agent Phase 2B")
+    parser = argparse.ArgumentParser(description="T01 Story Video Agent / Composer")
     parser.add_argument("--story-json", type=Path, required=True)
     parser.add_argument("--video-path", type=str, default="")
     parser.add_argument("--duration-sec", type=float, default=None)
@@ -24,6 +25,11 @@ def main() -> None:
     mode.add_argument("--dry-run", action="store_true")
     mode.add_argument("--media-only", action="store_true")
     mode.add_argument("--perception", action="store_true")
+    mode.add_argument("--compose", action="store_true", help="Phase 3A story plan + EDL")
+    parser.add_argument("--causal-json", type=Path, default=None)
+    parser.add_argument("--visual-evidence-json", type=Path, default=None)
+    parser.add_argument("--use-llm-narration", action="store_true")
+    parser.add_argument("--report-out", type=Path, default=None)
     parser.add_argument("--frame-budget", type=int, default=24)
     parser.add_argument("--frame-dir", type=Path, default=None)
     parser.add_argument("--manifest-out", type=Path, default=None)
@@ -34,6 +40,40 @@ def main() -> None:
     parser.add_argument("--use-llm-planner", action="store_true")
     parser.add_argument("--out", type=Path, default=None)
     args = parser.parse_args()
+
+    if args.compose:
+        plan = compose_from_paths(
+            str(args.story_json),
+            causal_path=str(args.causal_json) if args.causal_json else None,
+            visual_evidence_path=str(args.visual_evidence_json)
+            if args.visual_evidence_json
+            else None,
+            use_llm=bool(args.use_llm_narration),
+            out_json=str(args.out) if args.out else None,
+            out_report=str(args.report_out) if args.report_out else None,
+        )
+        if not args.out:
+            print(json.dumps(plan, ensure_ascii=False, indent=2))
+        else:
+            print(args.out)
+        if args.report_out:
+            print(args.report_out)
+        elif args.out:
+            # also print short status
+            pass
+        print(
+            "compose",
+            plan.get("story_tier"),
+            "segments",
+            len(plan.get("segments") or []),
+            "verification",
+            plan.get("verification_status"),
+            "structure_ok",
+            (plan.get("diagnostics") or {}).get("structure_ok"),
+            "missing",
+            len(plan.get("missing_evidence") or []),
+        )
+        return
 
     if args.perception:
         dry_run, media_only, perception = False, False, True

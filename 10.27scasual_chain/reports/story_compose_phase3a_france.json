@@ -1,0 +1,934 @@
+{
+  "schema_version": "story-compose-plan-3a",
+  "algorithm": "t01_story_composer_phase3a",
+  "match_id": "2022年11月23日 法国vs澳大利亚",
+  "template_id": "T01_comeback",
+  "story_tier": "story",
+  "protagonist": {
+    "side": "left",
+    "team_name": "法国",
+    "teams": {
+      "left": "法国",
+      "right": "澳大利亚"
+    }
+  },
+  "beats": [
+    "铺垫",
+    "蓄力",
+    "转折",
+    "高潮",
+    "收尾"
+  ],
+  "segments": [
+    {
+      "segment_id": "seg_setup_deficit",
+      "beat": "铺垫",
+      "role": "deficit_context",
+      "event_ids": [
+        "event_000027"
+      ],
+      "frame_ids": [],
+      "evidence_refs": [
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "source": "score_path",
+          "score": "0:1",
+          "t_sec": 1535.65
+        }
+      ],
+      "media_in": 1531.65,
+      "media_out": 1543.65,
+      "time_status": "score_path_only",
+      "shot_kind": "live",
+      "is_replay": false,
+      "verification_status": "draft",
+      "narration": "主角落后比分 0:1（score_path 规则事实）。",
+      "precise_claim": false
+    },
+    {
+      "segment_id": "seg_setup_replay_supp",
+      "beat": "铺垫",
+      "role": "deficit_replay_supplement",
+      "event_ids": [
+        "event_000027"
+      ],
+      "frame_ids": [],
+      "evidence_refs": [
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "source": "event_replay_flag",
+          "event_id": "event_000027"
+        }
+      ],
+      "media_in": 2446.817,
+      "media_out": 2458.817,
+      "time_status": "event_ms",
+      "shot_kind": "replay_supplement",
+      "is_replay": true,
+      "verification_status": "draft",
+      "narration": "叙事补充回放（非真实比赛主时序）。",
+      "precise_claim": false
+    },
+    {
+      "segment_id": "seg_buildup_event_000031",
+      "beat": "蓄力",
+      "role": "buildup_action",
+      "event_ids": [
+        "event_000031"
+      ],
+      "frame_ids": [],
+      "evidence_refs": [
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "source": "event",
+          "event_id": "event_000031",
+          "type": "角球"
+        }
+      ],
+      "media_in": 1585.9,
+      "media_out": 1597.9,
+      "time_status": "event_ms",
+      "shot_kind": "live",
+      "is_replay": false,
+      "verification_status": "draft",
+      "narration": "蓄力动作 角球（live）。",
+      "precise_claim": false
+    },
+    {
+      "segment_id": "seg_buildup_event_000072",
+      "beat": "蓄力",
+      "role": "buildup_action",
+      "event_ids": [
+        "event_000072"
+      ],
+      "frame_ids": [],
+      "evidence_refs": [
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "source": "event",
+          "event_id": "event_000072",
+          "type": "射门"
+        }
+      ],
+      "media_in": 2107.89,
+      "media_out": 2119.89,
+      "time_status": "event_ms",
+      "shot_kind": "live",
+      "is_replay": false,
+      "verification_status": "draft",
+      "narration": "蓄力动作 射门（live）。",
+      "precise_claim": false
+    },
+    {
+      "segment_id": "seg_equalizer",
+      "beat": "转折",
+      "role": "equalizer",
+      "event_ids": [
+        "event_000082"
+      ],
+      "frame_ids": [],
+      "evidence_refs": [
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "source": "score_path_equalizer",
+          "score": "1:1",
+          "t_sec": 2513.29
+        },
+        {
+          "kind": "mock",
+          "used_as_fact": false,
+          "gap_id": "verify_equalizer_goal_action",
+          "frame_ids": [
+            "fixture_eq"
+          ],
+          "provider_mode": "mock"
+        }
+      ],
+      "media_in": 2509.29,
+      "media_out": 2521.29,
+      "time_status": "pending_review",
+      "shot_kind": "live",
+      "is_replay": false,
+      "verification_status": "draft",
+      "narration": "扳平至 1:1（score_path）。",
+      "precise_claim": false
+    },
+    {
+      "segment_id": "seg_go_ahead",
+      "beat": "高潮",
+      "role": "go_ahead",
+      "event_ids": [
+        "event_000091"
+      ],
+      "frame_ids": [],
+      "evidence_refs": [
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "source": "score_path_go_ahead",
+          "score": "2:1",
+          "t_sec": 2904.31
+        },
+        {
+          "kind": "mock",
+          "used_as_fact": false,
+          "gap_id": "verify_go_ahead_goal_action",
+          "frame_ids": [
+            "fixture_ga"
+          ],
+          "provider_mode": "mock"
+        }
+      ],
+      "media_in": 2900.31,
+      "media_out": 2912.31,
+      "time_status": "pending_review",
+      "shot_kind": "live",
+      "is_replay": false,
+      "verification_status": "draft",
+      "narration": "反超至 2:1（score_path）。",
+      "precise_claim": false
+    },
+    {
+      "segment_id": "seg_ending",
+      "beat": "收尾",
+      "role": "ending",
+      "event_ids": [
+        "event_000302"
+      ],
+      "frame_ids": [],
+      "evidence_refs": [
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "source": "event",
+          "event_id": "event_000302"
+        },
+        {
+          "kind": "mock",
+          "used_as_fact": false,
+          "gap_id": "post_climax_reaction",
+          "frame_ids": [
+            "fixture_rx"
+          ]
+        }
+      ],
+      "media_in": 7237.8,
+      "media_out": 7249.8,
+      "time_status": "event_ms",
+      "shot_kind": "live",
+      "is_replay": false,
+      "verification_status": "draft",
+      "narration": "收尾/终场。",
+      "precise_claim": false
+    }
+  ],
+  "evidence_refs": [
+    {
+      "kind": "rule_fact",
+      "used_as_fact": true,
+      "source": "score_path",
+      "score": "0:1",
+      "t_sec": 1535.65
+    },
+    {
+      "kind": "rule_fact",
+      "used_as_fact": true,
+      "source": "event_replay_flag",
+      "event_id": "event_000027"
+    },
+    {
+      "kind": "mock",
+      "used_as_fact": false,
+      "gap_id": "missing_setup_visual",
+      "frame_ids": [
+        "fixture_su"
+      ],
+      "provider_mode": "mock"
+    },
+    {
+      "kind": "rule_fact",
+      "used_as_fact": true,
+      "source": "event",
+      "event_id": "event_000031",
+      "type": "角球"
+    },
+    {
+      "kind": "rule_fact",
+      "used_as_fact": true,
+      "source": "event",
+      "event_id": "event_000072",
+      "type": "射门"
+    },
+    {
+      "kind": "rule_fact",
+      "used_as_fact": true,
+      "source": "score_path_equalizer",
+      "score": "1:1",
+      "t_sec": 2513.29
+    },
+    {
+      "kind": "mock",
+      "used_as_fact": false,
+      "gap_id": "verify_equalizer_goal_action",
+      "frame_ids": [
+        "fixture_eq"
+      ],
+      "provider_mode": "mock"
+    },
+    {
+      "kind": "rule_fact",
+      "used_as_fact": true,
+      "source": "score_path_go_ahead",
+      "score": "2:1",
+      "t_sec": 2904.31
+    },
+    {
+      "kind": "mock",
+      "used_as_fact": false,
+      "gap_id": "verify_go_ahead_goal_action",
+      "frame_ids": [
+        "fixture_ga"
+      ],
+      "provider_mode": "mock"
+    },
+    {
+      "kind": "rule_fact",
+      "used_as_fact": true,
+      "source": "event",
+      "event_id": "event_000302"
+    },
+    {
+      "kind": "mock",
+      "used_as_fact": false,
+      "gap_id": "post_climax_reaction",
+      "frame_ids": [
+        "fixture_rx"
+      ]
+    }
+  ],
+  "event_ids": [
+    "event_000027",
+    "event_000031",
+    "event_000072",
+    "event_000082",
+    "event_000091",
+    "event_000302"
+  ],
+  "missing_evidence": [
+    "setup_visual_mock_only_not_factual",
+    "verify_equalizer_goal_action_mock_only",
+    "equalizer_goal_event_missing:event_000082",
+    "verify_go_ahead_goal_action_mock_only",
+    "go_ahead_goal_event_missing:event_000091",
+    "climax_event_missing:event_000260",
+    "climax_event_missing:event_000264",
+    "post_climax_reaction_mock_only"
+  ],
+  "verification_status": "partial",
+  "narration": {
+    "summary": "法国 逆风翻盘候选剪辑方案（规则基线）：落后→蓄力→扳平→反超→收尾。",
+    "by_beat": {
+      "铺垫": "主角落后比分 0:1（score_path 规则事实）。 叙事补充回放（非真实比赛主时序）。",
+      "蓄力": "蓄力动作 角球（live）。 蓄力动作 射门（live）。",
+      "转折": "扳平至 1:1（score_path）。",
+      "高潮": "反超至 2:1（score_path）。",
+      "收尾": "收尾/终场。"
+    }
+  },
+  "edl": [
+    {
+      "edl_index": 1,
+      "segment_id": "seg_setup_deficit",
+      "beat": "铺垫",
+      "shot_kind": "live",
+      "is_replay": false,
+      "media_in": 1531.65,
+      "media_out": 1543.65,
+      "time_status": "score_path_only",
+      "event_ids": [
+        "event_000027"
+      ],
+      "frame_ids": [],
+      "narration": "主角落后比分 0:1（score_path 规则事实）。",
+      "include_in_cut": true
+    },
+    {
+      "edl_index": 2,
+      "segment_id": "seg_setup_replay_supp",
+      "beat": "铺垫",
+      "shot_kind": "replay_supplement",
+      "is_replay": true,
+      "media_in": 2446.817,
+      "media_out": 2458.817,
+      "time_status": "event_ms",
+      "event_ids": [
+        "event_000027"
+      ],
+      "frame_ids": [],
+      "narration": "叙事补充回放（非真实比赛主时序）。",
+      "include_in_cut": true
+    },
+    {
+      "edl_index": 3,
+      "segment_id": "seg_buildup_event_000031",
+      "beat": "蓄力",
+      "shot_kind": "live",
+      "is_replay": false,
+      "media_in": 1585.9,
+      "media_out": 1597.9,
+      "time_status": "event_ms",
+      "event_ids": [
+        "event_000031"
+      ],
+      "frame_ids": [],
+      "narration": "蓄力动作 角球（live）。",
+      "include_in_cut": true
+    },
+    {
+      "edl_index": 4,
+      "segment_id": "seg_buildup_event_000072",
+      "beat": "蓄力",
+      "shot_kind": "live",
+      "is_replay": false,
+      "media_in": 2107.89,
+      "media_out": 2119.89,
+      "time_status": "event_ms",
+      "event_ids": [
+        "event_000072"
+      ],
+      "frame_ids": [],
+      "narration": "蓄力动作 射门（live）。",
+      "include_in_cut": true
+    },
+    {
+      "edl_index": 5,
+      "segment_id": "seg_equalizer",
+      "beat": "转折",
+      "shot_kind": "live",
+      "is_replay": false,
+      "media_in": 2509.29,
+      "media_out": 2521.29,
+      "time_status": "pending_review",
+      "event_ids": [
+        "event_000082"
+      ],
+      "frame_ids": [],
+      "narration": "扳平至 1:1（score_path）。",
+      "include_in_cut": false
+    },
+    {
+      "edl_index": 6,
+      "segment_id": "seg_go_ahead",
+      "beat": "高潮",
+      "shot_kind": "live",
+      "is_replay": false,
+      "media_in": 2900.31,
+      "media_out": 2912.31,
+      "time_status": "pending_review",
+      "event_ids": [
+        "event_000091"
+      ],
+      "frame_ids": [],
+      "narration": "反超至 2:1（score_path）。",
+      "include_in_cut": false
+    },
+    {
+      "edl_index": 7,
+      "segment_id": "seg_ending",
+      "beat": "收尾",
+      "shot_kind": "live",
+      "is_replay": false,
+      "media_in": 7237.8,
+      "media_out": 7249.8,
+      "time_status": "event_ms",
+      "event_ids": [
+        "event_000302"
+      ],
+      "frame_ids": [],
+      "narration": "收尾/终场。",
+      "include_in_cut": true
+    }
+  ],
+  "diagnostics": {
+    "verification": {
+      "ok": false,
+      "story_tier": "story",
+      "protagonist_side": "left",
+      "checks": [
+        {
+          "id": "score_time_0",
+          "ok": true,
+          "detail": "t_sec=882.74 vs prev=-1.0"
+        },
+        {
+          "id": "score_time_1",
+          "ok": true,
+          "detail": "t_sec=1535.65 vs prev=882.74"
+        },
+        {
+          "id": "score_progress_1",
+          "ok": true,
+          "detail": "(0, 0)->(0, 1)"
+        },
+        {
+          "id": "score_time_2",
+          "ok": true,
+          "detail": "t_sec=2513.29 vs prev=1535.65"
+        },
+        {
+          "id": "score_progress_2",
+          "ok": true,
+          "detail": "(0, 1)->(1, 1)"
+        },
+        {
+          "id": "score_time_3",
+          "ok": true,
+          "detail": "t_sec=2904.31 vs prev=2513.29"
+        },
+        {
+          "id": "score_progress_3",
+          "ok": true,
+          "detail": "(1, 1)->(2, 1)"
+        },
+        {
+          "id": "score_time_4",
+          "ok": true,
+          "detail": "t_sec=5594.3 vs prev=2904.31"
+        },
+        {
+          "id": "score_progress_4",
+          "ok": true,
+          "detail": "(2, 1)->(3, 1)"
+        },
+        {
+          "id": "score_time_5",
+          "ok": true,
+          "detail": "t_sec=5820.46 vs prev=5594.3"
+        },
+        {
+          "id": "score_progress_5",
+          "ok": true,
+          "detail": "(3, 1)->(4, 1)"
+        },
+        {
+          "id": "comeback_arc",
+          "ok": true,
+          "detail": "behind=True recover=True points=[(882.74, 0, '0:0'), (1535.65, -1, '0:1'), (2513.29, 0, '1:1'), (2904.31, 1, '2:1'), (5594.3, 2, '3:1'), (5820.46, 3, '4:1')]"
+        },
+        {
+          "id": "replay_flag_event_000012",
+          "ok": true,
+          "detail": "replay must not drive primary live timeline"
+        },
+        {
+          "id": "replay_flag_event_000013",
+          "ok": true,
+          "detail": "replay must not drive primary live timeline"
+        },
+        {
+          "id": "replay_flag_event_000027",
+          "ok": true,
+          "detail": "replay must not drive primary live timeline"
+        },
+        {
+          "id": "replay_flag_event_000028",
+          "ok": true,
+          "detail": "replay must not drive primary live timeline"
+        },
+        {
+          "id": "replay_flag_event_000029",
+          "ok": true,
+          "detail": "replay must not drive primary live timeline"
+        },
+        {
+          "id": "replay_flag_event_000030",
+          "ok": true,
+          "detail": "replay must not drive primary live timeline"
+        },
+        {
+          "id": "replay_flag_event_000047",
+          "ok": true,
+          "detail": "replay must not drive primary live timeline"
+        },
+        {
+          "id": "replay_flag_event_000048",
+          "ok": true,
+          "detail": "replay must not drive primary live timeline"
+        },
+        {
+          "id": "replay_flag_event_000049",
+          "ok": true,
+          "detail": "replay must not drive primary live timeline"
+        },
+        {
+          "id": "replay_flag_event_000055",
+          "ok": true,
+          "detail": "replay must not drive primary live timeline"
+        },
+        {
+          "id": "replay_flag_event_000056",
+          "ok": true,
+          "detail": "replay must not drive primary live timeline"
+        },
+        {
+          "id": "replay_flag_event_000068",
+          "ok": true,
+          "detail": "replay must not drive primary live timeline"
+        },
+        {
+          "id": "replay_flag_event_000069",
+          "ok": true,
+          "detail": "replay must not drive primary live timeline"
+        },
+        {
+          "id": "replay_as_primary_candidate_event_000027",
+          "ok": false,
+          "detail": "replay event listed in recognition beat 铺垫"
+        },
+        {
+          "id": "mock_excluded_verify_equalizer_goal_action",
+          "ok": true,
+          "detail": "mock evidence excluded from factual basis"
+        },
+        {
+          "id": "mock_excluded_verify_go_ahead_goal_action",
+          "ok": true,
+          "detail": "mock evidence excluded from factual basis"
+        },
+        {
+          "id": "mock_excluded_post_climax_reaction",
+          "ok": true,
+          "detail": "mock evidence excluded from factual basis"
+        },
+        {
+          "id": "mock_excluded_missing_setup_visual",
+          "ok": true,
+          "detail": "mock evidence excluded from factual basis"
+        }
+      ],
+      "conflicts": [
+        {
+          "type": "beat_event_missing",
+          "beat": "转折",
+          "event_id": "event_000082"
+        },
+        {
+          "type": "beat_event_missing",
+          "beat": "高潮",
+          "event_id": "event_000091"
+        },
+        {
+          "type": "beat_event_missing",
+          "beat": "高潮",
+          "event_id": "event_000260"
+        },
+        {
+          "type": "beat_event_missing",
+          "beat": "高潮",
+          "event_id": "event_000264"
+        }
+      ],
+      "rule_facts": [
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "score_node",
+          "t_sec": 882.74,
+          "score": "0:0",
+          "delta_side": null,
+          "carrier_event_id": "event_000005"
+        },
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "score_node",
+          "t_sec": 1535.65,
+          "score": "0:1",
+          "delta_side": "right",
+          "carrier_event_id": "event_000027"
+        },
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "score_node",
+          "t_sec": 2513.29,
+          "score": "1:1",
+          "delta_side": "left",
+          "carrier_event_id": "event_000082"
+        },
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "score_node",
+          "t_sec": 2904.31,
+          "score": "2:1",
+          "delta_side": "left",
+          "carrier_event_id": "event_000091"
+        },
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "score_node",
+          "t_sec": 5594.3,
+          "score": "3:1",
+          "delta_side": "left",
+          "carrier_event_id": "event_000260"
+        },
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "score_node",
+          "t_sec": 5820.46,
+          "score": "4:1",
+          "delta_side": "left",
+          "carrier_event_id": "event_000264"
+        },
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "protagonist_side",
+          "side": "left"
+        },
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "event_meta",
+          "event_id": "event_000012",
+          "type": "射门",
+          "is_replay": true,
+          "story_role": "铺垫",
+          "t_sec": 1484.419
+        },
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "event_meta",
+          "event_id": "event_000013",
+          "type": "进球",
+          "is_replay": true,
+          "story_role": "铺垫",
+          "t_sec": 1486.051
+        },
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "event_meta",
+          "event_id": "event_000031",
+          "type": "角球",
+          "is_replay": false,
+          "story_role": "蓄力",
+          "t_sec": 1589.9
+        },
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "event_meta",
+          "event_id": "event_000072",
+          "type": "射门",
+          "is_replay": false,
+          "story_role": "蓄力",
+          "t_sec": 2111.89
+        },
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "event_meta",
+          "event_id": "event_000027",
+          "type": "助攻",
+          "is_replay": true,
+          "story_role": "转折",
+          "t_sec": 2450.817
+        },
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "event_meta",
+          "event_id": "event_000028",
+          "type": "传球",
+          "is_replay": true,
+          "story_role": "转折",
+          "t_sec": 2450.85
+        },
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "event_meta",
+          "event_id": "event_000029",
+          "type": "射门",
+          "is_replay": true,
+          "story_role": "转折",
+          "t_sec": 2452.408
+        },
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "event_meta",
+          "event_id": "event_000030",
+          "type": "进球",
+          "is_replay": true,
+          "story_role": "转折",
+          "t_sec": 2453.099
+        },
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "event_meta",
+          "event_id": "event_000085",
+          "type": "射门",
+          "is_replay": false,
+          "story_role": "蓄力",
+          "t_sec": 2585.92
+        },
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "event_meta",
+          "event_id": "event_000047",
+          "type": "助攻",
+          "is_replay": true,
+          "story_role": "高潮",
+          "t_sec": 2882.466
+        },
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "event_meta",
+          "event_id": "event_000048",
+          "type": "射门",
+          "is_replay": true,
+          "story_role": "高潮",
+          "t_sec": 2883.03
+        },
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "event_meta",
+          "event_id": "event_000049",
+          "type": "进球",
+          "is_replay": true,
+          "story_role": "高潮",
+          "t_sec": 2883.53
+        },
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "event_meta",
+          "event_id": "event_000055",
+          "type": "射门",
+          "is_replay": true,
+          "story_role": "高潮",
+          "t_sec": 5490.769
+        },
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "event_meta",
+          "event_id": "event_000056",
+          "type": "进球",
+          "is_replay": true,
+          "story_role": "高潮",
+          "t_sec": 5491.386
+        },
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "event_meta",
+          "event_id": "event_000068",
+          "type": "射门",
+          "is_replay": true,
+          "story_role": "高潮",
+          "t_sec": 5719.526
+        },
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "event_meta",
+          "event_id": "event_000069",
+          "type": "进球",
+          "is_replay": true,
+          "story_role": "高潮",
+          "t_sec": 5719.966
+        },
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "event_meta",
+          "event_id": "event_000302",
+          "type": "比赛结束",
+          "is_replay": false,
+          "story_role": "收尾",
+          "t_sec": 7241.8
+        },
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "teams",
+          "team_1": "法国",
+          "team_2": "澳大利亚"
+        }
+      ],
+      "vlm_observations": [],
+      "mock_evidence": [
+        {
+          "gap_id": "verify_equalizer_goal_action",
+          "kind": "mock",
+          "used_as_fact": false,
+          "provider_mode": "mock",
+          "frame_ids": [
+            "fixture_eq"
+          ],
+          "normalized_ok": true,
+          "message": "mock VLM — not factual verification"
+        },
+        {
+          "gap_id": "verify_go_ahead_goal_action",
+          "kind": "mock",
+          "used_as_fact": false,
+          "provider_mode": "mock",
+          "frame_ids": [
+            "fixture_ga"
+          ],
+          "normalized_ok": true,
+          "message": "mock VLM — not factual verification"
+        },
+        {
+          "gap_id": "post_climax_reaction",
+          "kind": "mock",
+          "used_as_fact": false,
+          "provider_mode": "mock",
+          "frame_ids": [
+            "fixture_rx"
+          ],
+          "normalized_ok": true,
+          "message": "mock VLM — not factual verification"
+        },
+        {
+          "gap_id": "missing_setup_visual",
+          "kind": "mock",
+          "used_as_fact": false,
+          "provider_mode": "mock",
+          "frame_ids": [
+            "fixture_su"
+          ],
+          "normalized_ok": true,
+          "message": "mock VLM — not factual verification"
+        }
+      ],
+      "unresolved_conflicts": [],
+      "notes": [
+        "Mock evidence is never treated as real factual basis.",
+        "VLM observations are not automatically verified facts."
+      ]
+    },
+    "composer": "t01_story_composer_phase3a",
+    "llm_used": false,
+    "mock_not_factual": true,
+    "structure_ok": true,
+    "structure_problems": []
+  }
+}
