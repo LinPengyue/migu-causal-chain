@@ -29,7 +29,9 @@
 
 产品要的故事链：围绕一条主线，片段有因果/情绪递进（铺垫→积累→高潮→收尾），可以为主题丢掉无关高光；战局类多数仍按时间，人物/主题类才允许打乱时钟。三类主线：战局剧情（逆转/绝杀）、人物命运、对抗博弈。
 
-明确不做（标注里没有）：人脸、球衣号码识别、解说语调、欢呼声、反应镜头/过渡镜头。`video.has_audio` 只表示有音频，没有音频标注。
+**规则层（`algo/story_chain/`）仍不做：** 人脸、球衣号码、解说语调、欢呼声、反应/过渡镜头——这些不在结构化标注里，规则引擎不能编造。`video.has_audio` 只表示有音频轨，没有音频内容标注。
+
+**Video Agent 层（`algo/story_video_agent/`，2026-10-27 起）可以规划用视频工具补证据：** 记分牌 OCR、短窗画面检视、反应镜头候选、庆祝/终场氛围等。第一阶段只提供可扩展工具接口与 dry-run 证据任务，不调用付费 API、不下载大模型、不跑长视频全量推理。
 
 ## 标注实际在哪、有什么字段
 
@@ -75,17 +77,26 @@
 2. **candidate（候选）**：比分翻盘成立，但缺铺垫或蓄力（典型：克罗地亚开场即 `0:1`，文件里没有失球镜头）。`has_story=false`，`is_candidate=true`，`story_label_zh=逆风翻盘候选`，仍输出以扳平/反超为主的事件序列，供人工或下游筛选。
 3. **none**：连稳定比分翻盘都不成立 → 无故事、无候选。
 
-实现入口：`algo/story_chain/`（`recognize.py` 定 tier，`end_to_end.py` 端到端）。输出目录默认 `reports/story_t01/`。
+实现入口：`algo/story_chain/`（`recognize.py` 定 tier，`end_to_end.py` 端到端）。输出目录默认 `reports/story_t01/`。**不要改** `story_chain` 识别逻辑；Video Agent 只消费其 JSON 输出。
+
+## Video Agent 基座（本目录新层）
+
+- 路径：`algo/story_video_agent/`。决策循环/工具参数校验/观察记忆参考 `LinPengyue/Video-RSI` 的 `solver_full_workspace/{agent,main,memory,tools}.py`。
+- **不引入**：Editor、RSI 自进化、Gate。
+- **不改**：`8.31causal_chain/`、`10.19scasual_chain/`、本包 `api/` 协议。
+- 输入：T01 故事 JSON（`reports/story_t01/*.json` 或内存对象）+ 可选视频路径元数据。
+- 第一阶段输出：`evidence_tasks[]`（待补充故事证据任务）+ agent `trace`；工具 `execute` 一律 dry-run stub。
+- dry-run：`python -m story_video_agent --story-json ../reports/story_t01/<match>.json --dry-run`
 
 ## 实现约束
 
 - 不改 `causal_chain8` 链间边的语义；故事层在拆条链之上选主题和格子。
-- 不在算法里编造缺失的比分、球队、球员。
+- 规则层不编造缺失的比分、球队、球员；Video Agent 可将「待视频核实」写成证据任务，不得伪造核实结果。
 - 5 分钟出片取决于上游事件是否到齐；规则引擎本身不是瓶颈。
-- 本目录协议服务启动仍要 Python 3.9+ 与 `api/`（`start_api.sh` / `.command` / `.bat`，依赖 `requirements-api.txt`）。与故事链算法无关。
+- 本目录协议服务启动仍要 Python 3.9+ 与 `api/`（`start_api.sh` / `.command` / `.bat`，依赖 `requirements-api.txt`）。与故事链 / Video Agent 算法无关。
 
 ## 不要继承的误解
 
-- 产品清单里的人脸、音频峰值、反应镜头，不是本包能力，也不在标注里。
+- 「人脸 / 音频峰值 / 反应镜头永远不做」只适用于**规则层**；Video Agent 后续可用视频工具去补，第一阶段只登记任务。
 - `datasets/` 金标的 `label_score` 是选片打分，不是情绪分。情绪分只在 `交付_out` 的 `scores.emotional_heat_score`。
 - 乌龙在事件层是 `own_goal`，链模板是 `own_goal_causal_chain`（chainType 14）。金标里只有 3 条。

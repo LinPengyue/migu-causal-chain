@@ -1,0 +1,782 @@
+{
+  "schema_version": "story-video-agent-plan-1",
+  "algorithm": "t01_story_video_agent_dryrun",
+  "status": "planned",
+  "match_id": "2022-11-28 克罗地亚vs加拿大",
+  "video_name": "2022-11-28 克罗地亚vs加拿大.mp4",
+  "video_path": "",
+  "story_tier": "candidate",
+  "has_story": false,
+  "is_candidate": true,
+  "story_label_zh": "逆风翻盘候选",
+  "dry_run": true,
+  "gaps": [
+    {
+      "gap_id": "missing_setup_visual",
+      "kind": "setup",
+      "priority": 1,
+      "tool_hint": "inspect_story_window",
+      "start": 1077.06,
+      "end": 1087.06,
+      "note": "铺垫缺失（reason=missing_setup）；需短窗确认失球/扑救/门线画面"
+    },
+    {
+      "gap_id": "missing_buildup_visual",
+      "kind": "buildup",
+      "priority": 2,
+      "tool_hint": "inspect_story_window",
+      "start": 5498.175,
+      "end": 5506.175,
+      "note": "蓄力缺失；需确认射门/任意球/角球尝试镜头"
+    },
+    {
+      "gap_id": "verify_equalizer_scoreboard",
+      "kind": "scoreboard",
+      "priority": 3,
+      "tool_hint": "read_scoreboard_window",
+      "start": 3063.903,
+      "end": 3071.903,
+      "note": "核实转折附近记分牌是否与 score_path 一致"
+    },
+    {
+      "gap_id": "verify_go_ahead_scoreboard",
+      "kind": "scoreboard",
+      "priority": 3,
+      "tool_hint": "read_scoreboard_window",
+      "start": 3695.35,
+      "end": 3703.35,
+      "note": "核实高潮附近记分牌是否与 score_path 一致"
+    },
+    {
+      "gap_id": "post_climax_reaction",
+      "kind": "reaction",
+      "priority": 4,
+      "tool_hint": "scan_reaction_window",
+      "start": 7858.37,
+      "end": 7874.37,
+      "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）"
+    }
+  ],
+  "evidence_tasks": [
+    {
+      "task_id": "task_missing_setup_visual",
+      "gap_id": "missing_setup_visual",
+      "tool_hint": "inspect_story_window",
+      "window": {
+        "start": 1077.06,
+        "end": 1087.06
+      },
+      "note": "铺垫缺失（reason=missing_setup）；需短窗确认失球/扑救/门线画面",
+      "status": "planned",
+      "provider": null
+    },
+    {
+      "task_id": "task_missing_buildup_visual",
+      "gap_id": "missing_buildup_visual",
+      "tool_hint": "inspect_story_window",
+      "window": {
+        "start": 5498.175,
+        "end": 5506.175
+      },
+      "note": "蓄力缺失；需确认射门/任意球/角球尝试镜头",
+      "status": "planned",
+      "provider": null
+    },
+    {
+      "task_id": "task_verify_equalizer_scoreboard",
+      "gap_id": "verify_equalizer_scoreboard",
+      "tool_hint": "read_scoreboard_window",
+      "window": {
+        "start": 3063.903,
+        "end": 3071.903
+      },
+      "note": "核实转折附近记分牌是否与 score_path 一致",
+      "status": "planned",
+      "provider": null
+    },
+    {
+      "task_id": "task_verify_go_ahead_scoreboard",
+      "gap_id": "verify_go_ahead_scoreboard",
+      "tool_hint": "read_scoreboard_window",
+      "window": {
+        "start": 3695.35,
+        "end": 3703.35
+      },
+      "note": "核实高潮附近记分牌是否与 score_path 一致",
+      "status": "planned",
+      "provider": null
+    },
+    {
+      "task_id": "task_post_climax_reaction",
+      "gap_id": "post_climax_reaction",
+      "tool_hint": "scan_reaction_window",
+      "window": {
+        "start": 7858.37,
+        "end": 7874.37
+      },
+      "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）",
+      "status": "planned",
+      "provider": null
+    }
+  ],
+  "trace": [
+    {
+      "step": 0,
+      "decision": {
+        "type": "tool",
+        "tool": "list_story_gaps",
+        "arguments": {}
+      },
+      "decision_attempts": [
+        {
+          "attempt": 0,
+          "raw_response": {
+            "type": "tool",
+            "tool": "list_story_gaps",
+            "arguments": {}
+          },
+          "parse_mode": "rule_policy",
+          "proposed_decision": {
+            "type": "tool",
+            "tool": "list_story_gaps",
+            "arguments": {}
+          },
+          "status": "accepted",
+          "decision": {
+            "type": "tool",
+            "tool": "list_story_gaps",
+            "arguments": {}
+          }
+        }
+      ],
+      "observation": {
+        "dry_run": true,
+        "gaps": [
+          {
+            "gap_id": "missing_setup_visual",
+            "kind": "setup",
+            "priority": 1,
+            "tool_hint": "inspect_story_window",
+            "start": 1077.06,
+            "end": 1087.06,
+            "note": "铺垫缺失（reason=missing_setup）；需短窗确认失球/扑救/门线画面"
+          },
+          {
+            "gap_id": "missing_buildup_visual",
+            "kind": "buildup",
+            "priority": 2,
+            "tool_hint": "inspect_story_window",
+            "start": 5498.175,
+            "end": 5506.175,
+            "note": "蓄力缺失；需确认射门/任意球/角球尝试镜头"
+          },
+          {
+            "gap_id": "verify_equalizer_scoreboard",
+            "kind": "scoreboard",
+            "priority": 3,
+            "tool_hint": "read_scoreboard_window",
+            "start": 3063.903,
+            "end": 3071.903,
+            "note": "核实转折附近记分牌是否与 score_path 一致"
+          },
+          {
+            "gap_id": "verify_go_ahead_scoreboard",
+            "kind": "scoreboard",
+            "priority": 3,
+            "tool_hint": "read_scoreboard_window",
+            "start": 3695.35,
+            "end": 3703.35,
+            "note": "核实高潮附近记分牌是否与 score_path 一致"
+          },
+          {
+            "gap_id": "post_climax_reaction",
+            "kind": "reaction",
+            "priority": 4,
+            "tool_hint": "scan_reaction_window",
+            "start": 7858.37,
+            "end": 7874.37,
+            "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）"
+          }
+        ],
+        "count": 5
+      }
+    },
+    {
+      "step": 1,
+      "decision": {
+        "type": "tool",
+        "tool": "register_evidence_task",
+        "arguments": {
+          "gap_id": "missing_setup_visual",
+          "tool_hint": "inspect_story_window",
+          "start": 1077.06,
+          "end": 1087.06,
+          "note": "铺垫缺失（reason=missing_setup）；需短窗确认失球/扑救/门线画面"
+        }
+      },
+      "decision_attempts": [
+        {
+          "attempt": 0,
+          "raw_response": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "missing_setup_visual",
+              "tool_hint": "inspect_story_window",
+              "start": 1077.06,
+              "end": 1087.06,
+              "note": "铺垫缺失（reason=missing_setup）；需短窗确认失球/扑救/门线画面"
+            }
+          },
+          "parse_mode": "rule_policy",
+          "proposed_decision": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "missing_setup_visual",
+              "tool_hint": "inspect_story_window",
+              "start": 1077.06,
+              "end": 1087.06,
+              "note": "铺垫缺失（reason=missing_setup）；需短窗确认失球/扑救/门线画面"
+            }
+          },
+          "status": "accepted",
+          "decision": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "missing_setup_visual",
+              "tool_hint": "inspect_story_window",
+              "start": 1077.06,
+              "end": 1087.06,
+              "note": "铺垫缺失（reason=missing_setup）；需短窗确认失球/扑救/门线画面"
+            }
+          }
+        }
+      ],
+      "observation": {
+        "dry_run": true,
+        "registered": {
+          "task_id": "task_missing_setup_visual",
+          "gap_id": "missing_setup_visual",
+          "tool_hint": "inspect_story_window",
+          "window": {
+            "start": 1077.06,
+            "end": 1087.06
+          },
+          "note": "铺垫缺失（reason=missing_setup）；需短窗确认失球/扑救/门线画面",
+          "status": "planned",
+          "provider": null
+        }
+      }
+    },
+    {
+      "step": 2,
+      "decision": {
+        "type": "tool",
+        "tool": "register_evidence_task",
+        "arguments": {
+          "gap_id": "missing_buildup_visual",
+          "tool_hint": "inspect_story_window",
+          "start": 5498.175,
+          "end": 5506.175,
+          "note": "蓄力缺失；需确认射门/任意球/角球尝试镜头"
+        }
+      },
+      "decision_attempts": [
+        {
+          "attempt": 0,
+          "raw_response": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "missing_buildup_visual",
+              "tool_hint": "inspect_story_window",
+              "start": 5498.175,
+              "end": 5506.175,
+              "note": "蓄力缺失；需确认射门/任意球/角球尝试镜头"
+            }
+          },
+          "parse_mode": "rule_policy",
+          "proposed_decision": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "missing_buildup_visual",
+              "tool_hint": "inspect_story_window",
+              "start": 5498.175,
+              "end": 5506.175,
+              "note": "蓄力缺失；需确认射门/任意球/角球尝试镜头"
+            }
+          },
+          "status": "accepted",
+          "decision": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "missing_buildup_visual",
+              "tool_hint": "inspect_story_window",
+              "start": 5498.175,
+              "end": 5506.175,
+              "note": "蓄力缺失；需确认射门/任意球/角球尝试镜头"
+            }
+          }
+        }
+      ],
+      "observation": {
+        "dry_run": true,
+        "registered": {
+          "task_id": "task_missing_buildup_visual",
+          "gap_id": "missing_buildup_visual",
+          "tool_hint": "inspect_story_window",
+          "window": {
+            "start": 5498.175,
+            "end": 5506.175
+          },
+          "note": "蓄力缺失；需确认射门/任意球/角球尝试镜头",
+          "status": "planned",
+          "provider": null
+        }
+      }
+    },
+    {
+      "step": 3,
+      "decision": {
+        "type": "tool",
+        "tool": "register_evidence_task",
+        "arguments": {
+          "gap_id": "verify_equalizer_scoreboard",
+          "tool_hint": "read_scoreboard_window",
+          "start": 3063.903,
+          "end": 3071.903,
+          "note": "核实转折附近记分牌是否与 score_path 一致"
+        }
+      },
+      "decision_attempts": [
+        {
+          "attempt": 0,
+          "raw_response": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "verify_equalizer_scoreboard",
+              "tool_hint": "read_scoreboard_window",
+              "start": 3063.903,
+              "end": 3071.903,
+              "note": "核实转折附近记分牌是否与 score_path 一致"
+            }
+          },
+          "parse_mode": "rule_policy",
+          "proposed_decision": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "verify_equalizer_scoreboard",
+              "tool_hint": "read_scoreboard_window",
+              "start": 3063.903,
+              "end": 3071.903,
+              "note": "核实转折附近记分牌是否与 score_path 一致"
+            }
+          },
+          "status": "accepted",
+          "decision": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "verify_equalizer_scoreboard",
+              "tool_hint": "read_scoreboard_window",
+              "start": 3063.903,
+              "end": 3071.903,
+              "note": "核实转折附近记分牌是否与 score_path 一致"
+            }
+          }
+        }
+      ],
+      "observation": {
+        "dry_run": true,
+        "registered": {
+          "task_id": "task_verify_equalizer_scoreboard",
+          "gap_id": "verify_equalizer_scoreboard",
+          "tool_hint": "read_scoreboard_window",
+          "window": {
+            "start": 3063.903,
+            "end": 3071.903
+          },
+          "note": "核实转折附近记分牌是否与 score_path 一致",
+          "status": "planned",
+          "provider": null
+        }
+      }
+    },
+    {
+      "step": 4,
+      "decision": {
+        "type": "tool",
+        "tool": "register_evidence_task",
+        "arguments": {
+          "gap_id": "verify_go_ahead_scoreboard",
+          "tool_hint": "read_scoreboard_window",
+          "start": 3695.35,
+          "end": 3703.35,
+          "note": "核实高潮附近记分牌是否与 score_path 一致"
+        }
+      },
+      "decision_attempts": [
+        {
+          "attempt": 0,
+          "raw_response": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "verify_go_ahead_scoreboard",
+              "tool_hint": "read_scoreboard_window",
+              "start": 3695.35,
+              "end": 3703.35,
+              "note": "核实高潮附近记分牌是否与 score_path 一致"
+            }
+          },
+          "parse_mode": "rule_policy",
+          "proposed_decision": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "verify_go_ahead_scoreboard",
+              "tool_hint": "read_scoreboard_window",
+              "start": 3695.35,
+              "end": 3703.35,
+              "note": "核实高潮附近记分牌是否与 score_path 一致"
+            }
+          },
+          "status": "accepted",
+          "decision": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "verify_go_ahead_scoreboard",
+              "tool_hint": "read_scoreboard_window",
+              "start": 3695.35,
+              "end": 3703.35,
+              "note": "核实高潮附近记分牌是否与 score_path 一致"
+            }
+          }
+        }
+      ],
+      "observation": {
+        "dry_run": true,
+        "registered": {
+          "task_id": "task_verify_go_ahead_scoreboard",
+          "gap_id": "verify_go_ahead_scoreboard",
+          "tool_hint": "read_scoreboard_window",
+          "window": {
+            "start": 3695.35,
+            "end": 3703.35
+          },
+          "note": "核实高潮附近记分牌是否与 score_path 一致",
+          "status": "planned",
+          "provider": null
+        }
+      }
+    },
+    {
+      "step": 5,
+      "decision": {
+        "type": "tool",
+        "tool": "register_evidence_task",
+        "arguments": {
+          "gap_id": "post_climax_reaction",
+          "tool_hint": "scan_reaction_window",
+          "start": 7858.37,
+          "end": 7874.37,
+          "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）"
+        }
+      },
+      "decision_attempts": [
+        {
+          "attempt": 0,
+          "raw_response": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "post_climax_reaction",
+              "tool_hint": "scan_reaction_window",
+              "start": 7858.37,
+              "end": 7874.37,
+              "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）"
+            }
+          },
+          "parse_mode": "rule_policy",
+          "proposed_decision": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "post_climax_reaction",
+              "tool_hint": "scan_reaction_window",
+              "start": 7858.37,
+              "end": 7874.37,
+              "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）"
+            }
+          },
+          "status": "accepted",
+          "decision": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "post_climax_reaction",
+              "tool_hint": "scan_reaction_window",
+              "start": 7858.37,
+              "end": 7874.37,
+              "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）"
+            }
+          }
+        }
+      ],
+      "observation": {
+        "dry_run": true,
+        "registered": {
+          "task_id": "task_post_climax_reaction",
+          "gap_id": "post_climax_reaction",
+          "tool_hint": "scan_reaction_window",
+          "window": {
+            "start": 7858.37,
+            "end": 7874.37
+          },
+          "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）",
+          "status": "planned",
+          "provider": null
+        }
+      }
+    },
+    {
+      "step": 6,
+      "decision": {
+        "type": "tool",
+        "tool": "finish_evidence_plan",
+        "arguments": {}
+      },
+      "decision_attempts": [
+        {
+          "attempt": 0,
+          "raw_response": {
+            "type": "tool",
+            "tool": "finish_evidence_plan",
+            "arguments": {}
+          },
+          "parse_mode": "rule_policy",
+          "proposed_decision": {
+            "type": "tool",
+            "tool": "finish_evidence_plan",
+            "arguments": {}
+          },
+          "status": "accepted",
+          "decision": {
+            "type": "tool",
+            "tool": "finish_evidence_plan",
+            "arguments": {}
+          }
+        }
+      ],
+      "observation": {
+        "dry_run": true,
+        "finished": true
+      }
+    }
+  ],
+  "memory": [
+    {
+      "tool": "list_story_gaps",
+      "arguments": {},
+      "observation": {
+        "dry_run": true,
+        "gaps": [
+          {
+            "gap_id": "missing_setup_visual",
+            "kind": "setup",
+            "priority": 1,
+            "tool_hint": "inspect_story_window",
+            "start": 1077.06,
+            "end": 1087.06,
+            "note": "铺垫缺失（reason=missing_setup）；需短窗确认失球/扑救/门线画面"
+          },
+          {
+            "gap_id": "missing_buildup_visual",
+            "kind": "buildup",
+            "priority": 2,
+            "tool_hint": "inspect_story_window",
+            "start": 5498.175,
+            "end": 5506.175,
+            "note": "蓄力缺失；需确认射门/任意球/角球尝试镜头"
+          },
+          {
+            "gap_id": "verify_equalizer_scoreboard",
+            "kind": "scoreboard",
+            "priority": 3,
+            "tool_hint": "read_scoreboard_window",
+            "start": 3063.903,
+            "end": 3071.903,
+            "note": "核实转折附近记分牌是否与 score_path 一致"
+          },
+          {
+            "gap_id": "verify_go_ahead_scoreboard",
+            "kind": "scoreboard",
+            "priority": 3,
+            "tool_hint": "read_scoreboard_window",
+            "start": 3695.35,
+            "end": 3703.35,
+            "note": "核实高潮附近记分牌是否与 score_path 一致"
+          },
+          {
+            "gap_id": "post_climax_reaction",
+            "kind": "reaction",
+            "priority": 4,
+            "tool_hint": "scan_reaction_window",
+            "start": 7858.37,
+            "end": 7874.37,
+            "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）"
+          }
+        ],
+        "count": 5
+      }
+    },
+    {
+      "tool": "register_evidence_task",
+      "arguments": {
+        "gap_id": "missing_setup_visual",
+        "tool_hint": "inspect_story_window",
+        "start": 1077.06,
+        "end": 1087.06,
+        "note": "铺垫缺失（reason=missing_setup）；需短窗确认失球/扑救/门线画面"
+      },
+      "observation": {
+        "dry_run": true,
+        "registered": {
+          "task_id": "task_missing_setup_visual",
+          "gap_id": "missing_setup_visual",
+          "tool_hint": "inspect_story_window",
+          "window": {
+            "start": 1077.06,
+            "end": 1087.06
+          },
+          "note": "铺垫缺失（reason=missing_setup）；需短窗确认失球/扑救/门线画面",
+          "status": "planned",
+          "provider": null
+        }
+      }
+    },
+    {
+      "tool": "register_evidence_task",
+      "arguments": {
+        "gap_id": "missing_buildup_visual",
+        "tool_hint": "inspect_story_window",
+        "start": 5498.175,
+        "end": 5506.175,
+        "note": "蓄力缺失；需确认射门/任意球/角球尝试镜头"
+      },
+      "observation": {
+        "dry_run": true,
+        "registered": {
+          "task_id": "task_missing_buildup_visual",
+          "gap_id": "missing_buildup_visual",
+          "tool_hint": "inspect_story_window",
+          "window": {
+            "start": 5498.175,
+            "end": 5506.175
+          },
+          "note": "蓄力缺失；需确认射门/任意球/角球尝试镜头",
+          "status": "planned",
+          "provider": null
+        }
+      }
+    },
+    {
+      "tool": "register_evidence_task",
+      "arguments": {
+        "gap_id": "verify_equalizer_scoreboard",
+        "tool_hint": "read_scoreboard_window",
+        "start": 3063.903,
+        "end": 3071.903,
+        "note": "核实转折附近记分牌是否与 score_path 一致"
+      },
+      "observation": {
+        "dry_run": true,
+        "registered": {
+          "task_id": "task_verify_equalizer_scoreboard",
+          "gap_id": "verify_equalizer_scoreboard",
+          "tool_hint": "read_scoreboard_window",
+          "window": {
+            "start": 3063.903,
+            "end": 3071.903
+          },
+          "note": "核实转折附近记分牌是否与 score_path 一致",
+          "status": "planned",
+          "provider": null
+        }
+      }
+    },
+    {
+      "tool": "register_evidence_task",
+      "arguments": {
+        "gap_id": "verify_go_ahead_scoreboard",
+        "tool_hint": "read_scoreboard_window",
+        "start": 3695.35,
+        "end": 3703.35,
+        "note": "核实高潮附近记分牌是否与 score_path 一致"
+      },
+      "observation": {
+        "dry_run": true,
+        "registered": {
+          "task_id": "task_verify_go_ahead_scoreboard",
+          "gap_id": "verify_go_ahead_scoreboard",
+          "tool_hint": "read_scoreboard_window",
+          "window": {
+            "start": 3695.35,
+            "end": 3703.35
+          },
+          "note": "核实高潮附近记分牌是否与 score_path 一致",
+          "status": "planned",
+          "provider": null
+        }
+      }
+    },
+    {
+      "tool": "register_evidence_task",
+      "arguments": {
+        "gap_id": "post_climax_reaction",
+        "tool_hint": "scan_reaction_window",
+        "start": 7858.37,
+        "end": 7874.37,
+        "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）"
+      },
+      "observation": {
+        "dry_run": true,
+        "registered": {
+          "task_id": "task_post_climax_reaction",
+          "gap_id": "post_climax_reaction",
+          "tool_hint": "scan_reaction_window",
+          "window": {
+            "start": 7858.37,
+            "end": 7874.37
+          },
+          "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）",
+          "status": "planned",
+          "provider": null
+        }
+      }
+    },
+    {
+      "tool": "finish_evidence_plan",
+      "arguments": {},
+      "observation": {
+        "dry_run": true,
+        "finished": true
+      }
+    }
+  ],
+  "diagnostics": {
+    "tool_argument_errors": 0,
+    "decision_repair_calls": 0,
+    "tool_execution_errors": 0
+  },
+  "structure_ok": true,
+  "structure_problems": [],
+  "story_file": "../reports/story_t01/2022-11-28 克罗地亚vs加拿大.json"
+}
