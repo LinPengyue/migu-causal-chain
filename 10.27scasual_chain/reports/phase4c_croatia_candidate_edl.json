@@ -1,0 +1,241 @@
+[
+  {
+    "edl_index": 1,
+    "segment_id": "seg_setup_deficit",
+    "beat": "铺垫",
+    "role": "deficit_scoreboard_anchor",
+    "shot_kind": "scoreboard_anchor",
+    "is_replay": false,
+    "media_in": 1075.06,
+    "media_out": 1087.06,
+    "time_status": "score_path_only",
+    "time_provenance": {
+      "source": "score_path",
+      "t_sec": 1079.06,
+      "pipeline_verified": false
+    },
+    "event_ids": [],
+    "frame_ids": [],
+    "linked_live_event_id": null,
+    "narrative_order": 1,
+    "source_media_order": 1075.06,
+    "render_eligibility": "candidate_only",
+    "blocking_reasons": [
+      "score_path_only_not_render_ready",
+      "setup_is_scoreboard_anchor_not_goal",
+      "semantic_unverified"
+    ],
+    "confidence": 0.9,
+    "selection_reason": "score_path_behind_start",
+    "narration": "比分确认落后 0:1 @ 1079.06s（记分牌锚点，非进球）。",
+    "include_in_cut": false
+  },
+  {
+    "edl_index": 2,
+    "segment_id": "seg_buildup_pressure",
+    "beat": "蓄力",
+    "role": "buildup_attack",
+    "shot_kind": "live",
+    "is_replay": false,
+    "media_in": 3055.0,
+    "media_out": 3064.5,
+    "time_status": "local_visual_candidate",
+    "time_provenance": {
+      "source": "local_frame_review",
+      "pipeline_verified": false
+    },
+    "event_ids": [
+      "event_000067"
+    ],
+    "frame_ids": [],
+    "linked_live_event_id": null,
+    "narrative_order": 2,
+    "source_media_order": 3055.0,
+    "render_eligibility": "candidate_only",
+    "blocking_reasons": [
+      "local_visual_unverified",
+      "semantic_unverified"
+    ],
+    "confidence": 0.55,
+    "selection_reason": "local_pre_equalizer_attack",
+    "narration": "扳平前禁区压迫/传球推进候选（3055–3064.5；本地画面，待核验）。",
+    "include_in_cut": false
+  },
+  {
+    "edl_index": 3,
+    "segment_id": "seg_equalizer_goal_action",
+    "beat": "转折",
+    "role": "equalizer_goal_action",
+    "shot_kind": "live",
+    "is_replay": false,
+    "media_in": 3063.5,
+    "media_out": 3075.0,
+    "time_status": "local_visual_candidate",
+    "time_provenance": {
+      "source": "local_frame_review",
+      "shot_start_sec": 3066.0,
+      "ball_in_net_sec": 3067.0,
+      "celebration_start_sec": 3067.0,
+      "score_anchor_t_sec": 3145.98,
+      "pipeline_verified": false
+    },
+    "event_ids": [
+      "event_000021"
+    ],
+    "frame_ids": [
+      "eq_t_3066.000",
+      "eq_t_3067.000",
+      "eq_t_3072.000"
+    ],
+    "linked_live_event_id": null,
+    "narrative_order": 3,
+    "source_media_order": 3063.5,
+    "render_eligibility": "candidate_only",
+    "blocking_reasons": [
+      "goal_action_time_not_pipeline_verified",
+      "local_visual_unverified",
+      "semantic_unverified",
+      "phase4a_observation_unverified"
+    ],
+    "confidence": 0.72,
+    "selection_reason": "phase4c_local_frame_localization",
+    "narration": "扳平 live 候选：射门≈3066.0s，入网≈3067.0s，庆祝≈3067.0s；动作时记分牌仍 0:1（直播）；非 Qwen 推断事实。",
+    "include_in_cut": false
+  },
+  {
+    "edl_index": 4,
+    "segment_id": "seg_equalizer_scoreboard",
+    "beat": "转折",
+    "role": "equalizer_scoreboard_anchor",
+    "shot_kind": "scoreboard_anchor",
+    "is_replay": false,
+    "media_in": 3141.98,
+    "media_out": 3153.98,
+    "time_status": "score_path_only",
+    "time_provenance": {
+      "source": "score_path",
+      "t_sec": 3145.98,
+      "pipeline_verified": false
+    },
+    "event_ids": [],
+    "frame_ids": [
+      "eq_t_3146.000"
+    ],
+    "linked_live_event_id": null,
+    "narrative_order": 4,
+    "source_media_order": 3141.98,
+    "render_eligibility": "candidate_only",
+    "blocking_reasons": [
+      "score_path_only_not_render_ready",
+      "semantic_unverified"
+    ],
+    "confidence": 0.85,
+    "selection_reason": "score_path_board_anchor",
+    "narration": "扳平比分确认 1:1 @ 3145.98s（记分牌；本地 3146 可见 1:1）。",
+    "include_in_cut": false
+  },
+  {
+    "edl_index": 5,
+    "segment_id": "seg_go_ahead_goal_action",
+    "beat": "高潮",
+    "role": "go_ahead_goal_action",
+    "shot_kind": "live",
+    "is_replay": false,
+    "media_in": 3518.0,
+    "media_out": 3532.0,
+    "time_status": "local_visual_candidate",
+    "time_provenance": {
+      "source": "local_frame_review",
+      "ball_in_net_sec": 3525.0,
+      "causal_seed_sec": 3523.574,
+      "score_anchor_t_sec": 3697.35,
+      "pipeline_verified": false
+    },
+    "event_ids": [
+      "event_000022"
+    ],
+    "frame_ids": [
+      "ga_t_3524.800",
+      "ga_t_3525.000",
+      "ga_t_3526.074"
+    ],
+    "linked_live_event_id": null,
+    "narrative_order": 5,
+    "source_media_order": 3518.0,
+    "render_eligibility": "candidate_only",
+    "blocking_reasons": [
+      "goal_action_time_not_pipeline_verified",
+      "local_visual_unverified",
+      "semantic_unverified",
+      "missing_independent_semantic_attestation"
+    ],
+    "confidence": 0.7,
+    "selection_reason": "phase4c_local_frame_localization",
+    "narration": "反超 live 候选：射门飞行≈3524.8s，入网≈3525.0s；动作时记分牌仍 1:1（直播）。因果 ann_0008@3523.574 略早。记分牌 2:1 锚点 3697.35 不可冒充进球。",
+    "include_in_cut": false
+  },
+  {
+    "edl_index": 6,
+    "segment_id": "seg_go_ahead_scoreboard",
+    "beat": "高潮",
+    "role": "go_ahead_scoreboard_anchor",
+    "shot_kind": "scoreboard_anchor",
+    "is_replay": false,
+    "media_in": 3693.35,
+    "media_out": 3705.35,
+    "time_status": "score_path_only",
+    "time_provenance": {
+      "source": "score_path",
+      "t_sec": 3697.35,
+      "pipeline_verified": false
+    },
+    "event_ids": [],
+    "frame_ids": [
+      "ga_t_3696.000"
+    ],
+    "linked_live_event_id": null,
+    "narrative_order": 6,
+    "source_media_order": 3693.35,
+    "render_eligibility": "candidate_only",
+    "blocking_reasons": [
+      "score_path_only_not_render_ready",
+      "semantic_unverified"
+    ],
+    "confidence": 0.85,
+    "selection_reason": "score_path_board_anchor",
+    "narration": "反超比分确认 2:1 @ 3697.35s（记分牌；本地 3696 已显示 2:1，属动作后确认）。",
+    "include_in_cut": false
+  },
+  {
+    "edl_index": 7,
+    "segment_id": "seg_ending",
+    "beat": "收尾",
+    "role": "ending",
+    "shot_kind": "live",
+    "is_replay": false,
+    "media_in": 7942.16,
+    "media_out": 7954.16,
+    "time_status": "event_ms",
+    "time_provenance": {
+      "source": "event_ms",
+      "t_sec": 7946.16,
+      "pipeline_verified": false
+    },
+    "event_ids": [
+      "event_000159"
+    ],
+    "frame_ids": [],
+    "linked_live_event_id": null,
+    "narrative_order": 7,
+    "source_media_order": 7942.16,
+    "render_eligibility": "candidate_only",
+    "blocking_reasons": [
+      "unverified_event_ms",
+      "semantic_unverified"
+    ],
+    "confidence": 0.5,
+    "selection_reason": "ending_event",
+    "narration": "收尾/终场候选（未校准，默认不成片）。",
+    "include_in_cut": false
+  }
+]

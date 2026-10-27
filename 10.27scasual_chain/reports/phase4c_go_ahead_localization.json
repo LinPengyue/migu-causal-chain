@@ -1,0 +1,44 @@
+{
+  "match_id": "2022-11-28 克罗地亚vs加拿大",
+  "phase": "4C",
+  "billing": false,
+  "score_path_board_sec": 3697.35,
+  "method": "event/causal narrow + coarse 3510-3705 + fine around 3523/3617",
+  "event_clues": {
+    "story_go_ahead_event": "event_000076 type=射门 @3697.35 (=board; NOT action)",
+    "causal_goal": "ann_0008 event_000022 Goal @3523.574 is_replay=false",
+    "delivery_score_at_3522.76": "1:1 Key_Pass",
+    "delivery_score_at_3697.35": "2:1 Shot"
+  },
+  "timeline_candidates_media_sec": {
+    "pre_shot_1_1_live": 3520.0,
+    "shot_flight": 3524.8,
+    "ball_in_net": 3525.0,
+    "celebration_live": 3526.0,
+    "board_already_2_1": 3617.35,
+    "score_path_board": 3697.35
+  },
+  "live_vs_replay": {
+    "action_window_live_tag": true,
+    "scoreboard_during_action": "1:1",
+    "match_clock_at_net": "43:31-43:32",
+    "note": "入网后记分牌仍 1:1；3617 已见 2:1。legacy seed 窗 [3617,3692] 完全错过 live 进球。"
+  },
+  "legacy_croatia_seed_miss": {
+    "window": [
+      3617.35,
+      3692.35
+    ],
+    "contains_3525": false
+  },
+  "proposed_cut": {
+    "media_in": 3518.0,
+    "media_out": 3532.0,
+    "status": "candidate_only"
+  },
+  "pending_checks": [
+    "独立语义核验（非本阶段）",
+    "庆祝后是否插入回放及起止",
+    "确认射手身份仅作叙述辅助，不作 render_ready 依据"
+  ]
+}

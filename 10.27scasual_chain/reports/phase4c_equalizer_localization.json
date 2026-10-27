@@ -1,0 +1,37 @@
+{
+  "match_id": "2022-11-28 克罗地亚vs加拿大",
+  "phase": "4C",
+  "billing": false,
+  "seed_center_prior": 3065.903,
+  "method": "local_ffmpeg_dense_frames + human review",
+  "assets": {
+    "clip_live": "_local_render/phase4c/equalizer/clips/eq_live_candidate.mp4",
+    "contact_key": "_local_render/phase4c/equalizer/contact_key_moments.jpg",
+    "contact_dense": "_local_render/phase4c/equalizer/contact_dense_3055_3085.jpg"
+  },
+  "timeline_candidates_media_sec": {
+    "buildup_in_box": 3064.5,
+    "shot_contact_approx": 3066.0,
+    "ball_near_line": 3066.5,
+    "ball_in_net": 3067.0,
+    "celebration_arms_out": 3067.0,
+    "celebration_slide": 3072.0,
+    "fan_reaction": 3080.0
+  },
+  "live_vs_replay": {
+    "action_window_live_tag": true,
+    "scoreboard_during_action": "0:1",
+    "match_clock_at_net": "35:53",
+    "note": "动作窗均带「直播」；记分牌延迟更新。3085+ 特写仍为直播标签；完整回放起止待核验，不得用回放替代首次进球窗。"
+  },
+  "proposed_cut": {
+    "media_in": 3063.5,
+    "media_out": 3075.0,
+    "status": "candidate_only"
+  },
+  "not_treated_as_fact": [
+    "Qwen goal labels from Phase4B",
+    "scoreboard time as goal time"
+  ],
+  "board_anchor_sec": 3145.98
+}

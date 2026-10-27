@@ -1,0 +1,101 @@
+{
+  "template": "T01_comeback",
+  "beats": [
+    {
+      "beat": "铺垫",
+      "status": "located",
+      "segment_id": "seg_setup_deficit",
+      "media": [
+        1075.06,
+        1087.06
+      ],
+      "evidence": "score_path 0:1 @1079.06",
+      "gaps": [
+        "非进球动作",
+        "semantic_unverified"
+      ]
+    },
+    {
+      "beat": "蓄力",
+      "status": "candidate",
+      "segment_id": "seg_buildup_pressure",
+      "media": [
+        3055.0,
+        3064.5
+      ],
+      "evidence": "扳平前禁区压迫本地窗；此前 danger 链 ann_0006@~3004 另可选",
+      "gaps": [
+        "未独立核验",
+        "可选更长蓄力"
+      ]
+    },
+    {
+      "beat": "转折",
+      "status": "located_candidate",
+      "segments": [
+        {
+          "segment_id": "seg_equalizer_goal_action",
+          "media": [
+            3063.5,
+            3075.0
+          ],
+          "note": "live 射门入网庆祝"
+        },
+        {
+          "segment_id": "seg_equalizer_scoreboard",
+          "media": [
+            3141.98,
+            3153.98
+          ],
+          "note": "1:1 记分牌"
+        }
+      ],
+      "gaps": [
+        "pipeline/semantic 未签发",
+        "回放补充未收录"
+      ]
+    },
+    {
+      "beat": "高潮",
+      "status": "located_candidate",
+      "segments": [
+        {
+          "segment_id": "seg_go_ahead_goal_action",
+          "media": [
+            3518.0,
+            3532.0
+          ],
+          "note": "live 反超入网≈3525"
+        },
+        {
+          "segment_id": "seg_go_ahead_scoreboard",
+          "media": [
+            3693.35,
+            3705.35
+          ],
+          "note": "2:1 记分牌"
+        }
+      ],
+      "gaps": [
+        "原 pending 已填候选但仍 blocked for render_ready",
+        "semantic_unverified"
+      ]
+    },
+    {
+      "beat": "收尾",
+      "status": "pending_verify",
+      "segment_id": "seg_ending",
+      "media": [
+        7942.16,
+        7954.16
+      ],
+      "evidence": "event_000159 终场",
+      "gaps": [
+        "时间未校准",
+        "非本阶段重点"
+      ]
+    }
+  ],
+  "render_ready": false,
+  "go_ahead_goal": "candidate_localized_unverified"
+}

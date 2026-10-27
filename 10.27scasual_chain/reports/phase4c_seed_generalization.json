@@ -1,0 +1,102 @@
+{
+  "problem": "croatia_seed_targets() hardcodes 3065.903 / 3697.35 and ~80s go_ahead window",
+  "impact": "go_ahead live ~3525 missed by legacy window [3617,3692]",
+  "solution": "seed_targets_from_story(story, causal=...)",
+  "seeds_croatia_now": [
+    {
+      "target_id": "equalizer_goal",
+      "role": "equalizer_goal_action",
+      "beat": "转折",
+      "gap_id": "verify_equalizer_goal_action",
+      "kind": "action_verify",
+      "seed_center_sec": 3065.903,
+      "score_anchor_sec": 3145.98,
+      "seed_note": "story/causal live goal candidate @3065.903s (Δ=-80.077s to board); seed only",
+      "seed_provenance": {
+        "event_id": "event_000021",
+        "t_sec": 3065.903,
+        "source": "story_events",
+        "dt_to_score_sec": -80.077,
+        "confidence": 0.333
+      },
+      "window": {
+        "start": 3059.903,
+        "end": 3071.903
+      },
+      "segment_id_hints": [
+        "seg_equalizer_goal_action"
+      ]
+    },
+    {
+      "target_id": "go_ahead_goal",
+      "role": "go_ahead_goal_action",
+      "beat": "高潮",
+      "gap_id": "locate_go_ahead_goal_action",
+      "kind": "action_locate",
+      "seed_center_sec": 3523.574,
+      "score_anchor_sec": 3697.35,
+      "seed_note": "story/causal live goal candidate @3523.574s (Δ=-173.776s to board); seed only",
+      "seed_provenance": {
+        "event_id": "event_000022",
+        "t_sec": 3523.574,
+        "source": "causal_chain",
+        "annotation_id": "ann_0008",
+        "dt_to_score_sec": -173.776,
+        "confidence": 0.45
+      },
+      "window": {
+        "start": 3517.574,
+        "end": 3529.574
+      },
+      "segment_id_hints": [
+        "seg_go_ahead_goal_pending",
+        "seg_go_ahead_goal_action"
+      ]
+    }
+  ],
+  "legacy_for_comparison": [
+    {
+      "target_id": "equalizer_goal",
+      "role": "equalizer_goal_action",
+      "beat": "转折",
+      "gap_id": "verify_equalizer_goal_action",
+      "kind": "action_verify",
+      "seed_center_sec": 3065.903,
+      "score_anchor_sec": 3145.98,
+      "seed_note": "Phase3A.1 live candidate ≈3065.9s; seed only",
+      "window": {
+        "start": 3059.903,
+        "end": 3071.903
+      },
+      "segment_id_hints": [
+        "seg_equalizer_goal_action"
+      ]
+    },
+    {
+      "target_id": "go_ahead_goal",
+      "role": "go_ahead_goal_action",
+      "beat": "高潮",
+      "gap_id": "locate_go_ahead_goal_action",
+      "kind": "action_locate",
+      "seed_center_sec": 3657.35,
+      "score_anchor_sec": 3697.35,
+      "seed_note": "legacy croatia hardcode: search before go-ahead board ≈3697s; window ~80s may miss long board lag; prefer seed_targets_from_story",
+      "window": {
+        "start": 3617.35,
+        "end": 3692.35
+      },
+      "segment_id_hints": [
+        "seg_go_ahead_goal_pending",
+        "seg_go_ahead_goal_action"
+      ]
+    }
+  ],
+  "rules": [
+    "score_path board != goal action",
+    "prefer story/causal live Goal before board",
+    "exclude events within 1s of board (pseudo action)",
+    "expand GA search_before to ~200s by default",
+    "never auto render_ready"
+  ],
+  "tests": "algo/story_video_agent/test_phase4c_seed_from_story.py (5 passed, no billing)"
+}

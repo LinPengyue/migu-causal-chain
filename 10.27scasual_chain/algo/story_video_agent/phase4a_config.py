@@ -150,6 +150,242 @@ class Phase4AConfig:
         return d
 
 
+# 记分牌→动作粗搜：扳平常见 Δ≈60–90s；反超可能更长（本场 ~172s）。
+# 不得把 board 时间当作进球动作。
+DEFAULT_EQ_SEARCH_BEFORE_SEC = 120.0
+DEFAULT_GA_SEARCH_BEFORE_SEC = 200.0
+DEFAULT_SEARCH_AFTER_BOARD_SEC = 5.0
+DEFAULT_BOARD_FALLBACK_OFFSET_SEC = 40.0
+
+
+def _goalish_times_from_story_events(
+    story: Dict[str, Any],
+    *,
+    board_t: float,
+    role_hint: Optional[str] = None,
+    search_before: float,
+    search_after: float = DEFAULT_SEARCH_AFTER_BOARD_SEC,
+) -> List[Dict[str, Any]]:
+    """从 story.events 抽取 board 前的 live 进球候选（seed only）。"""
+    from story_video_agent.event_mapping import (
+        find_live_goal_candidates,
+        index_story_events,
+    )
+
+    indexed = index_story_events(story)
+    cands = find_live_goal_candidates(
+        indexed,
+        score_t=board_t,
+        role_hint=role_hint,
+        slack_before=search_before,
+        slack_after=search_after,
+    )
+    # 部分 story 把反超写成「射门」挂在记分牌时刻——不可作动作 seed
+    out: List[Dict[str, Any]] = []
+    for c in cands:
+        t = float(c["t_sec"])
+        if abs(t - board_t) < 1.0:
+            continue  # 排除记分牌同秒伪动作
+        out.append(
+            {
+                "event_id": c.get("event_id"),
+                "t_sec": t,
+                "source": "story_events",
+                "dt_to_score_sec": c.get("dt_to_score_sec"),
+                "confidence": c.get("confidence"),
+            }
+        )
+    return out
+
+
+def _goalish_times_from_causal(
+    causal: Optional[Dict[str, Any]],
+    *,
+    board_t: float,
+    search_before: float,
+    search_after: float = DEFAULT_SEARCH_AFTER_BOARD_SEC,
+) -> List[Dict[str, Any]]:
+    """扫描 causal_chains 中 live Goal 标注；仅作 seed，不视为核验事实。"""
+    if not causal:
+        return []
+    goal_types = {"进球", "Goal", "goal", "乌龙球"}
+    out: List[Dict[str, Any]] = []
+    for chain in causal.get("causal_chains") or []:
+        if not isinstance(chain, dict):
+            continue
+        if chain.get("is_replay"):
+            continue
+        for ee in chain.get("events") or []:
+            if not isinstance(ee, dict):
+                continue
+            typ = str(ee.get("type") or ee.get("type_en") or "")
+            if typ not in goal_types and "goal" not in typ.lower() and "进球" not in typ:
+                continue
+            try:
+                t = float(ee["t_ms"]) / 1000.0 if ee.get("t_ms") is not None else None
+            except (TypeError, ValueError):
+                t = None
+            if t is None:
+                continue
+            if not (board_t - search_before <= t <= board_t + search_after):
+                continue
+            if abs(t - board_t) < 1.0:
+                continue
+            out.append(
+                {
+                    "event_id": ee.get("event_id"),
+                    "t_sec": t,
+                    "source": "causal_chain",
+                    "annotation_id": chain.get("annotation_id"),
+                    "dt_to_score_sec": round(t - board_t, 3),
+                    "confidence": 0.45,
+                }
+            )
+    out.sort(key=lambda r: abs(float(r["dt_to_score_sec"])))
+    return out
+
+
+def seed_targets_from_story(
+    story: Dict[str, Any],
+    *,
+    causal: Optional[Dict[str, Any]] = None,
+    half: float = DEFAULT_WINDOW_HALF_SEC,
+    eq_search_before: float = DEFAULT_EQ_SEARCH_BEFORE_SEC,
+    ga_search_before: float = DEFAULT_GA_SEARCH_BEFORE_SEC,
+    board_fallback_offset: float = DEFAULT_BOARD_FALLBACK_OFFSET_SEC,
+) -> List[Dict[str, Any]]:
+    """从任意比赛 T01 Story JSON（+可选 causal）生成 Phase4 搜索种子。
+
+    - score_path 只提供比分锚点，不是进球动作时间
+    - 优先 story/causal 的 live Goal 候选作 seed_center
+    - 无候选时退化为 board - offset，并扩大 locate 窗
+    - 输出仍是 seed only，不得预设识别正确 / 不得提升 render_ready
+    """
+    from story_video_agent.state import _comeback_score_steps
+
+    steps = _comeback_score_steps(story)
+    targets: List[Dict[str, Any]] = []
+
+    eq_board_node = steps.get("equalizer")
+    ga_board_node = steps.get("go_ahead")
+
+    if eq_board_node and eq_board_node.get("t_sec") is not None:
+        eq_board = float(eq_board_node["t_sec"])
+        story_cands = _goalish_times_from_story_events(
+            story,
+            board_t=eq_board,
+            role_hint="转折",
+            search_before=eq_search_before,
+        )
+        causal_cands = _goalish_times_from_causal(
+            causal, board_t=eq_board, search_before=eq_search_before
+        )
+        best = (story_cands + causal_cands)
+        best.sort(key=lambda r: (0 if r["source"] == "story_events" else 1, abs(r["dt_to_score_sec"])))
+        if best:
+            seed = float(best[0]["t_sec"])
+            note = (
+                f"story/causal live goal candidate @{seed:.3f}s "
+                f"(Δ={best[0]['dt_to_score_sec']}s to board); seed only"
+            )
+            kind = "action_verify"
+            gap = "verify_equalizer_goal_action"
+            provenance = best[0]
+        else:
+            seed = max(0.0, eq_board - board_fallback_offset)
+            note = (
+                f"no live goal event; fallback seed board-{board_fallback_offset:.0f}s="
+                f"{seed:.3f}s; locate before board @{eq_board:.3f}s"
+            )
+            kind = "action_locate"
+            gap = "locate_equalizer_goal_action"
+            provenance = None
+        targets.append(
+            {
+                "target_id": "equalizer_goal",
+                "role": "equalizer_goal_action",
+                "beat": "转折",
+                "gap_id": gap,
+                "kind": kind,
+                "seed_center_sec": seed,
+                "score_anchor_sec": eq_board,
+                "seed_note": note,
+                "seed_provenance": provenance,
+                "window": {
+                    "start": max(0.0, seed - half)
+                    if kind == "action_verify"
+                    else max(0.0, eq_board - eq_search_before),
+                    "end": (seed + half)
+                    if kind == "action_verify"
+                    else max(0.0, eq_board - DEFAULT_SEARCH_AFTER_BOARD_SEC),
+                },
+                "segment_id_hints": ["seg_equalizer_goal_action"],
+            }
+        )
+
+    if ga_board_node and ga_board_node.get("t_sec") is not None:
+        ga_board = float(ga_board_node["t_sec"])
+        story_cands = _goalish_times_from_story_events(
+            story,
+            board_t=ga_board,
+            role_hint="高潮",
+            search_before=ga_search_before,
+        )
+        causal_cands = _goalish_times_from_causal(
+            causal, board_t=ga_board, search_before=ga_search_before
+        )
+        best = (story_cands + causal_cands)
+        best.sort(key=lambda r: (0 if r["source"] == "story_events" else 1, abs(r["dt_to_score_sec"])))
+        if best:
+            seed = float(best[0]["t_sec"])
+            note = (
+                f"story/causal live goal candidate @{seed:.3f}s "
+                f"(Δ={best[0]['dt_to_score_sec']}s to board); seed only"
+            )
+            # 有候选仍先 locate/verify，不自动信任
+            kind = "action_locate"
+            gap = "locate_go_ahead_goal_action"
+            provenance = best[0]
+            win_start = max(0.0, seed - half)
+            win_end = seed + half
+        else:
+            seed = max(0.0, ga_board - board_fallback_offset)
+            note = (
+                f"no live goal event; fallback seed board-{board_fallback_offset:.0f}s="
+                f"{seed:.3f}s; coarse locate in [{ga_board - ga_search_before:.1f},"
+                f" {ga_board - DEFAULT_SEARCH_AFTER_BOARD_SEC:.1f}]"
+            )
+            kind = "action_locate"
+            gap = "locate_go_ahead_goal_action"
+            provenance = None
+            win_start = max(0.0, ga_board - ga_search_before)
+            win_end = max(0.0, ga_board - DEFAULT_SEARCH_AFTER_BOARD_SEC)
+        targets.append(
+            {
+                "target_id": "go_ahead_goal",
+                "role": "go_ahead_goal_action",
+                "beat": "高潮",
+                "gap_id": gap,
+                "kind": kind,
+                "seed_center_sec": seed,
+                "score_anchor_sec": ga_board,
+                "seed_note": note,
+                "seed_provenance": provenance,
+                "window": {"start": win_start, "end": win_end},
+                "segment_id_hints": [
+                    "seg_go_ahead_goal_pending",
+                    "seg_go_ahead_goal_action",
+                ],
+            }
+        )
+
+    if not targets:
+        raise ValueError(
+            "seed_targets_from_story: no equalizer/go_ahead score_path milestones"
+        )
+    return targets
+
+
 def croatia_seed_targets(
     *,
     eq_live: float = CROATIA_SEED_EQUALIZER_LIVE_SEC,
@@ -157,7 +393,11 @@ def croatia_seed_targets(
     ga_board: float = CROATIA_SEED_GO_AHEAD_BOARD_SEC,
     half: float = DEFAULT_WINDOW_HALF_SEC,
 ) -> List[Dict[str, Any]]:
-    """返回搜索目标；时间仅为起点，不假定正确。"""
+    """克罗地亚硬编码种子（向后兼容 / 单测基线）。
+
+    新比赛请用 ``seed_targets_from_story``。硬编码 go_ahead 窗仅 ~80s，
+    本场真实动作约在 board-172s，已被 Phase4C 证明过窄。
+    """
     return [
         {
             "target_id": "equalizer_goal",
@@ -183,7 +423,8 @@ def croatia_seed_targets(
             "seed_center_sec": max(0.0, ga_board - 40.0),
             "score_anchor_sec": ga_board,
             "seed_note": (
-                "no trusted live goal; search before go-ahead board ≈3697s; seed only"
+                "legacy croatia hardcode: search before go-ahead board ≈3697s; "
+                "window ~80s may miss long board lag; prefer seed_targets_from_story"
             ),
             "window": {
                 "start": max(0.0, ga_board - 80.0),
@@ -201,12 +442,21 @@ def select_seed_targets(
     targets: Sequence[str],
     *,
     half: float = DEFAULT_WINDOW_HALF_SEC,
+    story: Optional[Dict[str, Any]] = None,
+    causal: Optional[Dict[str, Any]] = None,
+    prefer_story: bool = True,
 ) -> List[Dict[str, Any]]:
-    """按 target_id 筛选种子窗；未知或空匹配则报错（不静默回退全量）。"""
+    """按 target_id 筛选种子窗；未知或空匹配则报错（不静默回退全量）。
+
+    若提供 story 且 prefer_story，优先 ``seed_targets_from_story``；
+    否则回退克罗地亚硬编码（兼容旧测试）。
+    """
     want = parse_targets(list(targets))
-    selected = [
-        t for t in croatia_seed_targets(half=half) if t["target_id"] in set(want)
-    ]
+    if story is not None and prefer_story:
+        pool = seed_targets_from_story(story, causal=causal, half=half)
+    else:
+        pool = croatia_seed_targets(half=half)
+    selected = [t for t in pool if t["target_id"] in set(want)]
     if not selected:
         raise ValueError(f"no seed targets matched {list(want)}")
     return selected
