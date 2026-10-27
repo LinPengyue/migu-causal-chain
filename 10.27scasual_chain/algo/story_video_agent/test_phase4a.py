@@ -272,22 +272,23 @@ class Phase4AIntegrationMock(unittest.TestCase):
         story_path.write_text(json.dumps(story), encoding="utf-8")
         out = Path(self._tmpdir.name) / "out"
         # patch seeds to synthetic times
+        toy_seed = [
+            {
+                "target_id": "equalizer_goal",
+                "role": "equalizer_goal_action",
+                "beat": "转折",
+                "gap_id": "verify_equalizer_goal_action",
+                "kind": "action_verify",
+                "seed_center_sec": 15.0,
+                "score_anchor_sec": 20.0,
+                "seed_note": "toy seed",
+                "window": {"start": 12.0, "end": 18.0},
+                "segment_id_hints": ["seg_equalizer_goal_action"],
+            }
+        ]
         with mock.patch(
-            "story_video_agent.phase4a_optimize.croatia_seed_targets",
-            return_value=[
-                {
-                    "target_id": "equalizer_goal",
-                    "role": "equalizer_goal_action",
-                    "beat": "转折",
-                    "gap_id": "verify_equalizer_goal_action",
-                    "kind": "action_verify",
-                    "seed_center_sec": 15.0,
-                    "score_anchor_sec": 20.0,
-                    "seed_note": "toy seed",
-                    "window": {"start": 12.0, "end": 18.0},
-                    "segment_id_hints": ["seg_equalizer_goal_action"],
-                }
-            ],
+            "story_video_agent.phase4a_optimize.select_seed_targets",
+            return_value=toy_seed,
         ):
             cfg = Phase4AConfig(
                 mode="vlm-only",
@@ -295,6 +296,7 @@ class Phase4AIntegrationMock(unittest.TestCase):
                 max_rounds=2,
                 frames_per_round=2,
                 frame_budget=8,
+                targets=("equalizer_goal",),
             )
             report = run_phase4a(
                 story_json=story_path,

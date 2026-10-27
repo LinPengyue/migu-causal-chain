@@ -1,13 +1,24 @@
 {
-  "phase": "4A",
+  "phase": "4A.1",
   "description": "Croatia goal-shot multimodal search + Story plan feedback",
   "modes": ["vlm-only", "planner-vlm-loop"],
   "default_force_mock": true,
+  "targets_cli": {
+    "flag": "--targets",
+    "allowed": ["equalizer_goal", "go_ahead_goal"],
+    "default": ["equalizer_goal", "go_ahead_goal"],
+    "first_real_vlm_only": ["equalizer_goal"]
+  },
+  "official_video_rsi_models": {
+    "planner": "deepseek-v4-pro",
+    "vision": "qwen3.6-plus",
+    "note": "request_model must be a vendor-available model id"
+  },
   "billing_gates": [
     "STORY_API_ENABLE=1",
     "STORY_PHASE4A_REAL=1",
     "STORY_API_SMOKE=1",
-    "STORY_LLM_BASE_URL / STORY_LLM_API_KEY / STORY_VLM_MODEL",
+    "STORY_LLM_BASE_URL / STORY_LLM_API_KEY / STORY_LLM_MODEL / STORY_VLM_MODEL",
     "STORY_API_MAX_CALLS",
     "STORY_API_MAX_COST_USD"
   ],
@@ -19,15 +30,23 @@
     "equalizer_board_sec": 3145.98,
     "go_ahead_board_sec": 3697.35
   },
-  "budgets": {
+  "budgets_default_cli": {
     "max_rounds": 3,
     "frames_per_round": 3,
     "frame_budget": 18,
     "max_api_calls": 12
   },
+  "first_real_vlm_only": {
+    "max_rounds": 1,
+    "frames_per_round": 2,
+    "frame_budget": 4,
+    "max_api_calls": 3,
+    "max_completion_tokens": 256,
+    "cost_is_estimate_not_invoice_cap": true
+  },
   "trust": {
     "model_verified_ignored": true,
     "render_ready_requires": "internal_verification_pipeline"
   },
-  "cli": "python -m story_video_agent.phase4a_optimize --mode vlm-only|--planner-vlm-loop [--real]"
+  "cli": "python -m story_video_agent.phase4a_optimize --mode vlm-only --targets equalizer_goal [--real] [--dry-check]"
 }

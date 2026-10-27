@@ -38,10 +38,13 @@ from story_video_agent.media import MediaInfo, probe_video
 from story_video_agent.narrative_composer import compose_story_plan
 from story_video_agent.phase4a_config import (
     EXPERIMENT_MODES,
+    FIRST_REAL_VLM_ONLY,
+    OFFICIAL_VIDEO_RSI_MODELS,
     Phase4AConfig,
     billing_allowed,
-    croatia_seed_targets,
+    parse_targets,
     phase4a_real_enabled,
+    select_seed_targets,
 )
 from story_video_agent.review_assist import build_review_manifest
 from story_video_agent.story_output_schema import (
@@ -80,6 +83,12 @@ def preflight_phase4a(
     force_mock: bool,
     require_billing_caps: bool = True,
     max_api_calls: Optional[int] = None,
+    max_completion_tokens: Optional[int] = None,
+    targets: Optional[Sequence[str]] = None,
+    max_rounds: Optional[int] = None,
+    frames_per_round: Optional[int] = None,
+    frame_budget: Optional[int] = None,
+    raise_on_problems: bool = True,
 ) -> Dict[str, Any]:
     problems: List[str] = []
     if mode not in EXPERIMENT_MODES:
@@ -88,6 +97,12 @@ def preflight_phase4a(
         problems.append(f"story json missing: {story_json}")
     if not video_path.is_file():
         problems.append(f"video missing: {video_path}")
+
+    selected_targets: Tuple[str, ...] = ()
+    try:
+        selected_targets = parse_targets(targets)
+    except ValueError as exc:
+        problems.append(str(exc))
 
     want_real = not force_mock
     configs = load_endpoint_configs()
@@ -113,9 +128,30 @@ def preflight_phase4a(
             if not (os.environ.get("STORY_API_MAX_COST_USD") or "").strip():
                 problems.append("STORY_API_MAX_COST_USD required")
 
-    caps = resolve_effective_caps(max_calls=max_api_calls)
+    caps = resolve_effective_caps(
+        max_calls=max_api_calls,
+        max_completion_tokens=max_completion_tokens,
+    )
     # 端点摘要：不含 API Key
     endpoints = {r: configs[r].to_dict() for r in ("planner", "vision")}
+    request_models = {
+        "planner": endpoints["planner"].get("model") or "",
+        "vision": endpoints["vision"].get("model") or "",
+    }
+    seed_windows: List[Dict[str, Any]] = []
+    if selected_targets:
+        try:
+            seed_windows = [
+                {
+                    "target_id": t["target_id"],
+                    "seed_center_sec": t.get("seed_center_sec"),
+                    "window": t.get("window"),
+                    "score_anchor_sec": t.get("score_anchor_sec"),
+                }
+                for t in select_seed_targets(selected_targets)
+            ]
+        except ValueError as exc:
+            problems.append(str(exc))
 
     report = {
         "ok": not problems,
@@ -125,17 +161,37 @@ def preflight_phase4a(
         "want_real": want_real,
         "problems": problems,
         "cost_disclaimer": COST_DISCLAIMER,
+        "http_requests_sent": False,
+        "dry_check_no_http": True,
+        "targets": list(selected_targets),
+        "seed_windows": seed_windows,
+        "run_profile": {
+            "max_rounds": max_rounds,
+            "frames_per_round": frames_per_round,
+            "frame_budget": frame_budget,
+            "max_api_calls_explicit": max_api_calls,
+            "max_completion_tokens_explicit": max_completion_tokens,
+        },
+        "first_real_vlm_only_recommended": dict(FIRST_REAL_VLM_ONLY),
         "effective_caps": {
             "max_calls": caps["max_calls"],
             "max_cost_usd": caps["max_cost_usd"],
             "max_completion_tokens": caps["max_completion_tokens"],
             "sources": caps["sources"],
-            "note": "effective = min(code_explicit, env) when both set",
+            "note": "effective = min(code_explicit, env) when both set; cost is estimate only",
+            "cost_is_estimate_not_invoice_cap": True,
         },
         "models": {
-            "planner": endpoints["planner"].get("model"),
-            "vision": endpoints["vision"].get("model"),
+            "planner": request_models["planner"],
+            "vision": request_models["vision"],
         },
+        "official_video_rsi_models": dict(OFFICIAL_VIDEO_RSI_MODELS),
+        "request_models": request_models,
+        "request_model_note": (
+            "official labels are Video-RSI dual-model names; "
+            "actual request_model must be a vendor-available model id "
+            "(STORY_LLM_MODEL / STORY_VLM_MODEL)"
+        ),
         "vendor_compat": {
             "token_param": caps["token_param"],
             "planner_token_param": endpoints["planner"].get("token_param"),
@@ -148,13 +204,21 @@ def preflight_phase4a(
             "vision_timeout_sec": endpoints["vision"].get("timeout_sec"),
             "planner_max_retries": endpoints["planner"].get("max_retries"),
             "vision_max_retries": endpoints["vision"].get("max_retries"),
+            "sends_both_token_params": False,
+            "compat_note": "only one of max_tokens|max_completion_tokens|none is sent",
+        },
+        "endpoint_ready": {
+            "planner_configured": bool(configs["planner"].configured()),
+            "vision_configured": bool(configs["vision"].configured()),
+            "roles_required": roles,
+            "roles_ready": all(configs[r].configured() for r in roles),
         },
         "verify_key_persistent": verify_key_is_persistent(),
         "roles": roles,
         # 明确不回传任何 key 明文
         "secrets_redacted": True,
     }
-    if problems and want_real:
+    if problems and want_real and raise_on_problems:
         raise Phase4AError("; ".join(problems))
     return report
 
@@ -887,6 +951,10 @@ def run_phase4a(
         video_path=video_path,
         force_mock=cfg.force_mock,
         max_api_calls=cfg.max_api_calls,
+        targets=cfg.targets,
+        max_rounds=cfg.max_rounds,
+        frames_per_round=cfg.frames_per_round,
+        frame_budget=cfg.frame_budget,
     )
 
     story = json.loads(story_json.read_text(encoding="utf-8"))
@@ -896,14 +964,10 @@ def run_phase4a(
         plan_v1 = compose_story_plan(story, use_llm=False)
 
     media = probe_video(video_path)
-    want = set(cfg.targets)
-    targets = [
-        t
-        for t in croatia_seed_targets(half=cfg.window_half_sec)
-        if t["target_id"] in want
-    ]
-    if not targets:
-        targets = croatia_seed_targets(half=cfg.window_half_sec)
+    try:
+        targets = select_seed_targets(cfg.targets, half=cfg.window_half_sec)
+    except ValueError as exc:
+        raise Phase4AError(str(exc)) from exc
 
     gap_ids = [t["gap_id"] for t in targets]
     caps = allocate_gap_caps(gap_ids, global_budget=cfg.frame_budget)
@@ -1055,6 +1119,16 @@ def main(argv: Optional[List[str]] = None) -> int:
         help="vlm-only | planner-vlm-loop",
     )
     parser.add_argument(
+        "--targets",
+        nargs="+",
+        default=None,
+        metavar="TARGET",
+        help=(
+            "Search targets: equalizer_goal and/or go_ahead_goal "
+            "(space or comma separated). Default: both (backward compatible)."
+        ),
+    )
+    parser.add_argument(
         "--real",
         action="store_true",
         help="Request real API (still requires STORY_PHASE4A_REAL=1 etc.)",
@@ -1062,13 +1136,36 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser.add_argument("--max-rounds", type=int, default=3)
     parser.add_argument("--frame-budget", type=int, default=18)
     parser.add_argument("--frames-per-round", type=int, default=3)
+    parser.add_argument(
+        "--max-api-calls",
+        type=int,
+        default=None,
+        help="Explicit HTTP attempt cap (min'd with STORY_API_MAX_CALLS)",
+    )
+    parser.add_argument(
+        "--max-completion-tokens",
+        type=int,
+        default=None,
+        help="Explicit completion token cap (min'd with env)",
+    )
     parser.add_argument("--no-render", action="store_true")
     parser.add_argument("--v1-summary", type=Path, default=None)
-    parser.add_argument("--dry-check", action="store_true")
+    parser.add_argument(
+        "--dry-check",
+        action="store_true",
+        help="Print effective caps/models/compat; never send HTTP",
+    )
     args = parser.parse_args(argv)
 
+    try:
+        target_ids = parse_targets(args.targets)
+    except ValueError as exc:
+        print(f"REFUSE: {exc}", file=sys.stderr)
+        return 2
+
     force_mock = not args.real
-    if args.real and not billing_allowed():
+    # dry-check 允许 --real 仅做配置预检，绝不发 HTTP；真正运行才硬拒绝未授权
+    if args.real and not args.dry_check and not billing_allowed():
         print(
             "REFUSE real: need STORY_API_ENABLE=1 STORY_PHASE4A_REAL=1 "
             "STORY_API_SMOKE=1 and keys/caps",
@@ -1076,12 +1173,18 @@ def main(argv: Optional[List[str]] = None) -> int:
         )
         return 2
 
+    max_api_calls = args.max_api_calls
+    if max_api_calls is None:
+        max_api_calls = Phase4AConfig().max_api_calls
+
     cfg = Phase4AConfig(
         mode=args.mode,
         force_mock=force_mock,
         max_rounds=args.max_rounds,
         frame_budget=args.frame_budget,
         frames_per_round=args.frames_per_round,
+        max_api_calls=max_api_calls,
+        targets=target_ids,
     )
 
     try:
@@ -1092,8 +1195,22 @@ def main(argv: Optional[List[str]] = None) -> int:
                 video_path=args.video_path,
                 force_mock=cfg.force_mock,
                 max_api_calls=cfg.max_api_calls,
+                max_completion_tokens=args.max_completion_tokens,
+                targets=cfg.targets,
+                max_rounds=cfg.max_rounds,
+                frames_per_round=cfg.frames_per_round,
+                frame_budget=cfg.frame_budget,
+                raise_on_problems=False,
             )
-            print(json.dumps({"dry_check": True, **pf}, ensure_ascii=False, indent=2))
+            out = {
+                "dry_check": True,
+                "http_requests_sent": False,
+                **pf,
+            }
+            print(json.dumps(out, ensure_ascii=False, indent=2))
+            # 真实模式预检：配置不齐返回非 0，但仍已输出完整报告且未发 HTTP
+            if args.real and not pf.get("ok"):
+                return 4
             return 0
         report = run_phase4a(
             story_json=args.story_json,
@@ -1113,6 +1230,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     print(json.dumps({
         "ok": True,
+        "targets": list(cfg.targets),
         "real_api_executed": report.get("real_api_executed"),
         "api_mode": report.get("api_mode"),
         "elapsed_sec": report.get("elapsed_sec"),
@@ -1121,8 +1239,10 @@ def main(argv: Optional[List[str]] = None) -> int:
         "report_path": report.get("report_path"),
         "http_attempts": report.get("http_attempts"),
         "est_cost_usd_real": report.get("est_cost_usd_real"),
+        "cost_disclaimer": report.get("cost_disclaimer"),
     }, ensure_ascii=False, indent=2))
     return 0
+
 
 
 if __name__ == "__main__":

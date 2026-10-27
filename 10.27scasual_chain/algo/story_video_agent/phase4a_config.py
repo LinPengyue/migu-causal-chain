@@ -12,8 +12,8 @@
 from __future__ import annotations
 
 import os
-from dataclasses import asdict, dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
+from dataclasses import asdict, dataclass
+from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 
 from story_video_agent.api_provider import api_enabled, smoke_enabled
 
@@ -30,6 +30,29 @@ DEFAULT_WINDOW_HALF_SEC = 6.0
 DEFAULT_EXPAND_SEC = 8.0
 DEFAULT_SHIFT_SEC = 12.0
 
+# 可选搜索目标（CLI --targets）
+TARGET_IDS: Tuple[str, ...] = ("equalizer_goal", "go_ahead_goal")
+DEFAULT_TARGETS: Tuple[str, ...] = TARGET_IDS
+
+# Video-RSI 官方双模型标签；实际 request_model 以服务商可用 ID 为准
+OFFICIAL_VIDEO_RSI_MODELS: Dict[str, str] = {
+    "planner": "deepseek-v4-pro",
+    "vision": "qwen3.6-plus",
+}
+
+# 首次真实 VLM-only 联调固定小预算（不自动执行）
+FIRST_REAL_VLM_ONLY: Dict[str, Any] = {
+    "mode": "vlm-only",
+    "targets": ("equalizer_goal",),
+    "seed_center_sec": CROATIA_SEED_EQUALIZER_LIVE_SEC,
+    "max_rounds": 1,
+    "frames_per_round": 2,
+    "frame_budget": 4,
+    "max_api_calls": 3,
+    "max_completion_tokens": 256,
+    "cost_note": "STORY_API_MAX_COST_USD is an estimate soft cap, not an invoice hard limit",
+}
+
 
 def phase4a_real_enabled() -> bool:
     """显式 Phase 4A 计费开关（独立于通用 STORY_API_ENABLE）。"""
@@ -45,6 +68,59 @@ def billing_allowed() -> bool:
     return bool(api_enabled() and smoke_enabled() and phase4a_real_enabled())
 
 
+def parse_targets(
+    raw: Optional[Union[str, Sequence[str]]] = None,
+) -> Tuple[str, ...]:
+    """解析 --targets；默认两者，保持向后兼容。"""
+    if raw is None:
+        return DEFAULT_TARGETS
+    parts: List[str] = []
+    if isinstance(raw, str):
+        items: Sequence[str] = [raw]
+    else:
+        items = raw
+    for item in items:
+        for piece in str(item).replace(";", ",").split(","):
+            p = piece.strip()
+            if p:
+                parts.append(p)
+    if not parts:
+        return DEFAULT_TARGETS
+    unknown = [p for p in parts if p not in TARGET_IDS]
+    if unknown:
+        raise ValueError(
+            f"unknown targets {unknown}; expected one of {list(TARGET_IDS)}"
+        )
+    # 保序去重
+    seen = set()
+    out: List[str] = []
+    for p in parts:
+        if p not in seen:
+            seen.add(p)
+            out.append(p)
+    return tuple(out)
+
+
+def first_real_vlm_only_config(
+    *,
+    force_mock: bool = False,
+    **overrides: Any,
+) -> "Phase4AConfig":
+    """首次真实 VLM-only：equalizer @≈3065.9s，极小帧/HTTP 预算。"""
+    base = dict(
+        mode="vlm-only",
+        force_mock=force_mock,
+        max_rounds=int(FIRST_REAL_VLM_ONLY["max_rounds"]),
+        frames_per_round=int(FIRST_REAL_VLM_ONLY["frames_per_round"]),
+        frame_budget=int(FIRST_REAL_VLM_ONLY["frame_budget"]),
+        max_api_calls=int(FIRST_REAL_VLM_ONLY["max_api_calls"]),
+        targets=tuple(FIRST_REAL_VLM_ONLY["targets"]),
+        promote_to_render_ready=False,
+    )
+    base.update(overrides)
+    return Phase4AConfig(**base)
+
+
 @dataclass
 class Phase4AConfig:
     """VLM-only 与 Planner+VLM 共用配置。"""
@@ -58,7 +134,7 @@ class Phase4AConfig:
     expand_sec: float = DEFAULT_EXPAND_SEC
     shift_sec: float = DEFAULT_SHIFT_SEC
     max_api_calls: Optional[int] = DEFAULT_MAX_API_CALLS
-    targets: Tuple[str, ...] = ("equalizer_goal", "go_ahead_goal")
+    targets: Tuple[str, ...] = DEFAULT_TARGETS
     # 是否在内部核验后尝试 promote（默认否：4A 产出 preview 候选优化）
     promote_to_render_ready: bool = False
     # Mock 路径是否允许根据观察调整候选时间窗（仍不授予 render_ready）
@@ -70,6 +146,7 @@ class Phase4AConfig:
         d["phase4a_real_enabled"] = phase4a_real_enabled()
         d["api_enabled"] = api_enabled()
         d["smoke_enabled"] = smoke_enabled()
+        d["official_video_rsi_models"] = dict(OFFICIAL_VIDEO_RSI_MODELS)
         return d
 
 
@@ -118,6 +195,21 @@ def croatia_seed_targets(
             ],
         },
     ]
+
+
+def select_seed_targets(
+    targets: Sequence[str],
+    *,
+    half: float = DEFAULT_WINDOW_HALF_SEC,
+) -> List[Dict[str, Any]]:
+    """按 target_id 筛选种子窗；未知或空匹配则报错（不静默回退全量）。"""
+    want = parse_targets(list(targets))
+    selected = [
+        t for t in croatia_seed_targets(half=half) if t["target_id"] in set(want)
+    ]
+    if not selected:
+        raise ValueError(f"no seed targets matched {list(want)}")
+    return selected
 
 
 EXPERIMENT_MODES = ("vlm-only", "planner-vlm-loop")
