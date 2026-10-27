@@ -1,0 +1,65 @@
+{
+  "adjacent_overlap_check": [
+    {
+      "from": "seg_setup_deficit",
+      "to": "seg_buildup_attack",
+      "gap_sec": 1950.94,
+      "overlap_sec": 0.0,
+      "ok": true
+    },
+    {
+      "from": "seg_buildup_attack",
+      "to": "seg_equalizer_goal_action",
+      "gap_sec": -0.5,
+      "overlap_sec": 0.5,
+      "ok": false
+    },
+    {
+      "from": "seg_equalizer_goal_action",
+      "to": "seg_equalizer_scoreboard",
+      "gap_sec": 66.98,
+      "overlap_sec": 0.0,
+      "ok": true
+    },
+    {
+      "from": "seg_equalizer_scoreboard",
+      "to": "seg_go_ahead_goal_action",
+      "gap_sec": 364.02,
+      "overlap_sec": 0.0,
+      "ok": true
+    },
+    {
+      "from": "seg_go_ahead_goal_action",
+      "to": "seg_go_ahead_scoreboard_closer",
+      "gap_sec": 62.0,
+      "overlap_sec": 0.0,
+      "ok": true
+    },
+    {
+      "from": "seg_go_ahead_scoreboard_closer",
+      "to": "seg_ending_full_time",
+      "gap_sec": 4320.0,
+      "overlap_sec": 0.0,
+      "ok": true
+    }
+  ],
+  "jump_cut_risk": [
+    {
+      "pair": [
+        "seg_equalizer_goal_action",
+        "seg_equalizer_scoreboard"
+      ],
+      "media_gap_sec": 67.0,
+      "note": "intentional scoreboard confirm after goal; closer board used for go_ahead"
+    },
+    {
+      "pair": [
+        "seg_go_ahead_goal_action",
+        "seg_go_ahead_scoreboard_closer"
+      ],
+      "media_gap_sec": 62.0,
+      "note": "intentional scoreboard confirm after goal; closer board used for go_ahead"
+    }
+  ],
+  "audio_note": "preview uses source audio per cut; no loudness normalize in this phase"
+}

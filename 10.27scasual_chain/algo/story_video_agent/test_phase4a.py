@@ -86,6 +86,7 @@ class Phase4AGateTests(unittest.TestCase):
                 story_json=story,
                 video_path=vid,
                 force_mock=True,
+                seed_mode="croatia_legacy",
             )
             self.assertTrue(pf["ok"])
             self.assertTrue(pf["force_mock"])
@@ -287,7 +288,7 @@ class Phase4AIntegrationMock(unittest.TestCase):
             }
         ]
         with mock.patch(
-            "story_video_agent.phase4a_optimize.select_seed_targets",
+            "story_video_agent.phase4a_optimize.resolve_seed_targets",
             return_value=toy_seed,
         ):
             cfg = Phase4AConfig(
@@ -304,6 +305,7 @@ class Phase4AIntegrationMock(unittest.TestCase):
                 out_dir=out,
                 cfg=cfg,
                 render_preview=True,
+                seed_mode="croatia_legacy",
             )
         self.assertFalse(report["real_api_executed"])
         self.assertEqual(report["api_mode"], "mock")

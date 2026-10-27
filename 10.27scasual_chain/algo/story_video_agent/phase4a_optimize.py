@@ -37,13 +37,19 @@ from story_video_agent.internal_verification import (
 from story_video_agent.media import MediaInfo, probe_video
 from story_video_agent.narrative_composer import compose_story_plan
 from story_video_agent.phase4a_config import (
+    DEFAULT_WINDOW_HALF_SEC,
     EXPERIMENT_MODES,
     FIRST_REAL_VLM_ONLY,
     OFFICIAL_VIDEO_RSI_MODELS,
+    SEED_MODE_CROATIA_LEGACY,
+    SEED_MODE_STORY,
+    SEED_MODES,
     Phase4AConfig,
     billing_allowed,
+    load_optional_json,
     parse_targets,
     phase4a_real_enabled,
+    resolve_seed_targets,
     select_seed_targets,
 )
 from story_video_agent.review_assist import build_review_manifest
@@ -89,6 +95,9 @@ def preflight_phase4a(
     frames_per_round: Optional[int] = None,
     frame_budget: Optional[int] = None,
     raise_on_problems: bool = True,
+    causal_json: Optional[Path] = None,
+    seed_mode: str = SEED_MODE_STORY,
+    window_half_sec: Optional[float] = None,
 ) -> Dict[str, Any]:
     problems: List[str] = []
     if mode not in EXPERIMENT_MODES:
@@ -97,12 +106,19 @@ def preflight_phase4a(
         problems.append(f"story json missing: {story_json}")
     if not video_path.is_file():
         problems.append(f"video missing: {video_path}")
+    if causal_json is not None and not Path(causal_json).is_file():
+        problems.append(f"causal json missing: {causal_json}")
 
     selected_targets: Tuple[str, ...] = ()
     try:
         selected_targets = parse_targets(targets)
     except ValueError as exc:
         problems.append(str(exc))
+
+    mode_s = (seed_mode or SEED_MODE_STORY).strip().lower()
+    if mode_s not in SEED_MODES:
+        problems.append(f"unknown seed_mode {seed_mode!r}; expected {list(SEED_MODES)}")
+        mode_s = SEED_MODE_STORY
 
     want_real = not force_mock
     configs = load_endpoint_configs()
@@ -138,19 +154,54 @@ def preflight_phase4a(
         "planner": endpoints["planner"].get("model") or "",
         "vision": endpoints["vision"].get("model") or "",
     }
-    seed_windows: List[Dict[str, Any]] = []
-    if selected_targets:
+
+    story_obj: Optional[Dict[str, Any]] = None
+    causal_obj: Optional[Dict[str, Any]] = None
+    if story_json.is_file():
         try:
+            raw = json.loads(story_json.read_text(encoding="utf-8"))
+            if isinstance(raw, dict):
+                story_obj = raw
+            else:
+                problems.append("story json root must be object")
+        except (OSError, json.JSONDecodeError) as exc:
+            problems.append(f"story json unreadable: {exc}")
+    if causal_json is not None and Path(causal_json).is_file():
+        try:
+            causal_obj = load_optional_json(causal_json)
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            problems.append(f"causal json unreadable: {exc}")
+
+    half = (
+        float(window_half_sec)
+        if window_half_sec is not None
+        else float(DEFAULT_WINDOW_HALF_SEC)
+    )
+    seed_windows: List[Dict[str, Any]] = []
+    seed_error: Optional[str] = None
+    if selected_targets and "story json missing" not in " ".join(problems):
+        try:
+            resolved = resolve_seed_targets(
+                selected_targets,
+                half=half,
+                story=story_obj,
+                causal=causal_obj,
+                seed_mode=mode_s,
+            )
             seed_windows = [
                 {
                     "target_id": t["target_id"],
                     "seed_center_sec": t.get("seed_center_sec"),
                     "window": t.get("window"),
                     "score_anchor_sec": t.get("score_anchor_sec"),
+                    "seed_note": t.get("seed_note"),
+                    "kind": t.get("kind"),
+                    "seed_provenance": t.get("seed_provenance"),
                 }
-                for t in select_seed_targets(selected_targets)
+                for t in resolved
             ]
         except ValueError as exc:
+            seed_error = str(exc)
             problems.append(str(exc))
 
     report = {
@@ -164,7 +215,21 @@ def preflight_phase4a(
         "http_requests_sent": False,
         "dry_check_no_http": True,
         "targets": list(selected_targets),
+        "seed_mode": mode_s,
+        "seed_source": (
+            "croatia_seed_targets"
+            if mode_s == SEED_MODE_CROATIA_LEGACY
+            else "seed_targets_from_story"
+        ),
+        "causal_json": str(causal_json) if causal_json else None,
+        "seed_error": seed_error,
         "seed_windows": seed_windows,
+        "seed_policy": {
+            "board_is_not_goal_action": True,
+            "default_mode": SEED_MODE_STORY,
+            "croatia_legacy_explicit_only": True,
+            "preflight_run_same_resolver": "resolve_seed_targets",
+        },
         "run_profile": {
             "max_rounds": max_rounds,
             "frames_per_round": frames_per_round,
@@ -965,12 +1030,16 @@ def run_phase4a(
     cfg: Optional[Phase4AConfig] = None,
     render_preview: bool = True,
     v1_preview_summary: Optional[PathLike] = None,
+    causal_json: Optional[PathLike] = None,
+    seed_mode: str = SEED_MODE_STORY,
 ) -> Dict[str, Any]:
     cfg = cfg or Phase4AConfig()
     story_json = Path(story_json)
     video_path = Path(video_path)
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
+    causal_path = Path(causal_json) if causal_json else None
+    mode_s = (seed_mode or SEED_MODE_STORY).strip().lower()
 
     # 门控：若用户未显式要求 real，强制 mock
     if not cfg.force_mock and not billing_allowed():
@@ -989,9 +1058,15 @@ def run_phase4a(
         max_rounds=cfg.max_rounds,
         frames_per_round=cfg.frames_per_round,
         frame_budget=cfg.frame_budget,
+        causal_json=causal_path,
+        seed_mode=mode_s,
+        window_half_sec=cfg.window_half_sec,
     )
 
     story = json.loads(story_json.read_text(encoding="utf-8"))
+    causal_obj: Optional[Dict[str, Any]] = None
+    if causal_path is not None:
+        causal_obj = load_optional_json(causal_path)
     if plan_json and Path(plan_json).is_file():
         plan_v1 = json.loads(Path(plan_json).read_text(encoding="utf-8"))
     else:
@@ -999,9 +1074,29 @@ def run_phase4a(
 
     media = probe_video(video_path)
     try:
-        targets = select_seed_targets(cfg.targets, half=cfg.window_half_sec)
+        # 必须与 preflight 同一 resolve_seed_targets
+        targets = resolve_seed_targets(
+            cfg.targets,
+            half=cfg.window_half_sec,
+            story=story if isinstance(story, dict) else None,
+            causal=causal_obj,
+            seed_mode=mode_s,
+        )
     except ValueError as exc:
         raise Phase4AError(str(exc)) from exc
+    # 审计：run 种子与 preflight 一致
+    pf_seeds = [
+        (w.get("target_id"), w.get("seed_center_sec"), w.get("score_anchor_sec"))
+        for w in (pf.get("seed_windows") or [])
+    ]
+    run_seeds = [
+        (t.get("target_id"), t.get("seed_center_sec"), t.get("score_anchor_sec"))
+        for t in targets
+    ]
+    if pf_seeds != run_seeds:
+        raise Phase4AError(
+            f"preflight/run seed mismatch: preflight={pf_seeds} run={run_seeds}"
+        )
 
     gap_ids = [t["gap_id"] for t in targets]
     caps = allocate_gap_caps(gap_ids, global_budget=cfg.frame_budget)
@@ -1144,6 +1239,21 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser = argparse.ArgumentParser(description="Phase 4A shot optimize (gated real API)")
     parser.add_argument("--story-json", type=Path, required=True)
     parser.add_argument("--video-path", type=Path, required=True)
+    parser.add_argument(
+        "--causal-json",
+        type=Path,
+        default=None,
+        help="Optional causal JSON for story-driven seed targets",
+    )
+    parser.add_argument(
+        "--seed-mode",
+        choices=list(SEED_MODES),
+        default=SEED_MODE_STORY,
+        help=(
+            "story (default): seed_targets_from_story; "
+            "croatia_legacy: hardcoded Croatia seeds for explicit compat tests only"
+        ),
+    )
     parser.add_argument("--plan-json", type=Path, default=None)
     parser.add_argument("--out-dir", type=Path, required=True)
     parser.add_argument(
@@ -1235,6 +1345,9 @@ def main(argv: Optional[List[str]] = None) -> int:
                 frames_per_round=cfg.frames_per_round,
                 frame_budget=cfg.frame_budget,
                 raise_on_problems=False,
+                causal_json=args.causal_json,
+                seed_mode=args.seed_mode,
+                window_half_sec=cfg.window_half_sec,
             )
             out = {
                 "dry_check": True,
@@ -1254,6 +1367,8 @@ def main(argv: Optional[List[str]] = None) -> int:
             cfg=cfg,
             render_preview=not args.no_render,
             v1_preview_summary=args.v1_summary,
+            causal_json=args.causal_json,
+            seed_mode=args.seed_mode,
         )
     except (Phase4AError, ApiConfigError) as exc:
         print(f"REFUSE: {exc}", file=sys.stderr)

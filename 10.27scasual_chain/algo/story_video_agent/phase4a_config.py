@@ -11,8 +11,10 @@
 
 from __future__ import annotations
 
+import json
 import os
 from dataclasses import asdict, dataclass
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 
 from story_video_agent.api_provider import api_enabled, smoke_enabled
@@ -438,6 +440,58 @@ def croatia_seed_targets(
     ]
 
 
+SEED_MODE_STORY = "story"
+SEED_MODE_CROATIA_LEGACY = "croatia_legacy"
+SEED_MODES = (SEED_MODE_STORY, SEED_MODE_CROATIA_LEGACY)
+
+
+def resolve_seed_targets(
+    targets: Sequence[str],
+    *,
+    half: float = DEFAULT_WINDOW_HALF_SEC,
+    story: Optional[Dict[str, Any]] = None,
+    causal: Optional[Dict[str, Any]] = None,
+    seed_mode: str = SEED_MODE_STORY,
+) -> List[Dict[str, Any]]:
+    """Phase4A preflight/run/CLI 统一种子入口。
+
+    - 默认 ``story``：必须提供当前比赛 Story JSON（+可选 Causal）
+    - ``croatia_legacy``：仅显式兼容测试；不得作为跨比赛默认
+    - 缺少翻盘里程碑时抛错，禁止静默用记分牌时间冒充进球动作
+    """
+    mode = (seed_mode or SEED_MODE_STORY).strip().lower()
+    if mode not in SEED_MODES:
+        raise ValueError(f"unknown seed_mode {seed_mode!r}; expected one of {list(SEED_MODES)}")
+    want = parse_targets(list(targets))
+    if mode == SEED_MODE_CROATIA_LEGACY:
+        pool = croatia_seed_targets(half=half)
+    else:
+        if story is None:
+            raise ValueError(
+                "seed_mode=story requires story dict; "
+                "pass Story JSON or use --seed-mode croatia_legacy for explicit compat only"
+            )
+        pool = seed_targets_from_story(story, causal=causal, half=half)
+    selected = [t for t in pool if t["target_id"] in set(want)]
+    if not selected:
+        raise ValueError(
+            f"no seed targets matched {list(want)} under seed_mode={mode} "
+            f"(available={[t.get('target_id') for t in pool]})"
+        )
+    # 硬约束：动作 seed 不得等于记分牌锚点
+    for t in selected:
+        seed = t.get("seed_center_sec")
+        board = t.get("score_anchor_sec")
+        if seed is None or board is None:
+            continue
+        if abs(float(seed) - float(board)) < 1.0:
+            raise ValueError(
+                f"seed_center must not equal scoreboard anchor for {t.get('target_id')}: "
+                f"seed={seed} board={board}"
+            )
+    return selected
+
+
 def select_seed_targets(
     targets: Sequence[str],
     *,
@@ -445,21 +499,44 @@ def select_seed_targets(
     story: Optional[Dict[str, Any]] = None,
     causal: Optional[Dict[str, Any]] = None,
     prefer_story: bool = True,
+    seed_mode: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
-    """按 target_id 筛选种子窗；未知或空匹配则报错（不静默回退全量）。
+    """兼容包装：优先 ``resolve_seed_targets``。
 
-    若提供 story 且 prefer_story，优先 ``seed_targets_from_story``；
-    否则回退克罗地亚硬编码（兼容旧测试）。
+    - 显式 ``seed_mode`` 优先
+    - 否则 prefer_story + story → story；无 story 且 prefer_story → 报错
+    - prefer_story=False → croatia_legacy（旧单测）
     """
-    want = parse_targets(list(targets))
-    if story is not None and prefer_story:
-        pool = seed_targets_from_story(story, causal=causal, half=half)
+    if seed_mode is not None:
+        mode = seed_mode
+    elif prefer_story:
+        mode = SEED_MODE_STORY if story is not None else SEED_MODE_STORY
+        if story is None:
+            raise ValueError(
+                "select_seed_targets: story required when prefer_story=True; "
+                "pass story=... or prefer_story=False / seed_mode=croatia_legacy"
+            )
     else:
-        pool = croatia_seed_targets(half=half)
-    selected = [t for t in pool if t["target_id"] in set(want)]
-    if not selected:
-        raise ValueError(f"no seed targets matched {list(want)}")
-    return selected
+        mode = SEED_MODE_CROATIA_LEGACY
+    return resolve_seed_targets(
+        targets,
+        half=half,
+        story=story,
+        causal=causal,
+        seed_mode=mode,
+    )
+
+
+def load_optional_json(path: Optional[Union[str, Path]]) -> Optional[Dict[str, Any]]:
+    if path is None:
+        return None
+    p = Path(path)
+    if not p.is_file():
+        raise FileNotFoundError(f"json missing: {p}")
+    data = json.loads(p.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise ValueError(f"json root must be object: {p}")
+    return data
 
 
 EXPERIMENT_MODES = ("vlm-only", "planner-vlm-loop")

@@ -1,0 +1,181 @@
+{
+  "phase": "4D",
+  "billing": false,
+  "render_ready": false,
+  "semantic_auto_pass_forbidden": true,
+  "equalizer": {
+    "goal_id": "equalizer_goal",
+    "status": "pending_independent_human_review",
+    "auto_granted": false,
+    "production_authorities_required": [
+      "human_audited_review",
+      "independent_verification_pipeline"
+    ],
+    "cursor_may_not_simulate_pass": true,
+    "layers": {
+      "human_review": {
+        "status": "pending",
+        "conclusion": null,
+        "reviewer": null,
+        "note": "Requires human_audited_review or independent_verification_pipeline"
+      },
+      "programmatic": {
+        "requested_media_sec": [
+          3066.0,
+          3067.0,
+          3072.0
+        ],
+        "frame_paths": [
+          "_local_render/phase4d/packets/equalizer/shot_3066.000.jpg",
+          "_local_render/phase4d/packets/equalizer/ball_in_net_3067.000.jpg",
+          "_local_render/phase4d/packets/equalizer/celebration_3072.000.jpg"
+        ],
+        "pts_note": "ffmpeg -ss seek; actual PTS may differ slightly; treat as approx media_sec",
+        "live_tag_observed": true,
+        "scoreboard_during_action": "0:1"
+      },
+      "model_observation": {
+        "status": "not_used_as_fact",
+        "phase4b_reference_only": true,
+        "note": "Qwen labels from 4B are observation_only and cannot grant render_ready"
+      }
+    },
+    "evidence_frames": [
+      {
+        "frame_id": "eq_shot_3066000",
+        "requested_media_sec": 3066.0,
+        "label": "shot",
+        "path": "_local_render/phase4d/packets/equalizer/shot_3066.000.jpg",
+        "broadcast_tag": "直播"
+      },
+      {
+        "frame_id": "eq_ball_in_net_3067000",
+        "requested_media_sec": 3067.0,
+        "label": "ball_in_net",
+        "path": "_local_render/phase4d/packets/equalizer/ball_in_net_3067.000.jpg",
+        "broadcast_tag": "直播"
+      },
+      {
+        "frame_id": "eq_celebration_3072000",
+        "requested_media_sec": 3072.0,
+        "label": "celebration",
+        "path": "_local_render/phase4d/packets/equalizer/celebration_3072.000.jpg",
+        "broadcast_tag": "直播"
+      }
+    ],
+    "claims_under_review": {
+      "shot_kind": "live",
+      "is_replay": false,
+      "ball_in_net_approx_sec": 3067.0,
+      "celebration_present": true,
+      "proposed_cut": {
+        "media_in": 3063.5,
+        "media_out": 3075.0
+      }
+    },
+    "blocking_for_render_ready": [
+      "semantic_not_attested_by_production_authority",
+      "pipeline_time_not_verified"
+    ]
+  },
+  "go_ahead": {
+    "goal_id": "go_ahead_goal",
+    "status": "pending_independent_human_review",
+    "auto_granted": false,
+    "production_authorities_required": [
+      "human_audited_review",
+      "independent_verification_pipeline"
+    ],
+    "cursor_may_not_simulate_pass": true,
+    "layers": {
+      "human_review": {
+        "status": "pending",
+        "conclusion": null,
+        "reviewer": null,
+        "note": "Requires human_audited_review or independent_verification_pipeline"
+      },
+      "programmatic": {
+        "requested_media_sec": [
+          3524.8,
+          3525.0,
+          3526.074
+        ],
+        "frame_paths": [
+          "_local_render/phase4d/packets/go_ahead/shot_flight_3524.800.jpg",
+          "_local_render/phase4d/packets/go_ahead/ball_in_net_3525.000.jpg",
+          "_local_render/phase4d/packets/go_ahead/celebration_3526.074.jpg"
+        ],
+        "pts_note": "ffmpeg -ss seek; actual PTS may differ slightly; treat as approx media_sec",
+        "live_tag_observed": true,
+        "scoreboard_during_action": "1:1"
+      },
+      "model_observation": {
+        "status": "not_used_as_fact",
+        "phase4b_reference_only": true,
+        "note": "Qwen labels from 4B are observation_only and cannot grant render_ready"
+      }
+    },
+    "evidence_frames": [
+      {
+        "frame_id": "ga_shot_flight_3524800",
+        "requested_media_sec": 3524.8,
+        "label": "shot_flight",
+        "path": "_local_render/phase4d/packets/go_ahead/shot_flight_3524.800.jpg",
+        "broadcast_tag": "直播"
+      },
+      {
+        "frame_id": "ga_ball_in_net_3525000",
+        "requested_media_sec": 3525.0,
+        "label": "ball_in_net",
+        "path": "_local_render/phase4d/packets/go_ahead/ball_in_net_3525.000.jpg",
+        "broadcast_tag": "直播"
+      },
+      {
+        "frame_id": "ga_celebration_3526074",
+        "requested_media_sec": 3526.074,
+        "label": "celebration",
+        "path": "_local_render/phase4d/packets/go_ahead/celebration_3526.074.jpg",
+        "broadcast_tag": "直播"
+      }
+    ],
+    "claims_under_review": {
+      "shot_kind": "live",
+      "is_replay": false,
+      "ball_in_net_approx_sec": 3525.0,
+      "celebration_present": true,
+      "proposed_cut": {
+        "media_in": 3518.0,
+        "media_out": 3532.0
+      }
+    },
+    "blocking_for_render_ready": [
+      "semantic_not_attested_by_production_authority",
+      "pipeline_time_not_verified"
+    ]
+  },
+  "closer_go_ahead_board": {
+    "score_path_board_sec": 3697.35,
+    "closer_visual_board_sec": 3600.0,
+    "delta_from_goal_sec": 75.0,
+    "legacy_delta_sec": 172.3,
+    "evidence_frame": "_local_render/phase4d/board_ocr/full_3600.000.jpg",
+    "score_visible": "2:1",
+    "match_clock": "44:46",
+    "lower_third": "FULL-ish scorer bar present",
+    "status": "candidate_scoreboard_anchor_not_score_path"
+  },
+  "ending": {
+    "old_event_ms_window": [
+      7942.16,
+      7954.16
+    ],
+    "full_time_graphic_sec": 7935.0,
+    "proposed_cut": [
+      7928.0,
+      7942.0
+    ],
+    "evidence": "_local_render/phase4d/ending/e_7935.000.jpg",
+    "shows": "FULL TIME 4-1 + scorers",
+    "status": "candidate_better_than_event_ms_celebration"
+  }
+}

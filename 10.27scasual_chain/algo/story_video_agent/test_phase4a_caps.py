@@ -233,6 +233,7 @@ class DryCheckReportTests(unittest.TestCase):
                     video_path=vid,
                     force_mock=True,
                     max_api_calls=12,
+                    seed_mode="croatia_legacy",
                 )
             self.assertTrue(pf.get("secrets_redacted"))
             text = json.dumps(pf)
@@ -281,7 +282,10 @@ class TargetsCliTests(unittest.TestCase):
             parse_targets("winner_goal")
 
     def test_select_seed_equalizer_only_near_3065(self) -> None:
-        seeds = select_seed_targets(["equalizer_goal"])
+        # 显式 croatia_legacy：跨比赛默认不得隐式使用该硬编码
+        seeds = select_seed_targets(
+            ["equalizer_goal"], prefer_story=False, seed_mode="croatia_legacy"
+        )
         self.assertEqual(len(seeds), 1)
         self.assertEqual(seeds[0]["target_id"], "equalizer_goal")
         self.assertAlmostEqual(
@@ -320,12 +324,15 @@ class TargetsCliTests(unittest.TestCase):
                         "vlm-only",
                         "--targets",
                         "equalizer_goal",
+                        "--seed-mode",
+                        "croatia_legacy",
                         "--dry-check",
                     ]
                 )
             self.assertEqual(rc, 0)
             payload = json.loads(buf.getvalue())
             self.assertEqual(payload["targets"], ["equalizer_goal"])
+            self.assertEqual(payload["seed_mode"], "croatia_legacy")
             self.assertEqual(len(payload["seed_windows"]), 1)
             self.assertAlmostEqual(
                 float(payload["seed_windows"][0]["seed_center_sec"]),
@@ -386,6 +393,8 @@ class RealModeDryCheckTests(unittest.TestCase):
                                     "vlm-only",
                                     "--targets",
                                     "equalizer_goal",
+                                    "--seed-mode",
+                                    "croatia_legacy",
                                     "--max-rounds",
                                     "1",
                                     "--frames-per-round",
