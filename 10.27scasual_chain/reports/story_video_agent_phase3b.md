@@ -1,7 +1,7 @@
 # Phase 3B — 真实比赛视频剪辑与审核样片
 
 **分支**: `story-va-phase2c` · **范围**: `10.27scasual_chain` 仅 Story Video Agent  
-**Git commit**: `1956fddd1133304c2f2906ccd56a73b15d39db28`
+**Git commit**: `63e7d0d6277319b7d6a0edafae3f2ae0196ca31f` (`story-va-phase2c`)
 
 ## 结论
 
