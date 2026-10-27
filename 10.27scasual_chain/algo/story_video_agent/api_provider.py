@@ -1,11 +1,13 @@
-"""远程 OpenAI-compatible LLM/VLM Provider（Phase 2C 可信联调）。
+"""远程 OpenAI-compatible LLM/VLM Provider（Phase 2C.1 联调准备）。
 
-严格区分 mock / real / degraded：
+严格区分 mock / real / degraded / cache：
 - mock：显式 force_mock 或未启用 API（不计费）
-- real：STORY_API_ENABLE=1 且配置完整
-- degraded：真实调用失败后的显式降级标记（不得伪装成正常观察）
+- real：STORY_API_ENABLE=1 且配置完整；每次真实 HTTP 尝试（成功/失败/重试）计入限额
+- cache：缓存命中单独统计，不计入 HTTP 限额
+- degraded：真实调用失败后的显式降级（不得伪装成正常观察）
 
 生产启用后缺密钥/模型 → 显式失败，不静默 mock。
+费用字段均为本地估算，不是账单硬上限。
 """
 
 from __future__ import annotations
@@ -24,8 +26,13 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 logger = logging.getLogger("story_video_agent.api")
 
+COST_DISCLAIMER = (
+    "est_cost_usd is a local estimate from configured unit prices "
+    "(STORY_LLM_PRICE_*); it is NOT a billing guarantee or absolute invoice cap."
+)
+
 INTEGRATION_NOTES = """
-Story Video Agent remote API (Phase 2C):
+Story Video Agent remote API (Phase 2C.1):
   STORY_API_ENABLE=1                    require real HTTP (missing config => hard fail)
   STORY_LLM_BASE_URL / OPENAI_BASE_URL
   STORY_LLM_API_KEY  / OPENAI_API_KEY
@@ -33,9 +40,12 @@ Story Video Agent remote API (Phase 2C):
   STORY_VLM_BASE_URL / STORY_VLM_API_KEY / STORY_VLM_MODEL
   STORY_LLM_TIMEOUT_SEC / STORY_LLM_MAX_RETRIES / STORY_LLM_RPM
   STORY_API_SMOKE=1                     explicit billed smoke entry only
-  STORY_API_MAX_CALLS / STORY_API_MAX_COST_USD  hard caps for smoke/real runs
+  STORY_API_MAX_CALLS                   cap on real HTTP attempts (ok/fail/retry)
+  STORY_API_MAX_COST_USD                soft estimate guard (not invoice hard limit)
+  STORY_API_MAX_COMPLETION_TOKENS       per-request max_tokens / max_completion_tokens
 
-provider modes: mock | real | degraded
+provider modes: mock | real | degraded | cache
+HTTP attempts (success+failure+retry) count toward MAX_CALLS; cache hits do not.
 Logs never print API keys or image base64.
 """.strip()
 
@@ -44,7 +54,6 @@ _DEFAULT_PRICE = {
     "completion_per_mtok": float(os.environ.get("STORY_LLM_PRICE_COMPLETION", "0.60")),
 }
 
-# HTTP：4xx（除 408/429）不可重试；5xx/超时/连接错误可重试
 _RETRYABLE_HTTP = frozenset({408, 429, 500, 502, 503, 504})
 
 
@@ -55,10 +64,20 @@ class ApiConfigError(RuntimeError):
 class ApiCallError(RuntimeError):
     """真实 API 调用失败（带是否可重试标记）。"""
 
-    def __init__(self, message: str, *, retryable: bool = False, http_status: int = 0) -> None:
+    def __init__(
+        self,
+        message: str,
+        *,
+        retryable: bool = False,
+        http_status: int = 0,
+        failure_status: str = "",
+    ) -> None:
         super().__init__(message)
         self.retryable = retryable
         self.http_status = http_status
+        self.failure_status = failure_status or _failure_status_from_http(
+            http_status, message, retryable=retryable
+        )
 
 
 @dataclass
@@ -104,6 +123,9 @@ class ApiCallRecord:
     error: str = ""
     http_status: int = 0
     retryable: bool = False
+    http_attempt: bool = False
+    attempt_index: int = 0
+    failure_status: str = ""
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -117,36 +139,42 @@ class ApiUsageStats:
         self.calls.append(row)
 
     def summary(self) -> Dict[str, Any]:
-        real = [c for c in self.calls if c.mode == "real" and not c.cached]
-        cached = [c for c in self.calls if c.cached]
+        http_attempts = [c for c in self.calls if c.http_attempt]
+        cached = [c for c in self.calls if c.cached or c.mode == "cache"]
         mock = [c for c in self.calls if c.mode == "mock"]
         degraded = [c for c in self.calls if c.mode == "degraded"]
+        real_ok = [c for c in http_attempts if c.ok]
+        real_fail = [c for c in http_attempts if not c.ok]
         return {
             "calls": len(self.calls),
-            "real_requests": len(real),
+            "http_attempts": len(http_attempts),
+            "real_requests": len(http_attempts),
+            "real_ok": len(real_ok),
+            "real_failures": len(real_fail),
             "cached_hits": len(cached),
             "mock_calls": len(mock),
             "degraded_calls": len(degraded),
             "ok": sum(1 for c in self.calls if c.ok),
             "failures": sum(1 for c in self.calls if not c.ok),
-            "prompt_tokens": sum(c.prompt_tokens for c in real),
-            "completion_tokens": sum(c.completion_tokens for c in real),
-            "total_tokens": sum(c.total_tokens for c in real),
+            "prompt_tokens": sum(c.prompt_tokens for c in real_ok),
+            "completion_tokens": sum(c.completion_tokens for c in real_ok),
+            "total_tokens": sum(c.total_tokens for c in real_ok),
             "cached_tokens_reported": sum(c.total_tokens for c in cached),
-            "est_cost_usd_real": round(sum(c.est_cost_usd for c in real), 6),
+            "est_cost_usd_real": round(sum(c.est_cost_usd for c in real_ok), 6),
             "est_cost_usd_cached_replay": round(sum(c.est_cost_usd for c in cached), 6),
-            "elapsed_sec_real": round(sum(c.elapsed_sec for c in real), 4),
+            "cost_disclaimer": COST_DISCLAIMER,
+            "elapsed_sec_real": round(sum(c.elapsed_sec for c in http_attempts), 4),
             "by_role": {
                 role: {
-                    "real_requests": sum(1 for c in real if c.role == role),
-                    "tokens": sum(c.total_tokens for c in real if c.role == role),
+                    "http_attempts": sum(1 for c in http_attempts if c.role == role),
+                    "tokens": sum(c.total_tokens for c in real_ok if c.role == role),
                     "est_cost_usd": round(
-                        sum(c.est_cost_usd for c in real if c.role == role), 6
+                        sum(c.est_cost_usd for c in real_ok if c.role == role), 6
                     ),
                 }
                 for role in sorted({c.role for c in self.calls} or ["planner", "vision"])
             },
-            "records": [c.to_dict() for c in self.calls[-30:]],
+            "records": [c.to_dict() for c in self.calls[-40:]],
         }
 
 
@@ -241,6 +269,30 @@ def _encode_image(path: Path) -> str:
     return f"data:{mime};base64,{b64}"
 
 
+def _failure_status_from_http(http_status: int, message: str, *, retryable: bool) -> str:
+    msg = (message or "").lower()
+    if http_status == 429 or "429" in msg:
+        return "http_429"
+    if "timeout" in msg or "timed out" in msg:
+        return "timeout"
+    if http_status == 408:
+        return "timeout"
+    if http_status >= 500:
+        return "http_5xx"
+    if http_status >= 400:
+        return f"http_{http_status}"
+    if retryable:
+        return "transient_error"
+    return "api_error"
+
+
+def failure_status_from_exc(exc: BaseException) -> str:
+    if isinstance(exc, ApiCallError) and exc.failure_status:
+        return exc.failure_status
+    retryable, http_status, message = _classify_error(exc)
+    return _failure_status_from_http(http_status, message, retryable=retryable)
+
+
 def _classify_error(exc: BaseException) -> Tuple[bool, int, str]:
     if isinstance(exc, ApiCallError):
         return exc.retryable, exc.http_status, str(exc)
@@ -256,7 +308,6 @@ def _classify_error(exc: BaseException) -> Tuple[bool, int, str]:
 
 
 def _safe_log_error(role: str, message: str) -> None:
-    # 绝不记录 Authorization / base64
     scrubbed = message
     for token in ("Bearer ", "data:image"):
         if token in scrubbed:
@@ -273,18 +324,22 @@ class ApiProvider:
         configs: Optional[Dict[str, EndpointConfig]] = None,
         max_calls: Optional[int] = None,
         max_cost_usd: Optional[float] = None,
+        max_completion_tokens: Optional[int] = None,
+        required_roles: Optional[Sequence[str]] = None,
     ) -> None:
         self.configs = configs or load_endpoint_configs()
         self.require_real = bool(require_real) or api_enabled()
         self.force_mock = bool(force_mock)
+        self.required_roles = (
+            list(required_roles) if required_roles else list(self.configs.keys())
+        )
         if self.force_mock and self.require_real and api_enabled():
-            # 显式 force_mock 优先用于单测；生产 smoke 不应同时 force_mock
             self.require_real = False
         if self.require_real and not self.force_mock:
             missing = [
                 role
-                for role, cfg in self.configs.items()
-                if not cfg.configured()
+                for role in self.required_roles
+                if role in self.configs and not self.configs[role].configured()
             ]
             if missing:
                 raise ApiConfigError(
@@ -295,6 +350,7 @@ class ApiProvider:
         self._cache: Dict[str, Dict[str, Any]] = {}
         self._limiters = {role: _RateLimiter(cfg.rpm) for role, cfg in self.configs.items()}
         self.notes = INTEGRATION_NOTES
+        self.cost_disclaimer = COST_DISCLAIMER
         self.max_calls = max_calls
         if self.max_calls is None:
             raw = _env("STORY_API_MAX_CALLS", default="")
@@ -303,7 +359,11 @@ class ApiProvider:
         if self.max_cost_usd is None:
             raw = _env("STORY_API_MAX_COST_USD", default="")
             self.max_cost_usd = float(raw) if raw else None
-        self._real_calls = 0
+        self.max_completion_tokens = max_completion_tokens
+        if self.max_completion_tokens is None:
+            raw = _env("STORY_API_MAX_COMPLETION_TOKENS", default="")
+            self.max_completion_tokens = int(raw) if raw else None
+        self._http_attempts = 0
 
     def status(self) -> Dict[str, Any]:
         mode = "mock" if self.force_mock or not self.require_real else "real"
@@ -312,28 +372,46 @@ class ApiProvider:
             "api_enabled": api_enabled(),
             "require_real": self.require_real,
             "force_mock": self.force_mock,
+            "required_roles": list(self.required_roles),
             "planner": self.configs["planner"].to_dict(),
             "vision": self.configs["vision"].to_dict(),
-            "planner_ready": self.configs["planner"].configured() and self.require_real and not self.force_mock,
-            "vision_ready": self.configs["vision"].configured() and self.require_real and not self.force_mock,
+            "planner_ready": (
+                self.configs["planner"].configured()
+                and self.require_real
+                and not self.force_mock
+                and "planner" in self.required_roles
+            ),
+            "vision_ready": (
+                self.configs["vision"].configured()
+                and self.require_real
+                and not self.force_mock
+                and "vision" in self.required_roles
+            ),
             "max_calls": self.max_calls,
             "max_cost_usd": self.max_cost_usd,
+            "max_completion_tokens": self.max_completion_tokens,
+            "http_attempts": self._http_attempts,
+            "cost_disclaimer": self.cost_disclaimer,
             "notes": self.notes,
             "usage": self.stats.summary(),
         }
 
     def _check_caps(self) -> None:
-        if self.max_calls is not None and self._real_calls >= self.max_calls:
+        if self.max_calls is not None and self._http_attempts >= self.max_calls:
             raise ApiCallError(
-                f"API max_calls={self.max_calls} exhausted",
+                f"API max_calls={self.max_calls} exhausted "
+                f"(http_attempts={self._http_attempts}; cache hits excluded)",
                 retryable=False,
+                failure_status="budget_exhausted",
             )
         if self.max_cost_usd is not None:
             spent = self.stats.summary()["est_cost_usd_real"]
             if spent >= self.max_cost_usd:
                 raise ApiCallError(
-                    f"API max_cost_usd={self.max_cost_usd} reached (spent={spent})",
+                    f"API estimate soft-cap max_cost_usd={self.max_cost_usd} reached "
+                    f"(est_spent={spent}). {COST_DISCLAIMER}",
                     retryable=False,
+                    failure_status="cost_estimate_cap",
                 )
 
     def chat(
@@ -360,6 +438,7 @@ class ApiProvider:
                     mode="cache",
                     elapsed_sec=0.0,
                     cached=True,
+                    http_attempt=False,
                     prompt_tokens=int(usage.get("prompt_tokens") or 0),
                     completion_tokens=int(usage.get("completion_tokens") or 0),
                     total_tokens=int(usage.get("total_tokens") or 0),
@@ -394,21 +473,29 @@ class ApiProvider:
         last_err = ""
         http_status = 0
         retryable = False
+        failure_status = "api_error"
         t0 = time.perf_counter()
         for attempt in range(cfg.max_retries + 1):
+            http_started = False
+            attempt_t0 = time.perf_counter()
             try:
                 self._check_caps()
                 self._limiters[role].wait()
+                self._http_attempts += 1
+                http_started = True
                 payload = self._post_chat(cfg, messages=messages, temperature=temperature)
-                self._real_calls += 1
-                elapsed = time.perf_counter() - t0
+                elapsed = time.perf_counter() - attempt_t0
                 usage = payload.get("usage") or {}
                 pt = int(usage.get("prompt_tokens") or 0)
                 ct = int(usage.get("completion_tokens") or 0)
                 tt = int(usage.get("total_tokens") or (pt + ct))
                 choices = payload.get("choices") or []
                 if not choices:
-                    raise ApiCallError("empty choices", retryable=True)
+                    raise ApiCallError(
+                        "empty choices",
+                        retryable=True,
+                        failure_status="empty_response",
+                    )
                 content = str((choices[0].get("message") or {}).get("content") or "")
                 cost = _estimate_cost(pt, ct)
                 result = {
@@ -423,7 +510,9 @@ class ApiProvider:
                     "provider_mode": "real",
                     "cached": False,
                     "est_cost_usd": cost,
+                    "cost_disclaimer": COST_DISCLAIMER,
                     "raw_response_excerpt": content[:2000],
+                    "http_attempt_index": attempt,
                 }
                 self.stats.add(
                     ApiCallRecord(
@@ -437,6 +526,8 @@ class ApiProvider:
                         total_tokens=tt,
                         est_cost_usd=cost,
                         http_status=200,
+                        http_attempt=True,
+                        attempt_index=attempt,
                     )
                 )
                 if cache_key:
@@ -444,7 +535,24 @@ class ApiProvider:
                 return result
             except Exception as exc:  # noqa: BLE001
                 retryable, http_status, last_err = _classify_error(exc)
+                failure_status = failure_status_from_exc(exc)
                 _safe_log_error(role, last_err)
+                if http_started:
+                    self.stats.add(
+                        ApiCallRecord(
+                            role=role,
+                            model=cfg.model,
+                            ok=False,
+                            mode="real",
+                            elapsed_sec=time.perf_counter() - attempt_t0,
+                            error=last_err[:300],
+                            http_status=http_status,
+                            retryable=retryable,
+                            http_attempt=True,
+                            attempt_index=attempt,
+                            failure_status=failure_status,
+                        )
+                    )
                 if (not retryable) or attempt >= cfg.max_retries:
                     break
                 time.sleep(0.4 * (2**attempt))
@@ -460,10 +568,17 @@ class ApiProvider:
                 error=last_err,
                 http_status=http_status,
                 retryable=retryable,
+                failure_status=failure_status,
+                http_attempt=False,
             )
         )
         if not allow_degraded_fallback:
-            raise ApiCallError(last_err or "api failed", retryable=retryable, http_status=http_status)
+            raise ApiCallError(
+                last_err or "api failed",
+                retryable=retryable,
+                http_status=http_status,
+                failure_status=failure_status,
+            )
         return {
             "content": "",
             "usage": {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0},
@@ -472,7 +587,10 @@ class ApiProvider:
             "provider_mode": "degraded",
             "cached": False,
             "error": last_err,
+            "failure_status": failure_status,
+            "http_status": http_status,
             "est_cost_usd": 0.0,
+            "cost_disclaimer": COST_DISCLAIMER,
         }
 
     def _post_chat(
@@ -482,11 +600,15 @@ class ApiProvider:
         messages: Sequence[Dict[str, Any]],
         temperature: float,
     ) -> Dict[str, Any]:
-        body = {
+        body: Dict[str, Any] = {
             "model": cfg.model,
             "temperature": temperature,
             "messages": list(messages),
         }
+        if self.max_completion_tokens is not None:
+            # OpenAI-compatible：多数端点认 max_tokens；部分认 max_completion_tokens
+            body["max_tokens"] = int(self.max_completion_tokens)
+            body["max_completion_tokens"] = int(self.max_completion_tokens)
         data = json.dumps(body).encode("utf-8")
         headers = {
             "Content-Type": "application/json",
@@ -503,7 +625,6 @@ class ApiProvider:
                 return json.loads(resp.read().decode("utf-8", errors="replace"))
         except urllib.error.HTTPError as exc:
             detail = exc.read().decode("utf-8", errors="replace")
-            # 不记录可能含密钥的响应头
             raise ApiCallError(
                 f"HTTP {exc.code}: {detail[:200]}",
                 retryable=exc.code in _RETRYABLE_HTTP,
@@ -561,5 +682,5 @@ class ApiProvider:
             ],
             cache_key=f"vision:{digest.hexdigest()[:28]}",
             mock_content=json.dumps(mock_obj, ensure_ascii=False),
-            allow_degraded_fallback=True,  # 视觉层返回 degraded，由上层拒绝 observed
+            allow_degraded_fallback=True,
         )

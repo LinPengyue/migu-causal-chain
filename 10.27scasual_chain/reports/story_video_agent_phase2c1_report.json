@@ -1,0 +1,45 @@
+{
+  "phase": "2C.1",
+  "title": "Real API integration preparation",
+  "paid_smoke_executed": false,
+  "note": "Default free tests only. Real Croatia VLM/Planner smoke requires explicit STORY_API_SMOKE=1; not run in this commit.",
+  "modes": {
+    "vlm-only": "Rule policy picks one Croatia evidence window; real multimodal API only",
+    "planner-vlm-loop": "After VLM facts in memory, one real LLM planner decision (continue/refine/stop)"
+  },
+  "counting": {
+    "http_attempts_include": ["success", "failure", "retry"],
+    "cached_hits_separate": true,
+    "max_completion_tokens_env": "STORY_API_MAX_COMPLETION_TOKENS",
+    "cost_disclaimer": "est_cost_usd is a local estimate from configured unit prices (STORY_LLM_PRICE_*); it is NOT a billing guarantee or absolute invoice cap."
+  },
+  "failure_status_examples": [
+    "empty_json",
+    "illegal_json",
+    "invalid_frame_id",
+    "unrelated_visual",
+    "timeout",
+    "http_429",
+    "budget_exhausted"
+  ],
+  "croatia_assets": {
+    "story_json": "reports/story_t01/2022-11-28 克罗地亚vs加拿大.json",
+    "video_path": "/mnt/data4/migu/2022-11-28 克罗地亚vs加拿大.mp4",
+    "default_gap_id": "missing_setup_visual"
+  },
+  "branch_vs_main": {
+    "branch": "story-va-phase2c",
+    "merge_base_with_origin_main": "0fb8fa3 (Phase 2B)",
+    "force_push_main": false,
+    "overwrite_main": false
+  },
+  "regression": {
+    "command": "PYTHONPATH=. python3 -m unittest story_video_agent.test_dry_run story_video_agent.test_media story_video_agent.test_perception story_video_agent.test_phase2c story_video_agent.test_phase2c1 -v",
+    "result": "48 OK (1 skipped billed smoke)"
+  },
+  "report_sections_when_user_runs_smoke": [
+    "vlm recognition (frame_ids, description, raw excerpt)",
+    "planner follow-up decision",
+    "http_attempts / cached_hits / elapsed_sec / est_cost_usd_real"
+  ]
+}
