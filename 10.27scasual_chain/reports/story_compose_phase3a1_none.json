@@ -1,0 +1,127 @@
+{
+  "schema_version": "story-compose-plan-3a.1",
+  "algorithm": "t01_story_composer_phase3a1",
+  "match_id": "01_1 9月29日 25-26赛季西甲第7轮 巴塞罗那VS皇家社会 4K国语__converted_4K_H265_25fps",
+  "template_id": "T01_comeback",
+  "story_tier": "none",
+  "protagonist": {
+    "side": null,
+    "team_name": "",
+    "teams": {
+      "left": "01_1 9月29日 25-26赛季西甲第7轮 巴塞罗那",
+      "right": "皇家社会 4K国语__converted_4K_H265_25fps"
+    }
+  },
+  "beats": [
+    "铺垫",
+    "蓄力",
+    "转折",
+    "高潮",
+    "收尾"
+  ],
+  "segments": [],
+  "evidence_refs": [],
+  "event_ids": [],
+  "event_mappings": [],
+  "missing_evidence": [
+    "no_comeback_story"
+  ],
+  "blocking_reasons": [
+    "tier_none_no_comeback"
+  ],
+  "verification_status": "blocked_none",
+  "structure_ok": true,
+  "render_ready": false,
+  "narration": {
+    "summary": "T01 判定为 none（no_comeback）；不生成翻盘故事编排。",
+    "by_beat": {
+      "铺垫": "",
+      "蓄力": "",
+      "转折": "",
+      "高潮": "",
+      "收尾": ""
+    }
+  },
+  "candidate_edl": [],
+  "render_ready_edl": [],
+  "edl": [],
+  "diagnostics": {
+    "verification": {
+      "ok": true,
+      "story_tier": "none",
+      "protagonist_side": null,
+      "checks": [
+        {
+          "id": "score_time_0",
+          "ok": true,
+          "detail": "t_sec=262.98 vs prev=-1.0"
+        },
+        {
+          "id": "score_time_1",
+          "ok": true,
+          "detail": "t_sec=2144.75 vs prev=262.98"
+        },
+        {
+          "id": "score_progress_1",
+          "ok": true,
+          "detail": "(0, 0)->(0, 1)"
+        },
+        {
+          "id": "score_time_2",
+          "ok": true,
+          "detail": "t_sec=2903.88 vs prev=2144.75"
+        },
+        {
+          "id": "score_progress_2",
+          "ok": true,
+          "detail": "(0, 1)->(1, 1)"
+        }
+      ],
+      "conflicts": [],
+      "rule_facts": [
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "score_node",
+          "t_sec": 262.98,
+          "score": "0:0",
+          "delta_side": null,
+          "carrier_event_id": "event_000004"
+        },
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "score_node",
+          "t_sec": 2144.75,
+          "score": "0:1",
+          "delta_side": "right",
+          "carrier_event_id": "event_000576"
+        },
+        {
+          "kind": "rule_fact",
+          "used_as_fact": true,
+          "fact": "score_node",
+          "t_sec": 2903.88,
+          "score": "1:1",
+          "delta_side": "left",
+          "carrier_event_id": "event_000680"
+        }
+      ],
+      "vlm_observations": [],
+      "mock_evidence": [],
+      "unresolved_conflicts": [],
+      "notes": [
+        "Mock evidence is never treated as real factual basis.",
+        "VLM observations are not automatically verified facts.",
+        "fact_verified without pipeline_verified is forged and rejected."
+      ]
+    },
+    "composer": "t01_story_composer_phase3a1",
+    "schema": "story-compose-plan-3a.1",
+    "llm_used": false,
+    "mock_not_factual": true,
+    "milestones_source": "state._comeback_score_steps",
+    "structure_ok": true,
+    "structure_problems": []
+  }
+}

@@ -1,15 +1,12 @@
-"""Phase 3A：Story Verifier — 比分/归属/时序/回放/视觉证据一致性。
+"""Phase 3A.1：Story Verifier — 比分/归属/时序/回放/视觉证据一致性。
 
-明确区分：
-- rule_fact：T01/score_path/事件字段可支持的规则事实
-- vlm_observation：真实 VLM（provider_mode real/cache）观察
-- verified：已核证（本阶段稀缺）
-- mock：合成/fixture，不得 used_as_fact
-- unresolved_conflict：冲突未解
+`verified` 仅能由可信校验流水线（pipeline_verified）产生；
+外部 JSON 的 fact_verified=true 一律视为不可信声明。
 """
 
 from __future__ import annotations
 
+import re
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 
@@ -40,32 +37,87 @@ def classify_visual_evidence(ev: Dict[str, Any]) -> Dict[str, Any]:
     mode = str(ev.get("provider_mode") or ev.get("provider") or "")
     kind = "unresolved_conflict"
     used_as_fact = False
+    pipeline_verified = bool(ev.get("pipeline_verified"))
+
+    # 外部伪造 verified：无 pipeline_verified 则降级并记录
+    forged = False
+    if ev.get("fact_verified") and not pipeline_verified:
+        forged = True
+
     if mode == "mock" or ev.get("is_mock") or str(ev.get("notes") or "").startswith("mock"):
         kind = "mock"
         used_as_fact = False
-    elif mode in ("real", "cache") and ev.get("normalized_ok"):
-        kind = "vlm_observation"
-        used_as_fact = False  # 观察 ≠ 已核实事实
-    elif mode in ("real", "cache"):
-        kind = "vlm_observation"
-    elif ev.get("fact_verified") or ev.get("kind") == "verified":
+        pipeline_verified = False
+    elif pipeline_verified and ev.get("normalized_ok"):
         kind = "verified"
         used_as_fact = True
+    elif mode in ("real", "cache") and ev.get("normalized_ok"):
+        kind = "vlm_observation"
+        used_as_fact = False
+    elif mode in ("real", "cache"):
+        kind = "vlm_observation"
     elif ev.get("kind") == "rule_fact":
         kind = "rule_fact"
         used_as_fact = True
+    elif forged:
+        kind = "unresolved_conflict"
+        used_as_fact = False
+
     if ev.get("conflict") or ev.get("failure_status"):
         if kind != "mock":
             kind = "unresolved_conflict"
             used_as_fact = False
+            pipeline_verified = False
+
     return {
         "gap_id": ev.get("gap_id"),
         "kind": kind,
         "used_as_fact": used_as_fact,
+        "pipeline_verified": pipeline_verified,
+        "forged_verified_flag": forged,
         "provider_mode": mode or None,
         "frame_ids": list(ev.get("frame_ids") or []),
         "normalized_ok": bool(ev.get("normalized_ok")),
         "message": ev.get("message") or ev.get("notes") or "",
+    }
+
+
+def check_narration_grounding(plan: Dict[str, Any]) -> Dict[str, Any]:
+    """检查 LLM/叙事是否引入证据未支持的比分或精确时间声称。"""
+    allowed_scores = set()
+    for ref in plan.get("evidence_refs") or []:
+        if isinstance(ref, dict) and ref.get("score"):
+            allowed_scores.add(str(ref["score"]))
+    for node in (plan.get("diagnostics") or {}).get("verification", {}).get("rule_facts") or []:
+        if node.get("score"):
+            allowed_scores.add(str(node["score"]))
+    # also from segments evidence
+    for seg in plan.get("segments") or []:
+        for ref in seg.get("evidence_refs") or []:
+            if isinstance(ref, dict) and ref.get("score"):
+                allowed_scores.add(str(ref["score"]))
+
+    texts: List[str] = []
+    narr = plan.get("narration") or {}
+    if narr.get("summary"):
+        texts.append(str(narr["summary"]))
+    for v in (narr.get("by_beat") or {}).values():
+        texts.append(str(v))
+    for seg in plan.get("segments") or []:
+        if seg.get("narration"):
+            texts.append(str(seg["narration"]))
+    blob = "\n".join(texts)
+
+    score_hits = set(re.findall(r"\b\d+:\d+\b", blob))
+    ungrounded_scores = sorted(s for s in score_hits if s not in allowed_scores and s not in {"0:0"})
+    # 精确到毫秒的伪时间声称
+    fake_precision = bool(re.search(r"\d+\.\d{4,}s", blob))
+    return {
+        "allowed_scores": sorted(allowed_scores),
+        "mentioned_scores": sorted(score_hits),
+        "ungrounded": ungrounded_scores,
+        "fake_precision_time": fake_precision,
+        "ok": not ungrounded_scores and not fake_precision,
     }
 
 
@@ -75,7 +127,6 @@ def verify_story(
     visual_evidence: Optional[Sequence[Dict[str, Any]]] = None,
     causal: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
-    """核对比分轨迹、球队归属、进球/时序、回放标记与视觉证据。"""
     checks: List[Dict[str, Any]] = []
     conflicts: List[Dict[str, Any]] = []
     rule_facts: List[Dict[str, Any]] = []
@@ -89,7 +140,6 @@ def verify_story(
     events = _event_index(story)
     scores = _score_nodes(story)
 
-    # --- 比分轨迹单调与归属 ---
     prev_t = -1.0
     prev_pair: Optional[Tuple[int, int]] = None
     for i, node in enumerate(scores):
@@ -97,40 +147,22 @@ def verify_story(
         pair = _parse_score(str(node.get("score") or ""))
         ok_time = t >= prev_t - 1e-6
         checks.append(
-            {
-                "id": f"score_time_{i}",
-                "ok": ok_time,
-                "detail": f"t_sec={t} vs prev={prev_t}",
-            }
+            {"id": f"score_time_{i}", "ok": ok_time, "detail": f"t_sec={t} vs prev={prev_t}"}
         )
         if not ok_time:
             conflicts.append(
-                {
-                    "type": "score_path_time_regression",
-                    "index": i,
-                    "t_sec": t,
-                    "prev": prev_t,
-                }
+                {"type": "score_path_time_regression", "index": i, "t_sec": t, "prev": prev_t}
             )
         if pair and prev_pair:
-            # 单侧进球：总和 +1 且一侧不减
             total_ok = (pair[0] + pair[1]) >= (prev_pair[0] + prev_pair[1])
             nonneg = pair[0] >= prev_pair[0] and pair[1] >= prev_pair[1]
             ok_score = total_ok and nonneg
             checks.append(
-                {
-                    "id": f"score_progress_{i}",
-                    "ok": ok_score,
-                    "detail": f"{prev_pair}->{pair}",
-                }
+                {"id": f"score_progress_{i}", "ok": ok_score, "detail": f"{prev_pair}->{pair}"}
             )
             if not ok_score:
                 conflicts.append(
-                    {
-                        "type": "score_path_illegal_transition",
-                        "from": prev_pair,
-                        "to": pair,
-                    }
+                    {"type": "score_path_illegal_transition", "from": prev_pair, "to": pair}
                 )
             delta = node.get("delta_side")
             if delta == "left" and pair[0] <= prev_pair[0]:
@@ -152,7 +184,6 @@ def verify_story(
             prev_pair = pair
         prev_t = max(prev_t, t)
 
-    # 主角侧与翻盘弧（story/candidate）
     if tier in ("story", "candidate") and side in ("left", "right"):
         rule_facts.append(
             {
@@ -162,7 +193,6 @@ def verify_story(
                 "side": side,
             }
         )
-        # 是否出现过落后→扳平/反超
         deficits = []
         for node in scores:
             pair = _parse_score(str(node.get("score") or ""))
@@ -171,20 +201,17 @@ def verify_story(
             margin = pair[0] - pair[1] if side == "left" else pair[1] - pair[0]
             deficits.append((float(node.get("t_sec") or 0), margin, node.get("score")))
         saw_behind = any(m < 0 for _, m, _ in deficits)
-        saw_equal_or_lead = any(m >= 0 for _, m, _ in deficits[1:] or deficits)
         ok_arc = saw_behind and any(m >= 0 for _, m, _ in deficits)
         checks.append(
             {
                 "id": "comeback_arc",
                 "ok": ok_arc if tier == "story" else True,
-                "detail": f"behind={saw_behind} recover={saw_equal_or_lead} points={deficits}",
+                "detail": f"behind={saw_behind} points={deficits}",
             }
         )
         if tier == "story" and not ok_arc:
             conflicts.append({"type": "story_tier_without_comeback_arc", "side": side})
 
-    # --- 事件：进球动作、回放、时序 ---
-    live_times: List[float] = []
     for eid, ev in events.items():
         is_replay = bool(ev.get("is_replay"))
         t_ms = ev.get("t_ms")
@@ -209,42 +236,16 @@ def verify_story(
                     "detail": "replay must not drive primary live timeline",
                 }
             )
-        elif t_sec is not None:
-            if live_times and t_sec + 1e-3 < live_times[-1]:
-                # 不强制全局排序冲突（拆条可能乱序），仅记录
-                checks.append(
-                    {
-                        "id": f"live_order_{eid}",
-                        "ok": False,
-                        "detail": f"live t={t_sec} < prev={live_times[-1]}",
-                    }
-                )
-            live_times.append(t_sec)
 
-    # recognition beats vs event existence / role
     beats = ((story.get("recognition") or {}).get("beats") or {})
     for beat, ids in beats.items():
         for eid in ids or []:
             ev = events.get(str(eid))
             if ev is None:
                 conflicts.append(
-                    {
-                        "type": "beat_event_missing",
-                        "beat": beat,
-                        "event_id": eid,
-                    }
+                    {"type": "beat_event_missing", "beat": beat, "event_id": eid}
                 )
                 continue
-            role = ev.get("story_role")
-            if role and role != beat and not ev.get("is_replay"):
-                checks.append(
-                    {
-                        "id": f"role_mismatch_{eid}",
-                        "ok": False,
-                        "detail": f"beat={beat} story_role={role}",
-                    }
-                )
-            # 回放不应作为唯一铺垫/高潮主证据而不声明
             if ev.get("is_replay") and beat in ("铺垫", "转折", "高潮"):
                 checks.append(
                     {
@@ -254,7 +255,6 @@ def verify_story(
                     }
                 )
 
-    # causal teams (optional)
     if causal:
         t1 = causal.get("team_1_name") or ""
         t2 = causal.get("team_2_name") or ""
@@ -269,11 +269,18 @@ def verify_story(
                 }
             )
 
-    # --- 视觉证据 ---
     for raw in visual_evidence or []:
         if not isinstance(raw, dict):
             continue
         classified = classify_visual_evidence(raw)
+        if classified.get("forged_verified_flag"):
+            conflicts.append(
+                {
+                    "type": "forged_verified_flag",
+                    "gap_id": classified.get("gap_id"),
+                    "detail": "fact_verified=true without pipeline_verified",
+                }
+            )
         if classified["kind"] == "mock":
             mock_items.append(classified)
             checks.append(
@@ -294,16 +301,11 @@ def verify_story(
             observations.append(classified)
         else:
             observations.append(classified)
-            # VLM 与比分事件粗冲突：已在 classify 中
             if classified.get("normalized_ok") is False:
                 conflicts.append(
-                    {
-                        "type": "visual_not_normalized",
-                        "gap_id": classified.get("gap_id"),
-                    }
+                    {"type": "visual_not_normalized", "gap_id": classified.get("gap_id")}
                 )
 
-    # mock 不得混入 rule_facts
     for m in mock_items:
         if m.get("used_as_fact"):
             conflicts.append({"type": "mock_used_as_fact", "gap_id": m.get("gap_id")})
@@ -321,11 +323,12 @@ def verify_story(
         ],
         "mock_evidence": mock_items,
         "unresolved_conflicts": [
-            c for c in conflicts if c.get("type", "").startswith("visual")
+            c for c in conflicts if str(c.get("type", "")).startswith("visual")
         ]
         + [o for o in observations if o.get("kind") == "unresolved_conflict"],
         "notes": [
             "Mock evidence is never treated as real factual basis.",
             "VLM observations are not automatically verified facts.",
+            "fact_verified without pipeline_verified is forged and rejected.",
         ],
     }

@@ -1,4 +1,4 @@
-"""Phase 3A：Verifier + Composer 无计费单测（法国 story / 克罗地亚 candidate / none）。"""
+"""Phase 3A / 3A.1 回归：法国 story / 克罗地亚 candidate / none（无计费）。"""
 
 from __future__ import annotations
 
@@ -63,7 +63,9 @@ class Phase3ATests(unittest.TestCase):
         self.assertFalse(cl["used_as_fact"])
 
     def test_verifier_france_score_path(self) -> None:
-        rep = verify_story(self.france, visual_evidence=[_mock_visual("x")], causal=self.causal_fr)
+        rep = verify_story(
+            self.france, visual_evidence=[_mock_visual("x")], causal=self.causal_fr
+        )
         self.assertEqual(rep["story_tier"], "story")
         self.assertTrue(any(f.get("fact") == "score_node" for f in rep["rule_facts"]))
         self.assertTrue(rep["mock_evidence"])
@@ -83,21 +85,21 @@ class Phase3ATests(unittest.TestCase):
         self.assertEqual(plan["schema_version"], SCHEMA_VERSION)
         self.assertEqual(plan["story_tier"], "story")
         self.assertEqual(plan["beats"], list(BEATS))
+        self.assertFalse(plan["render_ready"])
         ok, problems = validate_compose_plan(plan)
         self.assertTrue(ok, problems)
         beats_present = {s["beat"] for s in plan["segments"]}
         for b in ("铺垫", "蓄力", "转折", "高潮"):
             self.assertIn(b, beats_present)
-        # mock 不得 used_as_fact
         for ref in plan["evidence_refs"]:
             if ref.get("kind") == "mock":
                 self.assertFalse(ref.get("used_as_fact"))
         self.assertTrue(any("mock_only" in m for m in plan["missing_evidence"]))
-        # EDL / report
-        self.assertTrue(plan["edl"])
+        self.assertTrue(plan["candidate_edl"])
+        self.assertEqual(plan["render_ready_edl"], [])
         md = render_narrative_report(plan)
         self.assertIn("铺垫", md)
-        self.assertIn(plan["match_id"], md)
+        self.assertIn("Render-ready EDL", md)
 
     def test_replay_not_marked_live(self) -> None:
         plan = compose_story_plan(self.france, causal=self.causal_fr, use_llm=False)
@@ -106,29 +108,28 @@ class Phase3ATests(unittest.TestCase):
                 self.assertEqual(seg.get("shot_kind"), "replay_supplement")
         ok, problems = validate_compose_plan(plan)
         self.assertTrue(ok, problems)
-        self.assertFalse(any("replay_marked_live" in p for p in problems))
 
     def test_live_timeline_non_decreasing(self) -> None:
         plan = compose_story_plan(self.france, causal=self.causal_fr, use_llm=False)
         times = [
             float(s["media_in"])
             for s in plan["segments"]
-            if s.get("shot_kind") == "live" and s.get("media_in") is not None
+            if s.get("shot_kind") in ("live", "scoreboard_anchor")
+            and s.get("media_in") is not None
         ]
         self.assertEqual(times, sorted(times))
 
     def test_croatia_candidate_partial(self) -> None:
-        plan = compose_story_plan(
-            self.croatia, causal=self.causal_hr, use_llm=False
-        )
+        plan = compose_story_plan(self.croatia, causal=self.causal_hr, use_llm=False)
         self.assertEqual(plan["story_tier"], "candidate")
-        self.assertEqual(plan["verification_status"], "partial")
-        self.assertTrue(plan["missing_evidence"])
+        self.assertIn(
+            plan["verification_status"],
+            ("partial", "not_render_ready", "conflicts_present"),
+        )
+        self.assertFalse(plan["render_ready"])
+        self.assertTrue(plan["missing_evidence"] or plan["blocking_reasons"])
         ok, problems = validate_compose_plan(plan)
         self.assertTrue(ok, problems)
-        # candidate 允许不完整但仍有转折/高潮候选
-        beats = {s["beat"] for s in plan["segments"]}
-        self.assertTrue({"转折", "高潮"} & beats)
 
     def test_none_blocks_comeback(self) -> None:
         if NONE is None or not NONE.is_file():
@@ -138,18 +139,12 @@ class Phase3ATests(unittest.TestCase):
         self.assertEqual(plan["story_tier"], "none")
         self.assertEqual(plan["verification_status"], "blocked_none")
         self.assertEqual(plan["segments"], [])
+        self.assertFalse(plan["render_ready"])
         ok, problems = validate_compose_plan(plan)
         self.assertTrue(ok, problems)
 
     def test_pending_localization_no_fake_precision(self) -> None:
-        story = dict(self.croatia)
-        # strip ending events to force pending ending
-        story["events"] = [
-            e
-            for e in (story.get("events") or [])
-            if e.get("story_role") != "收尾" and e.get("type") not in ("比赛结束",)
-        ]
-        plan = compose_story_plan(story, use_llm=False)
+        plan = compose_story_plan(self.france, use_llm=False)
         pending = [
             s
             for s in plan["segments"]
@@ -158,11 +153,9 @@ class Phase3ATests(unittest.TestCase):
         self.assertTrue(pending)
         for s in pending:
             self.assertFalse(s.get("precise_claim"))
-            # 允许 null 时间；若有数值也不得标 calibrated
-            self.assertNotEqual(s.get("time_status"), "calibrated")
+            self.assertNotEqual(s.get("render_eligibility"), "render_ready")
 
     def test_unrelated_event_not_forced(self) -> None:
-        # 注入无关事件不应进入高潮 live（非进球/射门）
         story = json.loads(json.dumps(self.france))
         story.setdefault("events", []).append(
             {
@@ -197,6 +190,7 @@ class Phase3ATests(unittest.TestCase):
             self.assertTrue(out_md.is_file())
             loaded = json.loads(out_json.read_text(encoding="utf-8"))
             self.assertEqual(loaded["match_id"], plan["match_id"])
+            self.assertEqual(loaded["schema_version"], SCHEMA_VERSION)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,430 @@
+{
+  "phase": "3A.1",
+  "note": "Diff vs Phase 3A outputs; mock fixture is not recognition accuracy. No paid LLM. No FFmpeg render.",
+  "france_3a_vs_3a1": {
+    "old_schema": "story-compose-plan-3a",
+    "new_schema": "story-compose-plan-3a.1",
+    "old_setup_segments": [
+      {
+        "id": "seg_setup_deficit",
+        "events": [
+          "event_000027"
+        ],
+        "media_in": 1531.65,
+        "shot": "live"
+      },
+      {
+        "id": "seg_setup_replay_supp",
+        "events": [
+          "event_000027"
+        ],
+        "media_in": 2446.817,
+        "shot": "replay_supplement"
+      }
+    ],
+    "new_setup_segment": {
+      "id": "seg_setup_deficit",
+      "beat": "铺垫",
+      "role": "deficit_scoreboard_anchor",
+      "events": [],
+      "time_status": "score_path_only",
+      "elig": "candidate_only",
+      "media_in": 1531.65,
+      "blocking": [
+        "score_path_only_not_render_ready",
+        "setup_is_scoreboard_anchor_not_goal",
+        "unresolved_mapping:time_mismatch: event@2450.817s vs score@1535.650s dt=915.167s>120.0,type_incompatible:助攻,replay_far_from_scoreboard"
+      ],
+      "shot": "scoreboard_anchor"
+    },
+    "old_had_event_000027_on_setup": true,
+    "new_has_event_000027_on_setup": false,
+    "old_edl_include_score_path_only": 1,
+    "new_render_ready_count": 0,
+    "new_safe_to_cut": [],
+    "new_blocked_or_draft": [
+      "seg_setup_deficit",
+      "seg_buildup_event_000031",
+      "seg_buildup_event_000072",
+      "seg_equalizer_scoreboard",
+      "seg_equalizer_goal_pending",
+      "seg_go_ahead_scoreboard",
+      "seg_go_ahead_goal_pending",
+      "seg_ending"
+    ],
+    "new_unresolved_mappings_count": 3
+  },
+  "summaries": {
+    "france": {
+      "schema": "story-compose-plan-3a.1",
+      "tier": "story",
+      "render_ready": false,
+      "verification_status": "not_render_ready",
+      "n_candidate_edl": 8,
+      "n_render_ready_edl": 0,
+      "blocking_reasons": [
+        "equalizer_goal_action_not_render_ready",
+        "go_ahead_goal_action_not_render_ready",
+        "missing_trusted_goal_action:equalizer",
+        "missing_trusted_goal_action:go_ahead"
+      ],
+      "safe_to_cut": [],
+      "blocked_or_draft": [
+        "seg_setup_deficit",
+        "seg_buildup_event_000031",
+        "seg_buildup_event_000072",
+        "seg_equalizer_scoreboard",
+        "seg_equalizer_goal_pending",
+        "seg_go_ahead_scoreboard",
+        "seg_go_ahead_goal_pending",
+        "seg_ending"
+      ],
+      "segments": [
+        {
+          "id": "seg_setup_deficit",
+          "beat": "铺垫",
+          "role": "deficit_scoreboard_anchor",
+          "events": [],
+          "time_status": "score_path_only",
+          "elig": "candidate_only",
+          "media_in": 1531.65,
+          "blocking": [
+            "score_path_only_not_render_ready",
+            "setup_is_scoreboard_anchor_not_goal",
+            "unresolved_mapping:time_mismatch: event@2450.817s vs score@1535.650s dt=915.167s>120.0,type_incompatible:助攻,replay_far_from_scoreboard"
+          ],
+          "shot": "scoreboard_anchor"
+        },
+        {
+          "id": "seg_buildup_event_000031",
+          "beat": "蓄力",
+          "role": "buildup_action",
+          "events": [
+            "event_000031"
+          ],
+          "time_status": "event_ms",
+          "elig": "candidate_only",
+          "media_in": 1585.9,
+          "blocking": [
+            "unverified_event_ms"
+          ],
+          "shot": "live"
+        },
+        {
+          "id": "seg_buildup_event_000072",
+          "beat": "蓄力",
+          "role": "buildup_action",
+          "events": [
+            "event_000072"
+          ],
+          "time_status": "event_ms",
+          "elig": "candidate_only",
+          "media_in": 2107.89,
+          "blocking": [
+            "unverified_event_ms"
+          ],
+          "shot": "live"
+        },
+        {
+          "id": "seg_equalizer_scoreboard",
+          "beat": "转折",
+          "role": "equalizer_scoreboard_anchor",
+          "events": [],
+          "time_status": "score_path_only",
+          "elig": "candidate_only",
+          "media_in": 2509.29,
+          "blocking": [
+            "score_path_only_not_render_ready"
+          ],
+          "shot": "scoreboard_anchor"
+        },
+        {
+          "id": "seg_equalizer_goal_pending",
+          "beat": "转折",
+          "role": "equalizer_goal_action",
+          "events": [],
+          "time_status": "pending_localization",
+          "elig": "blocked",
+          "media_in": null,
+          "blocking": [
+            "missing_trusted_goal_action:equalizer"
+          ],
+          "shot": "unknown"
+        },
+        {
+          "id": "seg_go_ahead_scoreboard",
+          "beat": "高潮",
+          "role": "go_ahead_scoreboard_anchor",
+          "events": [],
+          "time_status": "score_path_only",
+          "elig": "candidate_only",
+          "media_in": 2900.31,
+          "blocking": [
+            "score_path_only_not_render_ready"
+          ],
+          "shot": "scoreboard_anchor"
+        },
+        {
+          "id": "seg_go_ahead_goal_pending",
+          "beat": "高潮",
+          "role": "go_ahead_goal_action",
+          "events": [],
+          "time_status": "pending_localization",
+          "elig": "blocked",
+          "media_in": null,
+          "blocking": [
+            "missing_trusted_goal_action:go_ahead"
+          ],
+          "shot": "unknown"
+        },
+        {
+          "id": "seg_ending",
+          "beat": "收尾",
+          "role": "ending",
+          "events": [
+            "event_000302"
+          ],
+          "time_status": "event_ms",
+          "elig": "candidate_only",
+          "media_in": 7237.8,
+          "blocking": [
+            "unverified_event_ms"
+          ],
+          "shot": "live"
+        }
+      ],
+      "unresolved_mappings": [
+        {
+          "context": "behind_score",
+          "carrier_event_id": "event_000027",
+          "score_t_sec": 1535.65,
+          "score": "0:1",
+          "delta_side": "right",
+          "status": "unresolved_mapping",
+          "linked_event_id": null,
+          "reasons": [
+            "time_mismatch: event@2450.817s vs score@1535.650s dt=915.167s>120.0",
+            "type_incompatible:助攻",
+            "replay_far_from_scoreboard",
+            "score_context_mismatch:1:1!=0:1"
+          ],
+          "checks": {
+            "id_string_match": true,
+            "event_t_sec": 2450.817,
+            "event_type": "助攻",
+            "is_replay": true,
+            "namespace": "causal_chain",
+            "score_context": "1:1",
+            "abs_dt_sec": 915.167
+          }
+        },
+        {
+          "context": "equalizer_score",
+          "carrier_event_id": "event_000082",
+          "score_t_sec": 2513.29,
+          "score": "1:1",
+          "delta_side": "left",
+          "status": "unresolved_mapping",
+          "linked_event_id": null,
+          "reasons": [
+            "carrier_id_not_in_story_events"
+          ],
+          "checks": {
+            "id_string_match": false
+          }
+        },
+        {
+          "context": "go_ahead_score",
+          "carrier_event_id": "event_000091",
+          "score_t_sec": 2904.31,
+          "score": "2:1",
+          "delta_side": "left",
+          "status": "unresolved_mapping",
+          "linked_event_id": null,
+          "reasons": [
+            "carrier_id_not_in_story_events"
+          ],
+          "checks": {
+            "id_string_match": false
+          }
+        }
+      ]
+    },
+    "croatia": {
+      "schema": "story-compose-plan-3a.1",
+      "tier": "candidate",
+      "render_ready": false,
+      "verification_status": "not_render_ready",
+      "n_candidate_edl": 6,
+      "n_render_ready_edl": 0,
+      "blocking_reasons": [
+        "equalizer_goal_action_not_render_ready",
+        "go_ahead_goal_action_not_render_ready",
+        "missing_trusted_goal_action:go_ahead"
+      ],
+      "safe_to_cut": [],
+      "blocked_or_draft": [
+        "seg_setup_deficit",
+        "seg_equalizer_goal_action",
+        "seg_equalizer_scoreboard",
+        "seg_go_ahead_scoreboard",
+        "seg_go_ahead_goal_pending",
+        "seg_ending"
+      ],
+      "segments": [
+        {
+          "id": "seg_setup_deficit",
+          "beat": "铺垫",
+          "role": "deficit_scoreboard_anchor",
+          "events": [],
+          "time_status": "score_path_only",
+          "elig": "candidate_only",
+          "media_in": 1075.06,
+          "blocking": [
+            "score_path_only_not_render_ready",
+            "setup_is_scoreboard_anchor_not_goal",
+            "unresolved_mapping:carrier_id_not_in_story_events"
+          ],
+          "shot": "scoreboard_anchor"
+        },
+        {
+          "id": "seg_equalizer_goal_action",
+          "beat": "转折",
+          "role": "equalizer_goal_action",
+          "events": [
+            "event_000021"
+          ],
+          "time_status": "linked_event_ms",
+          "elig": "candidate_only",
+          "media_in": 3061.903,
+          "blocking": [
+            "goal_action_time_not_pipeline_verified"
+          ],
+          "shot": "live"
+        },
+        {
+          "id": "seg_equalizer_scoreboard",
+          "beat": "转折",
+          "role": "equalizer_scoreboard_anchor",
+          "events": [],
+          "time_status": "score_path_only",
+          "elig": "candidate_only",
+          "media_in": 3141.98,
+          "blocking": [
+            "score_path_only_not_render_ready"
+          ],
+          "shot": "scoreboard_anchor"
+        },
+        {
+          "id": "seg_go_ahead_scoreboard",
+          "beat": "高潮",
+          "role": "go_ahead_scoreboard_anchor",
+          "events": [],
+          "time_status": "score_path_only",
+          "elig": "candidate_only",
+          "media_in": 3693.35,
+          "blocking": [
+            "score_path_only_not_render_ready"
+          ],
+          "shot": "scoreboard_anchor"
+        },
+        {
+          "id": "seg_go_ahead_goal_pending",
+          "beat": "高潮",
+          "role": "go_ahead_goal_action",
+          "events": [],
+          "time_status": "pending_localization",
+          "elig": "blocked",
+          "media_in": null,
+          "blocking": [
+            "missing_trusted_goal_action:go_ahead"
+          ],
+          "shot": "unknown"
+        },
+        {
+          "id": "seg_ending",
+          "beat": "收尾",
+          "role": "ending",
+          "events": [
+            "event_000159"
+          ],
+          "time_status": "event_ms",
+          "elig": "candidate_only",
+          "media_in": 7942.16,
+          "blocking": [
+            "unverified_event_ms"
+          ],
+          "shot": "live"
+        }
+      ],
+      "unresolved_mappings": [
+        {
+          "context": "behind_score",
+          "carrier_event_id": "event_000004",
+          "score_t_sec": 1079.06,
+          "score": "0:1",
+          "delta_side": null,
+          "status": "unresolved_mapping",
+          "linked_event_id": null,
+          "reasons": [
+            "carrier_id_not_in_story_events"
+          ],
+          "checks": {
+            "id_string_match": false
+          }
+        },
+        {
+          "context": "equalizer_score",
+          "carrier_event_id": "event_000068",
+          "score_t_sec": 3145.98,
+          "score": "1:1",
+          "delta_side": "left",
+          "status": "unresolved_mapping",
+          "linked_event_id": null,
+          "reasons": [
+            "carrier_id_not_in_story_events"
+          ],
+          "checks": {
+            "id_string_match": false
+          }
+        },
+        {
+          "context": "go_ahead_score",
+          "carrier_event_id": "event_000076",
+          "score_t_sec": 3697.35,
+          "score": "2:1",
+          "delta_side": "left",
+          "status": "unresolved_mapping",
+          "linked_event_id": null,
+          "reasons": [
+            "type_incompatible:射门"
+          ],
+          "checks": {
+            "id_string_match": true,
+            "event_t_sec": 3697.35,
+            "event_type": "射门",
+            "is_replay": false,
+            "namespace": "delivery_event",
+            "score_context": "2:1",
+            "abs_dt_sec": 0.0
+          }
+        }
+      ]
+    },
+    "none": {
+      "schema": "story-compose-plan-3a.1",
+      "tier": "none",
+      "render_ready": false,
+      "verification_status": "blocked_none",
+      "n_candidate_edl": 0,
+      "n_render_ready_edl": 0,
+      "blocking_reasons": [
+        "tier_none_no_comeback"
+      ],
+      "safe_to_cut": [],
+      "blocked_or_draft": [],
+      "segments": [],
+      "unresolved_mappings": []
+    }
+  }
+}
