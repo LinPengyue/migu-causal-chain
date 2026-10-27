@@ -22,12 +22,12 @@ from story_video_agent.state import (
     load_t01_story,
     validate_plan_payload,
 )
-from story_video_agent.api_provider import ApiProvider, api_enabled
+from story_video_agent.api_provider import ApiConfigError, ApiProvider, api_enabled
 from story_video_agent.tools import ToolBox
 from story_video_agent.vision_provider import VisionProvider
 
-ALGORITHM_ID = "t01_story_video_agent_phase2b"
-SCHEMA_VERSION = "story-video-agent-plan-2b"
+ALGORITHM_ID = "t01_story_video_agent_phase2c"
+SCHEMA_VERSION = "story-video-agent-plan-2c"
 
 
 def _close_open_tasks(tasks: List[Dict[str, Any]], reason: str) -> None:
@@ -49,6 +49,36 @@ def _verification_complete(
     if not tasks:
         return False
     return all(task.get("status") == "verified" for task in tasks)
+
+
+def _derive_terminal_status(
+    *,
+    perception: bool,
+    media_only: bool,
+    dry_run: bool,
+    tasks: List[Dict[str, Any]],
+    forced_reason: str = "",
+) -> str:
+    """全局状态由任务事实推导，不因 perception 循环结束就宣称 observed。"""
+    if forced_reason == "frame_budget_exhausted":
+        return "frame_budget_exhausted"
+    if forced_reason == "budget_exhausted":
+        return "budget_exhausted"
+    if dry_run:
+        return "planned"
+    if media_only:
+        if any(t.get("status") == "sampled" for t in tasks):
+            return "sampled"
+        return "unresolved"
+    if perception:
+        observed = [t for t in tasks if t.get("status") == "observed"]
+        unresolved = [t for t in tasks if t.get("status") == "unresolved"]
+        if observed and not unresolved and len(observed) == len(tasks):
+            return "observed"
+        if observed:
+            return "partial_observed"
+        return "unresolved"
+    return "planned"
 
 
 def _attach_frames_to_task(
@@ -81,6 +111,7 @@ def solve(
     focus_gap_ids: Optional[Sequence[str]] = None,
     force_mock_vlm: bool = False,
     use_llm_planner: Optional[bool] = None,
+    require_real_api: bool = False,
 ) -> Dict[str, Any]:
     mode_flags = (dry_run, media_only, perception)
     if sum(bool(x) for x in mode_flags) != 1:
@@ -89,8 +120,15 @@ def solve(
     media_info = None
     store = None
     vision = None
-    # dry-run 强制 mock；perception/media 默认 mock，仅 STORY_API_ENABLE=1 走真实远程 API
-    api = ApiProvider(force_mock=force_mock_vlm or dry_run or not api_enabled())
+    # dry-run / 显式 mock：不计费；生产 require_real 或 STORY_API_ENABLE 缺配置则硬失败
+    want_real = bool(require_real_api) or (api_enabled() and not force_mock_vlm and not dry_run)
+    try:
+        api = ApiProvider(
+            force_mock=bool(force_mock_vlm or dry_run or (not want_real)),
+            require_real=want_real and not force_mock_vlm and not dry_run,
+        )
+    except ApiConfigError:
+        raise
     if perception:
         vision = VisionProvider(api, force_mock=api.force_mock)
 
@@ -287,11 +325,21 @@ def solve(
             forced_stop = decision.get("type") == "answer" and reason == "last_step"
             if forced_stop and unfinished_gaps:
                 return finish("budget_exhausted")
-            if perception:
-                return finish("observed")
-            if media_only:
-                return finish("sampled")
-            return finish("planned")
+            status = _derive_terminal_status(
+                perception=perception,
+                media_only=media_only,
+                dry_run=dry_run,
+                tasks=evidence_tasks,
+                forced_reason=reason if reason in ("refine_quota_exhausted",) else "",
+            )
+            if reason == "refine_quota_exhausted" and perception:
+                status = _derive_terminal_status(
+                    perception=True,
+                    media_only=False,
+                    dry_run=False,
+                    tasks=evidence_tasks,
+                )
+            return finish(status)
 
         try:
             observation = (
@@ -335,9 +383,18 @@ def solve(
         elif tool == "sample_next_evidence":
             gap_id = str((decision.get("arguments") or {}).get("gap_id") or "")
             frames = list((observation or {}).get("frames") or [])
+            window = (observation or {}).get("window") or {}
+            if gap_id and window.get("start") is not None and window.get("end") is not None:
+                memory.add_checked_interval(
+                    gap_id, float(window["start"]), float(window["end"])
+                )
             if gap_id and frames:
                 _attach_frames_to_task(evidence_tasks, gap_id, frames)
                 memory.mark_sampled(gap_id)
+                # 从帧窗口推断已检查区间
+                starts = [float(f.get("requested_media_sec") or 0) for f in frames]
+                if starts:
+                    memory.add_checked_interval(gap_id, min(starts), max(starts) + 0.04)
             elif gap_id and (observation or {}).get("status") == "sampled":
                 for task in evidence_tasks:
                     if task.get("gap_id") == gap_id and task.get("status") == "pending":
@@ -348,19 +405,38 @@ def solve(
             gap_id = str((decision.get("arguments") or {}).get("gap_id") or "")
             evidence = (observation or {}).get("visual_evidence") or {}
             status = (observation or {}).get("status")
+            memory.add_raw_vlm(
+                gap_id,
+                str(evidence.get("raw_response_excerpt") or ""),
+                evidence,
+            )
             for task in evidence_tasks:
                 if task.get("gap_id") != gap_id:
                     continue
                 task["visual_evidence"] = evidence
-                if status == "observed":
+                if status == "observed" and evidence.get("normalized_ok"):
                     task["status"] = "observed"
                     memory.mark_observed(gap_id, evidence)
                 else:
                     task["status"] = "unresolved"
                     task["unresolved_reason"] = evidence.get("message") or "vision_failed"
-                    memory.mark_unresolved(gap_id, task["unresolved_reason"])
+                    memory.mark_unresolved(
+                        gap_id,
+                        task["unresolved_reason"],
+                        doubt={"provider_mode": evidence.get("provider_mode")},
+                    )
+                    if evidence.get("conflict"):
+                        memory.add_conflict(evidence["conflict"])
                 break
             agent.mark_observe_result(gap_id, observation or {})
+        elif tool == "refine_search_window":
+            gap_id = str((decision.get("arguments") or {}).get("gap_id") or "")
+            window = (observation or {}).get("window") or {}
+            if gap_id and window.get("start") is not None:
+                memory.add_checked_interval(
+                    gap_id, float(window["start"]), float(window["end"])
+                )
+            agent.mark_refine(gap_id, observation or {})
         elif tool in (
             "coarse_search_interval",
             "inspect_story_window",
@@ -369,6 +445,11 @@ def solve(
         ):
             gap_id = str((decision.get("arguments") or {}).get("gap_id") or "")
             frames = list((observation or {}).get("frames") or [])
+            window = (observation or {}).get("window") or {}
+            if gap_id and window.get("start") is not None:
+                memory.add_checked_interval(
+                    gap_id, float(window["start"]), float(window["end"])
+                )
             if gap_id and frames:
                 _attach_frames_to_task(evidence_tasks, gap_id, frames)
                 memory.mark_sampled(gap_id)
@@ -393,6 +474,7 @@ def run_story_json(
     force_mock_vlm: bool = False,
     france_focus: bool = False,
     use_llm_planner: Optional[bool] = None,
+    require_real_api: bool = False,
 ) -> Dict[str, Any]:
     story = load_t01_story(story_path)
     focus = list(focus_gap_ids) if focus_gap_ids is not None else None
@@ -413,6 +495,7 @@ def run_story_json(
         focus_gap_ids=focus,
         force_mock_vlm=force_mock_vlm,
         use_llm_planner=use_llm_planner,
+        require_real_api=require_real_api,
     )
     result["story_file"] = str(story_path)
     return result

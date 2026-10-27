@@ -122,7 +122,11 @@ class ToolBox:
             "inspect_visual_evidence": (
                 "Run VLM over already extracted frames. Arguments: gap_id, frame_ids (list). "
                 "Returns strict JSON observation; timestamps bound by program only. "
-                "Success marks observed, never verified."
+                "Only normalized_ok evidence marks observed; never verified."
+            ),
+            "refine_search_window": (
+                "Propose next search after VLM feedback. Arguments: gap_id, mode "
+                "(shrink|expand|switch|stop), optional start,end. Budget/tool limits apply."
             ),
             "finish_evidence_plan": (
                 "Terminal action: freeze the evidence task list and stop the loop. Arguments {}."
@@ -206,6 +210,32 @@ class ToolBox:
                 raise ToolArgumentError("frame_ids must be a non-empty list")
             frame_ids = [str(x) for x in raw_ids]
             return {"gap_id": gap_id, "frame_ids": frame_ids}
+
+        if name == "refine_search_window":
+            if "gap_id" not in args or "mode" not in args:
+                raise ToolArgumentError("refine_search_window requires gap_id, mode")
+            allowed = {"gap_id", "mode", "start", "end", "note"}
+            extra = set(args) - allowed
+            if extra:
+                raise ToolArgumentError(f"refine_search_window unsupported {sorted(extra)}")
+            gap_id = str(args["gap_id"])
+            if self._gap_by_id(gap_id) is None:
+                raise ToolArgumentError(f"unknown gap_id {gap_id}")
+            mode = str(args["mode"])
+            if mode not in ("shrink", "expand", "switch", "stop"):
+                raise ToolArgumentError("mode must be shrink|expand|switch|stop")
+            out: Dict[str, Any] = {"gap_id": gap_id, "mode": mode}
+            if "start" in args or "end" in args:
+                if not {"start", "end"} <= set(args):
+                    raise ToolArgumentError("start and end must be provided together")
+                start, end = self._window(
+                    name, args["start"], args["end"], max_span=COARSE_MAX_SPAN
+                )
+                out["start"] = start
+                out["end"] = end
+            if "note" in args:
+                out["note"] = str(args["note"])
+            return out
 
         if name == "coarse_search_interval":
             required = {"gap_id", "start", "end"}
@@ -327,6 +357,14 @@ class ToolBox:
                 "status": "pending",
                 "fact_verified": False,
             }
+        if name == "refine_search_window":
+            return {
+                "dry_run": True,
+                "gap_id": normalized["gap_id"],
+                "mode": normalized["mode"],
+                "message": "stub refine",
+                "requeue_sample": False,
+            }
         return {
             "dry_run": True,
             "tool": name,
@@ -403,6 +441,9 @@ class ToolBox:
 
         if name == "inspect_visual_evidence":
             return self._inspect_visual(normalized["gap_id"], normalized["frame_ids"])
+
+        if name == "refine_search_window":
+            return self._refine_search(normalized)
 
         if name == "coarse_search_interval":
             return self._sample_window(
@@ -537,6 +578,62 @@ class ToolBox:
             coarse=True,
         )
 
+    def _refine_search(self, normalized: Dict[str, Any]) -> Dict[str, Any]:
+        gap_id = normalized["gap_id"]
+        mode = normalized["mode"]
+        if mode == "stop":
+            return {
+                "dry_run": False,
+                "gap_id": gap_id,
+                "mode": mode,
+                "requeue_sample": False,
+                "stopped": True,
+                "status": "unresolved",
+            }
+        start = normalized.get("start")
+        end = normalized.get("end")
+        gap = self._gap_by_id(gap_id) or {}
+        if start is None or end is None:
+            seeds = list(gap.get("seed_windows") or [])
+            intervals = list(gap.get("search_intervals") or [])
+            base = seeds[0] if seeds else (intervals[0] if intervals else None)
+            if not base:
+                raise ToolArgumentError(f"gap {gap_id} has no window to refine")
+            start, end = float(base["start"]), float(base["end"])
+            mid = (start + end) / 2.0
+            span = end - start
+            if mode == "shrink":
+                start, end = mid - span * 0.25, mid + span * 0.25
+            elif mode == "expand":
+                start, end = start - span * 0.5, end + span * 0.5
+            elif mode == "switch":
+                # 跳到下一个 search_interval（若有）
+                idx = self._gap_search_cursor.get(gap_id, 0)
+                if idx < len(intervals):
+                    start = float(intervals[idx]["start"])
+                    end = float(intervals[idx]["end"])
+        # clamp
+        start = max(0.0, float(start))
+        end = float(end)
+        if self.duration_known:
+            end = min(end, self.duration)
+        if end - start > COARSE_MAX_SPAN:
+            end = start + COARSE_MAX_SPAN
+        if not start < end:
+            raise ToolArgumentError("refined window invalid after clamp")
+        # 记录为临时 seed，供下一次 sample_next 优先使用
+        gap.setdefault("seed_windows", [])
+        gap["seed_windows"] = [{"start": start, "end": end}] + list(gap.get("seed_windows") or [])
+        self._gap_seed_cursor[gap_id] = 0
+        return {
+            "dry_run": False,
+            "gap_id": gap_id,
+            "mode": mode,
+            "window": {"start": start, "end": end},
+            "requeue_sample": True,
+            "status": "pending",
+        }
+
     def _inspect_visual(self, gap_id: str, frame_ids: List[str]) -> Dict[str, Any]:
         if not self.perception:
             raise MediaError("inspect_visual_evidence requires perception mode")
@@ -549,7 +646,6 @@ class ToolBox:
         for fid in frame_ids:
             rec = store.get_frame(fid)
             if rec is None:
-                # try manifest
                 hit = next((r for r in store.manifest if r.get("frame_id") == fid), None)
                 if not hit or not Path(str(hit.get("path") or "")).is_file():
                     raise ToolArgumentError(f"unknown or missing frame_id {fid}")
@@ -564,8 +660,9 @@ class ToolBox:
             frame_paths=paths,
             frame_ids=frame_ids,
             frame_bindings=bindings,
+            gap=gap,
         )
-        ok = "error" not in evidence
+        ok = bool(evidence.get("normalized_ok")) and "error" not in evidence
         return {
             "dry_run": False,
             "perception": True,

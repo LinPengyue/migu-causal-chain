@@ -437,6 +437,7 @@ _ALLOWED_SCHEMAS = frozenset(
         "story-video-agent-plan-1.5",
         "story-video-agent-plan-2a",
         "story-video-agent-plan-2b",
+        "story-video-agent-plan-2c",
     }
 )
 
@@ -506,8 +507,14 @@ def validate_plan_payload(payload: Dict[str, Any]) -> List[str]:
             problems.append(f"task[{index}]_media_only_verified_forbidden")
         if perception and status == "verified":
             problems.append(f"task[{index}]_perception_verified_forbidden")
-        if status == "observed" and not (task.get("visual_evidence") or task.get("frames")):
-            problems.append(f"task[{index}]_observed_without_evidence")
+        if status == "observed":
+            evidence = task.get("visual_evidence") or {}
+            if not evidence.get("normalized_ok"):
+                problems.append(f"task[{index}]_observed_without_normalized_ok")
+            if not evidence.get("frame_ids"):
+                problems.append(f"task[{index}]_observed_without_cited_frames")
+            if evidence.get("provider_mode") == "degraded":
+                problems.append(f"task[{index}]_observed_from_degraded")
 
         kind = task.get("kind")
         if kind == "scoreboard" and task.get("anchor_status") not in ("score_path",):

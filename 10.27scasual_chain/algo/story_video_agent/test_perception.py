@@ -169,7 +169,16 @@ class Phase2BTests(unittest.TestCase):
     def test_memory_rejects_verified_from_vlm(self) -> None:
         mem = Memory()
         mem.mark_sampled("g1")
-        mem.mark_observed("g1", {"gap_id": "g1", "fact_verified": False})
+        mem.mark_observed(
+            "g1",
+            {
+                "gap_id": "g1",
+                "fact_verified": False,
+                "normalized_ok": True,
+                "provider_mode": "mock",
+                "frame_ids": ["f1"],
+            },
+        )
         self.assertEqual(mem.gap_stages["g1"], "observed")
         with self.assertRaises(ValueError):
             mem.set_stage("g1", "verified")
@@ -182,8 +191,9 @@ class Phase2BTests(unittest.TestCase):
             mock_decision={"type": "answer", "answer": "finish_evidence_plan", "reason": "t"},
         )
         self.assertEqual(out["provider"], "mock")
-        self.assertEqual(api.stats.summary()["est_cost_usd"], 0.0)
-        self.assertEqual(api.stats.summary()["total_tokens"], 0)
+        summary = api.stats.summary()
+        self.assertEqual(summary["est_cost_usd_real"], 0.0)
+        self.assertEqual(summary["total_tokens"], 0)
 
     def test_france_like_perception_loop_mock(self) -> None:
         story = _france_like_story()
@@ -207,13 +217,16 @@ class Phase2BTests(unittest.TestCase):
         self.assertTrue(result["perception"])
         self.assertFalse(result["verification_complete"])
         self.assertTrue(result["structure_ok"], result.get("structure_problems"))
+        self.assertEqual(result["status"], "observed")
         self.assertEqual(len(result["evidence_tasks"]), 3)
         observed = [t for t in result["evidence_tasks"] if t["status"] == "observed"]
-        self.assertGreaterEqual(len(observed), 1)
+        self.assertEqual(len(observed), 3)
         for task in observed:
             ev = task["visual_evidence"]
             self.assertTrue(ev.get("observation_only"))
             self.assertFalse(ev.get("fact_verified"))
+            self.assertTrue(ev.get("normalized_ok"))
+            self.assertEqual(ev.get("provider_mode"), "mock")
             self.assertTrue(ev.get("frame_time_bindings"))
             for bind in ev["frame_time_bindings"]:
                 self.assertIn("requested_media_sec", bind)

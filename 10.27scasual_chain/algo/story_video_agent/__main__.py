@@ -30,6 +30,7 @@ def main() -> None:
     parser.add_argument("--france-focus", action="store_true")
     parser.add_argument("--croatia-setup-focus", action="store_true")
     parser.add_argument("--force-mock-vlm", action="store_true")
+    parser.add_argument("--require-real-api", action="store_true")
     parser.add_argument("--use-llm-planner", action="store_true")
     parser.add_argument("--out", type=Path, default=None)
     args = parser.parse_args()
@@ -60,6 +61,7 @@ def main() -> None:
         focus_gap_ids=focus,
         force_mock_vlm=bool(args.force_mock_vlm),
         use_llm_planner=True if args.use_llm_planner else None,
+        require_real_api=bool(args.require_real_api),
     )
     text = json.dumps(result, ensure_ascii=False, indent=2)
     if args.out:

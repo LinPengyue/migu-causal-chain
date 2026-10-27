@@ -17,8 +17,12 @@ PLANNER_SYSTEM = (
     "Choose exactly one next action as JSON: "
     '{"type":"tool","tool":"<name>","arguments":{...}} '
     'or {"type":"answer","answer":"finish_evidence_plan","reason":"..."}. '
-    "Use only listed tools. Never invent media timestamps; tools bind times. "
-    "VLM observations are not fact verification. Prefer high-priority climax gaps."
+    "Allowed refine tool: refine_search_window with gap_id, mode in "
+    "{shrink,expand,switch,stop}, optional start/end. "
+    "Use recent_observations, conflicts, unresolved_doubts, checked_intervals. "
+    "Never invent media timestamps; tools bind times. "
+    "Do not loop forever: if budget low or intervals exhausted, finish. "
+    "VLM observations are not fact verification."
 )
 
 
@@ -47,6 +51,8 @@ class Agent:
         self._observed_done: Set[str] = set()
         self._task_frames: Dict[str, List[str]] = {}
         self.planner_mode_log: List[str] = []
+        self._refine_counts: Dict[str, int] = {}
+        self.max_refines_per_gap = 2
 
     def decide(self, memory: Any, step: int, max_steps: int) -> Dict[str, Any]:
         self.decision_attempts = []
@@ -134,8 +140,18 @@ class Agent:
     ) -> Dict[str, Any]:
         assert self.api is not None
         tools = self.tools.descriptions()
-        stages = getattr(memory, "gap_stages", {}) or {}
-        evidence_n = len(getattr(memory, "visual_evidence", []) or [])
+        facts = memory.planner_facts() if hasattr(memory, "planner_facts") else {}
+        store = self.tools.frame_store
+        budget = None
+        if store is not None:
+            budget = {
+                "remaining": store.budget.remaining,
+                "used": store.budget.used,
+                "max": store.budget.max_frames,
+                "per_gap_remaining": {
+                    gid: store.budget.remaining_for(gid) for gid in sorted(self._registered)
+                },
+            }
         user = {
             "remaining_steps": remaining,
             "match_id": self.item.get("match_id"),
@@ -148,6 +164,8 @@ class Agent:
                     "priority": gap_priority(str(g.get("gap_id"))),
                     "anchor_status": g.get("anchor_status"),
                     "tool_hint": g.get("tool_hint"),
+                    "score_anchor_sec": g.get("score_anchor_sec"),
+                    "goal_anchor_sec": g.get("goal_anchor_sec"),
                 }
                 for g in (self.item.get("gaps") or [])
             ],
@@ -155,16 +173,23 @@ class Agent:
             "sample_queue": list(self._sample_queue),
             "observe_queue": list(self._observe_queue),
             "task_frames": {k: v[:8] for k, v in self._task_frames.items()},
-            "memory_stages": stages,
-            "visual_evidence_count": evidence_n,
+            "refine_counts": dict(self._refine_counts),
+            "max_refines_per_gap": self.max_refines_per_gap,
+            "frame_budget": budget,
+            "planner_facts": facts,
             "tools": tools,
             "hint_rule_decision": fallback,
         }
-        result = self.api.plan_decision(
-            system_prompt=PLANNER_SYSTEM,
-            user_prompt=json.dumps(user, ensure_ascii=False),
-            mock_decision=fallback,
-        )
+        try:
+            result = self.api.plan_decision(
+                system_prompt=PLANNER_SYSTEM,
+                user_prompt=json.dumps(user, ensure_ascii=False),
+                mock_decision=fallback,
+            )
+        except Exception:  # noqa: BLE001
+            return fallback
+        if result.get("provider_mode") == "degraded" or result.get("error"):
+            return fallback
         content = str(result.get("content") or "")
         try:
             obj = json.loads(content)
@@ -172,9 +197,21 @@ class Agent:
             m = _JSON_OBJ.search(content)
             if not m:
                 return fallback
-            obj = json.loads(m.group(0))
+            try:
+                obj = json.loads(m.group(0))
+            except json.JSONDecodeError:
+                return fallback
         if not isinstance(obj, dict) or "type" not in obj:
             return fallback
+        # 防无限 refine
+        if obj.get("type") == "tool" and obj.get("tool") == "refine_search_window":
+            gid = str((obj.get("arguments") or {}).get("gap_id") or "")
+            if gid and self._refine_counts.get(gid, 0) >= self.max_refines_per_gap:
+                return {
+                    "type": "answer",
+                    "answer": "finish_evidence_plan",
+                    "reason": "refine_quota_exhausted",
+                }
         return obj
 
     def _registerable_gaps(self) -> List[Dict[str, Any]]:
@@ -330,6 +367,15 @@ class Agent:
         self._observed_done.add(gap_id)
         if self._observe_queue and self._observe_queue[0] == gap_id:
             self._observe_queue.pop(0)
+
+    def mark_refine(self, gap_id: str, observation: Dict[str, Any]) -> None:
+        self._refine_counts[gap_id] = self._refine_counts.get(gap_id, 0) + 1
+        if observation.get("requeue_sample"):
+            if gap_id in self._sampled_done:
+                self._sampled_done.discard(gap_id)
+            if gap_id not in self._sample_queue:
+                self._sample_queue.insert(0, gap_id)
+                self._sample_queue = prioritize_gap_ids(self._sample_queue)
 
     def skipped_gap_ids(self) -> Set[str]:
         return set(self._skip)
