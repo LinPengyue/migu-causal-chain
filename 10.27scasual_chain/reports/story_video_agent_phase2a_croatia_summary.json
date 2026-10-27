@@ -1,0 +1,225 @@
+{
+  "schema_version": "story-video-agent-plan-2a",
+  "status": "frame_budget_exhausted",
+  "match_id": "2022-11-28 克罗地亚vs加拿大",
+  "dry_run": false,
+  "media_only": true,
+  "verification_complete": false,
+  "structure_ok": true,
+  "media_info": {
+    "path": "/mnt/data4/migu/2022-11-28 克罗地亚vs加拿大.mp4",
+    "duration_sec": 8034.703,
+    "width": 1920,
+    "height": 1080,
+    "fps": 49.9714947221669,
+    "video_codec": "hevc",
+    "audio_codec": "aac",
+    "start_time_sec": 0.0,
+    "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
+    "size_bytes": 8137219678
+  },
+  "diagnostics": {
+    "tool_argument_errors": 0,
+    "decision_repair_calls": 0,
+    "tool_execution_errors": 0,
+    "open_task_count": 0,
+    "unresolved_count": 5,
+    "sampled_count": 2,
+    "frame_count": 8,
+    "unique_frame_files": 8,
+    "frame_budget_used": 8,
+    "frame_budget_max": 8,
+    "elapsed_sec": 6.0619
+  },
+  "evidence_tasks": [
+    {
+      "gap_id": "missing_setup_visual",
+      "kind": "setup",
+      "status": "sampled",
+      "tool_hint": "coarse_search_interval",
+      "anchor_status": "needs_search",
+      "score_anchor_sec": 1079.06,
+      "goal_anchor_sec": null,
+      "window": {
+        "start": 0.0,
+        "end": 90.0
+      },
+      "frame_count": 4,
+      "frames": [
+        {
+          "frame_id": "f_0000_50",
+          "gap_id": "missing_setup_visual",
+          "requested_media_sec": 0.05,
+          "actual_media_sec": 0.05,
+          "match_logic_sec": 0.05,
+          "tool": "coarse_search_interval",
+          "cached": false
+        },
+        {
+          "frame_id": "f_0001_30017",
+          "gap_id": "missing_setup_visual",
+          "requested_media_sec": 30.017,
+          "actual_media_sec": 30.017,
+          "match_logic_sec": 30.017,
+          "tool": "coarse_search_interval",
+          "cached": false
+        },
+        {
+          "frame_id": "f_0002_59983",
+          "gap_id": "missing_setup_visual",
+          "requested_media_sec": 59.983,
+          "actual_media_sec": 59.983,
+          "match_logic_sec": 59.983,
+          "tool": "coarse_search_interval",
+          "cached": false
+        },
+        {
+          "frame_id": "f_0003_89950",
+          "gap_id": "missing_setup_visual",
+          "requested_media_sec": 89.95,
+          "actual_media_sec": 89.95,
+          "match_logic_sec": 89.95,
+          "tool": "coarse_search_interval",
+          "cached": false
+        }
+      ]
+    },
+    {
+      "gap_id": "missing_buildup_visual",
+      "kind": "buildup",
+      "status": "sampled",
+      "tool_hint": "coarse_search_interval",
+      "anchor_status": "needs_search",
+      "score_anchor_sec": null,
+      "goal_anchor_sec": null,
+      "window": {
+        "start": 1079.06,
+        "end": 1169.06
+      },
+      "frame_count": 4,
+      "frames": [
+        {
+          "frame_id": "f_0004_1079110",
+          "gap_id": "missing_buildup_visual",
+          "requested_media_sec": 1079.11,
+          "actual_media_sec": 1079.11,
+          "match_logic_sec": 1079.11,
+          "tool": "coarse_search_interval",
+          "cached": false
+        },
+        {
+          "frame_id": "f_0005_1109077",
+          "gap_id": "missing_buildup_visual",
+          "requested_media_sec": 1109.077,
+          "actual_media_sec": 1109.077,
+          "match_logic_sec": 1109.077,
+          "tool": "coarse_search_interval",
+          "cached": false
+        },
+        {
+          "frame_id": "f_0006_1139043",
+          "gap_id": "missing_buildup_visual",
+          "requested_media_sec": 1139.043,
+          "actual_media_sec": 1139.043,
+          "match_logic_sec": 1139.043,
+          "tool": "coarse_search_interval",
+          "cached": false
+        },
+        {
+          "frame_id": "f_0007_1169010",
+          "gap_id": "missing_buildup_visual",
+          "requested_media_sec": 1169.01,
+          "actual_media_sec": 1169.01,
+          "match_logic_sec": 1169.01,
+          "tool": "coarse_search_interval",
+          "cached": false
+        }
+      ]
+    },
+    {
+      "gap_id": "locate_go_ahead_goal_action",
+      "kind": "action_locate",
+      "status": "unresolved",
+      "tool_hint": "coarse_search_interval",
+      "anchor_status": "pending_localization",
+      "score_anchor_sec": 3697.35,
+      "goal_anchor_sec": null,
+      "window": {
+        "start": 3577.35,
+        "end": 3607.35
+      },
+      "frame_count": 0,
+      "frames": []
+    },
+    {
+      "gap_id": "verify_equalizer_goal_action",
+      "kind": "action_verify",
+      "status": "unresolved",
+      "tool_hint": "inspect_story_window",
+      "anchor_status": "goal_event",
+      "score_anchor_sec": 3145.98,
+      "goal_anchor_sec": 3065.903,
+      "window": {
+        "start": 3063.903,
+        "end": 3073.903
+      },
+      "frame_count": 0,
+      "frames": []
+    },
+    {
+      "gap_id": "verify_equalizer_scoreboard",
+      "kind": "scoreboard",
+      "status": "unresolved",
+      "tool_hint": "read_scoreboard_window",
+      "anchor_status": "score_path",
+      "score_anchor_sec": 3145.98,
+      "goal_anchor_sec": 3065.903,
+      "window": {
+        "start": 3143.98,
+        "end": 3151.98
+      },
+      "frame_count": 0,
+      "frames": []
+    },
+    {
+      "gap_id": "verify_go_ahead_scoreboard",
+      "kind": "scoreboard",
+      "status": "unresolved",
+      "tool_hint": "read_scoreboard_window",
+      "anchor_status": "score_path",
+      "score_anchor_sec": 3697.35,
+      "goal_anchor_sec": null,
+      "window": {
+        "start": 3695.35,
+        "end": 3703.35
+      },
+      "frame_count": 0,
+      "frames": []
+    },
+    {
+      "gap_id": "post_climax_reaction",
+      "kind": "reaction",
+      "status": "unresolved",
+      "tool_hint": "scan_reaction_window",
+      "anchor_status": "score_fallback_pending",
+      "score_anchor_sec": 3697.35,
+      "goal_anchor_sec": null,
+      "window": {
+        "start": 3697.35,
+        "end": 3713.35
+      },
+      "frame_count": 0,
+      "frames": []
+    }
+  ],
+  "gap_ids": [
+    "missing_setup_visual",
+    "missing_buildup_visual",
+    "locate_go_ahead_goal_action",
+    "verify_equalizer_goal_action",
+    "verify_equalizer_scoreboard",
+    "verify_go_ahead_scoreboard",
+    "post_climax_reaction"
+  ],
+  "frame_manifest_path": "../reports/story_video_agent_phase2a_manifest.json"
+}

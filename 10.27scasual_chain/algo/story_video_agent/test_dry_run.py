@@ -133,7 +133,7 @@ class Phase15Tests(unittest.TestCase):
 
     def test_semantic_validation_rejects_fake_verified(self) -> None:
         payload = {
-            "schema_version": "story-video-agent-plan-1.5",
+            "schema_version": "story-video-agent-plan-2a",
             "algorithm": "x",
             "status": "planned",
             "match_id": "m",
@@ -142,7 +142,7 @@ class Phase15Tests(unittest.TestCase):
                 {
                     "task_id": "t1",
                     "gap_id": "g1",
-                    "tool_hint": "inspect_story_window",
+                    "tool_hint": "coarse_search_interval",
                     "status": "verified",
                     "anchor_status": "needs_search",
                     "kind": "setup",

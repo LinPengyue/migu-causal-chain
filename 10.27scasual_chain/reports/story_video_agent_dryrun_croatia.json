@@ -1,6 +1,6 @@
 {
-  "schema_version": "story-video-agent-plan-1.5",
-  "algorithm": "t01_story_video_agent_dryrun",
+  "schema_version": "story-video-agent-plan-2a",
+  "algorithm": "t01_story_video_agent_phase2a",
   "status": "planned",
   "match_id": "2022-11-28 克罗地亚vs加拿大",
   "video_name": "2022-11-28 克罗地亚vs加拿大.mp4",
@@ -10,13 +10,15 @@
   "is_candidate": true,
   "story_label_zh": "逆风翻盘候选",
   "dry_run": true,
+  "media_only": false,
   "duration_known": false,
+  "media_info": null,
   "gaps": [
     {
       "gap_id": "missing_setup_visual",
       "kind": "setup",
       "priority": 1,
-      "tool_hint": "inspect_story_window",
+      "tool_hint": "coarse_search_interval",
       "registerable": true,
       "search_intervals": [
         {
@@ -241,7 +243,7 @@
       "gap_id": "missing_buildup_visual",
       "kind": "buildup",
       "priority": 2,
-      "tool_hint": "inspect_story_window",
+      "tool_hint": "coarse_search_interval",
       "registerable": true,
       "search_intervals": [
         {
@@ -436,7 +438,7 @@
       "gap_id": "locate_go_ahead_goal_action",
       "kind": "action_locate",
       "priority": 3,
-      "tool_hint": "inspect_story_window",
+      "tool_hint": "coarse_search_interval",
       "registerable": true,
       "search_intervals": [
         {
@@ -607,7 +609,7 @@
       "task_id": "task_missing_setup_visual",
       "gap_id": "missing_setup_visual",
       "kind": "setup",
-      "tool_hint": "inspect_story_window",
+      "tool_hint": "coarse_search_interval",
       "window": {
         "start": 0.0,
         "end": 90.0
@@ -832,13 +834,14 @@
       "note": "铺垫缺失（reason=missing_setup）；在 [0.0,3146.0] 按事件索引分段搜索失球/扑救/门线，禁止只扫首次比分旁短窗",
       "status": "pending",
       "provider": null,
-      "duration_known": false
+      "duration_known": false,
+      "frames": []
     },
     {
       "task_id": "task_missing_buildup_visual",
       "gap_id": "missing_buildup_visual",
       "kind": "buildup",
-      "tool_hint": "inspect_story_window",
+      "tool_hint": "coarse_search_interval",
       "window": {
         "start": 1079.06,
         "end": 1169.06
@@ -1033,13 +1036,14 @@
       "note": "蓄力缺失；在 [1079.1,3697.3] 分段搜索射门/任意球/角球，禁止只用时间中点单窗",
       "status": "pending",
       "provider": null,
-      "duration_known": false
+      "duration_known": false,
+      "frames": []
     },
     {
       "task_id": "task_locate_go_ahead_goal_action",
       "gap_id": "locate_go_ahead_goal_action",
       "kind": "action_locate",
-      "tool_hint": "inspect_story_window",
+      "tool_hint": "coarse_search_interval",
       "window": {
         "start": 3577.35,
         "end": 3607.35
@@ -1084,7 +1088,8 @@
       "note": "高潮缺少可靠进球事件锚点；先在比分确认前定位进球动作，不得用 score_path 时刻冒充进球",
       "status": "pending",
       "provider": null,
-      "duration_known": false
+      "duration_known": false,
+      "frames": []
     },
     {
       "task_id": "task_verify_equalizer_goal_action",
@@ -1116,7 +1121,8 @@
       "note": "转折动作检查使用进球锚点 t=3065.9s；比分确认 t=3146.0s 仅用于 OCR",
       "status": "pending",
       "provider": null,
-      "duration_known": false
+      "duration_known": false,
+      "frames": []
     },
     {
       "task_id": "task_verify_equalizer_scoreboard",
@@ -1148,7 +1154,8 @@
       "note": "OCR 核实转折记分牌，锚点取 score_path t=3146.0s（非进球动作时刻）",
       "status": "pending",
       "provider": null,
-      "duration_known": false
+      "duration_known": false,
+      "frames": []
     },
     {
       "task_id": "task_verify_go_ahead_scoreboard",
@@ -1180,7 +1187,8 @@
       "note": "OCR 核实高潮记分牌，锚点取 score_path t=3697.3s（非进球动作时刻）",
       "status": "pending",
       "provider": null,
-      "duration_known": false
+      "duration_known": false,
+      "frames": []
     },
     {
       "task_id": "task_post_climax_reaction",
@@ -1212,9 +1220,12 @@
       "note": "高潮后反应/庆祝候选；优先接在进球锚点之后",
       "status": "pending",
       "provider": null,
-      "duration_known": false
+      "duration_known": false,
+      "frames": []
     }
   ],
+  "frame_manifest": [],
+  "frame_manifest_path": null,
   "verification_complete": false,
   "trace": [
     {
@@ -1253,7 +1264,7 @@
             "gap_id": "missing_setup_visual",
             "kind": "setup",
             "priority": 1,
-            "tool_hint": "inspect_story_window",
+            "tool_hint": "coarse_search_interval",
             "registerable": true,
             "search_intervals": [
               {
@@ -1478,7 +1489,7 @@
             "gap_id": "missing_buildup_visual",
             "kind": "buildup",
             "priority": 2,
-            "tool_hint": "inspect_story_window",
+            "tool_hint": "coarse_search_interval",
             "registerable": true,
             "search_intervals": [
               {
@@ -1673,7 +1684,7 @@
             "gap_id": "locate_go_ahead_goal_action",
             "kind": "action_locate",
             "priority": 3,
-            "tool_hint": "inspect_story_window",
+            "tool_hint": "coarse_search_interval",
             "registerable": true,
             "search_intervals": [
               {
@@ -1850,7 +1861,7 @@
         "tool": "register_evidence_task",
         "arguments": {
           "gap_id": "missing_setup_visual",
-          "tool_hint": "inspect_story_window",
+          "tool_hint": "coarse_search_interval",
           "start": 0.0,
           "end": 90.0,
           "note": "铺垫缺失（reason=missing_setup）；在 [0.0,3146.0] 按事件索引分段搜索失球/扑救/门线，禁止只扫首次比分旁短窗"
@@ -1880,7 +1891,7 @@
             "tool": "register_evidence_task",
             "arguments": {
               "gap_id": "missing_setup_visual",
-              "tool_hint": "inspect_story_window",
+              "tool_hint": "coarse_search_interval",
               "start": 0.0,
               "end": 90.0,
               "note": "铺垫缺失（reason=missing_setup）；在 [0.0,3146.0] 按事件索引分段搜索失球/扑救/门线，禁止只扫首次比分旁短窗"
@@ -1894,7 +1905,7 @@
           "task_id": "task_missing_setup_visual",
           "gap_id": "missing_setup_visual",
           "kind": "setup",
-          "tool_hint": "inspect_story_window",
+          "tool_hint": "coarse_search_interval",
           "window": {
             "start": 0.0,
             "end": 90.0
@@ -2119,7 +2130,8 @@
           "note": "铺垫缺失（reason=missing_setup）；在 [0.0,3146.0] 按事件索引分段搜索失球/扑救/门线，禁止只扫首次比分旁短窗",
           "status": "pending",
           "provider": null,
-          "duration_known": false
+          "duration_known": false,
+          "frames": []
         }
       }
     },
@@ -2130,7 +2142,7 @@
         "tool": "register_evidence_task",
         "arguments": {
           "gap_id": "missing_buildup_visual",
-          "tool_hint": "inspect_story_window",
+          "tool_hint": "coarse_search_interval",
           "start": 1079.06,
           "end": 1169.06,
           "note": "蓄力缺失；在 [1079.1,3697.3] 分段搜索射门/任意球/角球，禁止只用时间中点单窗"
@@ -2160,7 +2172,7 @@
             "tool": "register_evidence_task",
             "arguments": {
               "gap_id": "missing_buildup_visual",
-              "tool_hint": "inspect_story_window",
+              "tool_hint": "coarse_search_interval",
               "start": 1079.06,
               "end": 1169.06,
               "note": "蓄力缺失；在 [1079.1,3697.3] 分段搜索射门/任意球/角球，禁止只用时间中点单窗"
@@ -2174,7 +2186,7 @@
           "task_id": "task_missing_buildup_visual",
           "gap_id": "missing_buildup_visual",
           "kind": "buildup",
-          "tool_hint": "inspect_story_window",
+          "tool_hint": "coarse_search_interval",
           "window": {
             "start": 1079.06,
             "end": 1169.06
@@ -2369,7 +2381,8 @@
           "note": "蓄力缺失；在 [1079.1,3697.3] 分段搜索射门/任意球/角球，禁止只用时间中点单窗",
           "status": "pending",
           "provider": null,
-          "duration_known": false
+          "duration_known": false,
+          "frames": []
         }
       }
     },
@@ -2380,7 +2393,7 @@
         "tool": "register_evidence_task",
         "arguments": {
           "gap_id": "locate_go_ahead_goal_action",
-          "tool_hint": "inspect_story_window",
+          "tool_hint": "coarse_search_interval",
           "start": 3577.35,
           "end": 3607.35,
           "note": "高潮缺少可靠进球事件锚点；先在比分确认前定位进球动作，不得用 score_path 时刻冒充进球"
@@ -2410,7 +2423,7 @@
             "tool": "register_evidence_task",
             "arguments": {
               "gap_id": "locate_go_ahead_goal_action",
-              "tool_hint": "inspect_story_window",
+              "tool_hint": "coarse_search_interval",
               "start": 3577.35,
               "end": 3607.35,
               "note": "高潮缺少可靠进球事件锚点；先在比分确认前定位进球动作，不得用 score_path 时刻冒充进球"
@@ -2424,7 +2437,7 @@
           "task_id": "task_locate_go_ahead_goal_action",
           "gap_id": "locate_go_ahead_goal_action",
           "kind": "action_locate",
-          "tool_hint": "inspect_story_window",
+          "tool_hint": "coarse_search_interval",
           "window": {
             "start": 3577.35,
             "end": 3607.35
@@ -2469,7 +2482,8 @@
           "note": "高潮缺少可靠进球事件锚点；先在比分确认前定位进球动作，不得用 score_path 时刻冒充进球",
           "status": "pending",
           "provider": null,
-          "duration_known": false
+          "duration_known": false,
+          "frames": []
         }
       }
     },
@@ -2550,7 +2564,8 @@
           "note": "转折动作检查使用进球锚点 t=3065.9s；比分确认 t=3146.0s 仅用于 OCR",
           "status": "pending",
           "provider": null,
-          "duration_known": false
+          "duration_known": false,
+          "frames": []
         }
       }
     },
@@ -2631,7 +2646,8 @@
           "note": "OCR 核实转折记分牌，锚点取 score_path t=3146.0s（非进球动作时刻）",
           "status": "pending",
           "provider": null,
-          "duration_known": false
+          "duration_known": false,
+          "frames": []
         }
       }
     },
@@ -2712,7 +2728,8 @@
           "note": "OCR 核实高潮记分牌，锚点取 score_path t=3697.3s（非进球动作时刻）",
           "status": "pending",
           "provider": null,
-          "duration_known": false
+          "duration_known": false,
+          "frames": []
         }
       }
     },
@@ -2793,7 +2810,8 @@
           "note": "高潮后反应/庆祝候选；优先接在进球锚点之后",
           "status": "pending",
           "provider": null,
-          "duration_known": false
+          "duration_known": false,
+          "frames": []
         }
       }
     },
@@ -2843,7 +2861,7 @@
             "gap_id": "missing_setup_visual",
             "kind": "setup",
             "priority": 1,
-            "tool_hint": "inspect_story_window",
+            "tool_hint": "coarse_search_interval",
             "registerable": true,
             "search_intervals": [
               {
@@ -3068,7 +3086,7 @@
             "gap_id": "missing_buildup_visual",
             "kind": "buildup",
             "priority": 2,
-            "tool_hint": "inspect_story_window",
+            "tool_hint": "coarse_search_interval",
             "registerable": true,
             "search_intervals": [
               {
@@ -3263,7 +3281,7 @@
             "gap_id": "locate_go_ahead_goal_action",
             "kind": "action_locate",
             "priority": 3,
-            "tool_hint": "inspect_story_window",
+            "tool_hint": "coarse_search_interval",
             "registerable": true,
             "search_intervals": [
               {
@@ -3437,7 +3455,7 @@
       "tool": "register_evidence_task",
       "arguments": {
         "gap_id": "missing_setup_visual",
-        "tool_hint": "inspect_story_window",
+        "tool_hint": "coarse_search_interval",
         "start": 0.0,
         "end": 90.0,
         "note": "铺垫缺失（reason=missing_setup）；在 [0.0,3146.0] 按事件索引分段搜索失球/扑救/门线，禁止只扫首次比分旁短窗"
@@ -3448,7 +3466,7 @@
           "task_id": "task_missing_setup_visual",
           "gap_id": "missing_setup_visual",
           "kind": "setup",
-          "tool_hint": "inspect_story_window",
+          "tool_hint": "coarse_search_interval",
           "window": {
             "start": 0.0,
             "end": 90.0
@@ -3673,7 +3691,8 @@
           "note": "铺垫缺失（reason=missing_setup）；在 [0.0,3146.0] 按事件索引分段搜索失球/扑救/门线，禁止只扫首次比分旁短窗",
           "status": "pending",
           "provider": null,
-          "duration_known": false
+          "duration_known": false,
+          "frames": []
         }
       }
     },
@@ -3681,7 +3700,7 @@
       "tool": "register_evidence_task",
       "arguments": {
         "gap_id": "missing_buildup_visual",
-        "tool_hint": "inspect_story_window",
+        "tool_hint": "coarse_search_interval",
         "start": 1079.06,
         "end": 1169.06,
         "note": "蓄力缺失；在 [1079.1,3697.3] 分段搜索射门/任意球/角球，禁止只用时间中点单窗"
@@ -3692,7 +3711,7 @@
           "task_id": "task_missing_buildup_visual",
           "gap_id": "missing_buildup_visual",
           "kind": "buildup",
-          "tool_hint": "inspect_story_window",
+          "tool_hint": "coarse_search_interval",
           "window": {
             "start": 1079.06,
             "end": 1169.06
@@ -3887,7 +3906,8 @@
           "note": "蓄力缺失；在 [1079.1,3697.3] 分段搜索射门/任意球/角球，禁止只用时间中点单窗",
           "status": "pending",
           "provider": null,
-          "duration_known": false
+          "duration_known": false,
+          "frames": []
         }
       }
     },
@@ -3895,7 +3915,7 @@
       "tool": "register_evidence_task",
       "arguments": {
         "gap_id": "locate_go_ahead_goal_action",
-        "tool_hint": "inspect_story_window",
+        "tool_hint": "coarse_search_interval",
         "start": 3577.35,
         "end": 3607.35,
         "note": "高潮缺少可靠进球事件锚点；先在比分确认前定位进球动作，不得用 score_path 时刻冒充进球"
@@ -3906,7 +3926,7 @@
           "task_id": "task_locate_go_ahead_goal_action",
           "gap_id": "locate_go_ahead_goal_action",
           "kind": "action_locate",
-          "tool_hint": "inspect_story_window",
+          "tool_hint": "coarse_search_interval",
           "window": {
             "start": 3577.35,
             "end": 3607.35
@@ -3951,7 +3971,8 @@
           "note": "高潮缺少可靠进球事件锚点；先在比分确认前定位进球动作，不得用 score_path 时刻冒充进球",
           "status": "pending",
           "provider": null,
-          "duration_known": false
+          "duration_known": false,
+          "frames": []
         }
       }
     },
@@ -3996,7 +4017,8 @@
           "note": "转折动作检查使用进球锚点 t=3065.9s；比分确认 t=3146.0s 仅用于 OCR",
           "status": "pending",
           "provider": null,
-          "duration_known": false
+          "duration_known": false,
+          "frames": []
         }
       }
     },
@@ -4041,7 +4063,8 @@
           "note": "OCR 核实转折记分牌，锚点取 score_path t=3146.0s（非进球动作时刻）",
           "status": "pending",
           "provider": null,
-          "duration_known": false
+          "duration_known": false,
+          "frames": []
         }
       }
     },
@@ -4086,7 +4109,8 @@
           "note": "OCR 核实高潮记分牌，锚点取 score_path t=3697.3s（非进球动作时刻）",
           "status": "pending",
           "provider": null,
-          "duration_known": false
+          "duration_known": false,
+          "frames": []
         }
       }
     },
@@ -4131,7 +4155,8 @@
           "note": "高潮后反应/庆祝候选；优先接在进球锚点之后",
           "status": "pending",
           "provider": null,
-          "duration_known": false
+          "duration_known": false,
+          "frames": []
         }
       }
     },
@@ -4149,7 +4174,13 @@
     "decision_repair_calls": 0,
     "tool_execution_errors": 0,
     "open_task_count": 7,
-    "unresolved_count": 0
+    "unresolved_count": 0,
+    "sampled_count": 0,
+    "frame_count": 0,
+    "unique_frame_files": 0,
+    "frame_budget_used": 0,
+    "frame_budget_max": 0,
+    "elapsed_sec": 0.0002
   },
   "structure_ok": true,
   "structure_problems": [],

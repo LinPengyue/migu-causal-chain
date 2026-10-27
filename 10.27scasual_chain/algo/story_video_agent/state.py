@@ -11,7 +11,9 @@ PathLike = Union[str, Path]
 _ROLE_BEATS = ("铺垫", "蓄力", "转折", "高潮", "收尾")
 _GOAL_TYPES = frozenset({"进球", "乌龙球", "头球破门", "goal", "own_goal", "header_goal"})
 _ATTEMPT_TYPES = frozenset({"射门", "任意球", "角球", "扑救", "门线救险", "shot", "free_kick", "corner", "keeper_save"})
-_TASK_STATUSES = frozenset({"pending", "running", "verified", "unresolved", "failed"})
+_TASK_STATUSES = frozenset(
+    {"pending", "running", "sampled", "verified", "unresolved", "failed"}
+)
 _CHUNK_SEC = 90.0
 _OCR_PAD_BEFORE = 2.0
 _OCR_PAD_AFTER = 6.0
@@ -46,43 +48,44 @@ def _margin(score: str, side: str) -> Optional[int]:
 
 
 def _comeback_score_steps(story: Dict[str, Any]) -> Dict[str, Optional[Dict[str, Any]]]:
-    """从 score_path 抽出扳平/反超节点（比分确认时间），不改 T01 识别结论。"""
+    """从 score_path 抽出扳平/反超节点，对齐 T01 最后一次逆转弧（find_comeback_arc）。
+
+    仅改 Video Agent 状态层；不改写 T01 识别 JSON。
+    """
     side = story.get("protagonist_side") or (story.get("recognition") or {}).get("protagonist_side")
     nodes = _score_nodes(story)
     if not side or not nodes:
         return {"equalizer": None, "go_ahead": None, "behind_start": nodes[0] if nodes else None}
 
-    last_behind = None
-    for node in nodes:
+    last_behind_idx: Optional[int] = None
+    for index, node in enumerate(nodes):
         margin = _margin(str(node.get("score") or ""), side)
         if margin is not None and margin < 0:
-            last_behind = node
-    if last_behind is None:
+            last_behind_idx = index
+    if last_behind_idx is None:
         return {"equalizer": None, "go_ahead": None, "behind_start": nodes[0]}
 
     equalizer = None
     go_ahead = None
-    seen_behind = False
-    for node in nodes:
+    for node in nodes[last_behind_idx + 1 :]:
         margin = _margin(str(node.get("score") or ""), side)
         if margin is None:
             continue
-        if margin < 0:
-            seen_behind = True
-            continue
-        if seen_behind and equalizer is None and margin == 0:
+        if equalizer is None and margin == 0:
             equalizer = node
-            continue
-        if equalizer is not None and go_ahead is None and margin > 0:
+        elif equalizer is not None and go_ahead is None and margin > 0:
             go_ahead = node
             break
-    behind_start = None
-    for node in nodes:
-        margin = _margin(str(node.get("score") or ""), side)
-        if margin is not None and margin < 0:
-            behind_start = node
+
+    spell_start = last_behind_idx
+    while spell_start > 0:
+        prev_margin = _margin(str(nodes[spell_start - 1].get("score") or ""), side)
+        if prev_margin is not None and prev_margin < 0:
+            spell_start -= 1
+        else:
             break
-    return {"equalizer": equalizer, "go_ahead": go_ahead, "behind_start": behind_start or last_behind}
+    behind_start = nodes[spell_start]
+    return {"equalizer": equalizer, "go_ahead": go_ahead, "behind_start": behind_start}
 
 
 def build_event_index(story: Dict[str, Any]) -> List[Dict[str, Any]]:
@@ -213,7 +216,7 @@ def detect_gaps(
                 "gap_id": "missing_setup_visual",
                 "kind": "setup",
                 "priority": 1,
-                "tool_hint": "inspect_story_window",
+                "tool_hint": "coarse_search_interval",
                 "registerable": True,
                 "search_intervals": intervals,
                 "seed_windows": seeds,
@@ -243,7 +246,7 @@ def detect_gaps(
                 "gap_id": "missing_buildup_visual",
                 "kind": "buildup",
                 "priority": 2,
-                "tool_hint": "inspect_story_window",
+                "tool_hint": "coarse_search_interval",
                 "registerable": True,
                 "search_intervals": intervals,
                 "seed_windows": seeds,
@@ -302,7 +305,7 @@ def detect_gaps(
                     "gap_id": f"locate_{label}_goal_action",
                     "kind": "action_locate",
                     "priority": 3,
-                    "tool_hint": "inspect_story_window",
+                    "tool_hint": "coarse_search_interval",
                     "registerable": True,
                     "search_intervals": _split_search_intervals(
                         max(0.0, score_t - _GOAL_MATCH_SLACK),
@@ -422,6 +425,11 @@ def build_agent_item(
     }
 
 
+_ALLOWED_SCHEMAS = frozenset(
+    {"story-video-agent-plan-1.5", "story-video-agent-plan-2a"}
+)
+
+
 def validate_plan_payload(payload: Dict[str, Any]) -> List[str]:
     """结构 + 语义校验。空列表表示合法。"""
     problems: List[str] = []
@@ -440,7 +448,7 @@ def validate_plan_payload(payload: Dict[str, Any]) -> List[str]:
     for key in required:
         if key not in payload:
             problems.append(f"missing:{key}")
-    if payload.get("schema_version") != "story-video-agent-plan-1.5":
+    if payload.get("schema_version") not in _ALLOWED_SCHEMAS:
         problems.append("bad_schema_version")
 
     tier = payload.get("story_tier")
@@ -458,8 +466,13 @@ def validate_plan_payload(payload: Dict[str, Any]) -> List[str]:
     if tier == "none" and gaps:
         problems.append("none_must_not_emit_gaps")
 
+    media_only = bool(payload.get("media_only"))
     if payload.get("dry_run") and payload.get("verification_complete") is True:
         problems.append("dry_run_cannot_claim_verification_complete")
+    if media_only and payload.get("verification_complete") is True:
+        problems.append("media_only_cannot_claim_verification_complete")
+    if media_only and payload.get("dry_run") is True:
+        problems.append("media_only_and_dry_run_conflict")
 
     for index, task in enumerate(tasks):
         if not isinstance(task, dict):
@@ -473,6 +486,8 @@ def validate_plan_payload(payload: Dict[str, Any]) -> List[str]:
             problems.append(f"task[{index}]_bad_status")
         if payload.get("dry_run") and status == "verified":
             problems.append(f"task[{index}]_dry_run_verified_forbidden")
+        if media_only and status == "verified":
+            problems.append(f"task[{index}]_media_only_verified_forbidden")
 
         kind = task.get("kind")
         if kind == "scoreboard" and task.get("anchor_status") not in ("score_path",):

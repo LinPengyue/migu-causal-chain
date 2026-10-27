@@ -1,6 +1,6 @@
 {
-  "schema_version": "story-video-agent-plan-1.5",
-  "algorithm": "t01_story_video_agent_dryrun",
+  "schema_version": "story-video-agent-plan-2a",
+  "algorithm": "t01_story_video_agent_phase2a",
   "status": "planned",
   "match_id": "2022年11月23日 法国vs澳大利亚",
   "video_name": "2022年11月23日 法国vs澳大利亚.mp4",
@@ -10,7 +10,9 @@
   "is_candidate": false,
   "story_label_zh": "逆风翻盘",
   "dry_run": true,
+  "media_only": false,
   "duration_known": false,
+  "media_info": null,
   "gaps": [
     {
       "gap_id": "verify_equalizer_goal_action",
@@ -199,7 +201,8 @@
       "note": "转折动作检查使用进球锚点 t=2453.1s；比分确认 t=2513.3s 仅用于 OCR",
       "status": "pending",
       "provider": null,
-      "duration_known": false
+      "duration_known": false,
+      "frames": []
     },
     {
       "task_id": "task_verify_equalizer_scoreboard",
@@ -231,7 +234,8 @@
       "note": "OCR 核实转折记分牌，锚点取 score_path t=2513.3s（非进球动作时刻）",
       "status": "pending",
       "provider": null,
-      "duration_known": false
+      "duration_known": false,
+      "frames": []
     },
     {
       "task_id": "task_verify_go_ahead_goal_action",
@@ -263,7 +267,8 @@
       "note": "高潮动作检查使用进球锚点 t=2883.5s；比分确认 t=2904.3s 仅用于 OCR",
       "status": "pending",
       "provider": null,
-      "duration_known": false
+      "duration_known": false,
+      "frames": []
     },
     {
       "task_id": "task_verify_go_ahead_scoreboard",
@@ -295,7 +300,8 @@
       "note": "OCR 核实高潮记分牌，锚点取 score_path t=2904.3s（非进球动作时刻）",
       "status": "pending",
       "provider": null,
-      "duration_known": false
+      "duration_known": false,
+      "frames": []
     },
     {
       "task_id": "task_post_climax_reaction",
@@ -327,9 +333,12 @@
       "note": "高潮后反应/庆祝候选；优先接在进球锚点之后",
       "status": "pending",
       "provider": null,
-      "duration_known": false
+      "duration_known": false,
+      "frames": []
     }
   ],
+  "frame_manifest": [],
+  "frame_manifest_path": null,
   "verification_complete": false,
   "trace": [
     {
@@ -601,7 +610,8 @@
           "note": "转折动作检查使用进球锚点 t=2453.1s；比分确认 t=2513.3s 仅用于 OCR",
           "status": "pending",
           "provider": null,
-          "duration_known": false
+          "duration_known": false,
+          "frames": []
         }
       }
     },
@@ -682,7 +692,8 @@
           "note": "OCR 核实转折记分牌，锚点取 score_path t=2513.3s（非进球动作时刻）",
           "status": "pending",
           "provider": null,
-          "duration_known": false
+          "duration_known": false,
+          "frames": []
         }
       }
     },
@@ -763,7 +774,8 @@
           "note": "高潮动作检查使用进球锚点 t=2883.5s；比分确认 t=2904.3s 仅用于 OCR",
           "status": "pending",
           "provider": null,
-          "duration_known": false
+          "duration_known": false,
+          "frames": []
         }
       }
     },
@@ -844,7 +856,8 @@
           "note": "OCR 核实高潮记分牌，锚点取 score_path t=2904.3s（非进球动作时刻）",
           "status": "pending",
           "provider": null,
-          "duration_known": false
+          "duration_known": false,
+          "frames": []
         }
       }
     },
@@ -925,7 +938,8 @@
           "note": "高潮后反应/庆祝候选；优先接在进球锚点之后",
           "status": "pending",
           "provider": null,
-          "duration_known": false
+          "duration_known": false,
+          "frames": []
         }
       }
     },
@@ -1172,7 +1186,8 @@
           "note": "转折动作检查使用进球锚点 t=2453.1s；比分确认 t=2513.3s 仅用于 OCR",
           "status": "pending",
           "provider": null,
-          "duration_known": false
+          "duration_known": false,
+          "frames": []
         }
       }
     },
@@ -1217,7 +1232,8 @@
           "note": "OCR 核实转折记分牌，锚点取 score_path t=2513.3s（非进球动作时刻）",
           "status": "pending",
           "provider": null,
-          "duration_known": false
+          "duration_known": false,
+          "frames": []
         }
       }
     },
@@ -1262,7 +1278,8 @@
           "note": "高潮动作检查使用进球锚点 t=2883.5s；比分确认 t=2904.3s 仅用于 OCR",
           "status": "pending",
           "provider": null,
-          "duration_known": false
+          "duration_known": false,
+          "frames": []
         }
       }
     },
@@ -1307,7 +1324,8 @@
           "note": "OCR 核实高潮记分牌，锚点取 score_path t=2904.3s（非进球动作时刻）",
           "status": "pending",
           "provider": null,
-          "duration_known": false
+          "duration_known": false,
+          "frames": []
         }
       }
     },
@@ -1352,7 +1370,8 @@
           "note": "高潮后反应/庆祝候选；优先接在进球锚点之后",
           "status": "pending",
           "provider": null,
-          "duration_known": false
+          "duration_known": false,
+          "frames": []
         }
       }
     },
@@ -1370,7 +1389,13 @@
     "decision_repair_calls": 0,
     "tool_execution_errors": 0,
     "open_task_count": 5,
-    "unresolved_count": 0
+    "unresolved_count": 0,
+    "sampled_count": 0,
+    "frame_count": 0,
+    "unique_frame_files": 0,
+    "frame_budget_used": 0,
+    "frame_budget_max": 0,
+    "elapsed_sec": 0.0002
   },
   "structure_ok": true,
   "structure_problems": [],
