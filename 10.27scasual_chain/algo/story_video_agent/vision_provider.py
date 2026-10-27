@@ -338,7 +338,9 @@ class VisionProvider:
         # mock 也必须显式引用至少一个合法 frame_id（取第一个），禁止隐含“全部帧”
         cited = [frame_ids[0]] if frame_ids else []
         kind = "general"
-        if "goal_action" in gap_id:
+        if "locate" in gap_id and "goal" in gap_id:
+            kind = "goal_locate"
+        elif "goal_action" in gap_id:
             kind = "goal_action"
         elif "scoreboard" in gap_id:
             kind = "scoreboard"
@@ -347,19 +349,25 @@ class VisionProvider:
         elif "setup" in gap_id:
             kind = "setup"
         actions = {
-            "goal_action": ["shot near goal", "possible goal event"],
-            "scoreboard": ["scorebug visible"],
-            "reaction": ["celebration or crowd reaction"],
+            "goal_action": ["shot", "goal", "possible goal event"],
+            "goal_locate": ["uncertain", "possible shot far from camera"],
+            "scoreboard": ["scoreboard", "scorebug visible"],
+            "reaction": ["celebration", "crowd reaction"],
             "setup": ["defensive crisis or conceded-goal context candidate"],
-            "general": ["football match scene"],
-        }[kind]
+            "general": ["football match scene", "uncertain"],
+        }.get(kind, ["football match scene", "uncertain"])
+        conf = 0.55 if kind == "goal_action" else 0.28
         return {
             "observed_actions": actions,
             "possible_teams": [],
-            "story_relation": f"mock observation for {gap_id}; {gap_note[:80]}",
-            "confidence": 0.35,
+            # 勿把 gap_id 写入 relation（常含 goal_action，会污染标签抽取）
+            "story_relation": f"mock observation kind={kind}; context={gap_note[:80]}",
+            "confidence": conf,
             "frame_ids": cited,
-            "notes": "mock VLM — not factual verification; not accuracy benchmark",
+            "notes": (
+                "mock VLM — observation_only; not factual verification; "
+                "labels are heuristic for pipeline tests"
+            ),
         }
 
     @property

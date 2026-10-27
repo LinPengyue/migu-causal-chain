@@ -1,0 +1,33 @@
+{
+  "phase": "4A",
+  "description": "Croatia goal-shot multimodal search + Story plan feedback",
+  "modes": ["vlm-only", "planner-vlm-loop"],
+  "default_force_mock": true,
+  "billing_gates": [
+    "STORY_API_ENABLE=1",
+    "STORY_PHASE4A_REAL=1",
+    "STORY_API_SMOKE=1",
+    "STORY_LLM_BASE_URL / STORY_LLM_API_KEY / STORY_VLM_MODEL",
+    "STORY_API_MAX_CALLS",
+    "STORY_API_MAX_COST_USD"
+  ],
+  "video": "/mnt/data4/migu/2022-11-28 克罗地亚vs加拿大.mp4",
+  "story_json": "reports/story_t01/2022-11-28 克罗地亚vs加拿大.json",
+  "plan_json_v1": "reports/story_compose_phase3a1_croatia.json",
+  "seeds_search_only": {
+    "equalizer_live_sec": 3065.903,
+    "equalizer_board_sec": 3145.98,
+    "go_ahead_board_sec": 3697.35
+  },
+  "budgets": {
+    "max_rounds": 3,
+    "frames_per_round": 3,
+    "frame_budget": 18,
+    "max_api_calls": 12
+  },
+  "trust": {
+    "model_verified_ignored": true,
+    "render_ready_requires": "internal_verification_pipeline"
+  },
+  "cli": "python -m story_video_agent.phase4a_optimize --mode vlm-only|--planner-vlm-loop [--real]"
+}
