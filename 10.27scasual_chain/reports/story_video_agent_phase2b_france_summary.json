@@ -1,0 +1,588 @@
+{
+  "schema_version": "story-video-agent-plan-2b",
+  "status": "observed",
+  "match_id": "france-like-perception",
+  "perception": true,
+  "verification_complete": false,
+  "focus_gap_ids": [
+    "verify_equalizer_goal_action",
+    "verify_go_ahead_goal_action",
+    "post_climax_reaction"
+  ],
+  "structure_ok": true,
+  "diagnostics": {
+    "frame_count": 9,
+    "elapsed_sec": 0.9147,
+    "observed_count": 3,
+    "api": {
+      "api_enabled": false,
+      "force_mock": true,
+      "planner": {
+        "role": "planner",
+        "base_url": "",
+        "model": "",
+        "timeout_sec": 60.0,
+        "max_retries": 2,
+        "rpm": 30.0,
+        "api_key_set": false
+      },
+      "vision": {
+        "role": "vision",
+        "base_url": "",
+        "model": "",
+        "timeout_sec": 60.0,
+        "max_retries": 2,
+        "rpm": 30.0,
+        "api_key_set": false
+      },
+      "planner_ready": false,
+      "vision_ready": false,
+      "notes": "Story Video Agent remote API (Phase 2B production path):\n  STORY_LLM_BASE_URL / OPENAI_BASE_URL   e.g. https://api.openai.com/v1\n  STORY_LLM_API_KEY  / OPENAI_API_KEY\n  STORY_LLM_MODEL                       planner model id\n  STORY_VLM_BASE_URL                    optional; defaults to LLM base\n  STORY_VLM_API_KEY                     optional; defaults to LLM key\n  STORY_VLM_MODEL                       vision model id\n  STORY_LLM_TIMEOUT_SEC                 default 60\n  STORY_LLM_MAX_RETRIES                 default 2\n  STORY_LLM_RPM                         soft rate limit (requests/min), default 30\n  STORY_API_ENABLE=1                    allow real HTTP calls\n  STORY_API_SMOKE=1                     enable billed smoke tests in unittest\n\nNo local model download. Mock is default when ENABLE is unset or key missing.",
+      "usage": {
+        "calls": 14,
+        "ok": 14,
+        "failures": 0,
+        "cached_hits": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
+        "est_cost_usd": 0.0,
+        "elapsed_sec": 0.0,
+        "by_role": {
+          "planner": {
+            "calls": 11,
+            "tokens": 0,
+            "est_cost_usd": 0.0
+          },
+          "vision": {
+            "calls": 3,
+            "tokens": 0,
+            "est_cost_usd": 0.0
+          }
+        },
+        "records": [
+          {
+            "role": "planner",
+            "model": "mock",
+            "ok": true,
+            "elapsed_sec": 0.0,
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0,
+            "est_cost_usd": 0.0,
+            "cached": false,
+            "error": "",
+            "http_status": 0
+          },
+          {
+            "role": "planner",
+            "model": "mock",
+            "ok": true,
+            "elapsed_sec": 0.0,
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0,
+            "est_cost_usd": 0.0,
+            "cached": false,
+            "error": "",
+            "http_status": 0
+          },
+          {
+            "role": "planner",
+            "model": "mock",
+            "ok": true,
+            "elapsed_sec": 0.0,
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0,
+            "est_cost_usd": 0.0,
+            "cached": false,
+            "error": "",
+            "http_status": 0
+          },
+          {
+            "role": "planner",
+            "model": "mock",
+            "ok": true,
+            "elapsed_sec": 0.0,
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0,
+            "est_cost_usd": 0.0,
+            "cached": false,
+            "error": "",
+            "http_status": 0
+          },
+          {
+            "role": "planner",
+            "model": "mock",
+            "ok": true,
+            "elapsed_sec": 0.0,
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0,
+            "est_cost_usd": 0.0,
+            "cached": false,
+            "error": "",
+            "http_status": 0
+          },
+          {
+            "role": "planner",
+            "model": "mock",
+            "ok": true,
+            "elapsed_sec": 0.0,
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0,
+            "est_cost_usd": 0.0,
+            "cached": false,
+            "error": "",
+            "http_status": 0
+          },
+          {
+            "role": "planner",
+            "model": "mock",
+            "ok": true,
+            "elapsed_sec": 0.0,
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0,
+            "est_cost_usd": 0.0,
+            "cached": false,
+            "error": "",
+            "http_status": 0
+          },
+          {
+            "role": "planner",
+            "model": "mock",
+            "ok": true,
+            "elapsed_sec": 0.0,
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0,
+            "est_cost_usd": 0.0,
+            "cached": false,
+            "error": "",
+            "http_status": 0
+          },
+          {
+            "role": "vision",
+            "model": "mock",
+            "ok": true,
+            "elapsed_sec": 0.0,
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0,
+            "est_cost_usd": 0.0,
+            "cached": false,
+            "error": "",
+            "http_status": 0
+          },
+          {
+            "role": "planner",
+            "model": "mock",
+            "ok": true,
+            "elapsed_sec": 0.0,
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0,
+            "est_cost_usd": 0.0,
+            "cached": false,
+            "error": "",
+            "http_status": 0
+          },
+          {
+            "role": "vision",
+            "model": "mock",
+            "ok": true,
+            "elapsed_sec": 0.0,
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0,
+            "est_cost_usd": 0.0,
+            "cached": false,
+            "error": "",
+            "http_status": 0
+          },
+          {
+            "role": "planner",
+            "model": "mock",
+            "ok": true,
+            "elapsed_sec": 0.0,
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0,
+            "est_cost_usd": 0.0,
+            "cached": false,
+            "error": "",
+            "http_status": 0
+          },
+          {
+            "role": "vision",
+            "model": "mock",
+            "ok": true,
+            "elapsed_sec": 0.0,
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0,
+            "est_cost_usd": 0.0,
+            "cached": false,
+            "error": "",
+            "http_status": 0
+          },
+          {
+            "role": "planner",
+            "model": "mock",
+            "ok": true,
+            "elapsed_sec": 0.0,
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0,
+            "est_cost_usd": 0.0,
+            "cached": false,
+            "error": "",
+            "http_status": 0
+          }
+        ]
+      }
+    },
+    "vision": {
+      "calls": 3,
+      "failures": 0,
+      "elapsed_sec": 0.0,
+      "tokens": 0,
+      "est_cost_usd": 0.0
+    },
+    "per_gap_caps": {
+      "verify_equalizer_goal_action": 4,
+      "verify_go_ahead_goal_action": 4,
+      "post_climax_reaction": 3
+    },
+    "per_gap_used": {
+      "verify_equalizer_goal_action": 3,
+      "verify_go_ahead_goal_action": 3,
+      "post_climax_reaction": 3
+    },
+    "planner_modes": [
+      "llm",
+      "llm",
+      "llm",
+      "llm",
+      "llm",
+      "llm",
+      "llm",
+      "llm",
+      "llm",
+      "llm",
+      "llm"
+    ]
+  },
+  "evidence_tasks": [
+    {
+      "gap_id": "verify_equalizer_goal_action",
+      "status": "observed",
+      "frame_ids": [
+        "f_0000_9050",
+        "f_0001_14000",
+        "f_0002_18950"
+      ],
+      "visual_evidence": {
+        "observed_actions": [
+          "shot near goal",
+          "possible goal event"
+        ],
+        "confidence": 0.35,
+        "frame_ids": [
+          "f_0000_9050",
+          "f_0001_14000",
+          "f_0002_18950"
+        ],
+        "fact_verified": false,
+        "observation_only": true,
+        "provider": "mock",
+        "frame_time_bindings": [
+          {
+            "frame_id": "f_0000_9050",
+            "requested_media_sec": 9.05,
+            "actual_media_sec": 9.08,
+            "pts_status": "pts",
+            "match_logic_sec": null,
+            "match_logic_status": "uncalibrated"
+          },
+          {
+            "frame_id": "f_0001_14000",
+            "requested_media_sec": 14.0,
+            "actual_media_sec": 14.0,
+            "pts_status": "pts",
+            "match_logic_sec": null,
+            "match_logic_status": "uncalibrated"
+          },
+          {
+            "frame_id": "f_0002_18950",
+            "requested_media_sec": 18.95,
+            "actual_media_sec": 18.96,
+            "pts_status": "pts",
+            "match_logic_sec": null,
+            "match_logic_status": "uncalibrated"
+          }
+        ]
+      }
+    },
+    {
+      "gap_id": "verify_go_ahead_goal_action",
+      "status": "observed",
+      "frame_ids": [
+        "f_0003_17050",
+        "f_0004_22000",
+        "f_0005_26950"
+      ],
+      "visual_evidence": {
+        "observed_actions": [
+          "shot near goal",
+          "possible goal event"
+        ],
+        "confidence": 0.35,
+        "frame_ids": [
+          "f_0003_17050",
+          "f_0004_22000",
+          "f_0005_26950"
+        ],
+        "fact_verified": false,
+        "observation_only": true,
+        "provider": "mock",
+        "frame_time_bindings": [
+          {
+            "frame_id": "f_0003_17050",
+            "requested_media_sec": 17.05,
+            "actual_media_sec": 17.08,
+            "pts_status": "pts",
+            "match_logic_sec": null,
+            "match_logic_status": "uncalibrated"
+          },
+          {
+            "frame_id": "f_0004_22000",
+            "requested_media_sec": 22.0,
+            "actual_media_sec": 22.0,
+            "pts_status": "pts",
+            "match_logic_sec": null,
+            "match_logic_status": "uncalibrated"
+          },
+          {
+            "frame_id": "f_0005_26950",
+            "requested_media_sec": 26.95,
+            "actual_media_sec": 26.96,
+            "pts_status": "pts",
+            "match_logic_sec": null,
+            "match_logic_status": "uncalibrated"
+          }
+        ]
+      }
+    },
+    {
+      "gap_id": "post_climax_reaction",
+      "status": "observed",
+      "frame_ids": [
+        "f_0006_19050",
+        "f_0007_27000",
+        "f_0008_34950"
+      ],
+      "visual_evidence": {
+        "observed_actions": [
+          "celebration or crowd reaction"
+        ],
+        "confidence": 0.35,
+        "frame_ids": [
+          "f_0006_19050",
+          "f_0007_27000",
+          "f_0008_34950"
+        ],
+        "fact_verified": false,
+        "observation_only": true,
+        "provider": "mock",
+        "frame_time_bindings": [
+          {
+            "frame_id": "f_0006_19050",
+            "requested_media_sec": 19.05,
+            "actual_media_sec": 19.08,
+            "pts_status": "pts",
+            "match_logic_sec": null,
+            "match_logic_status": "uncalibrated"
+          },
+          {
+            "frame_id": "f_0007_27000",
+            "requested_media_sec": 27.0,
+            "actual_media_sec": 27.0,
+            "pts_status": "pts",
+            "match_logic_sec": null,
+            "match_logic_status": "uncalibrated"
+          },
+          {
+            "frame_id": "f_0008_34950",
+            "requested_media_sec": 34.95,
+            "actual_media_sec": 34.96,
+            "pts_status": "pts",
+            "match_logic_sec": null,
+            "match_logic_status": "uncalibrated"
+          }
+        ]
+      }
+    }
+  ],
+  "visual_evidence": [
+    {
+      "gap_id": "verify_equalizer_goal_action",
+      "observed_actions": [
+        "shot near goal",
+        "possible goal event"
+      ],
+      "possible_teams": [],
+      "story_relation": "mock observation for verify_equalizer_goal_action; 转折动作检查使用进球锚点 t=11.0s；比分确认 t=12.0s 仅用于 OCR",
+      "confidence": 0.35,
+      "frame_ids": [
+        "f_0000_9050",
+        "f_0001_14000",
+        "f_0002_18950"
+      ],
+      "notes": "mock VLM — not factual verification",
+      "frame_time_bindings": [
+        {
+          "frame_id": "f_0000_9050",
+          "requested_media_sec": 9.05,
+          "actual_media_sec": 9.08,
+          "pts_status": "pts",
+          "match_logic_sec": null,
+          "match_logic_status": "uncalibrated"
+        },
+        {
+          "frame_id": "f_0001_14000",
+          "requested_media_sec": 14.0,
+          "actual_media_sec": 14.0,
+          "pts_status": "pts",
+          "match_logic_sec": null,
+          "match_logic_status": "uncalibrated"
+        },
+        {
+          "frame_id": "f_0002_18950",
+          "requested_media_sec": 18.95,
+          "actual_media_sec": 18.96,
+          "pts_status": "pts",
+          "match_logic_sec": null,
+          "match_logic_status": "uncalibrated"
+        }
+      ],
+      "provider_fields_stripped": [],
+      "observation_only": true,
+      "fact_verified": false,
+      "provider": "mock",
+      "model": "mock",
+      "usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      }
+    },
+    {
+      "gap_id": "verify_go_ahead_goal_action",
+      "observed_actions": [
+        "shot near goal",
+        "possible goal event"
+      ],
+      "possible_teams": [],
+      "story_relation": "mock observation for verify_go_ahead_goal_action; 高潮动作检查使用进球锚点 t=19.0s；比分确认 t=20.0s 仅用于 OCR",
+      "confidence": 0.35,
+      "frame_ids": [
+        "f_0003_17050",
+        "f_0004_22000",
+        "f_0005_26950"
+      ],
+      "notes": "mock VLM — not factual verification",
+      "frame_time_bindings": [
+        {
+          "frame_id": "f_0003_17050",
+          "requested_media_sec": 17.05,
+          "actual_media_sec": 17.08,
+          "pts_status": "pts",
+          "match_logic_sec": null,
+          "match_logic_status": "uncalibrated"
+        },
+        {
+          "frame_id": "f_0004_22000",
+          "requested_media_sec": 22.0,
+          "actual_media_sec": 22.0,
+          "pts_status": "pts",
+          "match_logic_sec": null,
+          "match_logic_status": "uncalibrated"
+        },
+        {
+          "frame_id": "f_0005_26950",
+          "requested_media_sec": 26.95,
+          "actual_media_sec": 26.96,
+          "pts_status": "pts",
+          "match_logic_sec": null,
+          "match_logic_status": "uncalibrated"
+        }
+      ],
+      "provider_fields_stripped": [],
+      "observation_only": true,
+      "fact_verified": false,
+      "provider": "mock",
+      "model": "mock",
+      "usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      }
+    },
+    {
+      "gap_id": "post_climax_reaction",
+      "observed_actions": [
+        "celebration or crowd reaction"
+      ],
+      "possible_teams": [],
+      "story_relation": "mock observation for post_climax_reaction; 高潮后反应/庆祝候选；优先接在进球锚点之后",
+      "confidence": 0.35,
+      "frame_ids": [
+        "f_0006_19050",
+        "f_0007_27000",
+        "f_0008_34950"
+      ],
+      "notes": "mock VLM — not factual verification",
+      "frame_time_bindings": [
+        {
+          "frame_id": "f_0006_19050",
+          "requested_media_sec": 19.05,
+          "actual_media_sec": 19.08,
+          "pts_status": "pts",
+          "match_logic_sec": null,
+          "match_logic_status": "uncalibrated"
+        },
+        {
+          "frame_id": "f_0007_27000",
+          "requested_media_sec": 27.0,
+          "actual_media_sec": 27.0,
+          "pts_status": "pts",
+          "match_logic_sec": null,
+          "match_logic_status": "uncalibrated"
+        },
+        {
+          "frame_id": "f_0008_34950",
+          "requested_media_sec": 34.95,
+          "actual_media_sec": 34.96,
+          "pts_status": "pts",
+          "match_logic_sec": null,
+          "match_logic_status": "uncalibrated"
+        }
+      ],
+      "provider_fields_stripped": [],
+      "observation_only": true,
+      "fact_verified": false,
+      "provider": "mock",
+      "model": "mock",
+      "usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      }
+    }
+  ]
+}

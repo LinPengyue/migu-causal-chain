@@ -12,7 +12,14 @@ _ROLE_BEATS = ("铺垫", "蓄力", "转折", "高潮", "收尾")
 _GOAL_TYPES = frozenset({"进球", "乌龙球", "头球破门", "goal", "own_goal", "header_goal"})
 _ATTEMPT_TYPES = frozenset({"射门", "任意球", "角球", "扑救", "门线救险", "shot", "free_kick", "corner", "keeper_save"})
 _TASK_STATUSES = frozenset(
-    {"pending", "running", "sampled", "verified", "unresolved", "failed"}
+    {"pending", "running", "sampled", "observed", "verified", "unresolved", "failed"}
+)
+
+# 法国 vs 澳大利亚 Phase 2B 最小感知集：扳平动作、反超动作、反应
+FRANCE_PERCEPTION_FOCUS = (
+    "verify_equalizer_goal_action",
+    "verify_go_ahead_goal_action",
+    "post_climax_reaction",
 )
 _CHUNK_SEC = 90.0
 _OCR_PAD_BEFORE = 2.0
@@ -426,7 +433,11 @@ def build_agent_item(
 
 
 _ALLOWED_SCHEMAS = frozenset(
-    {"story-video-agent-plan-1.5", "story-video-agent-plan-2a"}
+    {
+        "story-video-agent-plan-1.5",
+        "story-video-agent-plan-2a",
+        "story-video-agent-plan-2b",
+    }
 )
 
 
@@ -467,12 +478,17 @@ def validate_plan_payload(payload: Dict[str, Any]) -> List[str]:
         problems.append("none_must_not_emit_gaps")
 
     media_only = bool(payload.get("media_only"))
+    perception = bool(payload.get("perception"))
     if payload.get("dry_run") and payload.get("verification_complete") is True:
         problems.append("dry_run_cannot_claim_verification_complete")
     if media_only and payload.get("verification_complete") is True:
         problems.append("media_only_cannot_claim_verification_complete")
+    if perception and payload.get("verification_complete") is True:
+        problems.append("perception_cannot_claim_verification_complete")
     if media_only and payload.get("dry_run") is True:
         problems.append("media_only_and_dry_run_conflict")
+    if perception and payload.get("dry_run") is True:
+        problems.append("perception_and_dry_run_conflict")
 
     for index, task in enumerate(tasks):
         if not isinstance(task, dict):
@@ -488,6 +504,10 @@ def validate_plan_payload(payload: Dict[str, Any]) -> List[str]:
             problems.append(f"task[{index}]_dry_run_verified_forbidden")
         if media_only and status == "verified":
             problems.append(f"task[{index}]_media_only_verified_forbidden")
+        if perception and status == "verified":
+            problems.append(f"task[{index}]_perception_verified_forbidden")
+        if status == "observed" and not (task.get("visual_evidence") or task.get("frames")):
+            problems.append(f"task[{index}]_observed_without_evidence")
 
         kind = task.get("kind")
         if kind == "scoreboard" and task.get("anchor_status") not in ("score_path",):

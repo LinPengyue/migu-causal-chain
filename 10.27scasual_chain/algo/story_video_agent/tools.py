@@ -1,19 +1,21 @@
-"""可扩展视频工具箱：dry-run stub + media-only 抽帧（无 VLM/OCR/ASR）。"""
+"""可扩展视频工具箱：dry-run / media-only / perception（抽帧 + VLM 描述）。"""
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Sequence
 
 from story_video_agent.frames import (
     COARSE_MAX_SPAN,
     LOCAL_MAX_SPAN,
     REACTION_MAX_SPAN,
-    FrameBudget,
     FrameBudgetExhausted,
     FrameStore,
     plan_sample_count,
 )
 from story_video_agent.media import MediaError, MediaInfo, probe_video
+from story_video_agent.vision_provider import VisionProvider
+
 
 class ToolArgumentError(ValueError):
     """Repairable before media/provider execution; not a provider failure."""
@@ -32,8 +34,9 @@ _ALLOWED_HINTS = frozenset(
 class ToolBox:
     """Story Video Agent 工具面。
 
-    - dry_run=True: 不碰磁盘抽帧
-    - media_only=True: 仅 FFmpeg 抽帧，任务最多标 sampled
+    - dry_run: stub
+    - media_only: FFmpeg 抽帧 → sampled
+    - perception: 抽帧 + inspect_visual_evidence → observed（≠ verified）
     """
 
     def __init__(
@@ -42,20 +45,25 @@ class ToolBox:
         *,
         dry_run: bool = True,
         media_only: bool = False,
+        perception: bool = False,
         frame_store: Optional[FrameStore] = None,
         media_info: Optional[MediaInfo] = None,
+        vision: Optional[VisionProvider] = None,
         max_coarse_per_gap: int = 1,
+        focus_gap_ids: Optional[Sequence[str]] = None,
     ) -> None:
-        if dry_run and media_only:
-            raise ValueError("dry_run and media_only are mutually exclusive")
-        if not dry_run and not media_only:
-            raise ValueError("Phase 2A only supports dry_run or media_only (no VLM yet)")
+        modes = sum(bool(x) for x in (dry_run, media_only, perception))
+        if modes != 1:
+            raise ValueError("exactly one of dry_run / media_only / perception required")
         self.item = item
         self.dry_run = dry_run
         self.media_only = media_only
+        self.perception = perception
         self.media_info = media_info
         self.frame_store = frame_store
+        self.vision = vision
         self.max_coarse_per_gap = max(1, int(max_coarse_per_gap))
+        self.focus_gap_ids = set(focus_gap_ids or [])
         duration = float(item.get("duration_sec") or item.get("duration") or 0.0)
         if media_info is not None:
             duration = float(media_info.duration_sec)
@@ -98,7 +106,7 @@ class ToolBox:
                 + time_hint
             ),
             "read_scoreboard_window": (
-                "Local scoreboard window [start,end], span <= 16s (media-only: frames only, no OCR). "
+                "Local scoreboard window [start,end], span <= 16s (frames only, no OCR model). "
                 "Arguments start,end; optional gap_id."
                 + time_hint
             ),
@@ -109,8 +117,12 @@ class ToolBox:
             ),
             "sample_next_evidence": (
                 "Advance one sampling step for a gap: prefer seed_windows, else next "
-                "search_interval via coarse_search. Arguments: gap_id. Stops when gap "
-                "coarse quota or global frame budget is hit."
+                "search_interval via coarse_search. Arguments: gap_id."
+            ),
+            "inspect_visual_evidence": (
+                "Run VLM over already extracted frames. Arguments: gap_id, frame_ids (list). "
+                "Returns strict JSON observation; timestamps bound by program only. "
+                "Success marks observed, never verified."
             ),
             "finish_evidence_plan": (
                 "Terminal action: freeze the evidence task list and stop the loop. Arguments {}."
@@ -141,6 +153,8 @@ class ToolBox:
                 raise ToolArgumentError(f"unknown gap_id {gap_id}")
             if not gap.get("registerable", True):
                 raise ToolArgumentError(f"gap {gap_id} is not registerable")
+            if self.focus_gap_ids and gap_id not in self.focus_gap_ids:
+                raise ToolArgumentError(f"gap {gap_id} outside focus set")
             hint = str(args.get("tool_hint") or gap.get("tool_hint") or "")
             if hint not in _ALLOWED_HINTS:
                 raise ToolArgumentError(f"tool_hint must be one of {sorted(_ALLOWED_HINTS)}")
@@ -159,7 +173,6 @@ class ToolBox:
                 start, end = self._window(
                     name, source["start"], source["end"], max_span=None
                 )
-                # 注册窗若超过局部上限且 hint 仍是 inspect，改记 coarse
                 if end - start > LOCAL_MAX_SPAN + 1e-6 and hint == "inspect_story_window":
                     hint = "coarse_search_interval"
             note = str(args.get("note") or gap.get("note") or "")
@@ -178,6 +191,21 @@ class ToolBox:
             if self._gap_by_id(gap_id) is None:
                 raise ToolArgumentError(f"unknown gap_id {gap_id}")
             return {"gap_id": gap_id}
+
+        if name == "inspect_visual_evidence":
+            if "gap_id" not in args or "frame_ids" not in args:
+                raise ToolArgumentError("inspect_visual_evidence requires gap_id, frame_ids")
+            extra = set(args) - {"gap_id", "frame_ids"}
+            if extra:
+                raise ToolArgumentError(f"inspect_visual_evidence unsupported {sorted(extra)}")
+            gap_id = str(args["gap_id"])
+            if self._gap_by_id(gap_id) is None:
+                raise ToolArgumentError(f"unknown gap_id {gap_id}")
+            raw_ids = args["frame_ids"]
+            if not isinstance(raw_ids, list) or not raw_ids:
+                raise ToolArgumentError("frame_ids must be a non-empty list")
+            frame_ids = [str(x) for x in raw_ids]
+            return {"gap_id": gap_id, "frame_ids": frame_ids}
 
         if name == "coarse_search_interval":
             required = {"gap_id", "start", "end"}
@@ -247,14 +275,11 @@ class ToolBox:
 
     def _execute_dry(self, name: str, normalized: Dict[str, Any]) -> Dict[str, Any]:
         if name == "probe_video_media":
-            return {
-                "dry_run": True,
-                "probed": False,
-                "message": "stub only; no ffprobe",
-                "media": None,
-            }
+            return {"dry_run": True, "probed": False, "message": "stub only; no ffprobe", "media": None}
         if name == "list_story_gaps":
             gaps = list(self.item.get("gaps") or [])
+            if self.focus_gap_ids:
+                gaps = [g for g in gaps if g.get("gap_id") in self.focus_gap_ids]
             return {
                 "dry_run": True,
                 "gaps": gaps,
@@ -293,6 +318,15 @@ class ToolBox:
                 "frames": [],
                 "status": "pending",
             }
+        if name == "inspect_visual_evidence":
+            return {
+                "dry_run": True,
+                "gap_id": normalized["gap_id"],
+                "frame_ids": normalized["frame_ids"],
+                "message": "stub; no VLM",
+                "status": "pending",
+                "fact_verified": False,
+            }
         return {
             "dry_run": True,
             "tool": name,
@@ -305,7 +339,7 @@ class ToolBox:
 
     def _require_store(self) -> FrameStore:
         if self.frame_store is None or self.media_info is None:
-            raise MediaError("media_only requires probed video and frame store")
+            raise MediaError("media/perception mode requires probed video and frame store")
         return self.frame_store
 
     def _execute_media(self, name: str, normalized: Dict[str, Any]) -> Dict[str, Any]:
@@ -320,13 +354,20 @@ class ToolBox:
             self.item["duration_known"] = True
             self.item["media_info"] = info.to_dict()
             self._probed = True
-            return {"dry_run": False, "media_only": True, "probed": True, "media": info.to_dict()}
+            return {
+                "dry_run": False,
+                "media_only": self.media_only,
+                "perception": self.perception,
+                "probed": True,
+                "media": info.to_dict(),
+            }
 
         if name == "list_story_gaps":
             gaps = list(self.item.get("gaps") or [])
+            if self.focus_gap_ids:
+                gaps = [g for g in gaps if g.get("gap_id") in self.focus_gap_ids]
             return {
                 "dry_run": False,
-                "media_only": True,
                 "gaps": gaps,
                 "count": len(gaps),
                 "registerable_count": sum(1 for g in gaps if g.get("registerable", True)),
@@ -352,13 +393,16 @@ class ToolBox:
                 "duration_known": self.duration_known,
                 "frames": [],
             }
-            return {"dry_run": False, "media_only": True, "registered": task}
+            return {"dry_run": False, "registered": task}
 
         if name == "finish_evidence_plan":
-            return {"dry_run": False, "media_only": True, "finished": True}
+            return {"dry_run": False, "finished": True}
 
         if name == "sample_next_evidence":
             return self._sample_next(normalized["gap_id"])
+
+        if name == "inspect_visual_evidence":
+            return self._inspect_visual(normalized["gap_id"], normalized["frame_ids"])
 
         if name == "coarse_search_interval":
             return self._sample_window(
@@ -398,22 +442,21 @@ class ToolBox:
                 f"{tool} rejects span {span:g}s; use coarse_search_interval for <=90s"
             )
         want = plan_sample_count(span, coarse=coarse)
-        want = min(want, max(1, store.budget.remaining))
-        if store.budget.remaining <= 0:
-            raise FrameBudgetExhausted("no frame budget remaining")
-        try:
-            frames = store.extract_window(
-                start,
-                end,
-                gap_id=gap_id or "unknown",
-                tool=tool,
-                count=want,
-            )
-        except FrameBudgetExhausted:
-            raise
+        want = min(want, max(1, store.budget.remaining_for(gap_id or "unknown")))
+        if store.budget.remaining_for(gap_id or "unknown") <= 0:
+            raise FrameBudgetExhausted(f"no frame budget remaining for {gap_id}")
+        frames = store.extract_window(
+            start,
+            end,
+            gap_id=gap_id or "unknown",
+            tool=tool,
+            count=want,
+            match_logic_calibrated=False,
+        )
         return {
             "dry_run": False,
-            "media_only": True,
+            "media_only": self.media_only,
+            "perception": self.perception,
             "tool": tool,
             "gap_id": gap_id,
             "window": {"start": start, "end": end},
@@ -422,6 +465,7 @@ class ToolBox:
             "budget_remaining": store.budget.remaining,
             "status": "sampled" if frames else "pending",
             "verification": False,
+            "fact_verified": False,
         }
 
     def _sample_next(self, gap_id: str) -> Dict[str, Any]:
@@ -445,20 +489,20 @@ class ToolBox:
                     coarse=True,
                 )
             hint = str(gap.get("tool_hint") or "inspect_story_window")
-            tool = hint if hint in ("inspect_story_window", "read_scoreboard_window", "scan_reaction_window") else "inspect_story_window"
+            tool = (
+                hint
+                if hint
+                in ("inspect_story_window", "read_scoreboard_window", "scan_reaction_window")
+                else "inspect_story_window"
+            )
             return self._sample_window(
-                tool=tool,
-                gap_id=gap_id,
-                start=start,
-                end=end,
-                coarse=False,
+                tool=tool, gap_id=gap_id, start=start, end=end, coarse=False
             )
 
         coarse_used = self._gap_coarse_count.get(gap_id, 0)
         if coarse_used >= self.max_coarse_per_gap:
             return {
                 "dry_run": False,
-                "media_only": True,
                 "gap_id": gap_id,
                 "sampled": False,
                 "stopped": True,
@@ -471,7 +515,6 @@ class ToolBox:
         if search_i >= len(intervals):
             return {
                 "dry_run": False,
-                "media_only": True,
                 "gap_id": gap_id,
                 "sampled": False,
                 "stopped": True,
@@ -493,3 +536,43 @@ class ToolBox:
             end=end,
             coarse=True,
         )
+
+    def _inspect_visual(self, gap_id: str, frame_ids: List[str]) -> Dict[str, Any]:
+        if not self.perception:
+            raise MediaError("inspect_visual_evidence requires perception mode")
+        if self.vision is None:
+            raise MediaError("vision provider not configured")
+        store = self._require_store()
+        gap = self._gap_by_id(gap_id) or {}
+        paths = []
+        bindings = []
+        for fid in frame_ids:
+            rec = store.get_frame(fid)
+            if rec is None:
+                # try manifest
+                hit = next((r for r in store.manifest if r.get("frame_id") == fid), None)
+                if not hit or not Path(str(hit.get("path") or "")).is_file():
+                    raise ToolArgumentError(f"unknown or missing frame_id {fid}")
+                paths.append(Path(str(hit["path"])))
+                bindings.append(hit)
+            else:
+                paths.append(Path(rec.path))
+                bindings.append(rec.to_dict())
+        evidence = self.vision.describe_frames(
+            gap_id=gap_id,
+            gap_note=str(gap.get("note") or ""),
+            frame_paths=paths,
+            frame_ids=frame_ids,
+            frame_bindings=bindings,
+        )
+        ok = "error" not in evidence
+        return {
+            "dry_run": False,
+            "perception": True,
+            "gap_id": gap_id,
+            "frame_ids": frame_ids,
+            "visual_evidence": evidence,
+            "status": "observed" if ok else "unresolved",
+            "fact_verified": False,
+            "observation_only": True,
+        }
