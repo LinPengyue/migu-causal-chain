@@ -1,15 +1,13 @@
 {
   "phase": "4E",
-  "status": "offline_qc_pending",
-  "review_ready": false,
-  "requires_user_review": false,
+  "status": "awaiting_user_review",
+  "review_ready": true,
+  "requires_user_review": true,
   "production_ready": false,
   "render_ready": false,
-  "requested_user_action": null,
+  "requested_user_action": "watch_previews_and_answer_handoff_questions",
   "completed_checks": [
-    "repo_static_audit"
-  ],
-  "pending_checks": [
+    "repo_static_audit",
     "server_ffprobe_preview",
     "transition_qc",
     "audio_qc",
@@ -17,11 +15,31 @@
     "score_2to4_story_bridge_options",
     "review_preview_accessibility"
   ],
-  "blocking_reasons": [
-    "uninspected_local_preview",
-    "semantic_independent_review_pending",
-    "all_segments_candidate_only"
+  "pending_checks": [
+    "independent_human_semantic_review",
+    "user_preview_preference_short_vs_long"
   ],
-  "reference": "reports/phase4e_static_review_audit.md",
-  "notes": "Only mark requires_user_review=true when review preview and evidence packets are accessible and QC manifests exist; human approval never auto-grants production."
+  "blocking_reasons": [
+    "semantic_independent_review_pending",
+    "all_segments_candidate_only",
+    "user_review_not_yet_recorded"
+  ],
+  "preview_paths": {
+    "short_bridge": "_local_render/phase4e/croatia_preview_phase4e_short_bridge.mp4",
+    "long_with_goals": "_local_render/phase4e/croatia_preview_phase4e_long_with_goals.mp4",
+    "phase4d_baseline": "_local_render/phase4d/croatia_preview_phase4d_full.mp4",
+    "review_bundle": "_local_render/phase4e/review_bundle"
+  },
+  "play_commands": {
+    "short": "ffplay -autoexit '_local_render/phase4e/croatia_preview_phase4e_short_bridge.mp4'",
+    "long": "ffplay -autoexit '_local_render/phase4e/croatia_preview_phase4e_long_with_goals.mp4'",
+    "mpv_short": "mpv '_local_render/phase4e/croatia_preview_phase4e_short_bridge.mp4'"
+  },
+  "reference": [
+    "reports/phase4e_qc_report.md",
+    "reports/phase4e_qc_manifest.json",
+    "reports/phase4e_review_handoff.md",
+    "reports/phase4e_static_review_audit.md"
+  ],
+  "notes": "review_ready means materials are watchable for the user; it does NOT grant render_ready or production authority."
 }

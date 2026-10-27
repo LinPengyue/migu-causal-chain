@@ -1,0 +1,387 @@
+{
+  "phase": "4E",
+  "generated_at": "2026-10-27T11:44:45.882675+00:00",
+  "billing": false,
+  "render_ready": false,
+  "render_ready_edl": [],
+  "baseline_preview_phase4d": {
+    "path": "_local_render/phase4d/croatia_preview_phase4d_full.mp4",
+    "ffprobe": {
+      "duration_sec": 91.668,
+      "size_bytes": 27983355,
+      "video": "h264 1280x720 ~25fps",
+      "audio": "aac 44100 stereo"
+    },
+    "n_segments_cut": 7,
+    "n_placeholder": 0,
+    "loudness_integrated_lufs": -30.4,
+    "lra": 9.3,
+    "blackdetect_d0.15": "none_detected",
+    "silencedetect_n-35dB_d0.5": "none_reported",
+    "player_open": true
+  },
+  "segment_qa_preview_timeline": [
+    {
+      "i": 0,
+      "id": "setup",
+      "preview_t": [
+        0.0,
+        12.024
+      ],
+      "source": [
+        1075.06,
+        1087.06
+      ],
+      "audio": "aac",
+      "note": "ok stills"
+    },
+    {
+      "i": 1,
+      "id": "buildup",
+      "preview_t": [
+        12.024,
+        26.048
+      ],
+      "source": [
+        3038.0,
+        3052.0
+      ],
+      "audio": "aac",
+      "note": "TRUNCATED by max_clip_sec=14; plan wanted 3064 → causes jump to eq"
+    },
+    {
+      "i": 2,
+      "id": "eq_action",
+      "preview_t": [
+        26.048,
+        37.572
+      ],
+      "source": [
+        3063.5,
+        3075.0
+      ],
+      "audio": "aac",
+      "note": "ok"
+    },
+    {
+      "i": 3,
+      "id": "eq_board",
+      "preview_t": [
+        37.572,
+        49.596
+      ],
+      "source": [
+        3141.98,
+        3153.98
+      ],
+      "audio": "aac",
+      "note": "ok"
+    },
+    {
+      "i": 4,
+      "id": "ga_action",
+      "preview_t": [
+        49.596,
+        63.62
+      ],
+      "source": [
+        3518.0,
+        3532.0
+      ],
+      "audio": "aac",
+      "note": "ok"
+    },
+    {
+      "i": 5,
+      "id": "ga_board",
+      "preview_t": [
+        63.62,
+        77.644
+      ],
+      "source": [
+        3594.0,
+        3608.0
+      ],
+      "audio": "aac",
+      "note": "ok"
+    },
+    {
+      "i": 6,
+      "id": "ending",
+      "preview_t": [
+        77.644,
+        91.668
+      ],
+      "source": [
+        7928.0,
+        7942.0
+      ],
+      "audio": "aac",
+      "note": "FULL TIME candidate"
+    }
+  ],
+  "seam_findings": {
+    "edl_plan_overlap_sec": 0.5,
+    "edl_overlap_interval": [
+      3063.5,
+      3064.0
+    ],
+    "phase4d_checklist_ok": false,
+    "actual_phase4d_preview_seam": {
+      "buildup_out_used": 3052.0,
+      "equalizer_in": 3063.5,
+      "source_gap_sec": 11.5,
+      "issue": "max_clip_sec truncation removed buildup tail; jump cut in narrative (not black frame)"
+    },
+    "phase4e_fix": {
+      "buildup": [
+        3038.0,
+        3063.5
+      ],
+      "equalizer": [
+        3063.5,
+        3075.0
+      ],
+      "overlap_sec": 0.0,
+      "abut": true
+    },
+    "artifacts": [
+      "_local_render/phase4e/seams/contact_edl_overlap_3062_3066.jpg",
+      "_local_render/phase4e/seams/contact_preview_jump_3052_to_3063.jpg",
+      "_local_render/phase4e/seams/seam_edl_overlap_3062.5_3066.mp4",
+      "_local_render/phase4e/segments/seamclip_*"
+    ]
+  },
+  "goals_3_1_4_1": {
+    "third": {
+      "ball_in_net_sec": 6318.5,
+      "shot_sec": 6317.5,
+      "live_tag": true,
+      "scoreboard_during_action": "2:1",
+      "score_path_board_sec": 6408.7,
+      "causal_seed_sec": 6317.199,
+      "candidate_cut": [
+        6312.0,
+        6328.0
+      ],
+      "not_board_as_action": true
+    },
+    "fourth": {
+      "ball_in_net_sec": 7749.0,
+      "delivery_goal_sec": 7747.43,
+      "live_tag": true,
+      "scoreboard_during_action": "3:1",
+      "score_path_board_sec": 7858.37,
+      "candidate_cut": [
+        7740.0,
+        7756.0
+      ],
+      "not_board_as_action": true
+    }
+  },
+  "previews": {
+    "short_bridge": {
+      "variant": "short_bridge",
+      "out_mp4": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4e/croatia_preview_phase4e_short_bridge.mp4",
+      "duration_sec": 108.192,
+      "size_bytes": 24880692,
+      "streams": [
+        {
+          "codec_type": "video",
+          "codec_name": "h264",
+          "width": 1280,
+          "height": 720,
+          "sample_rate": null,
+          "channels": null
+        },
+        {
+          "codec_type": "audio",
+          "codec_name": "aac",
+          "width": null,
+          "height": null,
+          "sample_rate": "44100",
+          "channels": 2
+        }
+      ],
+      "clips": [
+        {
+          "segment_id": "seg_setup_deficit",
+          "media_in_used": 1075.06,
+          "media_out_used": 1087.06,
+          "duration": 12.0,
+          "path": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4e/work_short_bridge/000_seg_setup_deficit.mp4"
+        },
+        {
+          "segment_id": "seg_buildup_attack",
+          "media_in_used": 3038.0,
+          "media_out_used": 3063.5,
+          "duration": 25.5,
+          "path": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4e/work_short_bridge/001_seg_buildup_attack.mp4"
+        },
+        {
+          "segment_id": "seg_equalizer_goal_action",
+          "media_in_used": 3063.5,
+          "media_out_used": 3075.0,
+          "duration": 11.5,
+          "path": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4e/work_short_bridge/002_seg_equalizer_goal_action.mp4"
+        },
+        {
+          "segment_id": "seg_equalizer_scoreboard",
+          "media_in_used": 3141.98,
+          "media_out_used": 3153.98,
+          "duration": 12.0,
+          "path": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4e/work_short_bridge/003_seg_equalizer_scoreboard.mp4"
+        },
+        {
+          "segment_id": "seg_go_ahead_goal_action",
+          "media_in_used": 3518.0,
+          "media_out_used": 3532.0,
+          "duration": 14.0,
+          "path": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4e/work_short_bridge/004_seg_go_ahead_goal_action.mp4"
+        },
+        {
+          "segment_id": "seg_go_ahead_scoreboard_closer",
+          "media_in_used": 3594.0,
+          "media_out_used": 3608.0,
+          "duration": 14.0,
+          "path": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4e/work_short_bridge/005_seg_go_ahead_scoreboard_closer.mp4"
+        },
+        {
+          "segment_id": "seg_text_bridge_2_to_4",
+          "type": "bridge_card",
+          "path": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4e/work_short_bridge/006_bridge_card.mp4"
+        },
+        {
+          "segment_id": "seg_ending_full_time",
+          "media_in_used": 7928.0,
+          "media_out_used": 7942.0,
+          "duration": 14.0,
+          "path": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4e/work_short_bridge/007_seg_ending_full_time.mp4"
+        }
+      ],
+      "render_ready": false,
+      "plan_path": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4e/plan_short_bridge.json",
+      "edl_path": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4e/edl_short_bridge.json"
+    },
+    "long_with_goals": {
+      "variant": "long_with_goals",
+      "out_mp4": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4e/croatia_preview_phase4e_long_with_goals.mp4",
+      "duration_sec": 159.264,
+      "size_bytes": 40595784,
+      "streams": [
+        {
+          "codec_type": "video",
+          "codec_name": "h264",
+          "width": 1280,
+          "height": 720,
+          "sample_rate": null,
+          "channels": null
+        },
+        {
+          "codec_type": "audio",
+          "codec_name": "aac",
+          "width": null,
+          "height": null,
+          "sample_rate": "44100",
+          "channels": 2
+        }
+      ],
+      "clips": [
+        {
+          "segment_id": "seg_setup_deficit",
+          "media_in_used": 1075.06,
+          "media_out_used": 1087.06,
+          "duration": 12.0,
+          "path": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4e/work_long_with_goals/000_seg_setup_deficit.mp4"
+        },
+        {
+          "segment_id": "seg_buildup_attack",
+          "media_in_used": 3038.0,
+          "media_out_used": 3063.5,
+          "duration": 25.5,
+          "path": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4e/work_long_with_goals/001_seg_buildup_attack.mp4"
+        },
+        {
+          "segment_id": "seg_equalizer_goal_action",
+          "media_in_used": 3063.5,
+          "media_out_used": 3075.0,
+          "duration": 11.5,
+          "path": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4e/work_long_with_goals/002_seg_equalizer_goal_action.mp4"
+        },
+        {
+          "segment_id": "seg_equalizer_scoreboard",
+          "media_in_used": 3141.98,
+          "media_out_used": 3153.98,
+          "duration": 12.0,
+          "path": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4e/work_long_with_goals/003_seg_equalizer_scoreboard.mp4"
+        },
+        {
+          "segment_id": "seg_go_ahead_goal_action",
+          "media_in_used": 3518.0,
+          "media_out_used": 3532.0,
+          "duration": 14.0,
+          "path": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4e/work_long_with_goals/004_seg_go_ahead_goal_action.mp4"
+        },
+        {
+          "segment_id": "seg_go_ahead_scoreboard_closer",
+          "media_in_used": 3594.0,
+          "media_out_used": 3608.0,
+          "duration": 14.0,
+          "path": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4e/work_long_with_goals/005_seg_go_ahead_scoreboard_closer.mp4"
+        },
+        {
+          "segment_id": "seg_third_goal_action",
+          "media_in_used": 6312.0,
+          "media_out_used": 6328.0,
+          "duration": 16.0,
+          "path": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4e/work_long_with_goals/006_seg_third_goal_action.mp4"
+        },
+        {
+          "segment_id": "seg_third_scoreboard",
+          "media_in_used": 6404.7,
+          "media_out_used": 6416.7,
+          "duration": 12.0,
+          "path": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4e/work_long_with_goals/007_seg_third_scoreboard.mp4"
+        },
+        {
+          "segment_id": "seg_fourth_goal_action",
+          "media_in_used": 7740.0,
+          "media_out_used": 7756.0,
+          "duration": 16.0,
+          "path": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4e/work_long_with_goals/008_seg_fourth_goal_action.mp4"
+        },
+        {
+          "segment_id": "seg_fourth_scoreboard",
+          "media_in_used": 7854.37,
+          "media_out_used": 7866.37,
+          "duration": 12.0,
+          "path": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4e/work_long_with_goals/009_seg_fourth_scoreboard.mp4"
+        },
+        {
+          "segment_id": "seg_ending_full_time",
+          "media_in_used": 7928.0,
+          "media_out_used": 7942.0,
+          "duration": 14.0,
+          "path": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4e/work_long_with_goals/010_seg_ending_full_time.mp4"
+        }
+      ],
+      "render_ready": false,
+      "plan_path": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4e/plan_long_with_goals.json",
+      "edl_path": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4e/edl_long_with_goals.json"
+    }
+  },
+  "audio_qc": {
+    "phase4d_integrated_lufs": -30.4,
+    "phase4d_lra": 9.3,
+    "note": "Quiet vs typical -16/-23 targets; no per-seam loudness normalize; each cut keeps source audio",
+    "status": "measured_not_normalized"
+  },
+  "semantic": {
+    "status": "pending_independent_human_review",
+    "auto_granted": false,
+    "production_authorities_only": [
+      "human_audited_review",
+      "independent_verification_pipeline"
+    ]
+  }
+}
