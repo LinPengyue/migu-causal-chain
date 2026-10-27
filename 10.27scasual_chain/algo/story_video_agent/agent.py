@@ -1,4 +1,4 @@
-"""Agent 决策循环：形态对齐 Video-RSI Initial Harness；第一阶段用规则策略，不调 LLM。"""
+"""Agent 决策循环：Video-RSI Initial Harness 形态；Phase 1.5 规则策略，不调 LLM。"""
 
 from __future__ import annotations
 
@@ -15,9 +15,9 @@ class Agent:
         self.argument_error: Optional[Dict[str, Any]] = None
         self._registered: Set[str] = set()
         self._listed = False
+        self._skip: Set[str] = set()
 
     def decide(self, memory: Any, step: int, max_steps: int) -> Dict[str, Any]:
-        """返回 type=tool|answer 的决策。dry-run 规则策略，可做一次参数修复。"""
         self.decision_attempts = []
         self.argument_error = None
         remaining = max_steps - step
@@ -56,16 +56,31 @@ class Agent:
                             "stage": "pre_dispatch",
                             "repair_exhausted": True,
                         }
-                        # 修复耗尽：跳过坏工具，直接收尾
                         return {
                             "type": "answer",
                             "answer": "finish_evidence_plan",
                             "reason": f"repair_exhausted:{exc}",
                         }
                     raise ValueError("invalid_decision: " + str(exc)) from exc
-                # 第一次失败后下一轮重新 propose（规则策略会换动作）
+                # 跳过导致参数失败的 gap，下一轮换任务
+                gap_id = None
+                if isinstance(raw, dict) and raw.get("tool") == "register_evidence_task":
+                    gap_id = str((raw.get("arguments") or {}).get("gap_id") or "")
+                if gap_id:
+                    self._skip.add(gap_id)
                 continue
         raise ValueError("invalid_decision: exhausted decision attempts")
+
+    def _registerable_gaps(self) -> List[Dict[str, Any]]:
+        rows = []
+        for gap in self.item.get("gaps") or []:
+            gap_id = str(gap.get("gap_id") or "")
+            if not gap_id or gap_id in self._registered or gap_id in self._skip:
+                continue
+            if not gap.get("registerable", True):
+                continue
+            rows.append(gap)
+        return rows
 
     def _propose(self, remaining: int) -> Dict[str, Any]:
         if remaining <= 1:
@@ -77,39 +92,15 @@ class Agent:
         if not self._listed:
             return {"type": "tool", "tool": "list_story_gaps", "arguments": {}}
 
-        gaps = list(self.item.get("gaps") or [])
-        for gap in gaps:
-            gap_id = str(gap.get("gap_id") or "")
-            if not gap_id or gap_id in self._registered:
-                continue
-            if gap.get("kind") == "no_story":
-                # 无故事时登记一条说明任务后结束
-                return {
-                    "type": "tool",
-                    "tool": "register_evidence_task",
-                    "arguments": {
-                        "gap_id": gap_id,
-                        "tool_hint": gap.get("tool_hint") or "inspect_story_window",
-                        "start": float(gap.get("start") or 0.0),
-                        "end": float(gap.get("end") or 8.0),
-                        "note": str(gap.get("note") or ""),
-                    },
-                }
-            return {
-                "type": "tool",
-                "tool": "register_evidence_task",
-                "arguments": {
-                    "gap_id": gap_id,
-                    "tool_hint": gap.get("tool_hint") or "inspect_story_window",
-                    "start": float(gap.get("start") or 0.0),
-                    "end": float(gap.get("end") or 8.0),
-                    "note": str(gap.get("note") or ""),
-                },
-            }
+        pending = self._registerable_gaps()
+        if not pending:
+            return {"type": "tool", "tool": "finish_evidence_plan", "arguments": {}}
+
+        gap = pending[0]
         return {
             "type": "tool",
-            "tool": "finish_evidence_plan",
-            "arguments": {},
+            "tool": "register_evidence_task",
+            "arguments": {"gap_id": str(gap["gap_id"])},
         }
 
     def _normalize_decision(self, raw: Dict[str, Any], remaining: int) -> Dict[str, Any]:
@@ -139,3 +130,6 @@ class Agent:
 
     def mark_registered(self, gap_id: str) -> None:
         self._registered.add(gap_id)
+
+    def skipped_gap_ids(self) -> Set[str]:
+        return set(self._skip)

@@ -1,5 +1,5 @@
 {
-  "schema_version": "story-video-agent-plan-1",
+  "schema_version": "story-video-agent-plan-1.5",
   "algorithm": "t01_story_video_agent_dryrun",
   "status": "planned",
   "match_id": "2022-11-28 克罗地亚vs加拿大",
@@ -10,115 +10,1212 @@
   "is_candidate": true,
   "story_label_zh": "逆风翻盘候选",
   "dry_run": true,
+  "duration_known": false,
   "gaps": [
     {
       "gap_id": "missing_setup_visual",
       "kind": "setup",
       "priority": 1,
       "tool_hint": "inspect_story_window",
-      "start": 1077.06,
-      "end": 1087.06,
-      "note": "铺垫缺失（reason=missing_setup）；需短窗确认失球/扑救/门线画面"
+      "registerable": true,
+      "search_intervals": [
+        {
+          "start": 0.0,
+          "end": 90.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 90.0,
+          "end": 180.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 180.0,
+          "end": 270.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 270.0,
+          "end": 360.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 360.0,
+          "end": 450.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 450.0,
+          "end": 540.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 540.0,
+          "end": 630.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 630.0,
+          "end": 720.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 720.0,
+          "end": 810.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 810.0,
+          "end": 900.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 900.0,
+          "end": 990.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 990.0,
+          "end": 1080.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1080.0,
+          "end": 1170.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1170.0,
+          "end": 1260.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1260.0,
+          "end": 1350.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1350.0,
+          "end": 1440.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1440.0,
+          "end": 1530.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1530.0,
+          "end": 1620.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1620.0,
+          "end": 1710.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1710.0,
+          "end": 1800.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1800.0,
+          "end": 1890.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1890.0,
+          "end": 1980.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1980.0,
+          "end": 2070.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2070.0,
+          "end": 2160.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2160.0,
+          "end": 2250.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2250.0,
+          "end": 2340.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2340.0,
+          "end": 2430.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2430.0,
+          "end": 2520.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2520.0,
+          "end": 2610.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2610.0,
+          "end": 2700.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2700.0,
+          "end": 2790.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2790.0,
+          "end": 2880.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2880.0,
+          "end": 2970.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2970.0,
+          "end": 3060.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 3060.0,
+          "end": 3145.98,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        }
+      ],
+      "seed_windows": [],
+      "score_anchor_sec": 1079.06,
+      "goal_anchor_sec": null,
+      "anchor_status": "needs_search",
+      "adaptive_expand": true,
+      "note": "铺垫缺失（reason=missing_setup）；在 [0.0,3146.0] 按事件索引分段搜索失球/扑救/门线，禁止只扫首次比分旁短窗"
     },
     {
       "gap_id": "missing_buildup_visual",
       "kind": "buildup",
       "priority": 2,
       "tool_hint": "inspect_story_window",
-      "start": 5498.175,
-      "end": 5506.175,
-      "note": "蓄力缺失；需确认射门/任意球/角球尝试镜头"
+      "registerable": true,
+      "search_intervals": [
+        {
+          "start": 1079.06,
+          "end": 1169.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1169.06,
+          "end": 1259.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1259.06,
+          "end": 1349.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1349.06,
+          "end": 1439.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1439.06,
+          "end": 1529.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1529.06,
+          "end": 1619.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1619.06,
+          "end": 1709.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1709.06,
+          "end": 1799.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1799.06,
+          "end": 1889.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1889.06,
+          "end": 1979.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1979.06,
+          "end": 2069.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2069.06,
+          "end": 2159.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2159.06,
+          "end": 2249.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2249.06,
+          "end": 2339.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2339.06,
+          "end": 2429.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2429.06,
+          "end": 2519.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2519.06,
+          "end": 2609.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2609.06,
+          "end": 2699.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2699.06,
+          "end": 2789.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2789.06,
+          "end": 2879.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2879.06,
+          "end": 2969.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2969.06,
+          "end": 3059.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 3059.06,
+          "end": 3149.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 3149.06,
+          "end": 3239.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 3239.06,
+          "end": 3329.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 3329.06,
+          "end": 3419.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 3419.06,
+          "end": 3509.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 3509.06,
+          "end": 3599.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 3599.06,
+          "end": 3689.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 3689.06,
+          "end": 3697.35,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        }
+      ],
+      "seed_windows": [],
+      "score_anchor_sec": null,
+      "goal_anchor_sec": null,
+      "anchor_status": "needs_search",
+      "adaptive_expand": true,
+      "note": "蓄力缺失；在 [1079.1,3697.3] 分段搜索射门/任意球/角球，禁止只用时间中点单窗"
+    },
+    {
+      "gap_id": "locate_go_ahead_goal_action",
+      "kind": "action_locate",
+      "priority": 3,
+      "tool_hint": "inspect_story_window",
+      "registerable": true,
+      "search_intervals": [
+        {
+          "start": 3577.35,
+          "end": 3607.35,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 3607.35,
+          "end": 3637.35,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 3637.35,
+          "end": 3667.35,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 3667.35,
+          "end": 3697.35,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 3697.35,
+          "end": 3727.35,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        }
+      ],
+      "seed_windows": [],
+      "score_anchor_sec": 3697.35,
+      "goal_anchor_sec": null,
+      "anchor_status": "pending_localization",
+      "adaptive_expand": true,
+      "note": "高潮缺少可靠进球事件锚点；先在比分确认前定位进球动作，不得用 score_path 时刻冒充进球"
+    },
+    {
+      "gap_id": "verify_equalizer_goal_action",
+      "kind": "action_verify",
+      "priority": 3,
+      "tool_hint": "inspect_story_window",
+      "registerable": true,
+      "search_intervals": [
+        {
+          "start": 3063.903,
+          "end": 3073.903,
+          "expand_level": 0,
+          "expand_policy": "widen_by_4s_on_miss"
+        }
+      ],
+      "seed_windows": [
+        {
+          "start": 3063.903,
+          "end": 3073.903
+        }
+      ],
+      "score_anchor_sec": 3145.98,
+      "goal_anchor_sec": 3065.903,
+      "anchor_status": "goal_event",
+      "adaptive_expand": true,
+      "window_meta": {
+        "clamped": false,
+        "duration_unknown": true,
+        "oob": false
+      },
+      "note": "转折动作检查使用进球锚点 t=3065.9s；比分确认 t=3146.0s 仅用于 OCR"
     },
     {
       "gap_id": "verify_equalizer_scoreboard",
       "kind": "scoreboard",
       "priority": 3,
       "tool_hint": "read_scoreboard_window",
-      "start": 3063.903,
-      "end": 3071.903,
-      "note": "核实转折附近记分牌是否与 score_path 一致"
+      "registerable": true,
+      "search_intervals": [
+        {
+          "start": 3143.98,
+          "end": 3151.98,
+          "expand_level": 0,
+          "expand_policy": "widen_by_4s_on_miss"
+        }
+      ],
+      "seed_windows": [
+        {
+          "start": 3143.98,
+          "end": 3151.98
+        }
+      ],
+      "score_anchor_sec": 3145.98,
+      "goal_anchor_sec": 3065.903,
+      "anchor_status": "score_path",
+      "adaptive_expand": true,
+      "window_meta": {
+        "clamped": false,
+        "duration_unknown": true,
+        "oob": false
+      },
+      "note": "OCR 核实转折记分牌，锚点取 score_path t=3146.0s（非进球动作时刻）"
     },
     {
       "gap_id": "verify_go_ahead_scoreboard",
       "kind": "scoreboard",
       "priority": 3,
       "tool_hint": "read_scoreboard_window",
-      "start": 3695.35,
-      "end": 3703.35,
-      "note": "核实高潮附近记分牌是否与 score_path 一致"
+      "registerable": true,
+      "search_intervals": [
+        {
+          "start": 3695.35,
+          "end": 3703.35,
+          "expand_level": 0,
+          "expand_policy": "widen_by_4s_on_miss"
+        }
+      ],
+      "seed_windows": [
+        {
+          "start": 3695.35,
+          "end": 3703.35
+        }
+      ],
+      "score_anchor_sec": 3697.35,
+      "goal_anchor_sec": null,
+      "anchor_status": "score_path",
+      "adaptive_expand": true,
+      "window_meta": {
+        "clamped": false,
+        "duration_unknown": true,
+        "oob": false
+      },
+      "note": "OCR 核实高潮记分牌，锚点取 score_path t=3697.3s（非进球动作时刻）"
     },
     {
       "gap_id": "post_climax_reaction",
       "kind": "reaction",
       "priority": 4,
       "tool_hint": "scan_reaction_window",
-      "start": 7858.37,
-      "end": 7874.37,
-      "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）"
+      "registerable": true,
+      "search_intervals": [
+        {
+          "start": 3697.35,
+          "end": 3713.35,
+          "expand_level": 0,
+          "expand_policy": "extend_to_32s_on_miss"
+        }
+      ],
+      "seed_windows": [
+        {
+          "start": 3697.35,
+          "end": 3713.35
+        }
+      ],
+      "score_anchor_sec": 3697.35,
+      "goal_anchor_sec": null,
+      "anchor_status": "score_fallback_pending",
+      "adaptive_expand": true,
+      "window_meta": {
+        "clamped": false,
+        "duration_unknown": true,
+        "oob": false
+      },
+      "note": "高潮后反应/庆祝候选；优先接在进球锚点之后"
     }
   ],
   "evidence_tasks": [
     {
       "task_id": "task_missing_setup_visual",
       "gap_id": "missing_setup_visual",
+      "kind": "setup",
       "tool_hint": "inspect_story_window",
       "window": {
-        "start": 1077.06,
-        "end": 1087.06
+        "start": 0.0,
+        "end": 90.0
       },
-      "note": "铺垫缺失（reason=missing_setup）；需短窗确认失球/扑救/门线画面",
-      "status": "planned",
-      "provider": null
+      "search_intervals": [
+        {
+          "start": 0.0,
+          "end": 90.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 90.0,
+          "end": 180.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 180.0,
+          "end": 270.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 270.0,
+          "end": 360.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 360.0,
+          "end": 450.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 450.0,
+          "end": 540.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 540.0,
+          "end": 630.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 630.0,
+          "end": 720.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 720.0,
+          "end": 810.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 810.0,
+          "end": 900.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 900.0,
+          "end": 990.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 990.0,
+          "end": 1080.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1080.0,
+          "end": 1170.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1170.0,
+          "end": 1260.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1260.0,
+          "end": 1350.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1350.0,
+          "end": 1440.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1440.0,
+          "end": 1530.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1530.0,
+          "end": 1620.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1620.0,
+          "end": 1710.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1710.0,
+          "end": 1800.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1800.0,
+          "end": 1890.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1890.0,
+          "end": 1980.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1980.0,
+          "end": 2070.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2070.0,
+          "end": 2160.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2160.0,
+          "end": 2250.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2250.0,
+          "end": 2340.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2340.0,
+          "end": 2430.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2430.0,
+          "end": 2520.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2520.0,
+          "end": 2610.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2610.0,
+          "end": 2700.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2700.0,
+          "end": 2790.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2790.0,
+          "end": 2880.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2880.0,
+          "end": 2970.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2970.0,
+          "end": 3060.0,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 3060.0,
+          "end": 3145.98,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        }
+      ],
+      "seed_windows": [],
+      "score_anchor_sec": 1079.06,
+      "goal_anchor_sec": null,
+      "anchor_status": "needs_search",
+      "adaptive_expand": true,
+      "note": "铺垫缺失（reason=missing_setup）；在 [0.0,3146.0] 按事件索引分段搜索失球/扑救/门线，禁止只扫首次比分旁短窗",
+      "status": "pending",
+      "provider": null,
+      "duration_known": false
     },
     {
       "task_id": "task_missing_buildup_visual",
       "gap_id": "missing_buildup_visual",
+      "kind": "buildup",
       "tool_hint": "inspect_story_window",
       "window": {
-        "start": 5498.175,
-        "end": 5506.175
+        "start": 1079.06,
+        "end": 1169.06
       },
-      "note": "蓄力缺失；需确认射门/任意球/角球尝试镜头",
-      "status": "planned",
-      "provider": null
+      "search_intervals": [
+        {
+          "start": 1079.06,
+          "end": 1169.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1169.06,
+          "end": 1259.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1259.06,
+          "end": 1349.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1349.06,
+          "end": 1439.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1439.06,
+          "end": 1529.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1529.06,
+          "end": 1619.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1619.06,
+          "end": 1709.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1709.06,
+          "end": 1799.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1799.06,
+          "end": 1889.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1889.06,
+          "end": 1979.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 1979.06,
+          "end": 2069.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2069.06,
+          "end": 2159.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2159.06,
+          "end": 2249.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2249.06,
+          "end": 2339.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2339.06,
+          "end": 2429.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2429.06,
+          "end": 2519.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2519.06,
+          "end": 2609.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2609.06,
+          "end": 2699.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2699.06,
+          "end": 2789.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2789.06,
+          "end": 2879.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2879.06,
+          "end": 2969.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 2969.06,
+          "end": 3059.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 3059.06,
+          "end": 3149.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 3149.06,
+          "end": 3239.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 3239.06,
+          "end": 3329.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 3329.06,
+          "end": 3419.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 3419.06,
+          "end": 3509.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 3509.06,
+          "end": 3599.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 3599.06,
+          "end": 3689.06,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 3689.06,
+          "end": 3697.35,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        }
+      ],
+      "seed_windows": [],
+      "score_anchor_sec": null,
+      "goal_anchor_sec": null,
+      "anchor_status": "needs_search",
+      "adaptive_expand": true,
+      "note": "蓄力缺失；在 [1079.1,3697.3] 分段搜索射门/任意球/角球，禁止只用时间中点单窗",
+      "status": "pending",
+      "provider": null,
+      "duration_known": false
+    },
+    {
+      "task_id": "task_locate_go_ahead_goal_action",
+      "gap_id": "locate_go_ahead_goal_action",
+      "kind": "action_locate",
+      "tool_hint": "inspect_story_window",
+      "window": {
+        "start": 3577.35,
+        "end": 3607.35
+      },
+      "search_intervals": [
+        {
+          "start": 3577.35,
+          "end": 3607.35,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 3607.35,
+          "end": 3637.35,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 3637.35,
+          "end": 3667.35,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 3667.35,
+          "end": 3697.35,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        },
+        {
+          "start": 3697.35,
+          "end": 3727.35,
+          "expand_level": 0,
+          "expand_policy": "double_chunk_on_miss"
+        }
+      ],
+      "seed_windows": [],
+      "score_anchor_sec": 3697.35,
+      "goal_anchor_sec": null,
+      "anchor_status": "pending_localization",
+      "adaptive_expand": true,
+      "note": "高潮缺少可靠进球事件锚点；先在比分确认前定位进球动作，不得用 score_path 时刻冒充进球",
+      "status": "pending",
+      "provider": null,
+      "duration_known": false
+    },
+    {
+      "task_id": "task_verify_equalizer_goal_action",
+      "gap_id": "verify_equalizer_goal_action",
+      "kind": "action_verify",
+      "tool_hint": "inspect_story_window",
+      "window": {
+        "start": 3063.903,
+        "end": 3073.903
+      },
+      "search_intervals": [
+        {
+          "start": 3063.903,
+          "end": 3073.903,
+          "expand_level": 0,
+          "expand_policy": "widen_by_4s_on_miss"
+        }
+      ],
+      "seed_windows": [
+        {
+          "start": 3063.903,
+          "end": 3073.903
+        }
+      ],
+      "score_anchor_sec": 3145.98,
+      "goal_anchor_sec": 3065.903,
+      "anchor_status": "goal_event",
+      "adaptive_expand": true,
+      "note": "转折动作检查使用进球锚点 t=3065.9s；比分确认 t=3146.0s 仅用于 OCR",
+      "status": "pending",
+      "provider": null,
+      "duration_known": false
     },
     {
       "task_id": "task_verify_equalizer_scoreboard",
       "gap_id": "verify_equalizer_scoreboard",
+      "kind": "scoreboard",
       "tool_hint": "read_scoreboard_window",
       "window": {
-        "start": 3063.903,
-        "end": 3071.903
+        "start": 3143.98,
+        "end": 3151.98
       },
-      "note": "核实转折附近记分牌是否与 score_path 一致",
-      "status": "planned",
-      "provider": null
+      "search_intervals": [
+        {
+          "start": 3143.98,
+          "end": 3151.98,
+          "expand_level": 0,
+          "expand_policy": "widen_by_4s_on_miss"
+        }
+      ],
+      "seed_windows": [
+        {
+          "start": 3143.98,
+          "end": 3151.98
+        }
+      ],
+      "score_anchor_sec": 3145.98,
+      "goal_anchor_sec": 3065.903,
+      "anchor_status": "score_path",
+      "adaptive_expand": true,
+      "note": "OCR 核实转折记分牌，锚点取 score_path t=3146.0s（非进球动作时刻）",
+      "status": "pending",
+      "provider": null,
+      "duration_known": false
     },
     {
       "task_id": "task_verify_go_ahead_scoreboard",
       "gap_id": "verify_go_ahead_scoreboard",
+      "kind": "scoreboard",
       "tool_hint": "read_scoreboard_window",
       "window": {
         "start": 3695.35,
         "end": 3703.35
       },
-      "note": "核实高潮附近记分牌是否与 score_path 一致",
-      "status": "planned",
-      "provider": null
+      "search_intervals": [
+        {
+          "start": 3695.35,
+          "end": 3703.35,
+          "expand_level": 0,
+          "expand_policy": "widen_by_4s_on_miss"
+        }
+      ],
+      "seed_windows": [
+        {
+          "start": 3695.35,
+          "end": 3703.35
+        }
+      ],
+      "score_anchor_sec": 3697.35,
+      "goal_anchor_sec": null,
+      "anchor_status": "score_path",
+      "adaptive_expand": true,
+      "note": "OCR 核实高潮记分牌，锚点取 score_path t=3697.3s（非进球动作时刻）",
+      "status": "pending",
+      "provider": null,
+      "duration_known": false
     },
     {
       "task_id": "task_post_climax_reaction",
       "gap_id": "post_climax_reaction",
+      "kind": "reaction",
       "tool_hint": "scan_reaction_window",
       "window": {
-        "start": 7858.37,
-        "end": 7874.37
+        "start": 3697.35,
+        "end": 3713.35
       },
-      "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）",
-      "status": "planned",
-      "provider": null
+      "search_intervals": [
+        {
+          "start": 3697.35,
+          "end": 3713.35,
+          "expand_level": 0,
+          "expand_policy": "extend_to_32s_on_miss"
+        }
+      ],
+      "seed_windows": [
+        {
+          "start": 3697.35,
+          "end": 3713.35
+        }
+      ],
+      "score_anchor_sec": 3697.35,
+      "goal_anchor_sec": null,
+      "anchor_status": "score_fallback_pending",
+      "adaptive_expand": true,
+      "note": "高潮后反应/庆祝候选；优先接在进球锚点之后",
+      "status": "pending",
+      "provider": null,
+      "duration_known": false
     }
   ],
+  "verification_complete": false,
   "trace": [
     {
       "step": 0,
@@ -157,48 +1254,593 @@
             "kind": "setup",
             "priority": 1,
             "tool_hint": "inspect_story_window",
-            "start": 1077.06,
-            "end": 1087.06,
-            "note": "铺垫缺失（reason=missing_setup）；需短窗确认失球/扑救/门线画面"
+            "registerable": true,
+            "search_intervals": [
+              {
+                "start": 0.0,
+                "end": 90.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 90.0,
+                "end": 180.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 180.0,
+                "end": 270.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 270.0,
+                "end": 360.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 360.0,
+                "end": 450.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 450.0,
+                "end": 540.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 540.0,
+                "end": 630.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 630.0,
+                "end": 720.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 720.0,
+                "end": 810.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 810.0,
+                "end": 900.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 900.0,
+                "end": 990.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 990.0,
+                "end": 1080.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1080.0,
+                "end": 1170.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1170.0,
+                "end": 1260.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1260.0,
+                "end": 1350.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1350.0,
+                "end": 1440.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1440.0,
+                "end": 1530.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1530.0,
+                "end": 1620.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1620.0,
+                "end": 1710.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1710.0,
+                "end": 1800.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1800.0,
+                "end": 1890.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1890.0,
+                "end": 1980.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1980.0,
+                "end": 2070.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2070.0,
+                "end": 2160.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2160.0,
+                "end": 2250.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2250.0,
+                "end": 2340.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2340.0,
+                "end": 2430.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2430.0,
+                "end": 2520.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2520.0,
+                "end": 2610.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2610.0,
+                "end": 2700.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2700.0,
+                "end": 2790.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2790.0,
+                "end": 2880.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2880.0,
+                "end": 2970.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2970.0,
+                "end": 3060.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 3060.0,
+                "end": 3145.98,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              }
+            ],
+            "seed_windows": [],
+            "score_anchor_sec": 1079.06,
+            "goal_anchor_sec": null,
+            "anchor_status": "needs_search",
+            "adaptive_expand": true,
+            "note": "铺垫缺失（reason=missing_setup）；在 [0.0,3146.0] 按事件索引分段搜索失球/扑救/门线，禁止只扫首次比分旁短窗"
           },
           {
             "gap_id": "missing_buildup_visual",
             "kind": "buildup",
             "priority": 2,
             "tool_hint": "inspect_story_window",
-            "start": 5498.175,
-            "end": 5506.175,
-            "note": "蓄力缺失；需确认射门/任意球/角球尝试镜头"
+            "registerable": true,
+            "search_intervals": [
+              {
+                "start": 1079.06,
+                "end": 1169.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1169.06,
+                "end": 1259.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1259.06,
+                "end": 1349.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1349.06,
+                "end": 1439.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1439.06,
+                "end": 1529.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1529.06,
+                "end": 1619.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1619.06,
+                "end": 1709.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1709.06,
+                "end": 1799.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1799.06,
+                "end": 1889.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1889.06,
+                "end": 1979.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1979.06,
+                "end": 2069.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2069.06,
+                "end": 2159.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2159.06,
+                "end": 2249.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2249.06,
+                "end": 2339.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2339.06,
+                "end": 2429.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2429.06,
+                "end": 2519.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2519.06,
+                "end": 2609.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2609.06,
+                "end": 2699.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2699.06,
+                "end": 2789.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2789.06,
+                "end": 2879.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2879.06,
+                "end": 2969.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2969.06,
+                "end": 3059.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 3059.06,
+                "end": 3149.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 3149.06,
+                "end": 3239.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 3239.06,
+                "end": 3329.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 3329.06,
+                "end": 3419.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 3419.06,
+                "end": 3509.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 3509.06,
+                "end": 3599.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 3599.06,
+                "end": 3689.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 3689.06,
+                "end": 3697.35,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              }
+            ],
+            "seed_windows": [],
+            "score_anchor_sec": null,
+            "goal_anchor_sec": null,
+            "anchor_status": "needs_search",
+            "adaptive_expand": true,
+            "note": "蓄力缺失；在 [1079.1,3697.3] 分段搜索射门/任意球/角球，禁止只用时间中点单窗"
+          },
+          {
+            "gap_id": "locate_go_ahead_goal_action",
+            "kind": "action_locate",
+            "priority": 3,
+            "tool_hint": "inspect_story_window",
+            "registerable": true,
+            "search_intervals": [
+              {
+                "start": 3577.35,
+                "end": 3607.35,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 3607.35,
+                "end": 3637.35,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 3637.35,
+                "end": 3667.35,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 3667.35,
+                "end": 3697.35,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 3697.35,
+                "end": 3727.35,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              }
+            ],
+            "seed_windows": [],
+            "score_anchor_sec": 3697.35,
+            "goal_anchor_sec": null,
+            "anchor_status": "pending_localization",
+            "adaptive_expand": true,
+            "note": "高潮缺少可靠进球事件锚点；先在比分确认前定位进球动作，不得用 score_path 时刻冒充进球"
+          },
+          {
+            "gap_id": "verify_equalizer_goal_action",
+            "kind": "action_verify",
+            "priority": 3,
+            "tool_hint": "inspect_story_window",
+            "registerable": true,
+            "search_intervals": [
+              {
+                "start": 3063.903,
+                "end": 3073.903,
+                "expand_level": 0,
+                "expand_policy": "widen_by_4s_on_miss"
+              }
+            ],
+            "seed_windows": [
+              {
+                "start": 3063.903,
+                "end": 3073.903
+              }
+            ],
+            "score_anchor_sec": 3145.98,
+            "goal_anchor_sec": 3065.903,
+            "anchor_status": "goal_event",
+            "adaptive_expand": true,
+            "window_meta": {
+              "clamped": false,
+              "duration_unknown": true,
+              "oob": false
+            },
+            "note": "转折动作检查使用进球锚点 t=3065.9s；比分确认 t=3146.0s 仅用于 OCR"
           },
           {
             "gap_id": "verify_equalizer_scoreboard",
             "kind": "scoreboard",
             "priority": 3,
             "tool_hint": "read_scoreboard_window",
-            "start": 3063.903,
-            "end": 3071.903,
-            "note": "核实转折附近记分牌是否与 score_path 一致"
+            "registerable": true,
+            "search_intervals": [
+              {
+                "start": 3143.98,
+                "end": 3151.98,
+                "expand_level": 0,
+                "expand_policy": "widen_by_4s_on_miss"
+              }
+            ],
+            "seed_windows": [
+              {
+                "start": 3143.98,
+                "end": 3151.98
+              }
+            ],
+            "score_anchor_sec": 3145.98,
+            "goal_anchor_sec": 3065.903,
+            "anchor_status": "score_path",
+            "adaptive_expand": true,
+            "window_meta": {
+              "clamped": false,
+              "duration_unknown": true,
+              "oob": false
+            },
+            "note": "OCR 核实转折记分牌，锚点取 score_path t=3146.0s（非进球动作时刻）"
           },
           {
             "gap_id": "verify_go_ahead_scoreboard",
             "kind": "scoreboard",
             "priority": 3,
             "tool_hint": "read_scoreboard_window",
-            "start": 3695.35,
-            "end": 3703.35,
-            "note": "核实高潮附近记分牌是否与 score_path 一致"
+            "registerable": true,
+            "search_intervals": [
+              {
+                "start": 3695.35,
+                "end": 3703.35,
+                "expand_level": 0,
+                "expand_policy": "widen_by_4s_on_miss"
+              }
+            ],
+            "seed_windows": [
+              {
+                "start": 3695.35,
+                "end": 3703.35
+              }
+            ],
+            "score_anchor_sec": 3697.35,
+            "goal_anchor_sec": null,
+            "anchor_status": "score_path",
+            "adaptive_expand": true,
+            "window_meta": {
+              "clamped": false,
+              "duration_unknown": true,
+              "oob": false
+            },
+            "note": "OCR 核实高潮记分牌，锚点取 score_path t=3697.3s（非进球动作时刻）"
           },
           {
             "gap_id": "post_climax_reaction",
             "kind": "reaction",
             "priority": 4,
             "tool_hint": "scan_reaction_window",
-            "start": 7858.37,
-            "end": 7874.37,
-            "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）"
+            "registerable": true,
+            "search_intervals": [
+              {
+                "start": 3697.35,
+                "end": 3713.35,
+                "expand_level": 0,
+                "expand_policy": "extend_to_32s_on_miss"
+              }
+            ],
+            "seed_windows": [
+              {
+                "start": 3697.35,
+                "end": 3713.35
+              }
+            ],
+            "score_anchor_sec": 3697.35,
+            "goal_anchor_sec": null,
+            "anchor_status": "score_fallback_pending",
+            "adaptive_expand": true,
+            "window_meta": {
+              "clamped": false,
+              "duration_unknown": true,
+              "oob": false
+            },
+            "note": "高潮后反应/庆祝候选；优先接在进球锚点之后"
           }
         ],
-        "count": 5
+        "count": 7,
+        "registerable_count": 7
       }
     },
     {
@@ -209,9 +1851,9 @@
         "arguments": {
           "gap_id": "missing_setup_visual",
           "tool_hint": "inspect_story_window",
-          "start": 1077.06,
-          "end": 1087.06,
-          "note": "铺垫缺失（reason=missing_setup）；需短窗确认失球/扑救/门线画面"
+          "start": 0.0,
+          "end": 90.0,
+          "note": "铺垫缺失（reason=missing_setup）；在 [0.0,3146.0] 按事件索引分段搜索失球/扑救/门线，禁止只扫首次比分旁短窗"
         }
       },
       "decision_attempts": [
@@ -221,11 +1863,7 @@
             "type": "tool",
             "tool": "register_evidence_task",
             "arguments": {
-              "gap_id": "missing_setup_visual",
-              "tool_hint": "inspect_story_window",
-              "start": 1077.06,
-              "end": 1087.06,
-              "note": "铺垫缺失（reason=missing_setup）；需短窗确认失球/扑救/门线画面"
+              "gap_id": "missing_setup_visual"
             }
           },
           "parse_mode": "rule_policy",
@@ -233,11 +1871,7 @@
             "type": "tool",
             "tool": "register_evidence_task",
             "arguments": {
-              "gap_id": "missing_setup_visual",
-              "tool_hint": "inspect_story_window",
-              "start": 1077.06,
-              "end": 1087.06,
-              "note": "铺垫缺失（reason=missing_setup）；需短窗确认失球/扑救/门线画面"
+              "gap_id": "missing_setup_visual"
             }
           },
           "status": "accepted",
@@ -247,9 +1881,9 @@
             "arguments": {
               "gap_id": "missing_setup_visual",
               "tool_hint": "inspect_story_window",
-              "start": 1077.06,
-              "end": 1087.06,
-              "note": "铺垫缺失（reason=missing_setup）；需短窗确认失球/扑救/门线画面"
+              "start": 0.0,
+              "end": 90.0,
+              "note": "铺垫缺失（reason=missing_setup）；在 [0.0,3146.0] 按事件索引分段搜索失球/扑救/门线，禁止只扫首次比分旁短窗"
             }
           }
         }
@@ -259,14 +1893,233 @@
         "registered": {
           "task_id": "task_missing_setup_visual",
           "gap_id": "missing_setup_visual",
+          "kind": "setup",
           "tool_hint": "inspect_story_window",
           "window": {
-            "start": 1077.06,
-            "end": 1087.06
+            "start": 0.0,
+            "end": 90.0
           },
-          "note": "铺垫缺失（reason=missing_setup）；需短窗确认失球/扑救/门线画面",
-          "status": "planned",
-          "provider": null
+          "search_intervals": [
+            {
+              "start": 0.0,
+              "end": 90.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 90.0,
+              "end": 180.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 180.0,
+              "end": 270.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 270.0,
+              "end": 360.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 360.0,
+              "end": 450.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 450.0,
+              "end": 540.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 540.0,
+              "end": 630.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 630.0,
+              "end": 720.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 720.0,
+              "end": 810.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 810.0,
+              "end": 900.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 900.0,
+              "end": 990.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 990.0,
+              "end": 1080.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1080.0,
+              "end": 1170.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1170.0,
+              "end": 1260.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1260.0,
+              "end": 1350.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1350.0,
+              "end": 1440.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1440.0,
+              "end": 1530.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1530.0,
+              "end": 1620.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1620.0,
+              "end": 1710.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1710.0,
+              "end": 1800.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1800.0,
+              "end": 1890.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1890.0,
+              "end": 1980.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1980.0,
+              "end": 2070.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2070.0,
+              "end": 2160.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2160.0,
+              "end": 2250.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2250.0,
+              "end": 2340.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2340.0,
+              "end": 2430.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2430.0,
+              "end": 2520.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2520.0,
+              "end": 2610.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2610.0,
+              "end": 2700.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2700.0,
+              "end": 2790.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2790.0,
+              "end": 2880.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2880.0,
+              "end": 2970.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2970.0,
+              "end": 3060.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 3060.0,
+              "end": 3145.98,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            }
+          ],
+          "seed_windows": [],
+          "score_anchor_sec": 1079.06,
+          "goal_anchor_sec": null,
+          "anchor_status": "needs_search",
+          "adaptive_expand": true,
+          "note": "铺垫缺失（reason=missing_setup）；在 [0.0,3146.0] 按事件索引分段搜索失球/扑救/门线，禁止只扫首次比分旁短窗",
+          "status": "pending",
+          "provider": null,
+          "duration_known": false
         }
       }
     },
@@ -278,9 +2131,9 @@
         "arguments": {
           "gap_id": "missing_buildup_visual",
           "tool_hint": "inspect_story_window",
-          "start": 5498.175,
-          "end": 5506.175,
-          "note": "蓄力缺失；需确认射门/任意球/角球尝试镜头"
+          "start": 1079.06,
+          "end": 1169.06,
+          "note": "蓄力缺失；在 [1079.1,3697.3] 分段搜索射门/任意球/角球，禁止只用时间中点单窗"
         }
       },
       "decision_attempts": [
@@ -290,11 +2143,7 @@
             "type": "tool",
             "tool": "register_evidence_task",
             "arguments": {
-              "gap_id": "missing_buildup_visual",
-              "tool_hint": "inspect_story_window",
-              "start": 5498.175,
-              "end": 5506.175,
-              "note": "蓄力缺失；需确认射门/任意球/角球尝试镜头"
+              "gap_id": "missing_buildup_visual"
             }
           },
           "parse_mode": "rule_policy",
@@ -302,11 +2151,7 @@
             "type": "tool",
             "tool": "register_evidence_task",
             "arguments": {
-              "gap_id": "missing_buildup_visual",
-              "tool_hint": "inspect_story_window",
-              "start": 5498.175,
-              "end": 5506.175,
-              "note": "蓄力缺失；需确认射门/任意球/角球尝试镜头"
+              "gap_id": "missing_buildup_visual"
             }
           },
           "status": "accepted",
@@ -316,9 +2161,9 @@
             "arguments": {
               "gap_id": "missing_buildup_visual",
               "tool_hint": "inspect_story_window",
-              "start": 5498.175,
-              "end": 5506.175,
-              "note": "蓄力缺失；需确认射门/任意球/角球尝试镜头"
+              "start": 1079.06,
+              "end": 1169.06,
+              "note": "蓄力缺失；在 [1079.1,3697.3] 分段搜索射门/任意球/角球，禁止只用时间中点单窗"
             }
           }
         }
@@ -328,14 +2173,203 @@
         "registered": {
           "task_id": "task_missing_buildup_visual",
           "gap_id": "missing_buildup_visual",
+          "kind": "buildup",
           "tool_hint": "inspect_story_window",
           "window": {
-            "start": 5498.175,
-            "end": 5506.175
+            "start": 1079.06,
+            "end": 1169.06
           },
-          "note": "蓄力缺失；需确认射门/任意球/角球尝试镜头",
-          "status": "planned",
-          "provider": null
+          "search_intervals": [
+            {
+              "start": 1079.06,
+              "end": 1169.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1169.06,
+              "end": 1259.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1259.06,
+              "end": 1349.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1349.06,
+              "end": 1439.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1439.06,
+              "end": 1529.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1529.06,
+              "end": 1619.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1619.06,
+              "end": 1709.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1709.06,
+              "end": 1799.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1799.06,
+              "end": 1889.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1889.06,
+              "end": 1979.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1979.06,
+              "end": 2069.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2069.06,
+              "end": 2159.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2159.06,
+              "end": 2249.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2249.06,
+              "end": 2339.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2339.06,
+              "end": 2429.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2429.06,
+              "end": 2519.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2519.06,
+              "end": 2609.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2609.06,
+              "end": 2699.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2699.06,
+              "end": 2789.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2789.06,
+              "end": 2879.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2879.06,
+              "end": 2969.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2969.06,
+              "end": 3059.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 3059.06,
+              "end": 3149.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 3149.06,
+              "end": 3239.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 3239.06,
+              "end": 3329.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 3329.06,
+              "end": 3419.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 3419.06,
+              "end": 3509.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 3509.06,
+              "end": 3599.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 3599.06,
+              "end": 3689.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 3689.06,
+              "end": 3697.35,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            }
+          ],
+          "seed_windows": [],
+          "score_anchor_sec": null,
+          "goal_anchor_sec": null,
+          "anchor_status": "needs_search",
+          "adaptive_expand": true,
+          "note": "蓄力缺失；在 [1079.1,3697.3] 分段搜索射门/任意球/角球，禁止只用时间中点单窗",
+          "status": "pending",
+          "provider": null,
+          "duration_known": false
         }
       }
     },
@@ -345,11 +2379,11 @@
         "type": "tool",
         "tool": "register_evidence_task",
         "arguments": {
-          "gap_id": "verify_equalizer_scoreboard",
-          "tool_hint": "read_scoreboard_window",
-          "start": 3063.903,
-          "end": 3071.903,
-          "note": "核实转折附近记分牌是否与 score_path 一致"
+          "gap_id": "locate_go_ahead_goal_action",
+          "tool_hint": "inspect_story_window",
+          "start": 3577.35,
+          "end": 3607.35,
+          "note": "高潮缺少可靠进球事件锚点；先在比分确认前定位进球动作，不得用 score_path 时刻冒充进球"
         }
       },
       "decision_attempts": [
@@ -359,11 +2393,7 @@
             "type": "tool",
             "tool": "register_evidence_task",
             "arguments": {
-              "gap_id": "verify_equalizer_scoreboard",
-              "tool_hint": "read_scoreboard_window",
-              "start": 3063.903,
-              "end": 3071.903,
-              "note": "核实转折附近记分牌是否与 score_path 一致"
+              "gap_id": "locate_go_ahead_goal_action"
             }
           },
           "parse_mode": "rule_policy",
@@ -371,11 +2401,7 @@
             "type": "tool",
             "tool": "register_evidence_task",
             "arguments": {
-              "gap_id": "verify_equalizer_scoreboard",
-              "tool_hint": "read_scoreboard_window",
-              "start": 3063.903,
-              "end": 3071.903,
-              "note": "核实转折附近记分牌是否与 score_path 一致"
+              "gap_id": "locate_go_ahead_goal_action"
             }
           },
           "status": "accepted",
@@ -383,11 +2409,11 @@
             "type": "tool",
             "tool": "register_evidence_task",
             "arguments": {
-              "gap_id": "verify_equalizer_scoreboard",
-              "tool_hint": "read_scoreboard_window",
-              "start": 3063.903,
-              "end": 3071.903,
-              "note": "核实转折附近记分牌是否与 score_path 一致"
+              "gap_id": "locate_go_ahead_goal_action",
+              "tool_hint": "inspect_story_window",
+              "start": 3577.35,
+              "end": 3607.35,
+              "note": "高潮缺少可靠进球事件锚点；先在比分确认前定位进球动作，不得用 score_path 时刻冒充进球"
             }
           }
         }
@@ -395,16 +2421,55 @@
       "observation": {
         "dry_run": true,
         "registered": {
-          "task_id": "task_verify_equalizer_scoreboard",
-          "gap_id": "verify_equalizer_scoreboard",
-          "tool_hint": "read_scoreboard_window",
+          "task_id": "task_locate_go_ahead_goal_action",
+          "gap_id": "locate_go_ahead_goal_action",
+          "kind": "action_locate",
+          "tool_hint": "inspect_story_window",
           "window": {
-            "start": 3063.903,
-            "end": 3071.903
+            "start": 3577.35,
+            "end": 3607.35
           },
-          "note": "核实转折附近记分牌是否与 score_path 一致",
-          "status": "planned",
-          "provider": null
+          "search_intervals": [
+            {
+              "start": 3577.35,
+              "end": 3607.35,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 3607.35,
+              "end": 3637.35,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 3637.35,
+              "end": 3667.35,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 3667.35,
+              "end": 3697.35,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 3697.35,
+              "end": 3727.35,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            }
+          ],
+          "seed_windows": [],
+          "score_anchor_sec": 3697.35,
+          "goal_anchor_sec": null,
+          "anchor_status": "pending_localization",
+          "adaptive_expand": true,
+          "note": "高潮缺少可靠进球事件锚点；先在比分确认前定位进球动作，不得用 score_path 时刻冒充进球",
+          "status": "pending",
+          "provider": null,
+          "duration_known": false
         }
       }
     },
@@ -414,11 +2479,11 @@
         "type": "tool",
         "tool": "register_evidence_task",
         "arguments": {
-          "gap_id": "verify_go_ahead_scoreboard",
-          "tool_hint": "read_scoreboard_window",
-          "start": 3695.35,
-          "end": 3703.35,
-          "note": "核实高潮附近记分牌是否与 score_path 一致"
+          "gap_id": "verify_equalizer_goal_action",
+          "tool_hint": "inspect_story_window",
+          "start": 3063.903,
+          "end": 3073.903,
+          "note": "转折动作检查使用进球锚点 t=3065.9s；比分确认 t=3146.0s 仅用于 OCR"
         }
       },
       "decision_attempts": [
@@ -428,11 +2493,7 @@
             "type": "tool",
             "tool": "register_evidence_task",
             "arguments": {
-              "gap_id": "verify_go_ahead_scoreboard",
-              "tool_hint": "read_scoreboard_window",
-              "start": 3695.35,
-              "end": 3703.35,
-              "note": "核实高潮附近记分牌是否与 score_path 一致"
+              "gap_id": "verify_equalizer_goal_action"
             }
           },
           "parse_mode": "rule_policy",
@@ -440,11 +2501,7 @@
             "type": "tool",
             "tool": "register_evidence_task",
             "arguments": {
-              "gap_id": "verify_go_ahead_scoreboard",
-              "tool_hint": "read_scoreboard_window",
-              "start": 3695.35,
-              "end": 3703.35,
-              "note": "核实高潮附近记分牌是否与 score_path 一致"
+              "gap_id": "verify_equalizer_goal_action"
             }
           },
           "status": "accepted",
@@ -452,11 +2509,11 @@
             "type": "tool",
             "tool": "register_evidence_task",
             "arguments": {
-              "gap_id": "verify_go_ahead_scoreboard",
-              "tool_hint": "read_scoreboard_window",
-              "start": 3695.35,
-              "end": 3703.35,
-              "note": "核实高潮附近记分牌是否与 score_path 一致"
+              "gap_id": "verify_equalizer_goal_action",
+              "tool_hint": "inspect_story_window",
+              "start": 3063.903,
+              "end": 3073.903,
+              "note": "转折动作检查使用进球锚点 t=3065.9s；比分确认 t=3146.0s 仅用于 OCR"
             }
           }
         }
@@ -464,16 +2521,36 @@
       "observation": {
         "dry_run": true,
         "registered": {
-          "task_id": "task_verify_go_ahead_scoreboard",
-          "gap_id": "verify_go_ahead_scoreboard",
-          "tool_hint": "read_scoreboard_window",
+          "task_id": "task_verify_equalizer_goal_action",
+          "gap_id": "verify_equalizer_goal_action",
+          "kind": "action_verify",
+          "tool_hint": "inspect_story_window",
           "window": {
-            "start": 3695.35,
-            "end": 3703.35
+            "start": 3063.903,
+            "end": 3073.903
           },
-          "note": "核实高潮附近记分牌是否与 score_path 一致",
-          "status": "planned",
-          "provider": null
+          "search_intervals": [
+            {
+              "start": 3063.903,
+              "end": 3073.903,
+              "expand_level": 0,
+              "expand_policy": "widen_by_4s_on_miss"
+            }
+          ],
+          "seed_windows": [
+            {
+              "start": 3063.903,
+              "end": 3073.903
+            }
+          ],
+          "score_anchor_sec": 3145.98,
+          "goal_anchor_sec": 3065.903,
+          "anchor_status": "goal_event",
+          "adaptive_expand": true,
+          "note": "转折动作检查使用进球锚点 t=3065.9s；比分确认 t=3146.0s 仅用于 OCR",
+          "status": "pending",
+          "provider": null,
+          "duration_known": false
         }
       }
     },
@@ -483,11 +2560,11 @@
         "type": "tool",
         "tool": "register_evidence_task",
         "arguments": {
-          "gap_id": "post_climax_reaction",
-          "tool_hint": "scan_reaction_window",
-          "start": 7858.37,
-          "end": 7874.37,
-          "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）"
+          "gap_id": "verify_equalizer_scoreboard",
+          "tool_hint": "read_scoreboard_window",
+          "start": 3143.98,
+          "end": 3151.98,
+          "note": "OCR 核实转折记分牌，锚点取 score_path t=3146.0s（非进球动作时刻）"
         }
       },
       "decision_attempts": [
@@ -497,11 +2574,7 @@
             "type": "tool",
             "tool": "register_evidence_task",
             "arguments": {
-              "gap_id": "post_climax_reaction",
-              "tool_hint": "scan_reaction_window",
-              "start": 7858.37,
-              "end": 7874.37,
-              "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）"
+              "gap_id": "verify_equalizer_scoreboard"
             }
           },
           "parse_mode": "rule_policy",
@@ -509,11 +2582,169 @@
             "type": "tool",
             "tool": "register_evidence_task",
             "arguments": {
-              "gap_id": "post_climax_reaction",
-              "tool_hint": "scan_reaction_window",
-              "start": 7858.37,
-              "end": 7874.37,
-              "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）"
+              "gap_id": "verify_equalizer_scoreboard"
+            }
+          },
+          "status": "accepted",
+          "decision": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "verify_equalizer_scoreboard",
+              "tool_hint": "read_scoreboard_window",
+              "start": 3143.98,
+              "end": 3151.98,
+              "note": "OCR 核实转折记分牌，锚点取 score_path t=3146.0s（非进球动作时刻）"
+            }
+          }
+        }
+      ],
+      "observation": {
+        "dry_run": true,
+        "registered": {
+          "task_id": "task_verify_equalizer_scoreboard",
+          "gap_id": "verify_equalizer_scoreboard",
+          "kind": "scoreboard",
+          "tool_hint": "read_scoreboard_window",
+          "window": {
+            "start": 3143.98,
+            "end": 3151.98
+          },
+          "search_intervals": [
+            {
+              "start": 3143.98,
+              "end": 3151.98,
+              "expand_level": 0,
+              "expand_policy": "widen_by_4s_on_miss"
+            }
+          ],
+          "seed_windows": [
+            {
+              "start": 3143.98,
+              "end": 3151.98
+            }
+          ],
+          "score_anchor_sec": 3145.98,
+          "goal_anchor_sec": 3065.903,
+          "anchor_status": "score_path",
+          "adaptive_expand": true,
+          "note": "OCR 核实转折记分牌，锚点取 score_path t=3146.0s（非进球动作时刻）",
+          "status": "pending",
+          "provider": null,
+          "duration_known": false
+        }
+      }
+    },
+    {
+      "step": 6,
+      "decision": {
+        "type": "tool",
+        "tool": "register_evidence_task",
+        "arguments": {
+          "gap_id": "verify_go_ahead_scoreboard",
+          "tool_hint": "read_scoreboard_window",
+          "start": 3695.35,
+          "end": 3703.35,
+          "note": "OCR 核实高潮记分牌，锚点取 score_path t=3697.3s（非进球动作时刻）"
+        }
+      },
+      "decision_attempts": [
+        {
+          "attempt": 0,
+          "raw_response": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "verify_go_ahead_scoreboard"
+            }
+          },
+          "parse_mode": "rule_policy",
+          "proposed_decision": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "verify_go_ahead_scoreboard"
+            }
+          },
+          "status": "accepted",
+          "decision": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "verify_go_ahead_scoreboard",
+              "tool_hint": "read_scoreboard_window",
+              "start": 3695.35,
+              "end": 3703.35,
+              "note": "OCR 核实高潮记分牌，锚点取 score_path t=3697.3s（非进球动作时刻）"
+            }
+          }
+        }
+      ],
+      "observation": {
+        "dry_run": true,
+        "registered": {
+          "task_id": "task_verify_go_ahead_scoreboard",
+          "gap_id": "verify_go_ahead_scoreboard",
+          "kind": "scoreboard",
+          "tool_hint": "read_scoreboard_window",
+          "window": {
+            "start": 3695.35,
+            "end": 3703.35
+          },
+          "search_intervals": [
+            {
+              "start": 3695.35,
+              "end": 3703.35,
+              "expand_level": 0,
+              "expand_policy": "widen_by_4s_on_miss"
+            }
+          ],
+          "seed_windows": [
+            {
+              "start": 3695.35,
+              "end": 3703.35
+            }
+          ],
+          "score_anchor_sec": 3697.35,
+          "goal_anchor_sec": null,
+          "anchor_status": "score_path",
+          "adaptive_expand": true,
+          "note": "OCR 核实高潮记分牌，锚点取 score_path t=3697.3s（非进球动作时刻）",
+          "status": "pending",
+          "provider": null,
+          "duration_known": false
+        }
+      }
+    },
+    {
+      "step": 7,
+      "decision": {
+        "type": "tool",
+        "tool": "register_evidence_task",
+        "arguments": {
+          "gap_id": "post_climax_reaction",
+          "tool_hint": "scan_reaction_window",
+          "start": 3697.35,
+          "end": 3713.35,
+          "note": "高潮后反应/庆祝候选；优先接在进球锚点之后"
+        }
+      },
+      "decision_attempts": [
+        {
+          "attempt": 0,
+          "raw_response": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "post_climax_reaction"
+            }
+          },
+          "parse_mode": "rule_policy",
+          "proposed_decision": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "post_climax_reaction"
             }
           },
           "status": "accepted",
@@ -523,9 +2754,9 @@
             "arguments": {
               "gap_id": "post_climax_reaction",
               "tool_hint": "scan_reaction_window",
-              "start": 7858.37,
-              "end": 7874.37,
-              "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）"
+              "start": 3697.35,
+              "end": 3713.35,
+              "note": "高潮后反应/庆祝候选；优先接在进球锚点之后"
             }
           }
         }
@@ -535,19 +2766,39 @@
         "registered": {
           "task_id": "task_post_climax_reaction",
           "gap_id": "post_climax_reaction",
+          "kind": "reaction",
           "tool_hint": "scan_reaction_window",
           "window": {
-            "start": 7858.37,
-            "end": 7874.37
+            "start": 3697.35,
+            "end": 3713.35
           },
-          "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）",
-          "status": "planned",
-          "provider": null
+          "search_intervals": [
+            {
+              "start": 3697.35,
+              "end": 3713.35,
+              "expand_level": 0,
+              "expand_policy": "extend_to_32s_on_miss"
+            }
+          ],
+          "seed_windows": [
+            {
+              "start": 3697.35,
+              "end": 3713.35
+            }
+          ],
+          "score_anchor_sec": 3697.35,
+          "goal_anchor_sec": null,
+          "anchor_status": "score_fallback_pending",
+          "adaptive_expand": true,
+          "note": "高潮后反应/庆祝候选；优先接在进球锚点之后",
+          "status": "pending",
+          "provider": null,
+          "duration_known": false
         }
       }
     },
     {
-      "step": 6,
+      "step": 8,
       "decision": {
         "type": "tool",
         "tool": "finish_evidence_plan",
@@ -593,48 +2844,593 @@
             "kind": "setup",
             "priority": 1,
             "tool_hint": "inspect_story_window",
-            "start": 1077.06,
-            "end": 1087.06,
-            "note": "铺垫缺失（reason=missing_setup）；需短窗确认失球/扑救/门线画面"
+            "registerable": true,
+            "search_intervals": [
+              {
+                "start": 0.0,
+                "end": 90.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 90.0,
+                "end": 180.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 180.0,
+                "end": 270.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 270.0,
+                "end": 360.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 360.0,
+                "end": 450.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 450.0,
+                "end": 540.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 540.0,
+                "end": 630.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 630.0,
+                "end": 720.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 720.0,
+                "end": 810.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 810.0,
+                "end": 900.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 900.0,
+                "end": 990.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 990.0,
+                "end": 1080.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1080.0,
+                "end": 1170.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1170.0,
+                "end": 1260.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1260.0,
+                "end": 1350.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1350.0,
+                "end": 1440.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1440.0,
+                "end": 1530.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1530.0,
+                "end": 1620.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1620.0,
+                "end": 1710.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1710.0,
+                "end": 1800.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1800.0,
+                "end": 1890.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1890.0,
+                "end": 1980.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1980.0,
+                "end": 2070.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2070.0,
+                "end": 2160.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2160.0,
+                "end": 2250.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2250.0,
+                "end": 2340.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2340.0,
+                "end": 2430.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2430.0,
+                "end": 2520.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2520.0,
+                "end": 2610.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2610.0,
+                "end": 2700.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2700.0,
+                "end": 2790.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2790.0,
+                "end": 2880.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2880.0,
+                "end": 2970.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2970.0,
+                "end": 3060.0,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 3060.0,
+                "end": 3145.98,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              }
+            ],
+            "seed_windows": [],
+            "score_anchor_sec": 1079.06,
+            "goal_anchor_sec": null,
+            "anchor_status": "needs_search",
+            "adaptive_expand": true,
+            "note": "铺垫缺失（reason=missing_setup）；在 [0.0,3146.0] 按事件索引分段搜索失球/扑救/门线，禁止只扫首次比分旁短窗"
           },
           {
             "gap_id": "missing_buildup_visual",
             "kind": "buildup",
             "priority": 2,
             "tool_hint": "inspect_story_window",
-            "start": 5498.175,
-            "end": 5506.175,
-            "note": "蓄力缺失；需确认射门/任意球/角球尝试镜头"
+            "registerable": true,
+            "search_intervals": [
+              {
+                "start": 1079.06,
+                "end": 1169.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1169.06,
+                "end": 1259.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1259.06,
+                "end": 1349.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1349.06,
+                "end": 1439.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1439.06,
+                "end": 1529.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1529.06,
+                "end": 1619.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1619.06,
+                "end": 1709.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1709.06,
+                "end": 1799.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1799.06,
+                "end": 1889.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1889.06,
+                "end": 1979.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 1979.06,
+                "end": 2069.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2069.06,
+                "end": 2159.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2159.06,
+                "end": 2249.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2249.06,
+                "end": 2339.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2339.06,
+                "end": 2429.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2429.06,
+                "end": 2519.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2519.06,
+                "end": 2609.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2609.06,
+                "end": 2699.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2699.06,
+                "end": 2789.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2789.06,
+                "end": 2879.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2879.06,
+                "end": 2969.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 2969.06,
+                "end": 3059.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 3059.06,
+                "end": 3149.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 3149.06,
+                "end": 3239.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 3239.06,
+                "end": 3329.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 3329.06,
+                "end": 3419.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 3419.06,
+                "end": 3509.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 3509.06,
+                "end": 3599.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 3599.06,
+                "end": 3689.06,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 3689.06,
+                "end": 3697.35,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              }
+            ],
+            "seed_windows": [],
+            "score_anchor_sec": null,
+            "goal_anchor_sec": null,
+            "anchor_status": "needs_search",
+            "adaptive_expand": true,
+            "note": "蓄力缺失；在 [1079.1,3697.3] 分段搜索射门/任意球/角球，禁止只用时间中点单窗"
+          },
+          {
+            "gap_id": "locate_go_ahead_goal_action",
+            "kind": "action_locate",
+            "priority": 3,
+            "tool_hint": "inspect_story_window",
+            "registerable": true,
+            "search_intervals": [
+              {
+                "start": 3577.35,
+                "end": 3607.35,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 3607.35,
+                "end": 3637.35,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 3637.35,
+                "end": 3667.35,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 3667.35,
+                "end": 3697.35,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              },
+              {
+                "start": 3697.35,
+                "end": 3727.35,
+                "expand_level": 0,
+                "expand_policy": "double_chunk_on_miss"
+              }
+            ],
+            "seed_windows": [],
+            "score_anchor_sec": 3697.35,
+            "goal_anchor_sec": null,
+            "anchor_status": "pending_localization",
+            "adaptive_expand": true,
+            "note": "高潮缺少可靠进球事件锚点；先在比分确认前定位进球动作，不得用 score_path 时刻冒充进球"
+          },
+          {
+            "gap_id": "verify_equalizer_goal_action",
+            "kind": "action_verify",
+            "priority": 3,
+            "tool_hint": "inspect_story_window",
+            "registerable": true,
+            "search_intervals": [
+              {
+                "start": 3063.903,
+                "end": 3073.903,
+                "expand_level": 0,
+                "expand_policy": "widen_by_4s_on_miss"
+              }
+            ],
+            "seed_windows": [
+              {
+                "start": 3063.903,
+                "end": 3073.903
+              }
+            ],
+            "score_anchor_sec": 3145.98,
+            "goal_anchor_sec": 3065.903,
+            "anchor_status": "goal_event",
+            "adaptive_expand": true,
+            "window_meta": {
+              "clamped": false,
+              "duration_unknown": true,
+              "oob": false
+            },
+            "note": "转折动作检查使用进球锚点 t=3065.9s；比分确认 t=3146.0s 仅用于 OCR"
           },
           {
             "gap_id": "verify_equalizer_scoreboard",
             "kind": "scoreboard",
             "priority": 3,
             "tool_hint": "read_scoreboard_window",
-            "start": 3063.903,
-            "end": 3071.903,
-            "note": "核实转折附近记分牌是否与 score_path 一致"
+            "registerable": true,
+            "search_intervals": [
+              {
+                "start": 3143.98,
+                "end": 3151.98,
+                "expand_level": 0,
+                "expand_policy": "widen_by_4s_on_miss"
+              }
+            ],
+            "seed_windows": [
+              {
+                "start": 3143.98,
+                "end": 3151.98
+              }
+            ],
+            "score_anchor_sec": 3145.98,
+            "goal_anchor_sec": 3065.903,
+            "anchor_status": "score_path",
+            "adaptive_expand": true,
+            "window_meta": {
+              "clamped": false,
+              "duration_unknown": true,
+              "oob": false
+            },
+            "note": "OCR 核实转折记分牌，锚点取 score_path t=3146.0s（非进球动作时刻）"
           },
           {
             "gap_id": "verify_go_ahead_scoreboard",
             "kind": "scoreboard",
             "priority": 3,
             "tool_hint": "read_scoreboard_window",
-            "start": 3695.35,
-            "end": 3703.35,
-            "note": "核实高潮附近记分牌是否与 score_path 一致"
+            "registerable": true,
+            "search_intervals": [
+              {
+                "start": 3695.35,
+                "end": 3703.35,
+                "expand_level": 0,
+                "expand_policy": "widen_by_4s_on_miss"
+              }
+            ],
+            "seed_windows": [
+              {
+                "start": 3695.35,
+                "end": 3703.35
+              }
+            ],
+            "score_anchor_sec": 3697.35,
+            "goal_anchor_sec": null,
+            "anchor_status": "score_path",
+            "adaptive_expand": true,
+            "window_meta": {
+              "clamped": false,
+              "duration_unknown": true,
+              "oob": false
+            },
+            "note": "OCR 核实高潮记分牌，锚点取 score_path t=3697.3s（非进球动作时刻）"
           },
           {
             "gap_id": "post_climax_reaction",
             "kind": "reaction",
             "priority": 4,
             "tool_hint": "scan_reaction_window",
-            "start": 7858.37,
-            "end": 7874.37,
-            "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）"
+            "registerable": true,
+            "search_intervals": [
+              {
+                "start": 3697.35,
+                "end": 3713.35,
+                "expand_level": 0,
+                "expand_policy": "extend_to_32s_on_miss"
+              }
+            ],
+            "seed_windows": [
+              {
+                "start": 3697.35,
+                "end": 3713.35
+              }
+            ],
+            "score_anchor_sec": 3697.35,
+            "goal_anchor_sec": null,
+            "anchor_status": "score_fallback_pending",
+            "adaptive_expand": true,
+            "window_meta": {
+              "clamped": false,
+              "duration_unknown": true,
+              "oob": false
+            },
+            "note": "高潮后反应/庆祝候选；优先接在进球锚点之后"
           }
         ],
-        "count": 5
+        "count": 7,
+        "registerable_count": 7
       }
     },
     {
@@ -642,23 +3438,242 @@
       "arguments": {
         "gap_id": "missing_setup_visual",
         "tool_hint": "inspect_story_window",
-        "start": 1077.06,
-        "end": 1087.06,
-        "note": "铺垫缺失（reason=missing_setup）；需短窗确认失球/扑救/门线画面"
+        "start": 0.0,
+        "end": 90.0,
+        "note": "铺垫缺失（reason=missing_setup）；在 [0.0,3146.0] 按事件索引分段搜索失球/扑救/门线，禁止只扫首次比分旁短窗"
       },
       "observation": {
         "dry_run": true,
         "registered": {
           "task_id": "task_missing_setup_visual",
           "gap_id": "missing_setup_visual",
+          "kind": "setup",
           "tool_hint": "inspect_story_window",
           "window": {
-            "start": 1077.06,
-            "end": 1087.06
+            "start": 0.0,
+            "end": 90.0
           },
-          "note": "铺垫缺失（reason=missing_setup）；需短窗确认失球/扑救/门线画面",
-          "status": "planned",
-          "provider": null
+          "search_intervals": [
+            {
+              "start": 0.0,
+              "end": 90.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 90.0,
+              "end": 180.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 180.0,
+              "end": 270.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 270.0,
+              "end": 360.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 360.0,
+              "end": 450.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 450.0,
+              "end": 540.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 540.0,
+              "end": 630.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 630.0,
+              "end": 720.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 720.0,
+              "end": 810.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 810.0,
+              "end": 900.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 900.0,
+              "end": 990.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 990.0,
+              "end": 1080.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1080.0,
+              "end": 1170.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1170.0,
+              "end": 1260.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1260.0,
+              "end": 1350.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1350.0,
+              "end": 1440.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1440.0,
+              "end": 1530.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1530.0,
+              "end": 1620.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1620.0,
+              "end": 1710.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1710.0,
+              "end": 1800.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1800.0,
+              "end": 1890.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1890.0,
+              "end": 1980.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1980.0,
+              "end": 2070.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2070.0,
+              "end": 2160.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2160.0,
+              "end": 2250.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2250.0,
+              "end": 2340.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2340.0,
+              "end": 2430.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2430.0,
+              "end": 2520.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2520.0,
+              "end": 2610.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2610.0,
+              "end": 2700.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2700.0,
+              "end": 2790.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2790.0,
+              "end": 2880.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2880.0,
+              "end": 2970.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2970.0,
+              "end": 3060.0,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 3060.0,
+              "end": 3145.98,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            }
+          ],
+          "seed_windows": [],
+          "score_anchor_sec": 1079.06,
+          "goal_anchor_sec": null,
+          "anchor_status": "needs_search",
+          "adaptive_expand": true,
+          "note": "铺垫缺失（reason=missing_setup）；在 [0.0,3146.0] 按事件索引分段搜索失球/扑救/门线，禁止只扫首次比分旁短窗",
+          "status": "pending",
+          "provider": null,
+          "duration_known": false
         }
       }
     },
@@ -667,23 +3682,321 @@
       "arguments": {
         "gap_id": "missing_buildup_visual",
         "tool_hint": "inspect_story_window",
-        "start": 5498.175,
-        "end": 5506.175,
-        "note": "蓄力缺失；需确认射门/任意球/角球尝试镜头"
+        "start": 1079.06,
+        "end": 1169.06,
+        "note": "蓄力缺失；在 [1079.1,3697.3] 分段搜索射门/任意球/角球，禁止只用时间中点单窗"
       },
       "observation": {
         "dry_run": true,
         "registered": {
           "task_id": "task_missing_buildup_visual",
           "gap_id": "missing_buildup_visual",
+          "kind": "buildup",
           "tool_hint": "inspect_story_window",
           "window": {
-            "start": 5498.175,
-            "end": 5506.175
+            "start": 1079.06,
+            "end": 1169.06
           },
-          "note": "蓄力缺失；需确认射门/任意球/角球尝试镜头",
-          "status": "planned",
-          "provider": null
+          "search_intervals": [
+            {
+              "start": 1079.06,
+              "end": 1169.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1169.06,
+              "end": 1259.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1259.06,
+              "end": 1349.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1349.06,
+              "end": 1439.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1439.06,
+              "end": 1529.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1529.06,
+              "end": 1619.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1619.06,
+              "end": 1709.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1709.06,
+              "end": 1799.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1799.06,
+              "end": 1889.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1889.06,
+              "end": 1979.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 1979.06,
+              "end": 2069.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2069.06,
+              "end": 2159.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2159.06,
+              "end": 2249.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2249.06,
+              "end": 2339.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2339.06,
+              "end": 2429.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2429.06,
+              "end": 2519.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2519.06,
+              "end": 2609.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2609.06,
+              "end": 2699.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2699.06,
+              "end": 2789.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2789.06,
+              "end": 2879.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2879.06,
+              "end": 2969.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 2969.06,
+              "end": 3059.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 3059.06,
+              "end": 3149.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 3149.06,
+              "end": 3239.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 3239.06,
+              "end": 3329.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 3329.06,
+              "end": 3419.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 3419.06,
+              "end": 3509.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 3509.06,
+              "end": 3599.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 3599.06,
+              "end": 3689.06,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 3689.06,
+              "end": 3697.35,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            }
+          ],
+          "seed_windows": [],
+          "score_anchor_sec": null,
+          "goal_anchor_sec": null,
+          "anchor_status": "needs_search",
+          "adaptive_expand": true,
+          "note": "蓄力缺失；在 [1079.1,3697.3] 分段搜索射门/任意球/角球，禁止只用时间中点单窗",
+          "status": "pending",
+          "provider": null,
+          "duration_known": false
+        }
+      }
+    },
+    {
+      "tool": "register_evidence_task",
+      "arguments": {
+        "gap_id": "locate_go_ahead_goal_action",
+        "tool_hint": "inspect_story_window",
+        "start": 3577.35,
+        "end": 3607.35,
+        "note": "高潮缺少可靠进球事件锚点；先在比分确认前定位进球动作，不得用 score_path 时刻冒充进球"
+      },
+      "observation": {
+        "dry_run": true,
+        "registered": {
+          "task_id": "task_locate_go_ahead_goal_action",
+          "gap_id": "locate_go_ahead_goal_action",
+          "kind": "action_locate",
+          "tool_hint": "inspect_story_window",
+          "window": {
+            "start": 3577.35,
+            "end": 3607.35
+          },
+          "search_intervals": [
+            {
+              "start": 3577.35,
+              "end": 3607.35,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 3607.35,
+              "end": 3637.35,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 3637.35,
+              "end": 3667.35,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 3667.35,
+              "end": 3697.35,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            },
+            {
+              "start": 3697.35,
+              "end": 3727.35,
+              "expand_level": 0,
+              "expand_policy": "double_chunk_on_miss"
+            }
+          ],
+          "seed_windows": [],
+          "score_anchor_sec": 3697.35,
+          "goal_anchor_sec": null,
+          "anchor_status": "pending_localization",
+          "adaptive_expand": true,
+          "note": "高潮缺少可靠进球事件锚点；先在比分确认前定位进球动作，不得用 score_path 时刻冒充进球",
+          "status": "pending",
+          "provider": null,
+          "duration_known": false
+        }
+      }
+    },
+    {
+      "tool": "register_evidence_task",
+      "arguments": {
+        "gap_id": "verify_equalizer_goal_action",
+        "tool_hint": "inspect_story_window",
+        "start": 3063.903,
+        "end": 3073.903,
+        "note": "转折动作检查使用进球锚点 t=3065.9s；比分确认 t=3146.0s 仅用于 OCR"
+      },
+      "observation": {
+        "dry_run": true,
+        "registered": {
+          "task_id": "task_verify_equalizer_goal_action",
+          "gap_id": "verify_equalizer_goal_action",
+          "kind": "action_verify",
+          "tool_hint": "inspect_story_window",
+          "window": {
+            "start": 3063.903,
+            "end": 3073.903
+          },
+          "search_intervals": [
+            {
+              "start": 3063.903,
+              "end": 3073.903,
+              "expand_level": 0,
+              "expand_policy": "widen_by_4s_on_miss"
+            }
+          ],
+          "seed_windows": [
+            {
+              "start": 3063.903,
+              "end": 3073.903
+            }
+          ],
+          "score_anchor_sec": 3145.98,
+          "goal_anchor_sec": 3065.903,
+          "anchor_status": "goal_event",
+          "adaptive_expand": true,
+          "note": "转折动作检查使用进球锚点 t=3065.9s；比分确认 t=3146.0s 仅用于 OCR",
+          "status": "pending",
+          "provider": null,
+          "duration_known": false
         }
       }
     },
@@ -692,23 +4005,43 @@
       "arguments": {
         "gap_id": "verify_equalizer_scoreboard",
         "tool_hint": "read_scoreboard_window",
-        "start": 3063.903,
-        "end": 3071.903,
-        "note": "核实转折附近记分牌是否与 score_path 一致"
+        "start": 3143.98,
+        "end": 3151.98,
+        "note": "OCR 核实转折记分牌，锚点取 score_path t=3146.0s（非进球动作时刻）"
       },
       "observation": {
         "dry_run": true,
         "registered": {
           "task_id": "task_verify_equalizer_scoreboard",
           "gap_id": "verify_equalizer_scoreboard",
+          "kind": "scoreboard",
           "tool_hint": "read_scoreboard_window",
           "window": {
-            "start": 3063.903,
-            "end": 3071.903
+            "start": 3143.98,
+            "end": 3151.98
           },
-          "note": "核实转折附近记分牌是否与 score_path 一致",
-          "status": "planned",
-          "provider": null
+          "search_intervals": [
+            {
+              "start": 3143.98,
+              "end": 3151.98,
+              "expand_level": 0,
+              "expand_policy": "widen_by_4s_on_miss"
+            }
+          ],
+          "seed_windows": [
+            {
+              "start": 3143.98,
+              "end": 3151.98
+            }
+          ],
+          "score_anchor_sec": 3145.98,
+          "goal_anchor_sec": 3065.903,
+          "anchor_status": "score_path",
+          "adaptive_expand": true,
+          "note": "OCR 核实转折记分牌，锚点取 score_path t=3146.0s（非进球动作时刻）",
+          "status": "pending",
+          "provider": null,
+          "duration_known": false
         }
       }
     },
@@ -719,21 +4052,41 @@
         "tool_hint": "read_scoreboard_window",
         "start": 3695.35,
         "end": 3703.35,
-        "note": "核实高潮附近记分牌是否与 score_path 一致"
+        "note": "OCR 核实高潮记分牌，锚点取 score_path t=3697.3s（非进球动作时刻）"
       },
       "observation": {
         "dry_run": true,
         "registered": {
           "task_id": "task_verify_go_ahead_scoreboard",
           "gap_id": "verify_go_ahead_scoreboard",
+          "kind": "scoreboard",
           "tool_hint": "read_scoreboard_window",
           "window": {
             "start": 3695.35,
             "end": 3703.35
           },
-          "note": "核实高潮附近记分牌是否与 score_path 一致",
-          "status": "planned",
-          "provider": null
+          "search_intervals": [
+            {
+              "start": 3695.35,
+              "end": 3703.35,
+              "expand_level": 0,
+              "expand_policy": "widen_by_4s_on_miss"
+            }
+          ],
+          "seed_windows": [
+            {
+              "start": 3695.35,
+              "end": 3703.35
+            }
+          ],
+          "score_anchor_sec": 3697.35,
+          "goal_anchor_sec": null,
+          "anchor_status": "score_path",
+          "adaptive_expand": true,
+          "note": "OCR 核实高潮记分牌，锚点取 score_path t=3697.3s（非进球动作时刻）",
+          "status": "pending",
+          "provider": null,
+          "duration_known": false
         }
       }
     },
@@ -742,23 +4095,43 @@
       "arguments": {
         "gap_id": "post_climax_reaction",
         "tool_hint": "scan_reaction_window",
-        "start": 7858.37,
-        "end": 7874.37,
-        "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）"
+        "start": 3697.35,
+        "end": 3713.35,
+        "note": "高潮后反应/庆祝候选；优先接在进球锚点之后"
       },
       "observation": {
         "dry_run": true,
         "registered": {
           "task_id": "task_post_climax_reaction",
           "gap_id": "post_climax_reaction",
+          "kind": "reaction",
           "tool_hint": "scan_reaction_window",
           "window": {
-            "start": 7858.37,
-            "end": 7874.37
+            "start": 3697.35,
+            "end": 3713.35
           },
-          "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）",
-          "status": "planned",
-          "provider": null
+          "search_intervals": [
+            {
+              "start": 3697.35,
+              "end": 3713.35,
+              "expand_level": 0,
+              "expand_policy": "extend_to_32s_on_miss"
+            }
+          ],
+          "seed_windows": [
+            {
+              "start": 3697.35,
+              "end": 3713.35
+            }
+          ],
+          "score_anchor_sec": 3697.35,
+          "goal_anchor_sec": null,
+          "anchor_status": "score_fallback_pending",
+          "adaptive_expand": true,
+          "note": "高潮后反应/庆祝候选；优先接在进球锚点之后",
+          "status": "pending",
+          "provider": null,
+          "duration_known": false
         }
       }
     },
@@ -774,7 +4147,9 @@
   "diagnostics": {
     "tool_argument_errors": 0,
     "decision_repair_calls": 0,
-    "tool_execution_errors": 0
+    "tool_execution_errors": 0,
+    "open_task_count": 7,
+    "unresolved_count": 0
   },
   "structure_ok": true,
   "structure_problems": [],

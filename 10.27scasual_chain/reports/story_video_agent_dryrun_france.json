@@ -1,5 +1,5 @@
 {
-  "schema_version": "story-video-agent-plan-1",
+  "schema_version": "story-video-agent-plan-1.5",
   "algorithm": "t01_story_video_agent_dryrun",
   "status": "planned",
   "match_id": "2022年11月23日 法国vs澳大利亚",
@@ -10,73 +10,327 @@
   "is_candidate": false,
   "story_label_zh": "逆风翻盘",
   "dry_run": true,
+  "duration_known": false,
   "gaps": [
+    {
+      "gap_id": "verify_equalizer_goal_action",
+      "kind": "action_verify",
+      "priority": 3,
+      "tool_hint": "inspect_story_window",
+      "registerable": true,
+      "search_intervals": [
+        {
+          "start": 2451.099,
+          "end": 2461.099,
+          "expand_level": 0,
+          "expand_policy": "widen_by_4s_on_miss"
+        }
+      ],
+      "seed_windows": [
+        {
+          "start": 2451.099,
+          "end": 2461.099
+        }
+      ],
+      "score_anchor_sec": 2513.29,
+      "goal_anchor_sec": 2453.099,
+      "anchor_status": "goal_event",
+      "adaptive_expand": true,
+      "window_meta": {
+        "clamped": false,
+        "duration_unknown": true,
+        "oob": false
+      },
+      "note": "转折动作检查使用进球锚点 t=2453.1s；比分确认 t=2513.3s 仅用于 OCR"
+    },
     {
       "gap_id": "verify_equalizer_scoreboard",
       "kind": "scoreboard",
       "priority": 3,
       "tool_hint": "read_scoreboard_window",
-      "start": 2448.817,
-      "end": 2456.817,
-      "note": "核实转折附近记分牌是否与 score_path 一致"
+      "registerable": true,
+      "search_intervals": [
+        {
+          "start": 2511.29,
+          "end": 2519.29,
+          "expand_level": 0,
+          "expand_policy": "widen_by_4s_on_miss"
+        }
+      ],
+      "seed_windows": [
+        {
+          "start": 2511.29,
+          "end": 2519.29
+        }
+      ],
+      "score_anchor_sec": 2513.29,
+      "goal_anchor_sec": 2453.099,
+      "anchor_status": "score_path",
+      "adaptive_expand": true,
+      "window_meta": {
+        "clamped": false,
+        "duration_unknown": true,
+        "oob": false
+      },
+      "note": "OCR 核实转折记分牌，锚点取 score_path t=2513.3s（非进球动作时刻）"
+    },
+    {
+      "gap_id": "verify_go_ahead_goal_action",
+      "kind": "action_verify",
+      "priority": 3,
+      "tool_hint": "inspect_story_window",
+      "registerable": true,
+      "search_intervals": [
+        {
+          "start": 2881.53,
+          "end": 2891.53,
+          "expand_level": 0,
+          "expand_policy": "widen_by_4s_on_miss"
+        }
+      ],
+      "seed_windows": [
+        {
+          "start": 2881.53,
+          "end": 2891.53
+        }
+      ],
+      "score_anchor_sec": 2904.31,
+      "goal_anchor_sec": 2883.53,
+      "anchor_status": "goal_event",
+      "adaptive_expand": true,
+      "window_meta": {
+        "clamped": false,
+        "duration_unknown": true,
+        "oob": false
+      },
+      "note": "高潮动作检查使用进球锚点 t=2883.5s；比分确认 t=2904.3s 仅用于 OCR"
     },
     {
       "gap_id": "verify_go_ahead_scoreboard",
       "kind": "scoreboard",
       "priority": 3,
       "tool_hint": "read_scoreboard_window",
-      "start": 2880.466,
-      "end": 2888.466,
-      "note": "核实高潮附近记分牌是否与 score_path 一致"
+      "registerable": true,
+      "search_intervals": [
+        {
+          "start": 2902.31,
+          "end": 2910.31,
+          "expand_level": 0,
+          "expand_policy": "widen_by_4s_on_miss"
+        }
+      ],
+      "seed_windows": [
+        {
+          "start": 2902.31,
+          "end": 2910.31
+        }
+      ],
+      "score_anchor_sec": 2904.31,
+      "goal_anchor_sec": 2883.53,
+      "anchor_status": "score_path",
+      "adaptive_expand": true,
+      "window_meta": {
+        "clamped": false,
+        "duration_unknown": true,
+        "oob": false
+      },
+      "note": "OCR 核实高潮记分牌，锚点取 score_path t=2904.3s（非进球动作时刻）"
     },
     {
       "gap_id": "post_climax_reaction",
       "kind": "reaction",
       "priority": 4,
       "tool_hint": "scan_reaction_window",
-      "start": 5719.966,
-      "end": 5735.966,
-      "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）"
+      "registerable": true,
+      "search_intervals": [
+        {
+          "start": 2883.53,
+          "end": 2899.53,
+          "expand_level": 0,
+          "expand_policy": "extend_to_32s_on_miss"
+        }
+      ],
+      "seed_windows": [
+        {
+          "start": 2883.53,
+          "end": 2899.53
+        }
+      ],
+      "score_anchor_sec": 2904.31,
+      "goal_anchor_sec": 2883.53,
+      "anchor_status": "goal_event",
+      "adaptive_expand": true,
+      "window_meta": {
+        "clamped": false,
+        "duration_unknown": true,
+        "oob": false
+      },
+      "note": "高潮后反应/庆祝候选；优先接在进球锚点之后"
     }
   ],
   "evidence_tasks": [
     {
+      "task_id": "task_verify_equalizer_goal_action",
+      "gap_id": "verify_equalizer_goal_action",
+      "kind": "action_verify",
+      "tool_hint": "inspect_story_window",
+      "window": {
+        "start": 2451.099,
+        "end": 2461.099
+      },
+      "search_intervals": [
+        {
+          "start": 2451.099,
+          "end": 2461.099,
+          "expand_level": 0,
+          "expand_policy": "widen_by_4s_on_miss"
+        }
+      ],
+      "seed_windows": [
+        {
+          "start": 2451.099,
+          "end": 2461.099
+        }
+      ],
+      "score_anchor_sec": 2513.29,
+      "goal_anchor_sec": 2453.099,
+      "anchor_status": "goal_event",
+      "adaptive_expand": true,
+      "note": "转折动作检查使用进球锚点 t=2453.1s；比分确认 t=2513.3s 仅用于 OCR",
+      "status": "pending",
+      "provider": null,
+      "duration_known": false
+    },
+    {
       "task_id": "task_verify_equalizer_scoreboard",
       "gap_id": "verify_equalizer_scoreboard",
+      "kind": "scoreboard",
       "tool_hint": "read_scoreboard_window",
       "window": {
-        "start": 2448.817,
-        "end": 2456.817
+        "start": 2511.29,
+        "end": 2519.29
       },
-      "note": "核实转折附近记分牌是否与 score_path 一致",
-      "status": "planned",
-      "provider": null
+      "search_intervals": [
+        {
+          "start": 2511.29,
+          "end": 2519.29,
+          "expand_level": 0,
+          "expand_policy": "widen_by_4s_on_miss"
+        }
+      ],
+      "seed_windows": [
+        {
+          "start": 2511.29,
+          "end": 2519.29
+        }
+      ],
+      "score_anchor_sec": 2513.29,
+      "goal_anchor_sec": 2453.099,
+      "anchor_status": "score_path",
+      "adaptive_expand": true,
+      "note": "OCR 核实转折记分牌，锚点取 score_path t=2513.3s（非进球动作时刻）",
+      "status": "pending",
+      "provider": null,
+      "duration_known": false
+    },
+    {
+      "task_id": "task_verify_go_ahead_goal_action",
+      "gap_id": "verify_go_ahead_goal_action",
+      "kind": "action_verify",
+      "tool_hint": "inspect_story_window",
+      "window": {
+        "start": 2881.53,
+        "end": 2891.53
+      },
+      "search_intervals": [
+        {
+          "start": 2881.53,
+          "end": 2891.53,
+          "expand_level": 0,
+          "expand_policy": "widen_by_4s_on_miss"
+        }
+      ],
+      "seed_windows": [
+        {
+          "start": 2881.53,
+          "end": 2891.53
+        }
+      ],
+      "score_anchor_sec": 2904.31,
+      "goal_anchor_sec": 2883.53,
+      "anchor_status": "goal_event",
+      "adaptive_expand": true,
+      "note": "高潮动作检查使用进球锚点 t=2883.5s；比分确认 t=2904.3s 仅用于 OCR",
+      "status": "pending",
+      "provider": null,
+      "duration_known": false
     },
     {
       "task_id": "task_verify_go_ahead_scoreboard",
       "gap_id": "verify_go_ahead_scoreboard",
+      "kind": "scoreboard",
       "tool_hint": "read_scoreboard_window",
       "window": {
-        "start": 2880.466,
-        "end": 2888.466
+        "start": 2902.31,
+        "end": 2910.31
       },
-      "note": "核实高潮附近记分牌是否与 score_path 一致",
-      "status": "planned",
-      "provider": null
+      "search_intervals": [
+        {
+          "start": 2902.31,
+          "end": 2910.31,
+          "expand_level": 0,
+          "expand_policy": "widen_by_4s_on_miss"
+        }
+      ],
+      "seed_windows": [
+        {
+          "start": 2902.31,
+          "end": 2910.31
+        }
+      ],
+      "score_anchor_sec": 2904.31,
+      "goal_anchor_sec": 2883.53,
+      "anchor_status": "score_path",
+      "adaptive_expand": true,
+      "note": "OCR 核实高潮记分牌，锚点取 score_path t=2904.3s（非进球动作时刻）",
+      "status": "pending",
+      "provider": null,
+      "duration_known": false
     },
     {
       "task_id": "task_post_climax_reaction",
       "gap_id": "post_climax_reaction",
+      "kind": "reaction",
       "tool_hint": "scan_reaction_window",
       "window": {
-        "start": 5719.966,
-        "end": 5735.966
+        "start": 2883.53,
+        "end": 2899.53
       },
-      "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）",
-      "status": "planned",
-      "provider": null
+      "search_intervals": [
+        {
+          "start": 2883.53,
+          "end": 2899.53,
+          "expand_level": 0,
+          "expand_policy": "extend_to_32s_on_miss"
+        }
+      ],
+      "seed_windows": [
+        {
+          "start": 2883.53,
+          "end": 2899.53
+        }
+      ],
+      "score_anchor_sec": 2904.31,
+      "goal_anchor_sec": 2883.53,
+      "anchor_status": "goal_event",
+      "adaptive_expand": true,
+      "note": "高潮后反应/庆祝候选；优先接在进球锚点之后",
+      "status": "pending",
+      "provider": null,
+      "duration_known": false
     }
   ],
+  "verification_complete": false,
   "trace": [
     {
       "step": 0,
@@ -111,34 +365,163 @@
         "dry_run": true,
         "gaps": [
           {
+            "gap_id": "verify_equalizer_goal_action",
+            "kind": "action_verify",
+            "priority": 3,
+            "tool_hint": "inspect_story_window",
+            "registerable": true,
+            "search_intervals": [
+              {
+                "start": 2451.099,
+                "end": 2461.099,
+                "expand_level": 0,
+                "expand_policy": "widen_by_4s_on_miss"
+              }
+            ],
+            "seed_windows": [
+              {
+                "start": 2451.099,
+                "end": 2461.099
+              }
+            ],
+            "score_anchor_sec": 2513.29,
+            "goal_anchor_sec": 2453.099,
+            "anchor_status": "goal_event",
+            "adaptive_expand": true,
+            "window_meta": {
+              "clamped": false,
+              "duration_unknown": true,
+              "oob": false
+            },
+            "note": "转折动作检查使用进球锚点 t=2453.1s；比分确认 t=2513.3s 仅用于 OCR"
+          },
+          {
             "gap_id": "verify_equalizer_scoreboard",
             "kind": "scoreboard",
             "priority": 3,
             "tool_hint": "read_scoreboard_window",
-            "start": 2448.817,
-            "end": 2456.817,
-            "note": "核实转折附近记分牌是否与 score_path 一致"
+            "registerable": true,
+            "search_intervals": [
+              {
+                "start": 2511.29,
+                "end": 2519.29,
+                "expand_level": 0,
+                "expand_policy": "widen_by_4s_on_miss"
+              }
+            ],
+            "seed_windows": [
+              {
+                "start": 2511.29,
+                "end": 2519.29
+              }
+            ],
+            "score_anchor_sec": 2513.29,
+            "goal_anchor_sec": 2453.099,
+            "anchor_status": "score_path",
+            "adaptive_expand": true,
+            "window_meta": {
+              "clamped": false,
+              "duration_unknown": true,
+              "oob": false
+            },
+            "note": "OCR 核实转折记分牌，锚点取 score_path t=2513.3s（非进球动作时刻）"
+          },
+          {
+            "gap_id": "verify_go_ahead_goal_action",
+            "kind": "action_verify",
+            "priority": 3,
+            "tool_hint": "inspect_story_window",
+            "registerable": true,
+            "search_intervals": [
+              {
+                "start": 2881.53,
+                "end": 2891.53,
+                "expand_level": 0,
+                "expand_policy": "widen_by_4s_on_miss"
+              }
+            ],
+            "seed_windows": [
+              {
+                "start": 2881.53,
+                "end": 2891.53
+              }
+            ],
+            "score_anchor_sec": 2904.31,
+            "goal_anchor_sec": 2883.53,
+            "anchor_status": "goal_event",
+            "adaptive_expand": true,
+            "window_meta": {
+              "clamped": false,
+              "duration_unknown": true,
+              "oob": false
+            },
+            "note": "高潮动作检查使用进球锚点 t=2883.5s；比分确认 t=2904.3s 仅用于 OCR"
           },
           {
             "gap_id": "verify_go_ahead_scoreboard",
             "kind": "scoreboard",
             "priority": 3,
             "tool_hint": "read_scoreboard_window",
-            "start": 2880.466,
-            "end": 2888.466,
-            "note": "核实高潮附近记分牌是否与 score_path 一致"
+            "registerable": true,
+            "search_intervals": [
+              {
+                "start": 2902.31,
+                "end": 2910.31,
+                "expand_level": 0,
+                "expand_policy": "widen_by_4s_on_miss"
+              }
+            ],
+            "seed_windows": [
+              {
+                "start": 2902.31,
+                "end": 2910.31
+              }
+            ],
+            "score_anchor_sec": 2904.31,
+            "goal_anchor_sec": 2883.53,
+            "anchor_status": "score_path",
+            "adaptive_expand": true,
+            "window_meta": {
+              "clamped": false,
+              "duration_unknown": true,
+              "oob": false
+            },
+            "note": "OCR 核实高潮记分牌，锚点取 score_path t=2904.3s（非进球动作时刻）"
           },
           {
             "gap_id": "post_climax_reaction",
             "kind": "reaction",
             "priority": 4,
             "tool_hint": "scan_reaction_window",
-            "start": 5719.966,
-            "end": 5735.966,
-            "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）"
+            "registerable": true,
+            "search_intervals": [
+              {
+                "start": 2883.53,
+                "end": 2899.53,
+                "expand_level": 0,
+                "expand_policy": "extend_to_32s_on_miss"
+              }
+            ],
+            "seed_windows": [
+              {
+                "start": 2883.53,
+                "end": 2899.53
+              }
+            ],
+            "score_anchor_sec": 2904.31,
+            "goal_anchor_sec": 2883.53,
+            "anchor_status": "goal_event",
+            "adaptive_expand": true,
+            "window_meta": {
+              "clamped": false,
+              "duration_unknown": true,
+              "oob": false
+            },
+            "note": "高潮后反应/庆祝候选；优先接在进球锚点之后"
           }
         ],
-        "count": 3
+        "count": 5,
+        "registerable_count": 5
       }
     },
     {
@@ -147,11 +530,11 @@
         "type": "tool",
         "tool": "register_evidence_task",
         "arguments": {
-          "gap_id": "verify_equalizer_scoreboard",
-          "tool_hint": "read_scoreboard_window",
-          "start": 2448.817,
-          "end": 2456.817,
-          "note": "核实转折附近记分牌是否与 score_path 一致"
+          "gap_id": "verify_equalizer_goal_action",
+          "tool_hint": "inspect_story_window",
+          "start": 2451.099,
+          "end": 2461.099,
+          "note": "转折动作检查使用进球锚点 t=2453.1s；比分确认 t=2513.3s 仅用于 OCR"
         }
       },
       "decision_attempts": [
@@ -161,11 +544,7 @@
             "type": "tool",
             "tool": "register_evidence_task",
             "arguments": {
-              "gap_id": "verify_equalizer_scoreboard",
-              "tool_hint": "read_scoreboard_window",
-              "start": 2448.817,
-              "end": 2456.817,
-              "note": "核实转折附近记分牌是否与 score_path 一致"
+              "gap_id": "verify_equalizer_goal_action"
             }
           },
           "parse_mode": "rule_policy",
@@ -173,11 +552,7 @@
             "type": "tool",
             "tool": "register_evidence_task",
             "arguments": {
-              "gap_id": "verify_equalizer_scoreboard",
-              "tool_hint": "read_scoreboard_window",
-              "start": 2448.817,
-              "end": 2456.817,
-              "note": "核实转折附近记分牌是否与 score_path 一致"
+              "gap_id": "verify_equalizer_goal_action"
             }
           },
           "status": "accepted",
@@ -185,11 +560,11 @@
             "type": "tool",
             "tool": "register_evidence_task",
             "arguments": {
-              "gap_id": "verify_equalizer_scoreboard",
-              "tool_hint": "read_scoreboard_window",
-              "start": 2448.817,
-              "end": 2456.817,
-              "note": "核实转折附近记分牌是否与 score_path 一致"
+              "gap_id": "verify_equalizer_goal_action",
+              "tool_hint": "inspect_story_window",
+              "start": 2451.099,
+              "end": 2461.099,
+              "note": "转折动作检查使用进球锚点 t=2453.1s；比分确认 t=2513.3s 仅用于 OCR"
             }
           }
         }
@@ -197,16 +572,36 @@
       "observation": {
         "dry_run": true,
         "registered": {
-          "task_id": "task_verify_equalizer_scoreboard",
-          "gap_id": "verify_equalizer_scoreboard",
-          "tool_hint": "read_scoreboard_window",
+          "task_id": "task_verify_equalizer_goal_action",
+          "gap_id": "verify_equalizer_goal_action",
+          "kind": "action_verify",
+          "tool_hint": "inspect_story_window",
           "window": {
-            "start": 2448.817,
-            "end": 2456.817
+            "start": 2451.099,
+            "end": 2461.099
           },
-          "note": "核实转折附近记分牌是否与 score_path 一致",
-          "status": "planned",
-          "provider": null
+          "search_intervals": [
+            {
+              "start": 2451.099,
+              "end": 2461.099,
+              "expand_level": 0,
+              "expand_policy": "widen_by_4s_on_miss"
+            }
+          ],
+          "seed_windows": [
+            {
+              "start": 2451.099,
+              "end": 2461.099
+            }
+          ],
+          "score_anchor_sec": 2513.29,
+          "goal_anchor_sec": 2453.099,
+          "anchor_status": "goal_event",
+          "adaptive_expand": true,
+          "note": "转折动作检查使用进球锚点 t=2453.1s；比分确认 t=2513.3s 仅用于 OCR",
+          "status": "pending",
+          "provider": null,
+          "duration_known": false
         }
       }
     },
@@ -216,11 +611,11 @@
         "type": "tool",
         "tool": "register_evidence_task",
         "arguments": {
-          "gap_id": "verify_go_ahead_scoreboard",
+          "gap_id": "verify_equalizer_scoreboard",
           "tool_hint": "read_scoreboard_window",
-          "start": 2880.466,
-          "end": 2888.466,
-          "note": "核实高潮附近记分牌是否与 score_path 一致"
+          "start": 2511.29,
+          "end": 2519.29,
+          "note": "OCR 核实转折记分牌，锚点取 score_path t=2513.3s（非进球动作时刻）"
         }
       },
       "decision_attempts": [
@@ -230,11 +625,7 @@
             "type": "tool",
             "tool": "register_evidence_task",
             "arguments": {
-              "gap_id": "verify_go_ahead_scoreboard",
-              "tool_hint": "read_scoreboard_window",
-              "start": 2880.466,
-              "end": 2888.466,
-              "note": "核实高潮附近记分牌是否与 score_path 一致"
+              "gap_id": "verify_equalizer_scoreboard"
             }
           },
           "parse_mode": "rule_policy",
@@ -242,11 +633,7 @@
             "type": "tool",
             "tool": "register_evidence_task",
             "arguments": {
-              "gap_id": "verify_go_ahead_scoreboard",
-              "tool_hint": "read_scoreboard_window",
-              "start": 2880.466,
-              "end": 2888.466,
-              "note": "核实高潮附近记分牌是否与 score_path 一致"
+              "gap_id": "verify_equalizer_scoreboard"
             }
           },
           "status": "accepted",
@@ -254,11 +641,11 @@
             "type": "tool",
             "tool": "register_evidence_task",
             "arguments": {
-              "gap_id": "verify_go_ahead_scoreboard",
+              "gap_id": "verify_equalizer_scoreboard",
               "tool_hint": "read_scoreboard_window",
-              "start": 2880.466,
-              "end": 2888.466,
-              "note": "核实高潮附近记分牌是否与 score_path 一致"
+              "start": 2511.29,
+              "end": 2519.29,
+              "note": "OCR 核实转折记分牌，锚点取 score_path t=2513.3s（非进球动作时刻）"
             }
           }
         }
@@ -266,16 +653,36 @@
       "observation": {
         "dry_run": true,
         "registered": {
-          "task_id": "task_verify_go_ahead_scoreboard",
-          "gap_id": "verify_go_ahead_scoreboard",
+          "task_id": "task_verify_equalizer_scoreboard",
+          "gap_id": "verify_equalizer_scoreboard",
+          "kind": "scoreboard",
           "tool_hint": "read_scoreboard_window",
           "window": {
-            "start": 2880.466,
-            "end": 2888.466
+            "start": 2511.29,
+            "end": 2519.29
           },
-          "note": "核实高潮附近记分牌是否与 score_path 一致",
-          "status": "planned",
-          "provider": null
+          "search_intervals": [
+            {
+              "start": 2511.29,
+              "end": 2519.29,
+              "expand_level": 0,
+              "expand_policy": "widen_by_4s_on_miss"
+            }
+          ],
+          "seed_windows": [
+            {
+              "start": 2511.29,
+              "end": 2519.29
+            }
+          ],
+          "score_anchor_sec": 2513.29,
+          "goal_anchor_sec": 2453.099,
+          "anchor_status": "score_path",
+          "adaptive_expand": true,
+          "note": "OCR 核实转折记分牌，锚点取 score_path t=2513.3s（非进球动作时刻）",
+          "status": "pending",
+          "provider": null,
+          "duration_known": false
         }
       }
     },
@@ -285,11 +692,11 @@
         "type": "tool",
         "tool": "register_evidence_task",
         "arguments": {
-          "gap_id": "post_climax_reaction",
-          "tool_hint": "scan_reaction_window",
-          "start": 5719.966,
-          "end": 5735.966,
-          "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）"
+          "gap_id": "verify_go_ahead_goal_action",
+          "tool_hint": "inspect_story_window",
+          "start": 2881.53,
+          "end": 2891.53,
+          "note": "高潮动作检查使用进球锚点 t=2883.5s；比分确认 t=2904.3s 仅用于 OCR"
         }
       },
       "decision_attempts": [
@@ -299,11 +706,7 @@
             "type": "tool",
             "tool": "register_evidence_task",
             "arguments": {
-              "gap_id": "post_climax_reaction",
-              "tool_hint": "scan_reaction_window",
-              "start": 5719.966,
-              "end": 5735.966,
-              "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）"
+              "gap_id": "verify_go_ahead_goal_action"
             }
           },
           "parse_mode": "rule_policy",
@@ -311,11 +714,169 @@
             "type": "tool",
             "tool": "register_evidence_task",
             "arguments": {
-              "gap_id": "post_climax_reaction",
-              "tool_hint": "scan_reaction_window",
-              "start": 5719.966,
-              "end": 5735.966,
-              "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）"
+              "gap_id": "verify_go_ahead_goal_action"
+            }
+          },
+          "status": "accepted",
+          "decision": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "verify_go_ahead_goal_action",
+              "tool_hint": "inspect_story_window",
+              "start": 2881.53,
+              "end": 2891.53,
+              "note": "高潮动作检查使用进球锚点 t=2883.5s；比分确认 t=2904.3s 仅用于 OCR"
+            }
+          }
+        }
+      ],
+      "observation": {
+        "dry_run": true,
+        "registered": {
+          "task_id": "task_verify_go_ahead_goal_action",
+          "gap_id": "verify_go_ahead_goal_action",
+          "kind": "action_verify",
+          "tool_hint": "inspect_story_window",
+          "window": {
+            "start": 2881.53,
+            "end": 2891.53
+          },
+          "search_intervals": [
+            {
+              "start": 2881.53,
+              "end": 2891.53,
+              "expand_level": 0,
+              "expand_policy": "widen_by_4s_on_miss"
+            }
+          ],
+          "seed_windows": [
+            {
+              "start": 2881.53,
+              "end": 2891.53
+            }
+          ],
+          "score_anchor_sec": 2904.31,
+          "goal_anchor_sec": 2883.53,
+          "anchor_status": "goal_event",
+          "adaptive_expand": true,
+          "note": "高潮动作检查使用进球锚点 t=2883.5s；比分确认 t=2904.3s 仅用于 OCR",
+          "status": "pending",
+          "provider": null,
+          "duration_known": false
+        }
+      }
+    },
+    {
+      "step": 4,
+      "decision": {
+        "type": "tool",
+        "tool": "register_evidence_task",
+        "arguments": {
+          "gap_id": "verify_go_ahead_scoreboard",
+          "tool_hint": "read_scoreboard_window",
+          "start": 2902.31,
+          "end": 2910.31,
+          "note": "OCR 核实高潮记分牌，锚点取 score_path t=2904.3s（非进球动作时刻）"
+        }
+      },
+      "decision_attempts": [
+        {
+          "attempt": 0,
+          "raw_response": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "verify_go_ahead_scoreboard"
+            }
+          },
+          "parse_mode": "rule_policy",
+          "proposed_decision": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "verify_go_ahead_scoreboard"
+            }
+          },
+          "status": "accepted",
+          "decision": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "verify_go_ahead_scoreboard",
+              "tool_hint": "read_scoreboard_window",
+              "start": 2902.31,
+              "end": 2910.31,
+              "note": "OCR 核实高潮记分牌，锚点取 score_path t=2904.3s（非进球动作时刻）"
+            }
+          }
+        }
+      ],
+      "observation": {
+        "dry_run": true,
+        "registered": {
+          "task_id": "task_verify_go_ahead_scoreboard",
+          "gap_id": "verify_go_ahead_scoreboard",
+          "kind": "scoreboard",
+          "tool_hint": "read_scoreboard_window",
+          "window": {
+            "start": 2902.31,
+            "end": 2910.31
+          },
+          "search_intervals": [
+            {
+              "start": 2902.31,
+              "end": 2910.31,
+              "expand_level": 0,
+              "expand_policy": "widen_by_4s_on_miss"
+            }
+          ],
+          "seed_windows": [
+            {
+              "start": 2902.31,
+              "end": 2910.31
+            }
+          ],
+          "score_anchor_sec": 2904.31,
+          "goal_anchor_sec": 2883.53,
+          "anchor_status": "score_path",
+          "adaptive_expand": true,
+          "note": "OCR 核实高潮记分牌，锚点取 score_path t=2904.3s（非进球动作时刻）",
+          "status": "pending",
+          "provider": null,
+          "duration_known": false
+        }
+      }
+    },
+    {
+      "step": 5,
+      "decision": {
+        "type": "tool",
+        "tool": "register_evidence_task",
+        "arguments": {
+          "gap_id": "post_climax_reaction",
+          "tool_hint": "scan_reaction_window",
+          "start": 2883.53,
+          "end": 2899.53,
+          "note": "高潮后反应/庆祝候选；优先接在进球锚点之后"
+        }
+      },
+      "decision_attempts": [
+        {
+          "attempt": 0,
+          "raw_response": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "post_climax_reaction"
+            }
+          },
+          "parse_mode": "rule_policy",
+          "proposed_decision": {
+            "type": "tool",
+            "tool": "register_evidence_task",
+            "arguments": {
+              "gap_id": "post_climax_reaction"
             }
           },
           "status": "accepted",
@@ -325,9 +886,9 @@
             "arguments": {
               "gap_id": "post_climax_reaction",
               "tool_hint": "scan_reaction_window",
-              "start": 5719.966,
-              "end": 5735.966,
-              "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）"
+              "start": 2883.53,
+              "end": 2899.53,
+              "note": "高潮后反应/庆祝候选；优先接在进球锚点之后"
             }
           }
         }
@@ -337,19 +898,39 @@
         "registered": {
           "task_id": "task_post_climax_reaction",
           "gap_id": "post_climax_reaction",
+          "kind": "reaction",
           "tool_hint": "scan_reaction_window",
           "window": {
-            "start": 5719.966,
-            "end": 5735.966
+            "start": 2883.53,
+            "end": 2899.53
           },
-          "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）",
-          "status": "planned",
-          "provider": null
+          "search_intervals": [
+            {
+              "start": 2883.53,
+              "end": 2899.53,
+              "expand_level": 0,
+              "expand_policy": "extend_to_32s_on_miss"
+            }
+          ],
+          "seed_windows": [
+            {
+              "start": 2883.53,
+              "end": 2899.53
+            }
+          ],
+          "score_anchor_sec": 2904.31,
+          "goal_anchor_sec": 2883.53,
+          "anchor_status": "goal_event",
+          "adaptive_expand": true,
+          "note": "高潮后反应/庆祝候选；优先接在进球锚点之后",
+          "status": "pending",
+          "provider": null,
+          "duration_known": false
         }
       }
     },
     {
-      "step": 4,
+      "step": 6,
       "decision": {
         "type": "tool",
         "tool": "finish_evidence_plan",
@@ -391,34 +972,208 @@
         "dry_run": true,
         "gaps": [
           {
+            "gap_id": "verify_equalizer_goal_action",
+            "kind": "action_verify",
+            "priority": 3,
+            "tool_hint": "inspect_story_window",
+            "registerable": true,
+            "search_intervals": [
+              {
+                "start": 2451.099,
+                "end": 2461.099,
+                "expand_level": 0,
+                "expand_policy": "widen_by_4s_on_miss"
+              }
+            ],
+            "seed_windows": [
+              {
+                "start": 2451.099,
+                "end": 2461.099
+              }
+            ],
+            "score_anchor_sec": 2513.29,
+            "goal_anchor_sec": 2453.099,
+            "anchor_status": "goal_event",
+            "adaptive_expand": true,
+            "window_meta": {
+              "clamped": false,
+              "duration_unknown": true,
+              "oob": false
+            },
+            "note": "转折动作检查使用进球锚点 t=2453.1s；比分确认 t=2513.3s 仅用于 OCR"
+          },
+          {
             "gap_id": "verify_equalizer_scoreboard",
             "kind": "scoreboard",
             "priority": 3,
             "tool_hint": "read_scoreboard_window",
-            "start": 2448.817,
-            "end": 2456.817,
-            "note": "核实转折附近记分牌是否与 score_path 一致"
+            "registerable": true,
+            "search_intervals": [
+              {
+                "start": 2511.29,
+                "end": 2519.29,
+                "expand_level": 0,
+                "expand_policy": "widen_by_4s_on_miss"
+              }
+            ],
+            "seed_windows": [
+              {
+                "start": 2511.29,
+                "end": 2519.29
+              }
+            ],
+            "score_anchor_sec": 2513.29,
+            "goal_anchor_sec": 2453.099,
+            "anchor_status": "score_path",
+            "adaptive_expand": true,
+            "window_meta": {
+              "clamped": false,
+              "duration_unknown": true,
+              "oob": false
+            },
+            "note": "OCR 核实转折记分牌，锚点取 score_path t=2513.3s（非进球动作时刻）"
+          },
+          {
+            "gap_id": "verify_go_ahead_goal_action",
+            "kind": "action_verify",
+            "priority": 3,
+            "tool_hint": "inspect_story_window",
+            "registerable": true,
+            "search_intervals": [
+              {
+                "start": 2881.53,
+                "end": 2891.53,
+                "expand_level": 0,
+                "expand_policy": "widen_by_4s_on_miss"
+              }
+            ],
+            "seed_windows": [
+              {
+                "start": 2881.53,
+                "end": 2891.53
+              }
+            ],
+            "score_anchor_sec": 2904.31,
+            "goal_anchor_sec": 2883.53,
+            "anchor_status": "goal_event",
+            "adaptive_expand": true,
+            "window_meta": {
+              "clamped": false,
+              "duration_unknown": true,
+              "oob": false
+            },
+            "note": "高潮动作检查使用进球锚点 t=2883.5s；比分确认 t=2904.3s 仅用于 OCR"
           },
           {
             "gap_id": "verify_go_ahead_scoreboard",
             "kind": "scoreboard",
             "priority": 3,
             "tool_hint": "read_scoreboard_window",
-            "start": 2880.466,
-            "end": 2888.466,
-            "note": "核实高潮附近记分牌是否与 score_path 一致"
+            "registerable": true,
+            "search_intervals": [
+              {
+                "start": 2902.31,
+                "end": 2910.31,
+                "expand_level": 0,
+                "expand_policy": "widen_by_4s_on_miss"
+              }
+            ],
+            "seed_windows": [
+              {
+                "start": 2902.31,
+                "end": 2910.31
+              }
+            ],
+            "score_anchor_sec": 2904.31,
+            "goal_anchor_sec": 2883.53,
+            "anchor_status": "score_path",
+            "adaptive_expand": true,
+            "window_meta": {
+              "clamped": false,
+              "duration_unknown": true,
+              "oob": false
+            },
+            "note": "OCR 核实高潮记分牌，锚点取 score_path t=2904.3s（非进球动作时刻）"
           },
           {
             "gap_id": "post_climax_reaction",
             "kind": "reaction",
             "priority": 4,
             "tool_hint": "scan_reaction_window",
-            "start": 5719.966,
-            "end": 5735.966,
-            "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）"
+            "registerable": true,
+            "search_intervals": [
+              {
+                "start": 2883.53,
+                "end": 2899.53,
+                "expand_level": 0,
+                "expand_policy": "extend_to_32s_on_miss"
+              }
+            ],
+            "seed_windows": [
+              {
+                "start": 2883.53,
+                "end": 2899.53
+              }
+            ],
+            "score_anchor_sec": 2904.31,
+            "goal_anchor_sec": 2883.53,
+            "anchor_status": "goal_event",
+            "adaptive_expand": true,
+            "window_meta": {
+              "clamped": false,
+              "duration_unknown": true,
+              "oob": false
+            },
+            "note": "高潮后反应/庆祝候选；优先接在进球锚点之后"
           }
         ],
-        "count": 3
+        "count": 5,
+        "registerable_count": 5
+      }
+    },
+    {
+      "tool": "register_evidence_task",
+      "arguments": {
+        "gap_id": "verify_equalizer_goal_action",
+        "tool_hint": "inspect_story_window",
+        "start": 2451.099,
+        "end": 2461.099,
+        "note": "转折动作检查使用进球锚点 t=2453.1s；比分确认 t=2513.3s 仅用于 OCR"
+      },
+      "observation": {
+        "dry_run": true,
+        "registered": {
+          "task_id": "task_verify_equalizer_goal_action",
+          "gap_id": "verify_equalizer_goal_action",
+          "kind": "action_verify",
+          "tool_hint": "inspect_story_window",
+          "window": {
+            "start": 2451.099,
+            "end": 2461.099
+          },
+          "search_intervals": [
+            {
+              "start": 2451.099,
+              "end": 2461.099,
+              "expand_level": 0,
+              "expand_policy": "widen_by_4s_on_miss"
+            }
+          ],
+          "seed_windows": [
+            {
+              "start": 2451.099,
+              "end": 2461.099
+            }
+          ],
+          "score_anchor_sec": 2513.29,
+          "goal_anchor_sec": 2453.099,
+          "anchor_status": "goal_event",
+          "adaptive_expand": true,
+          "note": "转折动作检查使用进球锚点 t=2453.1s；比分确认 t=2513.3s 仅用于 OCR",
+          "status": "pending",
+          "provider": null,
+          "duration_known": false
+        }
       }
     },
     {
@@ -426,23 +1181,88 @@
       "arguments": {
         "gap_id": "verify_equalizer_scoreboard",
         "tool_hint": "read_scoreboard_window",
-        "start": 2448.817,
-        "end": 2456.817,
-        "note": "核实转折附近记分牌是否与 score_path 一致"
+        "start": 2511.29,
+        "end": 2519.29,
+        "note": "OCR 核实转折记分牌，锚点取 score_path t=2513.3s（非进球动作时刻）"
       },
       "observation": {
         "dry_run": true,
         "registered": {
           "task_id": "task_verify_equalizer_scoreboard",
           "gap_id": "verify_equalizer_scoreboard",
+          "kind": "scoreboard",
           "tool_hint": "read_scoreboard_window",
           "window": {
-            "start": 2448.817,
-            "end": 2456.817
+            "start": 2511.29,
+            "end": 2519.29
           },
-          "note": "核实转折附近记分牌是否与 score_path 一致",
-          "status": "planned",
-          "provider": null
+          "search_intervals": [
+            {
+              "start": 2511.29,
+              "end": 2519.29,
+              "expand_level": 0,
+              "expand_policy": "widen_by_4s_on_miss"
+            }
+          ],
+          "seed_windows": [
+            {
+              "start": 2511.29,
+              "end": 2519.29
+            }
+          ],
+          "score_anchor_sec": 2513.29,
+          "goal_anchor_sec": 2453.099,
+          "anchor_status": "score_path",
+          "adaptive_expand": true,
+          "note": "OCR 核实转折记分牌，锚点取 score_path t=2513.3s（非进球动作时刻）",
+          "status": "pending",
+          "provider": null,
+          "duration_known": false
+        }
+      }
+    },
+    {
+      "tool": "register_evidence_task",
+      "arguments": {
+        "gap_id": "verify_go_ahead_goal_action",
+        "tool_hint": "inspect_story_window",
+        "start": 2881.53,
+        "end": 2891.53,
+        "note": "高潮动作检查使用进球锚点 t=2883.5s；比分确认 t=2904.3s 仅用于 OCR"
+      },
+      "observation": {
+        "dry_run": true,
+        "registered": {
+          "task_id": "task_verify_go_ahead_goal_action",
+          "gap_id": "verify_go_ahead_goal_action",
+          "kind": "action_verify",
+          "tool_hint": "inspect_story_window",
+          "window": {
+            "start": 2881.53,
+            "end": 2891.53
+          },
+          "search_intervals": [
+            {
+              "start": 2881.53,
+              "end": 2891.53,
+              "expand_level": 0,
+              "expand_policy": "widen_by_4s_on_miss"
+            }
+          ],
+          "seed_windows": [
+            {
+              "start": 2881.53,
+              "end": 2891.53
+            }
+          ],
+          "score_anchor_sec": 2904.31,
+          "goal_anchor_sec": 2883.53,
+          "anchor_status": "goal_event",
+          "adaptive_expand": true,
+          "note": "高潮动作检查使用进球锚点 t=2883.5s；比分确认 t=2904.3s 仅用于 OCR",
+          "status": "pending",
+          "provider": null,
+          "duration_known": false
         }
       }
     },
@@ -451,23 +1271,43 @@
       "arguments": {
         "gap_id": "verify_go_ahead_scoreboard",
         "tool_hint": "read_scoreboard_window",
-        "start": 2880.466,
-        "end": 2888.466,
-        "note": "核实高潮附近记分牌是否与 score_path 一致"
+        "start": 2902.31,
+        "end": 2910.31,
+        "note": "OCR 核实高潮记分牌，锚点取 score_path t=2904.3s（非进球动作时刻）"
       },
       "observation": {
         "dry_run": true,
         "registered": {
           "task_id": "task_verify_go_ahead_scoreboard",
           "gap_id": "verify_go_ahead_scoreboard",
+          "kind": "scoreboard",
           "tool_hint": "read_scoreboard_window",
           "window": {
-            "start": 2880.466,
-            "end": 2888.466
+            "start": 2902.31,
+            "end": 2910.31
           },
-          "note": "核实高潮附近记分牌是否与 score_path 一致",
-          "status": "planned",
-          "provider": null
+          "search_intervals": [
+            {
+              "start": 2902.31,
+              "end": 2910.31,
+              "expand_level": 0,
+              "expand_policy": "widen_by_4s_on_miss"
+            }
+          ],
+          "seed_windows": [
+            {
+              "start": 2902.31,
+              "end": 2910.31
+            }
+          ],
+          "score_anchor_sec": 2904.31,
+          "goal_anchor_sec": 2883.53,
+          "anchor_status": "score_path",
+          "adaptive_expand": true,
+          "note": "OCR 核实高潮记分牌，锚点取 score_path t=2904.3s（非进球动作时刻）",
+          "status": "pending",
+          "provider": null,
+          "duration_known": false
         }
       }
     },
@@ -476,23 +1316,43 @@
       "arguments": {
         "gap_id": "post_climax_reaction",
         "tool_hint": "scan_reaction_window",
-        "start": 5719.966,
-        "end": 5735.966,
-        "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）"
+        "start": 2883.53,
+        "end": 2899.53,
+        "note": "高潮后反应/庆祝候选；优先接在进球锚点之后"
       },
       "observation": {
         "dry_run": true,
         "registered": {
           "task_id": "task_post_climax_reaction",
           "gap_id": "post_climax_reaction",
+          "kind": "reaction",
           "tool_hint": "scan_reaction_window",
           "window": {
-            "start": 5719.966,
-            "end": 5735.966
+            "start": 2883.53,
+            "end": 2899.53
           },
-          "note": "高潮后反应/庆祝镜头候选（规则层无此标注，交视频工具补）",
-          "status": "planned",
-          "provider": null
+          "search_intervals": [
+            {
+              "start": 2883.53,
+              "end": 2899.53,
+              "expand_level": 0,
+              "expand_policy": "extend_to_32s_on_miss"
+            }
+          ],
+          "seed_windows": [
+            {
+              "start": 2883.53,
+              "end": 2899.53
+            }
+          ],
+          "score_anchor_sec": 2904.31,
+          "goal_anchor_sec": 2883.53,
+          "anchor_status": "goal_event",
+          "adaptive_expand": true,
+          "note": "高潮后反应/庆祝候选；优先接在进球锚点之后",
+          "status": "pending",
+          "provider": null,
+          "duration_known": false
         }
       }
     },
@@ -508,7 +1368,9 @@
   "diagnostics": {
     "tool_argument_errors": 0,
     "decision_repair_calls": 0,
-    "tool_execution_errors": 0
+    "tool_execution_errors": 0,
+    "open_task_count": 5,
+    "unresolved_count": 0
   },
   "structure_ok": true,
   "structure_problems": [],
