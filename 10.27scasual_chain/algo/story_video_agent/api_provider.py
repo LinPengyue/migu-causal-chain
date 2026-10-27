@@ -55,12 +55,29 @@ Story Video Agent remote API (Phase 2C.1):
                                         (Paratera public docs do NOT list these — opt-in)
   STORY_PLANNER_ENABLE_THINKING / STORY_VLM_ENABLE_THINKING
   STORY_PLANNER_THINKING_BUDGET / STORY_VLM_THINKING_BUDGET
+  STORY_VLM_REQUEST_PROFILE / STORY_PLANNER_REQUEST_PROFILE
+                                        default | video_rsi
+                                        video_rsi mirrors Video-RSI PinnedProvider.chat:
+                                        temperature (role default 0 for VLM), max_tokens,
+                                        thinking={{"type":"disabled"}}, stream=false
+                                        Mutually exclusive with enable_thinking/thinking_budget.
+                                        Paratera docs do NOT document the thinking object —
+                                        profile is offline/Mock-safe; do not assume vendor support.
+  STORY_VLM_TEMPERATURE / STORY_PLANNER_TEMPERATURE
+  STORY_VLM_THINKING_OBJECT_DISABLED=1   opt-in alone (without full video_rsi profile)
 
 provider modes: mock | real | degraded | cache
 HTTP attempts (success+failure+retry) count toward MAX_CALLS; cache hits do not.
 If reported completion_tokens exceed configured output budget, later real calls block.
 Logs never print API keys, image base64, or reasoning_content text.
 """.strip()
+
+# Video-RSI 官方参考（solver_full_workspace/engine/services.py PinnedProvider.chat）
+VIDEO_RSI_COMPAT_NOTE = (
+    "Video-RSI PinnedProvider.chat sends temperature, max_tokens, "
+    "thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be "
+    "copied into this project; local HTTP/token/cost caps still apply."
+)
 
 _DEFAULT_PRICE = {
     "prompt_per_mtok": float(os.environ.get("STORY_LLM_PRICE_PROMPT", "0.15")),
@@ -110,6 +127,14 @@ class EndpointConfig:
     send_thinking_params: bool = False
     enable_thinking: Optional[bool] = None
     thinking_budget: Optional[int] = None
+    # default | video_rsi（按角色；默认 default 不影响 Planner）
+    request_profile: str = "default"
+    # 角色默认温度；None → 调用方 chat(temperature=...) 决定
+    default_temperature: Optional[float] = None
+    # Video-RSI: thinking={"type":"disabled"}；与 enable_thinking/thinking_budget 互斥
+    thinking_object_disabled: bool = False
+    # 始终建议显式 stream=false（Video-RSI 与 Paratera 示例均如此）
+    stream: bool = False
 
     def configured(self) -> bool:
         return bool(self.base_url and self.model and self.api_key)
@@ -128,13 +153,19 @@ class EndpointConfig:
             "send_thinking_params": self.send_thinking_params,
             "enable_thinking": self.enable_thinking,
             "thinking_budget": self.thinking_budget,
+            "request_profile": self.request_profile,
+            "default_temperature": self.default_temperature,
+            "thinking_object_disabled": self.thinking_object_disabled,
+            "stream": self.stream,
         }
 
     def cache_fingerprint(self) -> str:
         return (
             f"{self.role}|{self.base_url}|{self.model}|{self.token_param}|"
             f"{self.max_completion_tokens}|{self.send_thinking_params}|"
-            f"{self.enable_thinking}|{self.thinking_budget}"
+            f"{self.enable_thinking}|{self.thinking_budget}|"
+            f"{self.request_profile}|{self.default_temperature}|"
+            f"{self.thinking_object_disabled}|{self.stream}"
         )
 
 
@@ -273,13 +304,17 @@ def _parse_optional_int(raw: str) -> Optional[int]:
         return None
 
 
+def _role_prefix(role: str) -> str:
+    return "STORY_PLANNER" if role == "planner" else "STORY_VLM"
+
+
 def _role_thinking_from_env(role: str) -> Tuple[bool, Optional[bool], Optional[int]]:
     """返回 (send_thinking_params, enable_thinking, thinking_budget)。
 
     Paratera 公开 API 示例仅展示 max_tokens，未列出 enable_thinking / thinking_budget；
     默认不发送。仅当 STORY_{ROLE}_SEND_THINKING=1 时才附加（调用方自担兼容风险）。
     """
-    prefix = "STORY_PLANNER" if role == "planner" else "STORY_VLM"
+    prefix = _role_prefix(role)
     send = (_env(f"{prefix}_SEND_THINKING") or "").strip().lower() in (
         "1",
         "true",
@@ -288,6 +323,90 @@ def _role_thinking_from_env(role: str) -> Tuple[bool, Optional[bool], Optional[i
     enable = _parse_optional_bool(_env(f"{prefix}_ENABLE_THINKING"))
     budget = _parse_optional_int(_env(f"{prefix}_THINKING_BUDGET"))
     return send, enable, budget
+
+
+def _role_request_profile_from_env(role: str) -> str:
+    prefix = _role_prefix(role)
+    raw = (_env(f"{prefix}_REQUEST_PROFILE", default="default") or "default").strip().lower()
+    if raw in ("default", "video_rsi"):
+        return raw
+    return "default"
+
+
+def _role_temperature_from_env(role: str) -> Optional[float]:
+    prefix = _role_prefix(role)
+    raw = (_env(f"{prefix}_TEMPERATURE") or "").strip()
+    if not raw:
+        # VLM 默认 0（对齐 Video-RSI / 可配置）；Planner 不设则沿用 chat() 默认 0.1
+        if role == "vision":
+            return 0.0
+        return None
+    try:
+        return float(raw)
+    except ValueError:
+        return None
+
+
+def _role_thinking_object_disabled_from_env(role: str) -> bool:
+    """Video-RSI thinking={type:disabled} 显式 opt-in，或 video_rsi profile 自动开启。"""
+    prefix = _role_prefix(role)
+    if _role_request_profile_from_env(role) == "video_rsi":
+        return True
+    return (_env(f"{prefix}_THINKING_OBJECT_DISABLED") or "").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+
+
+def frame_time_binding_text(binding: Optional[Dict[str, Any]], frame_id: str) -> str:
+    """程序绑定的帧时间说明；模型不得自行创造媒体时间。"""
+    b = binding if isinstance(binding, dict) else {}
+    fid = str(b.get("frame_id") or frame_id)
+    lines = [f"frame_id={fid}"]
+    actual = b.get("actual_media_sec")
+    requested = b.get("requested_media_sec")
+    pts_status = str(b.get("pts_status") or "")
+    if actual is not None and pts_status != "requested_only":
+        try:
+            lines.append(f"actual_media_sec={float(actual):.3f}")
+            lines.append("media_time_status=actual_pts")
+        except (TypeError, ValueError):
+            lines.append("media_time_status=requested_only")
+            if requested is not None:
+                lines.append(f"requested_media_sec={float(requested):.3f}")
+    else:
+        lines.append("media_time_status=requested_only")
+        if requested is not None:
+            try:
+                lines.append(f"requested_media_sec={float(requested):.3f}")
+            except (TypeError, ValueError):
+                pass
+        lines.append("note=PTS unavailable; do not invent media time")
+    # Video-RSI 使用 timestamp_seconds=；此处额外给出绑定语义，禁止模型编造
+    return "\n".join(lines)
+
+
+def redact_request_body_for_diff(body: Dict[str, Any]) -> Dict[str, Any]:
+    """脱敏请求体用于差异报告：去掉 base64 / key，保留结构。"""
+    import copy
+
+    out = copy.deepcopy(body)
+
+    def _walk(obj: Any) -> Any:
+        if isinstance(obj, dict):
+            if "url" in obj and isinstance(obj["url"], str) and obj["url"].startswith(
+                "data:image"
+            ):
+                obj["url"] = "data:image/jpeg;base64,[REDACTED_FRAME]"
+            return {k: _walk(v) for k, v in obj.items()}
+        if isinstance(obj, list):
+            return [_walk(x) for x in obj]
+        if isinstance(obj, str) and obj.startswith("data:image"):
+            return "data:image/jpeg;base64,[REDACTED_FRAME]"
+        return obj
+
+    return _walk(out)
 
 
 def extract_usage_audit(payload: Dict[str, Any], *, content: str) -> Dict[str, Any]:
@@ -402,6 +521,13 @@ def load_endpoint_configs() -> Dict[str, EndpointConfig]:
     vision_max = _parse_optional_int(_env("STORY_VLM_MAX_COMPLETION_TOKENS"))
     p_send, p_en, p_bud = _role_thinking_from_env("planner")
     v_send, v_en, v_bud = _role_thinking_from_env("vision")
+    p_profile = _role_request_profile_from_env("planner")
+    v_profile = _role_request_profile_from_env("vision")
+    # video_rsi 官方使用 max_tokens 字段名
+    if v_profile == "video_rsi" and not (_env("STORY_VLM_TOKEN_PARAM") or "").strip():
+        vision_tok = "max_tokens"
+    if p_profile == "video_rsi" and not (_env("STORY_PLANNER_TOKEN_PARAM") or "").strip():
+        planner_tok = "max_tokens"
     return {
         "planner": EndpointConfig(
             role="planner",
@@ -416,6 +542,10 @@ def load_endpoint_configs() -> Dict[str, EndpointConfig]:
             send_thinking_params=p_send,
             enable_thinking=p_en,
             thinking_budget=p_bud,
+            request_profile=p_profile,
+            default_temperature=_role_temperature_from_env("planner"),
+            thinking_object_disabled=_role_thinking_object_disabled_from_env("planner"),
+            stream=False,
         ),
         "vision": EndpointConfig(
             role="vision",
@@ -430,6 +560,10 @@ def load_endpoint_configs() -> Dict[str, EndpointConfig]:
             send_thinking_params=v_send,
             enable_thinking=v_en,
             thinking_budget=v_bud,
+            request_profile=v_profile,
+            default_temperature=_role_temperature_from_env("vision"),
+            thinking_object_disabled=_role_thinking_object_disabled_from_env("vision"),
+            stream=False,
         ),
     }
 
@@ -739,13 +873,30 @@ class ApiProvider:
         temperature: float,
     ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
         """构造 chat/completions 请求体 + 脱敏审计元数据（无 messages 内容/无 key）。"""
+        # Video-RSI 风格与 enable_thinking/thinking_budget 互斥
+        flat_thinking = bool(
+            cfg.send_thinking_params
+            and (cfg.enable_thinking is not None or cfg.thinking_budget is not None)
+        )
+        if cfg.thinking_object_disabled and flat_thinking:
+            raise ApiConfigError(
+                f"role={cfg.role}: thinking={{type:disabled}} is mutually exclusive with "
+                "enable_thinking/thinking_budget; refuse both formats"
+            )
+
         body: Dict[str, Any] = {
             "model": cfg.model,
-            "temperature": temperature,
+            "temperature": float(temperature),
             "messages": list(messages),
+            # 显式 stream=false（Video-RSI 与 Paratera 示例一致）；禁止默认省略导致供应商流式差异
+            "stream": False if not cfg.stream else True,
         }
+
         limit = self.effective_output_token_limit(cfg)
         param = (cfg.token_param or "max_tokens").strip()
+        if cfg.request_profile == "video_rsi":
+            # 官方固定使用 max_tokens 字段名；额度仍受本项目 cap，禁止照搬 8192
+            param = "max_tokens"
         token_field_sent: Optional[str] = None
         if limit is not None:
             if param == "max_tokens":
@@ -759,26 +910,37 @@ class ApiProvider:
         if "max_tokens" in body and "max_completion_tokens" in body:
             raise ApiConfigError("refusing to send both max_tokens and max_completion_tokens")
 
-        thinking_sent = False
-        if cfg.send_thinking_params:
+        thinking_flat_sent = False
+        thinking_object_sent = False
+        if cfg.thinking_object_disabled:
+            body["thinking"] = {"type": "disabled"}
+            thinking_object_sent = True
+        elif cfg.send_thinking_params:
             if cfg.enable_thinking is not None:
                 body["enable_thinking"] = bool(cfg.enable_thinking)
-                thinking_sent = True
+                thinking_flat_sent = True
             if cfg.thinking_budget is not None:
                 body["thinking_budget"] = int(cfg.thinking_budget)
-                thinking_sent = True
+                thinking_flat_sent = True
 
         audit = {
             "role": cfg.role,
             "model": cfg.model,
-            "token_param_configured": param,
+            "request_profile": cfg.request_profile,
+            "token_param_configured": cfg.token_param,
             "token_param_sent": token_field_sent,
             "token_limit_sent": int(limit) if limit is not None and token_field_sent else None,
-            "thinking_params_sent": thinking_sent,
-            "enable_thinking_sent": body.get("enable_thinking") if thinking_sent else None,
-            "thinking_budget_sent": body.get("thinking_budget") if thinking_sent else None,
+            "temperature_sent": body.get("temperature"),
+            "stream_sent": body.get("stream"),
+            "thinking_params_sent": thinking_flat_sent,
+            "thinking_object_disabled_sent": thinking_object_sent,
+            "enable_thinking_sent": body.get("enable_thinking") if thinking_flat_sent else None,
+            "thinking_budget_sent": body.get("thinking_budget") if thinking_flat_sent else None,
             "sends_both_token_params": False,
+            "sends_both_thinking_formats": False,
             "message_count": len(messages),
+            "video_rsi_compat_note": VIDEO_RSI_COMPAT_NOTE,
+            "paratera_thinking_object_documented": False,
             # 不记录 messages / Authorization
         }
         return body, audit
@@ -788,12 +950,17 @@ class ApiProvider:
         *,
         role: str,
         messages: Sequence[Dict[str, Any]],
-        temperature: float = 0.1,
+        temperature: Optional[float] = None,
         cache_key: Optional[str] = None,
         mock_content: Optional[str] = None,
         allow_degraded_fallback: bool = False,
     ) -> Dict[str, Any]:
         cfg = self.configs[role]
+        if temperature is None:
+            if cfg.default_temperature is not None:
+                temperature = float(cfg.default_temperature)
+            else:
+                temperature = 0.1
         if cache_key and cache_key in self._cache:
             cached = dict(self._cache[cache_key])
             cached["cached"] = True
@@ -1048,16 +1215,35 @@ class ApiProvider:
         frame_paths: Sequence[Path],
         frame_ids: Sequence[str],
         mock_obj: Dict[str, Any],
+        frame_bindings: Optional[Sequence[Dict[str, Any]]] = None,
     ) -> Dict[str, Any]:
+        """多模态观察请求。
+
+        在每张 JPEG 前写入程序绑定的 frame_id 与媒体时间（actual_media_sec 或
+        requested_only），对齐 Video-RSI「先文本时间戳再 image_url」结构；模型不得编造时间。
+        """
         cfg = self.configs["vision"]
-        content: List[Dict[str, Any]] = [{"type": "text", "text": prompt}]
+        bindings = list(frame_bindings or [])
+        content: List[Dict[str, Any]] = [
+            {
+                "type": "text",
+                "text": (
+                    prompt
+                    + " Use only program-provided frame_id / media_time fields; "
+                    "never invent media timestamps."
+                ),
+            }
+        ]
         digest = hashlib.sha1()
         digest.update(cfg.cache_fingerprint().encode("utf-8"))
         digest.update(prompt.encode("utf-8"))
-        for path, fid in zip(frame_paths, frame_ids):
-            content.append({"type": "text", "text": f"frame_id={fid}"})
+        for i, (path, fid) in enumerate(zip(frame_paths, frame_ids)):
+            binding = bindings[i] if i < len(bindings) else {"frame_id": fid}
+            bind_text = frame_time_binding_text(binding, str(fid))
+            content.append({"type": "text", "text": bind_text})
             p = Path(path)
             digest.update(fid.encode("utf-8"))
+            digest.update(bind_text.encode("utf-8"))
             if p.is_file():
                 digest.update(_file_content_hash(p).encode("utf-8"))
                 content.append(
@@ -1069,6 +1255,7 @@ class ApiProvider:
                 {"role": "system", "content": "Reply with strict JSON only."},
                 {"role": "user", "content": content},
             ],
+            temperature=cfg.default_temperature,
             cache_key=f"vision:{digest.hexdigest()[:28]}",
             mock_content=json.dumps(mock_obj, ensure_ascii=False),
             allow_degraded_fallback=True,

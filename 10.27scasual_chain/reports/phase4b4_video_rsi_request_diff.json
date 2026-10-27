@@ -1,0 +1,170 @@
+{
+  "phase": "4B.4",
+  "billing_calls": false,
+  "video_rsi_source": "bingjunluo/Video-RSI solver_full_workspace/engine/services.py PinnedProvider.chat + Services._call(qwen)",
+  "paratera_thinking_object_documented": false,
+  "note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+  "official_video_rsi_desensitized": {
+    "model": "<request_model>",
+    "messages": [
+      "... multimodal user content with timestamp_seconds= then image_url ..."
+    ],
+    "temperature": "<config.temperature, typically 0 for deterministic>",
+    "max_tokens": 8192,
+    "thinking": {
+      "type": "disabled"
+    },
+    "stream": false
+  },
+  "phase4b2_style_body_redacted": {
+    "model": "Qwen3.6-Plus",
+    "temperature": 0.1,
+    "messages": [
+      {
+        "role": "system",
+        "content": "Reply with strict JSON only."
+      },
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "prompt"
+          },
+          {
+            "type": "text",
+            "text": "frame_id=f_0001"
+          },
+          {
+            "type": "image_url",
+            "image_url": {
+              "url": "data:image/jpeg;base64,[REDACTED_FRAME]"
+            }
+          }
+        ]
+      }
+    ],
+    "stream": false,
+    "max_tokens": 256
+  },
+  "phase4b2_style_audit": {
+    "role": "vision",
+    "model": "Qwen3.6-Plus",
+    "request_profile": "default",
+    "token_param_configured": "max_tokens",
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 256,
+    "temperature_sent": 0.1,
+    "stream_sent": false,
+    "thinking_params_sent": false,
+    "thinking_object_disabled_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "sends_both_token_params": false,
+    "sends_both_thinking_formats": false,
+    "message_count": 2,
+    "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+    "paratera_thinking_object_documented": false
+  },
+  "video_rsi_profile_body_redacted": {
+    "model": "Qwen3.6-Plus",
+    "temperature": 0.0,
+    "messages": [
+      {
+        "role": "system",
+        "content": "Reply with strict JSON only."
+      },
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "prompt; never invent media timestamps."
+          },
+          {
+            "type": "text",
+            "text": "frame_id=f_0001_3065903\nactual_media_sec=3065.900\nmedia_time_status=actual_pts"
+          },
+          {
+            "type": "image_url",
+            "image_url": {
+              "url": "data:image/jpeg;base64,[REDACTED_FRAME]"
+            }
+          }
+        ]
+      }
+    ],
+    "stream": false,
+    "max_tokens": 256,
+    "thinking": {
+      "type": "disabled"
+    }
+  },
+  "video_rsi_profile_audit": {
+    "role": "vision",
+    "model": "Qwen3.6-Plus",
+    "request_profile": "video_rsi",
+    "token_param_configured": "max_tokens",
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 256,
+    "temperature_sent": 0.0,
+    "stream_sent": false,
+    "thinking_params_sent": false,
+    "thinking_object_disabled_sent": true,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "sends_both_token_params": false,
+    "sends_both_thinking_formats": false,
+    "message_count": 2,
+    "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+    "paratera_thinking_object_documented": false
+  },
+  "field_diff": {
+    "temperature": {
+      "official": 0,
+      "phase4b2_run": 0.1,
+      "video_rsi_profile": 0.0
+    },
+    "stream": {
+      "official": false,
+      "phase4b2_run": "omitted",
+      "video_rsi_profile": false
+    },
+    "thinking": {
+      "official": {
+        "type": "disabled"
+      },
+      "phase4b2_run": "omitted",
+      "video_rsi_profile": {
+        "type": "disabled"
+      }
+    },
+    "max_tokens": {
+      "official": 8192,
+      "phase4b2_run": 256,
+      "video_rsi_profile": 256,
+      "project_policy": "never copy 8192; keep local caps + fuse"
+    },
+    "enable_thinking_flat": {
+      "official": "not used",
+      "phase4b2_run": "omitted",
+      "video_rsi_profile": "omitted (mutex with thinking object)"
+    },
+    "frame_time_text": {
+      "official": "timestamp_seconds=<sample timestamp>",
+      "phase4b2_run": "frame_id= only",
+      "video_rsi_profile": "frame_id + actual_media_sec|requested_only (program-bound)"
+    }
+  },
+  "hypothesis_for_3195_completion_tokens": [
+    "Phase 4B.2 omitted thinking={type:disabled}; if Paratera/Qwen defaults enable hidden chain-of-thought, completion_tokens may include reasoning while max_tokens only capped visible tokens (Alibaba docs describe similar split — Paratera unconfirmed).",
+    "Vendor may ignore max_tokens for multimodal or count internal tokens differently.",
+    "REQUIRES real API verification with video_rsi profile + response_audit.finish_reason/reasoning_tokens; not proven offline."
+  ],
+  "still_needs_real_api_verification": [
+    "Whether Paratera accepts thinking={type:disabled}",
+    "Whether that reduces completion_tokens under max_tokens=256",
+    "Whether stream=false changes usage accounting",
+    "Whether frame time binding text affects observation quality"
+  ]
+}

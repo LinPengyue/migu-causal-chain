@@ -248,6 +248,7 @@ class VisionProvider:
                 frame_paths=frame_paths,
                 frame_ids=frame_ids,
                 mock_obj=mock_obj,
+                frame_bindings=frame_bindings,
             )
         except (ApiConfigError, ApiCallError) as exc:
             fs = (
