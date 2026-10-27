@@ -1,0 +1,62 @@
+{
+  "model": "Qwen3.6-Plus",
+  "provider_mode": "real",
+  "http_status": 200,
+  "normalized_ok": true,
+  "observation_only": true,
+  "fact_verified": false,
+  "structured": {
+    "observed_actions": [
+      "shot",
+      "goal",
+      "celebration",
+      "scoreboard"
+    ],
+    "story_relation": "Croatia player takes a shot and scores an equalizer goal, followed by a celebration slide, while the scoreboard overlay has not yet updated.",
+    "notes": "Frame 1 shows general play with the scoreboard reading Croatia 0 - 1 Canada. Frame 2 captures a shot by a Croatia player (white/red kit) towards the goal. Frame 3 shows the same player sliding on the grass in celebration. The scoreboard still displays 0-1, indicating a broadcast delay in updating the score for the equalizer.",
+    "labels": {
+      "labels": [
+        "goal",
+        "shot",
+        "celebration",
+        "scoreboard"
+      ],
+      "primary": "goal",
+      "confidence": 0.95,
+      "uncertainty": 0.050000000000000044,
+      "frame_ids": [
+        "f_0000_3059953",
+        "f_0001_3065903",
+        "f_0002_3071853"
+      ],
+      "provider_mode": "real",
+      "description": "Croatia player takes a shot and scores an equalizer goal, followed by a celebration slide, while the scoreboard overlay has not yet updated.",
+      "observation_only": true,
+      "fact_verified": false
+    },
+    "frame_times": [
+      {
+        "frame_id": "f_0000_3059953",
+        "requested_media_sec": 3059.953,
+        "actual_media_sec": 3059.96
+      },
+      {
+        "frame_id": "f_0001_3065903",
+        "requested_media_sec": 3065.903,
+        "actual_media_sec": 3065.9
+      },
+      {
+        "frame_id": "f_0002_3071853",
+        "requested_media_sec": 3071.853,
+        "actual_media_sec": 3071.86
+      }
+    ]
+  },
+  "usage": {
+    "prompt_tokens": 6427,
+    "completion_tokens": 3195,
+    "total_tokens": 9622
+  },
+  "est_cost_usd": 0.00288105,
+  "token_cap_note": "Request intended max_tokens/completion<=256; vendor usage reported completion_tokens=3195 (cap not honored server-side). Local cost estimate still ~$0.0029 < $0.10 soft stop."
+}
