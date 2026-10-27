@@ -1,0 +1,263 @@
+{
+  "match_id": "2022-11-25 葡萄牙vs加纳",
+  "safe_id": "2022-11-25_葡萄牙vs加纳",
+  "mode": "online",
+  "n_chains": 6,
+  "category_counts": {
+    "outcome": 4,
+    "danger": 1
+  },
+  "chains": [
+    {
+      "clip_id": "clip00",
+      "annotation_id": "ann_0037",
+      "ok": true,
+      "strict_match": false,
+      "matched": false,
+      "latency_ms": null,
+      "track_id": null,
+      "t_ready": 6189352,
+      "flags": {
+        "a_time": false,
+        "b_category": false,
+        "c_first": false,
+        "d_last": false,
+        "strict": false,
+        "aux_time_cat": false,
+        "aux_time_cat_last": false
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "pass",
+        "last_event": "keeper_save",
+        "t0_ms": 6180166,
+        "t1_ms": 6191352
+      },
+      "pred": null
+    },
+    {
+      "clip_id": "clip01",
+      "annotation_id": "ann_0038",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 60000,
+      "track_id": 0,
+      "t_ready": 6222367,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "outcome",
+        "first_event": "pass",
+        "last_event": "goal",
+        "t0_ms": 6213972,
+        "t1_ms": 6224367
+      },
+      "pred": {
+        "category": "outcome",
+        "first": "pass",
+        "last": "goal",
+        "t0_ms": 6182166,
+        "t1_ms": 6222367,
+        "emit_t_ms": 6282367
+      },
+      "chain_category": "outcome",
+      "first_event": "pass",
+      "last_event": "goal",
+      "t0_ms": 6182166,
+      "t1_ms": 6222367,
+      "emit_t_ms": 6282367
+    },
+    {
+      "clip_id": "clip02",
+      "annotation_id": "ann_0041",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 26406,
+      "track_id": 1,
+      "t_ready": 6550992,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "outcome",
+        "first_event": "assist",
+        "last_event": "successful_tackle",
+        "t0_ms": 6511150,
+        "t1_ms": 6552992
+      },
+      "pred": {
+        "category": "outcome",
+        "first": "assist",
+        "last": "successful_tackle",
+        "t0_ms": 6513150,
+        "t1_ms": 6550992,
+        "emit_t_ms": 6577398
+      },
+      "chain_category": "outcome",
+      "first_event": "assist",
+      "last_event": "successful_tackle",
+      "t0_ms": 6513150,
+      "t1_ms": 6550992,
+      "emit_t_ms": 6577398
+    },
+    {
+      "clip_id": "clip03",
+      "annotation_id": "ann_0044",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 159920,
+      "track_id": 4,
+      "t_ready": 6652246,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "outcome",
+        "first_event": "successful_tackle",
+        "last_event": "goal",
+        "t0_ms": 6640013,
+        "t1_ms": 6654246
+      },
+      "pred": {
+        "category": "outcome",
+        "first": "successful_tackle",
+        "last": "goal",
+        "t0_ms": 6642013,
+        "t1_ms": 6652246,
+        "emit_t_ms": 6812166
+      },
+      "chain_category": "outcome",
+      "first_event": "successful_tackle",
+      "last_event": "goal",
+      "t0_ms": 6642013,
+      "t1_ms": 6652246,
+      "emit_t_ms": 6812166
+    },
+    {
+      "clip_id": "clip04",
+      "annotation_id": "ann_0047",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 75561,
+      "track_id": 5,
+      "t_ready": 6826605,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "successful_tackle",
+        "last_event": "keeper_save",
+        "t0_ms": 6816287,
+        "t1_ms": 6828605
+      },
+      "pred": {
+        "category": "danger",
+        "first": "successful_tackle",
+        "last": "keeper_save",
+        "t0_ms": 6818287,
+        "t1_ms": 6826605,
+        "emit_t_ms": 6902166
+      },
+      "chain_category": "danger",
+      "first_event": "successful_tackle",
+      "last_event": "keeper_save",
+      "t0_ms": 6818287,
+      "t1_ms": 6826605,
+      "emit_t_ms": 6902166
+    },
+    {
+      "clip_id": "clip05",
+      "annotation_id": "ann_0049",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 60000,
+      "track_id": 6,
+      "t_ready": 7198351,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "outcome",
+        "first_event": "pass",
+        "last_event": "goal",
+        "t0_ms": 7188164,
+        "t1_ms": 7200351
+      },
+      "pred": {
+        "category": "outcome",
+        "first": "pass",
+        "last": "goal",
+        "t0_ms": 7190164,
+        "t1_ms": 7198351,
+        "emit_t_ms": 7258351
+      },
+      "chain_category": "outcome",
+      "first_event": "pass",
+      "last_event": "goal",
+      "t0_ms": 7190164,
+      "t1_ms": 7198351,
+      "emit_t_ms": 7258351
+    }
+  ],
+  "config": {
+    "backend": "dump_strip_chains",
+    "algo": "causal_chain6",
+    "adapter": "OnlineStripAdapter",
+    "mode": "online",
+    "event_source": "gold_events",
+    "prefix_stride": 1,
+    "min_prefix": 2,
+    "profile": "production",
+    "use_llm": false,
+    "pipeline": "stream(gold_events)→OnlineStripEngine→one-to-one",
+    "aligned_with": "eval/eval_online_strip.py --stream-source gold_events"
+  },
+  "stats": {
+    "n_gold": 6,
+    "n_scorable": 6,
+    "strict_matched": 5,
+    "logic_complete_rate": 83.33,
+    "precision_hits": 5,
+    "n_tracks": 7,
+    "recall_matched": 5,
+    "n_stream_events": 30,
+    "n_prefix_snapshots": 43
+  }
+}

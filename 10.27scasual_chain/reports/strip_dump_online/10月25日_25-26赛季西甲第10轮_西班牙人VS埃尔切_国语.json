@@ -1,0 +1,102 @@
+{
+  "match_id": "10月25日_25-26赛季西甲第10轮_西班牙人VS埃尔切_国语",
+  "safe_id": "10月25日_25-26赛季西甲第10轮_西班牙人VS埃尔切_国语",
+  "mode": "online",
+  "n_chains": 2,
+  "category_counts": {
+    "danger": 1
+  },
+  "chains": [
+    {
+      "clip_id": "clip00",
+      "annotation_id": "ann_0002",
+      "ok": true,
+      "strict_match": false,
+      "matched": false,
+      "latency_ms": null,
+      "track_id": null,
+      "t_ready": 1058322,
+      "flags": {
+        "a_time": false,
+        "b_category": false,
+        "c_first": false,
+        "d_last": false,
+        "strict": false,
+        "aux_time_cat": false,
+        "aux_time_cat_last": false
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "pass",
+        "last_event": "keeper_save",
+        "t0_ms": 1051652,
+        "t1_ms": 1060322
+      },
+      "pred": null
+    },
+    {
+      "clip_id": "clip01",
+      "annotation_id": "ann_0003",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 116854,
+      "track_id": 0,
+      "t_ready": 1116798,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "pass",
+        "last_event": "goal_line_clearance",
+        "t0_ms": 1099400,
+        "t1_ms": 1118798
+      },
+      "pred": {
+        "category": "danger",
+        "first": "pass",
+        "last": "goal_line_clearance",
+        "t0_ms": 1053652,
+        "t1_ms": 1116798,
+        "emit_t_ms": 1233652
+      },
+      "chain_category": "danger",
+      "first_event": "pass",
+      "last_event": "goal_line_clearance",
+      "t0_ms": 1053652,
+      "t1_ms": 1116798,
+      "emit_t_ms": 1233652
+    }
+  ],
+  "config": {
+    "backend": "dump_strip_chains",
+    "algo": "causal_chain6",
+    "adapter": "OnlineStripAdapter",
+    "mode": "online",
+    "event_source": "gold_events",
+    "prefix_stride": 1,
+    "min_prefix": 2,
+    "profile": "production",
+    "use_llm": false,
+    "pipeline": "stream(gold_events)→OnlineStripEngine→one-to-one",
+    "aligned_with": "eval/eval_online_strip.py --stream-source gold_events"
+  },
+  "stats": {
+    "n_gold": 2,
+    "n_scorable": 2,
+    "strict_matched": 1,
+    "logic_complete_rate": 50.0,
+    "precision_hits": 1,
+    "n_tracks": 1,
+    "recall_matched": 1,
+    "n_stream_events": 12,
+    "n_prefix_snapshots": 13
+  }
+}

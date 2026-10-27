@@ -1,0 +1,737 @@
+{
+  "match_id": "9月18日_25-26赛季亚冠第1轮_利雅得胜利VS杜尚别独立_国语",
+  "safe_id": "9月18日_25-26赛季亚冠第1轮_利雅得胜利VS杜尚别独立_国语",
+  "input_file": "/data2/lpy1/causal-chain2/8.31causal_chain/datasets/matches/9月18日_25-26赛季亚冠第1轮_利雅得胜利VS杜尚别独立_国语/timeline.json",
+  "event_count": 394,
+  "reel": {
+    "clips": [
+      {
+        "clip_id": "clip00",
+        "chain_template_id": "shot_save_chain",
+        "chain_label_zh": "射门扑救链",
+        "chain_category": "danger",
+        "t0_ms": 1108120,
+        "t1_ms": 1121120,
+        "anchor_event": {
+          "type": "shot",
+          "t_ms": 1116120
+        },
+        "events": [
+          {
+            "event_id": "event_000047",
+            "order": 0,
+            "type": "free_kick",
+            "t_ms": 1113880,
+            "role": "set_piece",
+            "global_index": 46
+          },
+          {
+            "event_id": "event_000048",
+            "order": 1,
+            "type": "pass",
+            "t_ms": 1114720,
+            "role": "build_up",
+            "global_index": 47
+          },
+          {
+            "event_id": "event_000049",
+            "order": 2,
+            "type": "shot",
+            "t_ms": 1116120,
+            "role": "shot",
+            "global_index": 48
+          },
+          {
+            "event_id": "event_000050",
+            "order": 3,
+            "type": "keeper_save",
+            "t_ms": 1116830,
+            "role": "save",
+            "global_index": 49
+          },
+          {
+            "event_id": "event_000051",
+            "order": 4,
+            "type": "goal_line_clearance",
+            "t_ms": 1117270,
+            "role": "clearance",
+            "global_index": 50
+          },
+          {
+            "event_id": "event_000052",
+            "order": 5,
+            "type": "shot",
+            "t_ms": 1118110,
+            "role": "shot",
+            "global_index": 51
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 4,
+            "dst": 5,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 4,
+            "dst": 5,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "射门扑救链：free_kick → pass → shot → keeper_save → goal_line_clearance → shot",
+        "confidence": 1.255,
+        "margin": 1.255,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "shot → keeper_save",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 6,
+          "align_size": 2,
+          "exact_canonical": true,
+          "transitions_ok": false,
+          "illegal_pairs": [
+            "free_kick→pass",
+            "keeper_save→goal_line_clearance",
+            "goal_line_clearance→shot"
+          ],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            2,
+            3
+          ],
+          "selection": {
+            "tier": "T1",
+            "event_type": "shot",
+            "event_i": 48,
+            "t_ms": 1116120,
+            "t0_ms": 1108120,
+            "t1_ms": 1121120,
+            "reason": "shot_then_save_or_corner",
+            "half": 1,
+            "slot": 1
+          }
+        }
+      },
+      {
+        "clip_id": "clip01",
+        "chain_template_id": "team_buildup_goal",
+        "chain_label_zh": "团队配合射门进球链",
+        "chain_category": "outcome",
+        "t0_ms": 1728800,
+        "t1_ms": 1749100,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 1740800
+        },
+        "events": [
+          {
+            "event_id": "event_000135",
+            "order": 0,
+            "type": "pass",
+            "t_ms": 1736550,
+            "role": "build_up",
+            "global_index": 134
+          },
+          {
+            "event_id": "event_000136",
+            "order": 1,
+            "type": "shot",
+            "t_ms": 1739900,
+            "role": "shot",
+            "global_index": 135
+          },
+          {
+            "event_id": "event_000137",
+            "order": 2,
+            "type": "goal",
+            "t_ms": 1740800,
+            "role": "outcome",
+            "global_index": 136
+          },
+          {
+            "event_id": "event_000138",
+            "order": 3,
+            "type": "goal",
+            "t_ms": 1745100,
+            "role": "outcome",
+            "global_index": 137
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "团队配合射门进球链：pass → shot → goal → goal",
+        "confidence": 1.6175,
+        "margin": 0.6175,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "pass → shot → goal",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 4,
+          "align_size": 3,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            0,
+            1,
+            2
+          ],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 136,
+            "t_ms": 1740800,
+            "t0_ms": 1728800,
+            "t1_ms": 1749100,
+            "reason": "t0_goal|merged",
+            "half": 1,
+            "slot": 1
+          }
+        }
+      },
+      {
+        "clip_id": "clip02",
+        "chain_template_id": "individual_breakthrough_goal",
+        "chain_label_zh": "个人突破后射门进球链",
+        "chain_category": "outcome",
+        "t0_ms": 1895360,
+        "t1_ms": 1911360,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 1907360
+        },
+        "events": [
+          {
+            "event_id": "event_000139",
+            "order": 0,
+            "type": "dribble_past",
+            "t_ms": 1903920,
+            "role": "build_up",
+            "global_index": 138
+          },
+          {
+            "event_id": "event_000140",
+            "order": 1,
+            "type": "pass",
+            "t_ms": 1904900,
+            "role": "build_up",
+            "global_index": 139
+          },
+          {
+            "event_id": "event_000141",
+            "order": 2,
+            "type": "shot",
+            "t_ms": 1906210,
+            "role": "shot",
+            "global_index": 140
+          },
+          {
+            "event_id": "event_000142",
+            "order": 3,
+            "type": "goal",
+            "t_ms": 1907360,
+            "role": "outcome",
+            "global_index": 141
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "个人突破后射门进球链：dribble_past → pass → shot → goal",
+        "confidence": 1.7,
+        "margin": 0.7,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "dribble_past → shot → goal",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 4,
+          "align_size": 3,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            0,
+            2,
+            3
+          ],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 141,
+            "t_ms": 1907360,
+            "t0_ms": 1895360,
+            "t1_ms": 1911360,
+            "reason": "t0_goal",
+            "half": 1,
+            "slot": 2
+          }
+        }
+      },
+      {
+        "clip_id": "clip03",
+        "chain_template_id": "individual_breakthrough_goal",
+        "chain_label_zh": "个人突破后射门进球链",
+        "chain_category": "outcome",
+        "t0_ms": 5630600,
+        "t1_ms": 5646600,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 5642600
+        },
+        "events": [
+          {
+            "event_id": "event_000293",
+            "order": 0,
+            "type": "pass",
+            "t_ms": 5631310,
+            "role": "build_up",
+            "global_index": 292
+          },
+          {
+            "event_id": "event_000294",
+            "order": 1,
+            "type": "dribble_past",
+            "t_ms": 5636990,
+            "role": "build_up",
+            "global_index": 293
+          },
+          {
+            "event_id": "event_000295",
+            "order": 2,
+            "type": "shot",
+            "t_ms": 5641150,
+            "role": "shot",
+            "global_index": 294
+          },
+          {
+            "event_id": "event_000296",
+            "order": 3,
+            "type": "goal",
+            "t_ms": 5642600,
+            "role": "outcome",
+            "global_index": 295
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "个人突破后射门进球链：pass → dribble_past → shot → goal",
+        "confidence": 1.7,
+        "margin": 0.7,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "dribble_past → shot → goal",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 4,
+          "align_size": 3,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            1,
+            2,
+            3
+          ],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 295,
+            "t_ms": 5642600,
+            "t0_ms": 5630600,
+            "t1_ms": 5646600,
+            "reason": "t0_goal",
+            "half": 2,
+            "slot": 2
+          }
+        }
+      },
+      {
+        "clip_id": "clip04",
+        "chain_template_id": "team_buildup_goal",
+        "chain_label_zh": "团队配合射门进球链",
+        "chain_category": "outcome",
+        "t0_ms": 7460720,
+        "t1_ms": 7476720,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 7472720
+        },
+        "events": [
+          {
+            "event_id": "event_000379",
+            "order": 0,
+            "type": "pass",
+            "t_ms": 7462350,
+            "role": "build_up",
+            "global_index": 378
+          },
+          {
+            "event_id": "event_000380",
+            "order": 1,
+            "type": "pass",
+            "t_ms": 7467810,
+            "role": "build_up",
+            "global_index": 379
+          },
+          {
+            "event_id": "event_000381",
+            "order": 2,
+            "type": "shot",
+            "t_ms": 7471560,
+            "role": "shot",
+            "global_index": 380
+          },
+          {
+            "event_id": "event_000382",
+            "order": 3,
+            "type": "goal",
+            "t_ms": 7472720,
+            "role": "outcome",
+            "global_index": 381
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "团队配合射门进球链：pass → pass → shot → goal",
+        "confidence": 1.7,
+        "margin": 0.7,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "pass → shot → goal",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 4,
+          "align_size": 3,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            0,
+            2,
+            3
+          ],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 381,
+            "t_ms": 7472720,
+            "t0_ms": 7460720,
+            "t1_ms": 7476720,
+            "reason": "t0_goal",
+            "half": 2,
+            "slot": 2
+          }
+        }
+      },
+      {
+        "clip_id": "clip05",
+        "chain_template_id": "rebound_follow_up_goal",
+        "chain_label_zh": "射门被挡后补射进球链",
+        "chain_category": "outcome",
+        "t0_ms": 7497050,
+        "t1_ms": 7513050,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 7509050
+        },
+        "events": [
+          {
+            "event_id": "event_000383",
+            "order": 0,
+            "type": "shot",
+            "t_ms": 7503570,
+            "role": "shot",
+            "global_index": 382
+          },
+          {
+            "event_id": "event_000384",
+            "order": 1,
+            "type": "shot",
+            "t_ms": 7506980,
+            "role": "shot",
+            "global_index": 383
+          },
+          {
+            "event_id": "event_000385",
+            "order": 2,
+            "type": "goal",
+            "t_ms": 7509050,
+            "role": "outcome",
+            "global_index": 384
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "射门被挡后补射进球链：shot → shot → goal",
+        "confidence": 1.7,
+        "margin": 1.7,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "shot → shot → goal",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 3,
+          "align_size": 3,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            0,
+            1,
+            2
+          ],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 384,
+            "t_ms": 7509050,
+            "t0_ms": 7497050,
+            "t1_ms": 7513050,
+            "reason": "t0_goal",
+            "half": 2,
+            "slot": 2
+          }
+        }
+      }
+    ],
+    "ordering": [
+      "clip00",
+      "clip01",
+      "clip02",
+      "clip03",
+      "clip04",
+      "clip05"
+    ],
+    "total_duration_ms": 97300
+  },
+  "config": {
+    "backend": "dump_highlight_reels_full",
+    "profile": "production",
+    "drop_t2": false,
+    "min_clips": 6,
+    "use_llm": false,
+    "pipeline": "select_moments(full PDF)→optional T1/T2 fill→classify/refine",
+    "note": "交付观感用；评测 no_t2 仍用 dump_highlight_reels.py / reels_dump"
+  },
+  "stats": {
+    "moments_selected": 6,
+    "clips_final": 6,
+    "fast_path": 6,
+    "select": {
+      "rule": "rule_t0_many",
+      "half_ms": 2700000,
+      "n_t0": 6,
+      "n_t1_pool": 5,
+      "n_t2_pool": 7,
+      "n_selected": 5,
+      "n_t0_selected": 5,
+      "n_t1_selected": 0,
+      "n_t2_selected": 0,
+      "has_goal": true,
+      "has_penalty_goal": false,
+      "has_red": false
+    },
+    "fill": {
+      "min_clips": 6,
+      "n_before": 5,
+      "n_filled": 1,
+      "presentation_fill": true,
+      "n_after": 6
+    },
+    "n_moments_raw": 5,
+    "under_min_clips": false
+  }
+}

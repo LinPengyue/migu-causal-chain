@@ -1,0 +1,589 @@
+{
+  "match_id": "09_2 9月14日 25-26赛季意甲第3轮 尤文图斯VS国际米兰 4K国语__converted_4K_H265_25fps",
+  "safe_id": "09_2_9月14日_25-26赛季意甲第3轮_尤文图斯VS国际米兰_4K国语__converted_4K_H265_25fps",
+  "input_file": "/data2/lpy1/causal-chain2/8.31causal_chain/datasets/matches/09_2_9月14日_25-26赛季意甲第3轮_尤文图斯VS国际米兰_4K国语__converted_4K_H265_25fps/timeline.json",
+  "event_count": 262,
+  "reel": {
+    "clips": [
+      {
+        "clip_id": "clip00",
+        "chain_template_id": "goal_line_extreme_save_chain",
+        "chain_label_zh": "门线极限救险链",
+        "chain_category": "danger",
+        "t0_ms": 472750,
+        "t1_ms": 482750,
+        "anchor_event": {
+          "type": "successful_tackle",
+          "t_ms": 478750
+        },
+        "events": [
+          {
+            "event_id": "event_000028",
+            "order": 0,
+            "type": "pass",
+            "t_ms": 475520,
+            "role": "build_up",
+            "global_index": 27
+          },
+          {
+            "event_id": "event_000029",
+            "order": 1,
+            "type": "successful_tackle",
+            "t_ms": 478750,
+            "role": "outcome",
+            "global_index": 28
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "门线极限救险链（pass → successful_tackle）",
+        "confidence": 0.63,
+        "margin": 0.63,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 2,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T2",
+            "event_type": "successful_tackle",
+            "event_i": 28,
+            "t_ms": 478750,
+            "t0_ms": 472750,
+            "t1_ms": 482750,
+            "reason": "successful_tackle_then_threat",
+            "half": 1,
+            "slot": 0
+          }
+        }
+      },
+      {
+        "clip_id": "clip01",
+        "chain_template_id": "shot_post_bar_chain",
+        "chain_label_zh": "射门门柱/横梁链",
+        "chain_category": "danger",
+        "t0_ms": 852860,
+        "t1_ms": 862860,
+        "anchor_event": {
+          "type": "successful_tackle",
+          "t_ms": 858860
+        },
+        "events": [
+          {
+            "event_id": "event_000081",
+            "order": 0,
+            "type": "successful_tackle",
+            "t_ms": 858860,
+            "role": "build_up",
+            "global_index": 80
+          },
+          {
+            "event_id": "event_000082",
+            "order": 1,
+            "type": "shot",
+            "t_ms": 861500,
+            "role": "shot",
+            "global_index": 81
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "射门门柱/横梁链（successful_tackle → shot）",
+        "confidence": 1.22,
+        "margin": 1.22,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 2,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T2",
+            "event_type": "successful_tackle",
+            "event_i": 80,
+            "t_ms": 858860,
+            "t0_ms": 852860,
+            "t1_ms": 862860,
+            "reason": "successful_tackle_then_threat",
+            "half": 1,
+            "slot": 0
+          }
+        }
+      },
+      {
+        "clip_id": "clip02",
+        "chain_template_id": "shot_post_bar_chain",
+        "chain_label_zh": "射门门柱/横梁链",
+        "chain_category": "danger",
+        "t0_ms": 1331310,
+        "t1_ms": 1341310,
+        "anchor_event": {
+          "type": "successful_tackle",
+          "t_ms": 1337310
+        },
+        "events": [
+          {
+            "event_id": "event_000143",
+            "order": 0,
+            "type": "successful_tackle",
+            "t_ms": 1334310,
+            "role": "build_up",
+            "global_index": 142
+          },
+          {
+            "event_id": "event_000144",
+            "order": 1,
+            "type": "shot",
+            "t_ms": 1336470,
+            "role": "shot",
+            "global_index": 143
+          },
+          {
+            "event_id": "event_000145",
+            "order": 2,
+            "type": "successful_tackle",
+            "t_ms": 1337310,
+            "role": "build_up",
+            "global_index": 144
+          },
+          {
+            "event_id": "event_000146",
+            "order": 3,
+            "type": "shot",
+            "t_ms": 1338690,
+            "role": "shot",
+            "global_index": 145
+          },
+          {
+            "event_id": "event_000147",
+            "order": 4,
+            "type": "successful_tackle",
+            "t_ms": 1339340,
+            "role": "build_up",
+            "global_index": 146
+          },
+          {
+            "event_id": "event_000148",
+            "order": 5,
+            "type": "foul",
+            "t_ms": 1341220,
+            "role": "outcome",
+            "global_index": 147
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 4,
+            "dst": 5,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 4,
+            "dst": 5,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "射门门柱/横梁链：successful_tackle → shot → successful_tackle → shot → successful_tackle → foul",
+        "confidence": 0.7633,
+        "margin": 0.7633,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "shot → shot",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 6,
+          "align_size": 2,
+          "exact_canonical": true,
+          "transitions_ok": false,
+          "illegal_pairs": [
+            "successful_tackle→foul"
+          ],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            1,
+            3
+          ],
+          "selection": {
+            "tier": "T2",
+            "event_type": "successful_tackle",
+            "event_i": 144,
+            "t_ms": 1337310,
+            "t0_ms": 1331310,
+            "t1_ms": 1341310,
+            "reason": "successful_tackle_then_threat",
+            "half": 1,
+            "slot": 1
+          }
+        }
+      },
+      {
+        "clip_id": "clip03",
+        "chain_template_id": "shot_post_bar_chain",
+        "chain_label_zh": "射门门柱/横梁链",
+        "chain_category": "danger",
+        "t0_ms": 1771390,
+        "t1_ms": 1784390,
+        "anchor_event": {
+          "type": "shot",
+          "t_ms": 1779390
+        },
+        "events": [
+          {
+            "event_id": "event_000178",
+            "order": 0,
+            "type": "pass",
+            "t_ms": 1775490,
+            "role": "build_up",
+            "global_index": 177
+          },
+          {
+            "event_id": "event_000179",
+            "order": 1,
+            "type": "shot",
+            "t_ms": 1779390,
+            "role": "shot",
+            "global_index": 178
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "射门门柱/横梁链（pass → shot）",
+        "confidence": 1.22,
+        "margin": 1.22,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 2,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T1",
+            "event_type": "shot",
+            "event_i": 178,
+            "t_ms": 1779390,
+            "t0_ms": 1771390,
+            "t1_ms": 1784390,
+            "reason": "shot_then_save_or_corner",
+            "half": 1,
+            "slot": 1
+          }
+        }
+      },
+      {
+        "clip_id": "clip04",
+        "chain_template_id": "second_phase_after_frame_chain",
+        "chain_label_zh": "门框后二次进攻链",
+        "chain_category": "danger",
+        "t0_ms": 2516110,
+        "t1_ms": 2526110,
+        "anchor_event": {
+          "type": "dribble_past",
+          "t_ms": 2522110
+        },
+        "events": [
+          {
+            "event_id": "event_000224",
+            "order": 0,
+            "type": "corner",
+            "t_ms": 2518710,
+            "role": "set_piece",
+            "global_index": 223
+          },
+          {
+            "event_id": "event_000225",
+            "order": 1,
+            "type": "dribble_past",
+            "t_ms": 2522110,
+            "role": "build_up",
+            "global_index": 224
+          },
+          {
+            "event_id": "event_000226",
+            "order": 2,
+            "type": "shot",
+            "t_ms": 2523790,
+            "role": "shot",
+            "global_index": 225
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "门框后二次进攻链（corner → dribble_past → shot）",
+        "confidence": 0.88,
+        "margin": 0.88,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 3,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T2",
+            "event_type": "dribble_past",
+            "event_i": 224,
+            "t_ms": 2522110,
+            "t0_ms": 2516110,
+            "t1_ms": 2526110,
+            "reason": "dribble_then_threat",
+            "half": 1,
+            "slot": 2
+          }
+        }
+      },
+      {
+        "clip_id": "clip05",
+        "chain_template_id": "second_phase_after_frame_chain",
+        "chain_label_zh": "门框后二次进攻链",
+        "chain_category": "danger",
+        "t0_ms": 3087650,
+        "t1_ms": 3097650,
+        "anchor_event": {
+          "type": "corner",
+          "t_ms": 3093650
+        },
+        "events": [
+          {
+            "event_id": "event_000258",
+            "order": 0,
+            "type": "pass",
+            "t_ms": 3092790,
+            "role": "build_up",
+            "global_index": 257
+          },
+          {
+            "event_id": "event_000259",
+            "order": 1,
+            "type": "corner",
+            "t_ms": 3093650,
+            "role": "set_piece",
+            "global_index": 258
+          },
+          {
+            "event_id": "event_000260",
+            "order": 2,
+            "type": "shot",
+            "t_ms": 3095370,
+            "role": "shot",
+            "global_index": 259
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "门框后二次进攻链（pass → corner → shot）",
+        "confidence": 0.88,
+        "margin": 0.88,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 3,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T2",
+            "event_type": "corner",
+            "event_i": 258,
+            "t_ms": 3093650,
+            "t0_ms": 3087650,
+            "t1_ms": 3097650,
+            "reason": "corner_then_threat",
+            "half": 2,
+            "slot": 0
+          }
+        }
+      }
+    ],
+    "ordering": [
+      "clip00",
+      "clip01",
+      "clip02",
+      "clip03",
+      "clip04",
+      "clip05"
+    ],
+    "total_duration_ms": 63000
+  },
+  "config": {
+    "backend": "dump_highlight_reels_full",
+    "profile": "production",
+    "drop_t2": false,
+    "min_clips": 6,
+    "use_llm": false,
+    "pipeline": "select_moments(full PDF)→optional T1/T2 fill→classify/refine",
+    "note": "交付观感用；评测 no_t2 仍用 dump_highlight_reels.py / reels_dump"
+  },
+  "stats": {
+    "moments_selected": 6,
+    "clips_final": 6,
+    "fast_path": 6,
+    "select": {
+      "rule": "rule4_t1_plus_t2",
+      "half_ms": 2700000,
+      "n_t0": 0,
+      "n_t1_pool": 1,
+      "n_t2_pool": 12,
+      "n_selected": 5,
+      "n_t0_selected": 0,
+      "n_t1_selected": 1,
+      "n_t2_selected": 4,
+      "has_goal": false,
+      "has_penalty_goal": false,
+      "has_red": false
+    },
+    "fill": {
+      "min_clips": 6,
+      "n_before": 5,
+      "n_filled": 1,
+      "presentation_fill": true,
+      "n_after": 6
+    },
+    "n_moments_raw": 5,
+    "under_min_clips": false
+  }
+}

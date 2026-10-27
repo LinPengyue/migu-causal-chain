@@ -1,0 +1,2858 @@
+{
+  "match_id": "2022-11-27 比利时vs摩洛哥",
+  "safe_id": "2022-11-27_比利时vs摩洛哥",
+  "input_file": "/data2/lpy1/causal-chain2/8.31causal_chain/datasets/matches/2022-11-27_比利时vs摩洛哥/timeline.json",
+  "event_count": 370,
+  "reel": {
+    "clips": [
+      {
+        "clip_id": "clip00",
+        "chain_template_id": "outcome_other",
+        "chain_label_zh": "其他",
+        "chain_category": "outcome",
+        "t0_ms": 3671640,
+        "t1_ms": 3687640,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 3683640
+        },
+        "events": [
+          {
+            "event_id": "event_000108",
+            "order": 0,
+            "type": "free_kick",
+            "t_ms": 3681880,
+            "role": "set_piece",
+            "global_index": 107
+          },
+          {
+            "event_id": "event_000109",
+            "order": 1,
+            "type": "goal",
+            "t_ms": 3683640,
+            "role": "outcome",
+            "global_index": 108
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "其他（free_kick → goal）",
+        "confidence": 0.33,
+        "margin": 0.33,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 2,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": false,
+          "illegal_pairs": [
+            "free_kick→goal"
+          ],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 108,
+            "t_ms": 3683640,
+            "t0_ms": 3671640,
+            "t1_ms": 3687640,
+            "reason": "t0_goal",
+            "half": 2,
+            "slot": 1
+          }
+        }
+      },
+      {
+        "clip_id": "clip01",
+        "chain_template_id": "outcome_other",
+        "chain_label_zh": "其他",
+        "chain_category": "outcome",
+        "t0_ms": 3721670,
+        "t1_ms": 3751620,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 3733670
+        },
+        "events": [
+          {
+            "event_id": "event_000111",
+            "order": 0,
+            "type": "goal",
+            "t_ms": 3733670,
+            "role": "outcome",
+            "global_index": 110
+          },
+          {
+            "event_id": "event_000112",
+            "order": 1,
+            "type": "free_kick",
+            "t_ms": 3735590,
+            "role": "set_piece",
+            "global_index": 111
+          },
+          {
+            "event_id": "event_000113",
+            "order": 2,
+            "type": "goal",
+            "t_ms": 3737550,
+            "role": "outcome",
+            "global_index": 112
+          },
+          {
+            "event_id": "event_000114",
+            "order": 3,
+            "type": "free_kick",
+            "t_ms": 3739740,
+            "role": "set_piece",
+            "global_index": 113
+          },
+          {
+            "event_id": "event_000115",
+            "order": 4,
+            "type": "goal",
+            "t_ms": 3741880,
+            "role": "outcome",
+            "global_index": 114
+          },
+          {
+            "event_id": "event_000116",
+            "order": 5,
+            "type": "free_kick",
+            "t_ms": 3743820,
+            "role": "set_piece",
+            "global_index": 115
+          },
+          {
+            "event_id": "event_000117",
+            "order": 6,
+            "type": "goal",
+            "t_ms": 3747620,
+            "role": "outcome",
+            "global_index": 116
+          },
+          {
+            "event_id": "event_000118",
+            "order": 7,
+            "type": "free_kick",
+            "t_ms": 3749160,
+            "role": "set_piece",
+            "global_index": 117
+          }
+        ],
+        "context_events": [
+          {
+            "event_id": "event_000110",
+            "order": 0,
+            "type": "free_kick",
+            "t_ms": 3730670,
+            "role": "context",
+            "global_index": 109
+          }
+        ],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 4,
+            "dst": 5,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 4,
+            "dst": 5,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 5,
+            "dst": 6,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 5,
+            "dst": 6,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 6,
+            "dst": 7,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 6,
+            "dst": 7,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "其他（goal → free_kick → goal → free_kick → goal → free_kick → goal → free_kick）",
+        "confidence": 0.13,
+        "margin": 0.13,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 8,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": false,
+          "illegal_pairs": [
+            "goal→free_kick",
+            "free_kick→goal",
+            "goal→free_kick",
+            "free_kick→goal",
+            "goal→free_kick",
+            "free_kick→goal",
+            "goal→free_kick"
+          ],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 110,
+            "t_ms": 3733670,
+            "t0_ms": 3721670,
+            "t1_ms": 3751620,
+            "reason": "t0_goal|merged|merged|merged",
+            "half": 2,
+            "slot": 1
+          }
+        }
+      },
+      {
+        "clip_id": "clip02",
+        "chain_template_id": "outcome_other",
+        "chain_label_zh": "其他",
+        "chain_category": "outcome",
+        "t0_ms": 4138840,
+        "t1_ms": 4154840,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 4150840
+        },
+        "events": [
+          {
+            "event_id": "event_000136",
+            "order": 0,
+            "type": "free_kick",
+            "t_ms": 4142620,
+            "role": "set_piece",
+            "global_index": 135
+          },
+          {
+            "event_id": "event_000137",
+            "order": 1,
+            "type": "free_kick",
+            "t_ms": 4147090,
+            "role": "set_piece",
+            "global_index": 136
+          },
+          {
+            "event_id": "event_000138",
+            "order": 2,
+            "type": "goal",
+            "t_ms": 4150840,
+            "role": "outcome",
+            "global_index": 137
+          },
+          {
+            "event_id": "event_000139",
+            "order": 3,
+            "type": "free_kick",
+            "t_ms": 4152700,
+            "role": "set_piece",
+            "global_index": 138
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "其他（free_kick → free_kick → goal → free_kick）",
+        "confidence": 0.13,
+        "margin": 0.13,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 4,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": false,
+          "illegal_pairs": [
+            "free_kick→free_kick",
+            "free_kick→goal",
+            "goal→free_kick"
+          ],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 137,
+            "t_ms": 4150840,
+            "t0_ms": 4138840,
+            "t1_ms": 4154840,
+            "reason": "t0_goal",
+            "half": 2,
+            "slot": 1
+          }
+        }
+      },
+      {
+        "clip_id": "clip03",
+        "chain_template_id": "rebound_follow_up_goal",
+        "chain_label_zh": "射门被挡后补射进球链",
+        "chain_category": "outcome",
+        "t0_ms": 4205180,
+        "t1_ms": 4301920,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 4217180
+        },
+        "events": [
+          {
+            "event_id": "event_000141",
+            "order": 0,
+            "type": "shot",
+            "t_ms": 4215790,
+            "role": "shot",
+            "global_index": 140
+          },
+          {
+            "event_id": "event_000142",
+            "order": 1,
+            "type": "goal",
+            "t_ms": 4217180,
+            "role": "outcome",
+            "global_index": 141
+          },
+          {
+            "event_id": "event_000143",
+            "order": 2,
+            "type": "pass",
+            "t_ms": 4225530,
+            "role": "build_up",
+            "global_index": 142
+          },
+          {
+            "event_id": "event_000144",
+            "order": 3,
+            "type": "shot",
+            "t_ms": 4229090,
+            "role": "shot",
+            "global_index": 143
+          },
+          {
+            "event_id": "event_000145",
+            "order": 4,
+            "type": "goal",
+            "t_ms": 4230710,
+            "role": "outcome",
+            "global_index": 144
+          },
+          {
+            "event_id": "event_000146",
+            "order": 5,
+            "type": "shot",
+            "t_ms": 4235030,
+            "role": "shot",
+            "global_index": 145
+          },
+          {
+            "event_id": "event_000147",
+            "order": 6,
+            "type": "goal",
+            "t_ms": 4238560,
+            "role": "outcome",
+            "global_index": 146
+          },
+          {
+            "event_id": "event_000148",
+            "order": 7,
+            "type": "shot",
+            "t_ms": 4240030,
+            "role": "shot",
+            "global_index": 147
+          }
+        ],
+        "context_events": [
+          {
+            "event_id": "event_000140",
+            "order": 0,
+            "type": "pass",
+            "t_ms": 4212430,
+            "role": "context",
+            "global_index": 139
+          },
+          {
+            "event_id": "event_000149",
+            "order": 9,
+            "type": "goal",
+            "t_ms": 4242710,
+            "role": "context",
+            "global_index": 148
+          },
+          {
+            "event_id": "event_000150",
+            "order": 10,
+            "type": "pass",
+            "t_ms": 4255480,
+            "role": "context",
+            "global_index": 149
+          },
+          {
+            "event_id": "event_000151",
+            "order": 11,
+            "type": "shot",
+            "t_ms": 4257630,
+            "role": "context",
+            "global_index": 150
+          },
+          {
+            "event_id": "event_000152",
+            "order": 12,
+            "type": "goal",
+            "t_ms": 4259220,
+            "role": "context",
+            "global_index": 151
+          },
+          {
+            "event_id": "event_000153",
+            "order": 13,
+            "type": "shot",
+            "t_ms": 4270470,
+            "role": "context",
+            "global_index": 152
+          },
+          {
+            "event_id": "event_000154",
+            "order": 14,
+            "type": "goal",
+            "t_ms": 4273680,
+            "role": "context",
+            "global_index": 153
+          },
+          {
+            "event_id": "event_000155",
+            "order": 15,
+            "type": "shot",
+            "t_ms": 4276810,
+            "role": "context",
+            "global_index": 154
+          },
+          {
+            "event_id": "event_000156",
+            "order": 16,
+            "type": "goal",
+            "t_ms": 4284750,
+            "role": "context",
+            "global_index": 155
+          },
+          {
+            "event_id": "event_000157",
+            "order": 17,
+            "type": "shot",
+            "t_ms": 4293920,
+            "role": "context",
+            "global_index": 156
+          },
+          {
+            "event_id": "event_000158",
+            "order": 18,
+            "type": "shot",
+            "t_ms": 4296970,
+            "role": "context",
+            "global_index": 157
+          },
+          {
+            "event_id": "event_000159",
+            "order": 19,
+            "type": "goal",
+            "t_ms": 4297920,
+            "role": "context",
+            "global_index": 158
+          }
+        ],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 4,
+            "dst": 5,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 4,
+            "dst": 5,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 5,
+            "dst": 6,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 5,
+            "dst": 6,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 6,
+            "dst": 7,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 6,
+            "dst": 7,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "射门被挡后补射进球链：shot → goal → pass → shot → goal → shot → goal → shot",
+        "confidence": 1.7,
+        "margin": 1.7,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "shot → shot → goal",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 8,
+          "align_size": 3,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            1,
+            4,
+            5
+          ],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 141,
+            "t_ms": 4217180,
+            "t0_ms": 4205180,
+            "t1_ms": 4301920,
+            "reason": "t0_goal|merged|merged|merged|merged|merged|merged|merged",
+            "half": 2,
+            "slot": 1
+          }
+        }
+      },
+      {
+        "clip_id": "clip04",
+        "chain_template_id": "rebound_follow_up_goal",
+        "chain_label_zh": "射门被挡后补射进球链",
+        "chain_category": "outcome",
+        "t0_ms": 4304100,
+        "t1_ms": 4320100,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 4316100
+        },
+        "events": [
+          {
+            "event_id": "event_000160",
+            "order": 0,
+            "type": "shot",
+            "t_ms": 4306490,
+            "role": "shot",
+            "global_index": 159
+          },
+          {
+            "event_id": "event_000161",
+            "order": 1,
+            "type": "shot",
+            "t_ms": 4307690,
+            "role": "shot",
+            "global_index": 160
+          },
+          {
+            "event_id": "event_000162",
+            "order": 2,
+            "type": "shot",
+            "t_ms": 4314280,
+            "role": "shot",
+            "global_index": 161
+          },
+          {
+            "event_id": "event_000163",
+            "order": 3,
+            "type": "goal",
+            "t_ms": 4316100,
+            "role": "outcome",
+            "global_index": 162
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "射门被挡后补射进球链：shot → shot → shot → goal",
+        "confidence": 1.7,
+        "margin": 1.7,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "shot → shot → goal",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 4,
+          "align_size": 3,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            0,
+            1,
+            3
+          ],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 162,
+            "t_ms": 4316100,
+            "t0_ms": 4304100,
+            "t1_ms": 4320100,
+            "reason": "t0_goal",
+            "half": 2,
+            "slot": 1
+          }
+        }
+      },
+      {
+        "clip_id": "clip05",
+        "chain_template_id": "team_buildup_goal",
+        "chain_label_zh": "团队配合射门进球链",
+        "chain_category": "outcome",
+        "t0_ms": 4339830,
+        "t1_ms": 4436620,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 4351830
+        },
+        "events": [
+          {
+            "event_id": "event_000164",
+            "order": 0,
+            "type": "pass",
+            "t_ms": 4349190,
+            "role": "build_up",
+            "global_index": 163
+          },
+          {
+            "event_id": "event_000165",
+            "order": 1,
+            "type": "shot",
+            "t_ms": 4350910,
+            "role": "shot",
+            "global_index": 164
+          },
+          {
+            "event_id": "event_000166",
+            "order": 2,
+            "type": "goal",
+            "t_ms": 4351830,
+            "role": "outcome",
+            "global_index": 165
+          },
+          {
+            "event_id": "event_000167",
+            "order": 3,
+            "type": "pass",
+            "t_ms": 4364930,
+            "role": "build_up",
+            "global_index": 166
+          },
+          {
+            "event_id": "event_000168",
+            "order": 4,
+            "type": "shot",
+            "t_ms": 4366190,
+            "role": "shot",
+            "global_index": 167
+          },
+          {
+            "event_id": "event_000169",
+            "order": 5,
+            "type": "goal",
+            "t_ms": 4367210,
+            "role": "outcome",
+            "global_index": 168
+          }
+        ],
+        "context_events": [
+          {
+            "event_id": "event_000170",
+            "order": 6,
+            "type": "pass",
+            "t_ms": 4368610,
+            "role": "context",
+            "global_index": 169
+          },
+          {
+            "event_id": "event_000171",
+            "order": 7,
+            "type": "shot",
+            "t_ms": 4370120,
+            "role": "context",
+            "global_index": 170
+          },
+          {
+            "event_id": "event_000172",
+            "order": 8,
+            "type": "goal",
+            "t_ms": 4371020,
+            "role": "context",
+            "global_index": 171
+          },
+          {
+            "event_id": "event_000173",
+            "order": 9,
+            "type": "shot",
+            "t_ms": 4372940,
+            "role": "context",
+            "global_index": 172
+          },
+          {
+            "event_id": "event_000174",
+            "order": 10,
+            "type": "goal",
+            "t_ms": 4374430,
+            "role": "context",
+            "global_index": 173
+          },
+          {
+            "event_id": "event_000175",
+            "order": 11,
+            "type": "pass",
+            "t_ms": 4384680,
+            "role": "context",
+            "global_index": 174
+          },
+          {
+            "event_id": "event_000176",
+            "order": 12,
+            "type": "pass",
+            "t_ms": 4386780,
+            "role": "context",
+            "global_index": 175
+          },
+          {
+            "event_id": "event_000177",
+            "order": 13,
+            "type": "shot",
+            "t_ms": 4387430,
+            "role": "context",
+            "global_index": 176
+          },
+          {
+            "event_id": "event_000178",
+            "order": 14,
+            "type": "goal",
+            "t_ms": 4388360,
+            "role": "context",
+            "global_index": 177
+          },
+          {
+            "event_id": "event_000179",
+            "order": 15,
+            "type": "pass",
+            "t_ms": 4396490,
+            "role": "context",
+            "global_index": 178
+          },
+          {
+            "event_id": "event_000180",
+            "order": 16,
+            "type": "pass",
+            "t_ms": 4398190,
+            "role": "context",
+            "global_index": 179
+          },
+          {
+            "event_id": "event_000181",
+            "order": 17,
+            "type": "shot",
+            "t_ms": 4399280,
+            "role": "context",
+            "global_index": 180
+          },
+          {
+            "event_id": "event_000182",
+            "order": 18,
+            "type": "goal",
+            "t_ms": 4400370,
+            "role": "context",
+            "global_index": 181
+          },
+          {
+            "event_id": "event_000183",
+            "order": 19,
+            "type": "pass",
+            "t_ms": 4401520,
+            "role": "context",
+            "global_index": 182
+          },
+          {
+            "event_id": "event_000184",
+            "order": 20,
+            "type": "pass",
+            "t_ms": 4403470,
+            "role": "context",
+            "global_index": 183
+          },
+          {
+            "event_id": "event_000185",
+            "order": 21,
+            "type": "shot",
+            "t_ms": 4404470,
+            "role": "context",
+            "global_index": 184
+          },
+          {
+            "event_id": "event_000186",
+            "order": 22,
+            "type": "goal",
+            "t_ms": 4405700,
+            "role": "context",
+            "global_index": 185
+          },
+          {
+            "event_id": "event_000187",
+            "order": 23,
+            "type": "shot",
+            "t_ms": 4407070,
+            "role": "context",
+            "global_index": 186
+          },
+          {
+            "event_id": "event_000188",
+            "order": 24,
+            "type": "pass",
+            "t_ms": 4413910,
+            "role": "context",
+            "global_index": 187
+          },
+          {
+            "event_id": "event_000189",
+            "order": 25,
+            "type": "shot",
+            "t_ms": 4420350,
+            "role": "context",
+            "global_index": 188
+          },
+          {
+            "event_id": "event_000190",
+            "order": 26,
+            "type": "goal",
+            "t_ms": 4421280,
+            "role": "context",
+            "global_index": 189
+          },
+          {
+            "event_id": "event_000191",
+            "order": 27,
+            "type": "pass",
+            "t_ms": 4427780,
+            "role": "context",
+            "global_index": 190
+          },
+          {
+            "event_id": "event_000192",
+            "order": 28,
+            "type": "shot",
+            "t_ms": 4431620,
+            "role": "context",
+            "global_index": 191
+          },
+          {
+            "event_id": "event_000193",
+            "order": 29,
+            "type": "goal",
+            "t_ms": 4432620,
+            "role": "context",
+            "global_index": 192
+          },
+          {
+            "event_id": "event_000194",
+            "order": 30,
+            "type": "shot",
+            "t_ms": 4435590,
+            "role": "context",
+            "global_index": 193
+          }
+        ],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 4,
+            "dst": 5,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 4,
+            "dst": 5,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "团队配合射门进球链：pass → shot → goal → pass → shot → goal",
+        "confidence": 1.355,
+        "margin": 0.355,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "pass → shot → goal",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 6,
+          "align_size": 3,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            0,
+            1,
+            2
+          ],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 165,
+            "t_ms": 4351830,
+            "t0_ms": 4339830,
+            "t1_ms": 4436620,
+            "reason": "t0_goal|merged|merged|merged|merged|merged|merged|merged|merged",
+            "half": 2,
+            "slot": 1
+          }
+        }
+      },
+      {
+        "clip_id": "clip06",
+        "chain_template_id": "penalty_scored_chain",
+        "chain_label_zh": "点球命中链",
+        "chain_category": "outcome",
+        "t0_ms": 4458000,
+        "t1_ms": 4525010,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 4470000
+        },
+        "events": [
+          {
+            "event_id": "event_000206",
+            "order": 0,
+            "type": "goal",
+            "t_ms": 4494790,
+            "role": "outcome",
+            "global_index": 205
+          },
+          {
+            "event_id": "event_000207",
+            "order": 1,
+            "type": "shot",
+            "t_ms": 4498430,
+            "role": "shot",
+            "global_index": 206
+          },
+          {
+            "event_id": "event_000208",
+            "order": 2,
+            "type": "goal",
+            "t_ms": 4499640,
+            "role": "outcome",
+            "global_index": 207
+          },
+          {
+            "event_id": "event_000209",
+            "order": 3,
+            "type": "penalty",
+            "t_ms": 4503820,
+            "role": "set_piece",
+            "global_index": 208
+          },
+          {
+            "event_id": "event_000210",
+            "order": 4,
+            "type": "goal",
+            "t_ms": 4504810,
+            "role": "outcome",
+            "global_index": 209
+          },
+          {
+            "event_id": "event_000211",
+            "order": 5,
+            "type": "penalty",
+            "t_ms": 4514000,
+            "role": "set_piece",
+            "global_index": 210
+          },
+          {
+            "event_id": "event_000212",
+            "order": 6,
+            "type": "goal",
+            "t_ms": 4515140,
+            "role": "outcome",
+            "global_index": 211
+          },
+          {
+            "event_id": "event_000213",
+            "order": 7,
+            "type": "penalty",
+            "t_ms": 4519020,
+            "role": "set_piece",
+            "global_index": 212
+          }
+        ],
+        "context_events": [
+          {
+            "event_id": "event_000195",
+            "order": 0,
+            "type": "keeper_save",
+            "t_ms": 4464480,
+            "role": "context",
+            "global_index": 194
+          },
+          {
+            "event_id": "event_000196",
+            "order": 1,
+            "type": "shot",
+            "t_ms": 4467500,
+            "role": "context",
+            "global_index": 195
+          },
+          {
+            "event_id": "event_000197",
+            "order": 2,
+            "type": "goal",
+            "t_ms": 4470000,
+            "role": "context",
+            "global_index": 196
+          },
+          {
+            "event_id": "event_000198",
+            "order": 3,
+            "type": "pass",
+            "t_ms": 4473300,
+            "role": "context",
+            "global_index": 197
+          },
+          {
+            "event_id": "event_000199",
+            "order": 4,
+            "type": "pass",
+            "t_ms": 4475770,
+            "role": "context",
+            "global_index": 198
+          },
+          {
+            "event_id": "event_000200",
+            "order": 5,
+            "type": "pass",
+            "t_ms": 4477980,
+            "role": "context",
+            "global_index": 199
+          },
+          {
+            "event_id": "event_000201",
+            "order": 6,
+            "type": "shot",
+            "t_ms": 4479300,
+            "role": "context",
+            "global_index": 200
+          },
+          {
+            "event_id": "event_000202",
+            "order": 7,
+            "type": "goal",
+            "t_ms": 4480410,
+            "role": "context",
+            "global_index": 201
+          },
+          {
+            "event_id": "event_000203",
+            "order": 8,
+            "type": "pass",
+            "t_ms": 4490170,
+            "role": "context",
+            "global_index": 202
+          },
+          {
+            "event_id": "event_000204",
+            "order": 9,
+            "type": "pass",
+            "t_ms": 4492650,
+            "role": "context",
+            "global_index": 203
+          },
+          {
+            "event_id": "event_000205",
+            "order": 10,
+            "type": "shot",
+            "t_ms": 4493890,
+            "role": "context",
+            "global_index": 204
+          },
+          {
+            "event_id": "event_000214",
+            "order": 19,
+            "type": "goal",
+            "t_ms": 4521010,
+            "role": "context",
+            "global_index": 213
+          }
+        ],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 4,
+            "dst": 5,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 4,
+            "dst": 5,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 5,
+            "dst": 6,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 5,
+            "dst": 6,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 6,
+            "dst": 7,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 6,
+            "dst": 7,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "点球命中链：goal → shot → goal → penalty → goal → penalty → goal → penalty",
+        "confidence": 1.61,
+        "margin": 1.61,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "penalty → goal",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 8,
+          "align_size": 2,
+          "exact_canonical": true,
+          "transitions_ok": false,
+          "illegal_pairs": [
+            "goal→shot",
+            "shot→goal"
+          ],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            14,
+            15
+          ],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 196,
+            "t_ms": 4470000,
+            "t0_ms": 4458000,
+            "t1_ms": 4525010,
+            "reason": "t0_goal|merged|merged|merged|merged|merged|merged|merged|merged|merged",
+            "half": 2,
+            "slot": 1
+          }
+        }
+      },
+      {
+        "clip_id": "clip07",
+        "chain_template_id": "team_buildup_goal",
+        "chain_label_zh": "团队配合射门进球链",
+        "chain_category": "outcome",
+        "t0_ms": 4527100,
+        "t1_ms": 4620090,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 4539100
+        },
+        "events": [
+          {
+            "event_id": "event_000216",
+            "order": 0,
+            "type": "pass",
+            "t_ms": 4537270,
+            "role": "build_up",
+            "global_index": 215
+          },
+          {
+            "event_id": "event_000217",
+            "order": 1,
+            "type": "goal",
+            "t_ms": 4539100,
+            "role": "outcome",
+            "global_index": 216
+          },
+          {
+            "event_id": "event_000218",
+            "order": 2,
+            "type": "pass",
+            "t_ms": 4549550,
+            "role": "build_up",
+            "global_index": 217
+          },
+          {
+            "event_id": "event_000219",
+            "order": 3,
+            "type": "shot",
+            "t_ms": 4550480,
+            "role": "shot",
+            "global_index": 218
+          },
+          {
+            "event_id": "event_000220",
+            "order": 4,
+            "type": "goal",
+            "t_ms": 4551350,
+            "role": "outcome",
+            "global_index": 219
+          },
+          {
+            "event_id": "event_000221",
+            "order": 5,
+            "type": "pass",
+            "t_ms": 4553490,
+            "role": "build_up",
+            "global_index": 220
+          },
+          {
+            "event_id": "event_000222",
+            "order": 6,
+            "type": "shot",
+            "t_ms": 4556280,
+            "role": "shot",
+            "global_index": 221
+          },
+          {
+            "event_id": "event_000223",
+            "order": 7,
+            "type": "goal",
+            "t_ms": 4557220,
+            "role": "outcome",
+            "global_index": 222
+          }
+        ],
+        "context_events": [
+          {
+            "event_id": "event_000215",
+            "order": 0,
+            "type": "pass",
+            "t_ms": 4532620,
+            "role": "context",
+            "global_index": 214
+          },
+          {
+            "event_id": "event_000224",
+            "order": 9,
+            "type": "shot",
+            "t_ms": 4560390,
+            "role": "context",
+            "global_index": 223
+          },
+          {
+            "event_id": "event_000225",
+            "order": 10,
+            "type": "goal",
+            "t_ms": 4561490,
+            "role": "context",
+            "global_index": 224
+          },
+          {
+            "event_id": "event_000226",
+            "order": 11,
+            "type": "pass",
+            "t_ms": 4569650,
+            "role": "context",
+            "global_index": 225
+          },
+          {
+            "event_id": "event_000227",
+            "order": 12,
+            "type": "pass",
+            "t_ms": 4572060,
+            "role": "context",
+            "global_index": 226
+          },
+          {
+            "event_id": "event_000228",
+            "order": 13,
+            "type": "shot",
+            "t_ms": 4575120,
+            "role": "context",
+            "global_index": 227
+          },
+          {
+            "event_id": "event_000229",
+            "order": 14,
+            "type": "goal",
+            "t_ms": 4576540,
+            "role": "context",
+            "global_index": 228
+          },
+          {
+            "event_id": "event_000230",
+            "order": 15,
+            "type": "pass",
+            "t_ms": 4581210,
+            "role": "context",
+            "global_index": 229
+          },
+          {
+            "event_id": "event_000231",
+            "order": 16,
+            "type": "pass",
+            "t_ms": 4585310,
+            "role": "context",
+            "global_index": 230
+          },
+          {
+            "event_id": "event_000232",
+            "order": 17,
+            "type": "shot",
+            "t_ms": 4588030,
+            "role": "context",
+            "global_index": 231
+          },
+          {
+            "event_id": "event_000233",
+            "order": 18,
+            "type": "goal",
+            "t_ms": 4589410,
+            "role": "context",
+            "global_index": 232
+          },
+          {
+            "event_id": "event_000234",
+            "order": 19,
+            "type": "shot",
+            "t_ms": 4591530,
+            "role": "context",
+            "global_index": 233
+          },
+          {
+            "event_id": "event_000235",
+            "order": 20,
+            "type": "goal",
+            "t_ms": 4595630,
+            "role": "context",
+            "global_index": 234
+          },
+          {
+            "event_id": "event_000236",
+            "order": 21,
+            "type": "shot",
+            "t_ms": 4597890,
+            "role": "context",
+            "global_index": 235
+          },
+          {
+            "event_id": "event_000237",
+            "order": 22,
+            "type": "goal",
+            "t_ms": 4600940,
+            "role": "context",
+            "global_index": 236
+          },
+          {
+            "event_id": "event_000238",
+            "order": 23,
+            "type": "pass",
+            "t_ms": 4613710,
+            "role": "context",
+            "global_index": 237
+          },
+          {
+            "event_id": "event_000239",
+            "order": 24,
+            "type": "shot",
+            "t_ms": 4615190,
+            "role": "context",
+            "global_index": 238
+          },
+          {
+            "event_id": "event_000240",
+            "order": 25,
+            "type": "goal",
+            "t_ms": 4616090,
+            "role": "context",
+            "global_index": 239
+          }
+        ],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 4,
+            "dst": 5,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 4,
+            "dst": 5,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 5,
+            "dst": 6,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 5,
+            "dst": 6,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 6,
+            "dst": 7,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 6,
+            "dst": 7,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "团队配合射门进球链：pass → goal → pass → shot → goal → pass → shot → goal",
+        "confidence": 1.7,
+        "margin": 0.7,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "pass → shot → goal",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 8,
+          "align_size": 3,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            4,
+            5
+          ],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 216,
+            "t_ms": 4539100,
+            "t0_ms": 4527100,
+            "t1_ms": 4620090,
+            "reason": "t0_goal|merged|merged|merged|merged|merged|merged|merged|merged",
+            "half": 2,
+            "slot": 2
+          }
+        }
+      },
+      {
+        "clip_id": "clip08",
+        "chain_template_id": "team_buildup_goal",
+        "chain_label_zh": "团队配合射门进球链",
+        "chain_category": "outcome",
+        "t0_ms": 4622150,
+        "t1_ms": 4669460,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 4634150
+        },
+        "events": [
+          {
+            "event_id": "event_000241",
+            "order": 0,
+            "type": "pass",
+            "t_ms": 4623340,
+            "role": "build_up",
+            "global_index": 240
+          },
+          {
+            "event_id": "event_000242",
+            "order": 1,
+            "type": "pass",
+            "t_ms": 4631710,
+            "role": "build_up",
+            "global_index": 241
+          },
+          {
+            "event_id": "event_000243",
+            "order": 2,
+            "type": "shot",
+            "t_ms": 4632800,
+            "role": "shot",
+            "global_index": 242
+          },
+          {
+            "event_id": "event_000244",
+            "order": 3,
+            "type": "goal",
+            "t_ms": 4634150,
+            "role": "outcome",
+            "global_index": 243
+          },
+          {
+            "event_id": "event_000245",
+            "order": 4,
+            "type": "shot",
+            "t_ms": 4636230,
+            "role": "shot",
+            "global_index": 244
+          },
+          {
+            "event_id": "event_000246",
+            "order": 5,
+            "type": "goal",
+            "t_ms": 4642800,
+            "role": "outcome",
+            "global_index": 245
+          },
+          {
+            "event_id": "event_000247",
+            "order": 6,
+            "type": "pass",
+            "t_ms": 4644520,
+            "role": "outcome",
+            "global_index": 246
+          }
+        ],
+        "context_events": [
+          {
+            "event_id": "event_000248",
+            "order": 7,
+            "type": "shot",
+            "t_ms": 4648170,
+            "role": "context",
+            "global_index": 247
+          },
+          {
+            "event_id": "event_000249",
+            "order": 8,
+            "type": "goal",
+            "t_ms": 4650800,
+            "role": "context",
+            "global_index": 248
+          },
+          {
+            "event_id": "event_000250",
+            "order": 9,
+            "type": "pass",
+            "t_ms": 4663220,
+            "role": "context",
+            "global_index": 249
+          },
+          {
+            "event_id": "event_000251",
+            "order": 10,
+            "type": "shot",
+            "t_ms": 4664630,
+            "role": "context",
+            "global_index": 250
+          },
+          {
+            "event_id": "event_000252",
+            "order": 11,
+            "type": "goal",
+            "t_ms": 4665460,
+            "role": "context",
+            "global_index": 251
+          }
+        ],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 4,
+            "dst": 5,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 4,
+            "dst": 5,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 5,
+            "dst": 6,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 5,
+            "dst": 6,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "团队配合射门进球链：pass → pass → shot → goal → shot → goal → pass",
+        "confidence": 1.7,
+        "margin": 0.7,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "pass → shot → goal",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 7,
+          "align_size": 3,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            0,
+            2,
+            3
+          ],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 243,
+            "t_ms": 4634150,
+            "t0_ms": 4622150,
+            "t1_ms": 4669460,
+            "reason": "t0_goal|merged|merged|merged",
+            "half": 2,
+            "slot": 2
+          }
+        }
+      },
+      {
+        "clip_id": "clip09",
+        "chain_template_id": "outcome_other",
+        "chain_label_zh": "其他",
+        "chain_category": "outcome",
+        "t0_ms": 4671520,
+        "t1_ms": 4695710,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 4683520
+        },
+        "events": [
+          {
+            "event_id": "event_000253",
+            "order": 0,
+            "type": "pass",
+            "t_ms": 4680990,
+            "role": "build_up",
+            "global_index": 252
+          },
+          {
+            "event_id": "event_000254",
+            "order": 1,
+            "type": "shot",
+            "t_ms": 4682590,
+            "role": "shot",
+            "global_index": 253
+          },
+          {
+            "event_id": "event_000255",
+            "order": 2,
+            "type": "goal",
+            "t_ms": 4683520,
+            "role": "outcome",
+            "global_index": 254
+          },
+          {
+            "event_id": "event_000256",
+            "order": 3,
+            "type": "shot",
+            "t_ms": 4690120,
+            "role": "shot",
+            "global_index": 255
+          },
+          {
+            "event_id": "event_000257",
+            "order": 4,
+            "type": "goal",
+            "t_ms": 4691710,
+            "role": "outcome",
+            "global_index": 256
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "其他：pass → shot → goal → shot → goal",
+        "confidence": 1.7,
+        "margin": 1.7,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "shot → goal",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 5,
+          "align_size": 2,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            1,
+            2
+          ],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 254,
+            "t_ms": 4683520,
+            "t0_ms": 4671520,
+            "t1_ms": 4695710,
+            "reason": "t0_goal|merged",
+            "half": 2,
+            "slot": 2
+          }
+        }
+      },
+      {
+        "clip_id": "clip10",
+        "chain_template_id": "team_buildup_goal",
+        "chain_label_zh": "团队配合射门进球链",
+        "chain_category": "outcome",
+        "t0_ms": 4731080,
+        "t1_ms": 4747080,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 4743080
+        },
+        "events": [
+          {
+            "event_id": "event_000258",
+            "order": 0,
+            "type": "pass",
+            "t_ms": 4736870,
+            "role": "build_up",
+            "global_index": 257
+          },
+          {
+            "event_id": "event_000259",
+            "order": 1,
+            "type": "pass",
+            "t_ms": 4740440,
+            "role": "build_up",
+            "global_index": 258
+          },
+          {
+            "event_id": "event_000260",
+            "order": 2,
+            "type": "shot",
+            "t_ms": 4742300,
+            "role": "shot",
+            "global_index": 259
+          },
+          {
+            "event_id": "event_000261",
+            "order": 3,
+            "type": "goal",
+            "t_ms": 4743080,
+            "role": "outcome",
+            "global_index": 260
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "团队配合射门进球链：pass → pass → shot → goal",
+        "confidence": 1.7,
+        "margin": 0.7,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "pass → shot → goal",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 4,
+          "align_size": 3,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            0,
+            2,
+            3
+          ],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 260,
+            "t_ms": 4743080,
+            "t0_ms": 4731080,
+            "t1_ms": 4747080,
+            "reason": "t0_goal",
+            "half": 2,
+            "slot": 2
+          }
+        }
+      },
+      {
+        "clip_id": "clip11",
+        "chain_template_id": "outcome_other",
+        "chain_label_zh": "其他",
+        "chain_category": "outcome",
+        "t0_ms": 6446360,
+        "t1_ms": 6462360,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 6458360
+        },
+        "events": [
+          {
+            "event_id": "event_000309",
+            "order": 0,
+            "type": "free_kick",
+            "t_ms": 6454610,
+            "role": "set_piece",
+            "global_index": 308
+          },
+          {
+            "event_id": "event_000310",
+            "order": 1,
+            "type": "goal",
+            "t_ms": 6458360,
+            "role": "outcome",
+            "global_index": 309
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "其他（free_kick → goal）",
+        "confidence": 0.33,
+        "margin": 0.33,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 2,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": false,
+          "illegal_pairs": [
+            "free_kick→goal"
+          ],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 309,
+            "t_ms": 6458360,
+            "t0_ms": 6446360,
+            "t1_ms": 6462360,
+            "reason": "t0_goal",
+            "half": 2,
+            "slot": 2
+          }
+        }
+      },
+      {
+        "clip_id": "clip12",
+        "chain_template_id": "outcome_other",
+        "chain_label_zh": "其他",
+        "chain_category": "outcome",
+        "t0_ms": 6496530,
+        "t1_ms": 6524650,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 6508530
+        },
+        "events": [
+          {
+            "event_id": "event_000311",
+            "order": 0,
+            "type": "free_kick",
+            "t_ms": 6506190,
+            "role": "set_piece",
+            "global_index": 310
+          },
+          {
+            "event_id": "event_000312",
+            "order": 1,
+            "type": "goal",
+            "t_ms": 6508530,
+            "role": "outcome",
+            "global_index": 311
+          },
+          {
+            "event_id": "event_000313",
+            "order": 2,
+            "type": "free_kick",
+            "t_ms": 6509330,
+            "role": "set_piece",
+            "global_index": 312
+          },
+          {
+            "event_id": "event_000314",
+            "order": 3,
+            "type": "goal",
+            "t_ms": 6510550,
+            "role": "outcome",
+            "global_index": 313
+          },
+          {
+            "event_id": "event_000315",
+            "order": 4,
+            "type": "free_kick",
+            "t_ms": 6513230,
+            "role": "set_piece",
+            "global_index": 314
+          },
+          {
+            "event_id": "event_000316",
+            "order": 5,
+            "type": "goal",
+            "t_ms": 6516800,
+            "role": "outcome",
+            "global_index": 315
+          },
+          {
+            "event_id": "event_000317",
+            "order": 6,
+            "type": "goal",
+            "t_ms": 6520650,
+            "role": "outcome",
+            "global_index": 316
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 4,
+            "dst": 5,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 4,
+            "dst": 5,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 5,
+            "dst": 6,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 5,
+            "dst": 6,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "其他（free_kick → goal → free_kick → goal → free_kick → goal → goal）",
+        "confidence": 0.33,
+        "margin": 0.33,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 7,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": false,
+          "illegal_pairs": [
+            "free_kick→goal",
+            "goal→free_kick",
+            "free_kick→goal",
+            "goal→free_kick",
+            "free_kick→goal"
+          ],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 311,
+            "t_ms": 6508530,
+            "t0_ms": 6496530,
+            "t1_ms": 6524650,
+            "reason": "t0_goal|merged|merged|merged",
+            "half": 2,
+            "slot": 2
+          }
+        }
+      },
+      {
+        "clip_id": "clip13",
+        "chain_template_id": "outcome_other",
+        "chain_label_zh": "其他",
+        "chain_category": "outcome",
+        "t0_ms": 7102170,
+        "t1_ms": 7118170,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 7114170
+        },
+        "events": [
+          {
+            "event_id": "event_000345",
+            "order": 0,
+            "type": "free_kick",
+            "t_ms": 7109750,
+            "role": "set_piece",
+            "global_index": 344
+          },
+          {
+            "event_id": "event_000346",
+            "order": 1,
+            "type": "goal",
+            "t_ms": 7114170,
+            "role": "outcome",
+            "global_index": 345
+          },
+          {
+            "event_id": "event_000347",
+            "order": 2,
+            "type": "free_kick",
+            "t_ms": 7116310,
+            "role": "set_piece",
+            "global_index": 346
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "其他（free_kick → goal → free_kick）",
+        "confidence": 0.13,
+        "margin": 0.13,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 3,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": false,
+          "illegal_pairs": [
+            "free_kick→goal",
+            "goal→free_kick"
+          ],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 345,
+            "t_ms": 7114170,
+            "t0_ms": 7102170,
+            "t1_ms": 7118170,
+            "reason": "t0_goal",
+            "half": 2,
+            "slot": 2
+          }
+        }
+      },
+      {
+        "clip_id": "clip14",
+        "chain_template_id": "team_buildup_goal",
+        "chain_label_zh": "团队配合射门进球链",
+        "chain_category": "outcome",
+        "t0_ms": 7599160,
+        "t1_ms": 7615160,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 7611160
+        },
+        "events": [
+          {
+            "event_id": "event_000351",
+            "order": 0,
+            "type": "aerial_won",
+            "t_ms": 7602380,
+            "role": "build_up",
+            "global_index": 350
+          },
+          {
+            "event_id": "event_000352",
+            "order": 1,
+            "type": "pass",
+            "t_ms": 7609130,
+            "role": "build_up",
+            "global_index": 351
+          },
+          {
+            "event_id": "event_000353",
+            "order": 2,
+            "type": "shot",
+            "t_ms": 7609900,
+            "role": "shot",
+            "global_index": 352
+          },
+          {
+            "event_id": "event_000354",
+            "order": 3,
+            "type": "goal",
+            "t_ms": 7611160,
+            "role": "outcome",
+            "global_index": 353
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "团队配合射门进球链：aerial_won → pass → shot → goal",
+        "confidence": 1.7,
+        "margin": 0.7,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "pass → shot → goal",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 4,
+          "align_size": 3,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            1,
+            2,
+            3
+          ],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 353,
+            "t_ms": 7611160,
+            "t0_ms": 7599160,
+            "t1_ms": 7615160,
+            "reason": "t0_goal",
+            "half": 2,
+            "slot": 2
+          }
+        }
+      },
+      {
+        "clip_id": "clip15",
+        "chain_template_id": "team_buildup_goal",
+        "chain_label_zh": "团队配合射门进球链",
+        "chain_category": "outcome",
+        "t0_ms": 7657610,
+        "t1_ms": 7679480,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 7669610
+        },
+        "events": [
+          {
+            "event_id": "event_000355",
+            "order": 0,
+            "type": "pass",
+            "t_ms": 7663280,
+            "role": "build_up",
+            "global_index": 354
+          },
+          {
+            "event_id": "event_000356",
+            "order": 1,
+            "type": "shot",
+            "t_ms": 7664070,
+            "role": "shot",
+            "global_index": 355
+          },
+          {
+            "event_id": "event_000357",
+            "order": 2,
+            "type": "pass",
+            "t_ms": 7667780,
+            "role": "build_up",
+            "global_index": 356
+          },
+          {
+            "event_id": "event_000358",
+            "order": 3,
+            "type": "shot",
+            "t_ms": 7668620,
+            "role": "shot",
+            "global_index": 357
+          },
+          {
+            "event_id": "event_000359",
+            "order": 4,
+            "type": "goal",
+            "t_ms": 7669610,
+            "role": "outcome",
+            "global_index": 358
+          },
+          {
+            "event_id": "event_000360",
+            "order": 5,
+            "type": "pass",
+            "t_ms": 7671350,
+            "role": "build_up",
+            "global_index": 359
+          },
+          {
+            "event_id": "event_000361",
+            "order": 6,
+            "type": "shot",
+            "t_ms": 7673530,
+            "role": "shot",
+            "global_index": 360
+          },
+          {
+            "event_id": "event_000362",
+            "order": 7,
+            "type": "goal",
+            "t_ms": 7675480,
+            "role": "outcome",
+            "global_index": 361
+          }
+        ],
+        "context_events": [
+          {
+            "event_id": "event_000363",
+            "order": 8,
+            "type": "pass",
+            "t_ms": 7676850,
+            "role": "context",
+            "global_index": 362
+          },
+          {
+            "event_id": "event_000364",
+            "order": 9,
+            "type": "shot",
+            "t_ms": 7678750,
+            "role": "context",
+            "global_index": 363
+          }
+        ],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 4,
+            "dst": 5,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 4,
+            "dst": 5,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 5,
+            "dst": 6,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 5,
+            "dst": 6,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 6,
+            "dst": 7,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 6,
+            "dst": 7,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "团队配合射门进球链：pass → shot → pass → shot → goal → pass → shot → goal",
+        "confidence": 1.355,
+        "margin": 0.355,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "pass → shot → goal",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 8,
+          "align_size": 3,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            0,
+            1,
+            4
+          ],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 358,
+            "t_ms": 7669610,
+            "t0_ms": 7657610,
+            "t1_ms": 7679480,
+            "reason": "t0_goal|merged",
+            "half": 2,
+            "slot": 2
+          }
+        }
+      }
+    ],
+    "ordering": [
+      "clip00",
+      "clip01",
+      "clip02",
+      "clip03",
+      "clip04",
+      "clip05",
+      "clip06",
+      "clip07",
+      "clip08",
+      "clip09",
+      "clip10",
+      "clip11",
+      "clip12",
+      "clip13",
+      "clip14",
+      "clip15"
+    ],
+    "total_duration_ms": 616970
+  },
+  "config": {
+    "backend": "dump_highlight_reels",
+    "profile": "production",
+    "drop_t2": true,
+    "use_llm": false,
+    "pipeline": "select_moments→classify/refine→assemble_reel",
+    "aligned_with": "eval/eval_offline_highlight.py logic track"
+  },
+  "stats": {
+    "moments_selected": 16,
+    "clips_final": 16,
+    "fast_path": 16,
+    "select": {
+      "rule": "rule_t0_many",
+      "half_ms": 2700000,
+      "n_t0": 59,
+      "n_t1_pool": 1,
+      "n_t2_pool": 3,
+      "n_selected": 16,
+      "n_t0_selected": 16,
+      "n_t1_selected": 0,
+      "n_t2_selected": 0,
+      "has_goal": true,
+      "has_penalty_goal": true,
+      "has_red": false,
+      "drop_t2": true,
+      "n_selected_after_drop_t2": 16
+    }
+  }
+}

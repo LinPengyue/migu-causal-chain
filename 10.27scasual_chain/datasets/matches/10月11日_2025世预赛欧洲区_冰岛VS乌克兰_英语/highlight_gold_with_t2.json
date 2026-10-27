@@ -1,0 +1,56 @@
+{
+  "stats": {
+    "rule": "rule4_t1_plus_t2",
+    "half_ms": 426850,
+    "n_t0": 0,
+    "n_t1_pool": 0,
+    "n_t2_pool": 1,
+    "n_selected": 1,
+    "n_t0_selected": 0,
+    "n_t1_selected": 0,
+    "n_t2_selected": 1,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "with_t2",
+    "n_labeled_by_annotation": 1,
+    "n_heuristic": 0
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "10月11日_2025世预赛欧洲区_冰岛VS乌克兰_英语",
+      "chain_category": "danger",
+      "t0_ms": 676710,
+      "t1_ms": 686710,
+      "anchor_t_ms": 682710,
+      "first_event": "successful_tackle",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000067",
+          "type": "successful_tackle",
+          "t_ms": 682710,
+          "t0_ms": 681060,
+          "t1_ms": 706840,
+          "order": 66
+        },
+        {
+          "event_id": "event_000068",
+          "type": "shot",
+          "t_ms": 685300,
+          "t0_ms": 681060,
+          "t1_ms": 706840,
+          "order": 67
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "successful_tackle_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 23.22,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    }
+  ]
+}

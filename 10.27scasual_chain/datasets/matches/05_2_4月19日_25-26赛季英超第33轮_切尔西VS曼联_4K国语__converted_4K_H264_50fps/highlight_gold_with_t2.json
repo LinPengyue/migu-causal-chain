@@ -1,0 +1,91 @@
+{
+  "stats": {
+    "rule": "rule4_t1_plus_t2",
+    "half_ms": 2700000,
+    "n_t0": 0,
+    "n_t1_pool": 0,
+    "n_t2_pool": 2,
+    "n_selected": 2,
+    "n_t0_selected": 0,
+    "n_t1_selected": 0,
+    "n_t2_selected": 2,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "with_t2",
+    "n_labeled_by_annotation": 2,
+    "n_heuristic": 0
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0010",
+      "match_id": "05_2 4月19日 25-26赛季英超第33轮 切尔西VS曼联 4K国语__converted_4K_H264_50fps",
+      "chain_category": "danger",
+      "t0_ms": 1661230,
+      "t1_ms": 1671230,
+      "anchor_t_ms": 1667230,
+      "first_event": "corner",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000086",
+          "type": "corner",
+          "t_ms": 1667230,
+          "t0_ms": 1663110,
+          "t1_ms": 1673480,
+          "order": 85
+        },
+        {
+          "event_id": "event_000087",
+          "type": "shot",
+          "t_ms": 1670200,
+          "t0_ms": 1663110,
+          "t1_ms": 1673480,
+          "order": 86
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "corner_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 199.69,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0012",
+      "match_id": "05_2 4月19日 25-26赛季英超第33轮 切尔西VS曼联 4K国语__converted_4K_H264_50fps",
+      "chain_category": "danger",
+      "t0_ms": 2062000,
+      "t1_ms": 2072000,
+      "anchor_t_ms": 2068000,
+      "first_event": "successful_tackle",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000108",
+          "type": "successful_tackle",
+          "t_ms": 2068000,
+          "t0_ms": 2063199,
+          "t1_ms": 2073719,
+          "order": 107
+        },
+        {
+          "event_id": "event_000109",
+          "type": "shot",
+          "t_ms": 2069489,
+          "t0_ms": 2063199,
+          "t1_ms": 2073719,
+          "order": 108
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "successful_tackle_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 210.95,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    }
+  ]
+}

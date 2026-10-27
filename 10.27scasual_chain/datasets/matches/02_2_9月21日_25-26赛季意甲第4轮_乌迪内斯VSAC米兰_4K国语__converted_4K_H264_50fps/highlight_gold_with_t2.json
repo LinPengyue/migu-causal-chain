@@ -1,0 +1,161 @@
+{
+  "stats": {
+    "rule": "rule4_t1_plus_t2",
+    "half_ms": 2700000,
+    "n_t0": 0,
+    "n_t1_pool": 0,
+    "n_t2_pool": 5,
+    "n_selected": 4,
+    "n_t0_selected": 0,
+    "n_t1_selected": 0,
+    "n_t2_selected": 4,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "with_t2",
+    "n_labeled_by_annotation": 3,
+    "n_heuristic": 1
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "02_2 9月21日 25-26赛季意甲第4轮 乌迪内斯VSAC米兰 4K国语__converted_4K_H264_50fps",
+      "chain_category": "outcome",
+      "t0_ms": 1298830,
+      "t1_ms": 1308830,
+      "anchor_t_ms": 1304830,
+      "first_event": "successful_tackle",
+      "last_event": "successful_tackle",
+      "events": [
+        {
+          "event_id": "event_000097",
+          "type": "successful_tackle",
+          "t_ms": 1304830,
+          "t0_ms": 1302210,
+          "t1_ms": 1313930,
+          "order": 96
+        },
+        {
+          "event_id": "event_000098",
+          "type": "shot",
+          "t_ms": 1305680,
+          "t0_ms": 1302210,
+          "t1_ms": 1313930,
+          "order": 97
+        },
+        {
+          "event_id": "event_000099",
+          "type": "successful_tackle",
+          "t_ms": 1306010,
+          "t0_ms": 1302210,
+          "t1_ms": 1313930,
+          "order": 98
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "successful_tackle_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0009",
+      "match_id": "02_2 9月21日 25-26赛季意甲第4轮 乌迪内斯VSAC米兰 4K国语__converted_4K_H264_50fps",
+      "chain_category": "danger",
+      "t0_ms": 2204850,
+      "t1_ms": 2214850,
+      "anchor_t_ms": 2210850,
+      "first_event": "successful_tackle",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000170",
+          "type": "successful_tackle",
+          "t_ms": 2210850,
+          "t0_ms": 2206960,
+          "t1_ms": 2217850,
+          "order": 169
+        },
+        {
+          "event_id": "event_000171",
+          "type": "shot",
+          "t_ms": 2212390,
+          "t0_ms": 2206960,
+          "t1_ms": 2217850,
+          "order": 170
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "successful_tackle_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 256.59,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0009",
+      "match_id": "02_2 9月21日 25-26赛季意甲第4轮 乌迪内斯VSAC米兰 4K国语__converted_4K_H264_50fps",
+      "chain_category": "danger",
+      "t0_ms": 2217930,
+      "t1_ms": 2227930,
+      "anchor_t_ms": 2223930,
+      "first_event": "successful_tackle",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000172",
+          "type": "successful_tackle",
+          "t_ms": 2223930,
+          "t0_ms": 2219840,
+          "t1_ms": 2230420,
+          "order": 171
+        },
+        {
+          "event_id": "event_000173",
+          "type": "shot",
+          "t_ms": 2225480,
+          "t0_ms": 2219840,
+          "t1_ms": 2230420,
+          "order": 172
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "successful_tackle_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 243.51,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "select:02_2 9月21日 25-26赛季意甲第4轮 乌迪内斯VSAC米兰 4K国语__converted_4K_H264_50fps:2999840:T2",
+      "match_id": "02_2 9月21日 25-26赛季意甲第4轮 乌迪内斯VSAC米兰 4K国语__converted_4K_H264_50fps",
+      "chain_category": "danger",
+      "t0_ms": 2993840,
+      "t1_ms": 3003840,
+      "anchor_t_ms": 2999840,
+      "first_event": "corner",
+      "last_event": "corner",
+      "events": [
+        {
+          "event_id": "event_000227",
+          "type": "corner",
+          "t_ms": 2999840,
+          "t0_ms": 2996220,
+          "t1_ms": 3012910,
+          "order": 226
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "corner_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "timeline_heuristic",
+      "label_score": 0.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    }
+  ]
+}

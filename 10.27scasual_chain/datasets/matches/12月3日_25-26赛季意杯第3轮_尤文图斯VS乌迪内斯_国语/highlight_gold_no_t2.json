@@ -1,0 +1,57 @@
+{
+  "stats": {
+    "rule": "rule3_t0_1_fill_t1",
+    "half_ms": 2700000,
+    "n_t0": 1,
+    "n_t1_pool": 0,
+    "n_t2_pool": 2,
+    "n_selected": 1,
+    "n_t0_selected": 1,
+    "n_t1_selected": 0,
+    "n_t2_selected": 0,
+    "has_goal": true,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "no_t2",
+    "n_selected_after_drop_t2": 1,
+    "n_labeled_by_annotation": 1,
+    "n_heuristic": 0
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "12月3日_25-26赛季意杯第3轮_尤文图斯VS乌迪内斯_国语",
+      "chain_category": "outcome",
+      "t0_ms": 2810820,
+      "t1_ms": 2826820,
+      "anchor_t_ms": 2822820,
+      "first_event": "pass",
+      "last_event": "goal",
+      "events": [
+        {
+          "event_id": "event_000342",
+          "type": "pass",
+          "t_ms": 2813610,
+          "t0_ms": 2805330,
+          "t1_ms": 2824360,
+          "order": 341
+        },
+        {
+          "event_id": "event_000343",
+          "type": "goal",
+          "t_ms": 2822820,
+          "t0_ms": 2805330,
+          "t1_ms": 2824360,
+          "order": 342
+        }
+      ],
+      "tier": "T0",
+      "tier_reason": "t0_goal",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 70.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    }
+  ]
+}

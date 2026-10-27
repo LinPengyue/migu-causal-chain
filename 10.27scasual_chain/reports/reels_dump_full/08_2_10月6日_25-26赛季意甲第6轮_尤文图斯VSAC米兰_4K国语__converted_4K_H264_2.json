@@ -1,0 +1,374 @@
+{
+  "match_id": "08_2 10月6日 25-26赛季意甲第6轮 尤文图斯VSAC米兰 4K国语__converted_4K_H264_25fps",
+  "safe_id": "08_2_10月6日_25-26赛季意甲第6轮_尤文图斯VSAC米兰_4K国语__converted_4K_H264_25fps",
+  "input_file": "/data2/lpy1/causal-chain2/8.31causal_chain/datasets/matches/08_2_10月6日_25-26赛季意甲第6轮_尤文图斯VSAC米兰_4K国语__converted_4K_H264_25fps/timeline.json",
+  "event_count": 201,
+  "reel": {
+    "clips": [
+      {
+        "clip_id": "clip00",
+        "chain_template_id": "quick_restart_set_piece_chain",
+        "chain_label_zh": "快发定位球链",
+        "chain_category": "special",
+        "t0_ms": 562910,
+        "t1_ms": 572910,
+        "anchor_event": {
+          "type": "dribble_past",
+          "t_ms": 568910
+        },
+        "events": [
+          {
+            "event_id": "event_000022",
+            "order": 0,
+            "type": "pass",
+            "t_ms": 565670,
+            "role": "build_up",
+            "global_index": 21
+          },
+          {
+            "event_id": "event_000023",
+            "order": 1,
+            "type": "dribble_past",
+            "t_ms": 568910,
+            "role": "build_up",
+            "global_index": 22
+          },
+          {
+            "event_id": "event_000024",
+            "order": 2,
+            "type": "pass",
+            "t_ms": 570970,
+            "role": "outcome",
+            "global_index": 23
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "快发定位球链（pass → dribble_past → pass）",
+        "confidence": 0.63,
+        "margin": 0.63,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 3,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T2",
+            "event_type": "dribble_past",
+            "event_i": 22,
+            "t_ms": 568910,
+            "t0_ms": 562910,
+            "t1_ms": 572910,
+            "reason": "dribble_then_threat",
+            "half": 1,
+            "slot": 0
+          }
+        }
+      },
+      {
+        "clip_id": "clip01",
+        "chain_template_id": "goal_line_extreme_save_chain",
+        "chain_label_zh": "门线极限救险链",
+        "chain_category": "danger",
+        "t0_ms": 1746090,
+        "t1_ms": 1756090,
+        "anchor_event": {
+          "type": "successful_tackle",
+          "t_ms": 1752090
+        },
+        "events": [
+          {
+            "event_id": "event_000104",
+            "order": 0,
+            "type": "pass",
+            "t_ms": 1750380,
+            "role": "build_up",
+            "global_index": 103
+          },
+          {
+            "event_id": "event_000105",
+            "order": 1,
+            "type": "successful_tackle",
+            "t_ms": 1752090,
+            "role": "outcome",
+            "global_index": 104
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "门线极限救险链（pass → successful_tackle）",
+        "confidence": 0.63,
+        "margin": 0.63,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 2,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T2",
+            "event_type": "successful_tackle",
+            "event_i": 104,
+            "t_ms": 1752090,
+            "t0_ms": 1746090,
+            "t1_ms": 1756090,
+            "reason": "successful_tackle_then_threat",
+            "half": 1,
+            "slot": 1
+          }
+        }
+      },
+      {
+        "clip_id": "clip02",
+        "chain_template_id": "shot_save_chain",
+        "chain_label_zh": "射门扑救链",
+        "chain_category": "danger",
+        "t0_ms": 1876250,
+        "t1_ms": 1889250,
+        "anchor_event": {
+          "type": "shot",
+          "t_ms": 1884250
+        },
+        "events": [
+          {
+            "event_id": "event_000117",
+            "order": 0,
+            "type": "free_kick",
+            "t_ms": 1882760,
+            "role": "set_piece",
+            "global_index": 116
+          },
+          {
+            "event_id": "event_000118",
+            "order": 1,
+            "type": "shot",
+            "t_ms": 1884250,
+            "role": "shot",
+            "global_index": 117
+          },
+          {
+            "event_id": "event_000119",
+            "order": 2,
+            "type": "keeper_save",
+            "t_ms": 1885950,
+            "role": "save",
+            "global_index": 118
+          },
+          {
+            "event_id": "event_000120",
+            "order": 3,
+            "type": "successful_tackle",
+            "t_ms": 1888090,
+            "role": "outcome",
+            "global_index": 119
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "射门扑救链：free_kick → shot → keeper_save → successful_tackle",
+        "confidence": 1.255,
+        "margin": 1.255,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "shot → keeper_save",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 4,
+          "align_size": 2,
+          "exact_canonical": true,
+          "transitions_ok": false,
+          "illegal_pairs": [
+            "free_kick→shot"
+          ],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            1,
+            2
+          ],
+          "selection": {
+            "tier": "T1",
+            "event_type": "shot",
+            "event_i": 117,
+            "t_ms": 1884250,
+            "t0_ms": 1876250,
+            "t1_ms": 1889250,
+            "reason": "shot_then_save_or_corner",
+            "half": 1,
+            "slot": 2
+          }
+        }
+      },
+      {
+        "clip_id": "clip03",
+        "chain_template_id": "goal_line_extreme_save_chain",
+        "chain_label_zh": "门线极限救险链",
+        "chain_category": "danger",
+        "t0_ms": 2960250,
+        "t1_ms": 2970250,
+        "anchor_event": {
+          "type": "successful_tackle",
+          "t_ms": 2966250
+        },
+        "events": [
+          {
+            "event_id": "event_000199",
+            "order": 0,
+            "type": "successful_tackle",
+            "t_ms": 2966250,
+            "role": "build_up",
+            "global_index": 198
+          }
+        ],
+        "context_events": [],
+        "edges": [],
+        "narrative_zh": "门线极限救险链（successful_tackle）",
+        "confidence": 0.55,
+        "margin": 0.55,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 1,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T2",
+            "event_type": "successful_tackle",
+            "event_i": 198,
+            "t_ms": 2966250,
+            "t0_ms": 2960250,
+            "t1_ms": 2970250,
+            "reason": "successful_tackle_then_threat",
+            "half": 2,
+            "slot": 0
+          }
+        }
+      }
+    ],
+    "ordering": [
+      "clip00",
+      "clip01",
+      "clip02",
+      "clip03"
+    ],
+    "total_duration_ms": 43000
+  },
+  "config": {
+    "backend": "dump_highlight_reels_full",
+    "profile": "production",
+    "drop_t2": false,
+    "min_clips": 6,
+    "use_llm": false,
+    "pipeline": "select_moments(full PDF)→optional T1/T2 fill→classify/refine",
+    "note": "交付观感用；评测 no_t2 仍用 dump_highlight_reels.py / reels_dump"
+  },
+  "stats": {
+    "moments_selected": 4,
+    "clips_final": 4,
+    "fast_path": 4,
+    "select": {
+      "rule": "rule4_t1_plus_t2",
+      "half_ms": 2700000,
+      "n_t0": 0,
+      "n_t1_pool": 2,
+      "n_t2_pool": 3,
+      "n_selected": 4,
+      "n_t0_selected": 0,
+      "n_t1_selected": 1,
+      "n_t2_selected": 3,
+      "has_goal": false,
+      "has_penalty_goal": false,
+      "has_red": false
+    },
+    "fill": {
+      "min_clips": 6,
+      "n_before": 4,
+      "n_filled": 0,
+      "presentation_fill": false,
+      "n_after": 4
+    },
+    "n_moments_raw": 4,
+    "under_min_clips": true
+  }
+}

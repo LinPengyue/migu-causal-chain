@@ -1,0 +1,264 @@
+{
+  "match_id": "09_2 9月20日 25-26赛季英超第5轮 利物浦VS埃弗顿 4K国语__converted_4K_H264_50fps",
+  "safe_id": "09_2_9月20日_25-26赛季英超第5轮_利物浦VS埃弗顿_4K国语__converted_4K_H264_50fps",
+  "input_file": "/data2/lpy1/causal-chain2/8.31causal_chain/datasets/matches/09_2_9月20日_25-26赛季英超第5轮_利物浦VS埃弗顿_4K国语__converted_4K_H264_50fps/timeline.json",
+  "event_count": 253,
+  "reel": {
+    "clips": [
+      {
+        "clip_id": "clip00",
+        "chain_template_id": "shot_save_chain",
+        "chain_label_zh": "射门扑救链",
+        "chain_category": "danger",
+        "t0_ms": 2085180,
+        "t1_ms": 2117340,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 2097180
+        },
+        "events": [
+          {
+            "event_id": "event_000157",
+            "order": 0,
+            "type": "keeper_save",
+            "t_ms": 2097610,
+            "role": "save",
+            "global_index": 156
+          },
+          {
+            "event_id": "event_000158",
+            "order": 1,
+            "type": "foul",
+            "t_ms": 2101660,
+            "role": "build_up",
+            "global_index": 157
+          },
+          {
+            "event_id": "event_000159",
+            "order": 2,
+            "type": "pass",
+            "t_ms": 2103100,
+            "role": "build_up",
+            "global_index": 158
+          },
+          {
+            "event_id": "event_000160",
+            "order": 3,
+            "type": "shot",
+            "t_ms": 2104820,
+            "role": "shot",
+            "global_index": 159
+          },
+          {
+            "event_id": "event_000161",
+            "order": 4,
+            "type": "goal",
+            "t_ms": 2105860,
+            "role": "outcome",
+            "global_index": 160
+          },
+          {
+            "event_id": "event_000162",
+            "order": 5,
+            "type": "shot",
+            "t_ms": 2110810,
+            "role": "shot",
+            "global_index": 161
+          },
+          {
+            "event_id": "event_000163",
+            "order": 6,
+            "type": "goal",
+            "t_ms": 2113340,
+            "role": "outcome",
+            "global_index": 162
+          },
+          {
+            "event_id": "event_000164",
+            "order": 7,
+            "type": "keeper_save",
+            "t_ms": 2115720,
+            "role": "save",
+            "global_index": 163
+          }
+        ],
+        "context_events": [
+          {
+            "event_id": "event_000153",
+            "order": 0,
+            "type": "foul",
+            "t_ms": 2085580,
+            "role": "context",
+            "global_index": 152
+          },
+          {
+            "event_id": "event_000154",
+            "order": 1,
+            "type": "successful_tackle",
+            "t_ms": 2090290,
+            "role": "context",
+            "global_index": 153
+          },
+          {
+            "event_id": "event_000155",
+            "order": 2,
+            "type": "pass",
+            "t_ms": 2094210,
+            "role": "context",
+            "global_index": 154
+          },
+          {
+            "event_id": "event_000156",
+            "order": 3,
+            "type": "goal",
+            "t_ms": 2097180,
+            "role": "context",
+            "global_index": 155
+          }
+        ],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 4,
+            "dst": 5,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 4,
+            "dst": 5,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 5,
+            "dst": 6,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 5,
+            "dst": 6,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 6,
+            "dst": 7,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 6,
+            "dst": 7,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "射门扑救链：keeper_save → foul → pass → shot → goal → shot → goal → keeper_save",
+        "confidence": 0.9738,
+        "margin": 0.9738,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "shot → keeper_save",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 8,
+          "align_size": 2,
+          "exact_canonical": true,
+          "transitions_ok": false,
+          "illegal_pairs": [
+            "keeper_save→foul",
+            "foul→pass",
+            "shot→goal",
+            "goal→shot",
+            "shot→goal",
+            "goal→keeper_save"
+          ],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            7,
+            11
+          ],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 155,
+            "t_ms": 2097180,
+            "t0_ms": 2085180,
+            "t1_ms": 2117340,
+            "reason": "t0_goal|merged|merged",
+            "half": 1,
+            "slot": 2
+          }
+        }
+      }
+    ],
+    "ordering": [
+      "clip00"
+    ],
+    "total_duration_ms": 32160
+  },
+  "config": {
+    "backend": "dump_highlight_reels",
+    "profile": "production",
+    "drop_t2": true,
+    "use_llm": false,
+    "pipeline": "select_moments→classify/refine→assemble_reel",
+    "aligned_with": "eval/eval_offline_highlight.py logic track"
+  },
+  "stats": {
+    "moments_selected": 1,
+    "clips_final": 1,
+    "fast_path": 1,
+    "select": {
+      "rule": "rule3_t0_3_fill_t1",
+      "half_ms": 2700000,
+      "n_t0": 3,
+      "n_t1_pool": 1,
+      "n_t2_pool": 9,
+      "n_selected": 1,
+      "n_t0_selected": 1,
+      "n_t1_selected": 0,
+      "n_t2_selected": 0,
+      "has_goal": true,
+      "has_penalty_goal": false,
+      "has_red": false,
+      "drop_t2": true,
+      "n_selected_after_drop_t2": 1
+    }
+  }
+}

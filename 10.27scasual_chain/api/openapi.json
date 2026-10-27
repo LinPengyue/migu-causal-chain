@@ -1,0 +1,334 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "清华AI服务 · 故事链集锦协议层",
+    "description": "咪咕 2.3–2.6 RC（单 worker）。eventTime/start/end=媒体时间轴秒；算法内部毫秒。highlightType=5 → chainType=19 集锦组合链。eventTypeId 映射见 api/event_type_map.py（正式字典待咪咕确认）。正式接口：POST /highlight/start|sync|end。",
+    "version": "0.4.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Health Health Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/highlight/start": {
+      "post": {
+        "summary": "Highlight Start",
+        "operationId": "highlight_start_highlight_start_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/highlight/sync": {
+      "post": {
+        "summary": "Highlight Sync",
+        "operationId": "highlight_sync_highlight_sync_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SyncRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/highlight/end": {
+      "post": {
+        "summary": "Highlight End",
+        "operationId": "highlight_end_highlight_end_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EndRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ApiResponse": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code",
+            "default": "0"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message",
+            "default": "success"
+          }
+        },
+        "type": "object",
+        "title": "ApiResponse"
+      },
+      "ClipPayload": {
+        "properties": {
+          "clipId": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Clipid"
+          },
+          "videoPath": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Videopath"
+          },
+          "eventName": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Eventname"
+          },
+          "eventTypeId": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Eventtypeid"
+          },
+          "eventTime": {
+            "type": "number",
+            "title": "Eventtime",
+            "description": "媒体时间轴秒（可小数）；原点=输入视频/直播会话起点（含片头/中场等）。内部转为毫秒。"
+          },
+          "score": {
+            "anyOf": [
+              {},
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          }
+        },
+        "type": "object",
+        "required": [
+          "clipId",
+          "videoPath",
+          "eventName",
+          "eventTypeId",
+          "eventTime"
+        ],
+        "title": "ClipPayload"
+      },
+      "EndRequest": {
+        "properties": {
+          "taskId": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Taskid"
+          },
+          "matchId": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Matchid"
+          }
+        },
+        "type": "object",
+        "required": [
+          "taskId",
+          "matchId"
+        ],
+        "title": "EndRequest"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "StartRequest": {
+        "properties": {
+          "taskId": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Taskid"
+          },
+          "matchId": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Matchid"
+          },
+          "callbackUrl": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Callbackurl"
+          }
+        },
+        "type": "object",
+        "required": [
+          "taskId",
+          "matchId",
+          "callbackUrl"
+        ],
+        "title": "StartRequest"
+      },
+      "SyncRequest": {
+        "properties": {
+          "taskId": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Taskid"
+          },
+          "matchId": {
+            "type": "string",
+            "minLength": 1,
+            "title": "Matchid"
+          },
+          "clip": {
+            "$ref": "#/components/schemas/ClipPayload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "taskId",
+          "matchId",
+          "clip"
+        ],
+        "title": "SyncRequest"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

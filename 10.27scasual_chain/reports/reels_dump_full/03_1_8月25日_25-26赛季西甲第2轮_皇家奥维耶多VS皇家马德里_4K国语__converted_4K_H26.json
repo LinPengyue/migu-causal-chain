@@ -1,0 +1,262 @@
+{
+  "match_id": "03_1 8月25日 25-26赛季西甲第2轮 皇家奥维耶多VS皇家马德里 4K国语__converted_4K_H264_50fps",
+  "safe_id": "03_1_8月25日_25-26赛季西甲第2轮_皇家奥维耶多VS皇家马德里_4K国语__converted_4K_H264_50fps",
+  "input_file": "/data2/lpy1/causal-chain2/8.31causal_chain/datasets/matches/03_1_8月25日_25-26赛季西甲第2轮_皇家奥维耶多VS皇家马德里_4K国语__converted_4K_H264_50fps/timeline.json",
+  "event_count": 185,
+  "reel": {
+    "clips": [
+      {
+        "clip_id": "clip00",
+        "chain_template_id": "shot_post_bar_chain",
+        "chain_label_zh": "射门门柱/横梁链",
+        "chain_category": "danger",
+        "t0_ms": 360330,
+        "t1_ms": 370330,
+        "anchor_event": {
+          "type": "dribble_past",
+          "t_ms": 366330
+        },
+        "events": [
+          {
+            "event_id": "event_000007",
+            "order": 0,
+            "type": "dribble_past",
+            "t_ms": 366330,
+            "role": "build_up",
+            "global_index": 6
+          },
+          {
+            "event_id": "event_000008",
+            "order": 1,
+            "type": "shot",
+            "t_ms": 368910,
+            "role": "shot",
+            "global_index": 7
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "射门门柱/横梁链（dribble_past → shot）",
+        "confidence": 1.22,
+        "margin": 1.22,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 2,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T2",
+            "event_type": "dribble_past",
+            "event_i": 6,
+            "t_ms": 366330,
+            "t0_ms": 360330,
+            "t1_ms": 370330,
+            "reason": "dribble_then_threat",
+            "half": 1,
+            "slot": 0
+          }
+        }
+      },
+      {
+        "clip_id": "clip01",
+        "chain_template_id": "throw_in_build_up_chain",
+        "chain_label_zh": "手抛球发动进攻链",
+        "chain_category": "special",
+        "t0_ms": 407970,
+        "t1_ms": 417970,
+        "anchor_event": {
+          "type": "dribble_past",
+          "t_ms": 413970
+        },
+        "events": [
+          {
+            "event_id": "event_000015",
+            "order": 0,
+            "type": "dribble_past",
+            "t_ms": 413970,
+            "role": "build_up",
+            "global_index": 14
+          }
+        ],
+        "context_events": [],
+        "edges": [],
+        "narrative_zh": "手抛球发动进攻链（dribble_past）",
+        "confidence": 0.55,
+        "margin": 0.55,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 1,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T2",
+            "event_type": "dribble_past",
+            "event_i": 14,
+            "t_ms": 413970,
+            "t0_ms": 407970,
+            "t1_ms": 417970,
+            "reason": "dribble_then_threat",
+            "half": 1,
+            "slot": 0
+          }
+        }
+      },
+      {
+        "clip_id": "clip02",
+        "chain_template_id": "goal_line_extreme_save_chain",
+        "chain_label_zh": "门线极限救险链",
+        "chain_category": "danger",
+        "t0_ms": 2200160,
+        "t1_ms": 2210160,
+        "anchor_event": {
+          "type": "successful_tackle",
+          "t_ms": 2206160
+        },
+        "events": [
+          {
+            "event_id": "event_000140",
+            "order": 0,
+            "type": "corner",
+            "t_ms": 2201660,
+            "role": "set_piece",
+            "global_index": 139
+          },
+          {
+            "event_id": "event_000141",
+            "order": 1,
+            "type": "aerial_won",
+            "t_ms": 2203110,
+            "role": "build_up",
+            "global_index": 140
+          },
+          {
+            "event_id": "event_000142",
+            "order": 2,
+            "type": "successful_tackle",
+            "t_ms": 2206160,
+            "role": "outcome",
+            "global_index": 141
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "门线极限救险链（corner → aerial_won → successful_tackle）",
+        "confidence": 0.63,
+        "margin": 0.63,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 3,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T2",
+            "event_type": "successful_tackle",
+            "event_i": 141,
+            "t_ms": 2206160,
+            "t0_ms": 2200160,
+            "t1_ms": 2210160,
+            "reason": "successful_tackle_then_threat",
+            "half": 1,
+            "slot": 2
+          }
+        }
+      }
+    ],
+    "ordering": [
+      "clip00",
+      "clip01",
+      "clip02"
+    ],
+    "total_duration_ms": 30000
+  },
+  "config": {
+    "backend": "dump_highlight_reels_full",
+    "profile": "production",
+    "drop_t2": false,
+    "min_clips": 6,
+    "use_llm": false,
+    "pipeline": "select_moments(full PDF)→optional T1/T2 fill→classify/refine",
+    "note": "交付观感用；评测 no_t2 仍用 dump_highlight_reels.py / reels_dump"
+  },
+  "stats": {
+    "moments_selected": 3,
+    "clips_final": 3,
+    "fast_path": 3,
+    "select": {
+      "rule": "rule4_t1_plus_t2",
+      "half_ms": 2700000,
+      "n_t0": 0,
+      "n_t1_pool": 0,
+      "n_t2_pool": 3,
+      "n_selected": 3,
+      "n_t0_selected": 0,
+      "n_t1_selected": 0,
+      "n_t2_selected": 3,
+      "has_goal": false,
+      "has_penalty_goal": false,
+      "has_red": false
+    },
+    "fill": {
+      "min_clips": 6,
+      "n_before": 3,
+      "n_filled": 0,
+      "presentation_fill": false,
+      "n_after": 3
+    },
+    "n_moments_raw": 3,
+    "under_min_clips": true
+  }
+}

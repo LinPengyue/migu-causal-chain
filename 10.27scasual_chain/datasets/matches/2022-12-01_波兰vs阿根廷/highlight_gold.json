@@ -1,0 +1,74 @@
+{
+  "stats": {
+    "rule": "rule4_t1_plus_t2",
+    "half_ms": 2700000,
+    "n_t0": 0,
+    "n_t1_pool": 1,
+    "n_t2_pool": 0,
+    "n_selected": 1,
+    "n_t0_selected": 0,
+    "n_t1_selected": 1,
+    "n_t2_selected": 0,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "no_t2",
+    "n_selected_after_drop_t2": 1,
+    "n_labeled_by_annotation": 1,
+    "n_heuristic": 0
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "2022-12-01 波兰vs阿根廷",
+      "chain_category": "danger",
+      "t0_ms": 1706750,
+      "t1_ms": 1719750,
+      "anchor_t_ms": 1714750,
+      "first_event": "pass",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000027",
+          "type": "pass",
+          "t_ms": 1707940,
+          "t0_ms": 1677580,
+          "t1_ms": 1689680,
+          "order": 26
+        },
+        {
+          "event_id": "event_000028",
+          "type": "pass",
+          "t_ms": 1712550,
+          "t0_ms": 1677580,
+          "t1_ms": 1689680,
+          "order": 27
+        },
+        {
+          "event_id": "event_000029",
+          "type": "shot",
+          "t_ms": 1714750,
+          "t0_ms": 1677580,
+          "t1_ms": 1689680,
+          "order": 28
+        },
+        {
+          "event_id": "event_000030",
+          "type": "keeper_save",
+          "t_ms": 1715720,
+          "t0_ms": 1677580,
+          "t1_ms": 1689680,
+          "order": 29
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    }
+  ],
+  "note": "alias of highlight_gold_no_t2"
+}

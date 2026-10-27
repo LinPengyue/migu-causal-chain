@@ -1,0 +1,91 @@
+{
+  "stats": {
+    "rule": "rule3_t0_1_fill_t1",
+    "half_ms": 2700000,
+    "n_t0": 1,
+    "n_t1_pool": 1,
+    "n_t2_pool": 0,
+    "n_selected": 2,
+    "n_t0_selected": 1,
+    "n_t1_selected": 1,
+    "n_t2_selected": 0,
+    "has_goal": true,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "with_t2",
+    "n_labeled_by_annotation": 2,
+    "n_heuristic": 0
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0006",
+      "match_id": "2022-11-28 克罗地亚vs加拿大",
+      "chain_category": "danger",
+      "t0_ms": 1271960,
+      "t1_ms": 1284960,
+      "anchor_t_ms": 1279960,
+      "first_event": "shot",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000010",
+          "type": "shot",
+          "t_ms": 1279960,
+          "t0_ms": 1269970,
+          "t1_ms": 1280740,
+          "order": 9
+        },
+        {
+          "event_id": "event_000011",
+          "type": "keeper_save",
+          "t_ms": 1282530,
+          "t0_ms": 1281240,
+          "t1_ms": 1291900,
+          "order": 10
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "2022-11-28 克罗地亚vs加拿大",
+      "chain_category": "outcome",
+      "t0_ms": 7735430,
+      "t1_ms": 7751430,
+      "anchor_t_ms": 7747430,
+      "first_event": "pass",
+      "last_event": "goal",
+      "events": [
+        {
+          "event_id": "event_000152",
+          "type": "pass",
+          "t_ms": 7745650,
+          "t0_ms": 7731460,
+          "t1_ms": 7745900,
+          "order": 151
+        },
+        {
+          "event_id": "event_000153",
+          "type": "goal",
+          "t_ms": 7747430,
+          "t0_ms": 7746130,
+          "t1_ms": 7757490,
+          "order": 152
+        }
+      ],
+      "tier": "T0",
+      "tier_reason": "t0_goal",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 70.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    }
+  ]
+}

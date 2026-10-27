@@ -1,0 +1,152 @@
+{
+  "match_id": "2022-12-01 波兰vs阿根廷",
+  "safe_id": "2022-12-01_波兰vs阿根廷",
+  "input_file": "/data2/lpy1/causal-chain2/8.31causal_chain/datasets/matches/2022-12-01_波兰vs阿根廷/timeline.json",
+  "event_count": 63,
+  "reel": {
+    "clips": [
+      {
+        "clip_id": "clip00",
+        "chain_template_id": "shot_save_chain",
+        "chain_label_zh": "射门扑救链",
+        "chain_category": "danger",
+        "t0_ms": 1706750,
+        "t1_ms": 1719750,
+        "anchor_event": {
+          "type": "shot",
+          "t_ms": 1714750
+        },
+        "events": [
+          {
+            "event_id": "event_000027",
+            "order": 0,
+            "type": "pass",
+            "t_ms": 1707940,
+            "role": "build_up",
+            "global_index": 26
+          },
+          {
+            "event_id": "event_000028",
+            "order": 1,
+            "type": "pass",
+            "t_ms": 1712550,
+            "role": "build_up",
+            "global_index": 27
+          },
+          {
+            "event_id": "event_000029",
+            "order": 2,
+            "type": "shot",
+            "t_ms": 1714750,
+            "role": "shot",
+            "global_index": 28
+          },
+          {
+            "event_id": "event_000030",
+            "order": 3,
+            "type": "keeper_save",
+            "t_ms": 1715720,
+            "role": "save",
+            "global_index": 29
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "射门扑救链：pass → pass → shot → keeper_save",
+        "confidence": 2.15,
+        "margin": 2.15,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "shot → keeper_save",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 4,
+          "align_size": 2,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            2,
+            3
+          ],
+          "selection": {
+            "tier": "T1",
+            "event_type": "shot",
+            "event_i": 28,
+            "t_ms": 1714750,
+            "t0_ms": 1706750,
+            "t1_ms": 1719750,
+            "reason": "shot_then_save_or_corner",
+            "half": 1,
+            "slot": 1
+          }
+        }
+      }
+    ],
+    "ordering": [
+      "clip00"
+    ],
+    "total_duration_ms": 13000
+  },
+  "config": {
+    "backend": "dump_highlight_reels",
+    "profile": "production",
+    "drop_t2": true,
+    "use_llm": false,
+    "pipeline": "select_moments→classify/refine→assemble_reel",
+    "aligned_with": "eval/eval_offline_highlight.py logic track"
+  },
+  "stats": {
+    "moments_selected": 1,
+    "clips_final": 1,
+    "fast_path": 1,
+    "select": {
+      "rule": "rule4_t1_plus_t2",
+      "half_ms": 2700000,
+      "n_t0": 0,
+      "n_t1_pool": 1,
+      "n_t2_pool": 0,
+      "n_selected": 1,
+      "n_t0_selected": 0,
+      "n_t1_selected": 1,
+      "n_t2_selected": 0,
+      "has_goal": false,
+      "has_penalty_goal": false,
+      "has_red": false,
+      "drop_t2": true,
+      "n_selected_after_drop_t2": 1
+    }
+  }
+}

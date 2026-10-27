@@ -1,0 +1,161 @@
+{
+  "match_id": "29月25日_25-26赛季联赛杯第3轮_热刺VS唐卡斯特流浪_英语",
+  "safe_id": "29月25日_25-26赛季联赛杯第3轮_热刺VS唐卡斯特流浪_英语",
+  "mode": "gold_clips",
+  "n_chains": 2,
+  "category_counts": {
+    "danger": 1
+  },
+  "chains": [
+    {
+      "clip_id": "clip00",
+      "annotation_id": "ann_0001",
+      "ok": true,
+      "strict_match": false,
+      "flags": {
+        "a_time": false,
+        "b_category": false,
+        "c_first": false,
+        "d_last": false,
+        "strict": false
+      },
+      "gold": {
+        "chain_category": "outcome",
+        "first_event": "corner",
+        "last_event": "goal",
+        "t0_ms": 1199484,
+        "t1_ms": 1208727
+      },
+      "pred": null,
+      "n_preds_on_clip": 0,
+      "all_preds": []
+    },
+    {
+      "clip_id": "clip01",
+      "annotation_id": "ann_0002",
+      "ok": true,
+      "strict_match": true,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "corner",
+        "last_event": "goal_line_clearance",
+        "t0_ms": 2059415,
+        "t1_ms": 2065693
+      },
+      "pred": {
+        "chain_category": "danger",
+        "first_event": "corner",
+        "last_event": "goal_line_clearance",
+        "t0_ms": 2061415,
+        "t1_ms": 2063693,
+        "template_id": "goal_line_extreme_save_chain",
+        "source": "sliding",
+        "event_ids": [
+          "event_000006",
+          "event_000007",
+          "event_000008"
+        ],
+        "event_keys": [
+          [
+            2061415,
+            "corner"
+          ],
+          [
+            2063022,
+            "shot"
+          ],
+          [
+            2063693,
+            "goal_line_clearance"
+          ]
+        ]
+      },
+      "n_preds_on_clip": 1,
+      "all_preds": [
+        {
+          "chain_category": "danger",
+          "first_event": "corner",
+          "last_event": "goal_line_clearance",
+          "t0_ms": 2061415,
+          "t1_ms": 2063693,
+          "template_id": "goal_line_extreme_save_chain",
+          "source": "sliding",
+          "event_ids": [
+            "event_000006",
+            "event_000007",
+            "event_000008"
+          ],
+          "event_keys": [
+            [
+              2061415,
+              "corner"
+            ],
+            [
+              2063022,
+              "shot"
+            ],
+            [
+              2063693,
+              "goal_line_clearance"
+            ]
+          ]
+        }
+      ],
+      "chain_category": "danger",
+      "first_event": "corner",
+      "last_event": "goal_line_clearance",
+      "t0_ms": 2061415,
+      "t1_ms": 2063693,
+      "template_id": "goal_line_extreme_save_chain",
+      "events": null,
+      "event_ids": [
+        "event_000006",
+        "event_000007",
+        "event_000008"
+      ],
+      "event_keys": [
+        [
+          2061415,
+          "corner"
+        ],
+        [
+          2063022,
+          "shot"
+        ],
+        [
+          2063693,
+          "goal_line_clearance"
+        ]
+      ]
+    }
+  ],
+  "config": {
+    "backend": "dump_strip_chains",
+    "algo": "causal_chain6",
+    "adapter": "AlgoStripAdapter",
+    "mode": "gold_clips",
+    "event_source": "gold_events",
+    "prefix_stride": null,
+    "min_prefix": null,
+    "profile": "production",
+    "use_llm": false,
+    "pipeline": "gold_clip(gold_events)→causal_chain6.strip",
+    "aligned_with": "eval/eval_offline_strip.py --event-source gold_events"
+  },
+  "stats": {
+    "n_gold": 2,
+    "n_scorable": 2,
+    "n_empty_clip": 0,
+    "strict_matched": 1,
+    "logic_complete_rate": 50.0
+  }
+}

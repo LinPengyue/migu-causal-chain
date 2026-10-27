@@ -1,0 +1,296 @@
+{
+  "match_id": "10月10日_2025世预赛欧洲区_法罗群岛VS黑山_英语",
+  "safe_id": "10月10日_2025世预赛欧洲区_法罗群岛VS黑山_英语",
+  "input_file": "/data2/lpy1/causal-chain2/8.31causal_chain/datasets/matches/10月10日_2025世预赛欧洲区_法罗群岛VS黑山_英语/timeline.json",
+  "event_count": 616,
+  "reel": {
+    "clips": [
+      {
+        "clip_id": "clip00",
+        "chain_template_id": "outcome_other",
+        "chain_label_zh": "其他",
+        "chain_category": "outcome",
+        "t0_ms": 2448110,
+        "t1_ms": 2464110,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 2460110
+        },
+        "events": [
+          {
+            "event_id": "event_000402",
+            "order": 0,
+            "type": "free_kick",
+            "t_ms": 2458150,
+            "role": "set_piece",
+            "global_index": 401
+          },
+          {
+            "event_id": "event_000403",
+            "order": 1,
+            "type": "goal",
+            "t_ms": 2460110,
+            "role": "outcome",
+            "global_index": 402
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "其他（free_kick → goal）",
+        "confidence": 0.33,
+        "margin": 0.33,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 2,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": false,
+          "illegal_pairs": [
+            "free_kick→goal"
+          ],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 402,
+            "t_ms": 2460110,
+            "t0_ms": 2448110,
+            "t1_ms": 2464110,
+            "reason": "t0_goal",
+            "half": 1,
+            "slot": 2
+          }
+        }
+      },
+      {
+        "clip_id": "clip01",
+        "chain_template_id": "team_buildup_goal",
+        "chain_label_zh": "团队配合射门进球链",
+        "chain_category": "outcome",
+        "t0_ms": 4548630,
+        "t1_ms": 4564630,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 4560630
+        },
+        "events": [
+          {
+            "event_id": "event_000530",
+            "order": 0,
+            "type": "pass",
+            "t_ms": 4553200,
+            "role": "build_up",
+            "global_index": 529
+          },
+          {
+            "event_id": "event_000531",
+            "order": 1,
+            "type": "pass",
+            "t_ms": 4554980,
+            "role": "build_up",
+            "global_index": 530
+          },
+          {
+            "event_id": "event_000532",
+            "order": 2,
+            "type": "pass",
+            "t_ms": 4557780,
+            "role": "build_up",
+            "global_index": 531
+          },
+          {
+            "event_id": "event_000533",
+            "order": 3,
+            "type": "goal",
+            "t_ms": 4560630,
+            "role": "outcome",
+            "global_index": 532
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "团队配合射门进球链（pass → pass → pass → goal）",
+        "confidence": 0.88,
+        "margin": -0.12,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 4,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 532,
+            "t_ms": 4560630,
+            "t0_ms": 4548630,
+            "t1_ms": 4564630,
+            "reason": "t0_goal",
+            "half": 2,
+            "slot": 2
+          }
+        }
+      },
+      {
+        "clip_id": "clip02",
+        "chain_template_id": "penalty_scored_chain",
+        "chain_label_zh": "点球命中链",
+        "chain_category": "outcome",
+        "t0_ms": 5579750,
+        "t1_ms": 5599470,
+        "anchor_event": {
+          "type": "penalty",
+          "t_ms": 5591750
+        },
+        "events": [
+          {
+            "event_id": "event_000569",
+            "order": 0,
+            "type": "penalty",
+            "t_ms": 5591750,
+            "role": "set_piece",
+            "global_index": 568
+          },
+          {
+            "event_id": "event_000570",
+            "order": 1,
+            "type": "goal",
+            "t_ms": 5595470,
+            "role": "outcome",
+            "global_index": 569
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "点球命中链：penalty → goal",
+        "confidence": 2.2,
+        "margin": 2.2,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "penalty → goal",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 2,
+          "align_size": 2,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            0,
+            1
+          ],
+          "selection": {
+            "tier": "T0",
+            "event_type": "penalty",
+            "event_i": 568,
+            "t_ms": 5591750,
+            "t0_ms": 5579750,
+            "t1_ms": 5599470,
+            "reason": "t0_penalty_goal|merged",
+            "half": 2,
+            "slot": 2
+          }
+        }
+      }
+    ],
+    "ordering": [
+      "clip00",
+      "clip01",
+      "clip02"
+    ],
+    "total_duration_ms": 51720
+  },
+  "config": {
+    "backend": "dump_highlight_reels",
+    "profile": "production",
+    "drop_t2": true,
+    "use_llm": false,
+    "pipeline": "select_moments→classify/refine→assemble_reel",
+    "aligned_with": "eval/eval_offline_highlight.py logic track"
+  },
+  "stats": {
+    "moments_selected": 3,
+    "clips_final": 3,
+    "fast_path": 3,
+    "select": {
+      "rule": "rule3_t0_4_fill_t1",
+      "half_ms": 2700000,
+      "n_t0": 4,
+      "n_t1_pool": 0,
+      "n_t2_pool": 0,
+      "n_selected": 3,
+      "n_t0_selected": 3,
+      "n_t1_selected": 0,
+      "n_t2_selected": 0,
+      "has_goal": true,
+      "has_penalty_goal": true,
+      "has_red": false,
+      "drop_t2": true,
+      "n_selected_after_drop_t2": 3
+    }
+  }
+}

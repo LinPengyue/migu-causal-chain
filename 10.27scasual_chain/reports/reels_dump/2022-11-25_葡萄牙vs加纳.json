@@ -1,0 +1,115 @@
+{
+  "match_id": "2022-11-25 葡萄牙vs加纳",
+  "safe_id": "2022-11-25_葡萄牙vs加纳",
+  "input_file": "/data2/lpy1/causal-chain2/8.31causal_chain/datasets/matches/2022-11-25_葡萄牙vs加纳/timeline.json",
+  "event_count": 134,
+  "reel": {
+    "clips": [
+      {
+        "clip_id": "clip00",
+        "chain_template_id": "shot_save_chain",
+        "chain_label_zh": "射门扑救链",
+        "chain_category": "danger",
+        "t0_ms": 7707410,
+        "t1_ms": 7720410,
+        "anchor_event": {
+          "type": "free_kick",
+          "t_ms": 7715410
+        },
+        "events": [
+          {
+            "event_id": "event_000125",
+            "order": 0,
+            "type": "free_kick",
+            "t_ms": 7715410,
+            "role": "set_piece",
+            "global_index": 124
+          },
+          {
+            "event_id": "event_000126",
+            "order": 1,
+            "type": "keeper_save",
+            "t_ms": 7716830,
+            "role": "save",
+            "global_index": 125
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "射门扑救链（free_kick → keeper_save）",
+        "confidence": 0.78,
+        "margin": 0.78,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 2,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": false,
+          "illegal_pairs": [
+            "free_kick→keeper_save"
+          ],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T1",
+            "event_type": "free_kick",
+            "event_i": 124,
+            "t_ms": 7715410,
+            "t0_ms": 7707410,
+            "t1_ms": 7720410,
+            "reason": "fk_then_save_or_corner",
+            "half": 2,
+            "slot": 2
+          }
+        }
+      }
+    ],
+    "ordering": [
+      "clip00"
+    ],
+    "total_duration_ms": 13000
+  },
+  "config": {
+    "backend": "dump_highlight_reels",
+    "profile": "production",
+    "drop_t2": true,
+    "use_llm": false,
+    "pipeline": "select_moments→classify/refine→assemble_reel",
+    "aligned_with": "eval/eval_offline_highlight.py logic track"
+  },
+  "stats": {
+    "moments_selected": 1,
+    "clips_final": 1,
+    "fast_path": 1,
+    "select": {
+      "rule": "rule4_t1_plus_t2",
+      "half_ms": 2700000,
+      "n_t0": 0,
+      "n_t1_pool": 1,
+      "n_t2_pool": 2,
+      "n_selected": 3,
+      "n_t0_selected": 0,
+      "n_t1_selected": 1,
+      "n_t2_selected": 2,
+      "has_goal": false,
+      "has_penalty_goal": false,
+      "has_red": false,
+      "drop_t2": true,
+      "n_selected_after_drop_t2": 1
+    }
+  }
+}

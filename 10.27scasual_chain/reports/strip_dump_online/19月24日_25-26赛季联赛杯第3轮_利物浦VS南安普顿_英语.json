@@ -1,0 +1,142 @@
+{
+  "match_id": "19月24日_25-26赛季联赛杯第3轮_利物浦VS南安普顿_英语",
+  "safe_id": "19月24日_25-26赛季联赛杯第3轮_利物浦VS南安普顿_英语",
+  "mode": "online",
+  "n_chains": 3,
+  "category_counts": {
+    "danger": 2
+  },
+  "chains": [
+    {
+      "clip_id": "clip00",
+      "annotation_id": "ann_0001",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 161288,
+      "track_id": 0,
+      "t_ready": 674696,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "corner",
+        "last_event": "successful_tackle",
+        "t0_ms": 653984,
+        "t1_ms": 676696
+      },
+      "pred": {
+        "category": "danger",
+        "first": "corner",
+        "last": "successful_tackle",
+        "t0_ms": 655984,
+        "t1_ms": 740367,
+        "emit_t_ms": 835984
+      },
+      "chain_category": "danger",
+      "first_event": "corner",
+      "last_event": "successful_tackle",
+      "t0_ms": 655984,
+      "t1_ms": 740367,
+      "emit_t_ms": 835984
+    },
+    {
+      "clip_id": "clip01",
+      "annotation_id": "ann_0002",
+      "ok": true,
+      "strict_match": false,
+      "matched": false,
+      "latency_ms": null,
+      "track_id": null,
+      "t_ready": 740367,
+      "flags": {
+        "a_time": false,
+        "b_category": false,
+        "c_first": false,
+        "d_last": false,
+        "strict": false,
+        "aux_time_cat": false,
+        "aux_time_cat_last": false
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "pass",
+        "last_event": "successful_tackle",
+        "t0_ms": 729469,
+        "t1_ms": 742367
+      },
+      "pred": null
+    },
+    {
+      "clip_id": "clip02",
+      "annotation_id": "ann_0003",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 86383,
+      "track_id": 1,
+      "t_ready": 1379601,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "pass",
+        "last_event": "keeper_save",
+        "t0_ms": 1362687,
+        "t1_ms": 1381601
+      },
+      "pred": {
+        "category": "danger",
+        "first": "pass",
+        "last": "keeper_save",
+        "t0_ms": 1364687,
+        "t1_ms": 1379601,
+        "emit_t_ms": 1465984
+      },
+      "chain_category": "danger",
+      "first_event": "pass",
+      "last_event": "keeper_save",
+      "t0_ms": 1364687,
+      "t1_ms": 1379601,
+      "emit_t_ms": 1465984
+    }
+  ],
+  "config": {
+    "backend": "dump_strip_chains",
+    "algo": "causal_chain6",
+    "adapter": "OnlineStripAdapter",
+    "mode": "online",
+    "event_source": "gold_events",
+    "prefix_stride": 1,
+    "min_prefix": 2,
+    "profile": "production",
+    "use_llm": false,
+    "pipeline": "stream(gold_events)→OnlineStripEngine→one-to-one",
+    "aligned_with": "eval/eval_online_strip.py --stream-source gold_events"
+  },
+  "stats": {
+    "n_gold": 3,
+    "n_scorable": 3,
+    "strict_matched": 2,
+    "logic_complete_rate": 66.67,
+    "precision_hits": 2,
+    "n_tracks": 4,
+    "recall_matched": 2,
+    "n_stream_events": 16,
+    "n_prefix_snapshots": 20
+  }
+}

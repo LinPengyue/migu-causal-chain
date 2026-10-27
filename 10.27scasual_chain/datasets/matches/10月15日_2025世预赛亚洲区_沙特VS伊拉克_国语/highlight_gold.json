@@ -1,0 +1,101 @@
+{
+  "stats": {
+    "rule": "rule4_t1_plus_t2",
+    "half_ms": 2700000,
+    "n_t0": 0,
+    "n_t1_pool": 2,
+    "n_t2_pool": 14,
+    "n_selected": 6,
+    "n_t0_selected": 0,
+    "n_t1_selected": 2,
+    "n_t2_selected": 0,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "no_t2",
+    "n_selected_after_drop_t2": 2,
+    "n_labeled_by_annotation": 0,
+    "n_heuristic": 2
+  },
+  "chains": [
+    {
+      "annotation_id": "select:10月15日_2025世预赛亚洲区_沙特VS伊拉克_国语:2683430:T1",
+      "match_id": "10月15日_2025世预赛亚洲区_沙特VS伊拉克_国语",
+      "chain_category": "danger",
+      "t0_ms": 2675430,
+      "t1_ms": 2688430,
+      "anchor_t_ms": 2683430,
+      "first_event": "free_kick",
+      "last_event": "dribble_past",
+      "events": [
+        {
+          "event_id": "event_000335",
+          "type": "free_kick",
+          "t_ms": 2683430,
+          "t0_ms": 2679960,
+          "t1_ms": 2690300,
+          "order": 334
+        },
+        {
+          "event_id": "event_000336",
+          "type": "dribble_past",
+          "t_ms": 2687290,
+          "t0_ms": 2679960,
+          "t1_ms": 2690300,
+          "order": 335
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "fk_then_shot",
+      "window_aligned": "select_moments",
+      "label_source": "timeline_heuristic",
+      "label_score": 0.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    },
+    {
+      "annotation_id": "select:10月15日_2025世预赛亚洲区_沙特VS伊拉克_国语:4998490:T1",
+      "match_id": "10月15日_2025世预赛亚洲区_沙特VS伊拉克_国语",
+      "chain_category": "danger",
+      "t0_ms": 4990490,
+      "t1_ms": 5003490,
+      "anchor_t_ms": 4998490,
+      "first_event": "successful_tackle",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000550",
+          "type": "successful_tackle",
+          "t_ms": 4990500,
+          "t0_ms": 4981980,
+          "t1_ms": 4991800,
+          "order": 549
+        },
+        {
+          "event_id": "event_000551",
+          "type": "shot",
+          "t_ms": 4998490,
+          "t0_ms": 4995780,
+          "t1_ms": 5006060,
+          "order": 550
+        },
+        {
+          "event_id": "event_000552",
+          "type": "keeper_save",
+          "t_ms": 4999030,
+          "t0_ms": 4995780,
+          "t1_ms": 5006060,
+          "order": 551
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "timeline_heuristic",
+      "label_score": 0.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    }
+  ],
+  "note": "alias of highlight_gold_no_t2"
+}

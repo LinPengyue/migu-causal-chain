@@ -1,0 +1,106 @@
+{
+  "none_unmatched_pre_nms_diagnosis": {
+    "n": 116,
+    "P3_boundary_shift": 53,
+    "P4_wrong_category": 40,
+    "P2_merged_multi_gold": 22,
+    "P1_duplicate_like": 1,
+    "P5_genuine_spurious": 0,
+    "note": "重叠/边界类合计约 76/116，支持做 post-score NMS；错类 40 不会被同 template NMS 消掉"
+  },
+  "metrics": {
+    "legacy": {
+      "A": 64.76,
+      "prec": 87.08,
+      "tracks": 325,
+      "B": 81.46
+    },
+    "none": {
+      "A": 76.66,
+      "prec": 74.28,
+      "tracks": 451,
+      "B": 81.46
+    },
+    "none_nms_v1_aggressive": {
+      "A": 49.89,
+      "prec": 58.92,
+      "tracks": 370,
+      "B": 81.46,
+      "note": "过杀，已弃用为默认"
+    },
+    "none_nms_v2_conservative": {
+      "A": 73.23,
+      "prec": 77.48,
+      "tracks": 413,
+      "B": 81.46
+    }
+  },
+  "p1_keys": {
+    "legacy": {
+      "A_fail_n": 154,
+      "F7": 42,
+      "F4": 37,
+      "F3": 54,
+      "BA_merge": 50,
+      "BA_o2o": 27,
+      "BA_n": 80,
+      "unmatched": 42,
+      "fp": {
+        "P4_wrong_category": 23,
+        "P2_merged_multi_gold": 10,
+        "P3_boundary_shift": 8,
+        "P1_duplicate_like": 1
+      },
+      "quad": {
+        "A_ok_B_ok": 276,
+        "A_fail_B_fail": 74,
+        "A_fail_B_ok": 80,
+        "A_ok_B_fail": 7
+      }
+    },
+    "none": {
+      "A_fail_n": 102,
+      "F7": 25,
+      "F4": 13,
+      "F3": 52,
+      "BA_merge": 15,
+      "BA_o2o": 15,
+      "BA_n": 35,
+      "unmatched": 116,
+      "fp": {
+        "P3_boundary_shift": 53,
+        "P4_wrong_category": 40,
+        "P2_merged_multi_gold": 22,
+        "P1_duplicate_like": 1
+      },
+      "quad": {
+        "A_ok_B_ok": 321,
+        "A_fail_B_fail": 67,
+        "A_fail_B_ok": 35,
+        "A_ok_B_fail": 14
+      }
+    },
+    "none_nms_v2": {
+      "A_fail_n": 117,
+      "F7": 24,
+      "F4": 16,
+      "F3": 57,
+      "BA_merge": 17,
+      "BA_o2o": 12,
+      "BA_n": 46,
+      "unmatched": 93,
+      "fp": {
+        "P4_wrong_category": 43,
+        "P3_boundary_shift": 26,
+        "P2_merged_multi_gold": 23,
+        "P1_duplicate_like": 1
+      },
+      "quad": {
+        "A_ok_B_ok": 310,
+        "A_fail_B_fail": 71,
+        "A_fail_B_ok": 46,
+        "A_ok_B_fail": 10
+      }
+    }
+  }
+}

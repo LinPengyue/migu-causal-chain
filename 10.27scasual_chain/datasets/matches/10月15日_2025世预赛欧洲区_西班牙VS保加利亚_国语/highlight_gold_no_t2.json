@@ -1,0 +1,81 @@
+{
+  "stats": {
+    "rule": "rule4_t1_plus_t2",
+    "half_ms": 2700000,
+    "n_t0": 0,
+    "n_t1_pool": 2,
+    "n_t2_pool": 17,
+    "n_selected": 6,
+    "n_t0_selected": 0,
+    "n_t1_selected": 1,
+    "n_t2_selected": 0,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "no_t2",
+    "n_selected_after_drop_t2": 1,
+    "n_labeled_by_annotation": 1,
+    "n_heuristic": 0
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0016",
+      "match_id": "10月15日_2025世预赛欧洲区_西班牙VS保加利亚_国语",
+      "chain_category": "outcome",
+      "t0_ms": 5127200,
+      "t1_ms": 5140200,
+      "anchor_t_ms": 5135200,
+      "first_event": "pass",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000542",
+          "type": "pass",
+          "t_ms": 5131420,
+          "t0_ms": 5127950,
+          "t1_ms": 5140790,
+          "order": 541
+        },
+        {
+          "event_id": "event_000543",
+          "type": "pass",
+          "t_ms": 5134610,
+          "t0_ms": 5127950,
+          "t1_ms": 5140790,
+          "order": 542
+        },
+        {
+          "event_id": "event_000544",
+          "type": "shot",
+          "t_ms": 5135200,
+          "t0_ms": 5127950,
+          "t1_ms": 5140790,
+          "order": 543
+        },
+        {
+          "event_id": "event_000545",
+          "type": "keeper_save",
+          "t_ms": 5135450,
+          "t0_ms": 5127950,
+          "t1_ms": 5140790,
+          "order": 544
+        },
+        {
+          "event_id": "event_000546",
+          "type": "shot",
+          "t_ms": 5139860,
+          "t0_ms": 5127950,
+          "t1_ms": 5140790,
+          "order": 545
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 83.77,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "stats": {
+    "rule": "rule4_t1_plus_t2",
+    "half_ms": 2700000,
+    "n_t0": 0,
+    "n_t1_pool": 1,
+    "n_t2_pool": 28,
+    "n_selected": 5,
+    "n_t0_selected": 0,
+    "n_t1_selected": 1,
+    "n_t2_selected": 0,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "no_t2",
+    "n_selected_after_drop_t2": 1,
+    "n_labeled_by_annotation": 0,
+    "n_heuristic": 1
+  },
+  "chains": [
+    {
+      "annotation_id": "select:04_1 2月9日 25-26赛季英超第25轮 利物浦VS曼城 4K国语__converted_4K_H264_25fps:597860:T1",
+      "match_id": "04_1 2月9日 25-26赛季英超第25轮 利物浦VS曼城 4K国语__converted_4K_H264_25fps",
+      "chain_category": "danger",
+      "t0_ms": 589860,
+      "t1_ms": 602860,
+      "anchor_t_ms": 597860,
+      "first_event": "free_kick",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000103",
+          "type": "free_kick",
+          "t_ms": 597860,
+          "t0_ms": 594010,
+          "t1_ms": 605270,
+          "order": 102
+        },
+        {
+          "event_id": "event_000104",
+          "type": "shot",
+          "t_ms": 602700,
+          "t0_ms": 594010,
+          "t1_ms": 605270,
+          "order": 103
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "fk_then_shot",
+      "window_aligned": "select_moments",
+      "label_source": "timeline_heuristic",
+      "label_score": 0.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    }
+  ],
+  "note": "alias of highlight_gold_no_t2"
+}

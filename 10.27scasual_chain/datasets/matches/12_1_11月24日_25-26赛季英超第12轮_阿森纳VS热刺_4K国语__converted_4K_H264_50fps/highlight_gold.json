@@ -1,0 +1,176 @@
+{
+  "stats": {
+    "rule": "rule4_t1_plus_t2",
+    "half_ms": 2700000,
+    "n_t0": 0,
+    "n_t1_pool": 4,
+    "n_t2_pool": 19,
+    "n_selected": 6,
+    "n_t0_selected": 0,
+    "n_t1_selected": 3,
+    "n_t2_selected": 0,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "no_t2",
+    "n_selected_after_drop_t2": 3,
+    "n_labeled_by_annotation": 3,
+    "n_heuristic": 0
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0011",
+      "match_id": "12_1 11月24日 25-26赛季英超第12轮 阿森纳VS热刺 4K国语__converted_4K_H264_50fps",
+      "chain_category": "danger",
+      "t0_ms": 548250,
+      "t1_ms": 561250,
+      "anchor_t_ms": 556250,
+      "first_event": "free_kick",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000076",
+          "type": "free_kick",
+          "t_ms": 556250,
+          "t0_ms": 553480,
+          "t1_ms": 563800,
+          "order": 75
+        },
+        {
+          "event_id": "event_000077",
+          "type": "shot",
+          "t_ms": 558650,
+          "t0_ms": 553480,
+          "t1_ms": 563800,
+          "order": 76
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "fk_then_shot",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    },
+    {
+      "annotation_id": "ann_0012",
+      "match_id": "12_1 11月24日 25-26赛季英超第12轮 阿森纳VS热刺 4K国语__converted_4K_H264_50fps",
+      "chain_category": "danger",
+      "t0_ms": 1271040,
+      "t1_ms": 1284040,
+      "anchor_t_ms": 1279040,
+      "first_event": "free_kick",
+      "last_event": "pass",
+      "events": [
+        {
+          "event_id": "event_000183",
+          "type": "free_kick",
+          "t_ms": 1279040,
+          "t0_ms": 1276250,
+          "t1_ms": 1286720,
+          "order": 182
+        },
+        {
+          "event_id": "event_000184",
+          "type": "shot",
+          "t_ms": 1283260,
+          "t0_ms": 1276250,
+          "t1_ms": 1286720,
+          "order": 183
+        },
+        {
+          "event_id": "event_000185",
+          "type": "pass",
+          "t_ms": 1283970,
+          "t0_ms": 1280230,
+          "t1_ms": 1290810,
+          "order": 184
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "fk_then_shot",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 180.43,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    },
+    {
+      "annotation_id": "ann_0017",
+      "match_id": "12_1 11月24日 25-26赛季英超第12轮 阿森纳VS热刺 4K国语__converted_4K_H264_50fps",
+      "chain_category": "danger",
+      "t0_ms": 2057550,
+      "t1_ms": 2070550,
+      "anchor_t_ms": 2065550,
+      "first_event": "successful_tackle",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000294",
+          "type": "successful_tackle",
+          "t_ms": 2058870,
+          "t0_ms": 2054929,
+          "t1_ms": 2067120,
+          "order": 293
+        },
+        {
+          "event_id": "event_000295",
+          "type": "successful_tackle",
+          "t_ms": 2060679,
+          "t0_ms": 2054929,
+          "t1_ms": 2067120,
+          "order": 294
+        },
+        {
+          "event_id": "event_000296",
+          "type": "throw_in",
+          "t_ms": 2061500,
+          "t0_ms": 2061010,
+          "t1_ms": 2071020,
+          "order": 295
+        },
+        {
+          "event_id": "event_000297",
+          "type": "pass",
+          "t_ms": 2062679,
+          "t0_ms": 2054929,
+          "t1_ms": 2067120,
+          "order": 296
+        },
+        {
+          "event_id": "event_000298",
+          "type": "foul",
+          "t_ms": 2064820,
+          "t0_ms": 2061010,
+          "t1_ms": 2071020,
+          "order": 297
+        },
+        {
+          "event_id": "event_000299",
+          "type": "shot",
+          "t_ms": 2065550,
+          "t0_ms": 2054929,
+          "t1_ms": 2067120,
+          "order": 298
+        },
+        {
+          "event_id": "event_000300",
+          "type": "keeper_save",
+          "t_ms": 2066219,
+          "t0_ms": 2054929,
+          "t1_ms": 2067120,
+          "order": 299
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 115.92,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    }
+  ],
+  "note": "alias of highlight_gold_no_t2"
+}

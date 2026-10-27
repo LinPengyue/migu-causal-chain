@@ -1,0 +1,93 @@
+{
+  "legacy_metrics": {
+    "A": 64.76,
+    "B": 81.46,
+    "offline": 90.62,
+    "prec": 87.08,
+    "tracks": 325,
+    "matched": 283
+  },
+  "nomerge_metrics": {
+    "n_gold": 437,
+    "n_emit_deduped": 451,
+    "n_tracks": 451,
+    "recall_matched": 335,
+    "n_matched_gold": 335,
+    "n_unique_matched_tracks": 335,
+    "one_to_one_ok": true,
+    "recall_rate": 76.66,
+    "strict_complete": 335,
+    "strict_rate": 76.66,
+    "aux_time_cat_complete": 335,
+    "aux_time_cat_rate": 76.66,
+    "precision_hits": 335,
+    "precision_rate": 74.28,
+    "latency_ms_p50": 0.0,
+    "latency_ms_p90": 0.0,
+    "latency_ms_mean": 4355.1,
+    "dedupe_mode": "candidate_track_continuity",
+    "match_mode": "bipartite_max_weight_one_to_one"
+  },
+  "nomerge_B": {
+    "n_gold": 437,
+    "strict_complete": 356,
+    "strict_rate": 81.46,
+    "aux_time_cat_complete": 361,
+    "aux_time_cat_rate": 82.61
+  },
+  "a_fail_compare": {
+    "F7_one_to_one_conflict": {
+      "legacy": 42,
+      "nomerge": 25
+    },
+    "F4_track_exists_first_wrong": {
+      "legacy": 37,
+      "nomerge": 13
+    },
+    "F3_track_exists_category_wrong": {
+      "legacy": 54,
+      "nomerge": 52
+    }
+  },
+  "ba_compare": {
+    "track_merges_multi_gold": {
+      "legacy": 50,
+      "nomerge": 15
+    },
+    "one_to_one_conflict": {
+      "legacy": 27,
+      "nomerge": 15
+    }
+  },
+  "sliding_geom": {
+    "legacy": {
+      "n": 281,
+      "p50": 9180,
+      "p90": 113477,
+      "max": 977623,
+      "multi_gold": 62
+    },
+    "none": {
+      "n": 601,
+      "p50": 8537,
+      "p90": 90322,
+      "max": 179316,
+      "multi_gold": 120
+    }
+  },
+  "quad": {
+    "legacy": {
+      "A_ok_B_ok": 276,
+      "A_fail_B_fail": 74,
+      "A_fail_B_ok": 80,
+      "A_ok_B_fail": 7
+    },
+    "nomerge": {
+      "A_ok_B_ok": 321,
+      "A_fail_B_fail": 67,
+      "A_fail_B_ok": 35,
+      "A_ok_B_fail": 14
+    }
+  },
+  "decision_hint": "A up, F7/merge down; precision down and tracks up — mixed vs keep criteria"
+}

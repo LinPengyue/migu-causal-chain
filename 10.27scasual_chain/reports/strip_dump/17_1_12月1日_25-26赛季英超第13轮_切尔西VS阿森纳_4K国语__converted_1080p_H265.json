@@ -1,0 +1,98 @@
+{
+  "match_id": "17_1 12月1日 25-26赛季英超第13轮 切尔西VS阿森纳 4K国语__converted_1080p_H265_50fps",
+  "safe_id": "17_1_12月1日_25-26赛季英超第13轮_切尔西VS阿森纳_4K国语__converted_1080p_H265_50fps",
+  "mode": "gold_clips",
+  "n_chains": 3,
+  "category_counts": {},
+  "chains": [
+    {
+      "clip_id": "clip00",
+      "annotation_id": "ann_0002",
+      "ok": true,
+      "strict_match": false,
+      "flags": {
+        "a_time": false,
+        "b_category": false,
+        "c_first": false,
+        "d_last": false,
+        "strict": false
+      },
+      "gold": {
+        "chain_category": "outcome",
+        "first_event": "goal",
+        "last_event": "goal",
+        "t0_ms": 220883,
+        "t1_ms": 224883
+      },
+      "pred": null,
+      "n_preds_on_clip": 0,
+      "all_preds": []
+    },
+    {
+      "clip_id": "clip01",
+      "annotation_id": "ann_0004",
+      "ok": true,
+      "strict_match": false,
+      "flags": {
+        "a_time": false,
+        "b_category": false,
+        "c_first": false,
+        "d_last": false,
+        "strict": false
+      },
+      "gold": {
+        "chain_category": "outcome",
+        "first_event": "dribble_past",
+        "last_event": "goal",
+        "t0_ms": 912952,
+        "t1_ms": 919731
+      },
+      "pred": null,
+      "n_preds_on_clip": 0,
+      "all_preds": []
+    },
+    {
+      "clip_id": "clip02",
+      "annotation_id": "ann_0006",
+      "ok": true,
+      "strict_match": false,
+      "flags": {
+        "a_time": false,
+        "b_category": false,
+        "c_first": false,
+        "d_last": false,
+        "strict": false
+      },
+      "gold": {
+        "chain_category": "outcome",
+        "first_event": "receive_a_card",
+        "last_event": "var",
+        "t0_ms": 2284628,
+        "t1_ms": 2305630
+      },
+      "pred": null,
+      "n_preds_on_clip": 0,
+      "all_preds": []
+    }
+  ],
+  "config": {
+    "backend": "dump_strip_chains",
+    "algo": "causal_chain6",
+    "adapter": "AlgoStripAdapter",
+    "mode": "gold_clips",
+    "event_source": "gold_events",
+    "prefix_stride": null,
+    "min_prefix": null,
+    "profile": "production",
+    "use_llm": false,
+    "pipeline": "gold_clip(gold_events)→causal_chain6.strip",
+    "aligned_with": "eval/eval_offline_strip.py --event-source gold_events"
+  },
+  "stats": {
+    "n_gold": 3,
+    "n_scorable": 3,
+    "n_empty_clip": 0,
+    "strict_matched": 0,
+    "logic_complete_rate": 0.0
+  }
+}

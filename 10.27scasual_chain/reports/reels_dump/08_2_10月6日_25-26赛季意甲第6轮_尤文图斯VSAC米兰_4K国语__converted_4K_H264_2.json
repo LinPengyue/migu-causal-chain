@@ -1,0 +1,154 @@
+{
+  "match_id": "08_2 10月6日 25-26赛季意甲第6轮 尤文图斯VSAC米兰 4K国语__converted_4K_H264_25fps",
+  "safe_id": "08_2_10月6日_25-26赛季意甲第6轮_尤文图斯VSAC米兰_4K国语__converted_4K_H264_25fps",
+  "input_file": "/data2/lpy1/causal-chain2/8.31causal_chain/datasets/matches/08_2_10月6日_25-26赛季意甲第6轮_尤文图斯VSAC米兰_4K国语__converted_4K_H264_25fps/timeline.json",
+  "event_count": 201,
+  "reel": {
+    "clips": [
+      {
+        "clip_id": "clip00",
+        "chain_template_id": "shot_save_chain",
+        "chain_label_zh": "射门扑救链",
+        "chain_category": "danger",
+        "t0_ms": 1876250,
+        "t1_ms": 1889250,
+        "anchor_event": {
+          "type": "shot",
+          "t_ms": 1884250
+        },
+        "events": [
+          {
+            "event_id": "event_000117",
+            "order": 0,
+            "type": "free_kick",
+            "t_ms": 1882760,
+            "role": "set_piece",
+            "global_index": 116
+          },
+          {
+            "event_id": "event_000118",
+            "order": 1,
+            "type": "shot",
+            "t_ms": 1884250,
+            "role": "shot",
+            "global_index": 117
+          },
+          {
+            "event_id": "event_000119",
+            "order": 2,
+            "type": "keeper_save",
+            "t_ms": 1885950,
+            "role": "save",
+            "global_index": 118
+          },
+          {
+            "event_id": "event_000120",
+            "order": 3,
+            "type": "successful_tackle",
+            "t_ms": 1888090,
+            "role": "outcome",
+            "global_index": 119
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "射门扑救链：free_kick → shot → keeper_save → successful_tackle",
+        "confidence": 1.255,
+        "margin": 1.255,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "shot → keeper_save",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 4,
+          "align_size": 2,
+          "exact_canonical": true,
+          "transitions_ok": false,
+          "illegal_pairs": [
+            "free_kick→shot"
+          ],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            1,
+            2
+          ],
+          "selection": {
+            "tier": "T1",
+            "event_type": "shot",
+            "event_i": 117,
+            "t_ms": 1884250,
+            "t0_ms": 1876250,
+            "t1_ms": 1889250,
+            "reason": "shot_then_save_or_corner",
+            "half": 1,
+            "slot": 2
+          }
+        }
+      }
+    ],
+    "ordering": [
+      "clip00"
+    ],
+    "total_duration_ms": 13000
+  },
+  "config": {
+    "backend": "dump_highlight_reels",
+    "profile": "production",
+    "drop_t2": true,
+    "use_llm": false,
+    "pipeline": "select_moments→classify/refine→assemble_reel",
+    "aligned_with": "eval/eval_offline_highlight.py logic track"
+  },
+  "stats": {
+    "moments_selected": 1,
+    "clips_final": 1,
+    "fast_path": 1,
+    "select": {
+      "rule": "rule4_t1_plus_t2",
+      "half_ms": 2700000,
+      "n_t0": 0,
+      "n_t1_pool": 2,
+      "n_t2_pool": 3,
+      "n_selected": 4,
+      "n_t0_selected": 0,
+      "n_t1_selected": 1,
+      "n_t2_selected": 3,
+      "has_goal": false,
+      "has_penalty_goal": false,
+      "has_red": false,
+      "drop_t2": true,
+      "n_selected_after_drop_t2": 1
+    }
+  }
+}

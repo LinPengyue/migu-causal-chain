@@ -1,0 +1,116 @@
+{
+  "stats": {
+    "rule": "rule4_t1_plus_t2",
+    "half_ms": 2700000,
+    "n_t0": 0,
+    "n_t1_pool": 2,
+    "n_t2_pool": 24,
+    "n_selected": 6,
+    "n_t0_selected": 0,
+    "n_t1_selected": 2,
+    "n_t2_selected": 0,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "no_t2",
+    "n_selected_after_drop_t2": 2,
+    "n_labeled_by_annotation": 2,
+    "n_heuristic": 0
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0027",
+      "match_id": "10月10日_2025世预赛欧洲区_哈萨克斯坦VS列支敦士登_英语",
+      "chain_category": "special",
+      "t0_ms": 6464720,
+      "t1_ms": 6477720,
+      "anchor_t_ms": 6472720,
+      "first_event": "dribble_past",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000567",
+          "type": "dribble_past",
+          "t_ms": 6468710,
+          "t0_ms": 6458410,
+          "t1_ms": 6476070,
+          "order": 566
+        },
+        {
+          "event_id": "event_000568",
+          "type": "pass",
+          "t_ms": 6471390,
+          "t0_ms": 6458410,
+          "t1_ms": 6476070,
+          "order": 567
+        },
+        {
+          "event_id": "event_000569",
+          "type": "shot",
+          "t_ms": 6472720,
+          "t0_ms": 6458410,
+          "t1_ms": 6476070,
+          "order": 568
+        },
+        {
+          "event_id": "event_000570",
+          "type": "keeper_save",
+          "t_ms": 6475040,
+          "t0_ms": 6458410,
+          "t1_ms": 6476070,
+          "order": 569
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 94.34,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    },
+    {
+      "annotation_id": "ann_0028",
+      "match_id": "10月10日_2025世预赛欧洲区_哈萨克斯坦VS列支敦士登_英语",
+      "chain_category": "special",
+      "t0_ms": 6682940,
+      "t1_ms": 6695940,
+      "anchor_t_ms": 6690940,
+      "first_event": "shot",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000592",
+          "type": "shot",
+          "t_ms": 6684150,
+          "t0_ms": 6678370,
+          "t1_ms": 6692970,
+          "order": 591
+        },
+        {
+          "event_id": "event_000593",
+          "type": "shot",
+          "t_ms": 6690940,
+          "t0_ms": 6678370,
+          "t1_ms": 6692970,
+          "order": 592
+        },
+        {
+          "event_id": "event_000594",
+          "type": "keeper_save",
+          "t_ms": 6694200,
+          "t0_ms": 6693430,
+          "t1_ms": 6703650,
+          "order": 593
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 252.62,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    }
+  ]
+}

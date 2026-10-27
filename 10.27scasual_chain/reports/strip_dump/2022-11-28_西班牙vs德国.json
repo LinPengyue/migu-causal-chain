@@ -1,0 +1,749 @@
+{
+  "match_id": "2022-11-28 西班牙vs德国",
+  "safe_id": "2022-11-28_西班牙vs德国",
+  "mode": "gold_clips",
+  "n_chains": 6,
+  "category_counts": {
+    "danger": 4,
+    "outcome": 2
+  },
+  "chains": [
+    {
+      "clip_id": "clip00",
+      "annotation_id": "ann_0001",
+      "ok": true,
+      "strict_match": true,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "pass",
+        "last_event": "shot",
+        "t0_ms": 1273694,
+        "t1_ms": 1284042
+      },
+      "pred": {
+        "chain_category": "danger",
+        "first_event": "pass",
+        "last_event": "shot",
+        "t0_ms": 1275694,
+        "t1_ms": 1282042,
+        "template_id": "shot_post_bar_chain",
+        "source": "sliding",
+        "event_ids": [
+          "event_000001",
+          "event_000002",
+          "event_000003",
+          "event_000004"
+        ],
+        "event_keys": [
+          [
+            1275694,
+            "pass"
+          ],
+          [
+            1278988,
+            "pass"
+          ],
+          [
+            1280191,
+            "pass"
+          ],
+          [
+            1282042,
+            "shot"
+          ]
+        ]
+      },
+      "n_preds_on_clip": 1,
+      "all_preds": [
+        {
+          "chain_category": "danger",
+          "first_event": "pass",
+          "last_event": "shot",
+          "t0_ms": 1275694,
+          "t1_ms": 1282042,
+          "template_id": "shot_post_bar_chain",
+          "source": "sliding",
+          "event_ids": [
+            "event_000001",
+            "event_000002",
+            "event_000003",
+            "event_000004"
+          ],
+          "event_keys": [
+            [
+              1275694,
+              "pass"
+            ],
+            [
+              1278988,
+              "pass"
+            ],
+            [
+              1280191,
+              "pass"
+            ],
+            [
+              1282042,
+              "shot"
+            ]
+          ]
+        }
+      ],
+      "chain_category": "danger",
+      "first_event": "pass",
+      "last_event": "shot",
+      "t0_ms": 1275694,
+      "t1_ms": 1282042,
+      "template_id": "shot_post_bar_chain",
+      "events": null,
+      "event_ids": [
+        "event_000001",
+        "event_000002",
+        "event_000003",
+        "event_000004"
+      ],
+      "event_keys": [
+        [
+          1275694,
+          "pass"
+        ],
+        [
+          1278988,
+          "pass"
+        ],
+        [
+          1280191,
+          "pass"
+        ],
+        [
+          1282042,
+          "shot"
+        ]
+      ]
+    },
+    {
+      "clip_id": "clip01",
+      "annotation_id": "ann_0002",
+      "ok": true,
+      "strict_match": false,
+      "flags": {
+        "a_time": true,
+        "b_category": false,
+        "c_first": true,
+        "d_last": true,
+        "strict": false,
+        "aux_time_cat": false,
+        "aux_time_cat_last": false
+      },
+      "gold": {
+        "chain_category": "correction",
+        "first_event": "free_kick",
+        "last_event": "goal",
+        "t0_ms": 3233158,
+        "t1_ms": 3239610
+      },
+      "pred": {
+        "chain_category": "outcome",
+        "first_event": "free_kick",
+        "last_event": "goal",
+        "t0_ms": 3235158,
+        "t1_ms": 3237610,
+        "template_id": "outcome_other",
+        "source": "anchor",
+        "event_ids": [
+          "event_000005",
+          "event_000006",
+          "event_000007"
+        ],
+        "event_keys": [
+          [
+            3235158,
+            "free_kick"
+          ],
+          [
+            3236961,
+            "shot"
+          ],
+          [
+            3237610,
+            "goal"
+          ]
+        ]
+      },
+      "n_preds_on_clip": 1,
+      "all_preds": [
+        {
+          "chain_category": "outcome",
+          "first_event": "free_kick",
+          "last_event": "goal",
+          "t0_ms": 3235158,
+          "t1_ms": 3237610,
+          "template_id": "outcome_other",
+          "source": "anchor",
+          "event_ids": [
+            "event_000005",
+            "event_000006",
+            "event_000007"
+          ],
+          "event_keys": [
+            [
+              3235158,
+              "free_kick"
+            ],
+            [
+              3236961,
+              "shot"
+            ],
+            [
+              3237610,
+              "goal"
+            ]
+          ]
+        }
+      ],
+      "chain_category": "outcome",
+      "first_event": "free_kick",
+      "last_event": "goal",
+      "t0_ms": 3235158,
+      "t1_ms": 3237610,
+      "template_id": "outcome_other",
+      "events": null,
+      "event_ids": [
+        "event_000005",
+        "event_000006",
+        "event_000007"
+      ],
+      "event_keys": [
+        [
+          3235158,
+          "free_kick"
+        ],
+        [
+          3236961,
+          "shot"
+        ],
+        [
+          3237610,
+          "goal"
+        ]
+      ]
+    },
+    {
+      "clip_id": "clip02",
+      "annotation_id": "ann_0003",
+      "ok": true,
+      "strict_match": true,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "free_kick",
+        "last_event": "keeper_save",
+        "t0_ms": 3565899,
+        "t1_ms": 3573945
+      },
+      "pred": {
+        "chain_category": "danger",
+        "first_event": "free_kick",
+        "last_event": "keeper_save",
+        "t0_ms": 3567899,
+        "t1_ms": 3571945,
+        "template_id": "shot_save_chain",
+        "source": "sliding",
+        "event_ids": [
+          "event_000008",
+          "event_000009",
+          "event_000010"
+        ],
+        "event_keys": [
+          [
+            3567899,
+            "free_kick"
+          ],
+          [
+            3571401,
+            "shot"
+          ],
+          [
+            3571945,
+            "keeper_save"
+          ]
+        ]
+      },
+      "n_preds_on_clip": 1,
+      "all_preds": [
+        {
+          "chain_category": "danger",
+          "first_event": "free_kick",
+          "last_event": "keeper_save",
+          "t0_ms": 3567899,
+          "t1_ms": 3571945,
+          "template_id": "shot_save_chain",
+          "source": "sliding",
+          "event_ids": [
+            "event_000008",
+            "event_000009",
+            "event_000010"
+          ],
+          "event_keys": [
+            [
+              3567899,
+              "free_kick"
+            ],
+            [
+              3571401,
+              "shot"
+            ],
+            [
+              3571945,
+              "keeper_save"
+            ]
+          ]
+        }
+      ],
+      "chain_category": "danger",
+      "first_event": "free_kick",
+      "last_event": "keeper_save",
+      "t0_ms": 3567899,
+      "t1_ms": 3571945,
+      "template_id": "shot_save_chain",
+      "events": null,
+      "event_ids": [
+        "event_000008",
+        "event_000009",
+        "event_000010"
+      ],
+      "event_keys": [
+        [
+          3567899,
+          "free_kick"
+        ],
+        [
+          3571401,
+          "shot"
+        ],
+        [
+          3571945,
+          "keeper_save"
+        ]
+      ]
+    },
+    {
+      "clip_id": "clip03",
+      "annotation_id": "ann_0004",
+      "ok": true,
+      "strict_match": true,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "pass",
+        "last_event": "keeper_save",
+        "t0_ms": 5306329,
+        "t1_ms": 5319070
+      },
+      "pred": {
+        "chain_category": "danger",
+        "first_event": "pass",
+        "last_event": "keeper_save",
+        "t0_ms": 5308329,
+        "t1_ms": 5317070,
+        "template_id": "shot_save_chain",
+        "source": "sliding",
+        "event_ids": [
+          "event_000011",
+          "event_000012",
+          "event_000013",
+          "event_000014",
+          "event_000015"
+        ],
+        "event_keys": [
+          [
+            5308329,
+            "pass"
+          ],
+          [
+            5310643,
+            "pass"
+          ],
+          [
+            5315276,
+            "pass"
+          ],
+          [
+            5316501,
+            "shot"
+          ],
+          [
+            5317070,
+            "keeper_save"
+          ]
+        ]
+      },
+      "n_preds_on_clip": 1,
+      "all_preds": [
+        {
+          "chain_category": "danger",
+          "first_event": "pass",
+          "last_event": "keeper_save",
+          "t0_ms": 5308329,
+          "t1_ms": 5317070,
+          "template_id": "shot_save_chain",
+          "source": "sliding",
+          "event_ids": [
+            "event_000011",
+            "event_000012",
+            "event_000013",
+            "event_000014",
+            "event_000015"
+          ],
+          "event_keys": [
+            [
+              5308329,
+              "pass"
+            ],
+            [
+              5310643,
+              "pass"
+            ],
+            [
+              5315276,
+              "pass"
+            ],
+            [
+              5316501,
+              "shot"
+            ],
+            [
+              5317070,
+              "keeper_save"
+            ]
+          ]
+        }
+      ],
+      "chain_category": "danger",
+      "first_event": "pass",
+      "last_event": "keeper_save",
+      "t0_ms": 5308329,
+      "t1_ms": 5317070,
+      "template_id": "shot_save_chain",
+      "events": null,
+      "event_ids": [
+        "event_000011",
+        "event_000012",
+        "event_000013",
+        "event_000014",
+        "event_000015"
+      ],
+      "event_keys": [
+        [
+          5308329,
+          "pass"
+        ],
+        [
+          5310643,
+          "pass"
+        ],
+        [
+          5315276,
+          "pass"
+        ],
+        [
+          5316501,
+          "shot"
+        ],
+        [
+          5317070,
+          "keeper_save"
+        ]
+      ]
+    },
+    {
+      "clip_id": "clip04",
+      "annotation_id": "ann_0005",
+      "ok": true,
+      "strict_match": true,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "throw_in",
+        "last_event": "keeper_save",
+        "t0_ms": 5436239,
+        "t1_ms": 5445785
+      },
+      "pred": {
+        "chain_category": "danger",
+        "first_event": "throw_in",
+        "last_event": "keeper_save",
+        "t0_ms": 5438239,
+        "t1_ms": 5443785,
+        "template_id": "shot_save_chain",
+        "source": "sliding",
+        "event_ids": [
+          "event_000016",
+          "event_000017",
+          "event_000018"
+        ],
+        "event_keys": [
+          [
+            5438239,
+            "throw_in"
+          ],
+          [
+            5442821,
+            "shot"
+          ],
+          [
+            5443785,
+            "keeper_save"
+          ]
+        ]
+      },
+      "n_preds_on_clip": 1,
+      "all_preds": [
+        {
+          "chain_category": "danger",
+          "first_event": "throw_in",
+          "last_event": "keeper_save",
+          "t0_ms": 5438239,
+          "t1_ms": 5443785,
+          "template_id": "shot_save_chain",
+          "source": "sliding",
+          "event_ids": [
+            "event_000016",
+            "event_000017",
+            "event_000018"
+          ],
+          "event_keys": [
+            [
+              5438239,
+              "throw_in"
+            ],
+            [
+              5442821,
+              "shot"
+            ],
+            [
+              5443785,
+              "keeper_save"
+            ]
+          ]
+        }
+      ],
+      "chain_category": "danger",
+      "first_event": "throw_in",
+      "last_event": "keeper_save",
+      "t0_ms": 5438239,
+      "t1_ms": 5443785,
+      "template_id": "shot_save_chain",
+      "events": null,
+      "event_ids": [
+        "event_000016",
+        "event_000017",
+        "event_000018"
+      ],
+      "event_keys": [
+        [
+          5438239,
+          "throw_in"
+        ],
+        [
+          5442821,
+          "shot"
+        ],
+        [
+          5443785,
+          "keeper_save"
+        ]
+      ]
+    },
+    {
+      "clip_id": "clip05",
+      "annotation_id": "ann_0007",
+      "ok": true,
+      "strict_match": true,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "outcome",
+        "first_event": "successful_tackle",
+        "last_event": "goal",
+        "t0_ms": 6899078,
+        "t1_ms": 6910959
+      },
+      "pred": {
+        "chain_category": "outcome",
+        "first_event": "successful_tackle",
+        "last_event": "goal",
+        "t0_ms": 6901078,
+        "t1_ms": 6908959,
+        "template_id": "turnover_counter_goal",
+        "source": "anchor",
+        "event_ids": [
+          "event_000024",
+          "event_000025",
+          "event_000026",
+          "event_000027",
+          "event_000028"
+        ],
+        "event_keys": [
+          [
+            6901078,
+            "successful_tackle"
+          ],
+          [
+            6902806,
+            "pass"
+          ],
+          [
+            6905406,
+            "assist"
+          ],
+          [
+            6908066,
+            "shot"
+          ],
+          [
+            6908959,
+            "goal"
+          ]
+        ]
+      },
+      "n_preds_on_clip": 1,
+      "all_preds": [
+        {
+          "chain_category": "outcome",
+          "first_event": "successful_tackle",
+          "last_event": "goal",
+          "t0_ms": 6901078,
+          "t1_ms": 6908959,
+          "template_id": "turnover_counter_goal",
+          "source": "anchor",
+          "event_ids": [
+            "event_000024",
+            "event_000025",
+            "event_000026",
+            "event_000027",
+            "event_000028"
+          ],
+          "event_keys": [
+            [
+              6901078,
+              "successful_tackle"
+            ],
+            [
+              6902806,
+              "pass"
+            ],
+            [
+              6905406,
+              "assist"
+            ],
+            [
+              6908066,
+              "shot"
+            ],
+            [
+              6908959,
+              "goal"
+            ]
+          ]
+        }
+      ],
+      "chain_category": "outcome",
+      "first_event": "successful_tackle",
+      "last_event": "goal",
+      "t0_ms": 6901078,
+      "t1_ms": 6908959,
+      "template_id": "turnover_counter_goal",
+      "events": null,
+      "event_ids": [
+        "event_000024",
+        "event_000025",
+        "event_000026",
+        "event_000027",
+        "event_000028"
+      ],
+      "event_keys": [
+        [
+          6901078,
+          "successful_tackle"
+        ],
+        [
+          6902806,
+          "pass"
+        ],
+        [
+          6905406,
+          "assist"
+        ],
+        [
+          6908066,
+          "shot"
+        ],
+        [
+          6908959,
+          "goal"
+        ]
+      ]
+    }
+  ],
+  "config": {
+    "backend": "dump_strip_chains",
+    "algo": "causal_chain6",
+    "adapter": "AlgoStripAdapter",
+    "mode": "gold_clips",
+    "event_source": "gold_events",
+    "prefix_stride": null,
+    "min_prefix": null,
+    "profile": "production",
+    "use_llm": false,
+    "pipeline": "gold_clip(gold_events)→causal_chain6.strip",
+    "aligned_with": "eval/eval_offline_strip.py --event-source gold_events"
+  },
+  "stats": {
+    "n_gold": 6,
+    "n_scorable": 6,
+    "n_empty_clip": 0,
+    "strict_matched": 5,
+    "logic_complete_rate": 83.33
+  }
+}

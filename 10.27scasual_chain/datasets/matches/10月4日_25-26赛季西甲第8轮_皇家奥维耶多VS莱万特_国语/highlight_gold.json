@@ -1,0 +1,120 @@
+{
+  "stats": {
+    "rule": "rule3_t0_2_fill_t1",
+    "half_ms": 2700000,
+    "n_t0": 2,
+    "n_t1_pool": 1,
+    "n_t2_pool": 3,
+    "n_selected": 3,
+    "n_t0_selected": 2,
+    "n_t1_selected": 1,
+    "n_t2_selected": 0,
+    "has_goal": true,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "no_t2",
+    "n_selected_after_drop_t2": 3,
+    "n_labeled_by_annotation": 1,
+    "n_heuristic": 2
+  },
+  "chains": [
+    {
+      "annotation_id": "select:10月4日_25-26赛季西甲第8轮_皇家奥维耶多VS莱万特_国语:2378480:T0",
+      "match_id": "10月4日_25-26赛季西甲第8轮_皇家奥维耶多VS莱万特_国语",
+      "chain_category": "outcome",
+      "t0_ms": 2366480,
+      "t1_ms": 2382480,
+      "anchor_t_ms": 2378480,
+      "first_event": "dribble_past",
+      "last_event": "goal",
+      "events": [
+        {
+          "event_id": "event_000178",
+          "type": "dribble_past",
+          "t_ms": 2371290,
+          "t0_ms": 2342920,
+          "t1_ms": 2381400,
+          "order": 177
+        },
+        {
+          "event_id": "event_000179",
+          "type": "successful_tackle",
+          "t_ms": 2372680,
+          "t0_ms": 2342920,
+          "t1_ms": 2381400,
+          "order": 178
+        },
+        {
+          "event_id": "event_000180",
+          "type": "goal",
+          "t_ms": 2378480,
+          "t0_ms": 2342920,
+          "t1_ms": 2381400,
+          "order": 179
+        }
+      ],
+      "tier": "T0",
+      "tier_reason": "t0_goal",
+      "window_aligned": "select_moments",
+      "label_source": "timeline_heuristic",
+      "label_score": 0.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    },
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "10月4日_25-26赛季西甲第8轮_皇家奥维耶多VS莱万特_国语",
+      "chain_category": "danger",
+      "t0_ms": 3526330,
+      "t1_ms": 3539330,
+      "anchor_t_ms": 3534330,
+      "first_event": "shot",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000238",
+          "type": "shot",
+          "t_ms": 3534330,
+          "t0_ms": 3512450,
+          "t1_ms": 3552010,
+          "order": 237
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    },
+    {
+      "annotation_id": "select:10月4日_25-26赛季西甲第8轮_皇家奥维耶多VS莱万特_国语:3567140:T0",
+      "match_id": "10月4日_25-26赛季西甲第8轮_皇家奥维耶多VS莱万特_国语",
+      "chain_category": "outcome",
+      "t0_ms": 3555140,
+      "t1_ms": 3571140,
+      "anchor_t_ms": 3567140,
+      "first_event": "goal",
+      "last_event": "goal",
+      "events": [
+        {
+          "event_id": "event_000241",
+          "type": "goal",
+          "t_ms": 3567140,
+          "t0_ms": 3552340,
+          "t1_ms": 3602880,
+          "order": 240
+        }
+      ],
+      "tier": "T0",
+      "tier_reason": "t0_goal",
+      "window_aligned": "select_moments",
+      "label_source": "timeline_heuristic",
+      "label_score": 0.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    }
+  ],
+  "note": "alias of highlight_gold_no_t2"
+}

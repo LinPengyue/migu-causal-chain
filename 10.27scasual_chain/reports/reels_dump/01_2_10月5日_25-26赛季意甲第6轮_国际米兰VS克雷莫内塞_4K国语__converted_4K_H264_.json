@@ -1,0 +1,239 @@
+{
+  "match_id": "01_2 10月5日 25-26赛季意甲第6轮 国际米兰VS克雷莫内塞 4K国语__converted_4K_H264_50fps",
+  "safe_id": "01_2_10月5日_25-26赛季意甲第6轮_国际米兰VS克雷莫内塞_4K国语__converted_4K_H264_50fps",
+  "input_file": "/data2/lpy1/causal-chain2/8.31causal_chain/datasets/matches/01_2_10月5日_25-26赛季意甲第6轮_国际米兰VS克雷莫内塞_4K国语__converted_4K_H264_50fps/timeline.json",
+  "event_count": 103,
+  "reel": {
+    "clips": [
+      {
+        "clip_id": "clip00",
+        "chain_template_id": "outcome_other",
+        "chain_label_zh": "其他",
+        "chain_category": "outcome",
+        "t0_ms": 2601850,
+        "t1_ms": 2625860,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 2613850
+        },
+        "events": [
+          {
+            "event_id": "event_000082",
+            "order": 0,
+            "type": "pass",
+            "t_ms": 2611610,
+            "role": "build_up",
+            "global_index": 81
+          },
+          {
+            "event_id": "event_000083",
+            "order": 1,
+            "type": "aerial_won",
+            "t_ms": 2612880,
+            "role": "build_up",
+            "global_index": 82
+          },
+          {
+            "event_id": "event_000084",
+            "order": 2,
+            "type": "shot",
+            "t_ms": 2613370,
+            "role": "shot",
+            "global_index": 83
+          },
+          {
+            "event_id": "event_000085",
+            "order": 3,
+            "type": "goal",
+            "t_ms": 2613850,
+            "role": "outcome",
+            "global_index": 84
+          },
+          {
+            "event_id": "event_000086",
+            "order": 4,
+            "type": "pass",
+            "t_ms": 2615090,
+            "role": "build_up",
+            "global_index": 85
+          },
+          {
+            "event_id": "event_000087",
+            "order": 5,
+            "type": "aerial_won",
+            "t_ms": 2616490,
+            "role": "build_up",
+            "global_index": 86
+          },
+          {
+            "event_id": "event_000088",
+            "order": 6,
+            "type": "shot",
+            "t_ms": 2616990,
+            "role": "shot",
+            "global_index": 87
+          }
+        ],
+        "context_events": [
+          {
+            "event_id": "event_000089",
+            "order": 7,
+            "type": "goal",
+            "t_ms": 2617760,
+            "role": "context",
+            "global_index": 88
+          },
+          {
+            "event_id": "event_000090",
+            "order": 8,
+            "type": "aerial_won",
+            "t_ms": 2620210,
+            "role": "context",
+            "global_index": 89
+          },
+          {
+            "event_id": "event_000091",
+            "order": 9,
+            "type": "shot",
+            "t_ms": 2620910,
+            "role": "context",
+            "global_index": 90
+          },
+          {
+            "event_id": "event_000092",
+            "order": 10,
+            "type": "goal",
+            "t_ms": 2621860,
+            "role": "context",
+            "global_index": 91
+          }
+        ],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 4,
+            "dst": 5,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 4,
+            "dst": 5,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 5,
+            "dst": 6,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 5,
+            "dst": 6,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "其他：pass → aerial_won → shot → goal → pass → aerial_won → shot",
+        "confidence": 1.7,
+        "margin": 1.7,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "shot → goal",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 7,
+          "align_size": 2,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            2,
+            3
+          ],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 84,
+            "t_ms": 2613850,
+            "t0_ms": 2601850,
+            "t1_ms": 2625860,
+            "reason": "t0_goal|merged|merged",
+            "half": 1,
+            "slot": 2
+          }
+        }
+      }
+    ],
+    "ordering": [
+      "clip00"
+    ],
+    "total_duration_ms": 24010
+  },
+  "config": {
+    "backend": "dump_highlight_reels",
+    "profile": "production",
+    "drop_t2": true,
+    "use_llm": false,
+    "pipeline": "select_moments→classify/refine→assemble_reel",
+    "aligned_with": "eval/eval_offline_highlight.py logic track"
+  },
+  "stats": {
+    "moments_selected": 1,
+    "clips_final": 1,
+    "fast_path": 1,
+    "select": {
+      "rule": "rule3_t0_3_fill_t1",
+      "half_ms": 2700000,
+      "n_t0": 3,
+      "n_t1_pool": 0,
+      "n_t2_pool": 2,
+      "n_selected": 1,
+      "n_t0_selected": 1,
+      "n_t1_selected": 0,
+      "n_t2_selected": 0,
+      "has_goal": true,
+      "has_penalty_goal": false,
+      "has_red": false,
+      "drop_t2": true,
+      "n_selected_after_drop_t2": 1
+    }
+  }
+}

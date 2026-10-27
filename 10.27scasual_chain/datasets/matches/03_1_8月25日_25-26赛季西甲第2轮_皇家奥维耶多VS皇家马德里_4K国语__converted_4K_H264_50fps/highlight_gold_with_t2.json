@@ -1,0 +1,126 @@
+{
+  "stats": {
+    "rule": "rule4_t1_plus_t2",
+    "half_ms": 2700000,
+    "n_t0": 0,
+    "n_t1_pool": 0,
+    "n_t2_pool": 3,
+    "n_selected": 3,
+    "n_t0_selected": 0,
+    "n_t1_selected": 0,
+    "n_t2_selected": 3,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "with_t2",
+    "n_labeled_by_annotation": 3,
+    "n_heuristic": 0
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "03_1 8月25日 25-26赛季西甲第2轮 皇家奥维耶多VS皇家马德里 4K国语__converted_4K_H264_50fps",
+      "chain_category": "danger",
+      "t0_ms": 360330,
+      "t1_ms": 370330,
+      "anchor_t_ms": 366330,
+      "first_event": "dribble_past",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000007",
+          "type": "dribble_past",
+          "t_ms": 366330,
+          "t0_ms": 363980,
+          "t1_ms": 374620,
+          "order": 6
+        },
+        {
+          "event_id": "event_000008",
+          "type": "shot",
+          "t_ms": 368910,
+          "t0_ms": 363980,
+          "t1_ms": 374620,
+          "order": 7
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "dribble_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 255.91,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "03_1 8月25日 25-26赛季西甲第2轮 皇家奥维耶多VS皇家马德里 4K国语__converted_4K_H264_50fps",
+      "chain_category": "danger",
+      "t0_ms": 407970,
+      "t1_ms": 417970,
+      "anchor_t_ms": 413970,
+      "first_event": "dribble_past",
+      "last_event": "dribble_past",
+      "events": [
+        {
+          "event_id": "event_000015",
+          "type": "dribble_past",
+          "t_ms": 413970,
+          "t0_ms": 407990,
+          "t1_ms": 419060,
+          "order": 14
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "dribble_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 208.28,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0005",
+      "match_id": "03_1 8月25日 25-26赛季西甲第2轮 皇家奥维耶多VS皇家马德里 4K国语__converted_4K_H264_50fps",
+      "chain_category": "danger",
+      "t0_ms": 2200160,
+      "t1_ms": 2210160,
+      "anchor_t_ms": 2206160,
+      "first_event": "corner",
+      "last_event": "successful_tackle",
+      "events": [
+        {
+          "event_id": "event_000140",
+          "type": "corner",
+          "t_ms": 2201660,
+          "t0_ms": 2197980,
+          "t1_ms": 2209080,
+          "order": 139
+        },
+        {
+          "event_id": "event_000141",
+          "type": "aerial_won",
+          "t_ms": 2203110,
+          "t0_ms": 2197980,
+          "t1_ms": 2209080,
+          "order": 140
+        },
+        {
+          "event_id": "event_000142",
+          "type": "successful_tackle",
+          "t_ms": 2206160,
+          "t0_ms": 2197980,
+          "t1_ms": 2209080,
+          "order": 141
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "successful_tackle_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 114.08,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "match_id": "1月10日_25-26赛季足总杯第3轮_维尔港VS福利特伍德_国语",
+  "safe_id": "1月10日_25-26赛季足总杯第3轮_维尔港VS福利特伍德_国语",
+  "mode": "online",
+  "n_chains": 2,
+  "category_counts": {
+    "danger": 1
+  },
+  "chains": [
+    {
+      "clip_id": "clip00",
+      "annotation_id": "ann_0001",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 170671,
+      "track_id": 0,
+      "t_ready": 2787512,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "pass",
+        "last_event": "keeper_save",
+        "t0_ms": 2776183,
+        "t1_ms": 2789512
+      },
+      "pred": {
+        "category": "danger",
+        "first": "pass",
+        "last": "keeper_save",
+        "t0_ms": 2778183,
+        "t1_ms": 2787512,
+        "emit_t_ms": 2958183
+      },
+      "chain_category": "danger",
+      "first_event": "pass",
+      "last_event": "keeper_save",
+      "t0_ms": 2778183,
+      "t1_ms": 2787512,
+      "emit_t_ms": 2958183
+    },
+    {
+      "clip_id": "clip01",
+      "annotation_id": "ann_0004",
+      "ok": true,
+      "strict_match": false,
+      "matched": false,
+      "latency_ms": null,
+      "track_id": null,
+      "t_ready": 3726824,
+      "flags": {
+        "a_time": false,
+        "b_category": false,
+        "c_first": false,
+        "d_last": false,
+        "strict": false,
+        "aux_time_cat": false,
+        "aux_time_cat_last": false
+      },
+      "gold": {
+        "chain_category": "outcome",
+        "first_event": "throw_in",
+        "last_event": "goal",
+        "t0_ms": 3714649,
+        "t1_ms": 3728824
+      },
+      "pred": null
+    }
+  ],
+  "config": {
+    "backend": "dump_strip_chains",
+    "algo": "causal_chain6",
+    "adapter": "OnlineStripAdapter",
+    "mode": "online",
+    "event_source": "gold_events",
+    "prefix_stride": 1,
+    "min_prefix": 2,
+    "profile": "production",
+    "use_llm": false,
+    "pipeline": "stream(gold_events)→OnlineStripEngine→one-to-one",
+    "aligned_with": "eval/eval_online_strip.py --stream-source gold_events"
+  },
+  "stats": {
+    "n_gold": 2,
+    "n_scorable": 2,
+    "strict_matched": 1,
+    "logic_complete_rate": 50.0,
+    "precision_hits": 1,
+    "n_tracks": 2,
+    "recall_matched": 1,
+    "n_stream_events": 11,
+    "n_prefix_snapshots": 15
+  }
+}

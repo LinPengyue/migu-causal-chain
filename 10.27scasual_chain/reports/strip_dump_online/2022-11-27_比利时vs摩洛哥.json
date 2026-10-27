@@ -1,0 +1,155 @@
+{
+  "match_id": "2022-11-27 比利时vs摩洛哥",
+  "safe_id": "2022-11-27_比利时vs摩洛哥",
+  "mode": "online",
+  "n_chains": 3,
+  "category_counts": {
+    "danger": 3
+  },
+  "chains": [
+    {
+      "clip_id": "clip00",
+      "annotation_id": "ann_0004",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 178583,
+      "track_id": 0,
+      "t_ready": 3044351,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "corner",
+        "last_event": "keeper_save",
+        "t0_ms": 3040934,
+        "t1_ms": 3046351
+      },
+      "pred": {
+        "category": "danger",
+        "first": "corner",
+        "last": "keeper_save",
+        "t0_ms": 3042934,
+        "t1_ms": 3044351,
+        "emit_t_ms": 3222934
+      },
+      "chain_category": "danger",
+      "first_event": "corner",
+      "last_event": "keeper_save",
+      "t0_ms": 3042934,
+      "t1_ms": 3044351,
+      "emit_t_ms": 3222934
+    },
+    {
+      "clip_id": "clip01",
+      "annotation_id": "ann_0018",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 28163,
+      "track_id": 1,
+      "t_ready": 5084771,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "shot",
+        "last_event": "goal_line_clearance",
+        "t0_ms": 5081811,
+        "t1_ms": 5086771
+      },
+      "pred": {
+        "category": "danger",
+        "first": "shot",
+        "last": "goal_line_clearance",
+        "t0_ms": 5083811,
+        "t1_ms": 5084771,
+        "emit_t_ms": 5112934
+      },
+      "chain_category": "danger",
+      "first_event": "shot",
+      "last_event": "goal_line_clearance",
+      "t0_ms": 5083811,
+      "t1_ms": 5084771,
+      "emit_t_ms": 5112934
+    },
+    {
+      "clip_id": "clip02",
+      "annotation_id": "ann_0021",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 47858,
+      "track_id": 2,
+      "t_ready": 6055076,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "shot",
+        "last_event": "goal_line_clearance",
+        "t0_ms": 6051649,
+        "t1_ms": 6057076
+      },
+      "pred": {
+        "category": "danger",
+        "first": "shot",
+        "last": "goal_line_clearance",
+        "t0_ms": 6053649,
+        "t1_ms": 6055076,
+        "emit_t_ms": 6102934
+      },
+      "chain_category": "danger",
+      "first_event": "shot",
+      "last_event": "goal_line_clearance",
+      "t0_ms": 6053649,
+      "t1_ms": 6055076,
+      "emit_t_ms": 6102934
+    }
+  ],
+  "config": {
+    "backend": "dump_strip_chains",
+    "algo": "causal_chain6",
+    "adapter": "OnlineStripAdapter",
+    "mode": "online",
+    "event_source": "gold_events",
+    "prefix_stride": 1,
+    "min_prefix": 2,
+    "profile": "production",
+    "use_llm": false,
+    "pipeline": "stream(gold_events)→OnlineStripEngine→one-to-one",
+    "aligned_with": "eval/eval_online_strip.py --stream-source gold_events"
+  },
+  "stats": {
+    "n_gold": 3,
+    "n_scorable": 3,
+    "strict_matched": 3,
+    "logic_complete_rate": 100.0,
+    "precision_hits": 3,
+    "n_tracks": 3,
+    "recall_matched": 3,
+    "n_stream_events": 6,
+    "n_prefix_snapshots": 11
+  }
+}

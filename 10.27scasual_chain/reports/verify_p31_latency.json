@@ -1,0 +1,62 @@
+{
+  "final_equivalence": true,
+  "n_matches_eq": 2,
+  "eq_rows": [
+    {
+      "safe_id": "01_1_9月29日_25-26赛季西甲第7轮_巴塞罗那VS皇家社会_4K国语__converted_4K_H265_25fps",
+      "final_match": true,
+      "n_batch": 4,
+      "n_online": 4
+    },
+    {
+      "safe_id": "01_2_10月5日_25-26赛季意甲第6轮_国际米兰VS克雷莫内塞_4K国语__converted_4K_H264_50fps",
+      "final_match": true,
+      "n_batch": 8,
+      "n_online": 8
+    }
+  ],
+  "online_strict_rate": 90.0,
+  "online_strict_complete": 9,
+  "n_gold": 10,
+  "latency_ms_p50": 66906.0,
+  "latency_ms_p90": 176786.0,
+  "latency_ms_mean": 79502.0,
+  "n_latency_samples": 9,
+  "n_latency_gt_45s": 6,
+  "pct_latency_gt_45s": 66.67,
+  "profile_strip": {
+    "post_ms": 60000,
+    "window_ms": 180000,
+    "note": "若 >45s 仍高，属 post_ms/window_ms 结构下限，不继续调参"
+  },
+  "per_match": [
+    {
+      "safe_id": "01_1_9月29日_25-26赛季西甲第7轮_巴塞罗那VS皇家社会_4K国语__converted_4K_H265_25fps",
+      "summary": {
+        "n_gold": 3,
+        "n_tracks": 4,
+        "strict_complete": 2,
+        "strict_rate": 66.67,
+        "recall_rate": 66.67,
+        "precision_rate": 50.0,
+        "latency_ms_p50": 85817.0,
+        "latency_ms_p90": 176786.0,
+        "latency_ms_mean": 131301.5
+      }
+    },
+    {
+      "safe_id": "01_2_10月5日_25-26赛季意甲第6轮_国际米兰VS克雷莫内塞_4K国语__converted_4K_H264_50fps",
+      "summary": {
+        "n_gold": 7,
+        "n_tracks": 8,
+        "strict_complete": 7,
+        "strict_rate": 100.0,
+        "recall_rate": 100.0,
+        "precision_rate": 87.5,
+        "latency_ms_p50": 66539.0,
+        "latency_ms_p90": 81553.0,
+        "latency_ms_mean": 64702.1
+      }
+    }
+  ]
+}

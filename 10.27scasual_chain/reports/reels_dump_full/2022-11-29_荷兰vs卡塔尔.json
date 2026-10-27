@@ -1,0 +1,323 @@
+{
+  "match_id": "2022-11-29 荷兰vs卡塔尔",
+  "safe_id": "2022-11-29_荷兰vs卡塔尔",
+  "input_file": "/data2/lpy1/causal-chain2/8.31causal_chain/datasets/matches/2022-11-29_荷兰vs卡塔尔/timeline.json",
+  "event_count": 273,
+  "reel": {
+    "clips": [
+      {
+        "clip_id": "clip00",
+        "chain_template_id": "second_phase_after_frame_chain",
+        "chain_label_zh": "门框后二次进攻链",
+        "chain_category": "danger",
+        "t0_ms": 2072610,
+        "t1_ms": 2082610,
+        "anchor_event": {
+          "type": "corner",
+          "t_ms": 2078610
+        },
+        "events": [
+          {
+            "event_id": "event_000084",
+            "order": 0,
+            "type": "corner",
+            "t_ms": 2078610,
+            "role": "set_piece",
+            "global_index": 83
+          },
+          {
+            "event_id": "event_000085",
+            "order": 1,
+            "type": "shot",
+            "t_ms": 2080050,
+            "role": "shot",
+            "global_index": 84
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "门框后二次进攻链（corner → shot）",
+        "confidence": 0.8,
+        "margin": 0.8,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 2,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T2",
+            "event_type": "corner",
+            "event_i": 83,
+            "t_ms": 2078610,
+            "t0_ms": 2072610,
+            "t1_ms": 2082610,
+            "reason": "corner_then_threat",
+            "half": 1,
+            "slot": 2
+          }
+        }
+      },
+      {
+        "clip_id": "clip01",
+        "chain_template_id": "shot_save_chain",
+        "chain_label_zh": "射门扑救链",
+        "chain_category": "danger",
+        "t0_ms": 3604830,
+        "t1_ms": 3617830,
+        "anchor_event": {
+          "type": "shot",
+          "t_ms": 3612830
+        },
+        "events": [
+          {
+            "event_id": "event_000158",
+            "order": 0,
+            "type": "pass",
+            "t_ms": 3608800,
+            "role": "build_up",
+            "global_index": 157
+          },
+          {
+            "event_id": "event_000159",
+            "order": 1,
+            "type": "successful_tackle",
+            "t_ms": 3610030,
+            "role": "build_up",
+            "global_index": 158
+          },
+          {
+            "event_id": "event_000160",
+            "order": 2,
+            "type": "pass",
+            "t_ms": 3612030,
+            "role": "build_up",
+            "global_index": 159
+          },
+          {
+            "event_id": "event_000161",
+            "order": 3,
+            "type": "shot",
+            "t_ms": 3612830,
+            "role": "shot",
+            "global_index": 160
+          },
+          {
+            "event_id": "event_000162",
+            "order": 4,
+            "type": "keeper_save",
+            "t_ms": 3614750,
+            "role": "save",
+            "global_index": 161
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "射门扑救链：pass → successful_tackle → pass → shot → keeper_save",
+        "confidence": 2.15,
+        "margin": 2.15,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "shot → keeper_save",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 5,
+          "align_size": 2,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            3,
+            4
+          ],
+          "selection": {
+            "tier": "T1",
+            "event_type": "shot",
+            "event_i": 160,
+            "t_ms": 3612830,
+            "t0_ms": 3604830,
+            "t1_ms": 3617830,
+            "reason": "shot_then_save_or_corner",
+            "half": 2,
+            "slot": 1
+          }
+        }
+      },
+      {
+        "clip_id": "clip02",
+        "chain_template_id": "outcome_other",
+        "chain_label_zh": "其他",
+        "chain_category": "outcome",
+        "t0_ms": 3662780,
+        "t1_ms": 3678780,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 3674780
+        },
+        "events": [
+          {
+            "event_id": "event_000166",
+            "order": 0,
+            "type": "shot",
+            "t_ms": 3671440,
+            "role": "shot",
+            "global_index": 165
+          },
+          {
+            "event_id": "event_000167",
+            "order": 1,
+            "type": "goal",
+            "t_ms": 3674780,
+            "role": "outcome",
+            "global_index": 166
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "其他：shot → goal",
+        "confidence": 1.7,
+        "margin": 1.7,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "shot → goal",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 2,
+          "align_size": 2,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            0,
+            1
+          ],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 166,
+            "t_ms": 3674780,
+            "t0_ms": 3662780,
+            "t1_ms": 3678780,
+            "reason": "t0_goal",
+            "half": 2,
+            "slot": 1
+          }
+        }
+      }
+    ],
+    "ordering": [
+      "clip00",
+      "clip01",
+      "clip02"
+    ],
+    "total_duration_ms": 39000
+  },
+  "config": {
+    "backend": "dump_highlight_reels_full",
+    "profile": "production",
+    "drop_t2": false,
+    "min_clips": 6,
+    "use_llm": false,
+    "pipeline": "select_moments(full PDF)→optional T1/T2 fill→classify/refine",
+    "note": "交付观感用；评测 no_t2 仍用 dump_highlight_reels.py / reels_dump"
+  },
+  "stats": {
+    "moments_selected": 3,
+    "clips_final": 3,
+    "fast_path": 3,
+    "select": {
+      "rule": "rule3_t0_1_fill_t1",
+      "half_ms": 2700000,
+      "n_t0": 1,
+      "n_t1_pool": 1,
+      "n_t2_pool": 2,
+      "n_selected": 2,
+      "n_t0_selected": 1,
+      "n_t1_selected": 1,
+      "n_t2_selected": 0,
+      "has_goal": true,
+      "has_penalty_goal": false,
+      "has_red": false
+    },
+    "fill": {
+      "min_clips": 6,
+      "n_before": 2,
+      "n_filled": 1,
+      "presentation_fill": true,
+      "n_after": 3
+    },
+    "n_moments_raw": 2,
+    "under_min_clips": true
+  }
+}

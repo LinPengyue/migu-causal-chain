@@ -1,0 +1,86 @@
+{
+  "rule_only_default_ok": true,
+  "llm_loaded": true,
+  "interface_issues": [],
+  "matches": [
+    {
+      "safe_id": "01_1_9月29日_25-26赛季西甲第7轮_巴塞罗那VS皇家社会_4K国语__converted_4K_H265_25fps",
+      "n_events": 12,
+      "n_batch": 4,
+      "n_online": 4,
+      "schema_ok": true,
+      "schema_issues": [],
+      "final_equivalence": true,
+      "sample_pred": {
+        "chain_category": "danger",
+        "first_event": "corner",
+        "last_event": "keeper_save",
+        "t0_ms": 847109,
+        "t1_ms": 850323,
+        "template_id": "shot_save_chain",
+        "source": "sliding",
+        "event_ids": [
+          "event_000007",
+          "event_000008",
+          "event_000009",
+          "event_000010"
+        ],
+        "event_keys": [
+          [
+            847109,
+            "corner"
+          ],
+          [
+            848422,
+            "pass"
+          ],
+          [
+            849641,
+            "shot"
+          ],
+          [
+            850323,
+            "keeper_save"
+          ]
+        ]
+      },
+      "adapter_batch": {
+        "adapter": "AlgoStripAdapter",
+        "backend": "causal_chain6.strip_pipeline",
+        "profile": "production",
+        "llm_enabled": true,
+        "classify_backend": "chain4_agent+qwen",
+        "qwen_scope": "template/category only; geometry/stream unchanged",
+        "pre_ms": 120000,
+        "post_ms": 60000,
+        "window_ms": 180000,
+        "step_ms": 90000,
+        "sliding_merge_mode": "none",
+        "sliding_post_nms": "off",
+        "min_margin": 0.08,
+        "use_sliding_recall": true,
+        "note": "窗参来自算法 profile.strip；评测不内置触发/lookback"
+      },
+      "adapter_online": {
+        "adapter": "OnlineStripAdapter",
+        "backend": "causal_chain6.online_strip_engine",
+        "profile": "production",
+        "llm_enabled": true,
+        "classify_backend": "chain4_agent+qwen",
+        "qwen_scope": "template/category only; geometry/stream unchanged",
+        "pre_ms": 120000,
+        "post_ms": 60000,
+        "window_ms": 180000,
+        "step_ms": 90000,
+        "sliding_merge_mode": "none",
+        "sliding_post_nms": "off",
+        "min_margin": 0.08,
+        "use_sliding_recall": true,
+        "note": "P3.1 stateful online；feed+advance_time；predict=reset+feed_many+flush"
+      }
+    }
+  ],
+  "final_equivalence": true,
+  "schema_ok": true,
+  "smoke_pass": true
+}

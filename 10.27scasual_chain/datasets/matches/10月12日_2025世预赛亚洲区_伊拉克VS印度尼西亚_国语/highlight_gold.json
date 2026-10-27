@@ -1,0 +1,144 @@
+{
+  "stats": {
+    "rule": "rule4_t1_plus_t2",
+    "half_ms": 2700000,
+    "n_t0": 0,
+    "n_t1_pool": 3,
+    "n_t2_pool": 1,
+    "n_selected": 4,
+    "n_t0_selected": 0,
+    "n_t1_selected": 3,
+    "n_t2_selected": 0,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "no_t2",
+    "n_selected_after_drop_t2": 3,
+    "n_labeled_by_annotation": 3,
+    "n_heuristic": 0
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "10月12日_2025世预赛亚洲区_伊拉克VS印度尼西亚_国语",
+      "chain_category": "danger",
+      "t0_ms": 1478450,
+      "t1_ms": 1491450,
+      "anchor_t_ms": 1486450,
+      "first_event": "shot",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000171",
+          "type": "shot",
+          "t_ms": 1479080,
+          "t0_ms": 1467360,
+          "t1_ms": 1480570,
+          "order": 170
+        },
+        {
+          "event_id": "event_000172",
+          "type": "pass",
+          "t_ms": 1482030,
+          "t0_ms": 1480520,
+          "t1_ms": 1490920,
+          "order": 171
+        },
+        {
+          "event_id": "event_000173",
+          "type": "shot",
+          "t_ms": 1486450,
+          "t0_ms": 1480520,
+          "t1_ms": 1490920,
+          "order": 172
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    },
+    {
+      "annotation_id": "ann_0016",
+      "match_id": "10月12日_2025世预赛亚洲区_伊拉克VS印度尼西亚_国语",
+      "chain_category": "danger",
+      "t0_ms": 5817190,
+      "t1_ms": 5830190,
+      "anchor_t_ms": 5825190,
+      "first_event": "shot",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000460",
+          "type": "shot",
+          "t_ms": 5825190,
+          "t0_ms": 5819830,
+          "t1_ms": 5830410,
+          "order": 459
+        },
+        {
+          "event_id": "event_000461",
+          "type": "keeper_save",
+          "t_ms": 5826270,
+          "t0_ms": 5819830,
+          "t1_ms": 5830410,
+          "order": 460
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 230.37,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    },
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "10月12日_2025世预赛亚洲区_伊拉克VS印度尼西亚_国语",
+      "chain_category": "danger",
+      "t0_ms": 6444320,
+      "t1_ms": 6457320,
+      "anchor_t_ms": 6452320,
+      "first_event": "pass",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000491",
+          "type": "pass",
+          "t_ms": 6450400,
+          "t0_ms": 6448630,
+          "t1_ms": 6458740,
+          "order": 490
+        },
+        {
+          "event_id": "event_000492",
+          "type": "shot",
+          "t_ms": 6452320,
+          "t0_ms": 6448630,
+          "t1_ms": 6458740,
+          "order": 491
+        },
+        {
+          "event_id": "event_000493",
+          "type": "keeper_save",
+          "t_ms": 6454760,
+          "t0_ms": 6448630,
+          "t1_ms": 6458740,
+          "order": 492
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    }
+  ],
+  "note": "alias of highlight_gold_no_t2"
+}

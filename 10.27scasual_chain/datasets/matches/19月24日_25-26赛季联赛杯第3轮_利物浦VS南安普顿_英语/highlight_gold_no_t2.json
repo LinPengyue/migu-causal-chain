@@ -1,0 +1,57 @@
+{
+  "stats": {
+    "rule": "rule4_t1_plus_t2",
+    "half_ms": 2700000,
+    "n_t0": 0,
+    "n_t1_pool": 1,
+    "n_t2_pool": 7,
+    "n_selected": 4,
+    "n_t0_selected": 0,
+    "n_t1_selected": 1,
+    "n_t2_selected": 0,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "no_t2",
+    "n_selected_after_drop_t2": 1,
+    "n_labeled_by_annotation": 1,
+    "n_heuristic": 0
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "19月24日_25-26赛季联赛杯第3轮_利物浦VS南安普顿_英语",
+      "chain_category": "danger",
+      "t0_ms": 1784410,
+      "t1_ms": 1797410,
+      "anchor_t_ms": 1792410,
+      "first_event": "shot",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000239",
+          "type": "shot",
+          "t_ms": 1792410,
+          "t0_ms": 1788690,
+          "t1_ms": 1799450,
+          "order": 238
+        },
+        {
+          "event_id": "event_000240",
+          "type": "keeper_save",
+          "t_ms": 1793020,
+          "t0_ms": 1788690,
+          "t1_ms": 1799450,
+          "order": 239
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    }
+  ]
+}

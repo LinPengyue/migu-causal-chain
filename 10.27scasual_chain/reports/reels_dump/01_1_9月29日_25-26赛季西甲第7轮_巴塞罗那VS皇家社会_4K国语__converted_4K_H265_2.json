@@ -1,0 +1,113 @@
+{
+  "match_id": "01_1 9月29日 25-26赛季西甲第7轮 巴塞罗那VS皇家社会 4K国语__converted_4K_H265_25fps",
+  "safe_id": "01_1_9月29日_25-26赛季西甲第7轮_巴塞罗那VS皇家社会_4K国语__converted_4K_H265_25fps",
+  "input_file": "/data2/lpy1/causal-chain2/8.31causal_chain/datasets/matches/01_1_9月29日_25-26赛季西甲第7轮_巴塞罗那VS皇家社会_4K国语__converted_4K_H265_25fps/timeline.json",
+  "event_count": 701,
+  "reel": {
+    "clips": [
+      {
+        "clip_id": "clip00",
+        "chain_template_id": "outcome_other",
+        "chain_label_zh": "其他",
+        "chain_category": "outcome",
+        "t0_ms": 2101620,
+        "t1_ms": 2117620,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 2113620
+        },
+        "events": [
+          {
+            "event_id": "event_000574",
+            "order": 0,
+            "type": "pass",
+            "t_ms": 2111430,
+            "role": "build_up",
+            "global_index": 573
+          },
+          {
+            "event_id": "event_000575",
+            "order": 1,
+            "type": "goal",
+            "t_ms": 2113620,
+            "role": "outcome",
+            "global_index": 574
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "其他（pass → goal）",
+        "confidence": 0.88,
+        "margin": 0.88,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 2,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 574,
+            "t_ms": 2113620,
+            "t0_ms": 2101620,
+            "t1_ms": 2117620,
+            "reason": "t0_goal",
+            "half": 1,
+            "slot": 2
+          }
+        }
+      }
+    ],
+    "ordering": [
+      "clip00"
+    ],
+    "total_duration_ms": 16000
+  },
+  "config": {
+    "backend": "dump_highlight_reels",
+    "profile": "production",
+    "drop_t2": true,
+    "use_llm": false,
+    "pipeline": "select_moments→classify/refine→assemble_reel",
+    "aligned_with": "eval/eval_offline_highlight.py logic track"
+  },
+  "stats": {
+    "moments_selected": 1,
+    "clips_final": 1,
+    "fast_path": 1,
+    "select": {
+      "rule": "rule3_t0_1_fill_t1",
+      "half_ms": 2700000,
+      "n_t0": 1,
+      "n_t1_pool": 0,
+      "n_t2_pool": 11,
+      "n_selected": 1,
+      "n_t0_selected": 1,
+      "n_t1_selected": 0,
+      "n_t2_selected": 0,
+      "has_goal": true,
+      "has_penalty_goal": false,
+      "has_red": false,
+      "drop_t2": true,
+      "n_selected_after_drop_t2": 1
+    }
+  }
+}
