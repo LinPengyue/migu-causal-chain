@@ -128,39 +128,42 @@ def classify_observation_labels(evidence: Dict[str, Any]) -> Dict[str, Any]:
     """从 VLM 文本抽取视觉标签与不确定性（观察层）。"""
     import re
 
-    # 优先 observed_actions，避免 gap_id / 路径字符串污染
+    # 仅用 observed_actions 抽正向标签，避免 seed/notes 里的 “goal” 字样污染
     actions_blob = " ".join(str(a) for a in (evidence.get("observed_actions") or [])).lower()
-    extra_blob = " ".join(
+    notes_blob = " ".join(
         [
             str(evidence.get("story_relation") or ""),
             str(evidence.get("notes") or ""),
         ]
     ).lower()
-    # 去掉疑似标识符（含下划线的 token，如 verify_equalizer_goal_action）
-    extra_blob = re.sub(r"\b\w*_\w+\b", " ", extra_blob)
-    blob = f"{actions_blob} {extra_blob}"
     labels: List[str] = []
-    mapping = [
+    positive_mapping = [
         ("goal", (r"\bgoal\b", "进球", "ball in net", "破门")),
         ("shot", (r"\bshot\b", r"\bshoot\b", "射门", "strike")),
         ("score_change", ("score change", "scoreboard change", "比分变化")),
         ("celebration", ("celebrat", "庆祝", "crowd cheer")),
         ("replay", (r"\breplay\b", "回放", "slow motion", "slo-mo")),
         ("scoreboard", ("scoreboard", "scorebug", "记分牌", "比分牌")),
+    ]
+    soft_mapping = [
         ("unrelated", ("unrelated", "无关", "irrelevant", "no goal", "无进球")),
         ("uncertain", (r"\buncertain\b", "不确定", "不足以")),
     ]
-    for lab, keys in mapping:
-        hit = False
+
+    def _hit(blob: str, keys: tuple) -> bool:
         for k in keys:
             if k.startswith(r"\b"):
                 if re.search(k, blob):
-                    hit = True
-                    break
+                    return True
             elif k in blob:
-                hit = True
-                break
-        if hit:
+                return True
+        return False
+
+    for lab, keys in positive_mapping:
+        if _hit(actions_blob, keys):
+            labels.append(lab)
+    for lab, keys in soft_mapping:
+        if _hit(actions_blob, keys) or _hit(notes_blob, keys):
             labels.append(lab)
     if not labels:
         labels.append("uncertain")
