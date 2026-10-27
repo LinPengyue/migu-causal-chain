@@ -1,0 +1,171 @@
+{
+  "phase": "4B.5",
+  "http_attempts": 1,
+  "real_api_executed": true,
+  "api_mode": "real",
+  "est_cost_usd_real": 0.001107,
+  "usage_summary": {
+    "http_attempts": 1,
+    "real_ok": 1,
+    "real_failures": 0,
+    "prompt_tokens": 6505,
+    "completion_tokens": 218,
+    "total_tokens": 6723,
+    "est_cost_usd_real": 0.001107,
+    "output_budget_exceeded_count": 0,
+    "degraded_calls": 0
+  },
+  "records": [
+    {
+      "role": "vision",
+      "model": "Qwen3.6-Plus",
+      "ok": true,
+      "mode": "real",
+      "elapsed_sec": 32.8652044639457,
+      "prompt_tokens": 6505,
+      "completion_tokens": 218,
+      "total_tokens": 6723,
+      "est_cost_usd": 0.00110655,
+      "cached": false,
+      "error": "",
+      "http_status": 200,
+      "retryable": false,
+      "http_attempt": true,
+      "attempt_index": 0,
+      "failure_status": "",
+      "request_token_param": "max_tokens",
+      "request_token_limit": 256,
+      "request_thinking_sent": false,
+      "finish_reason": "stop",
+      "reasoning_tokens": null,
+      "visible_output_chars": 738,
+      "output_budget_exceeded": false
+    }
+  ],
+  "audits_found": [],
+  "frame_times": [
+    {
+      "frame_id": "f_0000_3059953",
+      "requested_media_sec": 3059.953,
+      "actual_media_sec": 3059.96
+    },
+    {
+      "frame_id": "f_0001_3065903",
+      "requested_media_sec": 3065.903,
+      "actual_media_sec": 3065.9
+    },
+    {
+      "frame_id": "f_0002_3071853",
+      "requested_media_sec": 3071.853,
+      "actual_media_sec": 3071.86
+    }
+  ],
+  "labels": {
+    "labels": [
+      "shot",
+      "celebration"
+    ],
+    "primary": "shot",
+    "confidence": 0.95,
+    "uncertainty": 0.050000000000000044,
+    "frame_ids": [
+      "f_0001_3065903",
+      "f_0002_3071853"
+    ],
+    "provider_mode": "real",
+    "description": "A Croatia player takes a shot on goal from inside the penalty area, followed immediately by a celebration slide, suggesting a successful equalizer goal.",
+    "observation_only": true,
+    "fact_verified": false
+  },
+  "evidence": {
+    "provider_mode": "real",
+    "normalized_ok": true,
+    "failure_status": null,
+    "observed_actions": [
+      "shot",
+      "celebration"
+    ],
+    "story_relation": "A Croatia player takes a shot on goal from inside the penalty area, followed immediately by a celebration slide, suggesting a successful equalizer goal.",
+    "notes": "Frame f_0001 shows the shooting action. Frame f_0002 shows a Croatian player sliding in celebration. The scoreboard overlay remains 0-1 in all provided frames, likely due to broadcast latency or the specific moment captured before the graphic update, but the visual evidence of the shot and subsequent celebration strongly implies a goal event.",
+    "model": "Qwen3.6-Plus",
+    "usage": {
+      "prompt_tokens": 6505,
+      "completion_tokens": 218,
+      "total_tokens": 6723,
+      "completion_tokens_details": {
+        "text_tokens": 218
+      }
+    },
+    "confidence": 0.95,
+    "observation_only": true,
+    "fact_verified": false
+  },
+  "json_complete_heuristic": {
+    "normalized_ok": true,
+    "has_actions": true,
+    "notes_endswith_incomplete": false,
+    "excerpt_len": 0
+  },
+  "comparison_to_4b2": {
+    "4b2_completion_tokens": 3195,
+    "4b5_completion_tokens": 218,
+    "4b2_had_thinking_disabled": false,
+    "4b5_profile": "video_rsi"
+  },
+  "window_provenance": {
+    "observed_best_window": {
+      "start": 3059.903,
+      "end": 3071.903
+    },
+    "proposed_next_window": {
+      "start": 3062.903,
+      "end": 3068.903
+    },
+    "proposed_next_action": "shrink",
+    "next_window_applied": false,
+    "next_window_pending": {
+      "window": {
+        "start": 3062.903,
+        "end": 3068.903
+      },
+      "applied": false,
+      "reason": "max_rounds_reached_before_next_observe"
+    },
+    "note": "EDL/candidate writes observed_best_window only; proposed_next_window is a plan for a subsequent round and is NOT verified localization by itself"
+  },
+  "gates": {
+    "render_ready": false,
+    "n_render_ready_edl": 0,
+    "go_ahead_pending": [
+      {
+        "segment_id": "seg_go_ahead_goal_pending",
+        "media_in": null,
+        "render_eligibility": "blocked",
+        "time_status": "pending_localization"
+      }
+    ]
+  },
+  "config_snapshot": {
+    "max_rounds": 1,
+    "frames_per_round": 3,
+    "max_api_calls": 1
+  },
+  "request_confirmed_pre_send": {
+    "model": "Qwen3.6-Plus",
+    "temperature": 0.0,
+    "max_tokens": 256,
+    "thinking": {
+      "type": "disabled"
+    },
+    "stream": false,
+    "http_status_observed": 200,
+    "thinking_field_rejected": false
+  },
+  "verdict": {
+    "paratera_accepts_thinking_disabled_object": true,
+    "completion_tokens_within_256": true,
+    "json_complete": true,
+    "vision_ok_not_budget_truncation": true,
+    "compared_to_4b2_3195": "218 vs 3195; thinking disabled correlates with large drop"
+  }
+}
