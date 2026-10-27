@@ -190,6 +190,7 @@ class Phase3A1Tests(unittest.TestCase):
         from story_video_agent.internal_verification import (
             GRANTED_BY,
             apply_internal_verification,
+            attest_semantic_result,
         )
         from story_video_agent.media import MediaInfo
 
@@ -287,6 +288,20 @@ class Phase3A1Tests(unittest.TestCase):
             format_name="mp4",
             size_bytes=1,
         )
+        # 界内可裁切 ≠ 语义通过；须内部语义签发后再 promote
+        for seg in plan["segments"]:
+            if seg.get("role") in (
+                "equalizer_goal_action",
+                "go_ahead_goal_action",
+            ):
+                attest_semantic_result(
+                    seg,
+                    media,
+                    status="passed",
+                    method="test_attestation",
+                    frame_ids=list(seg.get("frame_ids") or ["f_test"]),
+                    note="unit-test semantic pass",
+                )
         promoted = apply_internal_verification(
             plan, media, promote_to_render_ready=True
         )
@@ -297,8 +312,24 @@ class Phase3A1Tests(unittest.TestCase):
         self.assertIn("go_ahead_goal_action", roles)
         for row in promoted["render_ready_edl"]:
             self.assertEqual(row.get("granted_by"), GRANTED_BY)
+            self.assertTrue(row.get("grant_record_id"))
         ok, problems = validate_render_ready(promoted)
         self.assertTrue(ok, problems)
+        # 仅写 granted_by 字符串的 JSON 不能再抬升
+        forged = json.loads(json.dumps(promoted))
+        forged["diagnostics"]["internal_grant_ledger"] = []
+        for seg in forged["segments"]:
+            if seg.get("role") == "equalizer_goal_action":
+                seg["time_provenance"] = {
+                    "granted_by": GRANTED_BY,
+                    "pipeline_verified": True,
+                }
+                seg["render_eligibility"] = "render_ready"
+        from story_video_agent.internal_verification import sanitize_plan_trust
+
+        cleaned = sanitize_plan_trust(forged)
+        self.assertFalse(cleaned["render_ready"])
+        self.assertEqual(cleaned["render_ready_edl"], [])
 
     def test_replay_requires_live_link_for_render(self) -> None:
         plan = compose_story_plan(self.france, use_llm=False)

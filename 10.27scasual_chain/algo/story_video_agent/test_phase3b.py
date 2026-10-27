@@ -397,8 +397,23 @@ class Phase3BRenderTests(unittest.TestCase):
         self.assertIn("hard-fail", str(ctx.exception).lower())
 
     def test_final_ok_after_internal_promote(self) -> None:
+        from story_video_agent.internal_verification import attest_semantic_result
+
         plan = _toy_plan()
         media = probe_video(self.video)
+        for seg in plan["segments"]:
+            if seg.get("role") in (
+                "equalizer_goal_action",
+                "go_ahead_goal_action",
+            ):
+                attest_semantic_result(
+                    seg,
+                    media,
+                    status="passed",
+                    method="test_attestation",
+                    frame_ids=["f_toy"],
+                    note="unit-test",
+                )
         promoted = apply_internal_verification(
             plan, media, promote_to_render_ready=True
         )

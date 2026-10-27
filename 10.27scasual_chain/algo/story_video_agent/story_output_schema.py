@@ -252,16 +252,22 @@ def build_render_ready_edl(segments: Sequence[Dict[str, Any]]) -> List[Dict[str,
         if ts in NOT_RENDER_READY_TIME:
             continue
         prov = seg.get("time_provenance") or {}
-        # 必须由 internal_verification_pipeline 授予
+        # 必须由内部流水线授予，且带 grant_record_id（字符串 granted_by 不够）
         if prov.get("granted_by") != "internal_verification_pipeline":
             continue
         if not prov.get("pipeline_verified"):
+            continue
+        if not prov.get("grant_record_id"):
             continue
         if seg.get("media_in") is None or seg.get("media_out") is None:
             continue
         if seg.get("shot_kind") == "replay_supplement" and not seg.get(
             "linked_live_event_id"
         ):
+            continue
+        # 语义轴必须为已签名 passed
+        sem = seg.get("semantic_verification") or {}
+        if sem.get("status") != "passed" or not sem.get("mac"):
             continue
         idx += 1
         edl.append(
@@ -277,6 +283,7 @@ def build_render_ready_edl(segments: Sequence[Dict[str, Any]]) -> List[Dict[str,
                 "time_status": ts,
                 "pipeline_time_verified": True,
                 "granted_by": "internal_verification_pipeline",
+                "grant_record_id": prov.get("grant_record_id"),
                 "event_ids": list(seg.get("event_ids") or []),
                 "frame_ids": list(seg.get("frame_ids") or []),
                 "linked_live_event_id": seg.get("linked_live_event_id"),
@@ -285,6 +292,7 @@ def build_render_ready_edl(segments: Sequence[Dict[str, Any]]) -> List[Dict[str,
                 "confidence": seg.get("confidence"),
                 "narration": seg.get("narration") or "",
                 "include_in_cut": True,
+                "semantic_status": sem.get("status"),
             }
         )
     return edl

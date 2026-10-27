@@ -18,8 +18,7 @@ from story_video_agent.internal_verification import (
     GRANTED_BY,
     apply_internal_verification,
     assert_not_forged_render_ready,
-    sanitize_plan_trust,
-    verify_windows_against_media,
+    revalidate_plan_grants,
 )
 from story_video_agent.media import MediaError, MediaInfo, probe_video
 
@@ -387,37 +386,26 @@ def render_story_video(
     media = probe_video(video_path)
     has_audio = bool(media.audio_codec)
 
-    # 信任边界：始终剥离外部伪造字段
-    plan = sanitize_plan_trust(plan)
-
     if plan.get("story_tier") == "none":
         raise RenderError("story_tier=none: 不生成翻盘故事片")
 
-    from story_video_agent.story_output_schema import validate_render_ready
-
     if mode == "final":
         if promote_for_final:
+            # 测试辅助：现场 promote（仍要求语义签发）
             plan = apply_internal_verification(
                 plan, media, promote_to_render_ready=True
             )
         else:
-            # 不自动 promote；仅接受已有内部 granted_by 的片段
+            # 重新验证 ledger+媒体绑定；JSON 字符串 granted_by 无效
+            plan = revalidate_plan_grants(plan, media)
             try:
-                assert_not_forged_render_ready(plan)
+                assert_not_forged_render_ready(plan, media)
             except ValueError as exc:
                 raise RenderError(str(exc)) from exc
-            # 界内核验记录（不提升）
-            records = verify_windows_against_media(plan.get("segments") or [], media)
-            plan.setdefault("diagnostics", {})
-            plan["diagnostics"]["internal_time_verification"] = {
-                "granted_by_authority": GRANTED_BY,
-                "media": media.to_dict(),
-                "records": records,
-                "promote_requested": False,
-            }
-            ok, problems = validate_render_ready(plan)
-            plan["render_ready"] = bool(ok) and bool(plan.get("render_ready_edl"))
-            if not plan["render_ready"]:
+            if not plan.get("render_ready") or not plan.get("render_ready_edl"):
+                problems = (plan.get("diagnostics") or {}).get(
+                    "revalidate_render_problems"
+                ) or ["render_ready=false"]
                 raise RenderError(
                     "final mode hard-fail: render_ready=false; "
                     f"problems={problems}; 禁止降级为 preview"
@@ -430,7 +418,7 @@ def render_story_video(
         rows = _select_final_rows(plan)
         banner = ["正式成片", f"granted_by={GRANTED_BY}"]
     else:
-        # preview：记录时间核验但不提升证据等级
+        # preview：媒体时间核验 / 可裁切；不提升证据等级、不成片授权
         plan = apply_internal_verification(plan, media, promote_to_render_ready=False)
         rows = _select_preview_rows(plan)
         if not rows:
