@@ -657,11 +657,25 @@ def search_target(
             float(nxt["end"]) - float(window["end"])
         ) < 1e-6:
             break
+        # 仅当仍有后续 round 时才推进；否则 next_window 保持「待执行」
+        if r + 1 >= int(cfg.max_rounds):
+            round_rec["next_window_pending"] = {
+                "window": {
+                    "start": float(nxt["start"]),
+                    "end": float(nxt["end"]),
+                },
+                "applied": False,
+                "reason": "max_rounds_reached_before_next_observe",
+            }
+            break
         window = {
             "start": float(nxt["start"]),
             "end": float(nxt["end"]),
         }
 
+    best_clean = {k: v for k, v in (best or {}).items() if k != "_score"}
+    last_decision = (rounds[-1].get("decision") if rounds else None) or {}
+    pending = (rounds[-1].get("next_window_pending") if rounds else None) or {}
     return {
         "target_id": target["target_id"],
         "role": target["role"],
@@ -670,8 +684,20 @@ def search_target(
         "score_anchor_sec": target.get("score_anchor_sec"),
         "seed_window": dict(target["window"]),
         "rounds": rounds,
-        "best": {k: v for k, v in (best or {}).items() if k != "_score"},
+        "best": best_clean,
         "n_rounds": len(rounds),
+        "window_provenance": {
+            "observed_best_window": best_clean.get("window"),
+            "proposed_next_window": (last_decision.get("next_window") if last_decision else None),
+            "proposed_next_action": last_decision.get("action"),
+            "next_window_applied": bool(pending.get("applied")) if pending else False,
+            "next_window_pending": pending or None,
+            "note": (
+                "EDL/candidate writes observed_best_window only; "
+                "proposed_next_window is a plan for a subsequent round and is NOT "
+                "verified localization by itself"
+            ),
+        },
     }
 
 
@@ -834,6 +860,7 @@ def apply_search_to_plan(
             cl["phase4a_target"] = target_id
             plan.setdefault("evidence_refs", []).append(cl)
 
+        provenance = search.get("window_provenance") or {}
         updates.append(
             {
                 "target_id": target_id,
@@ -843,9 +870,16 @@ def apply_search_to_plan(
                 "adjusted_media_in": seg.get("media_in") if seg else None,
                 "adjusted_media_out": seg.get("media_out") if seg else None,
                 "window_adjusted": adjusted,
+                "observed_window_written": dict(win) if win else None,
+                "proposed_next_window": provenance.get("proposed_next_window"),
+                "next_window_applied": bool(provenance.get("next_window_applied")),
                 "labels": labels,
                 "provider_mode": provider_mode,
                 "verification_status": "observation_only",
+                "not_fine_localized": (
+                    bool(provenance.get("proposed_next_window"))
+                    and not bool(provenance.get("next_window_applied"))
+                ),
             }
         )
 

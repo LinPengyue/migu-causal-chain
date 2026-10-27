@@ -1,0 +1,33 @@
+{
+  "phase": "4B.3",
+  "billing_calls": false,
+  "phase4b2_request": {
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 256,
+    "construction_correct": true,
+    "reported_completion_tokens": 3195,
+    "server_honored_limit": false
+  },
+  "paratera_public_docs": {
+    "max_tokens_documented_in_examples": true,
+    "max_completion_tokens_documented": false,
+    "enable_thinking_documented": false,
+    "thinking_budget_documented": false,
+    "note": "Do not assume Paratera equals Alibaba/QwenCloud native API"
+  },
+  "phase4b2_response_fields": {
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "reasoning_content": null,
+    "completion_tokens_details": null,
+    "recoverable": false
+  },
+  "shrink_vs_edl": {
+    "observed_written_window": [3059.903, 3071.903],
+    "proposed_shrink_next_window": [3062.903, 3068.903],
+    "next_window_applied": false,
+    "fine_localization_complete": false,
+    "reason": "max_rounds=1; EDL uses observed window not pending next_window"
+  },
+  "mock_tests": "story_video_agent.test_phase4b3_token_audit"
+}

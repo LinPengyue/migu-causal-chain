@@ -46,10 +46,20 @@ Story Video Agent remote API (Phase 2C.1):
   STORY_API_MAX_COMPLETION_TOKENS       per-request output token cap (if set)
   STORY_API_TOKEN_PARAM                 max_tokens | max_completion_tokens | none
                                         (default max_tokens; never send both)
+  STORY_PLANNER_TOKEN_PARAM / STORY_VLM_TOKEN_PARAM
+                                        per-role override of token field name
+  STORY_PLANNER_MAX_COMPLETION_TOKENS / STORY_VLM_MAX_COMPLETION_TOKENS
+                                        per-role output budget (min'd with global)
+  STORY_PLANNER_SEND_THINKING / STORY_VLM_SEND_THINKING=1
+                                        only then may send enable_thinking/thinking_budget
+                                        (Paratera public docs do NOT list these — opt-in)
+  STORY_PLANNER_ENABLE_THINKING / STORY_VLM_ENABLE_THINKING
+  STORY_PLANNER_THINKING_BUDGET / STORY_VLM_THINKING_BUDGET
 
 provider modes: mock | real | degraded | cache
 HTTP attempts (success+failure+retry) count toward MAX_CALLS; cache hits do not.
-Logs never print API keys or image base64.
+If reported completion_tokens exceed configured output budget, later real calls block.
+Logs never print API keys, image base64, or reasoning_content text.
 """.strip()
 
 _DEFAULT_PRICE = {
@@ -92,8 +102,14 @@ class EndpointConfig:
     timeout_sec: float = 60.0
     max_retries: int = 2
     rpm: float = 30.0
-    # 供应商差异：只发其中一个字段，避免同时发送
+    # 供应商差异：只发其中一个字段，禁止同时发送 max_tokens + max_completion_tokens
     token_param: str = "max_tokens"  # max_tokens | max_completion_tokens | none
+    # 角色级输出预算；None → 使用 ApiProvider 全局 max_completion_tokens
+    max_completion_tokens: Optional[int] = None
+    # Thinking：仅当 send_thinking_params=True 时写入请求体（默认不发）
+    send_thinking_params: bool = False
+    enable_thinking: Optional[bool] = None
+    thinking_budget: Optional[int] = None
 
     def configured(self) -> bool:
         return bool(self.base_url and self.model and self.api_key)
@@ -108,10 +124,18 @@ class EndpointConfig:
             "rpm": self.rpm,
             "api_key_set": bool(self.api_key),
             "token_param": self.token_param,
+            "max_completion_tokens": self.max_completion_tokens,
+            "send_thinking_params": self.send_thinking_params,
+            "enable_thinking": self.enable_thinking,
+            "thinking_budget": self.thinking_budget,
         }
 
     def cache_fingerprint(self) -> str:
-        return f"{self.role}|{self.base_url}|{self.model}|{self.token_param}"
+        return (
+            f"{self.role}|{self.base_url}|{self.model}|{self.token_param}|"
+            f"{self.max_completion_tokens}|{self.send_thinking_params}|"
+            f"{self.enable_thinking}|{self.thinking_budget}"
+        )
 
 
 @dataclass
@@ -132,6 +156,14 @@ class ApiCallRecord:
     http_attempt: bool = False
     attempt_index: int = 0
     failure_status: str = ""
+    # 脱敏审计（不含 reasoning 原文 / key）
+    request_token_param: str = ""
+    request_token_limit: Optional[int] = None
+    request_thinking_sent: bool = False
+    finish_reason: str = ""
+    reasoning_tokens: Optional[int] = None
+    visible_output_chars: int = 0
+    output_budget_exceeded: bool = False
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
@@ -170,12 +202,18 @@ class ApiUsageStats:
             "est_cost_usd_cached_replay": round(sum(c.est_cost_usd for c in cached), 6),
             "cost_disclaimer": COST_DISCLAIMER,
             "elapsed_sec_real": round(sum(c.elapsed_sec for c in http_attempts), 4),
+            "output_budget_exceeded_count": sum(
+                1 for c in self.calls if c.output_budget_exceeded
+            ),
             "by_role": {
                 role: {
                     "http_attempts": sum(1 for c in http_attempts if c.role == role),
                     "tokens": sum(c.total_tokens for c in real_ok if c.role == role),
                     "est_cost_usd": round(
                         sum(c.est_cost_usd for c in real_ok if c.role == role), 6
+                    ),
+                    "output_budget_exceeded": any(
+                        c.output_budget_exceeded for c in self.calls if c.role == role
                     ),
                 }
                 for role in sorted({c.role for c in self.calls} or ["planner", "vision"])
@@ -207,11 +245,83 @@ def _env(*names: str, default: str = "") -> str:
     return default
 
 
-def _resolve_token_param() -> str:
-    raw = (_env("STORY_API_TOKEN_PARAM", default="max_tokens") or "max_tokens").strip()
+def _resolve_token_param(*role_env_names: str) -> str:
+    raw = (
+        _env(*role_env_names, "STORY_API_TOKEN_PARAM", default="max_tokens") or "max_tokens"
+    ).strip()
     if raw in ("max_tokens", "max_completion_tokens", "none"):
         return raw
     return "max_tokens"
+
+
+def _parse_optional_bool(raw: str) -> Optional[bool]:
+    v = (raw or "").strip().lower()
+    if v in ("1", "true", "yes", "on"):
+        return True
+    if v in ("0", "false", "no", "off"):
+        return False
+    return None
+
+
+def _parse_optional_int(raw: str) -> Optional[int]:
+    v = (raw or "").strip()
+    if not v:
+        return None
+    try:
+        return int(float(v))
+    except ValueError:
+        return None
+
+
+def _role_thinking_from_env(role: str) -> Tuple[bool, Optional[bool], Optional[int]]:
+    """返回 (send_thinking_params, enable_thinking, thinking_budget)。
+
+    Paratera 公开 API 示例仅展示 max_tokens，未列出 enable_thinking / thinking_budget；
+    默认不发送。仅当 STORY_{ROLE}_SEND_THINKING=1 时才附加（调用方自担兼容风险）。
+    """
+    prefix = "STORY_PLANNER" if role == "planner" else "STORY_VLM"
+    send = (_env(f"{prefix}_SEND_THINKING") or "").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    )
+    enable = _parse_optional_bool(_env(f"{prefix}_ENABLE_THINKING"))
+    budget = _parse_optional_int(_env(f"{prefix}_THINKING_BUDGET"))
+    return send, enable, budget
+
+
+def extract_usage_audit(payload: Dict[str, Any], *, content: str) -> Dict[str, Any]:
+    """从响应提取脱敏审计字段；缺失字段保持 None，不伪造。"""
+    usage = payload.get("usage") if isinstance(payload, dict) else None
+    usage = usage if isinstance(usage, dict) else {}
+    details = usage.get("completion_tokens_details")
+    reasoning_tokens: Optional[int] = None
+    if isinstance(details, dict) and details.get("reasoning_tokens") is not None:
+        try:
+            reasoning_tokens = int(details.get("reasoning_tokens"))
+        except (TypeError, ValueError):
+            reasoning_tokens = None
+    finish_reason = ""
+    choices = payload.get("choices") if isinstance(payload, dict) else None
+    if isinstance(choices, list) and choices:
+        c0 = choices[0] if isinstance(choices[0], dict) else {}
+        finish_reason = str(c0.get("finish_reason") or "")
+        # 明确不读取 / 不保存 message.reasoning_content 原文
+    return {
+        "finish_reason": finish_reason,
+        "reasoning_tokens": reasoning_tokens,
+        "visible_output_chars": len(content or ""),
+        "usage_keys_present": sorted(usage.keys()),
+        "has_completion_tokens_details": isinstance(details, dict),
+        "reasoning_content_present": bool(
+            isinstance(choices, list)
+            and choices
+            and isinstance(choices[0], dict)
+            and isinstance(choices[0].get("message"), dict)
+            and (choices[0]["message"].get("reasoning_content") not in (None, ""))
+        ),
+        # 仅布尔：是否存在 reasoning_content；从不回传文本
+    }
 
 
 def _stricter_int_cap(explicit: Optional[int], env_name: str) -> Optional[int]:
@@ -280,13 +390,18 @@ def load_endpoint_configs() -> Dict[str, EndpointConfig]:
     timeout = float(_env("STORY_LLM_TIMEOUT_SEC", default="60") or 60)
     retries = int(float(_env("STORY_LLM_MAX_RETRIES", default="2") or 2))
     rpm = float(_env("STORY_LLM_RPM", default="30") or 30)
-    token_param = _resolve_token_param()
     base = _env("STORY_LLM_BASE_URL", "OPENAI_BASE_URL").rstrip("/")
     key = _env("STORY_LLM_API_KEY", "OPENAI_API_KEY")
     planner_model = _env("STORY_LLM_MODEL", "OPENAI_MODEL")
     vbase = _env("STORY_VLM_BASE_URL", default=base).rstrip("/")
     vkey = _env("STORY_VLM_API_KEY", default=key)
     vmodel = _env("STORY_VLM_MODEL", default=planner_model)
+    planner_tok = _resolve_token_param("STORY_PLANNER_TOKEN_PARAM")
+    vision_tok = _resolve_token_param("STORY_VLM_TOKEN_PARAM")
+    planner_max = _parse_optional_int(_env("STORY_PLANNER_MAX_COMPLETION_TOKENS"))
+    vision_max = _parse_optional_int(_env("STORY_VLM_MAX_COMPLETION_TOKENS"))
+    p_send, p_en, p_bud = _role_thinking_from_env("planner")
+    v_send, v_en, v_bud = _role_thinking_from_env("vision")
     return {
         "planner": EndpointConfig(
             role="planner",
@@ -296,7 +411,11 @@ def load_endpoint_configs() -> Dict[str, EndpointConfig]:
             timeout_sec=timeout,
             max_retries=retries,
             rpm=rpm,
-            token_param=token_param,
+            token_param=planner_tok,
+            max_completion_tokens=planner_max,
+            send_thinking_params=p_send,
+            enable_thinking=p_en,
+            thinking_budget=p_bud,
         ),
         "vision": EndpointConfig(
             role="vision",
@@ -306,7 +425,11 @@ def load_endpoint_configs() -> Dict[str, EndpointConfig]:
             timeout_sec=timeout,
             max_retries=retries,
             rpm=rpm,
-            token_param=token_param,
+            token_param=vision_tok,
+            max_completion_tokens=vision_max,
+            send_thinking_params=v_send,
+            enable_thinking=v_en,
+            thinking_budget=v_bud,
         ),
     }
 
@@ -533,6 +656,9 @@ class ApiProvider:
             ),
         }
         self._http_attempts = 0
+        # 任一角色实测 completion_tokens 超过配置输出预算后阻断后续真实请求
+        self._output_budget_exceeded = False
+        self._output_budget_exceeded_roles: List[str] = []
 
     def status(self) -> Dict[str, Any]:
         mode = "mock" if self.force_mock or not self.require_real else "real"
@@ -562,12 +688,32 @@ class ApiProvider:
             "cap_sources": dict(self.cap_sources),
             "token_param": _resolve_token_param(),
             "http_attempts": self._http_attempts,
+            "output_budget_exceeded": self._output_budget_exceeded,
+            "output_budget_exceeded_roles": list(self._output_budget_exceeded_roles),
             "cost_disclaimer": self.cost_disclaimer,
             "notes": self.notes,
             "usage": self.stats.summary(),
         }
 
+    def effective_output_token_limit(self, cfg: EndpointConfig) -> Optional[int]:
+        """角色显式上限与全局上限取更严（均未设则 None）。"""
+        role_lim = cfg.max_completion_tokens
+        glob = self.max_completion_tokens
+        if role_lim is None:
+            return glob
+        if glob is None:
+            return role_lim
+        return min(int(role_lim), int(glob))
+
     def _check_caps(self) -> None:
+        if self._output_budget_exceeded:
+            roles = ",".join(self._output_budget_exceeded_roles) or "?"
+            raise ApiCallError(
+                f"output token budget previously exceeded for role(s)={roles}; "
+                "blocking further real HTTP (reported usage not altered)",
+                retryable=False,
+                failure_status="output_budget_exceeded",
+            )
         if self.max_calls is not None and self._http_attempts >= self.max_calls:
             raise ApiCallError(
                 f"API max_calls={self.max_calls} exhausted "
@@ -584,6 +730,58 @@ class ApiProvider:
                     retryable=False,
                     failure_status="cost_estimate_cap",
                 )
+
+    def build_chat_request_body(
+        self,
+        cfg: EndpointConfig,
+        *,
+        messages: Sequence[Dict[str, Any]],
+        temperature: float,
+    ) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+        """构造 chat/completions 请求体 + 脱敏审计元数据（无 messages 内容/无 key）。"""
+        body: Dict[str, Any] = {
+            "model": cfg.model,
+            "temperature": temperature,
+            "messages": list(messages),
+        }
+        limit = self.effective_output_token_limit(cfg)
+        param = (cfg.token_param or "max_tokens").strip()
+        token_field_sent: Optional[str] = None
+        if limit is not None:
+            if param == "max_tokens":
+                body["max_tokens"] = int(limit)
+                token_field_sent = "max_tokens"
+            elif param == "max_completion_tokens":
+                body["max_completion_tokens"] = int(limit)
+                token_field_sent = "max_completion_tokens"
+            # param == "none" → 不附加长度字段
+        # 禁止同时携带两个长度字段
+        if "max_tokens" in body and "max_completion_tokens" in body:
+            raise ApiConfigError("refusing to send both max_tokens and max_completion_tokens")
+
+        thinking_sent = False
+        if cfg.send_thinking_params:
+            if cfg.enable_thinking is not None:
+                body["enable_thinking"] = bool(cfg.enable_thinking)
+                thinking_sent = True
+            if cfg.thinking_budget is not None:
+                body["thinking_budget"] = int(cfg.thinking_budget)
+                thinking_sent = True
+
+        audit = {
+            "role": cfg.role,
+            "model": cfg.model,
+            "token_param_configured": param,
+            "token_param_sent": token_field_sent,
+            "token_limit_sent": int(limit) if limit is not None and token_field_sent else None,
+            "thinking_params_sent": thinking_sent,
+            "enable_thinking_sent": body.get("enable_thinking") if thinking_sent else None,
+            "thinking_budget_sent": body.get("thinking_budget") if thinking_sent else None,
+            "sends_both_token_params": False,
+            "message_count": len(messages),
+            # 不记录 messages / Authorization
+        }
+        return body, audit
 
     def chat(
         self,
@@ -654,7 +852,10 @@ class ApiProvider:
                 self._limiters[role].wait()
                 self._http_attempts += 1
                 http_started = True
-                payload = self._post_chat(cfg, messages=messages, temperature=temperature)
+                body, req_audit = self.build_chat_request_body(
+                    cfg, messages=messages, temperature=temperature
+                )
+                payload = self._post_chat(cfg, body=body)
                 elapsed = time.perf_counter() - attempt_t0
                 usage = payload.get("usage") or {}
                 pt = int(usage.get("prompt_tokens") or 0)
@@ -669,12 +870,21 @@ class ApiProvider:
                     )
                 content = str((choices[0].get("message") or {}).get("content") or "")
                 cost = _estimate_cost(pt, ct)
+                usage_audit = extract_usage_audit(payload, content=content)
+                limit = self.effective_output_token_limit(cfg)
+                exceeded = bool(limit is not None and ct > int(limit))
+                if exceeded:
+                    self._output_budget_exceeded = True
+                    if role not in self._output_budget_exceeded_roles:
+                        self._output_budget_exceeded_roles.append(role)
                 result = {
                     "content": content,
                     "usage": {
                         "prompt_tokens": pt,
                         "completion_tokens": ct,
                         "total_tokens": tt,
+                        # 透传 details 键是否存在；不改写供应商数值
+                        "completion_tokens_details": usage.get("completion_tokens_details"),
                     },
                     "model": cfg.model,
                     "provider": "openai_compatible",
@@ -684,6 +894,14 @@ class ApiProvider:
                     "cost_disclaimer": COST_DISCLAIMER,
                     "raw_response_excerpt": content[:2000],
                     "http_attempt_index": attempt,
+                    "request_audit": req_audit,
+                    "response_audit": {
+                        **usage_audit,
+                        "completion_tokens_reported": ct,
+                        "output_token_limit": limit,
+                        "output_budget_exceeded": exceeded,
+                    },
+                    "finish_reason": usage_audit.get("finish_reason") or "",
                 }
                 self.stats.add(
                     ApiCallRecord(
@@ -699,6 +917,16 @@ class ApiProvider:
                         http_status=200,
                         http_attempt=True,
                         attempt_index=attempt,
+                        request_token_param=str(req_audit.get("token_param_sent") or ""),
+                        request_token_limit=req_audit.get("token_limit_sent"),
+                        request_thinking_sent=bool(req_audit.get("thinking_params_sent")),
+                        finish_reason=str(usage_audit.get("finish_reason") or ""),
+                        reasoning_tokens=usage_audit.get("reasoning_tokens"),
+                        visible_output_chars=int(
+                            usage_audit.get("visible_output_chars") or 0
+                        ),
+                        output_budget_exceeded=exceeded,
+                        failure_status="output_budget_exceeded" if exceeded else "",
                     )
                 )
                 if cache_key:
@@ -768,22 +996,8 @@ class ApiProvider:
         self,
         cfg: EndpointConfig,
         *,
-        messages: Sequence[Dict[str, Any]],
-        temperature: float,
+        body: Dict[str, Any],
     ) -> Dict[str, Any]:
-        body: Dict[str, Any] = {
-            "model": cfg.model,
-            "temperature": temperature,
-            "messages": list(messages),
-        }
-        if self.max_completion_tokens is not None:
-            # 按供应商配置只发送一个字段，禁止默认同时发送
-            param = (cfg.token_param or "max_tokens").strip()
-            if param == "max_tokens":
-                body["max_tokens"] = int(self.max_completion_tokens)
-            elif param == "max_completion_tokens":
-                body["max_completion_tokens"] = int(self.max_completion_tokens)
-            # param == "none" → 不附加输出长度字段
         data = json.dumps(body).encode("utf-8")
         headers = {
             "Content-Type": "application/json",
