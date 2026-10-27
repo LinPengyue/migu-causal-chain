@@ -186,7 +186,13 @@ class Phase3A1Tests(unittest.TestCase):
         )
 
     def test_pipeline_verified_can_render(self) -> None:
-        """注入可信 live 进球 + pipeline 时间核验 → 可进入 render_ready_edl。"""
+        """外部 JSON 的 pipeline_verified 无效；须经 internal_verification 授予。"""
+        from story_video_agent.internal_verification import (
+            GRANTED_BY,
+            apply_internal_verification,
+        )
+        from story_video_agent.media import MediaInfo
+
         story = {
             "match_id": "toy",
             "story_tier": "story",
@@ -265,12 +271,33 @@ class Phase3A1Tests(unittest.TestCase):
         ]
         plan = compose_story_plan(story, visual_evidence=vis, use_llm=False)
         self.assertEqual(plan["schema_version"], SCHEMA_VERSION)
-        self.assertTrue(plan["render_ready"], plan["blocking_reasons"])
-        self.assertTrue(plan["render_ready_edl"])
-        roles = {r.get("role") for r in plan["render_ready_edl"]}
+        # 外部字段不得直接成片
+        self.assertFalse(plan["render_ready"], plan["blocking_reasons"])
+        self.assertEqual(plan["render_ready_edl"], [])
+        # 内部核验 + 虚拟媒体边界（覆盖候选窗）
+        media = MediaInfo(
+            path="/virtual/toy.mp4",
+            duration_sec=600.0,
+            width=1280,
+            height=720,
+            fps=25.0,
+            video_codec="h264",
+            audio_codec="aac",
+            start_time_sec=0.0,
+            format_name="mp4",
+            size_bytes=1,
+        )
+        promoted = apply_internal_verification(
+            plan, media, promote_to_render_ready=True
+        )
+        self.assertTrue(promoted["render_ready"], promoted.get("diagnostics"))
+        self.assertTrue(promoted["render_ready_edl"])
+        roles = {r.get("role") for r in promoted["render_ready_edl"]}
         self.assertIn("equalizer_goal_action", roles)
         self.assertIn("go_ahead_goal_action", roles)
-        ok, problems = validate_render_ready(plan)
+        for row in promoted["render_ready_edl"]:
+            self.assertEqual(row.get("granted_by"), GRANTED_BY)
+        ok, problems = validate_render_ready(promoted)
         self.assertTrue(ok, problems)
 
     def test_replay_requires_live_link_for_render(self) -> None:

@@ -33,22 +33,30 @@ def _parse_score(score: str) -> Optional[Tuple[int, int]]:
 
 
 def classify_visual_evidence(ev: Dict[str, Any]) -> Dict[str, Any]:
-    """将 Video Agent 视觉证据条目标注来源种类。"""
+    """将 Video Agent 视觉证据条目标注来源种类。
+
+    外部 JSON 的 pipeline_verified / time_pipeline_verified / fact_verified
+    一律不可授予 verified；仅 internal granted_by 可。
+    """
     mode = str(ev.get("provider_mode") or ev.get("provider") or "")
     kind = "unresolved_conflict"
     used_as_fact = False
-    pipeline_verified = bool(ev.get("pipeline_verified"))
-
-    # 外部伪造 verified：无 pipeline_verified 则降级并记录
-    forged = False
-    if ev.get("fact_verified") and not pipeline_verified:
-        forged = True
+    # 外部字段不可信
+    external_claims = bool(
+        ev.get("pipeline_verified")
+        or ev.get("time_pipeline_verified")
+        or ev.get("fact_verified")
+    )
+    internal_ok = (
+        ev.get("granted_by") == "internal_verification_pipeline"
+        and bool(ev.get("pipeline_verified"))
+    )
+    forged = external_claims and not internal_ok
 
     if mode == "mock" or ev.get("is_mock") or str(ev.get("notes") or "").startswith("mock"):
         kind = "mock"
         used_as_fact = False
-        pipeline_verified = False
-    elif pipeline_verified and ev.get("normalized_ok"):
+    elif internal_ok and ev.get("normalized_ok"):
         kind = "verified"
         used_as_fact = True
     elif mode in ("real", "cache") and ev.get("normalized_ok"):
@@ -67,13 +75,12 @@ def classify_visual_evidence(ev: Dict[str, Any]) -> Dict[str, Any]:
         if kind != "mock":
             kind = "unresolved_conflict"
             used_as_fact = False
-            pipeline_verified = False
 
     return {
         "gap_id": ev.get("gap_id"),
         "kind": kind,
         "used_as_fact": used_as_fact,
-        "pipeline_verified": pipeline_verified,
+        "pipeline_verified": bool(internal_ok),
         "forged_verified_flag": forged,
         "provider_mode": mode or None,
         "frame_ids": list(ev.get("frame_ids") or []),

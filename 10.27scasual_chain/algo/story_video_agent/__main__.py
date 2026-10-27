@@ -1,7 +1,8 @@
-"""CLI：dry-run / media-only / perception / compose（Phase 3A）。
+"""CLI：dry-run / media-only / perception / compose / render（Phase 3B）。
 
   python -m story_video_agent --story-json ... --dry-run
   python -m story_video_agent --story-json ... --compose [--causal-json ...] [--out ...]
+  python -m story_video_agent --plan-json ... --video-path ... --render preview --out ...
 """
 
 from __future__ import annotations
@@ -17,7 +18,8 @@ from story_video_agent.story_output_schema import render_narrative_report
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="T01 Story Video Agent / Composer")
-    parser.add_argument("--story-json", type=Path, required=True)
+    parser.add_argument("--story-json", type=Path, default=None)
+    parser.add_argument("--plan-json", type=Path, default=None, help="Phase 3A.1 compose plan")
     parser.add_argument("--video-path", type=str, default="")
     parser.add_argument("--duration-sec", type=float, default=None)
     parser.add_argument("--max-steps", type=int, default=32)
@@ -26,6 +28,11 @@ def main() -> None:
     mode.add_argument("--media-only", action="store_true")
     mode.add_argument("--perception", action="store_true")
     mode.add_argument("--compose", action="store_true", help="Phase 3A story plan + EDL")
+    mode.add_argument(
+        "--render",
+        choices=("preview", "final"),
+        help="Phase 3B FFmpeg render (requires --plan-json --video-path --out)",
+    )
     parser.add_argument("--causal-json", type=Path, default=None)
     parser.add_argument("--visual-evidence-json", type=Path, default=None)
     parser.add_argument("--use-llm-narration", action="store_true")
@@ -39,7 +46,38 @@ def main() -> None:
     parser.add_argument("--require-real-api", action="store_true")
     parser.add_argument("--use-llm-planner", action="store_true")
     parser.add_argument("--out", type=Path, default=None)
+    parser.add_argument("--work-dir", type=Path, default=None)
+    parser.add_argument("--max-clip-sec", type=float, default=None)
+    parser.add_argument("--review-dir", type=Path, default=None, help="also write review_manifest")
     args = parser.parse_args()
+
+    if args.render:
+        if not args.plan_json or not args.video_path or not args.out:
+            parser.error("--render requires --plan-json --video-path --out")
+        from story_video_agent.review_assist import build_review_manifest
+        from story_video_agent.video_renderer import render_from_paths
+
+        result = render_from_paths(
+            args.plan_json,
+            args.video_path,
+            args.out,
+            mode=args.render,
+            work_dir=str(args.work_dir) if args.work_dir else None,
+            max_clip_sec=args.max_clip_sec,
+        )
+        if args.review_dir:
+            plan = json.loads(Path(args.plan_json).read_text(encoding="utf-8"))
+            man = build_review_manifest(plan, args.video_path, args.review_dir)
+            result["review_manifest"] = man.get("path")
+            result["contact_sheet"] = man.get("contact_sheet")
+        print(json.dumps({k: result[k] for k in (
+            "ok", "mode", "out_mp4", "n_segments", "n_cut", "n_placeholder",
+            "output_media", "render_manifest", "review_manifest", "contact_sheet",
+        ) if k in result}, ensure_ascii=False, indent=2))
+        return
+
+    if not args.story_json:
+        parser.error("--story-json is required unless --render/--plan-json")
 
     if args.compose:
         plan = compose_from_paths(

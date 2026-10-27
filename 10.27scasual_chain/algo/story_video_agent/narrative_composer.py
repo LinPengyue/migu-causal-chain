@@ -533,26 +533,19 @@ def compose_story_plan(
             v_frames, v_refs, pipe_vlm = _attach_visual(
                 vis, vis_gaps, add_ref=add_ref, missing=missing
             )
-            # 默认可选成片条件：pipeline_verified 时间；本阶段无校准 → candidate_only
+            # 外部 JSON 不得授予 render_ready；仅 internal_verification 可提升
             elig = "candidate_only"
-            blocks = ["goal_action_time_not_pipeline_verified"]
+            blocks = ["awaiting_internal_media_verification"]
             conf = float(best["confidence"])
             if pipe_vlm:
                 conf = min(1.0, conf + 0.1)
-            # 仅当显式 pipeline_verified 视觉+时间才 render_ready（测试可注入）
             time_prov = {
                 "source": "linked_live_goal_event",
                 "t_sec": best["t_sec"],
                 "score_anchor_t_sec": score_t,
                 "pipeline_verified": False,
+                "granted_by": None,
             }
-            # 若视觉 gap 带 pipeline_verified 且要求成片时间核验——仍需 time pipeline flag
-            for g in vis_gaps:
-                raw = vis.get(g) or {}
-                if raw.get("pipeline_verified") and raw.get("time_pipeline_verified"):
-                    time_prov["pipeline_verified"] = True
-                    elig = "render_ready"
-                    blocks = []
             segments.append(
                 _mk_seg(
                     segment_id=f"seg_{role_prefix}_goal_action",
@@ -982,6 +975,8 @@ def compose_from_paths(
     out_json: Optional[str] = None,
     out_report: Optional[str] = None,
 ) -> Dict[str, Any]:
+    from story_video_agent.internal_verification import strip_external_trust_flags
+
     story = json.loads(Path(story_path).read_text(encoding="utf-8"))
     causal = None
     if causal_path and Path(causal_path).is_file():
@@ -993,6 +988,8 @@ def compose_from_paths(
             vis.extend(loaded)
         elif isinstance(loaded, dict) and isinstance(loaded.get("visual_evidence"), list):
             vis.extend(loaded["visual_evidence"])
+    # 外部信任字段一律剥离
+    vis = strip_external_trust_flags(vis)
     plan = compose_story_plan(
         story,
         visual_evidence=vis,

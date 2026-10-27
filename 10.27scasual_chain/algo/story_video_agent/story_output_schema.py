@@ -242,6 +242,7 @@ def build_candidate_edl(segments: Sequence[Dict[str, Any]]) -> List[Dict[str, An
 
 
 def build_render_ready_edl(segments: Sequence[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """仅收录内部核验流水线授予的片段；外部伪造 pipeline_verified 无效。"""
     edl: List[Dict[str, Any]] = []
     idx = 0
     for seg in segments:
@@ -251,6 +252,9 @@ def build_render_ready_edl(segments: Sequence[Dict[str, Any]]) -> List[Dict[str,
         if ts in NOT_RENDER_READY_TIME:
             continue
         prov = seg.get("time_provenance") or {}
+        # 必须由 internal_verification_pipeline 授予
+        if prov.get("granted_by") != "internal_verification_pipeline":
+            continue
         if not prov.get("pipeline_verified"):
             continue
         if seg.get("media_in") is None or seg.get("media_out") is None:
@@ -272,6 +276,7 @@ def build_render_ready_edl(segments: Sequence[Dict[str, Any]]) -> List[Dict[str,
                 "media_out": seg.get("media_out"),
                 "time_status": ts,
                 "pipeline_time_verified": True,
+                "granted_by": "internal_verification_pipeline",
                 "event_ids": list(seg.get("event_ids") or []),
                 "frame_ids": list(seg.get("frame_ids") or []),
                 "linked_live_event_id": seg.get("linked_live_event_id"),
