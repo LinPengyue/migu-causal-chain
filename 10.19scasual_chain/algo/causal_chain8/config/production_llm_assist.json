@@ -1,0 +1,51 @@
+{
+  "name": "production_llm_assist",
+  "description": "集锦实验：强制 Qwen 分类 + extract.llm_refine",
+  "rules_mode": "annotation",
+  "mapping": "params_first+annotation_compat",
+  "robust_classify": {
+    "enabled": true,
+    "short_core": true,
+    "core_min_len": 7,
+    "core_max": 8,
+    "morphology": true
+  },
+  "experience": {
+    "fewshot_enabled": true,
+    "fewshot_k": 3,
+    "fewshot_path": ""
+  },
+  "classify": {
+    "backend": "chain4_agent",
+    "eval_filter": "none",
+    "agent_margin": 0.99,
+    "soft_other": true
+  },
+  "strip": {
+    "backend": "chain4_agent",
+    "agent_margin": 0.99,
+    "min_margin": 0.08,
+    "max_events": 12,
+    "iou_dedupe": 0.5,
+    "iou_recall": 0.45,
+    "pre_ms": 120000,
+    "post_ms": 60000,
+    "window_ms": 180000,
+    "step_ms": 90000
+  },
+  "extract": {
+    "enabled": true,
+    "use_gold_hint": false,
+    "max_window": 12,
+    "llm_refine": true,
+    "llm_margin": 1.0
+  },
+  "llm": {
+    "enabled": true,
+    "ambiguous_margin": 0.99
+  },
+  "vlm": {
+    "enabled": false,
+    "max_frames": 3
+  }
+}

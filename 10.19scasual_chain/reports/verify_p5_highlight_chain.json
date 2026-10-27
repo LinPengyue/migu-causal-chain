@@ -1,0 +1,205 @@
+{
+  "matches": [
+    {
+      "safe_id": "01_1_9月29日_25-26赛季西甲第7轮_巴塞罗那VS皇家社会_4K国语__converted_4K_H265_25fps",
+      "n_strip": 3,
+      "n_nodes": 3,
+      "n_edges": 2,
+      "rel_counts": {
+        "follow": 2,
+        "same_sequence": 0,
+        "correction_of": 0
+      },
+      "has_single_highlight_chain": true,
+      "n_correction_of": 0,
+      "correction_edges": [],
+      "ordering_head": [
+        "ann_0003",
+        "ann_0006",
+        "ann_0008"
+      ],
+      "schema_issues": [],
+      "schema_ok": true,
+      "out": "reports/p5_highlight_01_1_9月29日_25-26赛季西甲第7轮_巴塞罗那VS皇家社会_4K国语_.json"
+    },
+    {
+      "safe_id": "2022-11-29_巴西vs瑞士",
+      "n_strip": 9,
+      "n_nodes": 9,
+      "n_edges": 8,
+      "rel_counts": {
+        "follow": 7,
+        "same_sequence": 0,
+        "correction_of": 1
+      },
+      "has_single_highlight_chain": true,
+      "n_correction_of": 1,
+      "correction_edges": [
+        {
+          "src": "ann_0023",
+          "dst": "ann_0020",
+          "rel": "correction_of",
+          "score": 3.5153,
+          "reason": "correction_links_prior_result"
+        }
+      ],
+      "ordering_head": [
+        "ann_0001",
+        "ann_0002",
+        "ann_0007",
+        "ann_0008",
+        "ann_0020"
+      ],
+      "schema_issues": [],
+      "schema_ok": true,
+      "out": "reports/p5_highlight_2022-11-29_巴西vs瑞士.json"
+    }
+  ],
+  "smoke_pass": true,
+  "schema_example": {
+    "match_id": "2022-11-29_巴西vs瑞士",
+    "stats": {
+      "n_strip_chains": 9,
+      "n_edges": 8,
+      "rel_counts": {
+        "follow": 7,
+        "same_sequence": 0,
+        "correction_of": 1
+      },
+      "ordering_method": "graph_topo_from_relations",
+      "n_correction_of": 1
+    },
+    "edges_sample": [
+      {
+        "src": "ann_0023",
+        "dst": "ann_0020",
+        "rel": "correction_of",
+        "score": 3.5153,
+        "reason": "correction_links_prior_result"
+      },
+      {
+        "src": "ann_0001",
+        "dst": "ann_0002",
+        "rel": "follow",
+        "score": 1.0,
+        "reason": "temporal_adjacent_fallback"
+      },
+      {
+        "src": "ann_0002",
+        "dst": "ann_0007",
+        "rel": "follow",
+        "score": 1.0,
+        "reason": "temporal_adjacent_fallback"
+      },
+      {
+        "src": "ann_0007",
+        "dst": "ann_0008",
+        "rel": "follow",
+        "score": 1.0,
+        "reason": "temporal_adjacent_fallback"
+      },
+      {
+        "src": "ann_0008",
+        "dst": "ann_0020",
+        "rel": "follow",
+        "score": 1.0,
+        "reason": "temporal_adjacent_fallback"
+      }
+    ],
+    "highlight_chain": {
+      "ordering": [
+        "ann_0001",
+        "ann_0002",
+        "ann_0007",
+        "ann_0008",
+        "ann_0020",
+        "ann_0023",
+        "ann_0024",
+        "ann_0025",
+        "ann_0028"
+      ],
+      "steps": [
+        {
+          "strip_chain_id": "ann_0001",
+          "via_rel": "start",
+          "from": null
+        },
+        {
+          "strip_chain_id": "ann_0002",
+          "via_rel": "follow",
+          "from": "ann_0001"
+        },
+        {
+          "strip_chain_id": "ann_0007",
+          "via_rel": "follow",
+          "from": "ann_0002"
+        },
+        {
+          "strip_chain_id": "ann_0008",
+          "via_rel": "follow",
+          "from": "ann_0007"
+        },
+        {
+          "strip_chain_id": "ann_0020",
+          "via_rel": "follow",
+          "from": "ann_0008"
+        },
+        {
+          "strip_chain_id": "ann_0023",
+          "via_rel": "correction_of",
+          "from": "ann_0020"
+        },
+        {
+          "strip_chain_id": "ann_0024",
+          "via_rel": "follow",
+          "from": "ann_0023"
+        },
+        {
+          "strip_chain_id": "ann_0025",
+          "via_rel": "follow",
+          "from": "ann_0024"
+        },
+        {
+          "strip_chain_id": "ann_0028",
+          "via_rel": "follow",
+          "from": "ann_0025"
+        }
+      ]
+    },
+    "node0": {
+      "strip_chain_id": "ann_0001",
+      "t0_ms": 1892625,
+      "t1_ms": 1912828,
+      "chain_category": "danger",
+      "template_id": "",
+      "first_event": "pass",
+      "last_event": "goal_line_clearance",
+      "events": [
+        {
+          "order": 0,
+          "type": "pass",
+          "t_ms": 1894625,
+          "event_id": "event_000001"
+        },
+        {
+          "order": 1,
+          "type": "pass",
+          "t_ms": 1901623,
+          "event_id": "event_000002"
+        },
+        {
+          "order": 2,
+          "type": "pass",
+          "t_ms": 1905898,
+          "event_id": "event_000003"
+        },
+        {
+          "order": 3,
+          "type": "goal_line_clearance",
+          "t_ms": 1910828,
+          "event_id": "event_000004"
+        }
+      ]
+    }
+  }
+}

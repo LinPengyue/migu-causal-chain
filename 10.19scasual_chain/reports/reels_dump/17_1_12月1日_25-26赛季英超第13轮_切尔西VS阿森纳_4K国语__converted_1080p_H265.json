@@ -1,0 +1,375 @@
+{
+  "match_id": "17_1 12月1日 25-26赛季英超第13轮 切尔西VS阿森纳 4K国语__converted_1080p_H265_50fps",
+  "safe_id": "17_1_12月1日_25-26赛季英超第13轮_切尔西VS阿森纳_4K国语__converted_1080p_H265_50fps",
+  "input_file": "/data2/lpy1/causal-chain2/8.31causal_chain/datasets/matches/17_1_12月1日_25-26赛季英超第13轮_切尔西VS阿森纳_4K国语__converted_1080p_H265_50fps/timeline.json",
+  "event_count": 302,
+  "reel": {
+    "clips": [
+      {
+        "clip_id": "clip00",
+        "chain_template_id": "shot_save_chain",
+        "chain_label_zh": "射门扑救链",
+        "chain_category": "danger",
+        "t0_ms": 1781440,
+        "t1_ms": 1802130,
+        "anchor_event": {
+          "type": "shot",
+          "t_ms": 1797130
+        },
+        "events": [
+          {
+            "event_id": "event_000206",
+            "order": 0,
+            "type": "dribble_past",
+            "t_ms": 1787440,
+            "role": "build_up",
+            "global_index": 205
+          },
+          {
+            "event_id": "event_000207",
+            "order": 1,
+            "type": "throw_in",
+            "t_ms": 1791830,
+            "role": "set_piece",
+            "global_index": 206
+          },
+          {
+            "event_id": "event_000208",
+            "order": 2,
+            "type": "pass",
+            "t_ms": 1795130,
+            "role": "build_up",
+            "global_index": 207
+          },
+          {
+            "event_id": "event_000209",
+            "order": 3,
+            "type": "shot",
+            "t_ms": 1797130,
+            "role": "shot",
+            "global_index": 208
+          },
+          {
+            "event_id": "event_000210",
+            "order": 4,
+            "type": "keeper_save",
+            "t_ms": 1798120,
+            "role": "save",
+            "global_index": 209
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "射门扑救链：dribble_past → throw_in → pass → shot → keeper_save",
+        "confidence": 2.15,
+        "margin": 2.15,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "shot → keeper_save",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 5,
+          "align_size": 2,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            3,
+            4
+          ],
+          "selection": {
+            "tier": "T1",
+            "event_type": "shot",
+            "event_i": 208,
+            "t_ms": 1797130,
+            "t0_ms": 1781440,
+            "t1_ms": 1802130,
+            "reason": "shot_then_save_or_corner|merged",
+            "half": 1,
+            "slot": 1
+          }
+        }
+      },
+      {
+        "clip_id": "clip01",
+        "chain_template_id": "shot_save_chain",
+        "chain_label_zh": "射门扑救链",
+        "chain_category": "danger",
+        "t0_ms": 2067830,
+        "t1_ms": 2080830,
+        "anchor_event": {
+          "type": "shot",
+          "t_ms": 2075830
+        },
+        "events": [
+          {
+            "event_id": "event_000228",
+            "order": 0,
+            "type": "foul",
+            "t_ms": 2071710,
+            "role": "build_up",
+            "global_index": 227
+          },
+          {
+            "event_id": "event_000229",
+            "order": 1,
+            "type": "shot",
+            "t_ms": 2075830,
+            "role": "shot",
+            "global_index": 228
+          },
+          {
+            "event_id": "event_000230",
+            "order": 2,
+            "type": "keeper_save",
+            "t_ms": 2077320,
+            "role": "save",
+            "global_index": 229
+          },
+          {
+            "event_id": "event_000231",
+            "order": 3,
+            "type": "controversy",
+            "t_ms": 2077909,
+            "role": "correction",
+            "global_index": 230
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "射门扑救链：foul → shot → keeper_save → controversy",
+        "confidence": 1.7,
+        "margin": 1.7,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "shot → keeper_save",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 4,
+          "align_size": 2,
+          "exact_canonical": true,
+          "transitions_ok": false,
+          "illegal_pairs": [
+            "foul→shot",
+            "keeper_save→controversy"
+          ],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            1,
+            2
+          ],
+          "selection": {
+            "tier": "T1",
+            "event_type": "shot",
+            "event_i": 228,
+            "t_ms": 2075830,
+            "t0_ms": 2067830,
+            "t1_ms": 2080830,
+            "reason": "shot_then_save_or_corner",
+            "half": 1,
+            "slot": 2
+          }
+        }
+      },
+      {
+        "clip_id": "clip02",
+        "chain_template_id": "shot_save_chain",
+        "chain_label_zh": "射门扑救链",
+        "chain_category": "danger",
+        "t0_ms": 2615400,
+        "t1_ms": 2628400,
+        "anchor_event": {
+          "type": "shot",
+          "t_ms": 2623400
+        },
+        "events": [
+          {
+            "event_id": "event_000256",
+            "order": 0,
+            "type": "shot",
+            "t_ms": 2623400,
+            "role": "shot",
+            "global_index": 255
+          },
+          {
+            "event_id": "event_000257",
+            "order": 1,
+            "type": "keeper_save",
+            "t_ms": 2624380,
+            "role": "save",
+            "global_index": 256
+          },
+          {
+            "event_id": "event_000258",
+            "order": 2,
+            "type": "shot",
+            "t_ms": 2626070,
+            "role": "shot",
+            "global_index": 257
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "射门扑救链：shot → keeper_save → shot",
+        "confidence": 1.8467,
+        "margin": 1.8467,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "shot → keeper_save",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 3,
+          "align_size": 2,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            0,
+            1
+          ],
+          "selection": {
+            "tier": "T1",
+            "event_type": "shot",
+            "event_i": 255,
+            "t_ms": 2623400,
+            "t0_ms": 2615400,
+            "t1_ms": 2628400,
+            "reason": "shot_then_save_or_corner",
+            "half": 1,
+            "slot": 2
+          }
+        }
+      }
+    ],
+    "ordering": [
+      "clip00",
+      "clip01",
+      "clip02"
+    ],
+    "total_duration_ms": 46690
+  },
+  "config": {
+    "backend": "dump_highlight_reels",
+    "profile": "production",
+    "drop_t2": true,
+    "use_llm": false,
+    "pipeline": "select_moments→classify/refine→assemble_reel",
+    "aligned_with": "eval/eval_offline_highlight.py logic track"
+  },
+  "stats": {
+    "moments_selected": 3,
+    "clips_final": 3,
+    "fast_path": 3,
+    "select": {
+      "rule": "rule4_t1_plus_t2",
+      "half_ms": 2700000,
+      "n_t0": 0,
+      "n_t1_pool": 4,
+      "n_t2_pool": 4,
+      "n_selected": 5,
+      "n_t0_selected": 0,
+      "n_t1_selected": 3,
+      "n_t2_selected": 2,
+      "has_goal": false,
+      "has_penalty_goal": false,
+      "has_red": false,
+      "drop_t2": true,
+      "n_selected_after_drop_t2": 3
+    }
+  }
+}

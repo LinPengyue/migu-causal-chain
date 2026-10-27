@@ -1,0 +1,159 @@
+{
+  "schema_version": "story-t01-1",
+  "match_id": "2022-11-28 克罗地亚vs加拿大",
+  "video_name": "2022-11-28 克罗地亚vs加拿大.mp4",
+  "has_story": false,
+  "is_candidate": true,
+  "story_tier": "candidate",
+  "story_template_id": "T01_comeback",
+  "chain_category": "故事链",
+  "causal_chain_subtype": "逆风翻盘",
+  "story_label_zh": "逆风翻盘候选",
+  "no_story_reason": "missing_setup",
+  "protagonist_side": "left",
+  "score_path": [
+    {
+      "t_sec": 1079.06,
+      "score": "0:1",
+      "opening": true,
+      "delta_side": null,
+      "carrier_event_id": "event_000004"
+    },
+    {
+      "t_sec": 3145.98,
+      "score": "1:1",
+      "opening": false,
+      "delta_side": "left",
+      "carrier_event_id": "event_000068"
+    },
+    {
+      "t_sec": 3697.35,
+      "score": "2:1",
+      "opening": false,
+      "delta_side": "left",
+      "carrier_event_id": "event_000076"
+    },
+    {
+      "t_sec": 6408.7,
+      "score": "3:1",
+      "opening": false,
+      "delta_side": "left",
+      "carrier_event_id": "event_000118"
+    },
+    {
+      "t_sec": 7858.37,
+      "score": "4:1",
+      "opening": false,
+      "delta_side": "left",
+      "carrier_event_id": "event_000155"
+    }
+  ],
+  "recognition": {
+    "present": false,
+    "tier": "candidate",
+    "is_candidate": true,
+    "reason": "missing_setup",
+    "protagonist_side": "left",
+    "beats": {
+      "铺垫": [],
+      "蓄力": [],
+      "转折": [
+        "event_000068"
+      ],
+      "高潮": [
+        "event_000076",
+        "event_000118",
+        "event_000155"
+      ]
+    }
+  },
+  "events": [
+    {
+      "event_id": "event_000021",
+      "type": "进球",
+      "type_en": "Goal",
+      "t_ms": 3065903.0,
+      "bz_id": "19b6af21-f2bd-9a43-553d-226b25732546-1782926892773",
+      "story_role": "转折",
+      "source": "causal_chain",
+      "source_annotation_id": "ann_0007",
+      "source_order": 0,
+      "source_chain_category": "",
+      "source_chain_subtype": "",
+      "is_replay": false,
+      "score_context": "1:1",
+      "order": 0
+    },
+    {
+      "event_id": "event_000076",
+      "type": "射门",
+      "type_en": "shot",
+      "t_ms": 3697350.0,
+      "bz_id": "0be1b8aa-1610-dea9-65d1-9c890c56826d-1782928461052",
+      "story_role": "高潮",
+      "source": "delivery_event",
+      "source_annotation_id": "",
+      "source_order": null,
+      "source_chain_category": "",
+      "source_chain_subtype": "",
+      "is_replay": false,
+      "score_context": "2:1",
+      "order": 1
+    },
+    {
+      "event_id": "event_000118",
+      "type": "犯规/被犯规",
+      "type_en": "foul",
+      "t_ms": 6408700.0,
+      "bz_id": "3477233d-4dd2-a61e-b0f1-3b5a3c72c95c-1782996218629",
+      "story_role": "高潮",
+      "source": "delivery_event",
+      "source_annotation_id": "",
+      "source_order": null,
+      "source_chain_category": "",
+      "source_chain_subtype": "",
+      "is_replay": false,
+      "score_context": "3:1",
+      "order": 2
+    },
+    {
+      "event_id": "event_000155",
+      "type": "界外球",
+      "type_en": "throw_in",
+      "t_ms": 7858370.0,
+      "bz_id": "459be808-24aa-a436-58a0-5b623d229111-1783054777170",
+      "story_role": "高潮",
+      "source": "delivery_event",
+      "source_annotation_id": "",
+      "source_order": null,
+      "source_chain_category": "",
+      "source_chain_subtype": "",
+      "is_replay": false,
+      "score_context": "4:1",
+      "order": 3
+    },
+    {
+      "event_id": "event_000159",
+      "type": "比赛结束",
+      "type_en": "match_end",
+      "t_ms": 7946160.0,
+      "bz_id": "9a3f4790-626a-f535-0776-d3f33b55d232-1783055244962",
+      "story_role": "收尾",
+      "source": "delivery_event",
+      "source_annotation_id": "",
+      "source_order": null,
+      "source_chain_category": "",
+      "source_chain_subtype": "",
+      "is_replay": false,
+      "score_context": "4:1",
+      "order": 4
+    }
+  ],
+  "algorithm": "t01_comeback_e2e",
+  "stages": [
+    "recognize_timeline",
+    "emit_candidate_chain"
+  ],
+  "events_file": "2022-11-28 克罗地亚vs加拿大.json",
+  "causal_file": "2022-11-28 克罗地亚vs加拿大_causal.json"
+}

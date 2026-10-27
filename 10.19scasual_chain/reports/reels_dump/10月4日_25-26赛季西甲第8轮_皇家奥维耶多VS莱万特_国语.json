@@ -1,0 +1,235 @@
+{
+  "match_id": "10月4日_25-26赛季西甲第8轮_皇家奥维耶多VS莱万特_国语",
+  "safe_id": "10月4日_25-26赛季西甲第8轮_皇家奥维耶多VS莱万特_国语",
+  "input_file": "/data2/lpy1/causal-chain2/8.31causal_chain/datasets/matches/10月4日_25-26赛季西甲第8轮_皇家奥维耶多VS莱万特_国语/timeline.json",
+  "event_count": 253,
+  "reel": {
+    "clips": [
+      {
+        "clip_id": "clip00",
+        "chain_template_id": "turnover_counter_goal",
+        "chain_label_zh": "抢断/反击/失误造成进球链",
+        "chain_category": "outcome",
+        "t0_ms": 2366480,
+        "t1_ms": 2382480,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 2378480
+        },
+        "events": [
+          {
+            "event_id": "event_000178",
+            "order": 0,
+            "type": "dribble_past",
+            "t_ms": 2371290,
+            "role": "build_up",
+            "global_index": 177
+          },
+          {
+            "event_id": "event_000179",
+            "order": 1,
+            "type": "successful_tackle",
+            "t_ms": 2372680,
+            "role": "build_up",
+            "global_index": 178
+          },
+          {
+            "event_id": "event_000180",
+            "order": 2,
+            "type": "goal",
+            "t_ms": 2378480,
+            "role": "outcome",
+            "global_index": 179
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "抢断/反击/失误造成进球链（dribble_past → successful_tackle → goal）",
+        "confidence": 1.3,
+        "margin": 1.3,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 3,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 179,
+            "t_ms": 2378480,
+            "t0_ms": 2366480,
+            "t1_ms": 2382480,
+            "reason": "t0_goal",
+            "half": 1,
+            "slot": 2
+          }
+        }
+      },
+      {
+        "clip_id": "clip01",
+        "chain_template_id": "shot_post_bar_chain",
+        "chain_label_zh": "射门门柱/横梁链",
+        "chain_category": "danger",
+        "t0_ms": 3526330,
+        "t1_ms": 3539330,
+        "anchor_event": {
+          "type": "shot",
+          "t_ms": 3534330
+        },
+        "events": [
+          {
+            "event_id": "event_000238",
+            "order": 0,
+            "type": "shot",
+            "t_ms": 3534330,
+            "role": "shot",
+            "global_index": 237
+          }
+        ],
+        "context_events": [],
+        "edges": [],
+        "narrative_zh": "射门门柱/横梁链（shot）",
+        "confidence": 1.14,
+        "margin": 1.14,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 1,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T1",
+            "event_type": "shot",
+            "event_i": 237,
+            "t_ms": 3534330,
+            "t0_ms": 3526330,
+            "t1_ms": 3539330,
+            "reason": "shot_then_save_or_corner",
+            "half": 2,
+            "slot": 0
+          }
+        }
+      },
+      {
+        "clip_id": "clip02",
+        "chain_template_id": "outcome_other",
+        "chain_label_zh": "其他",
+        "chain_category": "outcome",
+        "t0_ms": 3555140,
+        "t1_ms": 3571140,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 3567140
+        },
+        "events": [
+          {
+            "event_id": "event_000241",
+            "order": 0,
+            "type": "goal",
+            "t_ms": 3567140,
+            "role": "outcome",
+            "global_index": 240
+          }
+        ],
+        "context_events": [],
+        "edges": [],
+        "narrative_zh": "其他（goal）",
+        "confidence": 0.8,
+        "margin": 0.8,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 1,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 240,
+            "t_ms": 3567140,
+            "t0_ms": 3555140,
+            "t1_ms": 3571140,
+            "reason": "t0_goal",
+            "half": 2,
+            "slot": 0
+          }
+        }
+      }
+    ],
+    "ordering": [
+      "clip00",
+      "clip01",
+      "clip02"
+    ],
+    "total_duration_ms": 45000
+  },
+  "config": {
+    "backend": "dump_highlight_reels",
+    "profile": "production",
+    "drop_t2": true,
+    "use_llm": false,
+    "pipeline": "select_moments→classify/refine→assemble_reel",
+    "aligned_with": "eval/eval_offline_highlight.py logic track"
+  },
+  "stats": {
+    "moments_selected": 3,
+    "clips_final": 3,
+    "fast_path": 3,
+    "select": {
+      "rule": "rule3_t0_2_fill_t1",
+      "half_ms": 2700000,
+      "n_t0": 2,
+      "n_t1_pool": 1,
+      "n_t2_pool": 3,
+      "n_selected": 3,
+      "n_t0_selected": 2,
+      "n_t1_selected": 1,
+      "n_t2_selected": 0,
+      "has_goal": true,
+      "has_penalty_goal": false,
+      "has_red": false,
+      "drop_t2": true,
+      "n_selected_after_drop_t2": 3
+    }
+  }
+}

@@ -1,0 +1,182 @@
+{
+  "match_id": "05_2 4月19日 25-26赛季英超第33轮 切尔西VS曼联 4K国语__converted_4K_H264_50fps",
+  "safe_id": "05_2_4月19日_25-26赛季英超第33轮_切尔西VS曼联_4K国语__converted_4K_H264_50fps",
+  "input_file": "/data2/lpy1/causal-chain2/8.31causal_chain/datasets/matches/05_2_4月19日_25-26赛季英超第33轮_切尔西VS曼联_4K国语__converted_4K_H264_50fps/timeline.json",
+  "event_count": 162,
+  "reel": {
+    "clips": [
+      {
+        "clip_id": "clip00",
+        "chain_template_id": "second_phase_after_frame_chain",
+        "chain_label_zh": "门框后二次进攻链",
+        "chain_category": "danger",
+        "t0_ms": 1661230,
+        "t1_ms": 1671230,
+        "anchor_event": {
+          "type": "corner",
+          "t_ms": 1667230
+        },
+        "events": [
+          {
+            "event_id": "event_000086",
+            "order": 0,
+            "type": "corner",
+            "t_ms": 1667230,
+            "role": "set_piece",
+            "global_index": 85
+          },
+          {
+            "event_id": "event_000087",
+            "order": 1,
+            "type": "shot",
+            "t_ms": 1670200,
+            "role": "shot",
+            "global_index": 86
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "门框后二次进攻链（corner → shot）",
+        "confidence": 0.8,
+        "margin": 0.8,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 2,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T2",
+            "event_type": "corner",
+            "event_i": 85,
+            "t_ms": 1667230,
+            "t0_ms": 1661230,
+            "t1_ms": 1671230,
+            "reason": "corner_then_threat",
+            "half": 1,
+            "slot": 1
+          }
+        }
+      },
+      {
+        "clip_id": "clip01",
+        "chain_template_id": "shot_post_bar_chain",
+        "chain_label_zh": "射门门柱/横梁链",
+        "chain_category": "danger",
+        "t0_ms": 2062000,
+        "t1_ms": 2072000,
+        "anchor_event": {
+          "type": "successful_tackle",
+          "t_ms": 2068000
+        },
+        "events": [
+          {
+            "event_id": "event_000108",
+            "order": 0,
+            "type": "successful_tackle",
+            "t_ms": 2068000,
+            "role": "build_up",
+            "global_index": 107
+          },
+          {
+            "event_id": "event_000109",
+            "order": 1,
+            "type": "shot",
+            "t_ms": 2069489,
+            "role": "shot",
+            "global_index": 108
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "射门门柱/横梁链（successful_tackle → shot）",
+        "confidence": 1.22,
+        "margin": 1.22,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 2,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T2",
+            "event_type": "successful_tackle",
+            "event_i": 107,
+            "t_ms": 2068000,
+            "t0_ms": 2062000,
+            "t1_ms": 2072000,
+            "reason": "successful_tackle_then_threat",
+            "half": 1,
+            "slot": 2
+          }
+        }
+      }
+    ],
+    "ordering": [
+      "clip00",
+      "clip01"
+    ],
+    "total_duration_ms": 20000
+  },
+  "config": {
+    "backend": "dump_highlight_reels",
+    "profile": "production",
+    "drop_t2": false,
+    "use_llm": false,
+    "pipeline": "select_moments→classify/refine→assemble_reel",
+    "aligned_with": "eval/eval_offline_highlight.py logic track"
+  },
+  "stats": {
+    "moments_selected": 2,
+    "clips_final": 2,
+    "fast_path": 2,
+    "select": {
+      "rule": "rule4_t1_plus_t2",
+      "half_ms": 2700000,
+      "n_t0": 0,
+      "n_t1_pool": 0,
+      "n_t2_pool": 2,
+      "n_selected": 2,
+      "n_t0_selected": 0,
+      "n_t1_selected": 0,
+      "n_t2_selected": 2,
+      "has_goal": false,
+      "has_penalty_goal": false,
+      "has_red": false
+    }
+  }
+}

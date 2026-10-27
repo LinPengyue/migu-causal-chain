@@ -1,0 +1,58 @@
+{
+  "stats": {
+    "rule": "rule3_t0_2_fill_t1",
+    "half_ms": 2700000,
+    "n_t0": 2,
+    "n_t1_pool": 0,
+    "n_t2_pool": 1,
+    "n_selected": 1,
+    "n_t0_selected": 1,
+    "n_t1_selected": 0,
+    "n_t2_selected": 0,
+    "has_goal": true,
+    "has_penalty_goal": true,
+    "has_red": false,
+    "mode": "no_t2",
+    "n_selected_after_drop_t2": 1,
+    "n_labeled_by_annotation": 1,
+    "n_heuristic": 0
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0006",
+      "match_id": "2022-12-18 阿根廷vs法国",
+      "chain_category": "outcome",
+      "t0_ms": 11035870,
+      "t1_ms": 11048760,
+      "anchor_t_ms": 11047870,
+      "first_event": "penalty",
+      "last_event": "goal",
+      "events": [
+        {
+          "event_id": "event_000121",
+          "type": "penalty",
+          "t_ms": 11047870,
+          "t0_ms": 11044900,
+          "t1_ms": 11056740,
+          "order": 120
+        },
+        {
+          "event_id": "event_000122",
+          "type": "goal",
+          "t_ms": 11048760,
+          "t0_ms": 11044900,
+          "t1_ms": 11056740,
+          "order": 121
+        }
+      ],
+      "tier": "T0",
+      "tier_reason": "t0_penalty_goal|merged",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 70.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    }
+  ],
+  "note": "alias of highlight_gold_no_t2"
+}

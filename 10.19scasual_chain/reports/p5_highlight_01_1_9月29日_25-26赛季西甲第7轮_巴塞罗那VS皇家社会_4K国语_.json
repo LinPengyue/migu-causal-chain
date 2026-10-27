@@ -1,0 +1,162 @@
+{
+  "match_id": "01_1_9月29日_25-26赛季西甲第7轮_巴塞罗那VS皇家社会_4K国语__converted_4K_H265_25fps",
+  "source": "strip_gold",
+  "nodes": [
+    {
+      "strip_chain_id": "ann_0003",
+      "t0_ms": 845109,
+      "t1_ms": 852323,
+      "chain_category": "danger",
+      "template_id": "",
+      "first_event": "corner",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "order": 0,
+          "type": "corner",
+          "t_ms": 847109,
+          "event_id": "event_000007"
+        },
+        {
+          "order": 1,
+          "type": "pass",
+          "t_ms": 848422,
+          "event_id": "event_000008"
+        },
+        {
+          "order": 2,
+          "type": "shot",
+          "t_ms": 849641,
+          "event_id": "event_000009"
+        },
+        {
+          "order": 3,
+          "type": "keeper_save",
+          "t_ms": 850323,
+          "event_id": "event_000010"
+        }
+      ]
+    },
+    {
+      "strip_chain_id": "ann_0006",
+      "t0_ms": 2044218,
+      "t1_ms": 2062523,
+      "chain_category": "outcome",
+      "template_id": "",
+      "first_event": "pass",
+      "last_event": "goal",
+      "events": [
+        {
+          "order": 0,
+          "type": "pass",
+          "t_ms": 2046218,
+          "event_id": "event_000021"
+        },
+        {
+          "order": 1,
+          "type": "dribble_past",
+          "t_ms": 2058235,
+          "event_id": "event_000022"
+        },
+        {
+          "order": 2,
+          "type": "pass",
+          "t_ms": 2059426,
+          "event_id": "event_000023"
+        },
+        {
+          "order": 3,
+          "type": "goal",
+          "t_ms": 2060523,
+          "event_id": "event_000024"
+        }
+      ]
+    },
+    {
+      "strip_chain_id": "ann_0008",
+      "t0_ms": 2550755,
+      "t1_ms": 2563292,
+      "chain_category": "danger",
+      "template_id": "",
+      "first_event": "pass",
+      "last_event": "shot",
+      "events": [
+        {
+          "order": 0,
+          "type": "pass",
+          "t_ms": 2552755,
+          "event_id": "event_000029"
+        },
+        {
+          "order": 1,
+          "type": "pass",
+          "t_ms": 2555893,
+          "event_id": "event_000030"
+        },
+        {
+          "order": 2,
+          "type": "goal_line_clearance",
+          "t_ms": 2560379,
+          "event_id": "event_000031"
+        },
+        {
+          "order": 3,
+          "type": "shot",
+          "t_ms": 2561292,
+          "event_id": "event_000032"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "src": "ann_0003",
+      "dst": "ann_0006",
+      "rel": "follow",
+      "score": 1.0,
+      "reason": "temporal_adjacent_fallback"
+    },
+    {
+      "src": "ann_0006",
+      "dst": "ann_0008",
+      "rel": "follow",
+      "score": 1.0,
+      "reason": "temporal_adjacent_fallback"
+    }
+  ],
+  "highlight_chain": {
+    "ordering": [
+      "ann_0003",
+      "ann_0006",
+      "ann_0008"
+    ],
+    "steps": [
+      {
+        "strip_chain_id": "ann_0003",
+        "via_rel": "start",
+        "from": null
+      },
+      {
+        "strip_chain_id": "ann_0006",
+        "via_rel": "follow",
+        "from": "ann_0003"
+      },
+      {
+        "strip_chain_id": "ann_0008",
+        "via_rel": "follow",
+        "from": "ann_0006"
+      }
+    ]
+  },
+  "stats": {
+    "n_strip_chains": 3,
+    "n_edges": 2,
+    "rel_counts": {
+      "follow": 2,
+      "same_sequence": 0,
+      "correction_of": 0
+    },
+    "ordering_method": "graph_topo_from_relations",
+    "n_correction_of": 0
+  }
+}

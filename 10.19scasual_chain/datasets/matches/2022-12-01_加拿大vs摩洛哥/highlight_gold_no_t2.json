@@ -1,0 +1,116 @@
+{
+  "stats": {
+    "rule": "rule3_t0_2_fill_t1",
+    "half_ms": 2700000,
+    "n_t0": 2,
+    "n_t1_pool": 1,
+    "n_t2_pool": 3,
+    "n_selected": 2,
+    "n_t0_selected": 1,
+    "n_t1_selected": 1,
+    "n_t2_selected": 0,
+    "has_goal": true,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "no_t2",
+    "n_selected_after_drop_t2": 2,
+    "n_labeled_by_annotation": 2,
+    "n_heuristic": 0
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "2022-12-01 加拿大vs摩洛哥",
+      "chain_category": "outcome",
+      "t0_ms": 1146780,
+      "t1_ms": 1159780,
+      "anchor_t_ms": 1154780,
+      "first_event": "corner",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000023",
+          "type": "corner",
+          "t_ms": 1150820,
+          "t0_ms": 1145640,
+          "t1_ms": 1157810,
+          "order": 22
+        },
+        {
+          "event_id": "event_000024",
+          "type": "shot",
+          "t_ms": 1154780,
+          "t0_ms": 1145640,
+          "t1_ms": 1157810,
+          "order": 23
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    },
+    {
+      "annotation_id": "ann_0048",
+      "match_id": "2022-12-01 加拿大vs摩洛哥",
+      "chain_category": "outcome",
+      "t0_ms": 4171359,
+      "t1_ms": 4192979,
+      "anchor_t_ms": 4183359,
+      "first_event": "shot",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000146",
+          "type": "shot",
+          "t_ms": 4182160,
+          "t0_ms": 4179970,
+          "t1_ms": 4192840,
+          "order": 145
+        },
+        {
+          "event_id": "event_000147",
+          "type": "goal",
+          "t_ms": 4183359,
+          "t0_ms": 4179970,
+          "t1_ms": 4192840,
+          "order": 146
+        },
+        {
+          "event_id": "event_000148",
+          "type": "shot",
+          "t_ms": 4186040,
+          "t0_ms": 4179970,
+          "t1_ms": 4192840,
+          "order": 147
+        },
+        {
+          "event_id": "event_000149",
+          "type": "goal",
+          "t_ms": 4188979,
+          "t0_ms": 4179970,
+          "t1_ms": 4192840,
+          "order": 148
+        },
+        {
+          "event_id": "event_000150",
+          "type": "shot",
+          "t_ms": 4191010,
+          "t0_ms": 4179970,
+          "t1_ms": 4192840,
+          "order": 149
+        }
+      ],
+      "tier": "T0",
+      "tier_reason": "t0_goal|merged",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 341.86,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    }
+  ]
+}

@@ -1,0 +1,155 @@
+{
+  "match_id": "29月25日_25-26赛季联赛杯第3轮_维尔港VS阿森纳_英语",
+  "safe_id": "29月25日_25-26赛季联赛杯第3轮_维尔港VS阿森纳_英语",
+  "mode": "online",
+  "n_chains": 3,
+  "category_counts": {
+    "danger": 3
+  },
+  "chains": [
+    {
+      "clip_id": "clip00",
+      "annotation_id": "ann_0008",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 170592,
+      "track_id": 0,
+      "t_ready": 2151761,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "pass",
+        "last_event": "shot",
+        "t0_ms": 2140353,
+        "t1_ms": 2153761
+      },
+      "pred": {
+        "category": "danger",
+        "first": "pass",
+        "last": "shot",
+        "t0_ms": 2142353,
+        "t1_ms": 2151761,
+        "emit_t_ms": 2322353
+      },
+      "chain_category": "danger",
+      "first_event": "pass",
+      "last_event": "shot",
+      "t0_ms": 2142353,
+      "t1_ms": 2151761,
+      "emit_t_ms": 2322353
+    },
+    {
+      "clip_id": "clip01",
+      "annotation_id": "ann_0010",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 56420,
+      "track_id": 1,
+      "t_ready": 2445933,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "pass",
+        "last_event": "goal_line_clearance",
+        "t0_ms": 2435620,
+        "t1_ms": 2447933
+      },
+      "pred": {
+        "category": "danger",
+        "first": "pass",
+        "last": "goal_line_clearance",
+        "t0_ms": 2437620,
+        "t1_ms": 2445933,
+        "emit_t_ms": 2502353
+      },
+      "chain_category": "danger",
+      "first_event": "pass",
+      "last_event": "goal_line_clearance",
+      "t0_ms": 2437620,
+      "t1_ms": 2445933,
+      "emit_t_ms": 2502353
+    },
+    {
+      "clip_id": "clip02",
+      "annotation_id": "ann_0012",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 0,
+      "track_id": 2,
+      "t_ready": 2684641,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "pass",
+        "last_event": "pass",
+        "t0_ms": 2664838,
+        "t1_ms": 2686641
+      },
+      "pred": {
+        "category": "danger",
+        "first": "pass",
+        "last": "pass",
+        "t0_ms": 2666838,
+        "t1_ms": 2680166,
+        "emit_t_ms": 2684641
+      },
+      "chain_category": "danger",
+      "first_event": "pass",
+      "last_event": "pass",
+      "t0_ms": 2666838,
+      "t1_ms": 2680166,
+      "emit_t_ms": 2684641
+    }
+  ],
+  "config": {
+    "backend": "dump_strip_chains",
+    "algo": "causal_chain6",
+    "adapter": "OnlineStripAdapter",
+    "mode": "online",
+    "event_source": "gold_events",
+    "prefix_stride": 1,
+    "min_prefix": 2,
+    "profile": "production",
+    "use_llm": false,
+    "pipeline": "stream(gold_events)→OnlineStripEngine→one-to-one",
+    "aligned_with": "eval/eval_online_strip.py --stream-source gold_events"
+  },
+  "stats": {
+    "n_gold": 3,
+    "n_scorable": 3,
+    "strict_matched": 3,
+    "logic_complete_rate": 100.0,
+    "precision_hits": 3,
+    "n_tracks": 3,
+    "recall_matched": 3,
+    "n_stream_events": 15,
+    "n_prefix_snapshots": 21
+  }
+}

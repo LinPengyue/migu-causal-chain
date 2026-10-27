@@ -1,0 +1,121 @@
+{
+  "match_id": "10月15日_2025世预赛亚洲区_卡塔尔VS阿联酋_国语",
+  "safe_id": "10月15日_2025世预赛亚洲区_卡塔尔VS阿联酋_国语",
+  "input_file": "/data2/lpy1/causal-chain2/8.31causal_chain/datasets/matches/10月15日_2025世预赛亚洲区_卡塔尔VS阿联酋_国语/timeline.json",
+  "event_count": 145,
+  "reel": {
+    "clips": [
+      {
+        "clip_id": "clip00",
+        "chain_template_id": "second_phase_after_frame_chain",
+        "chain_label_zh": "门框后二次进攻链",
+        "chain_category": "danger",
+        "t0_ms": 1562370,
+        "t1_ms": 1572370,
+        "anchor_event": {
+          "type": "corner",
+          "t_ms": 1568370
+        },
+        "events": [
+          {
+            "event_id": "event_000099",
+            "order": 0,
+            "type": "corner",
+            "t_ms": 1568370,
+            "role": "set_piece",
+            "global_index": 98
+          },
+          {
+            "event_id": "event_000100",
+            "order": 1,
+            "type": "pass",
+            "t_ms": 1571130,
+            "role": "outcome",
+            "global_index": 99
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "门框后二次进攻链（corner → pass）",
+        "confidence": 0.35,
+        "margin": 0.35,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 2,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T2",
+            "event_type": "corner",
+            "event_i": 98,
+            "t_ms": 1568370,
+            "t0_ms": 1562370,
+            "t1_ms": 1572370,
+            "reason": "corner_then_threat",
+            "half": 2,
+            "slot": 0
+          }
+        }
+      }
+    ],
+    "ordering": [
+      "clip00"
+    ],
+    "total_duration_ms": 10000
+  },
+  "config": {
+    "backend": "dump_highlight_reels_full",
+    "profile": "production",
+    "drop_t2": false,
+    "min_clips": 6,
+    "use_llm": false,
+    "pipeline": "select_moments(full PDF)→optional T1/T2 fill→classify/refine",
+    "note": "交付观感用；评测 no_t2 仍用 dump_highlight_reels.py / reels_dump"
+  },
+  "stats": {
+    "moments_selected": 1,
+    "clips_final": 1,
+    "fast_path": 1,
+    "select": {
+      "rule": "rule4_t1_plus_t2",
+      "half_ms": 984670,
+      "n_t0": 0,
+      "n_t1_pool": 0,
+      "n_t2_pool": 1,
+      "n_selected": 1,
+      "n_t0_selected": 0,
+      "n_t1_selected": 0,
+      "n_t2_selected": 1,
+      "has_goal": false,
+      "has_penalty_goal": false,
+      "has_red": false
+    },
+    "fill": {
+      "min_clips": 6,
+      "n_before": 1,
+      "n_filled": 0,
+      "presentation_fill": false,
+      "n_after": 1
+    },
+    "n_moments_raw": 1,
+    "under_min_clips": true
+  }
+}

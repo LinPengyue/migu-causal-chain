@@ -1,0 +1,178 @@
+{
+  "stats": {
+    "rule": "rule2_t1_only",
+    "half_ms": 2700000,
+    "n_t0": 0,
+    "n_t1_pool": 11,
+    "n_t2_pool": 6,
+    "n_selected": 4,
+    "n_t0_selected": 0,
+    "n_t1_selected": 4,
+    "n_t2_selected": 0,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "no_t2",
+    "n_selected_after_drop_t2": 4,
+    "n_labeled_by_annotation": 4,
+    "n_heuristic": 0
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0005",
+      "match_id": "2022-12-01 沙特阿拉伯vs墨西哥",
+      "chain_category": "special",
+      "t0_ms": 2681620,
+      "t1_ms": 2694620,
+      "anchor_t_ms": 2689620,
+      "first_event": "free_kick",
+      "last_event": "aerial_won",
+      "events": [
+        {
+          "event_id": "event_000131",
+          "type": "free_kick",
+          "t_ms": 2689620,
+          "t0_ms": 2684360,
+          "t1_ms": 2694670,
+          "order": 130
+        },
+        {
+          "event_id": "event_000132",
+          "type": "aerial_won",
+          "t_ms": 2692020,
+          "t0_ms": 2684360,
+          "t1_ms": 2694670,
+          "order": 131
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "fk_then_shot",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    },
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "2022-12-01 沙特阿拉伯vs墨西哥",
+      "chain_category": "danger",
+      "t0_ms": 2748560,
+      "t1_ms": 2761560,
+      "anchor_t_ms": 2756560,
+      "first_event": "corner",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000139",
+          "type": "corner",
+          "t_ms": 2754380,
+          "t0_ms": 2753040,
+          "t1_ms": 2763690,
+          "order": 138
+        },
+        {
+          "event_id": "event_000140",
+          "type": "shot",
+          "t_ms": 2756560,
+          "t0_ms": 2753040,
+          "t1_ms": 2763690,
+          "order": 139
+        },
+        {
+          "event_id": "event_000141",
+          "type": "corner",
+          "t_ms": 2758650,
+          "t0_ms": 2753040,
+          "t1_ms": 2763690,
+          "order": 140
+        },
+        {
+          "event_id": "event_000142",
+          "type": "shot",
+          "t_ms": 2759770,
+          "t0_ms": 2753040,
+          "t1_ms": 2763690,
+          "order": 141
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    },
+    {
+      "annotation_id": "ann_0005",
+      "match_id": "2022-12-01 沙特阿拉伯vs墨西哥",
+      "chain_category": "special",
+      "t0_ms": 3701450,
+      "t1_ms": 3714450,
+      "anchor_t_ms": 3709450,
+      "first_event": "free_kick",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000211",
+          "type": "free_kick",
+          "t_ms": 3709450,
+          "t0_ms": 3708160,
+          "t1_ms": 3718670,
+          "order": 210
+        },
+        {
+          "event_id": "event_000212",
+          "type": "keeper_save",
+          "t_ms": 3713600,
+          "t0_ms": 3708160,
+          "t1_ms": 3718670,
+          "order": 211
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "fk_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    },
+    {
+      "annotation_id": "ann_0022",
+      "match_id": "2022-12-01 沙特阿拉伯vs墨西哥",
+      "chain_category": "outcome",
+      "t0_ms": 4852580,
+      "t1_ms": 4865580,
+      "anchor_t_ms": 4860580,
+      "first_event": "free_kick",
+      "last_event": "goal_line_clearance",
+      "events": [
+        {
+          "event_id": "event_000222",
+          "type": "free_kick",
+          "t_ms": 4860580,
+          "t0_ms": 4854720,
+          "t1_ms": 4865010,
+          "order": 221
+        },
+        {
+          "event_id": "event_000223",
+          "type": "goal_line_clearance",
+          "t_ms": 4862530,
+          "t0_ms": 4854720,
+          "t1_ms": 4865010,
+          "order": 222
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "fk_then_shot",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 68.04,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    }
+  ]
+}

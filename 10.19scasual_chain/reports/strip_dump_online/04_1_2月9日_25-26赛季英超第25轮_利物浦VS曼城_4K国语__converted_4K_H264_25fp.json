@@ -1,0 +1,155 @@
+{
+  "match_id": "04_1 2月9日 25-26赛季英超第25轮 利物浦VS曼城 4K国语__converted_4K_H264_25fps",
+  "safe_id": "04_1_2月9日_25-26赛季英超第25轮_利物浦VS曼城_4K国语__converted_4K_H264_25fps",
+  "mode": "online",
+  "n_chains": 3,
+  "category_counts": {
+    "danger": 3
+  },
+  "chains": [
+    {
+      "clip_id": "clip00",
+      "annotation_id": "ann_0001",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 175063,
+      "track_id": 0,
+      "t_ready": 1368638,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "corner",
+        "last_event": "keeper_save",
+        "t0_ms": 1361701,
+        "t1_ms": 1370638
+      },
+      "pred": {
+        "category": "danger",
+        "first": "corner",
+        "last": "keeper_save",
+        "t0_ms": 1363701,
+        "t1_ms": 1368638,
+        "emit_t_ms": 1543701
+      },
+      "chain_category": "danger",
+      "first_event": "corner",
+      "last_event": "keeper_save",
+      "t0_ms": 1363701,
+      "t1_ms": 1368638,
+      "emit_t_ms": 1543701
+    },
+    {
+      "clip_id": "clip01",
+      "annotation_id": "ann_0002",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 9546,
+      "track_id": 1,
+      "t_ready": 1714155,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "corner",
+        "last_event": "successful_tackle",
+        "t0_ms": 1701904,
+        "t1_ms": 1716155
+      },
+      "pred": {
+        "category": "danger",
+        "first": "corner",
+        "last": "successful_tackle",
+        "t0_ms": 1703904,
+        "t1_ms": 1714155,
+        "emit_t_ms": 1723701
+      },
+      "chain_category": "danger",
+      "first_event": "corner",
+      "last_event": "successful_tackle",
+      "t0_ms": 1703904,
+      "t1_ms": 1714155,
+      "emit_t_ms": 1723701
+    },
+    {
+      "clip_id": "clip02",
+      "annotation_id": "ann_0003",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 31152,
+      "track_id": 2,
+      "t_ready": 2052549,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "throw_in",
+        "last_event": "keeper_save",
+        "t0_ms": 2043449,
+        "t1_ms": 2054549
+      },
+      "pred": {
+        "category": "danger",
+        "first": "throw_in",
+        "last": "keeper_save",
+        "t0_ms": 2045449,
+        "t1_ms": 2052549,
+        "emit_t_ms": 2083701
+      },
+      "chain_category": "danger",
+      "first_event": "throw_in",
+      "last_event": "keeper_save",
+      "t0_ms": 2045449,
+      "t1_ms": 2052549,
+      "emit_t_ms": 2083701
+    }
+  ],
+  "config": {
+    "backend": "dump_strip_chains",
+    "algo": "causal_chain6",
+    "adapter": "OnlineStripAdapter",
+    "mode": "online",
+    "event_source": "gold_events",
+    "prefix_stride": 1,
+    "min_prefix": 2,
+    "profile": "production",
+    "use_llm": false,
+    "pipeline": "stream(gold_events)→OnlineStripEngine→one-to-one",
+    "aligned_with": "eval/eval_online_strip.py --stream-source gold_events"
+  },
+  "stats": {
+    "n_gold": 3,
+    "n_scorable": 3,
+    "strict_matched": 3,
+    "logic_complete_rate": 100.0,
+    "precision_hits": 3,
+    "n_tracks": 3,
+    "recall_matched": 3,
+    "n_stream_events": 15,
+    "n_prefix_snapshots": 20
+  }
+}

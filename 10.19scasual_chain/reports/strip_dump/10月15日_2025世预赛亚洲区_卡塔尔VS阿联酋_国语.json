@@ -1,0 +1,168 @@
+{
+  "match_id": "10月15日_2025世预赛亚洲区_卡塔尔VS阿联酋_国语",
+  "safe_id": "10月15日_2025世预赛亚洲区_卡塔尔VS阿联酋_国语",
+  "mode": "gold_clips",
+  "n_chains": 1,
+  "category_counts": {
+    "danger": 1
+  },
+  "chains": [
+    {
+      "clip_id": "clip00",
+      "annotation_id": "ann_0001",
+      "ok": true,
+      "strict_match": false,
+      "flags": {
+        "a_time": true,
+        "b_category": false,
+        "c_first": true,
+        "d_last": true,
+        "strict": false,
+        "aux_time_cat": false,
+        "aux_time_cat_last": false
+      },
+      "gold": {
+        "chain_category": "special",
+        "first_event": "throw_in",
+        "last_event": "keeper_save",
+        "t0_ms": 1397698,
+        "t1_ms": 1405789
+      },
+      "pred": {
+        "chain_category": "danger",
+        "first_event": "throw_in",
+        "last_event": "keeper_save",
+        "t0_ms": 1399698,
+        "t1_ms": 1403789,
+        "template_id": "shot_save_chain",
+        "source": "sliding",
+        "event_ids": [
+          "event_000001",
+          "event_000002",
+          "event_000003",
+          "event_000004",
+          "event_000005"
+        ],
+        "event_keys": [
+          [
+            1399698,
+            "throw_in"
+          ],
+          [
+            1400488,
+            "pass"
+          ],
+          [
+            1401466,
+            "pass"
+          ],
+          [
+            1402752,
+            "shot"
+          ],
+          [
+            1403789,
+            "keeper_save"
+          ]
+        ]
+      },
+      "n_preds_on_clip": 1,
+      "all_preds": [
+        {
+          "chain_category": "danger",
+          "first_event": "throw_in",
+          "last_event": "keeper_save",
+          "t0_ms": 1399698,
+          "t1_ms": 1403789,
+          "template_id": "shot_save_chain",
+          "source": "sliding",
+          "event_ids": [
+            "event_000001",
+            "event_000002",
+            "event_000003",
+            "event_000004",
+            "event_000005"
+          ],
+          "event_keys": [
+            [
+              1399698,
+              "throw_in"
+            ],
+            [
+              1400488,
+              "pass"
+            ],
+            [
+              1401466,
+              "pass"
+            ],
+            [
+              1402752,
+              "shot"
+            ],
+            [
+              1403789,
+              "keeper_save"
+            ]
+          ]
+        }
+      ],
+      "chain_category": "danger",
+      "first_event": "throw_in",
+      "last_event": "keeper_save",
+      "t0_ms": 1399698,
+      "t1_ms": 1403789,
+      "template_id": "shot_save_chain",
+      "events": null,
+      "event_ids": [
+        "event_000001",
+        "event_000002",
+        "event_000003",
+        "event_000004",
+        "event_000005"
+      ],
+      "event_keys": [
+        [
+          1399698,
+          "throw_in"
+        ],
+        [
+          1400488,
+          "pass"
+        ],
+        [
+          1401466,
+          "pass"
+        ],
+        [
+          1402752,
+          "shot"
+        ],
+        [
+          1403789,
+          "keeper_save"
+        ]
+      ]
+    }
+  ],
+  "config": {
+    "backend": "dump_strip_chains",
+    "algo": "causal_chain6",
+    "adapter": "AlgoStripAdapter",
+    "mode": "gold_clips",
+    "event_source": "gold_events",
+    "prefix_stride": null,
+    "min_prefix": null,
+    "profile": "production",
+    "use_llm": false,
+    "pipeline": "gold_clip(gold_events)→causal_chain6.strip",
+    "aligned_with": "eval/eval_offline_strip.py --event-source gold_events"
+  },
+  "stats": {
+    "n_gold": 1,
+    "n_scorable": 1,
+    "n_empty_clip": 0,
+    "strict_matched": 0,
+    "logic_complete_rate": 0.0
+  }
+}

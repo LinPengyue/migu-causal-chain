@@ -1,0 +1,31 @@
+{
+  "task": "offline_strip",
+  "config": {
+    "profile": "production",
+    "adapter": "AlgoStripAdapter",
+    "mode": "per_gold_clip_strip_B",
+    "event_source": "gold_events",
+    "use_llm": false,
+    "limit_matches": 0
+  },
+  "total_gold": 437,
+  "strict_matched": 359,
+  "logic_complete_rate": 82.15,
+  "precision": 93.01,
+  "latency_p50": null,
+  "latency_p90": null,
+  "over_45s_rate": null,
+  "structural": null,
+  "n_matches": 63,
+  "data_sources": {
+    "gold": "strip_gold.json",
+    "event_source": "gold_events",
+    "clip_events": "gold.events → strip (module eval; not classify)",
+    "n_scorable": 437,
+    "n_unscorable": 0
+  },
+  "note": "B-style oracle clip strip; not offline classify; no silent timeline→gold.events fallback",
+  "n_pred_total": 386,
+  "n_scorable": 437,
+  "n_unscorable": 0
+}

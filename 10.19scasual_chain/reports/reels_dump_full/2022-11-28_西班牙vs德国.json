@@ -1,0 +1,48 @@
+{
+  "match_id": "2022-11-28 西班牙vs德国",
+  "safe_id": "2022-11-28_西班牙vs德国",
+  "input_file": "/data2/lpy1/causal-chain2/8.31causal_chain/datasets/matches/2022-11-28_西班牙vs德国/timeline.json",
+  "event_count": 95,
+  "reel": {
+    "clips": [],
+    "ordering": [],
+    "total_duration_ms": 0
+  },
+  "config": {
+    "backend": "dump_highlight_reels_full",
+    "profile": "production",
+    "drop_t2": false,
+    "min_clips": 6,
+    "use_llm": false,
+    "pipeline": "select_moments(full PDF)→optional T1/T2 fill→classify/refine",
+    "note": "交付观感用；评测 no_t2 仍用 dump_highlight_reels.py / reels_dump"
+  },
+  "stats": {
+    "moments_selected": 0,
+    "clips_final": 0,
+    "fast_path": 0,
+    "select": {
+      "rule": "rule4_t1_plus_t2",
+      "half_ms": 2700000,
+      "n_t0": 0,
+      "n_t1_pool": 0,
+      "n_t2_pool": 0,
+      "n_selected": 0,
+      "n_t0_selected": 0,
+      "n_t1_selected": 0,
+      "n_t2_selected": 0,
+      "has_goal": false,
+      "has_penalty_goal": false,
+      "has_red": false
+    },
+    "fill": {
+      "min_clips": 6,
+      "n_before": 0,
+      "n_filled": 0,
+      "presentation_fill": false,
+      "n_after": 0
+    },
+    "n_moments_raw": 0,
+    "under_min_clips": true
+  }
+}

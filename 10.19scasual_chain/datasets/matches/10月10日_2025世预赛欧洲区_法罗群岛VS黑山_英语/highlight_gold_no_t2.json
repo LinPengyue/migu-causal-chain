@@ -1,0 +1,143 @@
+{
+  "stats": {
+    "rule": "rule3_t0_4_fill_t1",
+    "half_ms": 2700000,
+    "n_t0": 4,
+    "n_t1_pool": 0,
+    "n_t2_pool": 0,
+    "n_selected": 3,
+    "n_t0_selected": 3,
+    "n_t1_selected": 0,
+    "n_t2_selected": 0,
+    "has_goal": true,
+    "has_penalty_goal": true,
+    "has_red": false,
+    "mode": "no_t2",
+    "n_selected_after_drop_t2": 3,
+    "n_labeled_by_annotation": 0,
+    "n_heuristic": 3
+  },
+  "chains": [
+    {
+      "annotation_id": "select:10月10日_2025世预赛欧洲区_法罗群岛VS黑山_英语:2460110:T0",
+      "match_id": "10月10日_2025世预赛欧洲区_法罗群岛VS黑山_英语",
+      "chain_category": "outcome",
+      "t0_ms": 2448110,
+      "t1_ms": 2464110,
+      "anchor_t_ms": 2460110,
+      "first_event": "free_kick",
+      "last_event": "goal",
+      "events": [
+        {
+          "event_id": "event_000402",
+          "type": "free_kick",
+          "t_ms": 2458150,
+          "t0_ms": 2441800,
+          "t1_ms": 2464530,
+          "order": 401
+        },
+        {
+          "event_id": "event_000403",
+          "type": "goal",
+          "t_ms": 2460110,
+          "t0_ms": 2441800,
+          "t1_ms": 2464530,
+          "order": 402
+        }
+      ],
+      "tier": "T0",
+      "tier_reason": "t0_goal",
+      "window_aligned": "select_moments",
+      "label_source": "timeline_heuristic",
+      "label_score": 0.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    },
+    {
+      "annotation_id": "select:10月10日_2025世预赛欧洲区_法罗群岛VS黑山_英语:4560630:T0",
+      "match_id": "10月10日_2025世预赛欧洲区_法罗群岛VS黑山_英语",
+      "chain_category": "outcome",
+      "t0_ms": 4548630,
+      "t1_ms": 4564630,
+      "anchor_t_ms": 4560630,
+      "first_event": "pass",
+      "last_event": "goal",
+      "events": [
+        {
+          "event_id": "event_000530",
+          "type": "pass",
+          "t_ms": 4553200,
+          "t0_ms": 4467920,
+          "t1_ms": 4539480,
+          "order": 529
+        },
+        {
+          "event_id": "event_000531",
+          "type": "pass",
+          "t_ms": 4554980,
+          "t0_ms": 4467920,
+          "t1_ms": 4539480,
+          "order": 530
+        },
+        {
+          "event_id": "event_000532",
+          "type": "pass",
+          "t_ms": 4557780,
+          "t0_ms": 4467920,
+          "t1_ms": 4539480,
+          "order": 531
+        },
+        {
+          "event_id": "event_000533",
+          "type": "goal",
+          "t_ms": 4560630,
+          "t0_ms": 4467920,
+          "t1_ms": 4539480,
+          "order": 532
+        }
+      ],
+      "tier": "T0",
+      "tier_reason": "t0_goal",
+      "window_aligned": "select_moments",
+      "label_source": "timeline_heuristic",
+      "label_score": 0.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    },
+    {
+      "annotation_id": "select:10月10日_2025世预赛欧洲区_法罗群岛VS黑山_英语:5591750:T0",
+      "match_id": "10月10日_2025世预赛欧洲区_法罗群岛VS黑山_英语",
+      "chain_category": "outcome",
+      "t0_ms": 5579750,
+      "t1_ms": 5599470,
+      "anchor_t_ms": 5591750,
+      "first_event": "penalty",
+      "last_event": "goal",
+      "events": [
+        {
+          "event_id": "event_000569",
+          "type": "penalty",
+          "t_ms": 5591750,
+          "t0_ms": 5458340,
+          "t1_ms": 5599030,
+          "order": 568
+        },
+        {
+          "event_id": "event_000570",
+          "type": "goal",
+          "t_ms": 5595470,
+          "t0_ms": 5458340,
+          "t1_ms": 5599030,
+          "order": 569
+        }
+      ],
+      "tier": "T0",
+      "tier_reason": "t0_penalty_goal|merged",
+      "window_aligned": "select_moments",
+      "label_source": "timeline_heuristic",
+      "label_score": 0.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    }
+  ]
+}

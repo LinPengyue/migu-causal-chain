@@ -1,0 +1,156 @@
+{
+  "match_id": "10月10日_2025世预赛欧洲区_白俄罗斯VS丹麦_国语",
+  "safe_id": "10月10日_2025世预赛欧洲区_白俄罗斯VS丹麦_国语",
+  "mode": "online",
+  "n_chains": 3,
+  "category_counts": {
+    "danger": 1,
+    "outcome": 2
+  },
+  "chains": [
+    {
+      "clip_id": "clip00",
+      "annotation_id": "ann_0001",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 167692,
+      "track_id": 0,
+      "t_ready": 929482,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "aerial_won",
+        "last_event": "shot",
+        "t0_ms": 915174,
+        "t1_ms": 931482
+      },
+      "pred": {
+        "category": "danger",
+        "first": "aerial_won",
+        "last": "shot",
+        "t0_ms": 917174,
+        "t1_ms": 929482,
+        "emit_t_ms": 1097174
+      },
+      "chain_category": "danger",
+      "first_event": "aerial_won",
+      "last_event": "shot",
+      "t0_ms": 917174,
+      "t1_ms": 929482,
+      "emit_t_ms": 1097174
+    },
+    {
+      "clip_id": "clip01",
+      "annotation_id": "ann_0002",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 57747,
+      "track_id": 1,
+      "t_ready": 1309427,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "outcome",
+        "first_event": "pass",
+        "last_event": "goal",
+        "t0_ms": 1303604,
+        "t1_ms": 1311427
+      },
+      "pred": {
+        "category": "outcome",
+        "first": "pass",
+        "last": "goal",
+        "t0_ms": 1305604,
+        "t1_ms": 1309427,
+        "emit_t_ms": 1367174
+      },
+      "chain_category": "outcome",
+      "first_event": "pass",
+      "last_event": "goal",
+      "t0_ms": 1305604,
+      "t1_ms": 1309427,
+      "emit_t_ms": 1367174
+    },
+    {
+      "clip_id": "clip02",
+      "annotation_id": "ann_0004",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 9811,
+      "track_id": 2,
+      "t_ready": 1627363,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "outcome",
+        "first_event": "pass",
+        "last_event": "goal",
+        "t0_ms": 1621197,
+        "t1_ms": 1629363
+      },
+      "pred": {
+        "category": "outcome",
+        "first": "pass",
+        "last": "goal",
+        "t0_ms": 1623197,
+        "t1_ms": 1627363,
+        "emit_t_ms": 1637174
+      },
+      "chain_category": "outcome",
+      "first_event": "pass",
+      "last_event": "goal",
+      "t0_ms": 1623197,
+      "t1_ms": 1627363,
+      "emit_t_ms": 1637174
+    }
+  ],
+  "config": {
+    "backend": "dump_strip_chains",
+    "algo": "causal_chain6",
+    "adapter": "OnlineStripAdapter",
+    "mode": "online",
+    "event_source": "gold_events",
+    "prefix_stride": 1,
+    "min_prefix": 2,
+    "profile": "production",
+    "use_llm": false,
+    "pipeline": "stream(gold_events)→OnlineStripEngine→one-to-one",
+    "aligned_with": "eval/eval_online_strip.py --stream-source gold_events"
+  },
+  "stats": {
+    "n_gold": 3,
+    "n_scorable": 3,
+    "strict_matched": 3,
+    "logic_complete_rate": 100.0,
+    "precision_hits": 3,
+    "n_tracks": 3,
+    "recall_matched": 3,
+    "n_stream_events": 15,
+    "n_prefix_snapshots": 22
+  }
+}

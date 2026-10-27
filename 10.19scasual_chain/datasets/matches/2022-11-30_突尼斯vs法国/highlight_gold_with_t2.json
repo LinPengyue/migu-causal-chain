@@ -1,0 +1,196 @@
+{
+  "stats": {
+    "rule": "rule4_t1_plus_t2",
+    "half_ms": 2700000,
+    "n_t0": 0,
+    "n_t1_pool": 1,
+    "n_t2_pool": 4,
+    "n_selected": 5,
+    "n_t0_selected": 0,
+    "n_t1_selected": 1,
+    "n_t2_selected": 4,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "with_t2",
+    "n_labeled_by_annotation": 5,
+    "n_heuristic": 0
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0059",
+      "match_id": "2022-11-30  突尼斯vs法国",
+      "chain_category": "danger",
+      "t0_ms": 1468690,
+      "t1_ms": 1481690,
+      "anchor_t_ms": 1476690,
+      "first_event": "free_kick",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000032",
+          "type": "free_kick",
+          "t_ms": 1476690,
+          "t0_ms": 1471670,
+          "t1_ms": 1481750,
+          "order": 31
+        },
+        {
+          "event_id": "event_000033",
+          "type": "keeper_save",
+          "t_ms": 1478480,
+          "t0_ms": 1471670,
+          "t1_ms": 1481750,
+          "order": 32
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "fk_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0006",
+      "match_id": "2022-11-30  突尼斯vs法国",
+      "chain_category": "danger",
+      "t0_ms": 2620240,
+      "t1_ms": 2630240,
+      "anchor_t_ms": 2626240,
+      "first_event": "foul",
+      "last_event": "successful_tackle",
+      "events": [
+        {
+          "event_id": "event_000069",
+          "type": "foul",
+          "t_ms": 2622310,
+          "t0_ms": 2614820,
+          "t1_ms": 2624860,
+          "order": 68
+        },
+        {
+          "event_id": "event_000070",
+          "type": "successful_tackle",
+          "t_ms": 2626240,
+          "t0_ms": 2625780,
+          "t1_ms": 2635870,
+          "order": 69
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "successful_tackle_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 197.56,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0004",
+      "match_id": "2022-11-30  突尼斯vs法国",
+      "chain_category": "danger",
+      "t0_ms": 4744470,
+      "t1_ms": 4754470,
+      "anchor_t_ms": 4750470,
+      "first_event": "successful_tackle",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000103",
+          "type": "successful_tackle",
+          "t_ms": 4750470,
+          "t0_ms": 4747390,
+          "t1_ms": 4757460,
+          "order": 102
+        },
+        {
+          "event_id": "event_000104",
+          "type": "shot",
+          "t_ms": 4752620,
+          "t0_ms": 4747390,
+          "t1_ms": 4757460,
+          "order": 103
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "successful_tackle_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0004",
+      "match_id": "2022-11-30  突尼斯vs法国",
+      "chain_category": "danger",
+      "t0_ms": 4774840,
+      "t1_ms": 4784840,
+      "anchor_t_ms": 4780840,
+      "first_event": "shot",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000106",
+          "type": "shot",
+          "t_ms": 4775140,
+          "t0_ms": 4769620,
+          "t1_ms": 4779720,
+          "order": 105
+        },
+        {
+          "event_id": "event_000107",
+          "type": "successful_tackle",
+          "t_ms": 4780840,
+          "t0_ms": 4780460,
+          "t1_ms": 4790520,
+          "order": 106
+        },
+        {
+          "event_id": "event_000108",
+          "type": "shot",
+          "t_ms": 4782810,
+          "t0_ms": 4780460,
+          "t1_ms": 4790520,
+          "order": 107
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "successful_tackle_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0051",
+      "match_id": "2022-11-30  突尼斯vs法国",
+      "chain_category": "outcome",
+      "t0_ms": 5061620,
+      "t1_ms": 5071620,
+      "anchor_t_ms": 5067620,
+      "first_event": "successful_tackle",
+      "last_event": "successful_tackle",
+      "events": [
+        {
+          "event_id": "event_000125",
+          "type": "successful_tackle",
+          "t_ms": 5067620,
+          "t0_ms": 5061320,
+          "t1_ms": 5071430,
+          "order": 124
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "successful_tackle_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 243.15,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    }
+  ]
+}

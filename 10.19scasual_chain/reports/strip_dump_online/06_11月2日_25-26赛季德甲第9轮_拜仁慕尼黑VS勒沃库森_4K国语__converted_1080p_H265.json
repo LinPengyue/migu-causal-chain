@@ -1,0 +1,155 @@
+{
+  "match_id": "06_11月2日 25-26赛季德甲第9轮 拜仁慕尼黑VS勒沃库森 4K国语__converted_1080p_H265_50fps",
+  "safe_id": "06_11月2日_25-26赛季德甲第9轮_拜仁慕尼黑VS勒沃库森_4K国语__converted_1080p_H265_50fps",
+  "mode": "online",
+  "n_chains": 3,
+  "category_counts": {
+    "danger": 3
+  },
+  "chains": [
+    {
+      "clip_id": "clip00",
+      "annotation_id": "ann_0001",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 156120,
+      "track_id": 0,
+      "t_ready": 2267678,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "pass",
+        "last_event": "keeper_save",
+        "t0_ms": 2241798,
+        "t1_ms": 2269678
+      },
+      "pred": {
+        "category": "danger",
+        "first": "pass",
+        "last": "keeper_save",
+        "t0_ms": 2243798,
+        "t1_ms": 2267678,
+        "emit_t_ms": 2423798
+      },
+      "chain_category": "danger",
+      "first_event": "pass",
+      "last_event": "keeper_save",
+      "t0_ms": 2243798,
+      "t1_ms": 2267678,
+      "emit_t_ms": 2423798
+    },
+    {
+      "clip_id": "clip01",
+      "annotation_id": "ann_0002",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 23243,
+      "track_id": 1,
+      "t_ready": 3120555,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "corner",
+        "last_event": "throw_in",
+        "t0_ms": 3061990,
+        "t1_ms": 3122555
+      },
+      "pred": {
+        "category": "danger",
+        "first": "corner",
+        "last": "throw_in",
+        "t0_ms": 3063990,
+        "t1_ms": 3120555,
+        "emit_t_ms": 3143798
+      },
+      "chain_category": "danger",
+      "first_event": "corner",
+      "last_event": "throw_in",
+      "t0_ms": 3063990,
+      "t1_ms": 3120555,
+      "emit_t_ms": 3143798
+    },
+    {
+      "clip_id": "clip02",
+      "annotation_id": "ann_0004",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 54893,
+      "track_id": 2,
+      "t_ready": 6598905,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "throw_in",
+        "last_event": "foul",
+        "t0_ms": 6553859,
+        "t1_ms": 6600905
+      },
+      "pred": {
+        "category": "danger",
+        "first": "throw_in",
+        "last": "foul",
+        "t0_ms": 6555859,
+        "t1_ms": 6598905,
+        "emit_t_ms": 6653798
+      },
+      "chain_category": "danger",
+      "first_event": "throw_in",
+      "last_event": "foul",
+      "t0_ms": 6555859,
+      "t1_ms": 6598905,
+      "emit_t_ms": 6653798
+    }
+  ],
+  "config": {
+    "backend": "dump_strip_chains",
+    "algo": "causal_chain6",
+    "adapter": "OnlineStripAdapter",
+    "mode": "online",
+    "event_source": "gold_events",
+    "prefix_stride": 1,
+    "min_prefix": 2,
+    "profile": "production",
+    "use_llm": false,
+    "pipeline": "stream(gold_events)→OnlineStripEngine→one-to-one",
+    "aligned_with": "eval/eval_online_strip.py --stream-source gold_events"
+  },
+  "stats": {
+    "n_gold": 3,
+    "n_scorable": 3,
+    "strict_matched": 3,
+    "logic_complete_rate": 100.0,
+    "precision_hits": 3,
+    "n_tracks": 4,
+    "recall_matched": 3,
+    "n_stream_events": 14,
+    "n_prefix_snapshots": 20
+  }
+}

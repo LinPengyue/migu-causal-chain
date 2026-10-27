@@ -1,0 +1,119 @@
+{
+  "stats": {
+    "rule": "rule4_t1_plus_t2",
+    "half_ms": 1237335,
+    "n_t0": 0,
+    "n_t1_pool": 3,
+    "n_t2_pool": 12,
+    "n_selected": 6,
+    "n_t0_selected": 0,
+    "n_t1_selected": 3,
+    "n_t2_selected": 0,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "no_t2",
+    "n_selected_after_drop_t2": 3,
+    "n_labeled_by_annotation": 2,
+    "n_heuristic": 1
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "10月10日_2025世预赛欧洲区_苏格兰VS希腊_英语",
+      "chain_category": "danger",
+      "t0_ms": 2376940,
+      "t1_ms": 2389940,
+      "anchor_t_ms": 2384940,
+      "first_event": "shot",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000211",
+          "type": "shot",
+          "t_ms": 2384940,
+          "t0_ms": 2367200,
+          "t1_ms": 2392740,
+          "order": 210
+        },
+        {
+          "event_id": "event_000212",
+          "type": "keeper_save",
+          "t_ms": 2386390,
+          "t0_ms": 2367200,
+          "t1_ms": 2392740,
+          "order": 211
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    },
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "10月10日_2025世预赛欧洲区_苏格兰VS希腊_英语",
+      "chain_category": "danger",
+      "t0_ms": 2397320,
+      "t1_ms": 2410320,
+      "anchor_t_ms": 2405320,
+      "first_event": "shot",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000213",
+          "type": "shot",
+          "t_ms": 2405320,
+          "t0_ms": 2401250,
+          "t1_ms": 2414010,
+          "order": 212
+        },
+        {
+          "event_id": "event_000214",
+          "type": "keeper_save",
+          "t_ms": 2406330,
+          "t0_ms": 2401250,
+          "t1_ms": 2414010,
+          "order": 213
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    },
+    {
+      "annotation_id": "select:10月10日_2025世预赛欧洲区_苏格兰VS希腊_英语:2467510:T1",
+      "match_id": "10月10日_2025世预赛欧洲区_苏格兰VS希腊_英语",
+      "chain_category": "danger",
+      "t0_ms": 2459510,
+      "t1_ms": 2472510,
+      "anchor_t_ms": 2467510,
+      "first_event": "free_kick",
+      "last_event": "free_kick",
+      "events": [
+        {
+          "event_id": "event_000220",
+          "type": "free_kick",
+          "t_ms": 2467510,
+          "t0_ms": 2462790,
+          "t1_ms": 2477520,
+          "order": 219
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "fk_then_shot",
+      "window_aligned": "select_moments",
+      "label_source": "timeline_heuristic",
+      "label_score": 0.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    }
+  ]
+}

@@ -1,0 +1,247 @@
+{
+  "stats": {
+    "rule": "rule4_t1_plus_t2",
+    "half_ms": 2700000,
+    "n_t0": 0,
+    "n_t1_pool": 14,
+    "n_t2_pool": 8,
+    "n_selected": 6,
+    "n_t0_selected": 0,
+    "n_t1_selected": 3,
+    "n_t2_selected": 3,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "with_t2",
+    "n_labeled_by_annotation": 6,
+    "n_heuristic": 0
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0008",
+      "match_id": "10月10日_2025世预赛欧洲区_奥地利VS圣马力诺_国语",
+      "chain_category": "correction",
+      "t0_ms": 790000,
+      "t1_ms": 800000,
+      "anchor_t_ms": 796000,
+      "first_event": "successful_tackle",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000024",
+          "type": "successful_tackle",
+          "t_ms": 796000,
+          "t0_ms": 791190,
+          "t1_ms": 801690,
+          "order": 23
+        },
+        {
+          "event_id": "event_000025",
+          "type": "shot",
+          "t_ms": 797960,
+          "t0_ms": 791190,
+          "t1_ms": 801690,
+          "order": 24
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "successful_tackle_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0013",
+      "match_id": "10月10日_2025世预赛欧洲区_奥地利VS圣马力诺_国语",
+      "chain_category": "outcome",
+      "t0_ms": 1903990,
+      "t1_ms": 1913990,
+      "anchor_t_ms": 1909990,
+      "first_event": "corner",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000101",
+          "type": "corner",
+          "t_ms": 1908910,
+          "t0_ms": 1900370,
+          "t1_ms": 1910450,
+          "order": 100
+        },
+        {
+          "event_id": "event_000102",
+          "type": "successful_tackle",
+          "t_ms": 1909990,
+          "t0_ms": 1900370,
+          "t1_ms": 1910450,
+          "order": 101
+        },
+        {
+          "event_id": "event_000103",
+          "type": "shot",
+          "t_ms": 1912480,
+          "t0_ms": 1910770,
+          "t1_ms": 1920080,
+          "order": 102
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "successful_tackle_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 163.22,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0017",
+      "match_id": "10月10日_2025世预赛欧洲区_奥地利VS圣马力诺_国语",
+      "chain_category": "danger",
+      "t0_ms": 2106010,
+      "t1_ms": 2116010,
+      "anchor_t_ms": 2112010,
+      "first_event": "pass",
+      "last_event": "dribble_past",
+      "events": [
+        {
+          "event_id": "event_000127",
+          "type": "pass",
+          "t_ms": 2107740,
+          "t0_ms": 2105150,
+          "t1_ms": 2115610,
+          "order": 126
+        },
+        {
+          "event_id": "event_000128",
+          "type": "dribble_past",
+          "t_ms": 2112010,
+          "t0_ms": 2105150,
+          "t1_ms": 2115610,
+          "order": 127
+        }
+      ],
+      "tier": "T2",
+      "tier_reason": "dribble_then_threat",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 135.35,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0032",
+      "match_id": "10月10日_2025世预赛欧洲区_奥地利VS圣马力诺_国语",
+      "chain_category": "danger",
+      "t0_ms": 3434080,
+      "t1_ms": 3447080,
+      "anchor_t_ms": 3442080,
+      "first_event": "free_kick",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000219",
+          "type": "free_kick",
+          "t_ms": 3442080,
+          "t0_ms": 3439860,
+          "t1_ms": 3449480,
+          "order": 218
+        },
+        {
+          "event_id": "event_000220",
+          "type": "shot",
+          "t_ms": 3442430,
+          "t0_ms": 3439860,
+          "t1_ms": 3449480,
+          "order": 219
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "fk_then_shot",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 77.89,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "10月10日_2025世预赛欧洲区_奥地利VS圣马力诺_国语",
+      "chain_category": "outcome",
+      "t0_ms": 4973680,
+      "t1_ms": 4986680,
+      "anchor_t_ms": 4981680,
+      "first_event": "shot",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000274",
+          "type": "shot",
+          "t_ms": 4981680,
+          "t0_ms": 4977610,
+          "t1_ms": 4987460,
+          "order": 273
+        },
+        {
+          "event_id": "event_000275",
+          "type": "keeper_save",
+          "t_ms": 4982600,
+          "t0_ms": 4977610,
+          "t1_ms": 4987460,
+          "order": 274
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "10月10日_2025世预赛欧洲区_奥地利VS圣马力诺_国语",
+      "chain_category": "outcome",
+      "t0_ms": 5148440,
+      "t1_ms": 5161440,
+      "anchor_t_ms": 5156440,
+      "first_event": "pass",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000291",
+          "type": "pass",
+          "t_ms": 5154840,
+          "t0_ms": 5148620,
+          "t1_ms": 5158530,
+          "order": 290
+        },
+        {
+          "event_id": "event_000292",
+          "type": "shot",
+          "t_ms": 5156440,
+          "t0_ms": 5148620,
+          "t1_ms": 5158530,
+          "order": 291
+        },
+        {
+          "event_id": "event_000293",
+          "type": "keeper_save",
+          "t_ms": 5157050,
+          "t0_ms": 5148620,
+          "t1_ms": 5158530,
+          "order": 292
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    }
+  ]
+}

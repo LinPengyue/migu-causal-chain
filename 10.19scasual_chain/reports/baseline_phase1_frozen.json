@@ -1,0 +1,39 @@
+{
+  "name": "phase1_strip_baseline_frozen",
+  "frozen_at": "2026-09-09",
+  "note": "拆条 Phase1 冻结基线：sliding_merge_mode=none, sliding_post_nms=off；one-to-one matcher；rule-only + gold_events。暂不继续 P2 指标优化。",
+  "profile": "production",
+  "stream_source": "gold_events",
+  "rule_only": true,
+  "match_mode": "bipartite_max_weight_one_to_one",
+  "strip": {
+    "sliding_merge_mode": "none",
+    "sliding_post_nms": "off",
+    "window_ms": 180000,
+    "step_ms": 90000,
+    "pre_ms": 120000,
+    "post_ms": 60000,
+    "min_margin": 0.08
+  },
+  "metrics": {
+    "offline_strict": 90.62,
+    "B_strict": 81.46,
+    "A_strict": 76.66,
+    "A_precision": 74.28,
+    "n_tracks": 451,
+    "n_matched_gold": 335,
+    "n_gold": 437
+  },
+  "hierarchy": {
+    "offline": "给定完整链后的分类能力",
+    "B": "给定 oracle 输入边界后 strip 能否恢复",
+    "A": "不知完整链边界且无未来信息时的流式恢复"
+  },
+  "source_report": "reports/report_stream_strip_rule_gold_events_p2a_nomerge.json",
+  "out_of_scope_this_round": [
+    "P2 further metric tuning",
+    "Qwen",
+    "timeline main optimization",
+    "Top-N best-goal ranking"
+  ]
+}

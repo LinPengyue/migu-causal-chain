@@ -1,0 +1,211 @@
+{
+  "match_id": "07_2 11月10日 25-26赛季英超第11轮 曼城VS利物浦 4K国语__converted_4K_H264_25fps",
+  "safe_id": "07_2_11月10日_25-26赛季英超第11轮_曼城VS利物浦_4K国语__converted_4K_H264_25fps",
+  "input_file": "/data2/lpy1/causal-chain2/8.31causal_chain/datasets/matches/07_2_11月10日_25-26赛季英超第11轮_曼城VS利物浦_4K国语__converted_4K_H264_25fps/timeline.json",
+  "event_count": 264,
+  "reel": {
+    "clips": [
+      {
+        "clip_id": "clip00",
+        "chain_template_id": "shot_post_bar_chain",
+        "chain_label_zh": "射门门柱/横梁链",
+        "chain_category": "danger",
+        "t0_ms": 1299670,
+        "t1_ms": 1312670,
+        "anchor_event": {
+          "type": "shot",
+          "t_ms": 1307670
+        },
+        "events": [
+          {
+            "event_id": "event_000105",
+            "order": 0,
+            "type": "shot",
+            "t_ms": 1302420,
+            "role": "shot",
+            "global_index": 104
+          },
+          {
+            "event_id": "event_000106",
+            "order": 1,
+            "type": "shot",
+            "t_ms": 1307670,
+            "role": "shot",
+            "global_index": 105
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "射门门柱/横梁链：shot → shot",
+        "confidence": 2.24,
+        "margin": 2.24,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "shot → shot",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 2,
+          "align_size": 2,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            0,
+            1
+          ],
+          "selection": {
+            "tier": "T1",
+            "event_type": "shot",
+            "event_i": 105,
+            "t_ms": 1307670,
+            "t0_ms": 1299670,
+            "t1_ms": 1312670,
+            "reason": "shot_then_save_or_corner",
+            "half": 1,
+            "slot": 1
+          }
+        }
+      },
+      {
+        "clip_id": "clip01",
+        "chain_template_id": "quick_restart_set_piece_chain",
+        "chain_label_zh": "快发定位球链",
+        "chain_category": "special",
+        "t0_ms": 2827230,
+        "t1_ms": 2845320,
+        "anchor_event": {
+          "type": "free_kick",
+          "t_ms": 2835230
+        },
+        "events": [
+          {
+            "event_id": "event_000232",
+            "order": 0,
+            "type": "free_kick",
+            "t_ms": 2835230,
+            "role": "set_piece",
+            "global_index": 231
+          },
+          {
+            "event_id": "event_000233",
+            "order": 1,
+            "type": "corner",
+            "t_ms": 2841320,
+            "role": "set_piece",
+            "global_index": 232
+          },
+          {
+            "event_id": "event_000234",
+            "order": 2,
+            "type": "shot",
+            "t_ms": 2845220,
+            "role": "shot",
+            "global_index": 233
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "快发定位球链：free_kick → corner → shot",
+        "confidence": 1.0467,
+        "margin": 1.0467,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "free_kick → shot",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 3,
+          "align_size": 2,
+          "exact_canonical": true,
+          "transitions_ok": false,
+          "illegal_pairs": [
+            "free_kick→corner",
+            "corner→shot"
+          ],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            0,
+            2
+          ],
+          "selection": {
+            "tier": "T1",
+            "event_type": "free_kick",
+            "event_i": 231,
+            "t_ms": 2835230,
+            "t0_ms": 2827230,
+            "t1_ms": 2845320,
+            "reason": "fk_then_shot|merged",
+            "half": 2,
+            "slot": 0
+          }
+        }
+      }
+    ],
+    "ordering": [
+      "clip00",
+      "clip01"
+    ],
+    "total_duration_ms": 31090
+  },
+  "config": {
+    "backend": "dump_highlight_reels",
+    "profile": "production",
+    "drop_t2": true,
+    "use_llm": false,
+    "pipeline": "select_moments→classify/refine→assemble_reel",
+    "aligned_with": "eval/eval_offline_highlight.py logic track"
+  },
+  "stats": {
+    "moments_selected": 2,
+    "clips_final": 2,
+    "fast_path": 2,
+    "select": {
+      "rule": "rule4_t1_plus_t2",
+      "half_ms": 2700000,
+      "n_t0": 0,
+      "n_t1_pool": 2,
+      "n_t2_pool": 7,
+      "n_selected": 5,
+      "n_t0_selected": 0,
+      "n_t1_selected": 2,
+      "n_t2_selected": 3,
+      "has_goal": false,
+      "has_penalty_goal": false,
+      "has_red": false,
+      "drop_t2": true,
+      "n_selected_after_drop_t2": 2
+    }
+  }
+}

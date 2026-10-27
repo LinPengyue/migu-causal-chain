@@ -1,0 +1,101 @@
+{
+  "stats": {
+    "rule": "rule4_t1_plus_t2",
+    "half_ms": 2700000,
+    "n_t0": 0,
+    "n_t1_pool": 3,
+    "n_t2_pool": 7,
+    "n_selected": 5,
+    "n_t0_selected": 0,
+    "n_t1_selected": 2,
+    "n_t2_selected": 0,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "no_t2",
+    "n_selected_after_drop_t2": 2,
+    "n_labeled_by_annotation": 2,
+    "n_heuristic": 0
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0041",
+      "match_id": "2022-11-29 厄瓜多尔vs塞内加尔",
+      "chain_category": "special",
+      "t0_ms": 1211200,
+      "t1_ms": 1224200,
+      "anchor_t_ms": 1219200,
+      "first_event": "free_kick",
+      "last_event": "free_kick",
+      "events": [
+        {
+          "event_id": "event_000025",
+          "type": "free_kick",
+          "t_ms": 1219200,
+          "t0_ms": 1208330,
+          "t1_ms": 1221420,
+          "order": 24
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "fk_then_shot",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    },
+    {
+      "annotation_id": "ann_0005",
+      "match_id": "2022-11-29 厄瓜多尔vs塞内加尔",
+      "chain_category": "danger",
+      "t0_ms": 2809200,
+      "t1_ms": 2835260,
+      "anchor_t_ms": 2817200,
+      "first_event": "free_kick",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000090",
+          "type": "free_kick",
+          "t_ms": 2817200,
+          "t0_ms": 2811640,
+          "t1_ms": 2823060,
+          "order": 89
+        },
+        {
+          "event_id": "event_000091",
+          "type": "shot",
+          "t_ms": 2819150,
+          "t0_ms": 2811640,
+          "t1_ms": 2823060,
+          "order": 90
+        },
+        {
+          "event_id": "event_000092",
+          "type": "free_kick",
+          "t_ms": 2830260,
+          "t0_ms": 2826810,
+          "t1_ms": 2840970,
+          "order": 91
+        },
+        {
+          "event_id": "event_000093",
+          "type": "shot",
+          "t_ms": 2832340,
+          "t0_ms": 2826810,
+          "t1_ms": 2840970,
+          "order": 92
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "fk_then_shot|merged",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 162.86,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    }
+  ],
+  "note": "alias of highlight_gold_no_t2"
+}

@@ -1,0 +1,308 @@
+{
+  "stats": {
+    "rule": "rule2_t1_only",
+    "half_ms": 2700000,
+    "n_t0": 0,
+    "n_t1_pool": 16,
+    "n_t2_pool": 17,
+    "n_selected": 5,
+    "n_t0_selected": 0,
+    "n_t1_selected": 5,
+    "n_t2_selected": 0,
+    "has_goal": false,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "with_t2",
+    "n_labeled_by_annotation": 4,
+    "n_heuristic": 1
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0001",
+      "match_id": "28月28日_25-26赛季英联杯第2轮_格林斯比VS曼联_英语",
+      "chain_category": "outcome",
+      "t0_ms": 1369850,
+      "t1_ms": 1393060,
+      "anchor_t_ms": 1377850,
+      "first_event": "successful_tackle",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000334",
+          "type": "successful_tackle",
+          "t_ms": 1371540,
+          "t0_ms": 1369430,
+          "t1_ms": 1380300,
+          "order": 333
+        },
+        {
+          "event_id": "event_000335",
+          "type": "pass",
+          "t_ms": 1373870,
+          "t0_ms": 1369430,
+          "t1_ms": 1380300,
+          "order": 334
+        },
+        {
+          "event_id": "event_000336",
+          "type": "pass",
+          "t_ms": 1376590,
+          "t0_ms": 1369430,
+          "t1_ms": 1380300,
+          "order": 335
+        },
+        {
+          "event_id": "event_000337",
+          "type": "shot",
+          "t_ms": 1377850,
+          "t0_ms": 1370270,
+          "t1_ms": 1380540,
+          "order": 336
+        },
+        {
+          "event_id": "event_000338",
+          "type": "keeper_save",
+          "t_ms": 1379260,
+          "t0_ms": 1370270,
+          "t1_ms": 1380540,
+          "order": 337
+        },
+        {
+          "event_id": "event_000339",
+          "type": "shot",
+          "t_ms": 1388060,
+          "t0_ms": 1385000,
+          "t1_ms": 1397250,
+          "order": 338
+        },
+        {
+          "event_id": "event_000340",
+          "type": "keeper_save",
+          "t_ms": 1389170,
+          "t0_ms": 1385000,
+          "t1_ms": 1397250,
+          "order": 339
+        },
+        {
+          "event_id": "event_000341",
+          "type": "throw_in",
+          "t_ms": 1392190,
+          "t0_ms": 1389840,
+          "t1_ms": 1400420,
+          "order": 340
+        },
+        {
+          "event_id": "event_000342",
+          "type": "shot",
+          "t_ms": 1392960,
+          "t0_ms": 1385000,
+          "t1_ms": 1397250,
+          "order": 341
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner|merged",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "select:28月28日_25-26赛季英联杯第2轮_格林斯比VS曼联_英语:2583490:T1",
+      "match_id": "28月28日_25-26赛季英联杯第2轮_格林斯比VS曼联_英语",
+      "chain_category": "danger",
+      "t0_ms": 2575490,
+      "t1_ms": 2588490,
+      "anchor_t_ms": 2583490,
+      "first_event": "free_kick",
+      "last_event": "shot",
+      "events": [
+        {
+          "event_id": "event_000597",
+          "type": "free_kick",
+          "t_ms": 2583490,
+          "t0_ms": 2581900,
+          "t1_ms": 2592700,
+          "order": 596
+        },
+        {
+          "event_id": "event_000598",
+          "type": "pass",
+          "t_ms": 2585640,
+          "t0_ms": 2581900,
+          "t1_ms": 2592700,
+          "order": 597
+        },
+        {
+          "event_id": "event_000599",
+          "type": "shot",
+          "t_ms": 2587730,
+          "t0_ms": 2581900,
+          "t1_ms": 2592700,
+          "order": 598
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "fk_then_shot",
+      "window_aligned": "select_moments",
+      "label_source": "timeline_heuristic",
+      "label_score": 0.0,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0029",
+      "match_id": "28月28日_25-26赛季英联杯第2轮_格林斯比VS曼联_英语",
+      "chain_category": "outcome",
+      "t0_ms": 2740530,
+      "t1_ms": 2753530,
+      "anchor_t_ms": 2748530,
+      "first_event": "pass",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000635",
+          "type": "pass",
+          "t_ms": 2741480,
+          "t0_ms": 2732740,
+          "t1_ms": 2743550,
+          "order": 634
+        },
+        {
+          "event_id": "event_000636",
+          "type": "pass",
+          "t_ms": 2744850,
+          "t0_ms": 2743770,
+          "t1_ms": 2754160,
+          "order": 635
+        },
+        {
+          "event_id": "event_000637",
+          "type": "foul",
+          "t_ms": 2746590,
+          "t0_ms": 2743770,
+          "t1_ms": 2754160,
+          "order": 636
+        },
+        {
+          "event_id": "event_000638",
+          "type": "shot",
+          "t_ms": 2748530,
+          "t0_ms": 2745520,
+          "t1_ms": 2756230,
+          "order": 637
+        },
+        {
+          "event_id": "event_000639",
+          "type": "keeper_save",
+          "t_ms": 2753190,
+          "t0_ms": 2745520,
+          "t1_ms": 2756230,
+          "order": 638
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 79.39,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0029",
+      "match_id": "28月28日_25-26赛季英联杯第2轮_格林斯比VS曼联_英语",
+      "chain_category": "outcome",
+      "t0_ms": 3061780,
+      "t1_ms": 3074780,
+      "anchor_t_ms": 3069780,
+      "first_event": "pass",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000725",
+          "type": "pass",
+          "t_ms": 3067700,
+          "t0_ms": 3064650,
+          "t1_ms": 3074970,
+          "order": 724
+        },
+        {
+          "event_id": "event_000726",
+          "type": "shot",
+          "t_ms": 3069780,
+          "t0_ms": 3064650,
+          "t1_ms": 3074970,
+          "order": 725
+        },
+        {
+          "event_id": "event_000727",
+          "type": "keeper_save",
+          "t_ms": 3070620,
+          "t0_ms": 3064650,
+          "t1_ms": 3074970,
+          "order": 726
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 79.36,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    },
+    {
+      "annotation_id": "ann_0046",
+      "match_id": "28月28日_25-26赛季英联杯第2轮_格林斯比VS曼联_英语",
+      "chain_category": "outcome",
+      "t0_ms": 4038430,
+      "t1_ms": 4051430,
+      "anchor_t_ms": 4046430,
+      "first_event": "shot",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000797",
+          "type": "shot",
+          "t_ms": 4043140,
+          "t0_ms": 4040250,
+          "t1_ms": 4052040,
+          "order": 796
+        },
+        {
+          "event_id": "event_000798",
+          "type": "keeper_save",
+          "t_ms": 4044130,
+          "t0_ms": 4040250,
+          "t1_ms": 4052040,
+          "order": 797
+        },
+        {
+          "event_id": "event_000799",
+          "type": "shot",
+          "t_ms": 4046430,
+          "t0_ms": 4040250,
+          "t1_ms": 4052040,
+          "order": 798
+        },
+        {
+          "event_id": "event_000800",
+          "type": "keeper_save",
+          "t_ms": 4047440,
+          "t0_ms": 4040250,
+          "t1_ms": 4052040,
+          "order": 799
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 227.59,
+      "task": "highlight_with_t2",
+      "highlight_mode": "with_t2"
+    }
+  ]
+}

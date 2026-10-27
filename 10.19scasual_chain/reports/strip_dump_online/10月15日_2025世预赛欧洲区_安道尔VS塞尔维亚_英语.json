@@ -1,0 +1,183 @@
+{
+  "match_id": "10月15日_2025世预赛欧洲区_安道尔VS塞尔维亚_英语",
+  "safe_id": "10月15日_2025世预赛欧洲区_安道尔VS塞尔维亚_英语",
+  "mode": "online",
+  "n_chains": 4,
+  "category_counts": {
+    "outcome": 2,
+    "danger": 1
+  },
+  "chains": [
+    {
+      "clip_id": "clip00",
+      "annotation_id": "ann_0001",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 60000,
+      "track_id": 0,
+      "t_ready": 1704512,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "outcome",
+        "first_event": "pass",
+        "last_event": "goal",
+        "t0_ms": 1692510,
+        "t1_ms": 1706512
+      },
+      "pred": {
+        "category": "outcome",
+        "first": "pass",
+        "last": "goal",
+        "t0_ms": 1694510,
+        "t1_ms": 1704512,
+        "emit_t_ms": 1764512
+      },
+      "chain_category": "outcome",
+      "first_event": "pass",
+      "last_event": "goal",
+      "t0_ms": 1694510,
+      "t1_ms": 1704512,
+      "emit_t_ms": 1764512
+    },
+    {
+      "clip_id": "clip01",
+      "annotation_id": "ann_0002",
+      "ok": true,
+      "strict_match": false,
+      "matched": false,
+      "latency_ms": null,
+      "track_id": null,
+      "t_ready": 1807987,
+      "flags": {
+        "a_time": false,
+        "b_category": false,
+        "c_first": false,
+        "d_last": false,
+        "strict": false,
+        "aux_time_cat": false,
+        "aux_time_cat_last": false
+      },
+      "gold": {
+        "chain_category": "special",
+        "first_event": "corner",
+        "last_event": "goal",
+        "t0_ms": 1803813,
+        "t1_ms": 1809987
+      },
+      "pred": null
+    },
+    {
+      "clip_id": "clip02",
+      "annotation_id": "ann_0004",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 22052,
+      "track_id": 2,
+      "t_ready": 5002458,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "outcome",
+        "first_event": "pass",
+        "last_event": "goal",
+        "t0_ms": 4990737,
+        "t1_ms": 5004458
+      },
+      "pred": {
+        "category": "outcome",
+        "first": "pass",
+        "last": "goal",
+        "t0_ms": 4992737,
+        "t1_ms": 5002458,
+        "emit_t_ms": 5024510
+      },
+      "chain_category": "outcome",
+      "first_event": "pass",
+      "last_event": "goal",
+      "t0_ms": 4992737,
+      "t1_ms": 5002458,
+      "emit_t_ms": 5024510
+    },
+    {
+      "clip_id": "clip03",
+      "annotation_id": "ann_0006",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 66842,
+      "track_id": 3,
+      "t_ready": 5497668,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "throw_in",
+        "last_event": "keeper_save",
+        "t0_ms": 5489511,
+        "t1_ms": 5499668
+      },
+      "pred": {
+        "category": "danger",
+        "first": "throw_in",
+        "last": "keeper_save",
+        "t0_ms": 5491511,
+        "t1_ms": 5497668,
+        "emit_t_ms": 5564510
+      },
+      "chain_category": "danger",
+      "first_event": "throw_in",
+      "last_event": "keeper_save",
+      "t0_ms": 5491511,
+      "t1_ms": 5497668,
+      "emit_t_ms": 5564510
+    }
+  ],
+  "config": {
+    "backend": "dump_strip_chains",
+    "algo": "causal_chain6",
+    "adapter": "OnlineStripAdapter",
+    "mode": "online",
+    "event_source": "gold_events",
+    "prefix_stride": 1,
+    "min_prefix": 2,
+    "profile": "production",
+    "use_llm": false,
+    "pipeline": "stream(gold_events)→OnlineStripEngine→one-to-one",
+    "aligned_with": "eval/eval_online_strip.py --stream-source gold_events"
+  },
+  "stats": {
+    "n_gold": 4,
+    "n_scorable": 4,
+    "strict_matched": 3,
+    "logic_complete_rate": 75.0,
+    "precision_hits": 3,
+    "n_tracks": 4,
+    "recall_matched": 3,
+    "n_stream_events": 16,
+    "n_prefix_snapshots": 25
+  }
+}

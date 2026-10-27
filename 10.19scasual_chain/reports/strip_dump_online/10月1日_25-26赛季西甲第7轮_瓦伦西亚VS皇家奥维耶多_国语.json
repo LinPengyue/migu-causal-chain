@@ -1,0 +1,156 @@
+{
+  "match_id": "10月1日_25-26赛季西甲第7轮_瓦伦西亚VS皇家奥维耶多_国语",
+  "safe_id": "10月1日_25-26赛季西甲第7轮_瓦伦西亚VS皇家奥维耶多_国语",
+  "mode": "online",
+  "n_chains": 4,
+  "category_counts": {
+    "danger": 1
+  },
+  "chains": [
+    {
+      "clip_id": "clip00",
+      "annotation_id": "ann_0001",
+      "ok": true,
+      "strict_match": false,
+      "matched": false,
+      "latency_ms": null,
+      "track_id": null,
+      "t_ready": 712463,
+      "flags": {
+        "a_time": false,
+        "b_category": false,
+        "c_first": false,
+        "d_last": false,
+        "strict": false,
+        "aux_time_cat": false,
+        "aux_time_cat_last": false
+      },
+      "gold": {
+        "chain_category": "outcome",
+        "first_event": "pass",
+        "last_event": "goal",
+        "t0_ms": 700441,
+        "t1_ms": 714463
+      },
+      "pred": null
+    },
+    {
+      "clip_id": "clip01",
+      "annotation_id": "ann_0004",
+      "ok": true,
+      "strict_match": false,
+      "matched": false,
+      "latency_ms": null,
+      "track_id": null,
+      "t_ready": 1059084,
+      "flags": {
+        "a_time": false,
+        "b_category": false,
+        "c_first": false,
+        "d_last": false,
+        "strict": false,
+        "aux_time_cat": false,
+        "aux_time_cat_last": false
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "pass",
+        "last_event": "pass",
+        "t0_ms": 1054595,
+        "t1_ms": 1061084
+      },
+      "pred": null
+    },
+    {
+      "clip_id": "clip02",
+      "annotation_id": "ann_0005",
+      "ok": true,
+      "strict_match": true,
+      "matched": true,
+      "latency_ms": 82925,
+      "track_id": 0,
+      "t_ready": 1069516,
+      "flags": {
+        "a_time": true,
+        "b_category": true,
+        "c_first": true,
+        "d_last": true,
+        "strict": true,
+        "aux_time_cat": true,
+        "aux_time_cat_last": true
+      },
+      "gold": {
+        "chain_category": "danger",
+        "first_event": "pass",
+        "last_event": "pass",
+        "t0_ms": 1060963,
+        "t1_ms": 1071516
+      },
+      "pred": {
+        "category": "danger",
+        "first": "pass",
+        "last": "pass",
+        "t0_ms": 1056595,
+        "t1_ms": 1069516,
+        "emit_t_ms": 1152441
+      },
+      "chain_category": "danger",
+      "first_event": "pass",
+      "last_event": "pass",
+      "t0_ms": 1056595,
+      "t1_ms": 1069516,
+      "emit_t_ms": 1152441
+    },
+    {
+      "clip_id": "clip03",
+      "annotation_id": "ann_0022",
+      "ok": true,
+      "strict_match": false,
+      "matched": false,
+      "latency_ms": null,
+      "track_id": null,
+      "t_ready": 6624428,
+      "flags": {
+        "a_time": false,
+        "b_category": false,
+        "c_first": false,
+        "d_last": false,
+        "strict": false,
+        "aux_time_cat": false,
+        "aux_time_cat_last": false
+      },
+      "gold": {
+        "chain_category": "outcome",
+        "first_event": "corner",
+        "last_event": "shot",
+        "t0_ms": 6618583,
+        "t1_ms": 6626428
+      },
+      "pred": null
+    }
+  ],
+  "config": {
+    "backend": "dump_strip_chains",
+    "algo": "causal_chain6",
+    "adapter": "OnlineStripAdapter",
+    "mode": "online",
+    "event_source": "gold_events",
+    "prefix_stride": 1,
+    "min_prefix": 2,
+    "profile": "production",
+    "use_llm": false,
+    "pipeline": "stream(gold_events)→OnlineStripEngine→one-to-one",
+    "aligned_with": "eval/eval_online_strip.py --stream-source gold_events"
+  },
+  "stats": {
+    "n_gold": 4,
+    "n_scorable": 4,
+    "strict_matched": 1,
+    "logic_complete_rate": 25.0,
+    "precision_hits": 1,
+    "n_tracks": 3,
+    "recall_matched": 1,
+    "n_stream_events": 14,
+    "n_prefix_snapshots": 21
+  }
+}

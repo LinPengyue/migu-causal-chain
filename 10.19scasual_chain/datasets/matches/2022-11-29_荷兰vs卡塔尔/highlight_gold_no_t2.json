@@ -1,0 +1,116 @@
+{
+  "stats": {
+    "rule": "rule3_t0_1_fill_t1",
+    "half_ms": 2700000,
+    "n_t0": 1,
+    "n_t1_pool": 1,
+    "n_t2_pool": 2,
+    "n_selected": 2,
+    "n_t0_selected": 1,
+    "n_t1_selected": 1,
+    "n_t2_selected": 0,
+    "has_goal": true,
+    "has_penalty_goal": false,
+    "has_red": false,
+    "mode": "no_t2",
+    "n_selected_after_drop_t2": 2,
+    "n_labeled_by_annotation": 2,
+    "n_heuristic": 0
+  },
+  "chains": [
+    {
+      "annotation_id": "ann_0004",
+      "match_id": "2022-11-29 荷兰vs卡塔尔",
+      "chain_category": "outcome",
+      "t0_ms": 3604830,
+      "t1_ms": 3617830,
+      "anchor_t_ms": 3612830,
+      "first_event": "pass",
+      "last_event": "keeper_save",
+      "events": [
+        {
+          "event_id": "event_000158",
+          "type": "pass",
+          "t_ms": 3608800,
+          "t0_ms": 3608300,
+          "t1_ms": 3618520,
+          "order": 157
+        },
+        {
+          "event_id": "event_000159",
+          "type": "successful_tackle",
+          "t_ms": 3610030,
+          "t0_ms": 3608300,
+          "t1_ms": 3618520,
+          "order": 158
+        },
+        {
+          "event_id": "event_000160",
+          "type": "pass",
+          "t_ms": 3612030,
+          "t0_ms": 3608300,
+          "t1_ms": 3618520,
+          "order": 159
+        },
+        {
+          "event_id": "event_000161",
+          "type": "shot",
+          "t_ms": 3612830,
+          "t0_ms": 3608300,
+          "t1_ms": 3618520,
+          "order": 160
+        },
+        {
+          "event_id": "event_000162",
+          "type": "keeper_save",
+          "t_ms": 3614750,
+          "t0_ms": 3608300,
+          "t1_ms": 3618520,
+          "order": 161
+        }
+      ],
+      "tier": "T1",
+      "tier_reason": "shot_then_save_or_corner",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 40.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    },
+    {
+      "annotation_id": "ann_0004",
+      "match_id": "2022-11-29 荷兰vs卡塔尔",
+      "chain_category": "outcome",
+      "t0_ms": 3662780,
+      "t1_ms": 3678780,
+      "anchor_t_ms": 3674780,
+      "first_event": "shot",
+      "last_event": "goal",
+      "events": [
+        {
+          "event_id": "event_000166",
+          "type": "shot",
+          "t_ms": 3671440,
+          "t0_ms": 3670450,
+          "t1_ms": 3680830,
+          "order": 165
+        },
+        {
+          "event_id": "event_000167",
+          "type": "goal",
+          "t_ms": 3674780,
+          "t0_ms": 3670450,
+          "t1_ms": 3680830,
+          "order": 166
+        }
+      ],
+      "tier": "T0",
+      "tier_reason": "t0_goal",
+      "window_aligned": "select_moments",
+      "label_source": "annotation",
+      "label_score": 70.0,
+      "task": "highlight_no_t2",
+      "highlight_mode": "no_t2"
+    }
+  ]
+}

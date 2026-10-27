@@ -1,0 +1,659 @@
+{
+  "match_id": "28月28日_25-26赛季英联杯第2轮_格林斯比VS曼联_英语",
+  "safe_id": "28月28日_25-26赛季英联杯第2轮_格林斯比VS曼联_英语",
+  "input_file": "/data2/lpy1/causal-chain2/8.31causal_chain/datasets/matches/28月28日_25-26赛季英联杯第2轮_格林斯比VS曼联_英语/timeline.json",
+  "event_count": 802,
+  "reel": {
+    "clips": [
+      {
+        "clip_id": "clip00",
+        "chain_template_id": "shot_save_chain",
+        "chain_label_zh": "射门扑救链",
+        "chain_category": "danger",
+        "t0_ms": 1369850,
+        "t1_ms": 1393060,
+        "anchor_event": {
+          "type": "shot",
+          "t_ms": 1377850
+        },
+        "events": [
+          {
+            "event_id": "event_000334",
+            "order": 0,
+            "type": "successful_tackle",
+            "t_ms": 1371540,
+            "role": "build_up",
+            "global_index": 333
+          },
+          {
+            "event_id": "event_000335",
+            "order": 1,
+            "type": "pass",
+            "t_ms": 1373870,
+            "role": "build_up",
+            "global_index": 334
+          },
+          {
+            "event_id": "event_000336",
+            "order": 2,
+            "type": "pass",
+            "t_ms": 1376590,
+            "role": "build_up",
+            "global_index": 335
+          },
+          {
+            "event_id": "event_000337",
+            "order": 3,
+            "type": "shot",
+            "t_ms": 1377850,
+            "role": "shot",
+            "global_index": 336
+          },
+          {
+            "event_id": "event_000338",
+            "order": 4,
+            "type": "keeper_save",
+            "t_ms": 1379260,
+            "role": "save",
+            "global_index": 337
+          },
+          {
+            "event_id": "event_000339",
+            "order": 5,
+            "type": "shot",
+            "t_ms": 1388060,
+            "role": "shot",
+            "global_index": 338
+          },
+          {
+            "event_id": "event_000340",
+            "order": 6,
+            "type": "keeper_save",
+            "t_ms": 1389170,
+            "role": "save",
+            "global_index": 339
+          },
+          {
+            "event_id": "event_000341",
+            "order": 7,
+            "type": "throw_in",
+            "t_ms": 1392190,
+            "role": "set_piece",
+            "global_index": 340
+          }
+        ],
+        "context_events": [
+          {
+            "event_id": "event_000342",
+            "order": 8,
+            "type": "shot",
+            "t_ms": 1392960,
+            "role": "context",
+            "global_index": 341
+          }
+        ],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 4,
+            "dst": 5,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 4,
+            "dst": 5,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 5,
+            "dst": 6,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 5,
+            "dst": 6,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 6,
+            "dst": 7,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 6,
+            "dst": 7,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "射门扑救链：successful_tackle → pass → pass → shot → keeper_save → shot → keeper_save → throw_in",
+        "confidence": 1.8675,
+        "margin": 1.8675,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "shot → keeper_save",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 8,
+          "align_size": 2,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            3,
+            4
+          ],
+          "selection": {
+            "tier": "T1",
+            "event_type": "shot",
+            "event_i": 336,
+            "t_ms": 1377850,
+            "t0_ms": 1369850,
+            "t1_ms": 1393060,
+            "reason": "shot_then_save_or_corner|merged",
+            "half": 1,
+            "slot": 1
+          }
+        }
+      },
+      {
+        "clip_id": "clip01",
+        "chain_template_id": "quick_restart_set_piece_chain",
+        "chain_label_zh": "快发定位球链",
+        "chain_category": "special",
+        "t0_ms": 2575490,
+        "t1_ms": 2588490,
+        "anchor_event": {
+          "type": "free_kick",
+          "t_ms": 2583490
+        },
+        "events": [
+          {
+            "event_id": "event_000597",
+            "order": 0,
+            "type": "free_kick",
+            "t_ms": 2583490,
+            "role": "set_piece",
+            "global_index": 596
+          },
+          {
+            "event_id": "event_000598",
+            "order": 1,
+            "type": "pass",
+            "t_ms": 2585640,
+            "role": "build_up",
+            "global_index": 597
+          },
+          {
+            "event_id": "event_000599",
+            "order": 2,
+            "type": "shot",
+            "t_ms": 2587730,
+            "role": "shot",
+            "global_index": 598
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "快发定位球链：free_kick → pass → shot",
+        "confidence": 1.7,
+        "margin": 1.7,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "free_kick → pass → shot",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 3,
+          "align_size": 3,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            0,
+            1,
+            2
+          ],
+          "selection": {
+            "tier": "T1",
+            "event_type": "free_kick",
+            "event_i": 596,
+            "t_ms": 2583490,
+            "t0_ms": 2575490,
+            "t1_ms": 2588490,
+            "reason": "fk_then_shot",
+            "half": 1,
+            "slot": 2
+          }
+        }
+      },
+      {
+        "clip_id": "clip02",
+        "chain_template_id": "shot_save_chain",
+        "chain_label_zh": "射门扑救链",
+        "chain_category": "danger",
+        "t0_ms": 2740530,
+        "t1_ms": 2753530,
+        "anchor_event": {
+          "type": "shot",
+          "t_ms": 2748530
+        },
+        "events": [
+          {
+            "event_id": "event_000635",
+            "order": 0,
+            "type": "pass",
+            "t_ms": 2741480,
+            "role": "build_up",
+            "global_index": 634
+          },
+          {
+            "event_id": "event_000636",
+            "order": 1,
+            "type": "pass",
+            "t_ms": 2744850,
+            "role": "build_up",
+            "global_index": 635
+          },
+          {
+            "event_id": "event_000637",
+            "order": 2,
+            "type": "foul",
+            "t_ms": 2746590,
+            "role": "build_up",
+            "global_index": 636
+          },
+          {
+            "event_id": "event_000638",
+            "order": 3,
+            "type": "shot",
+            "t_ms": 2748530,
+            "role": "shot",
+            "global_index": 637
+          },
+          {
+            "event_id": "event_000639",
+            "order": 4,
+            "type": "keeper_save",
+            "t_ms": 2753190,
+            "role": "save",
+            "global_index": 638
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "射门扑救链：pass → pass → foul → shot → keeper_save",
+        "confidence": 1.7,
+        "margin": 1.7,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "shot → keeper_save",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 5,
+          "align_size": 2,
+          "exact_canonical": true,
+          "transitions_ok": false,
+          "illegal_pairs": [
+            "pass→foul",
+            "foul→shot"
+          ],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            3,
+            4
+          ],
+          "selection": {
+            "tier": "T1",
+            "event_type": "shot",
+            "event_i": 637,
+            "t_ms": 2748530,
+            "t0_ms": 2740530,
+            "t1_ms": 2753530,
+            "reason": "shot_then_save_or_corner",
+            "half": 2,
+            "slot": 0
+          }
+        }
+      },
+      {
+        "clip_id": "clip03",
+        "chain_template_id": "shot_save_chain",
+        "chain_label_zh": "射门扑救链",
+        "chain_category": "danger",
+        "t0_ms": 3061780,
+        "t1_ms": 3074780,
+        "anchor_event": {
+          "type": "shot",
+          "t_ms": 3069780
+        },
+        "events": [
+          {
+            "event_id": "event_000725",
+            "order": 0,
+            "type": "pass",
+            "t_ms": 3067700,
+            "role": "build_up",
+            "global_index": 724
+          },
+          {
+            "event_id": "event_000726",
+            "order": 1,
+            "type": "shot",
+            "t_ms": 3069780,
+            "role": "shot",
+            "global_index": 725
+          },
+          {
+            "event_id": "event_000727",
+            "order": 2,
+            "type": "keeper_save",
+            "t_ms": 3070620,
+            "role": "save",
+            "global_index": 726
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "射门扑救链：pass → shot → keeper_save",
+        "confidence": 2.15,
+        "margin": 2.15,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "shot → keeper_save",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 3,
+          "align_size": 2,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            1,
+            2
+          ],
+          "selection": {
+            "tier": "T1",
+            "event_type": "shot",
+            "event_i": 725,
+            "t_ms": 3069780,
+            "t0_ms": 3061780,
+            "t1_ms": 3074780,
+            "reason": "shot_then_save_or_corner",
+            "half": 2,
+            "slot": 0
+          }
+        }
+      },
+      {
+        "clip_id": "clip04",
+        "chain_template_id": "shot_save_chain",
+        "chain_label_zh": "射门扑救链",
+        "chain_category": "danger",
+        "t0_ms": 4038430,
+        "t1_ms": 4051430,
+        "anchor_event": {
+          "type": "shot",
+          "t_ms": 4046430
+        },
+        "events": [
+          {
+            "event_id": "event_000797",
+            "order": 0,
+            "type": "shot",
+            "t_ms": 4043140,
+            "role": "shot",
+            "global_index": 796
+          },
+          {
+            "event_id": "event_000798",
+            "order": 1,
+            "type": "keeper_save",
+            "t_ms": 4044130,
+            "role": "save",
+            "global_index": 797
+          },
+          {
+            "event_id": "event_000799",
+            "order": 2,
+            "type": "shot",
+            "t_ms": 4046430,
+            "role": "shot",
+            "global_index": 798
+          },
+          {
+            "event_id": "event_000800",
+            "order": 3,
+            "type": "keeper_save",
+            "t_ms": 4047440,
+            "role": "save",
+            "global_index": 799
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "射门扑救链：shot → keeper_save → shot → keeper_save",
+        "confidence": 2.15,
+        "margin": 2.15,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "shot → keeper_save",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 4,
+          "align_size": 2,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            0,
+            1
+          ],
+          "selection": {
+            "tier": "T1",
+            "event_type": "shot",
+            "event_i": 798,
+            "t_ms": 4046430,
+            "t0_ms": 4038430,
+            "t1_ms": 4051430,
+            "reason": "shot_then_save_or_corner",
+            "half": 2,
+            "slot": 1
+          }
+        }
+      }
+    ],
+    "ordering": [
+      "clip00",
+      "clip01",
+      "clip02",
+      "clip03",
+      "clip04"
+    ],
+    "total_duration_ms": 75210
+  },
+  "config": {
+    "backend": "dump_highlight_reels",
+    "profile": "production",
+    "drop_t2": true,
+    "use_llm": false,
+    "pipeline": "select_moments→classify/refine→assemble_reel",
+    "aligned_with": "eval/eval_offline_highlight.py logic track"
+  },
+  "stats": {
+    "moments_selected": 5,
+    "clips_final": 5,
+    "fast_path": 5,
+    "select": {
+      "rule": "rule2_t1_only",
+      "half_ms": 2700000,
+      "n_t0": 0,
+      "n_t1_pool": 16,
+      "n_t2_pool": 17,
+      "n_selected": 5,
+      "n_t0_selected": 0,
+      "n_t1_selected": 5,
+      "n_t2_selected": 0,
+      "has_goal": false,
+      "has_penalty_goal": false,
+      "has_red": false,
+      "drop_t2": true,
+      "n_selected_after_drop_t2": 5
+    }
+  }
+}

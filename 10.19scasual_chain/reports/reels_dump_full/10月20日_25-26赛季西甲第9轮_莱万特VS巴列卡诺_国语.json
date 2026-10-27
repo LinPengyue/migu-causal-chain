@@ -1,0 +1,614 @@
+{
+  "match_id": "10月20日_25-26赛季西甲第9轮_莱万特VS巴列卡诺_国语",
+  "safe_id": "10月20日_25-26赛季西甲第9轮_莱万特VS巴列卡诺_国语",
+  "input_file": "/data2/lpy1/causal-chain2/8.31causal_chain/datasets/matches/10月20日_25-26赛季西甲第9轮_莱万特VS巴列卡诺_国语/timeline.json",
+  "event_count": 443,
+  "reel": {
+    "clips": [
+      {
+        "clip_id": "clip00",
+        "chain_template_id": "individual_breakthrough_goal",
+        "chain_label_zh": "个人突破后射门进球链",
+        "chain_category": "outcome",
+        "t0_ms": 1452970,
+        "t1_ms": 1468970,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 1464970
+        },
+        "events": [
+          {
+            "event_id": "event_000139",
+            "order": 0,
+            "type": "pass",
+            "t_ms": 1457250,
+            "role": "build_up",
+            "global_index": 138
+          },
+          {
+            "event_id": "event_000140",
+            "order": 1,
+            "type": "dribble_past",
+            "t_ms": 1461860,
+            "role": "build_up",
+            "global_index": 139
+          },
+          {
+            "event_id": "event_000141",
+            "order": 2,
+            "type": "goal",
+            "t_ms": 1464970,
+            "role": "outcome",
+            "global_index": 140
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "个人突破后射门进球链（pass → dribble_past → goal）",
+        "confidence": 0.88,
+        "margin": -0.12,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 3,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 140,
+            "t_ms": 1464970,
+            "t0_ms": 1452970,
+            "t1_ms": 1468970,
+            "reason": "t0_goal",
+            "half": 1,
+            "slot": 1
+          }
+        }
+      },
+      {
+        "clip_id": "clip01",
+        "chain_template_id": "corner_coop_goal",
+        "chain_label_zh": "角球配合进球链",
+        "chain_category": "outcome",
+        "t0_ms": 3524400,
+        "t1_ms": 3540400,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 3536400
+        },
+        "events": [
+          {
+            "event_id": "event_000245",
+            "order": 0,
+            "type": "corner",
+            "t_ms": 3532820,
+            "role": "set_piece",
+            "global_index": 244
+          },
+          {
+            "event_id": "event_000246",
+            "order": 1,
+            "type": "goal",
+            "t_ms": 3536400,
+            "role": "outcome",
+            "global_index": 245
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "角球配合进球链（corner → goal）",
+        "confidence": 0.95,
+        "margin": -0.05,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "",
+          "align_score": 0.3,
+          "core_expanded": true,
+          "core_size": 2,
+          "align_size": 0,
+          "exact_canonical": false,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 245,
+            "t_ms": 3536400,
+            "t0_ms": 3524400,
+            "t1_ms": 3540400,
+            "reason": "t0_goal",
+            "half": 2,
+            "slot": 0
+          }
+        }
+      },
+      {
+        "clip_id": "clip02",
+        "chain_template_id": "outcome_other",
+        "chain_label_zh": "其他",
+        "chain_category": "outcome",
+        "t0_ms": 3769720,
+        "t1_ms": 3785720,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 3781720
+        },
+        "events": [
+          {
+            "event_id": "event_000247",
+            "order": 0,
+            "type": "dribble_past",
+            "t_ms": 3770680,
+            "role": "build_up",
+            "global_index": 246
+          },
+          {
+            "event_id": "event_000248",
+            "order": 1,
+            "type": "assist",
+            "t_ms": 3776430,
+            "role": "build_up",
+            "global_index": 247
+          },
+          {
+            "event_id": "event_000249",
+            "order": 2,
+            "type": "aerial_won",
+            "t_ms": 3778390,
+            "role": "build_up",
+            "global_index": 248
+          },
+          {
+            "event_id": "event_000250",
+            "order": 3,
+            "type": "shot",
+            "t_ms": 3780810,
+            "role": "shot",
+            "global_index": 249
+          },
+          {
+            "event_id": "event_000251",
+            "order": 4,
+            "type": "goal",
+            "t_ms": 3781720,
+            "role": "outcome",
+            "global_index": 250
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "其他：dribble_past → assist → aerial_won → shot → goal",
+        "confidence": 1.7,
+        "margin": 1.7,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "shot → goal",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 5,
+          "align_size": 2,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            3,
+            4
+          ],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 250,
+            "t_ms": 3781720,
+            "t0_ms": 3769720,
+            "t1_ms": 3785720,
+            "reason": "t0_goal",
+            "half": 2,
+            "slot": 1
+          }
+        }
+      },
+      {
+        "clip_id": "clip03",
+        "chain_template_id": "individual_breakthrough_goal",
+        "chain_label_zh": "个人突破后射门进球链",
+        "chain_category": "outcome",
+        "t0_ms": 3973770,
+        "t1_ms": 3989770,
+        "anchor_event": {
+          "type": "goal",
+          "t_ms": 3985770
+        },
+        "events": [
+          {
+            "event_id": "event_000253",
+            "order": 0,
+            "type": "dribble_past",
+            "t_ms": 3976770,
+            "role": "build_up",
+            "global_index": 252
+          },
+          {
+            "event_id": "event_000254",
+            "order": 1,
+            "type": "pass",
+            "t_ms": 3982440,
+            "role": "build_up",
+            "global_index": 253
+          },
+          {
+            "event_id": "event_000255",
+            "order": 2,
+            "type": "shot",
+            "t_ms": 3985300,
+            "role": "shot",
+            "global_index": 254
+          },
+          {
+            "event_id": "event_000256",
+            "order": 3,
+            "type": "goal",
+            "t_ms": 3985770,
+            "role": "outcome",
+            "global_index": 255
+          },
+          {
+            "event_id": "event_000257",
+            "order": 4,
+            "type": "dribble_past",
+            "t_ms": 3988970,
+            "role": "outcome",
+            "global_index": 256
+          }
+        ],
+        "context_events": [],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "个人突破后射门进球链：dribble_past → pass → shot → goal → dribble_past",
+        "confidence": 1.43,
+        "margin": 0.43,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "dribble_past → shot → goal",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 5,
+          "align_size": 3,
+          "exact_canonical": true,
+          "transitions_ok": true,
+          "illegal_pairs": [],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            0,
+            2,
+            3
+          ],
+          "selection": {
+            "tier": "T0",
+            "event_type": "goal",
+            "event_i": 255,
+            "t_ms": 3985770,
+            "t0_ms": 3973770,
+            "t1_ms": 3989770,
+            "reason": "t0_goal",
+            "half": 2,
+            "slot": 1
+          }
+        }
+      },
+      {
+        "clip_id": "clip04",
+        "chain_template_id": "shot_save_chain",
+        "chain_label_zh": "射门扑救链",
+        "chain_category": "danger",
+        "t0_ms": 4057760,
+        "t1_ms": 4078170,
+        "anchor_event": {
+          "type": "free_kick",
+          "t_ms": 4065760
+        },
+        "events": [
+          {
+            "event_id": "event_000265",
+            "order": 0,
+            "type": "free_kick",
+            "t_ms": 4065760,
+            "role": "set_piece",
+            "global_index": 264
+          },
+          {
+            "event_id": "event_000266",
+            "order": 1,
+            "type": "aerial_won",
+            "t_ms": 4067380,
+            "role": "build_up",
+            "global_index": 265
+          },
+          {
+            "event_id": "event_000267",
+            "order": 2,
+            "type": "pass",
+            "t_ms": 4071290,
+            "role": "build_up",
+            "global_index": 266
+          },
+          {
+            "event_id": "event_000268",
+            "order": 3,
+            "type": "shot",
+            "t_ms": 4073170,
+            "role": "shot",
+            "global_index": 267
+          },
+          {
+            "event_id": "event_000269",
+            "order": 4,
+            "type": "keeper_save",
+            "t_ms": 4073720,
+            "role": "save",
+            "global_index": 268
+          }
+        ],
+        "context_events": [
+          {
+            "event_id": "event_000263",
+            "order": 0,
+            "type": "free_kick",
+            "t_ms": 4060850,
+            "role": "context",
+            "global_index": 262
+          },
+          {
+            "event_id": "event_000264",
+            "order": 1,
+            "type": "aerial_won",
+            "t_ms": 4062720,
+            "role": "context",
+            "global_index": 263
+          }
+        ],
+        "edges": [
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 0,
+            "dst": 1,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 1,
+            "dst": 2,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 2,
+            "dst": 3,
+            "rel": "causal_leads_to"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "temporal_next"
+          },
+          {
+            "src": 3,
+            "dst": 4,
+            "rel": "causal_leads_to"
+          }
+        ],
+        "narrative_zh": "射门扑救链：free_kick → aerial_won → pass → shot → keeper_save",
+        "confidence": 1.7,
+        "margin": 1.7,
+        "fast_path": true,
+        "validation": {
+          "canonical_pattern": "shot → keeper_save",
+          "align_score": 1.0,
+          "core_expanded": true,
+          "core_size": 5,
+          "align_size": 2,
+          "exact_canonical": true,
+          "transitions_ok": false,
+          "illegal_pairs": [
+            "free_kick→aerial_won"
+          ],
+          "rules_backend": "causal_chain8",
+          "aligned_in_core": [
+            5,
+            6
+          ],
+          "selection": {
+            "tier": "T1",
+            "event_type": "free_kick",
+            "event_i": 264,
+            "t_ms": 4065760,
+            "t0_ms": 4057760,
+            "t1_ms": 4078170,
+            "reason": "fk_then_shot|merged",
+            "half": 2,
+            "slot": 1
+          }
+        }
+      }
+    ],
+    "ordering": [
+      "clip00",
+      "clip01",
+      "clip02",
+      "clip03",
+      "clip04"
+    ],
+    "total_duration_ms": 84410
+  },
+  "config": {
+    "backend": "dump_highlight_reels_full",
+    "profile": "production",
+    "drop_t2": false,
+    "min_clips": 6,
+    "use_llm": false,
+    "pipeline": "select_moments(full PDF)→optional T1/T2 fill→classify/refine",
+    "note": "交付观感用；评测 no_t2 仍用 dump_highlight_reels.py / reels_dump"
+  },
+  "stats": {
+    "moments_selected": 5,
+    "clips_final": 5,
+    "fast_path": 5,
+    "select": {
+      "rule": "rule3_t0_4_fill_t1",
+      "half_ms": 2700000,
+      "n_t0": 4,
+      "n_t1_pool": 3,
+      "n_t2_pool": 6,
+      "n_selected": 4,
+      "n_t0_selected": 4,
+      "n_t1_selected": 0,
+      "n_t2_selected": 0,
+      "has_goal": true,
+      "has_penalty_goal": false,
+      "has_red": false
+    },
+    "fill": {
+      "min_clips": 6,
+      "n_before": 4,
+      "n_filled": 1,
+      "presentation_fill": true,
+      "n_after": 5
+    },
+    "n_moments_raw": 4,
+    "under_min_clips": true
+  }
+}
