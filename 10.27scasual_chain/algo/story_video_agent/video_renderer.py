@@ -66,7 +66,7 @@ def _esc_drawtext(text: str) -> str:
 
 
 def _run_ffmpeg(cmd: List[str], *, label: str) -> Dict[str, Any]:
-    proc = subprocess.run(cmd, capture_output=True, text=True, check=False, timeout=600)
+    proc = subprocess.run(cmd, capture_output=True, text=True, check=False, timeout=1200)
     rec = {
         "label": label,
         "cmd": cmd,
@@ -117,35 +117,49 @@ def _cut_segment(
     fps: int,
     has_audio: bool,
     overlay_lines: Sequence[str],
+    accurate_seek: bool = True,
+    seek_pad_sec: float = 20.0,
+    audio_filter: Optional[str] = None,
 ) -> Dict[str, Any]:
+    """Cut+reencode one segment.
+
+    accurate_seek (default True): hybrid seek — coarse ``-ss`` before ``-i``,
+    then fine ``-ss`` after ``-i``. Reduces mid-GOP decode ambiguity on HEVC
+    while remaining much faster than decoding from file start.
+    """
     dur = max(0.04, float(media_out) - float(media_in))
+    media_in = float(media_in)
     vf = _normalize_clip_filter(
         width=width, height=height, fps=fps, overlay_lines=overlay_lines
     )
+    af = audio_filter or f"aresample={DEFAULT_AUDIO_RATE}"
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    cmd = [
+    cmd: List[str] = [
         ffmpeg,
         "-hide_banner",
         "-loglevel",
         "error",
         "-y",
-        "-ss",
-        f"{media_in:.3f}",
-        "-t",
-        f"{dur:.3f}",
-        "-i",
-        str(src),
     ]
+    if accurate_seek and media_in > 0.05:
+        pad = min(float(seek_pad_sec), media_in)
+        coarse = max(0.0, media_in - pad)
+        fine = media_in - coarse
+        cmd += ["-ss", f"{coarse:.3f}", "-i", str(src), "-ss", f"{fine:.3f}", "-t", f"{dur:.3f}"]
+    else:
+        cmd += ["-ss", f"{media_in:.3f}", "-t", f"{dur:.3f}", "-i", str(src)]
     if has_audio:
         cmd += [
             "-vf",
             vf,
             "-af",
-            f"aresample={DEFAULT_AUDIO_RATE}",
+            af,
             "-c:v",
             "libx264",
             "-pix_fmt",
             "yuv420p",
+            "-force_key_frames",
+            "expr:eq(n,0)",
             "-c:a",
             "aac",
             "-ar",
@@ -167,6 +181,8 @@ def _cut_segment(
             "libx264",
             "-pix_fmt",
             "yuv420p",
+            "-force_key_frames",
+            "expr:eq(n,0)",
             "-c:a",
             "aac",
             "-ar",

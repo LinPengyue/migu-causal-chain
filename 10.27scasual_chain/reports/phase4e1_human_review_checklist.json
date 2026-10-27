@@ -1,0 +1,57 @@
+{
+  "phase": "4E.1",
+  "purpose": "ChatGPT / human visual re-review after glitch avoidance + edit tighten",
+  "primary_file": "/data2/lpy1/_story_va_previews/croatia_preview_phase4e1_long_primary.mp4",
+  "alt_file": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase4e1/croatia_preview_phase4e1_long_primary.mp4",
+  "short_control": "/data2/lpy1/_story_va_previews/croatia_preview_phase4e1_short_bridge.mp4",
+  "play_hint": "Remote shell often lacks DISPLAY for ffplay; copy path above into local player or Cursor media viewer.",
+  "checklist": [
+    {
+      "id": "glitch_2_1_board",
+      "preview_approx_sec": [71.5, 75.0],
+      "claim": "2:1 scoreboard window clean (no green mosaic); was ~85s in 4E",
+      "evidence_stills": ["_local_render/phase4e1/qc_stills/long_ga_board_b.jpg"]
+    },
+    {
+      "id": "glitch_3_1_attack",
+      "preview_approx_sec": [75.0, 86.0],
+      "claim": "3:1 attack/celebration clean; ball-in-net ~76.5s; avoided media ~6316",
+      "evidence_stills": [
+        "_local_render/phase4e1/qc_stills/long_third_goal_ball_net_p076.5.jpg",
+        "_local_render/phase4e1/qc_stills/long_third_goal_a.jpg"
+      ]
+    },
+    {
+      "id": "glitch_4_1_board",
+      "preview_approx_sec": [103.5, 107.0],
+      "claim": "4:1 scoreboard clean; avoided media ~7856",
+      "evidence_stills": ["_local_render/phase4e1/qc_stills/long_fourth_board_b.jpg"]
+    },
+    {
+      "id": "seam_buildup_equalizer",
+      "preview_approx_sec": [40.0, 41.5],
+      "claim": "buildup 3038-3063.5 fully retained; abut to equalizer at 3063.5; no 11.5s jump",
+      "evidence_stills": [
+        "_local_render/phase4e1/qc_seams/buildup_last_p040.52.jpg",
+        "_local_render/phase4e1/qc_seams/eq_first_p040.55.jpg"
+      ]
+    },
+    {
+      "id": "story_arc",
+      "claim": "titles support 0:1 deficit → equalize → go-ahead → 3:1 → 4:1 → FULL TIME without overpowering play"
+    },
+    {
+      "id": "board_pacing",
+      "claim": "scoreboard dwell shortened to ~3.5s each; story completeness preferred over duration"
+    },
+    {
+      "id": "audio_loudness",
+      "claim": "internal target ~-16 LUFS / -1.5 dBTP; crowd/commentary dynamics retained",
+      "measured_long_LUFS": -15.78
+    },
+    {
+      "id": "gates",
+      "claim": "candidate_only; render_ready=false; review_ready=true for re-watch only; not formal production sign-off"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "phase": "4E.1",
+  "branch": "story-va-phase2c",
+  "candidate_only": true,
+  "render_ready": false,
+  "review_ready": true,
+  "video_qc_pass": true,
+  "paid_api_used": false,
+  "merged_main": false,
+  "primary_variant": "long_primary",
+  "primary_mp4": "_local_render/phase4e1/croatia_preview_phase4e1_long_primary.mp4",
+  "primary_mp4_workspace_copy": "/data2/lpy1/_story_va_previews/croatia_preview_phase4e1_long_primary.mp4",
+  "primary_duration_sec": 124.041,
+  "short_control_mp4": "_local_render/phase4e1/croatia_preview_phase4e1_short_bridge.mp4",
+  "short_duration_sec": 95.969,
+  "loudness_internal_target": {
+    "I_LUFS": -16.0,
+    "TP_dBTP": -1.5,
+    "note": "internal web preview only; not formal migu delivery"
+  },
+  "loudness_measured_long": {
+    "input_i": -15.78,
+    "input_tp": -1.41
+  },
+  "source_glitch_root_cause": "hevc_bitstream_corruption_in_source",
+  "source_glitch_ranges_media_sec": [
+    [3603.6, 3604.8],
+    [6315.8, 6316.7],
+    [7855.6, 7856.5]
+  ],
+  "goal_timestamps_unchanged": {
+    "equalizer": 3067.0,
+    "go_ahead": 3525.0,
+    "third": 6318.5,
+    "fourth": 7749.0
+  },
+  "reports": [
+    "reports/phase4e1_video_qc_report.md",
+    "reports/phase4e1_edit_comparison.md",
+    "reports/phase4e1_edl_long_primary.json",
+    "reports/phase4e1_edl_short_bridge.json",
+    "reports/phase4e1_plan_long_primary.json",
+    "reports/phase4e1_plan_short_bridge.json",
+    "reports/phase4e1_human_review_checklist.json"
+  ],
+  "stop_after_push": true,
+  "next_phase_auto": false
+}
