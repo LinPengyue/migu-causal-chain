@@ -54,7 +54,19 @@
 
 ---
 
-## 5. 交付路径（重跑后）
+## 5.1b 追加（ChatGPT QC 复审后）
+
+| 问题 | 通用修复 |
+|------|----------|
+| 进球窗含锚点但仍缺射门前动作 | `goal_action_complete` 拆为 result/approach/context/glitch_break；坏帧前后 **分段** 保留进攻上下文，不播坏帧 |
+| 终场=最后比分牌 / 45s 误拒 | match_end 作 **未核验候选**（可远于 45s，有上限）；成片默认 **故事收束包装**，`full_time_verified=false` |
+| 多次领先场次范围不清 | `story_scope.json`：全场比分 vs 最后落后弧 vs 弧前省略转折 |
+
+法国–澳大利亚仍为待传保留测试，未针对性调参。
+
+---
+
+## 6. 交付路径（重跑后）
 
 ```
 _local_render/phase5/{croatia,uae_oman,osasuna_celta}/

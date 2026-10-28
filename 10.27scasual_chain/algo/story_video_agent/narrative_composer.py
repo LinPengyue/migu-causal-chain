@@ -907,9 +907,9 @@ def compose_story_plan(
         )
 
     # ---------- 收尾 ----------
-    # 质量门禁：不得仅因标注「比赛结束」就截取远处镜头（可能切到其它转播）。
-    # 优先使用终场比分确认短窗；match_end 仅在紧邻终场比分且非回放时作为补充候选。
-    ENDING_MATCH_END_MAX_AFTER_FINAL = 45.0
+    # 终场必须语义核验；无付费 VLM 时不得把最后比分牌或远处 match_end 宣称为已核实 FULL TIME。
+    # 策略：记录 match_end 候选供 QC；成片默认用「最终比分/故事收束」包装，不自动切入未核验直播终场。
+    ENDING_MATCH_END_MAX_CANDIDATE = 900.0  # 超过则视为可能已切其它节目
     score_nodes = [n for n in (story.get("score_path") or []) if isinstance(n, dict)]
     final_score_node = score_nodes[-1] if score_nodes else None
     final_score_t = (
@@ -917,6 +917,15 @@ def compose_story_plan(
         if final_score_node and final_score_node.get("t_sec") is not None
         else None
     )
+    ending_diag: Dict[str, Any] = {
+        "final_score": (final_score_node or {}).get("score"),
+        "final_score_t": final_score_t,
+        "match_end_candidates": [],
+        "delivery_policy": "story_wrap_until_semantic_verify",
+        "full_time_verified": False,
+    }
+
+    # 故事收束用的比分确认（明确：非已核实终场哨声画面）
     if final_score_node and final_score_t is not None:
         win_ft = _window_from_t(
             final_score_t,
@@ -926,9 +935,9 @@ def compose_story_plan(
         )
         segments.append(
             _mk_seg(
-                segment_id="seg_ending_final_scoreboard",
+                segment_id="seg_ending_story_wrap_score",
                 beat="收尾",
-                role="ending_final_scoreboard",
+                role="ending_story_wrap_score",
                 event_ids=[str(final_score_node.get("carrier_event_id") or "")]
                 if final_score_node.get("carrier_event_id")
                 else [],
@@ -941,7 +950,7 @@ def compose_story_plan(
                             "source": "final_score_path",
                             "score": final_score_node.get("score"),
                             "t_sec": final_score_t,
-                            "note": "preferred_ending_over_raw_match_end",
+                            "note": "story_wrap_score_not_verified_full_time",
                         }
                     )
                 ],
@@ -951,24 +960,32 @@ def compose_story_plan(
                 shot_kind="scoreboard_anchor",
                 is_replay=False,
                 narration=(
-                    f"终场比分确认 {final_score_node.get('score')} @ {final_score_t}s"
-                    "（优先于远处比赛结束标注；仍需画面核验）。"
+                    f"故事收束·最终比分确认 {final_score_node.get('score')} @ {final_score_t}s"
+                    "（不是已核验的全场结束画面；可能与最后进球比分牌重合）。"
                 ),
-                selection_reason="ending_final_scoreboard_preferred",
+                selection_reason="ending_story_wrap_score",
                 source_refs=[
                     provenance_ref(
                         namespace="score_path",
-                        ref_id=str(final_score_node.get("carrier_event_id") or f"score@{final_score_t}"),
+                        ref_id=str(
+                            final_score_node.get("carrier_event_id")
+                            or f"score@{final_score_t}"
+                        ),
                     )
                 ],
-                confidence=0.7,
+                confidence=0.65,
                 time_provenance={
                     "source": "score_path",
                     "t_sec": final_score_t,
                     "pipeline_verified": False,
+                    "ending_status": "unverified_story_wrap",
+                    "not_verified_full_time": True,
                 },
                 render_eligibility="candidate_only",
-                blocking_reasons=["ending_visual_unverified", "score_path_only_not_render_ready"],
+                blocking_reasons=[
+                    "ending_not_semantically_verified",
+                    "score_path_only_not_render_ready",
+                ],
             )
         )
 
@@ -977,84 +994,62 @@ def compose_story_plan(
         for e in events.values()
         if e.get("story_role") == "收尾" or e.get("type") in ("比赛结束", "全场结束")
     ]
-    if ending:
-        ev = ending[0]
+    for ev in ending:
         eid = str(ev["event_id"])
         t = float(ev["t_ms"]) / 1000.0 if ev.get("t_ms") is not None else None
-        accept_match_end = False
+        cand: Dict[str, Any] = {
+            "event_id": eid,
+            "t_sec": t,
+            "is_replay": bool(ev.get("is_replay")),
+            "type": ev.get("type"),
+            "include_in_delivery": False,
+            "ending_status": "unverified_candidate",
+        }
         reject_reason = None
         if t is None:
             reject_reason = "match_end_missing_time"
         elif ev.get("is_replay"):
             reject_reason = "match_end_is_replay"
         elif final_score_t is None:
-            reject_reason = "no_final_score_anchor_for_match_end_gate"
+            reject_reason = "no_final_score_anchor"
         elif t < final_score_t - 5.0:
             reject_reason = "match_end_before_final_score"
-        elif t - final_score_t > ENDING_MATCH_END_MAX_AFTER_FINAL:
+        elif t - final_score_t > ENDING_MATCH_END_MAX_CANDIDATE:
             reject_reason = (
-                f"match_end_too_far_after_final_score:dt={round(t - final_score_t, 2)}"
+                f"match_end_beyond_candidate_horizon:dt={round(t - final_score_t, 2)}"
             )
+        if reject_reason:
+            cand["status"] = "rejected"
+            cand["reason"] = reject_reason
+            missing.append(f"ending_match_end_rejected:{reject_reason}")
         else:
-            accept_match_end = True
-        if accept_match_end:
-            win = _window_from_t(t, status="event_ms", pad_before=2.0, pad_after=6.0)
-            segments.append(
-                _mk_seg(
-                    segment_id="seg_ending_match_end",
-                    beat="收尾",
-                    role="ending_match_end",
-                    event_ids=[eid],
-                    frame_ids=[],
-                    evidence_refs=[
-                        add_ref(
-                            {
-                                "kind": "rule_fact",
-                                "used_as_fact": True,
-                                "source": "match_end_near_final_score",
-                                "event_id": eid,
-                                "t_sec": t,
-                            }
-                        )
-                    ],
-                    media_in=win["media_in"],
-                    media_out=win["media_out"],
-                    time_status="event_ms",
-                    shot_kind="live",
-                    is_replay=False,
-                    narration=f"比赛结束标注 @ {t}s（紧邻终场比分；仍需画面核验）。",
-                    selection_reason="ending_match_end_near_final_score",
-                    source_refs=[
-                        provenance_ref(
-                            namespace=str(ev.get("_namespace") or "t01_story_event"),
-                            ref_id=eid,
-                        )
-                    ],
-                    confidence=0.55,
-                    time_provenance={
-                        "source": "event_ms",
-                        "t_sec": t,
-                        "pipeline_verified": False,
-                        "ending_gate": "near_final_score",
-                    },
-                    render_eligibility="candidate_only",
-                    blocking_reasons=["ending_visual_unverified", "unverified_event_ms"],
-                )
-            )
-            all_event_ids.append(eid)
-        else:
-            missing.append(f"ending_match_end_rejected:{reject_reason or 'unknown'}")
+            dt = round(float(t) - float(final_score_t), 2)
+            cand["status"] = "candidate"
+            cand["dt_after_final_score"] = dt
+            cand["signals"] = {
+                "after_final_score": True,
+                "not_replay": True,
+                "within_horizon": True,
+                "semantic_verified": False,
+                "whistle_or_end_caption_verified": False,
+                "match_identity_verified": False,
+            }
+            # 记录候选但不自动切入成片（避免未核验误切其它转播）
             mappings.append(
                 {
                     "context": "ending_match_end",
-                    "status": "rejected_by_ending_gate",
+                    "status": "candidate_held_for_visual_qc",
                     "event_id": eid,
                     "t_sec": t,
-                    "reason": reject_reason,
-                    "final_score_t": final_score_t,
+                    "dt_after_final_score": dt,
+                    "include_in_delivery": False,
+                    "note": "需画面核验比赛身份/终场哨或结束字幕后才可成片",
                 }
             )
-    elif not final_score_node:
+            missing.append("ending_full_time_needs_visual_verify")
+        ending_diag["match_end_candidates"].append(cand)
+
+    if not final_score_node and not ending:
         missing.append("missing_ending_event")
         segments.append(
             _mk_seg(
@@ -1078,6 +1073,9 @@ def compose_story_plan(
                 blocking_reasons=["missing_ending_event"],
             )
         )
+
+    plan.setdefault("diagnostics", {})
+    plan["diagnostics"]["ending"] = ending_diag
 
     # narrative_order：按 beat，同 beat 内按媒体时间（进球动作早于记分牌确认）
     def sort_key(s: Dict[str, Any]) -> Tuple:

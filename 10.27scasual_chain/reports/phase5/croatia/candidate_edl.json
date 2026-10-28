@@ -42,28 +42,16 @@
   },
   {
     "edl_index": 2,
-    "segment_id": "seg_opponent_opening_goal_action",
     "beat": "铺垫",
-    "role": "opponent_opening_goal_action",
     "shot_kind": "live",
     "is_replay": false,
-    "media_in": 968.137,
-    "media_out": 990.137,
     "time_status": "linked_event_ms",
-    "time_provenance": {
-      "source": "linked_live_goal_event",
-      "t_sec": 980.137,
-      "score_anchor_t_sec": 1079.06,
-      "pipeline_verified": false,
-      "granted_by": null
-    },
     "event_ids": [
       "event_000004"
     ],
     "frame_ids": [],
     "linked_live_event_id": null,
     "narrative_order": 2,
-    "source_media_order": 968.137,
     "render_eligibility": "candidate_only",
     "blocking_reasons": [
       "awaiting_internal_media_verification",
@@ -71,12 +59,19 @@
       "semantic_unverified"
     ],
     "confidence": 0.45,
-    "selection_reason": "opponent_opening_goal_near_behind_scoreboard",
-    "narration": "率先失球动作 event_000004 @ 980.137s（相对 0:1 记分牌 Δ=-98.923s；非记分牌时间）。",
     "include_in_cut": true,
     "glitch_avoidance": [],
     "goal_anchor_t_sec": 980.137,
     "goal_action_complete": true,
+    "goal_completeness_facets": {
+      "result_visible": true,
+      "approach_visible": true,
+      "context_sufficient": true,
+      "glitch_break": false,
+      "approach_pad_sec": 12.0,
+      "approach_clip_sec": 0.0,
+      "goal_action_complete": true
+    },
     "integrity_failure": null,
     "evidence_refs": [
       {
@@ -95,7 +90,22 @@
         "shot_kind": "live",
         "role": "opponent_opening"
       }
-    ]
+    ],
+    "segment_id": "seg_opponent_opening_goal_action",
+    "role": "opponent_opening_goal_action",
+    "media_in": 968.137,
+    "media_out": 990.137,
+    "time_provenance": {
+      "source": "linked_live_goal_event",
+      "t_sec": 980.137,
+      "score_anchor_t_sec": 1079.06,
+      "pipeline_verified": false,
+      "granted_by": null,
+      "goal_part": "result"
+    },
+    "source_media_order": 968.137,
+    "selection_reason": "opponent_opening_goal_near_behind_scoreboard",
+    "narration": "率先失球动作 event_000004 @ 980.137s（相对 0:1 记分牌 Δ=-98.923s；非记分牌时间）。"
   },
   {
     "edl_index": 3,
@@ -136,6 +146,7 @@
     "goal_anchor_t_sec": null,
     "goal_action_complete": null,
     "integrity_failure": null,
+    "ending_status": null,
     "evidence_refs": [
       {
         "kind": "rule_fact",
@@ -196,6 +207,7 @@
     "goal_anchor_t_sec": null,
     "goal_action_complete": null,
     "integrity_failure": null,
+    "ending_status": null,
     "evidence_refs": [
       {
         "kind": "rule_fact",
@@ -248,6 +260,7 @@
     "goal_anchor_t_sec": null,
     "goal_action_complete": null,
     "integrity_failure": null,
+    "ending_status": null,
     "evidence_refs": [
       {
         "kind": "rule_fact",
@@ -266,28 +279,16 @@
   },
   {
     "edl_index": 6,
-    "segment_id": "seg_equalizer_goal_action",
     "beat": "转折",
-    "role": "equalizer_goal_action",
     "shot_kind": "live",
     "is_replay": false,
-    "media_in": 3053.903,
-    "media_out": 3075.903,
     "time_status": "linked_event_ms",
-    "time_provenance": {
-      "source": "linked_live_goal_event",
-      "t_sec": 3065.903,
-      "score_anchor_t_sec": 3145.98,
-      "pipeline_verified": false,
-      "granted_by": null
-    },
     "event_ids": [
       "event_000021"
     ],
     "frame_ids": [],
     "linked_live_event_id": null,
     "narrative_order": 6,
-    "source_media_order": 3053.903,
     "render_eligibility": "candidate_only",
     "blocking_reasons": [
       "awaiting_internal_media_verification",
@@ -295,12 +296,19 @@
       "semantic_unverified"
     ],
     "confidence": 0.555,
-    "selection_reason": "live_goal_near_scoreboard_anchor",
-    "narration": "equalizer 进球动作候选 event_000021 @ 3065.903s（相对记分牌 Δ=-80.077s）。",
     "include_in_cut": true,
     "glitch_avoidance": [],
     "goal_anchor_t_sec": 3065.903,
     "goal_action_complete": true,
+    "goal_completeness_facets": {
+      "result_visible": true,
+      "approach_visible": true,
+      "context_sufficient": true,
+      "glitch_break": false,
+      "approach_pad_sec": 12.0,
+      "approach_clip_sec": 0.0,
+      "goal_action_complete": true
+    },
     "integrity_failure": null,
     "evidence_refs": [
       {
@@ -317,7 +325,22 @@
         "id": "event_000021",
         "shot_kind": "live"
       }
-    ]
+    ],
+    "segment_id": "seg_equalizer_goal_action",
+    "role": "equalizer_goal_action",
+    "media_in": 3053.903,
+    "media_out": 3075.903,
+    "time_provenance": {
+      "source": "linked_live_goal_event",
+      "t_sec": 3065.903,
+      "score_anchor_t_sec": 3145.98,
+      "pipeline_verified": false,
+      "granted_by": null,
+      "goal_part": "result"
+    },
+    "source_media_order": 3053.903,
+    "selection_reason": "live_goal_near_scoreboard_anchor",
+    "narration": "equalizer 进球动作候选 event_000021 @ 3065.903s（相对记分牌 Δ=-80.077s）。"
   },
   {
     "edl_index": 7,
@@ -354,6 +377,7 @@
     "goal_anchor_t_sec": null,
     "goal_action_complete": null,
     "integrity_failure": null,
+    "ending_status": null,
     "evidence_refs": [
       {
         "kind": "rule_fact",
@@ -382,28 +406,16 @@
   },
   {
     "edl_index": 8,
-    "segment_id": "seg_go_ahead_goal_action",
     "beat": "高潮",
-    "role": "go_ahead_goal_action",
     "shot_kind": "live",
     "is_replay": false,
-    "media_in": 3511.574,
-    "media_out": 3533.574,
     "time_status": "linked_event_ms",
-    "time_provenance": {
-      "source": "linked_live_goal_event",
-      "t_sec": 3523.574,
-      "score_anchor_t_sec": 3697.35,
-      "pipeline_verified": false,
-      "granted_by": null
-    },
     "event_ids": [
       "event_000022"
     ],
     "frame_ids": [],
     "linked_live_event_id": null,
     "narrative_order": 8,
-    "source_media_order": 3511.574,
     "render_eligibility": "candidate_only",
     "blocking_reasons": [
       "awaiting_internal_media_verification",
@@ -411,12 +423,19 @@
       "semantic_unverified"
     ],
     "confidence": 0.035,
-    "selection_reason": "live_goal_near_scoreboard_anchor",
-    "narration": "go_ahead 进球动作候选 event_000022 @ 3523.574s（相对记分牌 Δ=-173.776s）。",
     "include_in_cut": true,
     "glitch_avoidance": [],
     "goal_anchor_t_sec": 3523.574,
     "goal_action_complete": true,
+    "goal_completeness_facets": {
+      "result_visible": true,
+      "approach_visible": true,
+      "context_sufficient": true,
+      "glitch_break": false,
+      "approach_pad_sec": 12.0,
+      "approach_clip_sec": 0.0,
+      "goal_action_complete": true
+    },
     "integrity_failure": null,
     "evidence_refs": [
       {
@@ -433,7 +452,22 @@
         "id": "event_000022",
         "shot_kind": "live"
       }
-    ]
+    ],
+    "segment_id": "seg_go_ahead_goal_action",
+    "role": "go_ahead_goal_action",
+    "media_in": 3511.574,
+    "media_out": 3533.574,
+    "time_provenance": {
+      "source": "linked_live_goal_event",
+      "t_sec": 3523.574,
+      "score_anchor_t_sec": 3697.35,
+      "pipeline_verified": false,
+      "granted_by": null,
+      "goal_part": "result"
+    },
+    "source_media_order": 3511.574,
+    "selection_reason": "live_goal_near_scoreboard_anchor",
+    "narration": "go_ahead 进球动作候选 event_000022 @ 3523.574s（相对记分牌 Δ=-173.776s）。"
   },
   {
     "edl_index": 9,
@@ -470,6 +504,7 @@
     "goal_anchor_t_sec": null,
     "goal_action_complete": null,
     "integrity_failure": null,
+    "ending_status": null,
     "evidence_refs": [
       {
         "kind": "rule_fact",
@@ -498,28 +533,16 @@
   },
   {
     "edl_index": 10,
-    "segment_id": "seg_lead_extend_1_goal_action",
     "beat": "高潮",
-    "role": "lead_extend_1_goal_action",
     "shot_kind": "live",
     "is_replay": false,
-    "media_in": 6316.7,
-    "media_out": 6327.199,
     "time_status": "linked_event_ms",
-    "time_provenance": {
-      "source": "linked_live_goal_event",
-      "t_sec": 6317.199,
-      "score_anchor_t_sec": 6408.7,
-      "pipeline_verified": false,
-      "granted_by": null
-    },
     "event_ids": [
       "event_000025"
     ],
     "frame_ids": [],
     "linked_live_event_id": null,
     "narrative_order": 10,
-    "source_media_order": 6305.199,
     "render_eligibility": "candidate_only",
     "blocking_reasons": [
       "awaiting_internal_media_verification",
@@ -527,19 +550,40 @@
       "semantic_unverified"
     ],
     "confidence": 0.492,
-    "selection_reason": "live_goal_near_scoreboard_anchor",
-    "narration": "lead_extend_1 进球动作候选 event_000025 @ 6317.199s（相对记分牌 Δ=-91.501s）。",
     "include_in_cut": true,
     "glitch_avoidance": [
       {
         "label": "third_goal_approach_neon_band",
-        "action": "raise_in_keep_anchor",
-        "from": 6305.199,
-        "to": 6316.7
+        "action": "split_approach_before_glitch",
+        "window": [
+          6305.199,
+          6315.8
+        ]
+      },
+      {
+        "label": "third_goal_approach_neon_band",
+        "action": "split_result_after_glitch",
+        "window": [
+          6316.7,
+          6327.199
+        ]
+      },
+      {
+        "action": "split_around_glitch",
+        "n_clips": 2
       }
     ],
     "goal_anchor_t_sec": 6317.199,
     "goal_action_complete": true,
+    "goal_completeness_facets": {
+      "result_visible": true,
+      "approach_visible": true,
+      "context_sufficient": true,
+      "glitch_break": true,
+      "approach_pad_sec": 0.499,
+      "approach_clip_sec": 10.601,
+      "goal_action_complete": true
+    },
     "integrity_failure": null,
     "evidence_refs": [
       {
@@ -556,10 +600,111 @@
         "id": "event_000025",
         "shot_kind": "live"
       }
-    ]
+    ],
+    "segment_id": "seg_lead_extend_1_goal_action_approach",
+    "role": "lead_extend_1_goal_action_approach",
+    "media_in": 6305.199,
+    "media_out": 6315.8,
+    "time_provenance": {
+      "source": "linked_live_goal_event",
+      "t_sec": 6317.199,
+      "score_anchor_t_sec": 6408.7,
+      "pipeline_verified": false,
+      "granted_by": null,
+      "goal_part": "approach"
+    },
+    "source_media_order": 6305.199,
+    "selection_reason": "goal_approach_before_glitch_or_anchor",
+    "narration": "lead_extend_1 进球动作候选 event_000025 @ 6317.199s（相对记分牌 Δ=-91.501s）。〔射门前上下文〕"
   },
   {
     "edl_index": 11,
+    "beat": "高潮",
+    "shot_kind": "live",
+    "is_replay": false,
+    "time_status": "linked_event_ms",
+    "event_ids": [
+      "event_000025"
+    ],
+    "frame_ids": [],
+    "linked_live_event_id": null,
+    "narrative_order": 11,
+    "render_eligibility": "candidate_only",
+    "blocking_reasons": [
+      "awaiting_internal_media_verification",
+      "phase5_candidate_delivery",
+      "semantic_unverified"
+    ],
+    "confidence": 0.492,
+    "include_in_cut": true,
+    "glitch_avoidance": [
+      {
+        "label": "third_goal_approach_neon_band",
+        "action": "split_approach_before_glitch",
+        "window": [
+          6305.199,
+          6315.8
+        ]
+      },
+      {
+        "label": "third_goal_approach_neon_band",
+        "action": "split_result_after_glitch",
+        "window": [
+          6316.7,
+          6327.199
+        ]
+      },
+      {
+        "action": "split_around_glitch",
+        "n_clips": 2
+      }
+    ],
+    "goal_anchor_t_sec": 6317.199,
+    "goal_action_complete": true,
+    "goal_completeness_facets": {
+      "result_visible": true,
+      "approach_visible": true,
+      "context_sufficient": true,
+      "glitch_break": true,
+      "approach_pad_sec": 0.499,
+      "approach_clip_sec": 10.601,
+      "goal_action_complete": true
+    },
+    "integrity_failure": null,
+    "evidence_refs": [
+      {
+        "kind": "rule_fact",
+        "used_as_fact": true,
+        "source": "live_goal_candidate",
+        "event_id": "event_000025",
+        "dt_to_score_sec": -91.501
+      }
+    ],
+    "source_refs": [
+      {
+        "namespace": "t01_story_event",
+        "id": "event_000025",
+        "shot_kind": "live"
+      }
+    ],
+    "segment_id": "seg_lead_extend_1_goal_action",
+    "role": "lead_extend_1_goal_action",
+    "media_in": 6316.7,
+    "media_out": 6327.199,
+    "time_provenance": {
+      "source": "linked_live_goal_event",
+      "t_sec": 6317.199,
+      "score_anchor_t_sec": 6408.7,
+      "pipeline_verified": false,
+      "granted_by": null,
+      "goal_part": "result"
+    },
+    "source_media_order": 6316.7,
+    "selection_reason": "live_goal_near_scoreboard_anchor",
+    "narration": "lead_extend_1 进球动作候选 event_000025 @ 6317.199s（相对记分牌 Δ=-91.501s）。"
+  },
+  {
+    "edl_index": 12,
     "segment_id": "seg_lead_extend_1_scoreboard",
     "beat": "高潮",
     "role": "lead_extend_1_scoreboard_anchor",
@@ -577,7 +722,7 @@
     "event_ids": [],
     "frame_ids": [],
     "linked_live_event_id": null,
-    "narrative_order": 11,
+    "narrative_order": 12,
     "source_media_order": 6407.7,
     "render_eligibility": "candidate_only",
     "blocking_reasons": [
@@ -593,6 +738,7 @@
     "goal_anchor_t_sec": null,
     "goal_action_complete": null,
     "integrity_failure": null,
+    "ending_status": null,
     "evidence_refs": [
       {
         "kind": "rule_fact",
@@ -620,44 +766,46 @@
     ]
   },
   {
-    "edl_index": 12,
-    "segment_id": "seg_ending_final_scoreboard",
+    "edl_index": 13,
+    "segment_id": "seg_ending_story_wrap_score",
     "beat": "收尾",
-    "role": "ending_final_scoreboard",
+    "role": "ending_story_wrap_score",
     "shot_kind": "scoreboard_anchor",
     "is_replay": false,
     "media_in": 7857.37,
-    "media_out": 7860.87,
+    "media_out": 7862.37,
     "time_status": "score_path_only",
     "time_provenance": {
       "source": "score_path",
       "t_sec": 7858.37,
       "pipeline_verified": false,
-      "shortened_scoreboard": true,
-      "not_a_goal_action": true
+      "ending_status": "unverified_story_wrap",
+      "not_verified_full_time": true
     },
     "event_ids": [
       "event_000155"
     ],
     "frame_ids": [],
     "linked_live_event_id": null,
-    "narrative_order": 12,
+    "narrative_order": 13,
     "source_media_order": 7857.37,
     "render_eligibility": "candidate_only",
     "blocking_reasons": [
-      "ending_visual_unverified",
+      "ending_not_semantically_verified",
       "score_path_only_not_render_ready",
       "phase5_candidate_delivery",
-      "semantic_unverified"
+      "semantic_unverified",
+      "ending_not_semantically_verified"
     ],
-    "confidence": 0.7,
-    "selection_reason": "ending_final_scoreboard_preferred",
-    "narration": "终场比分确认 4:1 @ 7858.37s（优先于远处比赛结束标注；仍需画面核验）。",
+    "confidence": 0.65,
+    "selection_reason": "ending_story_wrap_score",
+    "narration": "故事收束·最终比分确认 4:1 @ 7858.37s（不是已核验的全场结束画面；可能与最后进球比分牌重合）。",
     "include_in_cut": true,
     "glitch_avoidance": [],
     "goal_anchor_t_sec": null,
     "goal_action_complete": null,
     "integrity_failure": null,
+    "ending_status": "unverified_story_wrap",
     "evidence_refs": [
       {
         "kind": "rule_fact",
@@ -665,7 +813,7 @@
         "source": "final_score_path",
         "score": "4:1",
         "t_sec": 7858.37,
-        "note": "preferred_ending_over_raw_match_end"
+        "note": "story_wrap_score_not_verified_full_time"
       }
     ],
     "source_refs": [
@@ -676,10 +824,10 @@
     ]
   },
   {
-    "edl_index": 13,
+    "edl_index": 14,
     "segment_id": "seg_title_close",
     "beat": "收尾",
-    "role": "story_title",
+    "role": "story_wrap_title",
     "shot_kind": "title_card",
     "is_replay": false,
     "media_in": null,
@@ -692,30 +840,31 @@
     "event_ids": [],
     "frame_ids": [],
     "linked_live_event_id": null,
-    "narrative_order": 13,
+    "narrative_order": 14,
     "source_media_order": -1,
     "render_eligibility": "candidate_only",
     "blocking_reasons": [
       "phase5_candidate_delivery"
     ],
     "confidence": 1.0,
-    "selection_reason": "phase5_narrative_packaging",
-    "narration": "收束标题",
+    "selection_reason": "ending_story_wrap_packaging",
+    "narration": "最终比分/故事收束包装（非已核实 FULL TIME 直播）",
     "include_in_cut": true,
     "placeholder_sec": 3.0,
     "placeholder_lines": [
       "克罗地亚 逆转 加拿大",
-      "终场 4:1",
+      "最终比分 4:1",
       "故事收束"
     ],
     "placeholder_lines_qc": [
       "克罗地亚 逆转 加拿大",
-      "终场 4:1",
-      "故事收束",
+      "最终比分 4:1",
+      "故事收束 · 终场画面未独立核验",
       "candidate_only · render_ready=false"
     ],
     "evidence_refs": [],
     "source_refs": [],
-    "glitch_avoidance": []
+    "glitch_avoidance": [],
+    "ending_status": "unverified_story_wrap"
   }
 ]

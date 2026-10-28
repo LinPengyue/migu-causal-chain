@@ -21,6 +21,7 @@ from story_chain.end_to_end import run_paths
 from story_video_agent.narrative_composer import compose_story_plan
 from story_video_agent.phase5_delivery import (
     build_story_graph,
+    build_story_scope,
     build_story_summary_md,
     build_story_title,
     load_glitch_profile,
@@ -90,18 +91,25 @@ def insert_title_cards(
         "glitch_avoidance": [],
     }
     close_lines = [title, "故事收束"]
-    close_lines_qc = [title, "故事收束", "candidate_only · render_ready=false"]
+    close_lines_qc = [
+        title,
+        "故事收束 · 终场画面未独立核验",
+        "candidate_only · render_ready=false",
+    ]
     if final_score:
-        close_lines.insert(1, f"终场 {final_score}")
-        close_lines_qc.insert(1, f"终场 {final_score}")
+        close_lines.insert(1, f"最终比分 {final_score}")
+        close_lines_qc.insert(1, f"最终比分 {final_score}")
     close_card = {
         **open_card,
         "segment_id": "seg_title_close",
         "beat": "收尾",
+        "role": "story_wrap_title",
         "narrative_order": 10_000,
-        "narration": "收束标题",
+        "narration": "最终比分/故事收束包装（非已核实 FULL TIME 直播）",
+        "selection_reason": "ending_story_wrap_packaging",
         "placeholder_lines": close_lines,
         "placeholder_lines_qc": close_lines_qc,
+        "ending_status": "unverified_story_wrap",
     }
     out = [open_card] + list(delivery_edl) + [close_card]
     for i, row in enumerate(out):
@@ -139,7 +147,9 @@ def run_phase5(
         }
     )
     title = enrich_plan_title(plan, story)
+    plan["story_scope"] = build_story_scope(story, plan)
     _write_json(out_dir / "story_plan.json", plan)
+    _write_json(out_dir / "story_scope.json", plan["story_scope"])
 
     glitch = load_glitch_profile(glitch_profile)
     delivery = select_delivery_rows(plan, glitch_ranges=glitch)

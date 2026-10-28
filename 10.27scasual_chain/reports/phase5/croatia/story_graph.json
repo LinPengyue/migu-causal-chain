@@ -132,6 +132,23 @@
       "goal_action_complete": null
     },
     {
+      "id": "seg_lead_extend_1_goal_action_approach",
+      "type": "story_segment",
+      "beat": "高潮",
+      "role": "lead_extend_1_goal_action_approach",
+      "media_in": 6305.199,
+      "media_out": 6315.8,
+      "time_status": "linked_event_ms",
+      "shot_kind": "live",
+      "goal_action_complete": true
+    },
+    {
+      "id": "event:event_000025",
+      "type": "event",
+      "event_id": "event_000025",
+      "linked_from_segment": "seg_lead_extend_1_goal_action_approach"
+    },
+    {
       "id": "seg_lead_extend_1_goal_action",
       "type": "story_segment",
       "beat": "高潮",
@@ -141,12 +158,6 @@
       "time_status": "linked_event_ms",
       "shot_kind": "live",
       "goal_action_complete": true
-    },
-    {
-      "id": "event:event_000025",
-      "type": "event",
-      "event_id": "event_000025",
-      "linked_from_segment": "seg_lead_extend_1_goal_action"
     },
     {
       "id": "seg_lead_extend_1_scoreboard",
@@ -160,12 +171,12 @@
       "goal_action_complete": null
     },
     {
-      "id": "seg_ending_final_scoreboard",
+      "id": "seg_ending_story_wrap_score",
       "type": "story_segment",
       "beat": "收尾",
-      "role": "ending_final_scoreboard",
+      "role": "ending_story_wrap_score",
       "media_in": 7857.37,
-      "media_out": 7860.87,
+      "media_out": 7862.37,
       "time_status": "score_path_only",
       "shot_kind": "scoreboard_anchor",
       "goal_action_complete": null
@@ -174,13 +185,13 @@
       "id": "event:event_000155",
       "type": "event",
       "event_id": "event_000155",
-      "linked_from_segment": "seg_ending_final_scoreboard"
+      "linked_from_segment": "seg_ending_story_wrap_score"
     },
     {
       "id": "seg_title_close",
       "type": "story_segment",
       "beat": "收尾",
-      "role": "story_title",
+      "role": "story_wrap_title",
       "media_in": null,
       "media_out": null,
       "time_status": "placeholder_title",
@@ -295,6 +306,14 @@
     },
     {
       "source": "seg_go_ahead_scoreboard",
+      "target": "seg_lead_extend_1_goal_action_approach",
+      "relation": "narrative_succession",
+      "evidence": "delivery_edl_order",
+      "semantic_verified": false,
+      "note": "剪辑叙事承接，非已证实因果"
+    },
+    {
+      "source": "seg_lead_extend_1_goal_action_approach",
       "target": "seg_lead_extend_1_goal_action",
       "relation": "narrative_succession",
       "evidence": "delivery_edl_order",
@@ -311,14 +330,14 @@
     },
     {
       "source": "seg_lead_extend_1_scoreboard",
-      "target": "seg_ending_final_scoreboard",
+      "target": "seg_ending_story_wrap_score",
       "relation": "narrative_succession",
       "evidence": "delivery_edl_order",
       "semantic_verified": false,
       "note": "剪辑叙事承接，非已证实因果"
     },
     {
-      "source": "seg_ending_final_scoreboard",
+      "source": "seg_ending_story_wrap_score",
       "target": "seg_title_close",
       "relation": "narrative_succession",
       "evidence": "delivery_edl_order",
@@ -383,6 +402,14 @@
     },
     {
       "source": "seg_go_ahead_scoreboard",
+      "target": "seg_lead_extend_1_goal_action_approach",
+      "relation": "temporal_before",
+      "evidence": "media_in_order",
+      "semantic_verified": false,
+      "note": "原片时间先后（可核对时间戳）"
+    },
+    {
+      "source": "seg_lead_extend_1_goal_action_approach",
       "target": "seg_lead_extend_1_goal_action",
       "relation": "temporal_before",
       "evidence": "media_in_order",
@@ -399,7 +426,7 @@
     },
     {
       "source": "seg_lead_extend_1_scoreboard",
-      "target": "seg_ending_final_scoreboard",
+      "target": "seg_ending_story_wrap_score",
       "relation": "temporal_before",
       "evidence": "media_in_order",
       "semantic_verified": false,
@@ -486,6 +513,14 @@
       "note": "镜头–事件规则关联；未做独立语义核验"
     },
     {
+      "source": "seg_lead_extend_1_goal_action_approach",
+      "target": "event:event_000025",
+      "relation": "event_association",
+      "evidence": "segment_event_ids",
+      "semantic_verified": false,
+      "note": "镜头–事件规则关联；未做独立语义核验"
+    },
+    {
       "source": "seg_lead_extend_1_goal_action",
       "target": "event:event_000025",
       "relation": "event_association",
@@ -494,7 +529,7 @@
       "note": "镜头–事件规则关联；未做独立语义核验"
     },
     {
-      "source": "seg_ending_final_scoreboard",
+      "source": "seg_ending_story_wrap_score",
       "target": "event:event_000155",
       "relation": "event_association",
       "evidence": "segment_event_ids",

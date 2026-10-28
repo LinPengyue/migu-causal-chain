@@ -47,6 +47,16 @@
 - [OK] t=3523.57 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/croatia/qc_pack/frames/seg_go_ahead_goal_action_anchor_3523.6.jpg`
 - [OK] t=3525.07 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/croatia/qc_pack/frames/seg_go_ahead_goal_action_anchor_plus_1_5_3525.1.jpg`
 
+### seg_lead_extend_1_goal_action_approach · lead_extend_1_goal_action_approach
+- 窗口 `6305.199`–`6315.800` · anchor=6317.199 · complete=True
+- checklist: `{"goal_inside_window": false, "not_scoreboard_as_goal": true, "glitch_demotion": true, "semantic_verified": false, "human_review_required": true}`
+- integrity: `None`
+- [OK] t=6306.20 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/croatia/qc_pack/frames/seg_lead_extend_1_goal_action_approach_in_plus_1_6306.2.jpg`
+- [OK] t=6310.50 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/croatia/qc_pack/frames/seg_lead_extend_1_goal_action_approach_mid_6310.5.jpg`
+- [OK] t=6314.80 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/croatia/qc_pack/frames/seg_lead_extend_1_goal_action_approach_out_minus_1_6314.8.jpg`
+- [OK] t=6317.20 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/croatia/qc_pack/frames/seg_lead_extend_1_goal_action_approach_anchor_6317.2.jpg`
+- [OK] t=6318.70 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/croatia/qc_pack/frames/seg_lead_extend_1_goal_action_approach_anchor_plus_1_5_6318.7.jpg`
+
 ### seg_lead_extend_1_goal_action · lead_extend_1_goal_action
 - 窗口 `6316.700`–`6327.199` · anchor=6317.199 · complete=True
 - checklist: `{"goal_inside_window": true, "not_scoreboard_as_goal": true, "glitch_demotion": true, "semantic_verified": false, "human_review_required": true}`
@@ -65,11 +75,11 @@
 - [OK] t=6409.45 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/croatia/qc_pack/frames/seg_lead_extend_1_scoreboard_mid_6409.4.jpg`
 - [OK] t=6410.20 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/croatia/qc_pack/frames/seg_lead_extend_1_scoreboard_out_minus_1_6410.2.jpg`
 
-### seg_ending_final_scoreboard · ending_final_scoreboard
-- 窗口 `7857.370`–`7860.870` · anchor=None · complete=None
+### seg_ending_story_wrap_score · ending_story_wrap_score
+- 窗口 `7857.370`–`7862.370` · anchor=None · complete=None
 - checklist: `{"goal_inside_window": null, "not_scoreboard_as_goal": true, "glitch_demotion": true, "semantic_verified": false, "human_review_required": true}`
 - integrity: `None`
-- [OK] t=7858.37 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/croatia/qc_pack/frames/seg_ending_final_scoreboard_in_plus_1_7858.4.jpg`
-- [OK] t=7859.12 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/croatia/qc_pack/frames/seg_ending_final_scoreboard_mid_7859.1.jpg`
-- [OK] t=7859.87 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/croatia/qc_pack/frames/seg_ending_final_scoreboard_out_minus_1_7859.9.jpg`
+- [OK] t=7858.37 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/croatia/qc_pack/frames/seg_ending_story_wrap_score_in_plus_1_7858.4.jpg`
+- [OK] t=7859.87 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/croatia/qc_pack/frames/seg_ending_story_wrap_score_mid_7859.9.jpg`
+- [OK] t=7861.37 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/croatia/qc_pack/frames/seg_ending_story_wrap_score_out_minus_1_7861.4.jpg`
 

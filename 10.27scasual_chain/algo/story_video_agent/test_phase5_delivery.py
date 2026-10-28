@@ -4,24 +4,52 @@ from __future__ import annotations
 
 from story_video_agent.phase5_delivery import (
     apply_glitch_avoidance,
+    assess_goal_completeness,
     build_story_graph,
+    plan_goal_clips_around_glitch,
     select_delivery_rows,
     validate_story_graph,
 )
 
 
-def test_glitch_avoidance_keeps_goal_anchor_after_glitch():
-    # Croatia-like: glitch just before ball-in-net; must not crop to attack-only
-    a, b, notes, fail = apply_glitch_avoidance(
+def test_glitch_split_keeps_approach_and_result():
+    # Croatia-like: glitch before ball-in-net → approach + result, no bad frames
+    clips, notes, fail = plan_goal_clips_around_glitch(
         6305.199,
         6327.199,
         [(6315.8, 6316.7, "neon")],
         must_cover=6317.199,
     )
-    assert fail is None, (fail, notes, a, b)
-    assert a >= 6316.7 - 1e-6
-    assert a < 6317.199 < b
-    assert b - 6317.199 >= 2.5 - 1e-6
+    assert fail is None, (fail, notes, clips)
+    parts = {c["part"]: c for c in clips}
+    assert "approach" in parts and "result" in parts
+    assert parts["approach"]["media_out"] <= 6315.8 + 1e-6
+    assert parts["result"]["media_in"] >= 6316.7 - 1e-6
+    assert parts["result"]["media_in"] <= 6317.199 <= parts["result"]["media_out"]
+    facets = assess_goal_completeness(
+        media_in=parts["result"]["media_in"],
+        media_out=parts["result"]["media_out"],
+        anchor=6317.199,
+        has_approach_clip=True,
+        glitch_break=True,
+        approach_media_in=parts["approach"]["media_in"],
+        approach_media_out=parts["approach"]["media_out"],
+    )
+    assert facets["result_visible"] and facets["approach_visible"]
+    assert facets["goal_action_complete"] is True
+
+
+def test_anchor_only_without_approach_is_incomplete():
+    facets = assess_goal_completeness(
+        media_in=6316.7,
+        media_out=6327.2,
+        anchor=6317.2,
+        has_approach_clip=False,
+        glitch_break=True,
+    )
+    assert facets["result_visible"] is True
+    assert facets["approach_visible"] is False
+    assert facets["goal_action_complete"] is False
 
 
 def test_glitch_on_anchor_marks_failure():
@@ -147,16 +175,19 @@ def test_legacy_far_match_end_skipped_in_delivery():
                 "evidence_refs": [],
             },
             {
-                "segment_id": "seg_ending_final_scoreboard",
+                "segment_id": "seg_ending_story_wrap_score",
                 "beat": "收尾",
-                "role": "ending_final_scoreboard",
+                "role": "ending_story_wrap_score",
                 "shot_kind": "scoreboard_anchor",
                 "media_in": 7857.0,
                 "media_out": 7862.0,
                 "time_status": "score_path_only",
-                "time_provenance": {"t_sec": 7858.0},
+                "time_provenance": {
+                    "t_sec": 7858.0,
+                    "ending_status": "unverified_story_wrap",
+                },
                 "event_ids": [],
-                "selection_reason": "ending_final_scoreboard_preferred",
+                "selection_reason": "ending_story_wrap_score",
                 "render_eligibility": "candidate_only",
                 "blocking_reasons": [],
                 "narrative_order": 2,
@@ -167,4 +198,4 @@ def test_legacy_far_match_end_skipped_in_delivery():
     rows = select_delivery_rows(plan, glitch_ranges=[])
     roles = [r["role"] for r in rows]
     assert "ending" not in roles
-    assert "ending_final_scoreboard" in roles
+    assert "ending_story_wrap_score" in roles

@@ -121,12 +121,23 @@
       "linked_from_segment": "seg_go_ahead_goal_action"
     },
     {
-      "id": "seg_ending_final_scoreboard",
+      "id": "seg_go_ahead_scoreboard",
       "type": "story_segment",
-      "beat": "收尾",
-      "role": "ending_final_scoreboard",
+      "beat": "高潮",
+      "role": "go_ahead_scoreboard_anchor",
       "media_in": 6956.12,
       "media_out": 6959.62,
+      "time_status": "score_path_only",
+      "shot_kind": "scoreboard_anchor",
+      "goal_action_complete": null
+    },
+    {
+      "id": "seg_ending_story_wrap_score",
+      "type": "story_segment",
+      "beat": "收尾",
+      "role": "ending_story_wrap_score",
+      "media_in": 6956.12,
+      "media_out": 6961.12,
       "time_status": "score_path_only",
       "shot_kind": "scoreboard_anchor",
       "goal_action_complete": null
@@ -135,13 +146,13 @@
       "id": "event:event_000670",
       "type": "event",
       "event_id": "event_000670",
-      "linked_from_segment": "seg_ending_final_scoreboard"
+      "linked_from_segment": "seg_ending_story_wrap_score"
     },
     {
       "id": "seg_title_close",
       "type": "story_segment",
       "beat": "收尾",
-      "role": "story_title",
+      "role": "story_wrap_title",
       "media_in": null,
       "media_out": null,
       "time_status": "placeholder_title",
@@ -240,14 +251,22 @@
     },
     {
       "source": "seg_go_ahead_goal_action",
-      "target": "seg_ending_final_scoreboard",
+      "target": "seg_go_ahead_scoreboard",
       "relation": "narrative_succession",
       "evidence": "delivery_edl_order",
       "semantic_verified": false,
       "note": "剪辑叙事承接，非已证实因果"
     },
     {
-      "source": "seg_ending_final_scoreboard",
+      "source": "seg_go_ahead_scoreboard",
+      "target": "seg_ending_story_wrap_score",
+      "relation": "narrative_succession",
+      "evidence": "delivery_edl_order",
+      "semantic_verified": false,
+      "note": "剪辑叙事承接，非已证实因果"
+    },
+    {
+      "source": "seg_ending_story_wrap_score",
       "target": "seg_title_close",
       "relation": "narrative_succession",
       "evidence": "delivery_edl_order",
@@ -304,7 +323,15 @@
     },
     {
       "source": "seg_go_ahead_goal_action",
-      "target": "seg_ending_final_scoreboard",
+      "target": "seg_go_ahead_scoreboard",
+      "relation": "temporal_before",
+      "evidence": "media_in_order",
+      "semantic_verified": false,
+      "note": "原片时间先后（可核对时间戳）"
+    },
+    {
+      "source": "seg_go_ahead_scoreboard",
+      "target": "seg_ending_story_wrap_score",
       "relation": "temporal_before",
       "evidence": "media_in_order",
       "semantic_verified": false,
@@ -375,7 +402,7 @@
       "note": "镜头–事件规则关联；未做独立语义核验"
     },
     {
-      "source": "seg_ending_final_scoreboard",
+      "source": "seg_ending_story_wrap_score",
       "target": "event:event_000670",
       "relation": "event_association",
       "evidence": "segment_event_ids",

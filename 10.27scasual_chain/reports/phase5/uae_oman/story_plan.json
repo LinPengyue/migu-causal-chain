@@ -570,9 +570,9 @@
       "verification_status": "draft"
     },
     {
-      "segment_id": "seg_ending_final_scoreboard",
+      "segment_id": "seg_ending_story_wrap_score",
       "beat": "收尾",
-      "role": "ending_final_scoreboard",
+      "role": "ending_story_wrap_score",
       "event_ids": [
         "event_000670"
       ],
@@ -584,7 +584,7 @@
           "source": "final_score_path",
           "score": "2:1",
           "t_sec": 6957.12,
-          "note": "preferred_ending_over_raw_match_end"
+          "note": "story_wrap_score_not_verified_full_time"
         }
       ],
       "media_in": 6956.12,
@@ -593,24 +593,26 @@
       "shot_kind": "scoreboard_anchor",
       "is_replay": false,
       "linked_live_event_id": null,
-      "narration": "终场比分确认 2:1 @ 6957.12s（优先于远处比赛结束标注；仍需画面核验）。",
+      "narration": "故事收束·最终比分确认 2:1 @ 6957.12s（不是已核验的全场结束画面；可能与最后进球比分牌重合）。",
       "precise_claim": false,
-      "selection_reason": "ending_final_scoreboard_preferred",
+      "selection_reason": "ending_story_wrap_score",
       "source_refs": [
         {
           "namespace": "unknown",
           "id": "event_000670"
         }
       ],
-      "confidence": 0.7,
+      "confidence": 0.65,
       "time_provenance": {
         "source": "score_path",
         "t_sec": 6957.12,
-        "pipeline_verified": false
+        "pipeline_verified": false,
+        "ending_status": "unverified_story_wrap",
+        "not_verified_full_time": true
       },
       "render_eligibility": "candidate_only",
       "blocking_reasons": [
-        "ending_visual_unverified",
+        "ending_not_semantically_verified",
         "score_path_only_not_render_ready"
       ],
       "narrative_order": 12,
@@ -730,7 +732,7 @@
       "source": "final_score_path",
       "score": "2:1",
       "t_sec": 6957.12,
-      "note": "preferred_ending_over_raw_match_end"
+      "note": "story_wrap_score_not_verified_full_time"
     }
   ],
   "event_ids": [
@@ -818,21 +820,13 @@
         "replay_not_near_live_event",
         "role_hint_mismatch:转折"
       ]
-    },
-    {
-      "context": "ending_match_end",
-      "status": "rejected_by_ending_gate",
-      "event_id": "event_000749",
-      "t_sec": 8012.93,
-      "reason": "match_end_too_far_after_final_score:dt=1055.81",
-      "final_score_t": 6957.12
     }
   ],
   "missing_evidence": [
     "behind_carrier_unresolved:event_000173",
     "equalizer_carrier_unresolved:event_000637",
     "go_ahead_carrier_unresolved:event_000670",
-    "ending_match_end_rejected:match_end_too_far_after_final_score:dt=1055.81"
+    "ending_match_end_rejected:match_end_beyond_candidate_horizon:dt=1055.81"
   ],
   "blocking_reasons": [
     "equalizer_goal_action_not_render_ready",
@@ -848,7 +842,7 @@
       "蓄力": "蓄力动作 角球（live，event_ms 未校准成片）。 蓄力动作 射门（live，event_ms 未校准成片）。",
       "转折": "equalizer 进球动作候选 causal:ann_0015:event_000076 @ 6449.644s（相对记分牌 Δ=-85.976s）。 回放补充（关联 live causal:ann_0015:event_000076；默认不成片）。 equalizer 比分确认 1:1 @ 6535.62s（非进球剪辑点）。 回放补充（关联 live causal:ann_0015:event_000076；默认不成片）。",
       "高潮": "go_ahead 进球动作候选 causal:ann_0020:event_000105 @ 6843.088s（相对记分牌 Δ=-114.032s）。 回放补充（关联 live causal:ann_0020:event_000105；默认不成片）。 go_ahead 比分确认 2:1 @ 6957.12s（非进球剪辑点）。",
-      "收尾": "终场比分确认 2:1 @ 6957.12s（优先于远处比赛结束标注；仍需画面核验）。"
+      "收尾": "故事收束·最终比分确认 2:1 @ 6957.12s（不是已核验的全场结束画面；可能与最后进球比分牌重合）。"
     },
     "title": "阿联酋 逆转 阿曼"
   },
@@ -1201,9 +1195,9 @@
     },
     {
       "edl_index": 12,
-      "segment_id": "seg_ending_final_scoreboard",
+      "segment_id": "seg_ending_story_wrap_score",
       "beat": "收尾",
-      "role": "ending_final_scoreboard",
+      "role": "ending_story_wrap_score",
       "shot_kind": "scoreboard_anchor",
       "is_replay": false,
       "media_in": 6956.12,
@@ -1212,7 +1206,9 @@
       "time_provenance": {
         "source": "score_path",
         "t_sec": 6957.12,
-        "pipeline_verified": false
+        "pipeline_verified": false,
+        "ending_status": "unverified_story_wrap",
+        "not_verified_full_time": true
       },
       "event_ids": [
         "event_000670"
@@ -1223,12 +1219,12 @@
       "source_media_order": 6956.12,
       "render_eligibility": "candidate_only",
       "blocking_reasons": [
-        "ending_visual_unverified",
+        "ending_not_semantically_verified",
         "score_path_only_not_render_ready"
       ],
-      "confidence": 0.7,
-      "selection_reason": "ending_final_scoreboard_preferred",
-      "narration": "终场比分确认 2:1 @ 6957.12s（优先于远处比赛结束标注；仍需画面核验）。",
+      "confidence": 0.65,
+      "selection_reason": "ending_story_wrap_score",
+      "narration": "故事收束·最终比分确认 2:1 @ 6957.12s（不是已核验的全场结束画面；可能与最后进球比分牌重合）。",
       "include_in_cut": false
     }
   ],
@@ -1582,9 +1578,9 @@
     },
     {
       "edl_index": 12,
-      "segment_id": "seg_ending_final_scoreboard",
+      "segment_id": "seg_ending_story_wrap_score",
       "beat": "收尾",
-      "role": "ending_final_scoreboard",
+      "role": "ending_story_wrap_score",
       "shot_kind": "scoreboard_anchor",
       "is_replay": false,
       "media_in": 6956.12,
@@ -1593,7 +1589,9 @@
       "time_provenance": {
         "source": "score_path",
         "t_sec": 6957.12,
-        "pipeline_verified": false
+        "pipeline_verified": false,
+        "ending_status": "unverified_story_wrap",
+        "not_verified_full_time": true
       },
       "event_ids": [
         "event_000670"
@@ -1604,12 +1602,12 @@
       "source_media_order": 6956.12,
       "render_eligibility": "candidate_only",
       "blocking_reasons": [
-        "ending_visual_unverified",
+        "ending_not_semantically_verified",
         "score_path_only_not_render_ready"
       ],
-      "confidence": 0.7,
-      "selection_reason": "ending_final_scoreboard_preferred",
-      "narration": "终场比分确认 2:1 @ 6957.12s（优先于远处比赛结束标注；仍需画面核验）。",
+      "confidence": 0.65,
+      "selection_reason": "ending_story_wrap_score",
+      "narration": "故事收束·最终比分确认 2:1 @ 6957.12s（不是已核验的全场结束画面；可能与最后进球比分牌重合）。",
       "include_in_cut": false
     }
   ],
@@ -1957,6 +1955,24 @@
     "llm_used": false,
     "mock_not_factual": true,
     "milestones_source": "state._comeback_score_steps",
+    "ending": {
+      "final_score": "2:1",
+      "final_score_t": 6957.12,
+      "match_end_candidates": [
+        {
+          "event_id": "event_000749",
+          "t_sec": 8012.93,
+          "is_replay": false,
+          "type": "比赛结束",
+          "include_in_delivery": false,
+          "ending_status": "unverified_candidate",
+          "status": "rejected",
+          "reason": "match_end_beyond_candidate_horizon:dt=1055.81"
+        }
+      ],
+      "delivery_policy": "story_wrap_until_semantic_verify",
+      "full_time_verified": false
+    },
     "render_problems": [
       "missing_render_ready_role:equalizer_goal_action",
       "missing_render_ready_role:go_ahead_goal_action"
@@ -1970,5 +1986,80 @@
     "no_auto_semantic_grant": true,
     "phase5_generic": true,
     "glitch_profile": null
+  },
+  "story_scope": {
+    "full_match_score_path": [
+      {
+        "score": "0:0",
+        "t_sec": 649.75,
+        "delta_side": null
+      },
+      {
+        "score": "0:1",
+        "t_sec": 1410.43,
+        "delta_side": "right"
+      },
+      {
+        "score": "1:1",
+        "t_sec": 6535.62,
+        "delta_side": "left"
+      },
+      {
+        "score": "2:1",
+        "t_sec": 6957.12,
+        "delta_side": "left"
+      }
+    ],
+    "selected_arc": {
+      "kind": "t01_last_deficit_comeback",
+      "behind_start": {
+        "t_sec": 1410.43,
+        "score": "0:1",
+        "opening": false,
+        "delta_side": "right",
+        "carrier_event_id": "event_000173"
+      },
+      "equalizer": {
+        "t_sec": 6535.62,
+        "score": "1:1",
+        "opening": false,
+        "delta_side": "left",
+        "carrier_event_id": "event_000637"
+      },
+      "go_ahead": {
+        "t_sec": 6957.12,
+        "score": "2:1",
+        "opening": false,
+        "delta_side": "left",
+        "carrier_event_id": "event_000670"
+      },
+      "lead_extends": [],
+      "score_nodes_in_arc": [
+        {
+          "score": "0:1",
+          "t_sec": 1410.43,
+          "delta_side": "right"
+        },
+        {
+          "score": "1:1",
+          "t_sec": 6535.62,
+          "delta_side": "left"
+        },
+        {
+          "score": "2:1",
+          "t_sec": 6957.12,
+          "delta_side": "left"
+        }
+      ]
+    },
+    "prior_score_turns_omitted": [
+      {
+        "score": "0:0",
+        "t_sec": 649.75,
+        "delta_side": null
+      }
+    ],
+    "prior_turns_needed_for_context": true,
+    "scope_disclaimer": "本次剪辑主线是 T01「最后一次落后弧」上的扳平/反超（及弧内失球），不是默认收录全场每一次比分转折。整场比分背景见 full_match_score_path；弧前省略的转折见 prior_score_turns_omitted。"
   }
 }

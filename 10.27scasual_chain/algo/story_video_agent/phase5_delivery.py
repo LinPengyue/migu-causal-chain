@@ -53,8 +53,136 @@ def _safe_float(v: Any) -> Optional[float]:
         return None
 
 
+# 进球过程完整性：不仅“锚点在窗内”，还要求射门前上下文
+MIN_APPROACH_BEFORE_ANCHOR = 4.0
+MIN_RESULT_AFTER_ANCHOR = 2.5
+MIN_APPROACH_CLIP_SEC = 3.0
+
+
 def _window_covers(a: float, b: float, t: float, *, pad_before: float = 0.0, pad_after: float = 0.0) -> bool:
     return (a + pad_before) <= t <= (b - pad_after)
+
+
+def assess_goal_completeness(
+    *,
+    media_in: Optional[float],
+    media_out: Optional[float],
+    anchor: Optional[float],
+    has_approach_clip: bool = False,
+    glitch_break: bool = False,
+    approach_media_in: Optional[float] = None,
+    approach_media_out: Optional[float] = None,
+) -> Dict[str, Any]:
+    """Faceted goal completeness — anchor coverage alone is not enough."""
+    result_visible = False
+    approach_visible = False
+    context_sufficient = False
+    if (
+        media_in is not None
+        and media_out is not None
+        and anchor is not None
+        and _window_covers(media_in, media_out, anchor)
+        and (media_out - anchor) >= MIN_RESULT_AFTER_ANCHOR - 1e-6
+    ):
+        result_visible = True
+    approach_pad = 0.0
+    if media_in is not None and anchor is not None:
+        approach_pad = max(0.0, anchor - media_in)
+    approach_clip_dur = 0.0
+    if approach_media_in is not None and approach_media_out is not None:
+        approach_clip_dur = max(0.0, approach_media_out - approach_media_in)
+    if has_approach_clip and approach_clip_dur >= MIN_APPROACH_CLIP_SEC - 1e-6:
+        approach_visible = True
+    elif approach_pad >= MIN_APPROACH_BEFORE_ANCHOR - 1e-6:
+        approach_visible = True
+    context_sufficient = bool(result_visible and approach_visible)
+    # 坏帧断裂且无进攻上下文补段 → 不完整
+    complete = context_sufficient and not (glitch_break and not has_approach_clip)
+    if glitch_break and has_approach_clip and result_visible:
+        complete = True
+    return {
+        "result_visible": result_visible,
+        "approach_visible": approach_visible,
+        "context_sufficient": context_sufficient,
+        "glitch_break": glitch_break,
+        "approach_pad_sec": round(approach_pad, 3),
+        "approach_clip_sec": round(approach_clip_dur, 3),
+        "goal_action_complete": complete,
+    }
+
+
+def plan_goal_clips_around_glitch(
+    media_in: float,
+    media_out: float,
+    ranges: Sequence[Tuple[float, float, str]],
+    *,
+    must_cover: float,
+) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]], Optional[str]]:
+    """Prefer split: approach before glitch + result after glitch (no bad frames).
+
+    Returns (clips, notes, integrity_failure).
+    Each clip: {part: approach|result, media_in, media_out}.
+    """
+    notes: List[Dict[str, Any]] = []
+    a0, b0 = float(media_in), float(media_out)
+    # Glitches that sit strictly between approach start and anchor
+    blockers = []
+    for ga, gb, lab in ranges:
+        if b0 <= ga or a0 >= gb:
+            continue
+        if ga - 1e-6 <= must_cover <= gb + 1e-6:
+            notes.append({"label": lab, "action": "anchor_in_glitch", "glitch": [ga, gb]})
+            return [], notes, "goal_anchor_inside_glitch"
+        if a0 < ga < must_cover:
+            blockers.append((ga, gb, lab))
+    if blockers:
+        # Use earliest glitch before anchor as split point
+        blockers.sort(key=lambda x: x[0])
+        ga, gb, lab = blockers[0]
+        approach_out = min(ga, must_cover)
+        result_in = max(gb, a0)
+        clips: List[Dict[str, Any]] = []
+        if approach_out - a0 >= 1.0:
+            clips.append(
+                {
+                    "part": "approach",
+                    "media_in": round(a0, 3),
+                    "media_out": round(approach_out, 3),
+                }
+            )
+            notes.append(
+                {
+                    "label": lab,
+                    "action": "split_approach_before_glitch",
+                    "window": [a0, approach_out],
+                }
+            )
+        if b0 - result_in >= MIN_RESULT_AFTER_ANCHOR and result_in <= must_cover <= b0:
+            clips.append(
+                {
+                    "part": "result",
+                    "media_in": round(result_in, 3),
+                    "media_out": round(b0, 3),
+                }
+            )
+            notes.append(
+                {
+                    "label": lab,
+                    "action": "split_result_after_glitch",
+                    "window": [result_in, b0],
+                }
+            )
+        if not clips or not any(c["part"] == "result" for c in clips):
+            return clips, notes, "glitch_split_missing_result"
+        notes.append({"action": "split_around_glitch", "n_clips": len(clips)})
+        return clips, notes, None
+
+    # No split needed: single clean window (still may need approach pad check)
+    return (
+        [{"part": "result", "media_in": round(a0, 3), "media_out": round(b0, 3)}],
+        notes,
+        None,
+    )
 
 
 def apply_glitch_avoidance(
@@ -68,13 +196,7 @@ def apply_glitch_avoidance(
     rebuild_pad_before: float = 8.0,
     rebuild_pad_after: float = 10.0,
 ) -> Tuple[float, float, List[Dict[str, Any]], Optional[str]]:
-    """Shift window off glitch spans while preserving optional goal anchor.
-
-    Returns ``(media_in, media_out, notes, integrity_failure)``.
-    If ``must_cover`` is set and no clean window can still contain the anchor
-    (with minimum pads), ``integrity_failure`` explains why — caller must not
-    treat the clip as a complete goal action.
-    """
+    """Legacy single-window trim. Prefer ``plan_goal_clips_around_glitch`` for goals."""
     notes: List[Dict[str, Any]] = []
     a, b = float(media_in), float(media_out)
     ranges = list(ranges or [])
@@ -85,7 +207,6 @@ def apply_glitch_avoidance(
             if bb <= ga or aa >= gb:
                 continue
             if must_cover is not None:
-                # Anchor inside glitch → cannot salvage this span
                 if ga - 1e-6 <= must_cover <= gb + 1e-6:
                     notes.append(
                         {
@@ -96,7 +217,6 @@ def apply_glitch_avoidance(
                         }
                     )
                     continue
-                # Prefer the side that keeps the anchor
                 if must_cover >= gb:
                     notes.append({"label": lab, "action": "raise_in_keep_anchor", "from": aa, "to": gb})
                     aa = max(aa, gb)
@@ -104,10 +224,8 @@ def apply_glitch_avoidance(
                     notes.append({"label": lab, "action": "lower_out_keep_anchor", "from": bb, "to": ga})
                     bb = min(bb, ga)
                 else:
-                    # Should not happen if anchor not in glitch
                     notes.append({"label": lab, "action": "ambiguous_overlap", "glitch": [ga, gb]})
             else:
-                # No anchor: prefer shorter trim
                 if aa < gb <= bb and (gb - aa) <= (bb - ga):
                     notes.append({"label": lab, "action": "raise_in", "from": aa, "to": gb})
                     aa = gb
@@ -121,30 +239,17 @@ def apply_glitch_avoidance(
         return aa, bb
 
     a, b = _avoid(a, b)
-
     if must_cover is not None:
         ok = (
-            b - a >= (min_pad_before_anchor + min_pad_after_anchor)
-            and _window_covers(
-                a, b, must_cover, pad_before=0.0, pad_after=0.0
-            )
+            _window_covers(a, b, must_cover)
             and must_cover - a >= min_pad_before_anchor - 1e-6
             and b - must_cover >= min_pad_after_anchor - 1e-6
         )
-        # Also ensure no glitch remains overlapping window
         still_glitch = any(not (b <= ga or a >= gb) for ga, gb, _ in ranges)
         if (not ok) or still_glitch:
-            # Rebuild tight window around anchor then re-avoid
             a2 = max(0.0, must_cover - rebuild_pad_before)
             b2 = must_cover + rebuild_pad_after
-            notes.append(
-                {
-                    "action": "rebuild_around_anchor",
-                    "must_cover": must_cover,
-                    "from": [a, b],
-                    "to": [a2, b2],
-                }
-            )
+            notes.append({"action": "rebuild_around_anchor", "from": [a, b], "to": [a2, b2]})
             a, b = _avoid(a2, b2)
             still_glitch = any(not (b <= ga or a >= gb) for ga, gb, _ in ranges)
             covers = _window_covers(a, b, must_cover)
@@ -155,14 +260,11 @@ def apply_glitch_avoidance(
             )
             if still_glitch or not pads_ok:
                 reason = "glitch_conflicts_with_goal_anchor"
-                if any(
-                    ga - 1e-6 <= must_cover <= gb + 1e-6 for ga, gb, _ in ranges
-                ):
+                if any(ga - 1e-6 <= must_cover <= gb + 1e-6 for ga, gb, _ in ranges):
                     reason = "goal_anchor_inside_glitch"
                 elif not covers:
                     reason = "goal_anchor_outside_clean_window"
                 return round(a, 3), round(b, 3), notes, reason
-
     return round(a, 3), round(b, 3), notes, None
 
 
@@ -218,14 +320,15 @@ def select_delivery_rows(
             if buildup_n > _MAX_BUILDUP_CLIPS:
                 continue
 
-        # 终场：优先终场比分确认；拒绝未过门禁的远处 match_end
-        if role in ("ending", "ending_match_end") and (
-            "ending_match_end_rejected" in str(seg.get("blocking_reasons") or [])
-            or str(seg.get("selection_reason") or "") == "ending_event"
-        ):
-            # legacy/unverified match_end cut — do not ship (may be other-match feed)
+        # 未核验 match_end / 旧版 ending：不成片（可能切到其它转播）
+        if role in ("ending", "ending_match_end", "ending_match_end_candidate"):
             continue
         if role == "ending_pending":
+            continue
+        if (
+            str(seg.get("selection_reason") or "") == "ending_event"
+            or "ending_match_end_rejected" in str(seg.get("blocking_reasons") or [])
+        ):
             continue
 
         tin = _safe_float(seg.get("media_in"))
@@ -245,47 +348,145 @@ def select_delivery_rows(
         if is_goal_action:
             must_cover = _safe_float(prov.get("t_sec"))
             if must_cover is None and tin is not None and tout is not None:
-                # fallback: mid-window is weak; prefer original center of action pad
                 must_cover = round((tin + tout) / 2.0, 3)
                 prov["anchor_fallback"] = "mid_window_untrusted"
-        if tin is not None and tout is not None and glitch_ranges:
-            tin, tout, notes, integrity_fail = apply_glitch_avoidance(
-                tin,
-                tout,
-                glitch_ranges,
-                must_cover=must_cover if is_goal_action else None,
-            )
-        elif tin is not None and tout is not None and is_goal_action and must_cover is not None:
-            if not _window_covers(tin, tout, must_cover):
-                integrity_fail = "goal_anchor_outside_window"
 
         blocks = list(seg.get("blocking_reasons") or []) + [
             "phase5_candidate_delivery",
             "semantic_unverified",
         ]
-        goal_complete = True
-        if is_goal_action and integrity_fail:
-            goal_complete = False
-            blocks.append(f"goal_integrity_failed:{integrity_fail}")
-            blocks.append("needs_alternate_live_goal_search")
-            # Do not ship incomplete attack-only clip as a complete goal action
-            # Keep in EDL as补证 marker with times for QC, but flag explicitly
-            role = f"{role}_incomplete" if not role.endswith("_incomplete") else role
-            notes.append(
-                {
-                    "action": "demote_incomplete_goal",
-                    "reason": integrity_fail,
-                    "must_cover": must_cover,
-                }
-            )
 
-        # Post-check: complete goals must still cover anchor after any trim
-        if is_goal_action and goal_complete and must_cover is not None and tin is not None and tout is not None:
-            if not _window_covers(tin, tout, must_cover):
-                goal_complete = False
-                integrity_fail = "goal_anchor_outside_final_window"
+        # ---- Goal actions: split around glitch to keep approach + result ----
+        if is_goal_action and tin is not None and tout is not None and must_cover is not None:
+            clips: List[Dict[str, Any]]
+            if glitch_ranges:
+                clips, notes, integrity_fail = plan_goal_clips_around_glitch(
+                    tin, tout, glitch_ranges, must_cover=must_cover
+                )
+            else:
+                clips = [{"part": "result", "media_in": tin, "media_out": tout}]
+            approach_clip = next((c for c in clips if c["part"] == "approach"), None)
+            result_clip = next((c for c in clips if c["part"] == "result"), None)
+            if result_clip is None and clips:
+                result_clip = clips[-1]
+            glitch_break = any(
+                n.get("action") in ("split_around_glitch", "raise_in_keep_anchor") for n in notes
+            )
+            facets = assess_goal_completeness(
+                media_in=(result_clip or {}).get("media_in"),
+                media_out=(result_clip or {}).get("media_out"),
+                anchor=must_cover,
+                has_approach_clip=approach_clip is not None,
+                glitch_break=glitch_break,
+                approach_media_in=(approach_clip or {}).get("media_in"),
+                approach_media_out=(approach_clip or {}).get("media_out"),
+            )
+            # No glitch but approach pad too short → incomplete (need补证 / 回放)
+            if not glitch_ranges and not facets["approach_visible"]:
+                facets["goal_action_complete"] = False
+                integrity_fail = integrity_fail or "insufficient_pre_shot_context"
+            if integrity_fail:
+                facets["goal_action_complete"] = False
                 blocks.append(f"goal_integrity_failed:{integrity_fail}")
-                role = f"{role}_incomplete" if not role.endswith("_incomplete") else role
+                blocks.append("needs_alternate_live_goal_search")
+            if not facets["goal_action_complete"]:
+                blocks.append("goal_process_incomplete")
+                role_out = f"{role}_incomplete" if not role.endswith("_incomplete") else role
+            else:
+                role_out = role
+
+            def _goal_row(**extra: Any) -> Dict[str, Any]:
+                base = {
+                    "edl_index": len(rows) + 1,
+                    "beat": seg.get("beat"),
+                    "shot_kind": shot,
+                    "is_replay": bool(seg.get("is_replay")),
+                    "time_status": seg.get("time_status"),
+                    "event_ids": list(seg.get("event_ids") or []),
+                    "frame_ids": list(seg.get("frame_ids") or []),
+                    "linked_live_event_id": seg.get("linked_live_event_id"),
+                    "narrative_order": seg.get("narrative_order"),
+                    "render_eligibility": "candidate_only",
+                    "blocking_reasons": list(blocks),
+                    "confidence": seg.get("confidence"),
+                    "include_in_cut": True,
+                    "glitch_avoidance": notes,
+                    "goal_anchor_t_sec": must_cover,
+                    "goal_action_complete": facets["goal_action_complete"],
+                    "goal_completeness_facets": facets,
+                    "integrity_failure": integrity_fail,
+                    "evidence_refs": list(seg.get("evidence_refs") or []),
+                    "source_refs": list(seg.get("source_refs") or []),
+                }
+                base.update(extra)
+                return base
+
+            if approach_clip is not None:
+                rows.append(
+                    _goal_row(
+                        segment_id=f"{seg.get('segment_id')}_approach",
+                        role=f"{role_out}_approach",
+                        media_in=approach_clip["media_in"],
+                        media_out=approach_clip["media_out"],
+                        time_provenance=dict(prov, goal_part="approach"),
+                        source_media_order=approach_clip["media_in"],
+                        selection_reason="goal_approach_before_glitch_or_anchor",
+                        narration=(seg.get("narration") or "") + "〔射门前上下文〕",
+                        is_replay=False,
+                        frame_ids=[],
+                    )
+                )
+            if result_clip is not None:
+                rows.append(
+                    _goal_row(
+                        segment_id=str(seg.get("segment_id")),
+                        role=role_out,
+                        media_in=result_clip["media_in"],
+                        media_out=result_clip["media_out"],
+                        time_provenance=dict(prov, goal_part="result"),
+                        source_media_order=result_clip["media_in"],
+                        selection_reason=seg.get("selection_reason"),
+                        narration=seg.get("narration") or "",
+                    )
+                )
+            elif not clips:
+                # 无法得到干净结果窗：保留补证占位（不切入坏帧）
+                rows.append(
+                    _goal_row(
+                        segment_id=str(seg.get("segment_id")),
+                        role=role_out,
+                        media_in=None,
+                        media_out=None,
+                        time_provenance=dict(prov, goal_part="unavailable"),
+                        source_media_order=None,
+                        selection_reason="goal_unavailable_after_glitch_gate",
+                        narration=(seg.get("narration") or "")
+                        + "〔坏帧与进球冲突，未输出动作窗〕",
+                        shot_kind="title_card",
+                        placeholder_sec=2.0,
+                        placeholder_lines=["进球动作待补证", str(integrity_fail or "")],
+                    )
+                )
+            continue
+
+        # ---- Non-goal / untimed ----
+        if tin is not None and tout is not None and glitch_ranges:
+            tin, tout, notes, integrity_fail = apply_glitch_avoidance(tin, tout, glitch_ranges)
+
+        # 终场包装段：明确非“已核实全场哨声终场”
+        ending_status = None
+        if role in (
+            "ending_final_scoreboard",
+            "ending_story_wrap_score",
+            "ending_match_end_candidate",
+        ):
+            ending_status = str(
+                (seg.get("time_provenance") or {}).get("ending_status")
+                or "unverified_story_wrap"
+            )
+            prov["ending_status"] = ending_status
+            prov["not_verified_full_time"] = True
+            blocks.append("ending_not_semantically_verified")
 
         row = {
             "edl_index": len(rows) + 1,
@@ -310,14 +511,14 @@ def select_delivery_rows(
             "narration": seg.get("narration") or "",
             "include_in_cut": True,
             "glitch_avoidance": notes,
-            "goal_anchor_t_sec": must_cover if is_goal_action else None,
-            "goal_action_complete": goal_complete if is_goal_action else None,
+            "goal_anchor_t_sec": None,
+            "goal_action_complete": None,
             "integrity_failure": integrity_fail,
+            "ending_status": ending_status,
             "evidence_refs": list(seg.get("evidence_refs") or []),
             "source_refs": list(seg.get("source_refs") or []),
         }
         if tin is None or tout is None:
-            # skip untimed unless title
             if shot != "title_card":
                 continue
         rows.append(row)
@@ -338,8 +539,17 @@ def _dedupe_windows_prefer_ending(rows: List[Dict[str, Any]]) -> List[Dict[str, 
         if len(idxs) < 2:
             continue
         roles = [(j, str(rows[j].get("role") or "")) for j in idxs]
-        ending = [j for j, role in roles if role == "ending_final_scoreboard"]
-        boards = [j for j, role in roles if "scoreboard" in role and role != "ending_final_scoreboard"]
+        ending = [
+            j
+            for j, role in roles
+            if role in ("ending_final_scoreboard", "ending_story_wrap_score")
+        ]
+        boards = [
+            j
+            for j, role in roles
+            if "scoreboard" in role
+            and role not in ("ending_final_scoreboard", "ending_story_wrap_score")
+        ]
         if ending and boards:
             drop.update(boards)
         elif len(boards) > 1:
@@ -560,6 +770,57 @@ def render_dual_delivery(
     return results
 
 
+def build_story_scope(story: Dict[str, Any], plan: Dict[str, Any]) -> Dict[str, Any]:
+    """Distinguish full-match score background vs selected last-comeback arc."""
+    from story_video_agent.state import _comeback_score_steps
+
+    score_path = [n for n in (story.get("score_path") or []) if isinstance(n, dict)]
+    steps = _comeback_score_steps(story)
+    behind = steps.get("behind_start")
+    equalizer = steps.get("equalizer")
+    go_ahead = steps.get("go_ahead")
+    behind_t = _safe_float((behind or {}).get("t_sec"))
+    prior = []
+    arc_nodes = []
+    for n in score_path:
+        t = _safe_float(n.get("t_sec"))
+        if behind_t is not None and t is not None and t < behind_t - 1e-6:
+            prior.append({"score": n.get("score"), "t_sec": n.get("t_sec"), "delta_side": n.get("delta_side")})
+        else:
+            arc_nodes.append({"score": n.get("score"), "t_sec": n.get("t_sec"), "delta_side": n.get("delta_side")})
+    # lead extends after go_ahead
+    go_t = _safe_float((go_ahead or {}).get("t_sec"))
+    extras = [
+        n
+        for n in score_path
+        if go_t is not None
+        and _safe_float(n.get("t_sec")) is not None
+        and float(n["t_sec"]) > go_t + 1e-6
+        and n.get("delta_side") == (plan.get("protagonist") or {}).get("side")
+    ][:2]
+    return {
+        "full_match_score_path": [
+            {"score": n.get("score"), "t_sec": n.get("t_sec"), "delta_side": n.get("delta_side")}
+            for n in score_path
+        ],
+        "selected_arc": {
+            "kind": "t01_last_deficit_comeback",
+            "behind_start": behind,
+            "equalizer": equalizer,
+            "go_ahead": go_ahead,
+            "lead_extends": extras,
+            "score_nodes_in_arc": arc_nodes,
+        },
+        "prior_score_turns_omitted": prior,
+        "prior_turns_needed_for_context": len(prior) > 0,
+        "scope_disclaimer": (
+            "本次剪辑主线是 T01「最后一次落后弧」上的扳平/反超（及弧内失球），"
+            "不是默认收录全场每一次比分转折。整场比分背景见 full_match_score_path；"
+            "弧前省略的转折见 prior_score_turns_omitted。"
+        ),
+    }
+
+
 def build_story_title(plan: Dict[str, Any], story: Dict[str, Any]) -> str:
     proto = (plan.get("protagonist") or {}).get("team_name") or ""
     teams = (plan.get("protagonist") or {}).get("teams") or {}
@@ -643,11 +904,19 @@ def build_story_summary_md(
     has_open = any("opponent_opening" in str(r.get("role")) for r in delivery_edl)
     has_eq = any("equalizer_goal" in str(r.get("role")) for r in delivery_edl)
     has_ga = any("go_ahead_goal" in str(r.get("role")) for r in delivery_edl)
+    scope = plan.get("story_scope") or {}
+    prior = scope.get("prior_score_turns_omitted") or []
     if has_open and has_eq and has_ga:
         arc_note = (
-            f"本摘要主线是{proto}在「最后一次落后」之后完成的扳平与反超"
-            "（T01 最后一次落后弧），并不默认展开赛前所有历史进球过程。"
+            f"本摘要与成片主线是{proto}在「最后一次落后弧」上的失球→扳平→反超"
+            "（T01 选定弧），不得等同于全场所有比分故事。"
         )
+        if prior:
+            arc_note += (
+                f"整场在此弧之前还有 {len(prior)} 次比分转折未纳入本次剪辑主线"
+                f"（例如 {[p.get('score') for p in prior[:6]]}）；"
+                "若甲方需要完整背景，应单独声明补镜，而非默认已覆盖。"
+            )
     abstract = (
         f"本场为「逆风翻盘」类型故事。对阵双方为{left_n}与{right_n}，"
         f"系统认定的故事主角是{proto}"
@@ -755,8 +1024,48 @@ def build_story_summary_md(
         "## 五段叙事过程",
         "\n\n".join(beat_blocks),
         "",
-        "## 关键比分变化",
+        "## 故事范围（全场背景 vs 本次剪辑弧）",
+        "",
+        (scope.get("scope_disclaimer") or "（见 story_scope）"),
+        "",
+        "### 整场比分背景",
     ]
+    full_path = (scope.get("full_match_score_path") or score_path) if scope else score_path
+    if full_path:
+        for n in full_path:
+            lines.append(
+                f"- {n.get('score')} @ {n.get('t_sec')}s"
+                + (f"（delta={n.get('delta_side')}）" if n.get("delta_side") else "")
+            )
+    else:
+        lines.append("- （无）")
+    lines.append("")
+    lines.append("### 本次剪辑选取的最后翻盘弧")
+    arc = (scope.get("selected_arc") or {}) if scope else {}
+    for key, label in (
+        ("behind_start", "弧内落后起点"),
+        ("equalizer", "扳平"),
+        ("go_ahead", "反超"),
+    ):
+        node = arc.get(key) if isinstance(arc, dict) else None
+        if isinstance(node, dict):
+            lines.append(f"- {label}：{node.get('score')} @ {node.get('t_sec')}s")
+    if prior:
+        lines.append("")
+        lines.append("### 弧前省略的比分转折（未默认剪入）")
+        for n in prior:
+            lines.append(f"- {n.get('score')} @ {n.get('t_sec')}s")
+        lines.append(
+            "- 是否补入这些转折以帮助理解：由产品/审核决定；"
+            f"当前 `prior_turns_needed_for_context="
+            f"{scope.get('prior_turns_needed_for_context')}`。"
+        )
+    lines.extend(
+        [
+            "",
+            "## 关键比分变化（记分牌锚点）",
+        ]
+    )
     if score_path:
         for n in score_path:
             lines.append(

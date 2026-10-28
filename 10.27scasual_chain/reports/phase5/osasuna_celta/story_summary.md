@@ -11,7 +11,7 @@
 塞尔塔维戈 逆转 奥萨苏纳
 
 ## 故事摘要
-本场为「逆风翻盘」类型故事。对阵双方为奥萨苏纳与塞尔塔维戈，系统认定的故事主角是塞尔塔维戈（对手为奥萨苏纳）。本摘要主线是塞尔塔维戈在「最后一次落后」之后完成的扳平与反超（T01 最后一次落后弧），并不默认展开赛前所有历史进球过程。比分确认轨迹为：0:0 → 0:1（塞尔塔维戈取得进球后的比分确认） → 1:1（奥萨苏纳取得进球后的比分确认） → 2:1（奥萨苏纳取得进球后的比分确认） → 2:2（塞尔塔维戈取得进球后的比分确认） → 2:3（塞尔塔维戈取得进球后的比分确认）。上述时间为记分牌确认锚点，不等于进球动作发生时刻。叙事按铺垫、蓄力、转折、高潮、收尾组织：先交代造成（该弧内）落后的失球，再收录落后期间的相关进攻，随后是扳平与反超（及可能的扩大优势），最后以终场比分确认收束（远处「比赛结束」标注若不紧邻终场比分则不采用，以免误切其它转播）。当前结构化收录了 3 个判定为窗口完整的进球动作候选，另有 0 个进球动作因证据不足或花屏冲突降级为补证，摘要不将其表述为已核实进球。本文仅陈述算法已结构化的事实；未经验证的战术、球员动作与因果不作断言。
+本场为「逆风翻盘」类型故事。对阵双方为奥萨苏纳与塞尔塔维戈，系统认定的故事主角是塞尔塔维戈（对手为奥萨苏纳）。本摘要与成片主线是塞尔塔维戈在「最后一次落后弧」上的失球→扳平→反超（T01 选定弧），不得等同于全场所有比分故事。整场在此弧之前还有 3 次比分转折未纳入本次剪辑主线（例如 ['0:0', '0:1', '1:1']）；若甲方需要完整背景，应单独声明补镜，而非默认已覆盖。比分确认轨迹为：0:0 → 0:1（塞尔塔维戈取得进球后的比分确认） → 1:1（奥萨苏纳取得进球后的比分确认） → 2:1（奥萨苏纳取得进球后的比分确认） → 2:2（塞尔塔维戈取得进球后的比分确认） → 2:3（塞尔塔维戈取得进球后的比分确认）。上述时间为记分牌确认锚点，不等于进球动作发生时刻。叙事按铺垫、蓄力、转折、高潮、收尾组织：先交代造成（该弧内）落后的失球，再收录落后期间的相关进攻，随后是扳平与反超（及可能的扩大优势），最后以终场比分确认收束（远处「比赛结束」标注若不紧邻终场比分则不采用，以免误切其它转播）。当前结构化收录了 3 个判定为窗口完整的进球动作候选，另有 0 个进球动作因证据不足或花屏冲突降级为补证，摘要不将其表述为已核实进球。本文仅陈述算法已结构化的事实；未经验证的战术、球员动作与因果不作断言。
 
 ## 五段叙事过程
 ### 铺垫
@@ -29,12 +29,36 @@
 
 ### 高潮
 - 反超进球动作：原片约 6779.9–6801.9 秒；进球动作候选·窗口完整。
+- 反超比分确认：原片约 6880.9–6884.4 秒；比分确认（非进球动作）。
 
 ### 收尾
-- 终场/收尾画面：原片约 6880.9–6884.4 秒；比分确认（非进球动作）。
+- 终场/收尾画面：原片约 6880.9–6885.9 秒；窗口完整候选。
 - 标题卡（标题/说明卡）
 
-## 关键比分变化
+## 故事范围（全场背景 vs 本次剪辑弧）
+
+本次剪辑主线是 T01「最后一次落后弧」上的扳平/反超（及弧内失球），不是默认收录全场每一次比分转折。整场比分背景见 full_match_score_path；弧前省略的转折见 prior_score_turns_omitted。
+
+### 整场比分背景
+- 0:0 @ 425.71s
+- 0:1 @ 2071.43s（delta=right）
+- 1:1 @ 2660.82s（delta=left）
+- 2:1 @ 3199.66s（delta=left）
+- 2:2 @ 5712.01s（delta=right）
+- 2:3 @ 6881.94s（delta=right）
+
+### 本次剪辑选取的最后翻盘弧
+- 弧内落后起点：2:1 @ 3199.66s
+- 扳平：2:2 @ 5712.01s
+- 反超：2:3 @ 6881.94s
+
+### 弧前省略的比分转折（未默认剪入）
+- 0:0 @ 425.71s
+- 0:1 @ 2071.43s
+- 1:1 @ 2660.82s
+- 是否补入这些转折以帮助理解：由产品/审核决定；当前 `prior_turns_needed_for_context=True`。
+
+## 关键比分变化（记分牌锚点）
 - 比分确认 **0:0**（记分牌锚点约 425.71 秒；非进球动作时刻）
 - 比分确认 **0:1**（记分牌锚点约 2071.43 秒；非进球动作时刻）
 - 比分确认 **1:1**（记分牌锚点约 2660.82 秒；非进球动作时刻）
@@ -58,7 +82,7 @@
 - 缺失证据标记：behind_carrier_unresolved:event_000456
 - 缺失证据标记：equalizer_carrier_unresolved:event_000560
 - 缺失证据标记：go_ahead_carrier_unresolved:event_000636
-- 缺失证据标记：ending_match_end_rejected:match_end_too_far_after_final_score:dt=520.32
+- 缺失证据标记：ending_full_time_needs_visual_verify
 
 ---
 
@@ -81,5 +105,6 @@
 | seg_equalizer_goal_action | 转折 | equalizer_goal_action | 5645.621 | 5667.621 | ['event_000117'] | linked_event_ms | True | candidate_only / semantic_unverified |
 | seg_equalizer_scoreboard | 转折 | equalizer_scoreboard_anchor | 5711.01 | 5714.51 | [] | score_path_only | None | candidate_only / semantic_unverified |
 | seg_go_ahead_goal_action | 高潮 | go_ahead_goal_action | 6779.882 | 6801.882 | ['causal:ann_0031:event_000160'] | linked_event_ms | True | candidate_only / semantic_unverified |
-| seg_ending_final_scoreboard | 收尾 | ending_final_scoreboard | 6880.94 | 6884.44 | ['event_000636'] | score_path_only | None | candidate_only / semantic_unverified |
-| seg_title_close | 收尾 | story_title | None | None | [] | placeholder_title | None | candidate_only / semantic_unverified |
+| seg_go_ahead_scoreboard | 高潮 | go_ahead_scoreboard_anchor | 6880.94 | 6884.44 | [] | score_path_only | None | candidate_only / semantic_unverified |
+| seg_ending_story_wrap_score | 收尾 | ending_story_wrap_score | 6880.94 | 6885.94 | ['event_000636'] | score_path_only | None | candidate_only / semantic_unverified |
+| seg_title_close | 收尾 | story_wrap_title | None | None | [] | placeholder_title | None | candidate_only / semantic_unverified |

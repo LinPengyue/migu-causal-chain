@@ -47,11 +47,11 @@
 - [OK] t=6791.88 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/osasuna_celta/qc_pack/frames/seg_go_ahead_goal_action_anchor_6791.9.jpg`
 - [OK] t=6793.38 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/osasuna_celta/qc_pack/frames/seg_go_ahead_goal_action_anchor_plus_1_5_6793.4.jpg`
 
-### seg_ending_final_scoreboard · ending_final_scoreboard
-- 窗口 `6880.940`–`6884.440` · anchor=None · complete=None
+### seg_ending_story_wrap_score · ending_story_wrap_score
+- 窗口 `6880.940`–`6885.940` · anchor=None · complete=None
 - checklist: `{"goal_inside_window": null, "not_scoreboard_as_goal": true, "glitch_demotion": true, "semantic_verified": false, "human_review_required": true}`
 - integrity: `None`
-- [OK] t=6881.94 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/osasuna_celta/qc_pack/frames/seg_ending_final_scoreboard_in_plus_1_6881.9.jpg`
-- [OK] t=6882.69 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/osasuna_celta/qc_pack/frames/seg_ending_final_scoreboard_mid_6882.7.jpg`
-- [OK] t=6883.44 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/osasuna_celta/qc_pack/frames/seg_ending_final_scoreboard_out_minus_1_6883.4.jpg`
+- [OK] t=6881.94 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/osasuna_celta/qc_pack/frames/seg_ending_story_wrap_score_in_plus_1_6881.9.jpg`
+- [OK] t=6883.44 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/osasuna_celta/qc_pack/frames/seg_ending_story_wrap_score_mid_6883.4.jpg`
+- [OK] t=6884.94 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/osasuna_celta/qc_pack/frames/seg_ending_story_wrap_score_out_minus_1_6884.9.jpg`
 

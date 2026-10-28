@@ -27,13 +27,13 @@
     "story_clean": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/osasuna_celta/story_clean.mp4",
     "story_qc": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/osasuna_celta/story_qc.mp4"
   },
-  "delivery_segments": 10,
-  "timed_segments": 8,
+  "delivery_segments": 11,
+  "timed_segments": 9,
   "missing_evidence": [
     "behind_carrier_unresolved:event_000456",
     "equalizer_carrier_unresolved:event_000560",
     "go_ahead_carrier_unresolved:event_000636",
-    "ending_match_end_rejected:match_end_too_far_after_final_score:dt=520.32"
+    "ending_full_time_needs_visual_verify"
   ],
   "blocking_reasons": [
     "equalizer_goal_action_not_render_ready",
@@ -42,7 +42,7 @@
   "render": {
     "clean": {
       "out_mp4": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/osasuna_celta/story_clean.mp4",
-      "duration_sec": 106.859,
+      "duration_sec": 111.897,
       "segments": [
         {
           "segment_id": "seg_title_open",
@@ -117,29 +117,38 @@
           "placeholder": false
         },
         {
-          "segment_id": "seg_ending_final_scoreboard",
-          "beat": "收尾",
-          "role": "ending_final_scoreboard",
+          "segment_id": "seg_go_ahead_scoreboard",
+          "beat": "高潮",
+          "role": "go_ahead_scoreboard_anchor",
           "media_in": 6880.94,
           "media_out": 6884.44,
           "cut": true,
           "placeholder": false
         },
         {
+          "segment_id": "seg_ending_story_wrap_score",
+          "beat": "收尾",
+          "role": "ending_story_wrap_score",
+          "media_in": 6880.94,
+          "media_out": 6885.94,
+          "cut": true,
+          "placeholder": false
+        },
+        {
           "segment_id": "seg_title_close",
           "beat": "收尾",
-          "role": "story_title",
+          "role": "story_wrap_title",
           "media_in": null,
           "media_out": null,
           "cut": false,
           "placeholder": true
         }
       ],
-      "ffmpeg_log_n": 12
+      "ffmpeg_log_n": 13
     },
     "qc": {
       "out_mp4": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/osasuna_celta/story_qc.mp4",
-      "duration_sec": 106.859,
+      "duration_sec": 111.897,
       "segments": [
         {
           "segment_id": "seg_title_open",
@@ -214,25 +223,34 @@
           "placeholder": false
         },
         {
-          "segment_id": "seg_ending_final_scoreboard",
-          "beat": "收尾",
-          "role": "ending_final_scoreboard",
+          "segment_id": "seg_go_ahead_scoreboard",
+          "beat": "高潮",
+          "role": "go_ahead_scoreboard_anchor",
           "media_in": 6880.94,
           "media_out": 6884.44,
           "cut": true,
           "placeholder": false
         },
         {
+          "segment_id": "seg_ending_story_wrap_score",
+          "beat": "收尾",
+          "role": "ending_story_wrap_score",
+          "media_in": 6880.94,
+          "media_out": 6885.94,
+          "cut": true,
+          "placeholder": false
+        },
+        {
           "segment_id": "seg_title_close",
           "beat": "收尾",
-          "role": "story_title",
+          "role": "story_wrap_title",
           "media_in": null,
           "media_out": null,
           "cut": false,
           "placeholder": true
         }
       ],
-      "ffmpeg_log_n": 12
+      "ffmpeg_log_n": 13
     },
     "skipped": false
   },
