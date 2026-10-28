@@ -1,0 +1,126 @@
+{
+  "schema": "video_driven_score_timeline_v2",
+  "video": "/tmp/migu_vd_synth/synth_pil2.mp4",
+  "duration_sec": 40.0,
+  "commit_sha": "52a65176ec79026386d23ab84eed993280d3f6e5",
+  "nodes": [
+    {
+      "t_sec": 0.0,
+      "score": "0:0",
+      "opening": true,
+      "delta_side": null,
+      "carrier_event_id": "ocr@0.0"
+    },
+    {
+      "t_sec": 10.0,
+      "score": "0:1",
+      "opening": false,
+      "delta_side": "right",
+      "carrier_event_id": "ocr@10.0"
+    },
+    {
+      "t_sec": 20.0,
+      "score": "1:1",
+      "opening": false,
+      "delta_side": "left",
+      "carrier_event_id": "ocr@20.0"
+    },
+    {
+      "t_sec": 30.0,
+      "score": "2:1",
+      "opening": false,
+      "delta_side": "left",
+      "carrier_event_id": "ocr@30.0"
+    }
+  ],
+  "observation_count": 14,
+  "usable_ocr_count": 12,
+  "commit_diagnostics": [
+    {
+      "t_sec": 0.0,
+      "committed": "0:0",
+      "role": "initial_established",
+      "hits": 2
+    },
+    {
+      "t_sec": 10.0,
+      "committed": "0:1",
+      "delta_side": "right",
+      "hits": 3,
+      "confidence_sample": 0.55
+    },
+    {
+      "t_sec": 20.0,
+      "committed": "1:1",
+      "delta_side": "left",
+      "hits": 3,
+      "confidence_sample": 0.55
+    },
+    {
+      "t_sec": 30.0,
+      "committed": "2:1",
+      "delta_side": "left",
+      "hits": 3,
+      "confidence_sample": 0.55
+    }
+  ],
+  "path_meta": {
+    "initial_state": "0:0",
+    "established": true,
+    "revoked_initial": false,
+    "unresolved_transitions": []
+  },
+  "unresolved_transitions": [],
+  "degraded": false,
+  "degrade_reasons": [],
+  "sampling_coverage": {
+    "n_samples": 14,
+    "first_sec": 0.0,
+    "last_sec": 40.0,
+    "span_ratio": 1.0,
+    "max_gap_sec": 5.0,
+    "median_gap_sec": 3.0,
+    "coverage_ratio": 0.9375,
+    "uncovered_intervals": [
+      {
+        "start": 0.0,
+        "end": 5.0,
+        "gap_sec": 5.0
+      },
+      {
+        "start": 10.0,
+        "end": 15.0,
+        "gap_sec": 5.0
+      },
+      {
+        "start": 25.0,
+        "end": 30.0,
+        "gap_sec": 5.0
+      },
+      {
+        "start": 35.0,
+        "end": 39.95,
+        "gap_sec": 4.95
+      }
+    ],
+    "fullspan": true
+  },
+  "perception_quality": {
+    "scoreboard_detect_rate": 0.8571,
+    "usable_score_obs_rate": 0.8571,
+    "usable_ocr_count": 12,
+    "observation_count": 14,
+    "n_score_nodes": 4,
+    "ocr": {
+      "calls": 61,
+      "sec": 17.739895820617676
+    }
+  },
+  "notes": [
+    "t_sec is media PTS / seek time, not match clock",
+    "scoreboard change time is confirmation observation, not goal action time",
+    "initial score requires multi-frame establishment; 0:0 is not assumed",
+    "semantic_verified=false"
+  ],
+  "semantic_verified": false
+}

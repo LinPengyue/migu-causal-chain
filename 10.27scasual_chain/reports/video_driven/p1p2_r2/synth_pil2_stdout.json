@@ -1,0 +1,71 @@
+{
+  "schema": "video_driven_p1p2_run_report_v2",
+  "commit_sha": "52a65176ec79026386d23ab84eed993280d3f6e5",
+  "out_dir": "../reports/video_driven/p1p2_r2/synth_pil2",
+  "video": "/tmp/migu_vd_synth/synth_pil2.mp4",
+  "params": {
+    "coarse_step": 5.0,
+    "max_coarse_frames": 12,
+    "max_dense_extra": 8,
+    "confirm_hits": 2,
+    "establish_hits": 2,
+    "frame_width": 0
+  },
+  "elapsed_sec": 21.003,
+  "p1_elapsed_sec": 20.841,
+  "degraded": false,
+  "degrade_reasons": [],
+  "n_score_nodes": 4,
+  "discovery_grade": "story",
+  "n_evidence_tasks": 5,
+  "perception_quality": {
+    "scoreboard_detect_rate": 0.8571,
+    "usable_score_obs_rate": 0.8571,
+    "usable_ocr_count": 12,
+    "observation_count": 14,
+    "n_score_nodes": 4,
+    "ocr": {
+      "calls": 61,
+      "sec": 17.739895820617676
+    }
+  },
+  "sampling_coverage": {
+    "n_samples": 14,
+    "first_sec": 0.0,
+    "last_sec": 40.0,
+    "span_ratio": 1.0,
+    "max_gap_sec": 5.0,
+    "median_gap_sec": 3.0,
+    "coverage_ratio": 0.9375,
+    "uncovered_intervals": [
+      {
+        "start": 0.0,
+        "end": 5.0,
+        "gap_sec": 5.0
+      },
+      {
+        "start": 10.0,
+        "end": 15.0,
+        "gap_sec": 5.0
+      },
+      {
+        "start": 25.0,
+        "end": 30.0,
+        "gap_sec": 5.0
+      },
+      {
+        "start": 35.0,
+        "end": 39.95,
+        "gap_sec": 4.95
+      }
+    ],
+    "fullspan": true
+  },
+  "semantic_verified": false,
+  "render_ready": false,
+  "gates": {
+    "no_events_json": true,
+    "no_causal_json": true,
+    "no_paid_api": true
+  }
+}

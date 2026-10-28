@@ -1,0 +1,34 @@
+{
+  "schema": "video_driven_story_evidence_tasks_v2",
+  "story_type": "T01_comeback",
+  "discovery_grade": "unresolved",
+  "semantic_verified": false,
+  "tasks": [
+    {
+      "task_id": "improve_score_perception",
+      "why": "P1 degraded/unestablished; densify OCR before story claims.",
+      "search_media_range": {
+        "media_start_sec": 0.0,
+        "media_end_sec": 20.0,
+        "hard_bound": false,
+        "expandable": true
+      },
+      "expected_actions_or_relations": [
+        "stable_scoreboard",
+        "established_initial_score"
+      ],
+      "required": true,
+      "evidence_status": "missing",
+      "existing_evidence": [],
+      "retrieval_budget_hint": "increase coarse budget / ROI track",
+      "stop_when": "initial score established or budget exhausted",
+      "source": "score_timeline_hypothesis",
+      "not_from_events_json": true
+    }
+  ],
+  "gates": {
+    "no_events_json": true,
+    "no_causal_json": true,
+    "render_ready": false
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "schema": "video_driven_p1p2_run_report_v2",
+  "commit_sha": "52a65176ec79026386d23ab84eed993280d3f6e5",
+  "out_dir": "../reports/video_driven/p1p2_r2/neg_black",
+  "video": "/tmp/migu_vd_clips/neg_black.mp4",
+  "params": {
+    "coarse_step": 45.0,
+    "max_coarse_frames": 6,
+    "max_dense_extra": 2,
+    "confirm_hits": 3,
+    "establish_hits": 3,
+    "frame_width": 0
+  },
+  "elapsed_sec": 13.918,
+  "p1_elapsed_sec": 13.762,
+  "degraded": true,
+  "degrade_reasons": [
+    "no_usable_ocr",
+    "empty_score_path",
+    "initial_unestablished",
+    "low_usable_ocr_rate"
+  ],
+  "n_score_nodes": 0,
+  "discovery_grade": "unresolved",
+  "n_evidence_tasks": 1,
+  "perception_quality": {
+    "scoreboard_detect_rate": 0.0,
+    "usable_score_obs_rate": 0.0,
+    "usable_ocr_count": 0,
+    "observation_count": 2,
+    "n_score_nodes": 0,
+    "ocr": {
+      "calls": 48,
+      "sec": 13.166501998901367
+    }
+  },
+  "sampling_coverage": {
+    "n_samples": 2,
+    "first_sec": 0.0,
+    "last_sec": 19.95,
+    "span_ratio": 0.9975,
+    "max_gap_sec": 19.95,
+    "median_gap_sec": 19.95,
+    "coverage_ratio": 0.5,
+    "uncovered_intervals": [],
+    "fullspan": true
+  },
+  "semantic_verified": false,
+  "render_ready": false,
+  "gates": {
+    "no_events_json": true,
+    "no_causal_json": true,
+    "no_paid_api": true
+  }
+}

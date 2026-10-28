@@ -1,0 +1,80 @@
+{
+  "schema": "video_driven_p1p2_run_report_v2",
+  "commit_sha": "52a65176ec79026386d23ab84eed993280d3f6e5",
+  "out_dir": "../reports/video_driven/p1p2_r2/croatia_clip",
+  "video": "/tmp/migu_vd_clips/croatia_2_1_60s.mp4",
+  "params": {
+    "coarse_step": 5.0,
+    "max_coarse_frames": 15,
+    "max_dense_extra": 8,
+    "confirm_hits": 2,
+    "establish_hits": 2,
+    "frame_width": 0
+  },
+  "elapsed_sec": 173.061,
+  "p1_elapsed_sec": 172.902,
+  "degraded": true,
+  "degrade_reasons": [
+    "empty_score_path",
+    "initial_unestablished",
+    "low_usable_ocr_rate"
+  ],
+  "n_score_nodes": 0,
+  "discovery_grade": "unresolved",
+  "n_evidence_tasks": 1,
+  "perception_quality": {
+    "scoreboard_detect_rate": 0.7143,
+    "usable_score_obs_rate": 0.0952,
+    "usable_ocr_count": 2,
+    "observation_count": 21,
+    "n_score_nodes": 0,
+    "ocr": {
+      "calls": 251,
+      "sec": 154.07186126708984
+    }
+  },
+  "sampling_coverage": {
+    "n_samples": 21,
+    "first_sec": 0.0,
+    "last_sec": 60.0,
+    "span_ratio": 0.9863,
+    "max_gap_sec": 5.0,
+    "median_gap_sec": 3.0,
+    "coverage_ratio": 0.9458,
+    "uncovered_intervals": [
+      {
+        "start": 0.0,
+        "end": 5.0,
+        "gap_sec": 5.0
+      },
+      {
+        "start": 25.0,
+        "end": 30.0,
+        "gap_sec": 5.0
+      },
+      {
+        "start": 35.0,
+        "end": 40.0,
+        "gap_sec": 5.0
+      },
+      {
+        "start": 40.0,
+        "end": 45.0,
+        "gap_sec": 5.0
+      },
+      {
+        "start": 50.0,
+        "end": 55.0,
+        "gap_sec": 5.0
+      }
+    ],
+    "fullspan": true
+  },
+  "semantic_verified": false,
+  "render_ready": false,
+  "gates": {
+    "no_events_json": true,
+    "no_causal_json": true,
+    "no_paid_api": true
+  }
+}

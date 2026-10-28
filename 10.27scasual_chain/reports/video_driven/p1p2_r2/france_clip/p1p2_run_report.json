@@ -1,0 +1,66 @@
+{
+  "schema": "video_driven_p1p2_run_report_v2",
+  "commit_sha": "52a65176ec79026386d23ab84eed993280d3f6e5",
+  "out_dir": "../reports/video_driven/p1p2_r2/france_clip",
+  "video": "/tmp/migu_vd_clips/france_0_1_60s.mp4",
+  "params": {
+    "coarse_step": 45.0,
+    "max_coarse_frames": 8,
+    "max_dense_extra": 4,
+    "confirm_hits": 2,
+    "establish_hits": 2,
+    "frame_width": 0
+  },
+  "elapsed_sec": 54.03,
+  "p1_elapsed_sec": 53.892,
+  "degraded": true,
+  "degrade_reasons": [
+    "no_usable_ocr",
+    "empty_score_path",
+    "initial_unestablished",
+    "low_usable_ocr_rate"
+  ],
+  "n_score_nodes": 0,
+  "discovery_grade": "unresolved",
+  "n_evidence_tasks": 1,
+  "perception_quality": {
+    "scoreboard_detect_rate": 0.7143,
+    "usable_score_obs_rate": 0.0,
+    "usable_ocr_count": 0,
+    "observation_count": 7,
+    "n_score_nodes": 0,
+    "ocr": {
+      "calls": 96,
+      "sec": 51.094409704208374
+    }
+  },
+  "sampling_coverage": {
+    "n_samples": 7,
+    "first_sec": 0.0,
+    "last_sec": 60.974,
+    "span_ratio": 0.9992,
+    "max_gap_sec": 16.0,
+    "median_gap_sec": 8.0,
+    "coverage_ratio": 0.8682,
+    "uncovered_intervals": [
+      {
+        "start": 29.0,
+        "end": 45.0,
+        "gap_sec": 16.0
+      },
+      {
+        "start": 45.0,
+        "end": 60.974,
+        "gap_sec": 15.974
+      }
+    ],
+    "fullspan": true
+  },
+  "semantic_verified": false,
+  "render_ready": false,
+  "gates": {
+    "no_events_json": true,
+    "no_causal_json": true,
+    "no_paid_api": true
+  }
+}

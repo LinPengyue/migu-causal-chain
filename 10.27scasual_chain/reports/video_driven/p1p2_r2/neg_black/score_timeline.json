@@ -1,0 +1,56 @@
+{
+  "schema": "video_driven_score_timeline_v2",
+  "video": "/tmp/migu_vd_clips/neg_black.mp4",
+  "duration_sec": 20.0,
+  "commit_sha": "52a65176ec79026386d23ab84eed993280d3f6e5",
+  "nodes": [],
+  "observation_count": 2,
+  "usable_ocr_count": 0,
+  "commit_diagnostics": [
+    {
+      "note": "no_usable_score_observations"
+    }
+  ],
+  "path_meta": {
+    "initial_state": "unknown",
+    "established": false,
+    "revoked_initial": false
+  },
+  "unresolved_transitions": [],
+  "degraded": true,
+  "degrade_reasons": [
+    "no_usable_ocr",
+    "empty_score_path",
+    "initial_unestablished",
+    "low_usable_ocr_rate"
+  ],
+  "sampling_coverage": {
+    "n_samples": 2,
+    "first_sec": 0.0,
+    "last_sec": 19.95,
+    "span_ratio": 0.9975,
+    "max_gap_sec": 19.95,
+    "median_gap_sec": 19.95,
+    "coverage_ratio": 0.5,
+    "uncovered_intervals": [],
+    "fullspan": true
+  },
+  "perception_quality": {
+    "scoreboard_detect_rate": 0.0,
+    "usable_score_obs_rate": 0.0,
+    "usable_ocr_count": 0,
+    "observation_count": 2,
+    "n_score_nodes": 0,
+    "ocr": {
+      "calls": 48,
+      "sec": 13.166501998901367
+    }
+  },
+  "notes": [
+    "t_sec is media PTS / seek time, not match clock",
+    "scoreboard change time is confirmation observation, not goal action time",
+    "initial score requires multi-frame establishment; 0:0 is not assumed",
+    "semantic_verified=false"
+  ],
+  "semantic_verified": false
+}

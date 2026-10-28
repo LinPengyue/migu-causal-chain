@@ -1,0 +1,50 @@
+{
+  "schema": "video_driven_story_discovery_v2",
+  "story_type": "T01_comeback",
+  "grade": "unresolved",
+  "protagonist_side": null,
+  "opponent_side": null,
+  "teams": {
+    "left": null,
+    "right": null,
+    "status": "unresolved",
+    "note": "P1 does not resolve team names from video alone"
+  },
+  "score_path": [],
+  "last_deficit_arc": null,
+  "key_nodes": {},
+  "hypotheses": [
+    {
+      "id": "perception_insufficient",
+      "status": "blocked",
+      "detail": {
+        "degraded": true,
+        "degrade_reasons": [
+          "empty_score_path",
+          "initial_unestablished"
+        ],
+        "n_nodes": 0,
+        "usable_score_obs_rate": 0.2857
+      }
+    }
+  ],
+  "semantic_verified": false,
+  "score_level_only": true,
+  "degraded_input": true,
+  "perception_quality": {
+    "scoreboard_detect_rate": 0.5714,
+    "usable_score_obs_rate": 0.2857,
+    "usable_ocr_count": 2,
+    "observation_count": 7,
+    "n_score_nodes": 0,
+    "ocr": {
+      "calls": 70,
+      "sec": 48.53351664543152
+    }
+  },
+  "notes": [
+    "grade=story: score-path supports T01 (still needs video evidence)",
+    "grade=none: sufficient path evidence against comeback",
+    "grade=unresolved: perception insufficient — not the same as no_comeback"
+  ]
+}

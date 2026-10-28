@@ -1,0 +1,56 @@
+{
+  "schema": "video_driven_score_timeline_v2",
+  "video": "/mnt/data4/migu/2022-11-28 克罗地亚vs加拿大.mp4",
+  "duration_sec": 8034.703,
+  "commit_sha": "52a65176ec79026386d23ab84eed993280d3f6e5",
+  "nodes": [],
+  "observation_count": 48,
+  "usable_ocr_count": 2,
+  "commit_diagnostics": [
+    {
+      "note": "initial_score_unestablished",
+      "n_points": 2
+    }
+  ],
+  "path_meta": {
+    "initial_state": "unknown",
+    "established": false,
+    "revoked_initial": false
+  },
+  "unresolved_transitions": [],
+  "degraded": true,
+  "degrade_reasons": [
+    "empty_score_path",
+    "initial_unestablished",
+    "low_usable_ocr_rate"
+  ],
+  "sampling_coverage": {
+    "n_samples": 48,
+    "first_sec": 0.0,
+    "last_sec": 8034.653,
+    "span_ratio": 1.0,
+    "max_gap_sec": 229.562,
+    "median_gap_sec": 229.561,
+    "coverage_ratio": 0.9857,
+    "uncovered_intervals": [],
+    "fullspan": true
+  },
+  "perception_quality": {
+    "scoreboard_detect_rate": 0.3958,
+    "usable_score_obs_rate": 0.0417,
+    "usable_ocr_count": 2,
+    "observation_count": 48,
+    "n_score_nodes": 0,
+    "ocr": {
+      "calls": 437,
+      "sec": 226.39179754257202
+    }
+  },
+  "notes": [
+    "t_sec is media PTS / seek time, not match clock",
+    "scoreboard change time is confirmation observation, not goal action time",
+    "initial score requires multi-frame establishment; 0:0 is not assumed",
+    "semantic_verified=false"
+  ],
+  "semantic_verified": false
+}

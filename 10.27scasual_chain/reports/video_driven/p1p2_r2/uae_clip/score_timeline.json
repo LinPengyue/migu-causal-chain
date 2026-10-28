@@ -1,0 +1,66 @@
+{
+  "schema": "video_driven_score_timeline_v2",
+  "video": "/tmp/migu_vd_clips/uae_0_0_60s.mp4",
+  "duration_sec": 60.651,
+  "commit_sha": "52a65176ec79026386d23ab84eed993280d3f6e5",
+  "nodes": [],
+  "observation_count": 7,
+  "usable_ocr_count": 2,
+  "commit_diagnostics": [
+    {
+      "note": "initial_score_unestablished",
+      "n_points": 2
+    }
+  ],
+  "path_meta": {
+    "initial_state": "unknown",
+    "established": false,
+    "revoked_initial": false
+  },
+  "unresolved_transitions": [],
+  "degraded": true,
+  "degrade_reasons": [
+    "empty_score_path",
+    "initial_unestablished"
+  ],
+  "sampling_coverage": {
+    "n_samples": 7,
+    "first_sec": 0.0,
+    "last_sec": 60.601,
+    "span_ratio": 0.9992,
+    "max_gap_sec": 16.0,
+    "median_gap_sec": 8.0,
+    "coverage_ratio": 0.8674,
+    "uncovered_intervals": [
+      {
+        "start": 29.0,
+        "end": 45.0,
+        "gap_sec": 16.0
+      },
+      {
+        "start": 45.0,
+        "end": 60.601,
+        "gap_sec": 15.601
+      }
+    ],
+    "fullspan": true
+  },
+  "perception_quality": {
+    "scoreboard_detect_rate": 0.5714,
+    "usable_score_obs_rate": 0.2857,
+    "usable_ocr_count": 2,
+    "observation_count": 7,
+    "n_score_nodes": 0,
+    "ocr": {
+      "calls": 70,
+      "sec": 48.53351664543152
+    }
+  },
+  "notes": [
+    "t_sec is media PTS / seek time, not match clock",
+    "scoreboard change time is confirmation observation, not goal action time",
+    "initial score requires multi-frame establishment; 0:0 is not assumed",
+    "semantic_verified=false"
+  ],
+  "semantic_verified": false
+}
