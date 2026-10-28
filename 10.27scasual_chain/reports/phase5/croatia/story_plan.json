@@ -618,48 +618,51 @@
       "verification_status": "draft"
     },
     {
-      "segment_id": "seg_ending",
+      "segment_id": "seg_ending_final_scoreboard",
       "beat": "收尾",
-      "role": "ending",
+      "role": "ending_final_scoreboard",
       "event_ids": [
-        "event_000159"
+        "event_000155"
       ],
       "frame_ids": [],
       "evidence_refs": [
         {
           "kind": "rule_fact",
           "used_as_fact": true,
-          "source": "event",
-          "event_id": "event_000159"
+          "source": "final_score_path",
+          "score": "4:1",
+          "t_sec": 7858.37,
+          "note": "preferred_ending_over_raw_match_end"
         }
       ],
-      "media_in": 7942.16,
-      "media_out": 7954.16,
-      "time_status": "event_ms",
-      "shot_kind": "live",
+      "media_in": 7857.37,
+      "media_out": 7862.37,
+      "time_status": "score_path_only",
+      "shot_kind": "scoreboard_anchor",
       "is_replay": false,
       "linked_live_event_id": null,
-      "narration": "收尾/终场（未校准默认不成片）。",
+      "narration": "终场比分确认 4:1 @ 7858.37s（优先于远处比赛结束标注；仍需画面核验）。",
       "precise_claim": false,
-      "selection_reason": "ending_event",
+      "selection_reason": "ending_final_scoreboard_preferred",
       "source_refs": [
         {
-          "namespace": "delivery_event",
-          "id": "event_000159"
+          "namespace": "unknown",
+          "id": "event_000155"
         }
       ],
-      "confidence": 0.5,
+      "confidence": 0.7,
       "time_provenance": {
-        "source": "event_ms",
-        "t_sec": 7946.16,
+        "source": "score_path",
+        "t_sec": 7858.37,
         "pipeline_verified": false
       },
       "render_eligibility": "candidate_only",
       "blocking_reasons": [
-        "unverified_event_ms"
+        "ending_visual_unverified",
+        "score_path_only_not_render_ready"
       ],
       "narrative_order": 13,
-      "source_media_order": 7942.16,
+      "source_media_order": 7857.37,
       "verification_status": "draft"
     }
   ],
@@ -788,8 +791,10 @@
     {
       "kind": "rule_fact",
       "used_as_fact": true,
-      "source": "event",
-      "event_id": "event_000159"
+      "source": "final_score_path",
+      "score": "4:1",
+      "t_sec": 7858.37,
+      "note": "preferred_ending_over_raw_match_end"
     }
   ],
   "event_ids": [
@@ -798,8 +803,7 @@
     "event_000021",
     "event_000022",
     "event_000025",
-    "event_000040",
-    "event_000159"
+    "event_000040"
   ],
   "event_mappings": [
     {
@@ -900,6 +904,14 @@
         "score_context": "4:1",
         "abs_dt_sec": 0.0
       }
+    },
+    {
+      "context": "ending_match_end",
+      "status": "rejected_by_ending_gate",
+      "event_id": "event_000159",
+      "t_sec": 7946.16,
+      "reason": "match_end_too_far_after_final_score:dt=87.79",
+      "final_score_t": 7858.37
     }
   ],
   "missing_evidence": [
@@ -907,7 +919,8 @@
     "go_ahead_carrier_unresolved:event_000076",
     "lead_extend_1_carrier_unresolved:event_000118",
     "lead_extend_2_carrier_unresolved:event_000155",
-    "missing_live_goal_action:lead_extend_2"
+    "missing_live_goal_action:lead_extend_2",
+    "ending_match_end_rejected:match_end_too_far_after_final_score:dt=87.79"
   ],
   "blocking_reasons": [
     "equalizer_goal_action_not_render_ready",
@@ -924,7 +937,7 @@
       "蓄力": "蓄力动作 任意球（live，event_ms 未校准成片）。 蓄力动作 射门（live，event_ms 未校准成片）。",
       "转折": "equalizer 进球动作候选 event_000021 @ 3065.903s（相对记分牌 Δ=-80.077s）。 equalizer 比分确认 1:1 @ 3145.98s（非进球剪辑点）。",
       "高潮": "go_ahead 进球动作候选 event_000022 @ 3523.574s（相对记分牌 Δ=-173.776s）。 go_ahead 比分确认 2:1 @ 3697.35s（非进球剪辑点）。 lead_extend_1 进球动作候选 event_000025 @ 6317.199s（相对记分牌 Δ=-91.501s）。 lead_extend_1 比分确认 3:1 @ 6408.7s（非进球剪辑点）。 lead_extend_2 比分确认 4:1 @ 7858.37s（非进球剪辑点）。 lead_extend_2 缺少可信 live 进球动作窗口；记分牌时间不可冒充进球。",
-      "收尾": "收尾/终场（未校准默认不成片）。"
+      "收尾": "终场比分确认 4:1 @ 7858.37s（优先于远处比赛结束标注；仍需画面核验）。"
     },
     "title": "克罗地亚 逆转 加拿大"
   },
@@ -1302,33 +1315,34 @@
     },
     {
       "edl_index": 13,
-      "segment_id": "seg_ending",
+      "segment_id": "seg_ending_final_scoreboard",
       "beat": "收尾",
-      "role": "ending",
-      "shot_kind": "live",
+      "role": "ending_final_scoreboard",
+      "shot_kind": "scoreboard_anchor",
       "is_replay": false,
-      "media_in": 7942.16,
-      "media_out": 7954.16,
-      "time_status": "event_ms",
+      "media_in": 7857.37,
+      "media_out": 7862.37,
+      "time_status": "score_path_only",
       "time_provenance": {
-        "source": "event_ms",
-        "t_sec": 7946.16,
+        "source": "score_path",
+        "t_sec": 7858.37,
         "pipeline_verified": false
       },
       "event_ids": [
-        "event_000159"
+        "event_000155"
       ],
       "frame_ids": [],
       "linked_live_event_id": null,
       "narrative_order": 13,
-      "source_media_order": 7942.16,
+      "source_media_order": 7857.37,
       "render_eligibility": "candidate_only",
       "blocking_reasons": [
-        "unverified_event_ms"
+        "ending_visual_unverified",
+        "score_path_only_not_render_ready"
       ],
-      "confidence": 0.5,
-      "selection_reason": "ending_event",
-      "narration": "收尾/终场（未校准默认不成片）。",
+      "confidence": 0.7,
+      "selection_reason": "ending_final_scoreboard_preferred",
+      "narration": "终场比分确认 4:1 @ 7858.37s（优先于远处比赛结束标注；仍需画面核验）。",
       "include_in_cut": false
     }
   ],
@@ -1707,33 +1721,34 @@
     },
     {
       "edl_index": 13,
-      "segment_id": "seg_ending",
+      "segment_id": "seg_ending_final_scoreboard",
       "beat": "收尾",
-      "role": "ending",
-      "shot_kind": "live",
+      "role": "ending_final_scoreboard",
+      "shot_kind": "scoreboard_anchor",
       "is_replay": false,
-      "media_in": 7942.16,
-      "media_out": 7954.16,
-      "time_status": "event_ms",
+      "media_in": 7857.37,
+      "media_out": 7862.37,
+      "time_status": "score_path_only",
       "time_provenance": {
-        "source": "event_ms",
-        "t_sec": 7946.16,
+        "source": "score_path",
+        "t_sec": 7858.37,
         "pipeline_verified": false
       },
       "event_ids": [
-        "event_000159"
+        "event_000155"
       ],
       "frame_ids": [],
       "linked_live_event_id": null,
       "narrative_order": 13,
-      "source_media_order": 7942.16,
+      "source_media_order": 7857.37,
       "render_eligibility": "candidate_only",
       "blocking_reasons": [
-        "unverified_event_ms"
+        "ending_visual_unverified",
+        "score_path_only_not_render_ready"
       ],
-      "confidence": 0.5,
-      "selection_reason": "ending_event",
-      "narration": "收尾/终场（未校准默认不成片）。",
+      "confidence": 0.7,
+      "selection_reason": "ending_final_scoreboard_preferred",
+      "narration": "终场比分确认 4:1 @ 7858.37s（优先于远处比赛结束标注；仍需画面核验）。",
       "include_in_cut": false
     }
   ],

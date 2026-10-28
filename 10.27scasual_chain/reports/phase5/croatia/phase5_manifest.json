@@ -27,14 +27,15 @@
     "story_clean": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/croatia/story_clean.mp4",
     "story_qc": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/croatia/story_qc.mp4"
   },
-  "delivery_segments": 14,
-  "timed_segments": 12,
+  "delivery_segments": 13,
+  "timed_segments": 11,
   "missing_evidence": [
     "equalizer_carrier_unresolved:event_000068",
     "go_ahead_carrier_unresolved:event_000076",
     "lead_extend_1_carrier_unresolved:event_000118",
     "lead_extend_2_carrier_unresolved:event_000155",
-    "missing_live_goal_action:lead_extend_2"
+    "missing_live_goal_action:lead_extend_2",
+    "ending_match_end_rejected:match_end_too_far_after_final_score:dt=87.79"
   ],
   "blocking_reasons": [
     "equalizer_goal_action_not_render_ready",
@@ -44,7 +45,7 @@
   "render": {
     "clean": {
       "out_mp4": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/croatia/story_clean.mp4",
-      "duration_sec": 136.44,
+      "duration_sec": 124.32,
       "segments": [
         {
           "segment_id": "seg_title_open",
@@ -131,8 +132,8 @@
           "segment_id": "seg_lead_extend_1_goal_action",
           "beat": "高潮",
           "role": "lead_extend_1_goal_action",
-          "media_in": 6305.199,
-          "media_out": 6315.8,
+          "media_in": 6316.7,
+          "media_out": 6327.199,
           "cut": true,
           "placeholder": false
         },
@@ -146,20 +147,11 @@
           "placeholder": false
         },
         {
-          "segment_id": "seg_lead_extend_2_scoreboard",
-          "beat": "高潮",
-          "role": "lead_extend_2_scoreboard_anchor",
+          "segment_id": "seg_ending_final_scoreboard",
+          "beat": "收尾",
+          "role": "ending_final_scoreboard",
           "media_in": 7857.37,
           "media_out": 7860.87,
-          "cut": true,
-          "placeholder": false
-        },
-        {
-          "segment_id": "seg_ending",
-          "beat": "收尾",
-          "role": "ending",
-          "media_in": 7942.16,
-          "media_out": 7954.16,
           "cut": true,
           "placeholder": false
         },
@@ -173,11 +165,11 @@
           "placeholder": true
         }
       ],
-      "ffmpeg_log_n": 16
+      "ffmpeg_log_n": 15
     },
     "qc": {
       "out_mp4": "/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/croatia/story_qc.mp4",
-      "duration_sec": 136.44,
+      "duration_sec": 124.32,
       "segments": [
         {
           "segment_id": "seg_title_open",
@@ -264,8 +256,8 @@
           "segment_id": "seg_lead_extend_1_goal_action",
           "beat": "高潮",
           "role": "lead_extend_1_goal_action",
-          "media_in": 6305.199,
-          "media_out": 6315.8,
+          "media_in": 6316.7,
+          "media_out": 6327.199,
           "cut": true,
           "placeholder": false
         },
@@ -279,20 +271,11 @@
           "placeholder": false
         },
         {
-          "segment_id": "seg_lead_extend_2_scoreboard",
-          "beat": "高潮",
-          "role": "lead_extend_2_scoreboard_anchor",
+          "segment_id": "seg_ending_final_scoreboard",
+          "beat": "收尾",
+          "role": "ending_final_scoreboard",
           "media_in": 7857.37,
           "media_out": 7860.87,
-          "cut": true,
-          "placeholder": false
-        },
-        {
-          "segment_id": "seg_ending",
-          "beat": "收尾",
-          "role": "ending",
-          "media_in": 7942.16,
-          "media_out": 7954.16,
           "cut": true,
           "placeholder": false
         },
@@ -306,7 +289,7 @@
           "placeholder": true
         }
       ],
-      "ffmpeg_log_n": 16
+      "ffmpeg_log_n": 15
     },
     "skipped": false
   },

@@ -26,6 +26,7 @@ from story_video_agent.phase5_delivery import (
     load_glitch_profile,
     render_dual_delivery,
     select_delivery_rows,
+    validate_story_graph,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -77,16 +78,22 @@ def insert_title_cards(
         "placeholder_sec": 3.0,
         "placeholder_lines": [
             title,
-            "逆风翻盘故事链",
-            "内部候选审核样片",
+            "逆风翻盘",
+        ],
+        "placeholder_lines_qc": [
+            title,
+            "逆风翻盘 · QC",
+            "candidate_only · render_ready=false",
         ],
         "evidence_refs": [],
         "source_refs": [],
         "glitch_avoidance": [],
     }
-    close_lines = [title, "故事收束", "candidate_only · render_ready=false"]
+    close_lines = [title, "故事收束"]
+    close_lines_qc = [title, "故事收束", "candidate_only · render_ready=false"]
     if final_score:
         close_lines.insert(1, f"终场 {final_score}")
+        close_lines_qc.insert(1, f"终场 {final_score}")
     close_card = {
         **open_card,
         "segment_id": "seg_title_close",
@@ -94,6 +101,7 @@ def insert_title_cards(
         "narrative_order": 10_000,
         "narration": "收束标题",
         "placeholder_lines": close_lines,
+        "placeholder_lines_qc": close_lines_qc,
     }
     out = [open_card] + list(delivery_edl) + [close_card]
     for i, row in enumerate(out):
@@ -148,7 +156,20 @@ def run_phase5(
     (out_dir / "story_summary.md").write_text(summary_md, encoding="utf-8")
 
     graph = build_story_graph(plan=plan, story=story, delivery_edl=delivery)
+    g_ok, g_problems = validate_story_graph(graph)
+    graph["structure_ok"] = g_ok
+    graph["structure_problems"] = g_problems
     _write_json(out_dir / "story_graph.json", graph)
+    if not g_ok:
+        raise RuntimeError(f"story_graph structure invalid: {g_problems}")
+
+    review_note = (
+        "【审核说明 · 非画面烧录】\n"
+        "本目录 story_clean.mp4 / story_qc.mp4 均为内部候选交付（candidate_only）。\n"
+        "render_ready=false；未做付费 VLM / 独立语义签发；非正式咪咕生产成片。\n"
+        "业务版去除技术叠字不等于获得正式授权。详见 story_summary.md 与 phase5_manifest.json。\n"
+    )
+    (out_dir / "REVIEW_NOTE.txt").write_text(review_note, encoding="utf-8")
 
     render_info: Dict[str, Any] = {"skipped": True}
     if not skip_render and plan.get("story_tier") != "none":

@@ -53,30 +53,117 @@ def _safe_float(v: Any) -> Optional[float]:
         return None
 
 
+def _window_covers(a: float, b: float, t: float, *, pad_before: float = 0.0, pad_after: float = 0.0) -> bool:
+    return (a + pad_before) <= t <= (b - pad_after)
+
+
 def apply_glitch_avoidance(
     media_in: float,
     media_out: float,
     ranges: Sequence[Tuple[float, float, str]],
-) -> Tuple[float, float, List[Dict[str, Any]]]:
-    """Shift window endpoints off explicit glitch spans. No default ranges."""
+    *,
+    must_cover: Optional[float] = None,
+    min_pad_before_anchor: float = 0.3,
+    min_pad_after_anchor: float = 2.5,
+    rebuild_pad_before: float = 8.0,
+    rebuild_pad_after: float = 10.0,
+) -> Tuple[float, float, List[Dict[str, Any]], Optional[str]]:
+    """Shift window off glitch spans while preserving optional goal anchor.
+
+    Returns ``(media_in, media_out, notes, integrity_failure)``.
+    If ``must_cover`` is set and no clean window can still contain the anchor
+    (with minimum pads), ``integrity_failure`` explains why — caller must not
+    treat the clip as a complete goal action.
+    """
     notes: List[Dict[str, Any]] = []
     a, b = float(media_in), float(media_out)
-    for ga, gb, lab in ranges:
-        if b <= ga or a >= gb:
-            continue
-        # Prefer keep action after glitch if overlap near start
-        if a < gb <= b and (gb - a) < (b - ga):
-            notes.append({"label": lab, "action": "raise_in", "from": a, "to": gb})
-            a = gb
-        elif a < ga < b:
-            notes.append({"label": lab, "action": "lower_out", "from": b, "to": ga})
-            b = ga
-        if b - a < 0.5:
-            # fallback: jump past glitch
-            notes.append({"label": lab, "action": "jump_past", "to": gb + 0.2})
-            a = gb + 0.2
-            b = max(b, a + 2.0)
-    return round(a, 3), round(b, 3), notes
+    ranges = list(ranges or [])
+
+    def _avoid(a0: float, b0: float) -> Tuple[float, float]:
+        aa, bb = a0, b0
+        for ga, gb, lab in ranges:
+            if bb <= ga or aa >= gb:
+                continue
+            if must_cover is not None:
+                # Anchor inside glitch → cannot salvage this span
+                if ga - 1e-6 <= must_cover <= gb + 1e-6:
+                    notes.append(
+                        {
+                            "label": lab,
+                            "action": "anchor_in_glitch",
+                            "must_cover": must_cover,
+                            "glitch": [ga, gb],
+                        }
+                    )
+                    continue
+                # Prefer the side that keeps the anchor
+                if must_cover >= gb:
+                    notes.append({"label": lab, "action": "raise_in_keep_anchor", "from": aa, "to": gb})
+                    aa = max(aa, gb)
+                elif must_cover <= ga:
+                    notes.append({"label": lab, "action": "lower_out_keep_anchor", "from": bb, "to": ga})
+                    bb = min(bb, ga)
+                else:
+                    # Should not happen if anchor not in glitch
+                    notes.append({"label": lab, "action": "ambiguous_overlap", "glitch": [ga, gb]})
+            else:
+                # No anchor: prefer shorter trim
+                if aa < gb <= bb and (gb - aa) <= (bb - ga):
+                    notes.append({"label": lab, "action": "raise_in", "from": aa, "to": gb})
+                    aa = gb
+                elif aa < ga < bb:
+                    notes.append({"label": lab, "action": "lower_out", "from": bb, "to": ga})
+                    bb = ga
+            if bb - aa < 0.5 and must_cover is None:
+                notes.append({"label": lab, "action": "jump_past", "to": gb + 0.2})
+                aa = gb + 0.2
+                bb = max(bb, aa + 2.0)
+        return aa, bb
+
+    a, b = _avoid(a, b)
+
+    if must_cover is not None:
+        ok = (
+            b - a >= (min_pad_before_anchor + min_pad_after_anchor)
+            and _window_covers(
+                a, b, must_cover, pad_before=0.0, pad_after=0.0
+            )
+            and must_cover - a >= min_pad_before_anchor - 1e-6
+            and b - must_cover >= min_pad_after_anchor - 1e-6
+        )
+        # Also ensure no glitch remains overlapping window
+        still_glitch = any(not (b <= ga or a >= gb) for ga, gb, _ in ranges)
+        if (not ok) or still_glitch:
+            # Rebuild tight window around anchor then re-avoid
+            a2 = max(0.0, must_cover - rebuild_pad_before)
+            b2 = must_cover + rebuild_pad_after
+            notes.append(
+                {
+                    "action": "rebuild_around_anchor",
+                    "must_cover": must_cover,
+                    "from": [a, b],
+                    "to": [a2, b2],
+                }
+            )
+            a, b = _avoid(a2, b2)
+            still_glitch = any(not (b <= ga or a >= gb) for ga, gb, _ in ranges)
+            covers = _window_covers(a, b, must_cover)
+            pads_ok = (
+                covers
+                and (must_cover - a) >= min_pad_before_anchor - 1e-6
+                and (b - must_cover) >= min_pad_after_anchor - 1e-6
+            )
+            if still_glitch or not pads_ok:
+                reason = "glitch_conflicts_with_goal_anchor"
+                if any(
+                    ga - 1e-6 <= must_cover <= gb + 1e-6 for ga, gb, _ in ranges
+                ):
+                    reason = "goal_anchor_inside_glitch"
+                elif not covers:
+                    reason = "goal_anchor_outside_clean_window"
+                return round(a, 3), round(b, 3), notes, reason
+
+    return round(a, 3), round(b, 3), notes, None
 
 
 def select_delivery_rows(
@@ -112,6 +199,11 @@ def select_delivery_rows(
             prefix = role.replace("_goal_action", "")
             has_goal_for_prefix[prefix] = True
         if "scoreboard" in role:
+            # 无对应完整进球动作的扩大比分牌：留给 ending_final_scoreboard，避免重复且不伪装进球
+            if role.startswith("lead_extend_") and "scoreboard" in role:
+                prefix = role.split("_scoreboard")[0]
+                if not has_goal_for_prefix.get(prefix):
+                    continue
             tin = _safe_float(seg.get("media_in"))
             tout = _safe_float(seg.get("media_out"))
             if tin is not None and tout is not None and (tout - tin) > _MAX_SCOREBOARD_SEC:
@@ -126,11 +218,74 @@ def select_delivery_rows(
             if buildup_n > _MAX_BUILDUP_CLIPS:
                 continue
 
+        # 终场：优先终场比分确认；拒绝未过门禁的远处 match_end
+        if role in ("ending", "ending_match_end") and (
+            "ending_match_end_rejected" in str(seg.get("blocking_reasons") or [])
+            or str(seg.get("selection_reason") or "") == "ending_event"
+        ):
+            # legacy/unverified match_end cut — do not ship (may be other-match feed)
+            continue
+        if role == "ending_pending":
+            continue
+
         tin = _safe_float(seg.get("media_in"))
         tout = _safe_float(seg.get("media_out"))
         notes: List[Dict[str, Any]] = []
+        integrity_fail: Optional[str] = None
+        prov = dict(seg.get("time_provenance") or {})
+        is_goal_action = (
+            "goal_action" in role
+            and "pending" not in role
+            and "scoreboard" not in role
+        )
+        # 仅有比分牌不得标为完整进球动作
+        if "scoreboard" in role:
+            prov["not_a_goal_action"] = True
+        must_cover: Optional[float] = None
+        if is_goal_action:
+            must_cover = _safe_float(prov.get("t_sec"))
+            if must_cover is None and tin is not None and tout is not None:
+                # fallback: mid-window is weak; prefer original center of action pad
+                must_cover = round((tin + tout) / 2.0, 3)
+                prov["anchor_fallback"] = "mid_window_untrusted"
         if tin is not None and tout is not None and glitch_ranges:
-            tin, tout, notes = apply_glitch_avoidance(tin, tout, glitch_ranges)
+            tin, tout, notes, integrity_fail = apply_glitch_avoidance(
+                tin,
+                tout,
+                glitch_ranges,
+                must_cover=must_cover if is_goal_action else None,
+            )
+        elif tin is not None and tout is not None and is_goal_action and must_cover is not None:
+            if not _window_covers(tin, tout, must_cover):
+                integrity_fail = "goal_anchor_outside_window"
+
+        blocks = list(seg.get("blocking_reasons") or []) + [
+            "phase5_candidate_delivery",
+            "semantic_unverified",
+        ]
+        goal_complete = True
+        if is_goal_action and integrity_fail:
+            goal_complete = False
+            blocks.append(f"goal_integrity_failed:{integrity_fail}")
+            blocks.append("needs_alternate_live_goal_search")
+            # Do not ship incomplete attack-only clip as a complete goal action
+            # Keep in EDL as补证 marker with times for QC, but flag explicitly
+            role = f"{role}_incomplete" if not role.endswith("_incomplete") else role
+            notes.append(
+                {
+                    "action": "demote_incomplete_goal",
+                    "reason": integrity_fail,
+                    "must_cover": must_cover,
+                }
+            )
+
+        # Post-check: complete goals must still cover anchor after any trim
+        if is_goal_action and goal_complete and must_cover is not None and tin is not None and tout is not None:
+            if not _window_covers(tin, tout, must_cover):
+                goal_complete = False
+                integrity_fail = "goal_anchor_outside_final_window"
+                blocks.append(f"goal_integrity_failed:{integrity_fail}")
+                role = f"{role}_incomplete" if not role.endswith("_incomplete") else role
 
         row = {
             "edl_index": len(rows) + 1,
@@ -142,20 +297,22 @@ def select_delivery_rows(
             "media_in": tin,
             "media_out": tout,
             "time_status": seg.get("time_status"),
-            "time_provenance": seg.get("time_provenance") or {},
+            "time_provenance": prov,
             "event_ids": list(seg.get("event_ids") or []),
             "frame_ids": list(seg.get("frame_ids") or []),
             "linked_live_event_id": seg.get("linked_live_event_id"),
             "narrative_order": seg.get("narrative_order"),
             "source_media_order": seg.get("source_media_order"),
             "render_eligibility": "candidate_only",
-            "blocking_reasons": list(seg.get("blocking_reasons") or [])
-            + ["phase5_candidate_delivery", "semantic_unverified"],
+            "blocking_reasons": blocks,
             "confidence": seg.get("confidence"),
             "selection_reason": seg.get("selection_reason"),
             "narration": seg.get("narration") or "",
             "include_in_cut": True,
             "glitch_avoidance": notes,
+            "goal_anchor_t_sec": must_cover if is_goal_action else None,
+            "goal_action_complete": goal_complete if is_goal_action else None,
+            "integrity_failure": integrity_fail,
             "evidence_refs": list(seg.get("evidence_refs") or []),
             "source_refs": list(seg.get("source_refs") or []),
         }
@@ -164,7 +321,34 @@ def select_delivery_rows(
             if shot != "title_card":
                 continue
         rows.append(row)
-    return rows
+    return _dedupe_windows_prefer_ending(rows)
+
+
+def _dedupe_windows_prefer_ending(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Same media window: keep ending_final_scoreboard over plain scoreboard."""
+    by_win: Dict[Tuple[int, int], List[int]] = {}
+    for i, r in enumerate(rows):
+        tin, tout = _safe_float(r.get("media_in")), _safe_float(r.get("media_out"))
+        if tin is None or tout is None:
+            continue
+        key = (int(round(tin * 100)), int(round(tout * 100)))
+        by_win.setdefault(key, []).append(i)
+    drop: set = set()
+    for idxs in by_win.values():
+        if len(idxs) < 2:
+            continue
+        roles = [(j, str(rows[j].get("role") or "")) for j in idxs]
+        ending = [j for j, role in roles if role == "ending_final_scoreboard"]
+        boards = [j for j, role in roles if "scoreboard" in role and role != "ending_final_scoreboard"]
+        if ending and boards:
+            drop.update(boards)
+        elif len(boards) > 1:
+            drop.update(boards[1:])
+    out = [r for i, r in enumerate(rows) if i not in drop]
+    for i, r in enumerate(out):
+        r["edl_index"] = i + 1
+        r["narrative_order"] = i + 1
+    return out
 
 
 def _score_label_from_plan(plan: Dict[str, Any], role: str) -> List[str]:
@@ -200,24 +384,35 @@ def _score_label_from_plan(plan: Dict[str, Any], role: str) -> List[str]:
 
 
 def _clean_overlays(plan: Dict[str, Any], row: Dict[str, Any]) -> List[str]:
-    title = (plan.get("narration") or {}).get("title") or "T01 逆风翻盘"
+    """Business-facing: no tech banners on live footage.
+
+    Title cards use placeholder_lines (clean). Gameplay: light narrative cue only.
+    """
     role = str(row.get("role") or "")
-    lines = ["候选审核样片", str(title)[:40]]
-    lines.extend(_score_label_from_plan(plan, role))
-    return lines[:4]
+    if row.get("shot_kind") == "title_card":
+        return []
+    # Soft beat cue only — no candidate_only / media timestamps / event ids
+    labels = _score_label_from_plan(plan, role.replace("_incomplete", ""))
+    return [x for x in labels if x and "candidate" not in x.lower()][:2]
 
 
 def _qc_overlays(plan: Dict[str, Any], row: Dict[str, Any]) -> List[str]:
     a = row.get("media_in")
     b = row.get("media_out")
     eids = ",".join(str(x) for x in (row.get("event_ids") or [])[:3]) or "-"
-    return [
-        "内部 QC · candidate_only",
+    complete = row.get("goal_action_complete")
+    anchor = row.get("goal_anchor_t_sec")
+    lines = [
+        "内部 QC · candidate_only · render_ready=false",
         f"{row.get('beat') or ''} | {row.get('role') or ''}",
         f"media {a}-{b} | {row.get('time_status')}",
         f"eid:{eids}",
-        f"elig:{row.get('render_eligibility')}",
     ]
+    if anchor is not None:
+        lines.append(f"anchor={anchor} complete={complete}")
+    if row.get("integrity_failure"):
+        lines.append(f"integrity:{row.get('integrity_failure')}")
+    return lines
 
 
 def render_dual_delivery(
@@ -262,7 +457,14 @@ def render_dual_delivery(
             }
             tin, tout = row.get("media_in"), row.get("media_out")
             if tin is None or tout is None:
-                lines = list(row.get("placeholder_lines") or ["标题", sid])
+                if variant == "qc":
+                    lines = list(
+                        row.get("placeholder_lines_qc")
+                        or row.get("placeholder_lines")
+                        or ["标题", sid]
+                    )
+                else:
+                    lines = list(row.get("placeholder_lines") or ["标题", sid])
                 rec = _make_placeholder(
                     ffmpeg=ffmpeg,
                     out_path=clip_path,
@@ -370,6 +572,33 @@ def build_story_title(plan: Dict[str, Any], story: Dict[str, Any]) -> str:
     return f"T01 逆风翻盘 · {match_id}"
 
 
+def _beat_plain_label(role: str) -> str:
+    role = role.replace("_incomplete", "")
+    if "opponent_opening" in role and "goal" in role:
+        return "对手造成落后的进球动作"
+    if "deficit" in role or ("scoreboard" in role and "铺垫" in role):
+        return "落后比分确认"
+    if "equalizer" in role and "goal" in role:
+        return "扳平进球动作"
+    if "equalizer" in role:
+        return "扳平比分确认"
+    if "go_ahead" in role and "goal" in role:
+        return "反超进球动作"
+    if "go_ahead" in role:
+        return "反超比分确认"
+    if "lead_extend" in role and "goal" in role:
+        return "扩大优势进球动作"
+    if "lead_extend" in role:
+        return "扩大优势比分确认"
+    if "buildup" in role:
+        return "蓄力阶段相关进攻/事件"
+    if "ending" in role:
+        return "终场/收尾画面"
+    if "title" in role:
+        return "标题卡"
+    return role
+
+
 def build_story_summary_md(
     *,
     plan: Dict[str, Any],
@@ -377,134 +606,223 @@ def build_story_summary_md(
     delivery_edl: Sequence[Dict[str, Any]],
     title: str,
 ) -> str:
+    """甲方可读正文 + 技术附录。不编造球员/战术/未证实因果。"""
     teams = (plan.get("protagonist") or {}).get("teams") or {}
     side = (plan.get("protagonist") or {}).get("side")
-    proto = (plan.get("protagonist") or {}).get("team_name") or f"side={side}"
-    score_path = story.get("score_path") or []
-    score_lines = []
+    proto = (plan.get("protagonist") or {}).get("team_name") or "主角队"
+    other = ""
+    if proto and teams:
+        other = teams.get("right") if proto == teams.get("left") else teams.get("left")
+        other = other or ""
+    score_path = [n for n in (story.get("score_path") or []) if isinstance(n, dict)]
+
+    # Score arc in plain language (from structured path only)
+    score_plain = []
     for n in score_path:
-        if isinstance(n, dict):
-            score_lines.append(
-                f"- {n.get('score')} @ {n.get('t_sec')}s"
-                f"（delta_side={n.get('delta_side')}）"
-            )
+        who = n.get("delta_side")
+        who_name = teams.get(str(who)) if who else None
+        if who_name:
+            score_plain.append(f"{n.get('score')}（{who_name}取得进球后的比分确认）")
+        else:
+            score_plain.append(str(n.get("score")))
 
-    by_beat: Dict[str, List[str]] = {}
-    for row in delivery_edl:
-        beat = str(row.get("beat") or "?")
-        by_beat.setdefault(beat, []).append(
-            f"- **{row.get('role')}** | media "
-            f"{row.get('media_in')}-{row.get('media_out')} | "
-            f"events={row.get('event_ids')} | "
-            f"{row.get('selection_reason')} | "
-            f"status={row.get('time_status')} / {row.get('render_eligibility')}"
-        )
-
-    # Natural-language abstract from structured facts only
-    milestones = []
-    for row in delivery_edl:
-        role = str(row.get("role") or "")
-        if "goal_action" in role:
-            milestones.append(f"{row.get('beat')}段纳入 {role}（事件 {row.get('event_ids')}）")
-    abstract_parts = [
-        f"本场由 T01 识别为逆风翻盘故事（tier={plan.get('story_tier')}），"
-        f"主角为 {proto}（side={side}）。",
-        f"球队：{teams.get('left') or '?'} vs {teams.get('right') or '?'}。",
+    goal_rows = [
+        r
+        for r in delivery_edl
+        if "goal_action" in str(r.get("role") or "") and r.get("shot_kind") != "title_card"
     ]
-    if score_path:
-        first = score_path[0].get("score") if isinstance(score_path[0], dict) else "?"
-        last = score_path[-1].get("score") if isinstance(score_path[-1], dict) else "?"
-        abstract_parts.append(
-            f"比分轨迹自 {first} 至终场相关节点 {last}（详见下表；记分牌时间为确认锚点，"
-            f"不等于进球动作时刻）。"
+    complete_goals = [r for r in goal_rows if r.get("goal_action_complete") is not False]
+    incomplete_goals = [r for r in goal_rows if r.get("goal_action_complete") is False]
+    missing = list(plan.get("missing_evidence") or [])
+
+    # ~200–400字摘要：只用结构化事实
+    left_n = teams.get("left") or "主队"
+    right_n = teams.get("right") or "客队"
+    # 最后一次落后弧（非整场所有进球默认全收）
+    arc_note = ""
+    has_open = any("opponent_opening" in str(r.get("role")) for r in delivery_edl)
+    has_eq = any("equalizer_goal" in str(r.get("role")) for r in delivery_edl)
+    has_ga = any("go_ahead_goal" in str(r.get("role")) for r in delivery_edl)
+    if has_open and has_eq and has_ga:
+        arc_note = (
+            f"本摘要主线是{proto}在「最后一次落后」之后完成的扳平与反超"
+            "（T01 最后一次落后弧），并不默认展开赛前所有历史进球过程。"
         )
-    abstract_parts.append(
-        "叙事按铺垫→蓄力→转折→高潮→收尾组织；进球镜头优先关联因果/事件表中的 live 进球，"
-        "回放不作独立主叙事。以下摘要仅陈述系统已结构化收录的事件与关系，"
-        "未经验证的因果不作事实断言。"
+    abstract = (
+        f"本场为「逆风翻盘」类型故事。对阵双方为{left_n}与{right_n}，"
+        f"系统认定的故事主角是{proto}"
+        + (f"（对手为{other}）" if other else "")
+        + "。"
+        + arc_note
     )
-    if milestones:
-        abstract_parts.append("关键动作收录：" + "；".join(milestones) + "。")
-    abstract = "".join(abstract_parts)
-    # keep ~200-400 Chinese chars where possible
-    if len(abstract) < 180:
+    if score_plain:
+        abstract += "比分确认轨迹为：" + " → ".join(score_plain) + "。"
+        abstract += "上述时间为记分牌确认锚点，不等于进球动作发生时刻。"
+    abstract += (
+        "叙事按铺垫、蓄力、转折、高潮、收尾组织："
+        "先交代造成（该弧内）落后的失球，再收录落后期间的相关进攻，"
+        "随后是扳平与反超（及可能的扩大优势），最后以终场比分确认收束"
+        "（远处「比赛结束」标注若不紧邻终场比分则不采用，以免误切其它转播）。"
+    )
+    abstract += (
+        f"当前结构化收录了 {len(complete_goals)} 个判定为窗口完整的进球动作候选"
+    )
+    if incomplete_goals or missing:
         abstract += (
-            f"交付为候选审核样片（render_ready=false）；"
-            f"共 {len(delivery_edl)} 个剪辑段，业务版与 QC 版共用同一 EDL。"
+            f"，另有 {len(incomplete_goals)} 个进球动作因证据不足或花屏冲突降级为补证，"
+            "摘要不将其表述为已核实进球。"
         )
+    else:
+        abstract += "。"
+    abstract += "本文仅陈述算法已结构化的事实；未经验证的战术、球员动作与因果不作断言。"
 
-    why_selected = []
-    for row in delivery_edl:
-        why_selected.append(
-            f"- `{row.get('segment_id')}`：{row.get('selection_reason')} — {row.get('narration')}"
-        )
-
-    relations = []
-    for row in delivery_edl:
-        for ref in row.get("evidence_refs") or []:
-            if isinstance(ref, dict) and ref.get("used_as_fact"):
-                relations.append(
-                    f"- 证据({ref.get('kind')}/{ref.get('source')}): "
-                    f"{json.dumps(ref, ensure_ascii=False)[:200]}"
-                )
-    relations = relations[:40]
-
-    beats_block = []
+    # Five beats in plain language
+    beat_blocks: List[str] = []
     for beat in ("铺垫", "蓄力", "转折", "高潮", "收尾"):
-        items = by_beat.get(beat) or ["- （本场该段无入选镜头或证据不足）"]
-        beats_block.append(f"### {beat}\n" + "\n".join(items))
+        items = [r for r in delivery_edl if r.get("beat") == beat]
+        if not items:
+            beat_blocks.append(f"### {beat}\n本段暂无入选镜头，或证据不足未编排。")
+            continue
+        lines_b = [f"### {beat}"]
+        for r in items:
+            label = _beat_plain_label(str(r.get("role") or ""))
+            tin, tout = r.get("media_in"), r.get("media_out")
+            if tin is None:
+                lines_b.append(f"- {label}（标题/说明卡）")
+                continue
+            status = "窗口完整候选" if r.get("goal_action_complete") is not False or "goal_action" not in str(r.get("role")) else "不完整·待补证"
+            if "goal_action" in str(r.get("role") or ""):
+                status = "进球动作候选·窗口完整" if r.get("goal_action_complete") is not False else "进球动作·不完整待补证"
+            elif "scoreboard" in str(r.get("role") or ""):
+                status = "比分确认（非进球动作）"
+            lines_b.append(
+                f"- {label}：原片约 {tin:.1f}–{tout:.1f} 秒；{status}。"
+            )
+        beat_blocks.append("\n".join(lines_b))
+
+    # Relations in plain language
+    rel_lines = [
+        "- 叙事承接：各段按故事顺序衔接，**不代表**已证实战术因果。",
+        "- 时间先后：有时间戳的镜头按原片时间排序。",
+        "- 比分状态：score_path 相邻节点表示记分牌确认的比分变化。",
+        "- 事件关联：进球镜头与事件表/因果链 live 进球的规则匹配；"
+        "**不等于**独立语义核验通过，也**不等于**已证实攻防因果。",
+    ]
+
+    # Gaps
+    gap_lines = []
+    for r in incomplete_goals:
+        gap_lines.append(
+            f"- {_beat_plain_label(str(r.get('role')))}："
+            f"完整性失败原因 `{r.get('integrity_failure')}`；"
+            f"锚点 {r.get('goal_anchor_t_sec')}；需另搜可用直播镜头。"
+        )
+    for m in missing:
+        gap_lines.append(f"- 缺失证据标记：{m}")
+    if not gap_lines:
+        gap_lines.append("- 当前无额外补证条目（仍整体为候选，未做独立语义签发）。")
+
+    # Tech appendix table
+    tech_rows = [
+        "| 段 | 叙事位 | 角色 | 原片入点 | 原片出点 | 关联事件 | 时间状态 | 进球完整 | 核验 |",
+        "|---|---|---|---|---|---|---|---|---|",
+    ]
+    for r in delivery_edl:
+        tech_rows.append(
+            f"| {r.get('segment_id')} | {r.get('beat')} | {r.get('role')} | "
+            f"{r.get('media_in')} | {r.get('media_out')} | {r.get('event_ids')} | "
+            f"{r.get('time_status')} | {r.get('goal_action_complete')} | "
+            f"candidate_only / semantic_unverified |"
+        )
 
     lines = [
-        f"# 故事链内容摘要：{title}",
+        f"# {title}",
         "",
-        "> 内部候选交付 · `render_ready=false` · 非正式生产授权",
+        "> 本稿为咪咕甲方可读的故事链内容摘要（候选审核）。"
+        "非正式生产授权；画面语义尚未独立核验通过。",
         "",
-        "## 1. 比赛信息与故事类型",
-        f"- match_id: `{story.get('match_id') or plan.get('match_id')}`",
-        f"- 故事类型: T01 逆风翻盘（tier=`{plan.get('story_tier')}`）",
-        f"- 主角: {proto}（{side}）",
-        f"- 球队: left={teams.get('left')} / right={teams.get('right')}",
+        "## 比赛与故事类型",
+        f"- 对阵：{left_n} vs {right_n}",
+        f"- 故事类型：逆风翻盘（T01）",
+        f"- 故事主角：{proto}",
         "",
-        "## 2. 故事标题",
-        f"**{title}**",
+        "## 故事标题",
+        title,
         "",
-        "## 3. 故事摘要",
+        "## 故事摘要",
         abstract,
         "",
-        "## 4. 五段叙事结构",
-        "\n\n".join(beats_block),
+        "## 五段叙事过程",
+        "\n\n".join(beat_blocks),
         "",
-        "## 5. 关键比分变化",
-        "\n".join(score_lines) if score_lines else "- （无 score_path）",
-        "",
-        "## 6. 关键事件为何入选",
-        "\n".join(why_selected) if why_selected else "- （无）",
-        "",
-        "## 7. 事件关系与证据（摘要）",
-        "关系类型详见 `story_graph.json`（因果 / 比分状态 / 时间先后 / 叙事承接分边）。",
-        "\n".join(relations) if relations else "- （无 used_as_fact 证据条目）",
-        "",
-        "## 8. 时间与核验",
-        "| segment | beat | media_in | media_out | events | time_status | eligibility |",
-        "|---|---|---|---|---|---|---|",
+        "## 关键比分变化",
     ]
-    for row in delivery_edl:
-        lines.append(
-            f"| {row.get('segment_id')} | {row.get('beat')} | {row.get('media_in')} | "
-            f"{row.get('media_out')} | {row.get('event_ids')} | {row.get('time_status')} | "
-            f"{row.get('render_eligibility')} |"
-        )
+    if score_path:
+        for n in score_path:
+            lines.append(
+                f"- 比分确认 **{n.get('score')}**（记分牌锚点约 {n.get('t_sec')} 秒；"
+                f"非进球动作时刻）"
+            )
+    else:
+        lines.append("- （无比分轨迹）")
     lines.extend(
         [
             "",
-            "## 门禁",
-            f"- render_ready: `{plan.get('render_ready')}`",
-            f"- blocking: {plan.get('blocking_reasons')}",
-            f"- missing_evidence: {plan.get('missing_evidence')}",
+            "## 事件关系说明",
+            "\n".join(rel_lines),
+            "",
+            "## 镜头来源与核验状态（概要）",
+            "- 业务版与内部 QC 版共用同一剪辑时间轴（同一 EDL）。",
+            "- 全部镜头为算法候选：`render_ready=false`，未授予正式成片。",
+            "- 进球动作优先绑定事件表/因果链中的 live 进球时间；比分牌仅作确认，不替代进球。",
+            f"- 完整进球动作候选 {len(complete_goals)} 个；不完整/补证 {len(incomplete_goals)} 个。",
+            "",
+            "## 不能确认的关键事实与缺失证据",
+            "\n".join(gap_lines),
+            "",
+            "---",
+            "",
+            "## 技术附录",
+            "",
+            "以下字段供研发/算法复审，不作为甲方主读内容。完整图见 `story_graph.json`，"
+            "剪辑表见 `candidate_edl.json`，方案见 `story_plan.json`。",
+            "",
+            f"- match_id: `{story.get('match_id') or plan.get('match_id')}`",
+            f"- story_tier: `{plan.get('story_tier')}`",
+            f"- protagonist_side: `{side}`",
+            f"- blocking_reasons: `{plan.get('blocking_reasons')}`",
+            "",
+            "\n".join(tech_rows),
             "",
         ]
     )
     return "\n".join(lines)
+
+
+def validate_story_graph(graph: Dict[str, Any]) -> Tuple[bool, List[str]]:
+    """Ensure every edge endpoint exists; relation types are declared; no forged semantic pass."""
+    problems: List[str] = []
+    nodes = graph.get("nodes") or []
+    edges = graph.get("edges") or []
+    ids = {str(n.get("id")) for n in nodes if n.get("id") is not None}
+    if len(ids) != len([n for n in nodes if n.get("id") is not None]):
+        problems.append("duplicate_node_id")
+    allowed = set(graph.get("relation_types") or [])
+    for i, e in enumerate(edges):
+        s, t = str(e.get("source")), str(e.get("target"))
+        if s not in ids:
+            problems.append(f"edge[{i}].source_missing:{s}")
+        if t not in ids:
+            problems.append(f"edge[{i}].target_missing:{t}")
+        rel = e.get("relation")
+        if allowed and rel not in allowed:
+            problems.append(f"edge[{i}].unknown_relation:{rel}")
+        # Candidate associations must not claim semantic verification done
+        if e.get("relation") == "event_association" and e.get("semantic_verified") is True:
+            problems.append(f"edge[{i}].forged_semantic_verified")
+        if e.get("relation") == "causal_verified" and not e.get("independent_verification"):
+            problems.append(f"edge[{i}].causal_verified_without_independent_check")
+    return (not problems), problems
 
 
 def build_story_graph(
@@ -513,46 +831,65 @@ def build_story_graph(
     story: Dict[str, Any],
     delivery_edl: Sequence[Dict[str, Any]],
 ) -> Dict[str, Any]:
-    """Nodes + typed edges; do not conflate causal vs temporal vs narrative."""
+    """Typed nodes/edges; all endpoints exist; no conflation of relation kinds."""
     nodes: List[Dict[str, Any]] = []
     edges: List[Dict[str, Any]] = []
-    node_ids: List[str] = []
+    id_set: set = set()
 
+    def add_node(node: Dict[str, Any]) -> str:
+        nid = str(node["id"])
+        if nid in id_set:
+            return nid
+        id_set.add(nid)
+        nodes.append(node)
+        return nid
+
+    seg_ids: List[str] = []
     for row in delivery_edl:
-        nid = str(row.get("segment_id") or f"n{len(nodes)}")
-        node_ids.append(nid)
-        nodes.append(
-            {
-                "id": nid,
-                "type": "story_segment",
-                "beat": row.get("beat"),
-                "role": row.get("role"),
-                "event_ids": row.get("event_ids"),
-                "media_in": row.get("media_in"),
-                "media_out": row.get("media_out"),
-                "time_status": row.get("time_status"),
-                "shot_kind": row.get("shot_kind"),
-            }
+        nid = str(row.get("segment_id") or f"seg_{len(seg_ids)}")
+        seg_ids.append(
+            add_node(
+                {
+                    "id": nid,
+                    "type": "story_segment",
+                    "beat": row.get("beat"),
+                    "role": row.get("role"),
+                    "media_in": row.get("media_in"),
+                    "media_out": row.get("media_out"),
+                    "time_status": row.get("time_status"),
+                    "shot_kind": row.get("shot_kind"),
+                    "goal_action_complete": row.get("goal_action_complete"),
+                }
+            )
         )
+        for eid in row.get("event_ids") or []:
+            add_node(
+                {
+                    "id": f"event:{eid}",
+                    "type": "event",
+                    "event_id": eid,
+                    "linked_from_segment": nid,
+                }
+            )
 
-    # Narrative succession (not causal)
-    for i in range(len(node_ids) - 1):
+    # Narrative succession among segments only
+    for i in range(len(seg_ids) - 1):
         edges.append(
             {
-                "source": node_ids[i],
-                "target": node_ids[i + 1],
+                "source": seg_ids[i],
+                "target": seg_ids[i + 1],
                 "relation": "narrative_succession",
                 "evidence": "delivery_edl_order",
-                "proven": False,
+                "semantic_verified": False,
                 "note": "剪辑叙事承接，非已证实因果",
             }
         )
 
-    # Temporal order when both timed
+    seg_by_id = {n["id"]: n for n in nodes if n.get("type") == "story_segment"}
     timed = [
-        (nid, _safe_float(n["media_in"]))
-        for nid, n in zip(node_ids, nodes)
-        if _safe_float(n.get("media_in")) is not None
+        (sid, _safe_float(seg_by_id[sid].get("media_in")))
+        for sid in seg_ids
+        if _safe_float(seg_by_id.get(sid, {}).get("media_in")) is not None
     ]
     timed.sort(key=lambda x: x[1] or 0)
     for i in range(len(timed) - 1):
@@ -562,17 +899,17 @@ def build_story_graph(
                 "target": timed[i + 1][0],
                 "relation": "temporal_before",
                 "evidence": "media_in_order",
-                "proven": True,
+                "semantic_verified": False,
+                "note": "原片时间先后（可核对时间戳）",
             }
         )
 
-    # Score-state edges from score_path
     sp = [n for n in (story.get("score_path") or []) if isinstance(n, dict)]
+    score_ids: List[str] = []
     for i, node in enumerate(sp):
-        sid = f"score_{i}_{node.get('score')}"
-        nodes.append(
+        sid = add_node(
             {
-                "id": sid,
+                "id": f"score:{i}:{node.get('score')}",
                 "type": "score_state",
                 "score": node.get("score"),
                 "t_sec": node.get("t_sec"),
@@ -580,58 +917,96 @@ def build_story_graph(
                 "carrier_event_id": node.get("carrier_event_id"),
             }
         )
+        score_ids.append(sid)
         if i > 0:
-            prev = f"score_{i-1}_{sp[i-1].get('score')}"
             edges.append(
                 {
-                    "source": prev,
+                    "source": score_ids[i - 1],
                     "target": sid,
                     "relation": "score_state_change",
                     "evidence": "score_path",
-                    "proven": True,
+                    "semantic_verified": False,
                     "note": "比分状态变化（记分牌锚点）",
                 }
             )
 
-    # Evidenced causal only when composer marked used_as_fact causal/live link
+    # Event association (rule-matched); NOT causal_verified / NOT semantic pass
     for row in delivery_edl:
         sid = str(row.get("segment_id"))
+        for eid in row.get("event_ids") or []:
+            ev_nid = f"event:{eid}"
+            if ev_nid not in id_set:
+                add_node({"id": ev_nid, "type": "event", "event_id": eid})
+            edges.append(
+                {
+                    "source": sid,
+                    "target": ev_nid,
+                    "relation": "event_association",
+                    "evidence": "segment_event_ids",
+                    "semantic_verified": False,
+                    "note": "镜头–事件规则关联；未做独立语义核验",
+                }
+            )
         for ref in row.get("evidence_refs") or []:
             if not isinstance(ref, dict):
                 continue
             src = str(ref.get("source") or "")
-            if ref.get("used_as_fact") and src in (
+            if not ref.get("used_as_fact"):
+                continue
+            if src not in (
                 "live_goal_candidate",
                 "opponent_opening_live_goal",
                 "replay_linked_to_live",
             ):
-                edges.append(
-                    {
-                        "source": sid,
-                        "target": str(ref.get("event_id") or ref.get("linked_live_event_id")),
-                        "relation": "evidenced_association",
-                        "evidence": src,
-                        "proven": True,
-                        "note": "事件关联有规则证据；不等于战术因果已证实",
-                    }
-                )
+                continue
+            eid = ref.get("event_id") or ref.get("linked_live_event_id")
+            if not eid:
+                continue
+            ev_nid = f"event:{eid}"
+            if ev_nid not in id_set:
+                add_node({"id": ev_nid, "type": "event", "event_id": eid})
+            # Avoid duplicate association edges
+            if any(
+                e.get("source") == sid
+                and e.get("target") == ev_nid
+                and e.get("relation") == "event_association"
+                for e in edges
+            ):
+                continue
+            edges.append(
+                {
+                    "source": sid,
+                    "target": ev_nid,
+                    "relation": "event_association",
+                    "evidence": src,
+                    "semantic_verified": False,
+                    "note": "规则证据上的事件关联；非已证实战术因果，非语义签发",
+                }
+            )
 
-    return {
-        "schema": "phase5_story_graph_v1",
+    graph = {
+        "schema": "phase5_1_story_graph_v2",
         "match_id": story.get("match_id") or plan.get("match_id"),
         "nodes": nodes,
         "edges": edges,
         "relation_types": [
-            "evidenced_association",
+            "event_association",
             "score_state_change",
             "temporal_before",
             "narrative_succession",
+            # reserved: only when independent verification exists
+            "causal_verified",
         ],
         "disclaimer": (
-            "叙事承接与时间先后不得解释为已证实因果；"
-            "仅 evidenced_association 且 used_as_fact 的边表示有规则证据的事件关联。"
+            "narrative_succession / temporal_before / score_state_change / event_association "
+            "均不得解释为已完成的独立语义核验或战术因果证实；"
+            "causal_verified 仅在具备 independent_verification 时使用（本阶段不自动产出）。"
         ),
     }
+    ok, problems = validate_story_graph(graph)
+    graph["structure_ok"] = ok
+    graph["structure_problems"] = problems
+    return graph
 
 
 def load_glitch_profile(path: Optional[Path]) -> List[Tuple[float, float, str]]:

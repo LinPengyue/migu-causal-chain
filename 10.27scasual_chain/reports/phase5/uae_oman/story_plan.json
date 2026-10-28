@@ -570,48 +570,51 @@
       "verification_status": "draft"
     },
     {
-      "segment_id": "seg_ending",
+      "segment_id": "seg_ending_final_scoreboard",
       "beat": "收尾",
-      "role": "ending",
+      "role": "ending_final_scoreboard",
       "event_ids": [
-        "event_000749"
+        "event_000670"
       ],
       "frame_ids": [],
       "evidence_refs": [
         {
           "kind": "rule_fact",
           "used_as_fact": true,
-          "source": "event",
-          "event_id": "event_000749"
+          "source": "final_score_path",
+          "score": "2:1",
+          "t_sec": 6957.12,
+          "note": "preferred_ending_over_raw_match_end"
         }
       ],
-      "media_in": 8008.93,
-      "media_out": 8020.93,
-      "time_status": "event_ms",
-      "shot_kind": "live",
+      "media_in": 6956.12,
+      "media_out": 6961.12,
+      "time_status": "score_path_only",
+      "shot_kind": "scoreboard_anchor",
       "is_replay": false,
       "linked_live_event_id": null,
-      "narration": "收尾/终场（未校准默认不成片）。",
+      "narration": "终场比分确认 2:1 @ 6957.12s（优先于远处比赛结束标注；仍需画面核验）。",
       "precise_claim": false,
-      "selection_reason": "ending_event",
+      "selection_reason": "ending_final_scoreboard_preferred",
       "source_refs": [
         {
-          "namespace": "delivery_event",
-          "id": "event_000749"
+          "namespace": "unknown",
+          "id": "event_000670"
         }
       ],
-      "confidence": 0.5,
+      "confidence": 0.7,
       "time_provenance": {
-        "source": "event_ms",
-        "t_sec": 8012.93,
+        "source": "score_path",
+        "t_sec": 6957.12,
         "pipeline_verified": false
       },
       "render_eligibility": "candidate_only",
       "blocking_reasons": [
-        "unverified_event_ms"
+        "ending_visual_unverified",
+        "score_path_only_not_render_ready"
       ],
       "narrative_order": 12,
-      "source_media_order": 8008.93,
+      "source_media_order": 6956.12,
       "verification_status": "draft"
     }
   ],
@@ -724,8 +727,10 @@
     {
       "kind": "rule_fact",
       "used_as_fact": true,
-      "source": "event",
-      "event_id": "event_000749"
+      "source": "final_score_path",
+      "score": "2:1",
+      "t_sec": 6957.12,
+      "note": "preferred_ending_over_raw_match_end"
     }
   ],
   "event_ids": [
@@ -733,8 +738,7 @@
     "causal:ann_0015:event_000076",
     "causal:ann_0020:event_000105",
     "event_000276",
-    "event_000411",
-    "event_000749"
+    "event_000411"
   ],
   "event_mappings": [
     {
@@ -814,12 +818,21 @@
         "replay_not_near_live_event",
         "role_hint_mismatch:转折"
       ]
+    },
+    {
+      "context": "ending_match_end",
+      "status": "rejected_by_ending_gate",
+      "event_id": "event_000749",
+      "t_sec": 8012.93,
+      "reason": "match_end_too_far_after_final_score:dt=1055.81",
+      "final_score_t": 6957.12
     }
   ],
   "missing_evidence": [
     "behind_carrier_unresolved:event_000173",
     "equalizer_carrier_unresolved:event_000637",
-    "go_ahead_carrier_unresolved:event_000670"
+    "go_ahead_carrier_unresolved:event_000670",
+    "ending_match_end_rejected:match_end_too_far_after_final_score:dt=1055.81"
   ],
   "blocking_reasons": [
     "equalizer_goal_action_not_render_ready",
@@ -835,7 +848,7 @@
       "蓄力": "蓄力动作 角球（live，event_ms 未校准成片）。 蓄力动作 射门（live，event_ms 未校准成片）。",
       "转折": "equalizer 进球动作候选 causal:ann_0015:event_000076 @ 6449.644s（相对记分牌 Δ=-85.976s）。 回放补充（关联 live causal:ann_0015:event_000076；默认不成片）。 equalizer 比分确认 1:1 @ 6535.62s（非进球剪辑点）。 回放补充（关联 live causal:ann_0015:event_000076；默认不成片）。",
       "高潮": "go_ahead 进球动作候选 causal:ann_0020:event_000105 @ 6843.088s（相对记分牌 Δ=-114.032s）。 回放补充（关联 live causal:ann_0020:event_000105；默认不成片）。 go_ahead 比分确认 2:1 @ 6957.12s（非进球剪辑点）。",
-      "收尾": "收尾/终场（未校准默认不成片）。"
+      "收尾": "终场比分确认 2:1 @ 6957.12s（优先于远处比赛结束标注；仍需画面核验）。"
     },
     "title": "阿联酋 逆转 阿曼"
   },
@@ -1188,33 +1201,34 @@
     },
     {
       "edl_index": 12,
-      "segment_id": "seg_ending",
+      "segment_id": "seg_ending_final_scoreboard",
       "beat": "收尾",
-      "role": "ending",
-      "shot_kind": "live",
+      "role": "ending_final_scoreboard",
+      "shot_kind": "scoreboard_anchor",
       "is_replay": false,
-      "media_in": 8008.93,
-      "media_out": 8020.93,
-      "time_status": "event_ms",
+      "media_in": 6956.12,
+      "media_out": 6961.12,
+      "time_status": "score_path_only",
       "time_provenance": {
-        "source": "event_ms",
-        "t_sec": 8012.93,
+        "source": "score_path",
+        "t_sec": 6957.12,
         "pipeline_verified": false
       },
       "event_ids": [
-        "event_000749"
+        "event_000670"
       ],
       "frame_ids": [],
       "linked_live_event_id": null,
       "narrative_order": 12,
-      "source_media_order": 8008.93,
+      "source_media_order": 6956.12,
       "render_eligibility": "candidate_only",
       "blocking_reasons": [
-        "unverified_event_ms"
+        "ending_visual_unverified",
+        "score_path_only_not_render_ready"
       ],
-      "confidence": 0.5,
-      "selection_reason": "ending_event",
-      "narration": "收尾/终场（未校准默认不成片）。",
+      "confidence": 0.7,
+      "selection_reason": "ending_final_scoreboard_preferred",
+      "narration": "终场比分确认 2:1 @ 6957.12s（优先于远处比赛结束标注；仍需画面核验）。",
       "include_in_cut": false
     }
   ],
@@ -1568,33 +1582,34 @@
     },
     {
       "edl_index": 12,
-      "segment_id": "seg_ending",
+      "segment_id": "seg_ending_final_scoreboard",
       "beat": "收尾",
-      "role": "ending",
-      "shot_kind": "live",
+      "role": "ending_final_scoreboard",
+      "shot_kind": "scoreboard_anchor",
       "is_replay": false,
-      "media_in": 8008.93,
-      "media_out": 8020.93,
-      "time_status": "event_ms",
+      "media_in": 6956.12,
+      "media_out": 6961.12,
+      "time_status": "score_path_only",
       "time_provenance": {
-        "source": "event_ms",
-        "t_sec": 8012.93,
+        "source": "score_path",
+        "t_sec": 6957.12,
         "pipeline_verified": false
       },
       "event_ids": [
-        "event_000749"
+        "event_000670"
       ],
       "frame_ids": [],
       "linked_live_event_id": null,
       "narrative_order": 12,
-      "source_media_order": 8008.93,
+      "source_media_order": 6956.12,
       "render_eligibility": "candidate_only",
       "blocking_reasons": [
-        "unverified_event_ms"
+        "ending_visual_unverified",
+        "score_path_only_not_render_ready"
       ],
-      "confidence": 0.5,
-      "selection_reason": "ending_event",
-      "narration": "收尾/终场（未校准默认不成片）。",
+      "confidence": 0.7,
+      "selection_reason": "ending_final_scoreboard_preferred",
+      "narration": "终场比分确认 2:1 @ 6957.12s（优先于远处比赛结束标注；仍需画面核验）。",
       "include_in_cut": false
     }
   ],

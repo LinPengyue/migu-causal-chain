@@ -907,6 +907,71 @@ def compose_story_plan(
         )
 
     # ---------- 收尾 ----------
+    # 质量门禁：不得仅因标注「比赛结束」就截取远处镜头（可能切到其它转播）。
+    # 优先使用终场比分确认短窗；match_end 仅在紧邻终场比分且非回放时作为补充候选。
+    ENDING_MATCH_END_MAX_AFTER_FINAL = 45.0
+    score_nodes = [n for n in (story.get("score_path") or []) if isinstance(n, dict)]
+    final_score_node = score_nodes[-1] if score_nodes else None
+    final_score_t = (
+        float(final_score_node["t_sec"])
+        if final_score_node and final_score_node.get("t_sec") is not None
+        else None
+    )
+    if final_score_node and final_score_t is not None:
+        win_ft = _window_from_t(
+            final_score_t,
+            status="score_path_only",
+            pad_before=SCOREBOARD_PAD_BEFORE,
+            pad_after=max(SCOREBOARD_PAD_AFTER, 4.0),
+        )
+        segments.append(
+            _mk_seg(
+                segment_id="seg_ending_final_scoreboard",
+                beat="收尾",
+                role="ending_final_scoreboard",
+                event_ids=[str(final_score_node.get("carrier_event_id") or "")]
+                if final_score_node.get("carrier_event_id")
+                else [],
+                frame_ids=[],
+                evidence_refs=[
+                    add_ref(
+                        {
+                            "kind": "rule_fact",
+                            "used_as_fact": True,
+                            "source": "final_score_path",
+                            "score": final_score_node.get("score"),
+                            "t_sec": final_score_t,
+                            "note": "preferred_ending_over_raw_match_end",
+                        }
+                    )
+                ],
+                media_in=win_ft["media_in"],
+                media_out=win_ft["media_out"],
+                time_status="score_path_only",
+                shot_kind="scoreboard_anchor",
+                is_replay=False,
+                narration=(
+                    f"终场比分确认 {final_score_node.get('score')} @ {final_score_t}s"
+                    "（优先于远处比赛结束标注；仍需画面核验）。"
+                ),
+                selection_reason="ending_final_scoreboard_preferred",
+                source_refs=[
+                    provenance_ref(
+                        namespace="score_path",
+                        ref_id=str(final_score_node.get("carrier_event_id") or f"score@{final_score_t}"),
+                    )
+                ],
+                confidence=0.7,
+                time_provenance={
+                    "source": "score_path",
+                    "t_sec": final_score_t,
+                    "pipeline_verified": False,
+                },
+                render_eligibility="candidate_only",
+                blocking_reasons=["ending_visual_unverified", "score_path_only_not_render_ready"],
+            )
+        )
+
     ending = [
         e
         for e in events.values()
@@ -916,52 +981,80 @@ def compose_story_plan(
         ev = ending[0]
         eid = str(ev["event_id"])
         t = float(ev["t_ms"]) / 1000.0 if ev.get("t_ms") is not None else None
-        win = _window_from_t(t, status="event_ms" if t is not None else "pending_localization")
-        frames, refs, _ = _attach_visual(
-            vis, ["post_climax_reaction"], add_ref=add_ref, missing=missing
-        )
-        segments.append(
-            _mk_seg(
-                segment_id="seg_ending",
-                beat="收尾",
-                role="ending",
-                event_ids=[eid],
-                frame_ids=frames,
-                evidence_refs=[
-                    add_ref(
-                        {
-                            "kind": "rule_fact",
-                            "used_as_fact": True,
-                            "source": "event",
-                            "event_id": eid,
-                        }
-                    )
-                ]
-                + refs,
-                media_in=win["media_in"],
-                media_out=win["media_out"],
-                time_status=win["time_status"],
-                shot_kind="replay_supplement" if ev.get("is_replay") else "live",
-                is_replay=bool(ev.get("is_replay")),
-                narration="收尾/终场（未校准默认不成片）。",
-                selection_reason="ending_event",
-                source_refs=[
-                    provenance_ref(
-                        namespace=str(ev.get("_namespace") or "t01_story_event"), ref_id=eid
-                    )
-                ],
-                confidence=0.5,
-                time_provenance={
-                    "source": "event_ms",
-                    "t_sec": t,
-                    "pipeline_verified": False,
-                },
-                render_eligibility="candidate_only",
-                blocking_reasons=["unverified_event_ms"],
+        accept_match_end = False
+        reject_reason = None
+        if t is None:
+            reject_reason = "match_end_missing_time"
+        elif ev.get("is_replay"):
+            reject_reason = "match_end_is_replay"
+        elif final_score_t is None:
+            reject_reason = "no_final_score_anchor_for_match_end_gate"
+        elif t < final_score_t - 5.0:
+            reject_reason = "match_end_before_final_score"
+        elif t - final_score_t > ENDING_MATCH_END_MAX_AFTER_FINAL:
+            reject_reason = (
+                f"match_end_too_far_after_final_score:dt={round(t - final_score_t, 2)}"
             )
-        )
-        all_event_ids.append(eid)
-    else:
+        else:
+            accept_match_end = True
+        if accept_match_end:
+            win = _window_from_t(t, status="event_ms", pad_before=2.0, pad_after=6.0)
+            segments.append(
+                _mk_seg(
+                    segment_id="seg_ending_match_end",
+                    beat="收尾",
+                    role="ending_match_end",
+                    event_ids=[eid],
+                    frame_ids=[],
+                    evidence_refs=[
+                        add_ref(
+                            {
+                                "kind": "rule_fact",
+                                "used_as_fact": True,
+                                "source": "match_end_near_final_score",
+                                "event_id": eid,
+                                "t_sec": t,
+                            }
+                        )
+                    ],
+                    media_in=win["media_in"],
+                    media_out=win["media_out"],
+                    time_status="event_ms",
+                    shot_kind="live",
+                    is_replay=False,
+                    narration=f"比赛结束标注 @ {t}s（紧邻终场比分；仍需画面核验）。",
+                    selection_reason="ending_match_end_near_final_score",
+                    source_refs=[
+                        provenance_ref(
+                            namespace=str(ev.get("_namespace") or "t01_story_event"),
+                            ref_id=eid,
+                        )
+                    ],
+                    confidence=0.55,
+                    time_provenance={
+                        "source": "event_ms",
+                        "t_sec": t,
+                        "pipeline_verified": False,
+                        "ending_gate": "near_final_score",
+                    },
+                    render_eligibility="candidate_only",
+                    blocking_reasons=["ending_visual_unverified", "unverified_event_ms"],
+                )
+            )
+            all_event_ids.append(eid)
+        else:
+            missing.append(f"ending_match_end_rejected:{reject_reason or 'unknown'}")
+            mappings.append(
+                {
+                    "context": "ending_match_end",
+                    "status": "rejected_by_ending_gate",
+                    "event_id": eid,
+                    "t_sec": t,
+                    "reason": reject_reason,
+                    "final_score_t": final_score_t,
+                }
+            )
+    elif not final_score_node:
         missing.append("missing_ending_event")
         segments.append(
             _mk_seg(

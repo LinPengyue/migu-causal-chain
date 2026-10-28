@@ -1,88 +1,83 @@
-# 故事链内容摘要：阿联酋 逆转 阿曼
+# 阿联酋 逆转 阿曼
 
-> 内部候选交付 · `render_ready=false` · 非正式生产授权
+> 本稿为咪咕甲方可读的故事链内容摘要（候选审核）。非正式生产授权；画面语义尚未独立核验通过。
 
-## 1. 比赛信息与故事类型
-- match_id: `10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语`
-- 故事类型: T01 逆风翻盘（tier=`story`）
-- 主角: 阿联酋（left）
-- 球队: left=阿联酋 / right=阿曼
+## 比赛与故事类型
+- 对阵：阿联酋 vs 阿曼
+- 故事类型：逆风翻盘（T01）
+- 故事主角：阿联酋
 
-## 2. 故事标题
-**阿联酋 逆转 阿曼**
+## 故事标题
+阿联酋 逆转 阿曼
 
-## 3. 故事摘要
-本场由 T01 识别为逆风翻盘故事（tier=story），主角为 阿联酋（side=left）。球队：阿联酋 vs 阿曼。比分轨迹自 0:0 至终场相关节点 2:1（详见下表；记分牌时间为确认锚点，不等于进球动作时刻）。叙事按铺垫→蓄力→转折→高潮→收尾组织；进球镜头优先关联因果/事件表中的 live 进球，回放不作独立主叙事。以下摘要仅陈述系统已结构化收录的事件与关系，未经验证的因果不作事实断言。关键动作收录：铺垫段纳入 opponent_opening_goal_action（事件 ['causal:ann_0001:event_000005']）；转折段纳入 equalizer_goal_action（事件 ['causal:ann_0015:event_000076']）；高潮段纳入 go_ahead_goal_action（事件 ['causal:ann_0020:event_000105']）。
+## 故事摘要
+本场为「逆风翻盘」类型故事。对阵双方为阿联酋与阿曼，系统认定的故事主角是阿联酋（对手为阿曼）。本摘要主线是阿联酋在「最后一次落后」之后完成的扳平与反超（T01 最后一次落后弧），并不默认展开赛前所有历史进球过程。比分确认轨迹为：0:0 → 0:1（阿曼取得进球后的比分确认） → 1:1（阿联酋取得进球后的比分确认） → 2:1（阿联酋取得进球后的比分确认）。上述时间为记分牌确认锚点，不等于进球动作发生时刻。叙事按铺垫、蓄力、转折、高潮、收尾组织：先交代造成（该弧内）落后的失球，再收录落后期间的相关进攻，随后是扳平与反超（及可能的扩大优势），最后以终场比分确认收束（远处「比赛结束」标注若不紧邻终场比分则不采用，以免误切其它转播）。当前结构化收录了 3 个判定为窗口完整的进球动作候选，另有 0 个进球动作因证据不足或花屏冲突降级为补证，摘要不将其表述为已核实进球。本文仅陈述算法已结构化的事实；未经验证的战术、球员动作与因果不作断言。
 
-## 4. 五段叙事结构
+## 五段叙事过程
 ### 铺垫
-- **story_title** | media None-None | events=[] | phase5_narrative_packaging | status=placeholder_title / candidate_only
-- **opponent_opening_goal_action** | media 1325.123-1347.123 | events=['causal:ann_0001:event_000005'] | opponent_opening_goal_near_behind_scoreboard | status=linked_event_ms / candidate_only
-- **deficit_scoreboard_anchor** | media 1409.43-1412.93 | events=[] | last_comeback_arc_behind_start_score_path | status=score_path_only / candidate_only
+- 标题卡（标题/说明卡）
+- 对手造成落后的进球动作：原片约 1325.1–1347.1 秒；进球动作候选·窗口完整。
+- 落后比分确认：原片约 1409.4–1412.9 秒；比分确认（非进球动作）。
 
 ### 蓄力
-- **buildup_action** | media 1912.42-1924.42 | events=['event_000276'] | live_buildup_between_behind_and_equalizer | status=event_ms / candidate_only
-- **buildup_action** | media 3442.75-3454.75 | events=['event_000411'] | live_buildup_between_behind_and_equalizer | status=event_ms / candidate_only
+- 蓄力阶段相关进攻/事件：原片约 1912.4–1924.4 秒；窗口完整候选。
+- 蓄力阶段相关进攻/事件：原片约 3442.8–3454.8 秒；窗口完整候选。
 
 ### 转折
-- **equalizer_goal_action** | media 6437.644-6459.644 | events=['causal:ann_0015:event_000076'] | live_goal_near_scoreboard_anchor | status=linked_event_ms / candidate_only
-- **equalizer_scoreboard_anchor** | media 6534.62-6538.12 | events=[] | score_path_board_anchor | status=score_path_only / candidate_only
+- 扳平进球动作：原片约 6437.6–6459.6 秒；进球动作候选·窗口完整。
+- 扳平比分确认：原片约 6534.6–6538.1 秒；比分确认（非进球动作）。
 
 ### 高潮
-- **go_ahead_goal_action** | media 6831.088-6853.088 | events=['causal:ann_0020:event_000105'] | live_goal_near_scoreboard_anchor | status=linked_event_ms / candidate_only
-- **go_ahead_scoreboard_anchor** | media 6956.12-6959.62 | events=[] | score_path_board_anchor | status=score_path_only / candidate_only
+- 反超进球动作：原片约 6831.1–6853.1 秒；进球动作候选·窗口完整。
 
 ### 收尾
-- **ending** | media 8008.93-8020.93 | events=['event_000749'] | ending_event | status=event_ms / candidate_only
-- **story_title** | media None-None | events=[] | phase5_narrative_packaging | status=placeholder_title / candidate_only
+- 终场/收尾画面：原片约 6956.1–6959.6 秒；比分确认（非进球动作）。
+- 标题卡（标题/说明卡）
 
-## 5. 关键比分变化
-- 0:0 @ 649.75s（delta_side=None）
-- 0:1 @ 1410.43s（delta_side=right）
-- 1:1 @ 6535.62s（delta_side=left）
-- 2:1 @ 6957.12s（delta_side=left）
+## 关键比分变化
+- 比分确认 **0:0**（记分牌锚点约 649.75 秒；非进球动作时刻）
+- 比分确认 **0:1**（记分牌锚点约 1410.43 秒；非进球动作时刻）
+- 比分确认 **1:1**（记分牌锚点约 6535.62 秒；非进球动作时刻）
+- 比分确认 **2:1**（记分牌锚点约 6957.12 秒；非进球动作时刻）
 
-## 6. 关键事件为何入选
-- `seg_title_open`：phase5_narrative_packaging — 开场标题（不剧透终场比分）
-- `seg_opponent_opening_goal_action`：opponent_opening_goal_near_behind_scoreboard — 率先失球动作 causal:ann_0001:event_000005 @ 1337.123s（相对 0:1 记分牌 Δ=-73.307s；非记分牌时间）。
-- `seg_setup_deficit`：last_comeback_arc_behind_start_score_path — 比分确认落后 0:1 @ 1410.43s（非进球动作时间）。
-- `seg_buildup_event_000276`：live_buildup_between_behind_and_equalizer — 蓄力动作 角球（live，event_ms 未校准成片）。
-- `seg_buildup_event_000411`：live_buildup_between_behind_and_equalizer — 蓄力动作 射门（live，event_ms 未校准成片）。
-- `seg_equalizer_goal_action`：live_goal_near_scoreboard_anchor — equalizer 进球动作候选 causal:ann_0015:event_000076 @ 6449.644s（相对记分牌 Δ=-85.976s）。
-- `seg_equalizer_scoreboard`：score_path_board_anchor — equalizer 比分确认 1:1 @ 6535.62s（非进球剪辑点）。
-- `seg_go_ahead_goal_action`：live_goal_near_scoreboard_anchor — go_ahead 进球动作候选 causal:ann_0020:event_000105 @ 6843.088s（相对记分牌 Δ=-114.032s）。
-- `seg_go_ahead_scoreboard`：score_path_board_anchor — go_ahead 比分确认 2:1 @ 6957.12s（非进球剪辑点）。
-- `seg_ending`：ending_event — 收尾/终场（未校准默认不成片）。
-- `seg_title_close`：phase5_narrative_packaging — 收束标题
+## 事件关系说明
+- 叙事承接：各段按故事顺序衔接，**不代表**已证实战术因果。
+- 时间先后：有时间戳的镜头按原片时间排序。
+- 比分状态：score_path 相邻节点表示记分牌确认的比分变化。
+- 事件关联：进球镜头与事件表/因果链 live 进球的规则匹配；**不等于**独立语义核验通过，也**不等于**已证实攻防因果。
 
-## 7. 事件关系与证据（摘要）
-关系类型详见 `story_graph.json`（因果 / 比分状态 / 时间先后 / 叙事承接分边）。
-- 证据(rule_fact/opponent_opening_live_goal): {"kind": "rule_fact", "used_as_fact": true, "source": "opponent_opening_live_goal", "event_id": "causal:ann_0001:event_000005", "dt_to_score_sec": -73.307, "note": "cause_of_deficit_not_scoreboard"}
-- 证据(rule_fact/score_path): {"kind": "rule_fact", "used_as_fact": true, "source": "score_path", "score": "0:1", "t_sec": 1410.43, "note": "scoreboard_anchor_not_goal_action"}
-- 证据(rule_fact/event): {"kind": "rule_fact", "used_as_fact": true, "source": "event", "event_id": "event_000276", "type": "角球"}
-- 证据(rule_fact/event): {"kind": "rule_fact", "used_as_fact": true, "source": "event", "event_id": "event_000411", "type": "射门"}
-- 证据(rule_fact/live_goal_candidate): {"kind": "rule_fact", "used_as_fact": true, "source": "live_goal_candidate", "event_id": "causal:ann_0015:event_000076", "dt_to_score_sec": -85.976}
-- 证据(rule_fact/score_path): {"kind": "rule_fact", "used_as_fact": true, "source": "score_path", "score": "1:1", "t_sec": 6535.62, "note": "scoreboard_confirm_only"}
-- 证据(rule_fact/live_goal_candidate): {"kind": "rule_fact", "used_as_fact": true, "source": "live_goal_candidate", "event_id": "causal:ann_0020:event_000105", "dt_to_score_sec": -114.032}
-- 证据(rule_fact/score_path): {"kind": "rule_fact", "used_as_fact": true, "source": "score_path", "score": "2:1", "t_sec": 6957.12, "note": "scoreboard_confirm_only"}
-- 证据(rule_fact/event): {"kind": "rule_fact", "used_as_fact": true, "source": "event", "event_id": "event_000749"}
+## 镜头来源与核验状态（概要）
+- 业务版与内部 QC 版共用同一剪辑时间轴（同一 EDL）。
+- 全部镜头为算法候选：`render_ready=false`，未授予正式成片。
+- 进球动作优先绑定事件表/因果链中的 live 进球时间；比分牌仅作确认，不替代进球。
+- 完整进球动作候选 3 个；不完整/补证 0 个。
 
-## 8. 时间与核验
-| segment | beat | media_in | media_out | events | time_status | eligibility |
-|---|---|---|---|---|---|---|
-| seg_title_open | 铺垫 | None | None | [] | placeholder_title | candidate_only |
-| seg_opponent_opening_goal_action | 铺垫 | 1325.123 | 1347.123 | ['causal:ann_0001:event_000005'] | linked_event_ms | candidate_only |
-| seg_setup_deficit | 铺垫 | 1409.43 | 1412.93 | [] | score_path_only | candidate_only |
-| seg_buildup_event_000276 | 蓄力 | 1912.42 | 1924.42 | ['event_000276'] | event_ms | candidate_only |
-| seg_buildup_event_000411 | 蓄力 | 3442.75 | 3454.75 | ['event_000411'] | event_ms | candidate_only |
-| seg_equalizer_goal_action | 转折 | 6437.644 | 6459.644 | ['causal:ann_0015:event_000076'] | linked_event_ms | candidate_only |
-| seg_equalizer_scoreboard | 转折 | 6534.62 | 6538.12 | [] | score_path_only | candidate_only |
-| seg_go_ahead_goal_action | 高潮 | 6831.088 | 6853.088 | ['causal:ann_0020:event_000105'] | linked_event_ms | candidate_only |
-| seg_go_ahead_scoreboard | 高潮 | 6956.12 | 6959.62 | [] | score_path_only | candidate_only |
-| seg_ending | 收尾 | 8008.93 | 8020.93 | ['event_000749'] | event_ms | candidate_only |
-| seg_title_close | 收尾 | None | None | [] | placeholder_title | candidate_only |
+## 不能确认的关键事实与缺失证据
+- 缺失证据标记：behind_carrier_unresolved:event_000173
+- 缺失证据标记：equalizer_carrier_unresolved:event_000637
+- 缺失证据标记：go_ahead_carrier_unresolved:event_000670
+- 缺失证据标记：ending_match_end_rejected:match_end_too_far_after_final_score:dt=1055.81
 
-## 门禁
-- render_ready: `False`
-- blocking: ['equalizer_goal_action_not_render_ready', 'go_ahead_goal_action_not_render_ready']
-- missing_evidence: ['behind_carrier_unresolved:event_000173', 'equalizer_carrier_unresolved:event_000637', 'go_ahead_carrier_unresolved:event_000670']
+---
+
+## 技术附录
+
+以下字段供研发/算法复审，不作为甲方主读内容。完整图见 `story_graph.json`，剪辑表见 `candidate_edl.json`，方案见 `story_plan.json`。
+
+- match_id: `10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语`
+- story_tier: `story`
+- protagonist_side: `left`
+- blocking_reasons: `['equalizer_goal_action_not_render_ready', 'go_ahead_goal_action_not_render_ready']`
+
+| 段 | 叙事位 | 角色 | 原片入点 | 原片出点 | 关联事件 | 时间状态 | 进球完整 | 核验 |
+|---|---|---|---|---|---|---|---|---|
+| seg_title_open | 铺垫 | story_title | None | None | [] | placeholder_title | None | candidate_only / semantic_unverified |
+| seg_opponent_opening_goal_action | 铺垫 | opponent_opening_goal_action | 1325.123 | 1347.123 | ['causal:ann_0001:event_000005'] | linked_event_ms | True | candidate_only / semantic_unverified |
+| seg_setup_deficit | 铺垫 | deficit_scoreboard_anchor | 1409.43 | 1412.93 | [] | score_path_only | None | candidate_only / semantic_unverified |
+| seg_buildup_event_000276 | 蓄力 | buildup_action | 1912.42 | 1924.42 | ['event_000276'] | event_ms | None | candidate_only / semantic_unverified |
+| seg_buildup_event_000411 | 蓄力 | buildup_action | 3442.75 | 3454.75 | ['event_000411'] | event_ms | None | candidate_only / semantic_unverified |
+| seg_equalizer_goal_action | 转折 | equalizer_goal_action | 6437.644 | 6459.644 | ['causal:ann_0015:event_000076'] | linked_event_ms | True | candidate_only / semantic_unverified |
+| seg_equalizer_scoreboard | 转折 | equalizer_scoreboard_anchor | 6534.62 | 6538.12 | [] | score_path_only | None | candidate_only / semantic_unverified |
+| seg_go_ahead_goal_action | 高潮 | go_ahead_goal_action | 6831.088 | 6853.088 | ['causal:ann_0020:event_000105'] | linked_event_ms | True | candidate_only / semantic_unverified |
+| seg_ending_final_scoreboard | 收尾 | ending_final_scoreboard | 6956.12 | 6959.62 | ['event_000670'] | score_path_only | None | candidate_only / semantic_unverified |
+| seg_title_close | 收尾 | story_title | None | None | [] | placeholder_title | None | candidate_only / semantic_unverified |

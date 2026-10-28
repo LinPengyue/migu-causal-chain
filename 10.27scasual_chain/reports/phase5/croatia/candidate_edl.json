@@ -29,8 +29,12 @@
     "placeholder_sec": 3.0,
     "placeholder_lines": [
       "克罗地亚 逆转 加拿大",
-      "逆风翻盘故事链",
-      "内部候选审核样片"
+      "逆风翻盘"
+    ],
+    "placeholder_lines_qc": [
+      "克罗地亚 逆转 加拿大",
+      "逆风翻盘 · QC",
+      "candidate_only · render_ready=false"
     ],
     "evidence_refs": [],
     "source_refs": [],
@@ -71,6 +75,9 @@
     "narration": "率先失球动作 event_000004 @ 980.137s（相对 0:1 记分牌 Δ=-98.923s；非记分牌时间）。",
     "include_in_cut": true,
     "glitch_avoidance": [],
+    "goal_anchor_t_sec": 980.137,
+    "goal_action_complete": true,
+    "integrity_failure": null,
     "evidence_refs": [
       {
         "kind": "rule_fact",
@@ -104,7 +111,8 @@
       "source": "score_path",
       "t_sec": 1079.06,
       "pipeline_verified": false,
-      "shortened_scoreboard": true
+      "shortened_scoreboard": true,
+      "not_a_goal_action": true
     },
     "event_ids": [
       "event_000004"
@@ -125,6 +133,9 @@
     "narration": "比分确认落后 0:1 @ 1079.06s（非进球动作时间）。",
     "include_in_cut": true,
     "glitch_avoidance": [],
+    "goal_anchor_t_sec": null,
+    "goal_action_complete": null,
+    "integrity_failure": null,
     "evidence_refs": [
       {
         "kind": "rule_fact",
@@ -182,6 +193,9 @@
     "narration": "蓄力动作 任意球（live，event_ms 未校准成片）。",
     "include_in_cut": true,
     "glitch_avoidance": [],
+    "goal_anchor_t_sec": null,
+    "goal_action_complete": null,
+    "integrity_failure": null,
     "evidence_refs": [
       {
         "kind": "rule_fact",
@@ -231,6 +245,9 @@
     "narration": "蓄力动作 射门（live，event_ms 未校准成片）。",
     "include_in_cut": true,
     "glitch_avoidance": [],
+    "goal_anchor_t_sec": null,
+    "goal_action_complete": null,
+    "integrity_failure": null,
     "evidence_refs": [
       {
         "kind": "rule_fact",
@@ -282,6 +299,9 @@
     "narration": "equalizer 进球动作候选 event_000021 @ 3065.903s（相对记分牌 Δ=-80.077s）。",
     "include_in_cut": true,
     "glitch_avoidance": [],
+    "goal_anchor_t_sec": 3065.903,
+    "goal_action_complete": true,
+    "integrity_failure": null,
     "evidence_refs": [
       {
         "kind": "rule_fact",
@@ -312,7 +332,8 @@
     "time_provenance": {
       "source": "score_path",
       "t_sec": 3145.98,
-      "pipeline_verified": false
+      "pipeline_verified": false,
+      "not_a_goal_action": true
     },
     "event_ids": [],
     "frame_ids": [],
@@ -330,6 +351,9 @@
     "narration": "equalizer 比分确认 1:1 @ 3145.98s（非进球剪辑点）。",
     "include_in_cut": true,
     "glitch_avoidance": [],
+    "goal_anchor_t_sec": null,
+    "goal_action_complete": null,
+    "integrity_failure": null,
     "evidence_refs": [
       {
         "kind": "rule_fact",
@@ -391,6 +415,9 @@
     "narration": "go_ahead 进球动作候选 event_000022 @ 3523.574s（相对记分牌 Δ=-173.776s）。",
     "include_in_cut": true,
     "glitch_avoidance": [],
+    "goal_anchor_t_sec": 3523.574,
+    "goal_action_complete": true,
+    "integrity_failure": null,
     "evidence_refs": [
       {
         "kind": "rule_fact",
@@ -421,7 +448,8 @@
     "time_provenance": {
       "source": "score_path",
       "t_sec": 3697.35,
-      "pipeline_verified": false
+      "pipeline_verified": false,
+      "not_a_goal_action": true
     },
     "event_ids": [],
     "frame_ids": [],
@@ -439,6 +467,9 @@
     "narration": "go_ahead 比分确认 2:1 @ 3697.35s（非进球剪辑点）。",
     "include_in_cut": true,
     "glitch_avoidance": [],
+    "goal_anchor_t_sec": null,
+    "goal_action_complete": null,
+    "integrity_failure": null,
     "evidence_refs": [
       {
         "kind": "rule_fact",
@@ -472,8 +503,8 @@
     "role": "lead_extend_1_goal_action",
     "shot_kind": "live",
     "is_replay": false,
-    "media_in": 6305.199,
-    "media_out": 6315.8,
+    "media_in": 6316.7,
+    "media_out": 6327.199,
     "time_status": "linked_event_ms",
     "time_provenance": {
       "source": "linked_live_goal_event",
@@ -502,11 +533,14 @@
     "glitch_avoidance": [
       {
         "label": "third_goal_approach_neon_band",
-        "action": "lower_out",
-        "from": 6327.199,
-        "to": 6315.8
+        "action": "raise_in_keep_anchor",
+        "from": 6305.199,
+        "to": 6316.7
       }
     ],
+    "goal_anchor_t_sec": 6317.199,
+    "goal_action_complete": true,
+    "integrity_failure": null,
     "evidence_refs": [
       {
         "kind": "rule_fact",
@@ -537,7 +571,8 @@
     "time_provenance": {
       "source": "score_path",
       "t_sec": 6408.7,
-      "pipeline_verified": false
+      "pipeline_verified": false,
+      "not_a_goal_action": true
     },
     "event_ids": [],
     "frame_ids": [],
@@ -555,6 +590,9 @@
     "narration": "lead_extend_1 比分确认 3:1 @ 6408.7s（非进球剪辑点）。",
     "include_in_cut": true,
     "glitch_avoidance": [],
+    "goal_anchor_t_sec": null,
+    "goal_action_complete": null,
+    "integrity_failure": null,
     "evidence_refs": [
       {
         "kind": "rule_fact",
@@ -583,9 +621,9 @@
   },
   {
     "edl_index": 12,
-    "segment_id": "seg_lead_extend_2_scoreboard",
-    "beat": "高潮",
-    "role": "lead_extend_2_scoreboard_anchor",
+    "segment_id": "seg_ending_final_scoreboard",
+    "beat": "收尾",
+    "role": "ending_final_scoreboard",
     "shot_kind": "scoreboard_anchor",
     "is_replay": false,
     "media_in": 7857.37,
@@ -594,100 +632,51 @@
     "time_provenance": {
       "source": "score_path",
       "t_sec": 7858.37,
-      "pipeline_verified": false
+      "pipeline_verified": false,
+      "shortened_scoreboard": true,
+      "not_a_goal_action": true
     },
-    "event_ids": [],
+    "event_ids": [
+      "event_000155"
+    ],
     "frame_ids": [],
     "linked_live_event_id": null,
     "narrative_order": 12,
     "source_media_order": 7857.37,
     "render_eligibility": "candidate_only",
     "blocking_reasons": [
+      "ending_visual_unverified",
       "score_path_only_not_render_ready",
       "phase5_candidate_delivery",
       "semantic_unverified"
     ],
-    "confidence": 0.85,
-    "selection_reason": "score_path_board_anchor",
-    "narration": "lead_extend_2 比分确认 4:1 @ 7858.37s（非进球剪辑点）。",
+    "confidence": 0.7,
+    "selection_reason": "ending_final_scoreboard_preferred",
+    "narration": "终场比分确认 4:1 @ 7858.37s（优先于远处比赛结束标注；仍需画面核验）。",
     "include_in_cut": true,
     "glitch_avoidance": [],
+    "goal_anchor_t_sec": null,
+    "goal_action_complete": null,
+    "integrity_failure": null,
     "evidence_refs": [
       {
         "kind": "rule_fact",
         "used_as_fact": true,
-        "source": "score_path",
+        "source": "final_score_path",
         "score": "4:1",
         "t_sec": 7858.37,
-        "note": "scoreboard_confirm_only"
-      },
-      {
-        "kind": "unresolved_mapping",
-        "used_as_fact": false,
-        "carrier_event_id": "event_000155",
-        "reasons": [
-          "type_incompatible:界外球"
-        ]
+        "note": "preferred_ending_over_raw_match_end"
       }
     ],
     "source_refs": [
       {
-        "namespace": "score_path_carrier",
-        "id": "event_000155",
-        "link_status": "unresolved_mapping"
+        "namespace": "unknown",
+        "id": "event_000155"
       }
     ]
   },
   {
     "edl_index": 13,
-    "segment_id": "seg_ending",
-    "beat": "收尾",
-    "role": "ending",
-    "shot_kind": "live",
-    "is_replay": false,
-    "media_in": 7942.16,
-    "media_out": 7954.16,
-    "time_status": "event_ms",
-    "time_provenance": {
-      "source": "event_ms",
-      "t_sec": 7946.16,
-      "pipeline_verified": false
-    },
-    "event_ids": [
-      "event_000159"
-    ],
-    "frame_ids": [],
-    "linked_live_event_id": null,
-    "narrative_order": 13,
-    "source_media_order": 7942.16,
-    "render_eligibility": "candidate_only",
-    "blocking_reasons": [
-      "unverified_event_ms",
-      "phase5_candidate_delivery",
-      "semantic_unverified"
-    ],
-    "confidence": 0.5,
-    "selection_reason": "ending_event",
-    "narration": "收尾/终场（未校准默认不成片）。",
-    "include_in_cut": true,
-    "glitch_avoidance": [],
-    "evidence_refs": [
-      {
-        "kind": "rule_fact",
-        "used_as_fact": true,
-        "source": "event",
-        "event_id": "event_000159"
-      }
-    ],
-    "source_refs": [
-      {
-        "namespace": "delivery_event",
-        "id": "event_000159"
-      }
-    ]
-  },
-  {
-    "edl_index": 14,
     "segment_id": "seg_title_close",
     "beat": "收尾",
     "role": "story_title",
@@ -703,7 +692,7 @@
     "event_ids": [],
     "frame_ids": [],
     "linked_live_event_id": null,
-    "narrative_order": 14,
+    "narrative_order": 13,
     "source_media_order": -1,
     "render_eligibility": "candidate_only",
     "blocking_reasons": [
@@ -715,6 +704,11 @@
     "include_in_cut": true,
     "placeholder_sec": 3.0,
     "placeholder_lines": [
+      "克罗地亚 逆转 加拿大",
+      "终场 4:1",
+      "故事收束"
+    ],
+    "placeholder_lines_qc": [
       "克罗地亚 逆转 加拿大",
       "终场 4:1",
       "故事收束",
