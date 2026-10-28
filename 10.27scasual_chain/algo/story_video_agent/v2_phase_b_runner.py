@@ -14,6 +14,7 @@ from story_video_agent.vision_provider import VisionProvider
 from story_video_agent.v2_phase_b_agent import V2PhaseBAgent
 from story_video_agent.v2_phase_b_memory import V2PhaseBMemory
 from story_video_agent.v2_phase_b_toolbox import V2PhaseBToolbox
+from story_video_agent.v2_score_transitions import independent_discovery_check
 
 
 def _write(path: Path, obj: Any) -> None:
@@ -87,9 +88,32 @@ def run_multi_discovery(
         if decision["type"] == "answer":
             stop_reason = str(decision.get("reason") or decision.get("answer") or "planner_finish")
             hyp = dict(decision.get("hypothesis") or {})
-            hyp.setdefault("discovery_status", decision.get("answer"))
+            # Independent score-transition check — do not trust LLM self-report alone.
+            check = independent_discovery_check(
+                llm_status=str(decision.get("answer") or hyp.get("discovery_status") or "unresolved"),
+                observations=memory.observations + [
+                    {
+                        "notes": it.get("notes"),
+                        "observed_actions": it.get("supporting_observations") or it.get("raw_actions"),
+                        "media_start_sec": it.get("media_start"),
+                        "media_end_sec": it.get("media_end"),
+                        "tool": it.get("source_tool"),
+                    }
+                    for it in memory.evidence_items
+                ],
+            )
+            final = check["final_status"]
+            hyp["discovery_status"] = final
+            hyp["status"] = final
+            hyp["score_check"] = check
+            memory.discovery_status = final
             memory.set_hypothesis(hyp)
-            step_row["observation"] = {"terminal": True, "answer": decision.get("answer")}
+            step_row["observation"] = {
+                "terminal": True,
+                "answer": decision.get("answer"),
+                "final_status_after_check": final,
+                "demoted": check.get("demoted"),
+            }
             trace.append(step_row)
             break
         if agent.argument_error is not None:

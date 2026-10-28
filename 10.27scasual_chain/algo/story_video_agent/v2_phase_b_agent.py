@@ -9,6 +9,7 @@ from typing import Any, Dict, List, Optional
 from story_video_agent.api_provider import ApiProvider
 from story_video_agent.tools import ToolArgumentError
 from story_video_agent.v2_phase_b_toolbox import V2PhaseBToolbox
+from story_video_agent.v2_score_transitions import independent_discovery_check
 
 _JSON_OBJ = re.compile(r"\{.*\}", re.DOTALL)
 
@@ -137,33 +138,39 @@ class V2PhaseBAgent:
         facts = memory.planner_facts() if hasattr(memory, "planner_facts") else {}
         n_obs = int(facts.get("n_observations") or 0)
         if remaining <= 1:
-            # Prefer evidence-backed terminal status over blank unresolved.
-            blob = json.dumps(facts.get("evidence_items_deduped") or [], ensure_ascii=False).lower()
-            notes = " ".join(
-                str(o.get("notes_head") or "") for o in (facts.get("recent_observations") or [])
-            ).lower()
-            text = blob + " " + notes
-            has_deficit = ("0 - 1" in text) or ("0-1" in text) or ("trailing" in text) or ("落后" in text)
-            has_level = ("1 - 1" in text) or ("1-1" in text) or ("equaliz" in text) or ("扳平" in text)
-            has_lead = ("2 - 1" in text) or ("2-1" in text) or ("comeback" in text) or ("反超" in text)
-            if has_deficit and has_level and has_lead:
-                ans = "story_candidate"
-            elif has_deficit or has_level or has_lead:
-                ans = "partial_story"
-            else:
-                ans = "unresolved"
+            # Generic score transitions only — no match-specific 0-1/1-1/2-1 hardcoding,
+            # and no narrative keywords (comeback/trailing) as confirmation.
+            obs_rows = []
+            for it in facts.get("evidence_items_deduped") or []:
+                obs_rows.append(
+                    {
+                        "notes": it.get("notes"),
+                        "observed_actions": it.get("supporting_observations") or it.get("raw_actions"),
+                        "media_start_sec": it.get("media_start"),
+                        "media_end_sec": it.get("media_end"),
+                        "tool": it.get("source_tool"),
+                    }
+                )
+            for o in facts.get("recent_observations") or []:
+                obs_rows.append(
+                    {
+                        "notes": o.get("notes_head"),
+                        "observed_actions": o.get("actions_head"),
+                        "media_start_sec": o.get("media_start_sec"),
+                        "media_end_sec": o.get("media_end_sec"),
+                        "tool": o.get("tool"),
+                    }
+                )
+            check = independent_discovery_check(llm_status="unresolved", observations=obs_rows)
+            ans = str(check["final_status"])
             return {
                 "type": "answer",
                 "answer": ans,
-                "reason": "budget_or_last_step_from_evidence",
+                "reason": "budget_or_last_step_score_transition_check",
                 "hypothesis": {
                     "discovery_status": ans,
                     "status": ans,
-                    "evidence_cues": {
-                        "deficit_like": has_deficit,
-                        "level_like": has_level,
-                        "lead_like": has_lead,
-                    },
+                    "score_check": check,
                 },
             }
         if n_obs == 0:
