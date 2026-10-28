@@ -1040,7 +1040,15 @@ class ApiProvider:
                 usage_audit = extract_usage_audit(payload, content=content)
                 limit = self.effective_output_token_limit(cfg)
                 exceeded = bool(limit is not None and ct > int(limit))
-                if exceeded:
+                # Reasoning models often report completion_tokens >> max_tokens while still
+                # returning usable visible content (finish_reason=stop). Hard-block only when
+                # truncated/empty, or when STORY_API_HARD_BLOCK_ON_OUTPUT_BUDGET=1.
+                hard_env = (_env("STORY_API_HARD_BLOCK_ON_OUTPUT_BUDGET") or "").strip().lower()
+                hard_block = hard_env in ("1", "true", "yes", "on")
+                finish_reason = str(usage_audit.get("finish_reason") or "")
+                visible_chars = int(usage_audit.get("visible_output_chars") or len(content))
+                truncated_empty = finish_reason == "length" and visible_chars < 8
+                if exceeded and (hard_block or truncated_empty):
                     self._output_budget_exceeded = True
                     if role not in self._output_budget_exceeded_roles:
                         self._output_budget_exceeded_roles.append(role)

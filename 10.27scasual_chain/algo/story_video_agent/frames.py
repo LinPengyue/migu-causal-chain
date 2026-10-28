@@ -255,9 +255,10 @@ class FrameStore:
                 f"requested media time {requested_sec:.3f}s outside "
                 f"[0, {self.media.duration_sec:.3f}]"
             )
-        # 允许落在媒体起点偏移之后的有效区间
+        # 允许落在媒体起点偏移之后的有效区间；尾部留足余量避免 HEVC seek 空帧
         lo = max(0.0, self.media.start_time_sec)
-        hi = max(lo, self.media.duration_sec - 0.02)
+        tail = min(1.0, max(0.5, self.media.duration_sec * 0.02))
+        hi = max(lo, self.media.duration_sec - tail)
         requested_sec = min(max(requested_sec, lo), hi)
 
         cached = self._cache_get(requested_sec)
