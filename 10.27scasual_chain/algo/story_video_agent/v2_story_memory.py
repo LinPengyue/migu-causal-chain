@@ -24,10 +24,28 @@ class V2StoryMemory:
             }
         )
         if observation.get("media_start_sec") is not None:
+            frames = observation.get("frames") or []
+            sampled = observation.get("sampled_media_times") or [
+                f.get("requested_media_sec") for f in frames if isinstance(f, dict)
+            ]
+            perc = observation.get("perception") or {}
+            failed = bool(observation.get("error"))
+            observed = (not failed) and bool(perc.get("normalized_ok"))
             self.checked_intervals.append(
                 {
+                    "requested_start": float(observation["media_start_sec"]),
+                    "requested_end": float(observation["media_end_sec"]),
+                    # backward-compatible aliases
                     "start": float(observation["media_start_sec"]),
                     "end": float(observation["media_end_sec"]),
+                    "sampled_media_times": [t for t in (sampled or []) if t is not None],
+                    "observed": observed,
+                    "failed": failed,
+                    "sparse_note": (
+                        "sparse_samples_do_not_mean_full_interval_was_watched"
+                        if str(decision.get("tool") or "") in ("overview", "scan_interval", "global_overview")
+                        else ""
+                    ),
                 }
             )
         perc = observation.get("perception") or {}
