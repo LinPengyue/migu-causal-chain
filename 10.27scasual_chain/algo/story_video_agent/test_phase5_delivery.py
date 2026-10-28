@@ -6,7 +6,9 @@ from story_video_agent.phase5_delivery import (
     apply_glitch_avoidance,
     assess_goal_completeness,
     build_story_graph,
+    decide_arc_background_plan,
     plan_goal_clips_around_glitch,
+    resolve_delivery_window_conflicts,
     select_delivery_rows,
     validate_story_graph,
 )
@@ -153,6 +155,47 @@ def test_validate_detects_dangling():
     ok, problems = validate_story_graph(g)
     assert not ok
     assert any("target_missing" in p for p in problems)
+
+
+def test_ending_wrap_dropped_when_overlaps_go_ahead_board():
+    rows = [
+        {
+            "segment_id": "seg_ga_board",
+            "beat": "高潮",
+            "role": "go_ahead_scoreboard_anchor",
+            "media_in": 6956.12,
+            "media_out": 6959.62,
+            "blocking_reasons": [],
+        },
+        {
+            "segment_id": "seg_wrap",
+            "beat": "收尾",
+            "role": "ending_story_wrap_score",
+            "media_in": 6956.12,
+            "media_out": 6961.12,
+            "blocking_reasons": [],
+        },
+    ]
+    out = resolve_delivery_window_conflicts(rows)
+    roles = [r["role"] for r in out]
+    assert "go_ahead_scoreboard_anchor" in roles
+    assert "ending_story_wrap_score" not in roles
+
+
+def test_arc_background_plan_for_multi_turn_prior():
+    prior = [
+        {"score": "0:1", "t_sec": 100.0, "delta_side": "right"},
+        {"score": "1:1", "t_sec": 200.0, "delta_side": "left"},
+    ]
+    # protagonist right led, then arc starts later at 2:1 deficit
+    dec = decide_arc_background_plan(
+        prior=prior,
+        protagonist_side="right",
+        behind={"score": "2:1", "t_sec": 300.0},
+    )
+    assert dec["affects_comeback_understanding"] is True
+    assert dec["mode"] == "title_and_key_boards"
+    assert len(dec["boards_to_include"]) >= 1
 
 
 def test_legacy_far_match_end_skipped_in_delivery():

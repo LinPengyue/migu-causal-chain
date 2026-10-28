@@ -32,12 +32,11 @@
 - 反超比分确认：原片约 6956.1–6959.6 秒；比分确认（非进球动作）。
 
 ### 收尾
-- 终场/收尾画面：原片约 6956.1–6961.1 秒；窗口完整候选。
 - 标题卡（标题/说明卡）
 
 ## 故事范围（全场背景 vs 本次剪辑弧）
 
-本次剪辑主线是 T01「最后一次落后弧」上的扳平/反超（及弧内失球），不是默认收录全场每一次比分转折。整场比分背景见 full_match_score_path；弧前省略的转折见 prior_score_turns_omitted。
+本次剪辑主线是 T01「最后一次落后弧」；规划器可按需补充弧前背景摘要/关键比分牌，但不会默认剪成固定三事件，也不会强制纳入全部进球。整场轨迹见 full_match_score_path；弧前省略见 prior_score_turns_omitted；补入决策见 background_plan。
 
 ### 整场比分背景
 - 0:0 @ 649.75s
@@ -52,7 +51,8 @@
 
 ### 弧前省略的比分转折（未默认剪入）
 - 0:0 @ 649.75s
-- 是否补入这些转折以帮助理解：由产品/审核决定；当前 `prior_turns_needed_for_context=True`。
+- 规划器背景决策：mode=`none` · affects_understanding=`False` · reason=`no_meaningful_prior_score_changes`
+- 不会固定为「落后→扳平→反超」三事件模板，也不会强制纳入全部进球。
 
 ## 关键比分变化（记分牌锚点）
 - 比分确认 **0:0**（记分牌锚点约 649.75 秒；非进球动作时刻）
@@ -76,6 +76,7 @@
 - 缺失证据标记：behind_carrier_unresolved:event_000173
 - 缺失证据标记：equalizer_carrier_unresolved:event_000637
 - 缺失证据标记：go_ahead_carrier_unresolved:event_000670
+- 缺失证据标记：ending_wrap_score_skipped_duplicate_of_go_ahead_board
 - 缺失证据标记：ending_match_end_rejected:match_end_beyond_candidate_horizon:dt=1055.81
 
 ---
@@ -100,5 +101,4 @@
 | seg_equalizer_scoreboard | 转折 | equalizer_scoreboard_anchor | 6534.62 | 6538.12 | [] | score_path_only | None | candidate_only / semantic_unverified |
 | seg_go_ahead_goal_action | 高潮 | go_ahead_goal_action | 6831.088 | 6853.088 | ['causal:ann_0020:event_000105'] | linked_event_ms | True | candidate_only / semantic_unverified |
 | seg_go_ahead_scoreboard | 高潮 | go_ahead_scoreboard_anchor | 6956.12 | 6959.62 | [] | score_path_only | None | candidate_only / semantic_unverified |
-| seg_ending_story_wrap_score | 收尾 | ending_story_wrap_score | 6956.12 | 6961.12 | ['event_000670'] | score_path_only | None | candidate_only / semantic_unverified |
 | seg_title_close | 收尾 | story_wrap_title | None | None | [] | placeholder_title | None | candidate_only / semantic_unverified |

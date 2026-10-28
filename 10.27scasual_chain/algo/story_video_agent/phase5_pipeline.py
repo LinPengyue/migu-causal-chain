@@ -20,6 +20,7 @@ from typing import Any, Dict, List, Optional
 from story_chain.end_to_end import run_paths
 from story_video_agent.narrative_composer import compose_story_plan
 from story_video_agent.phase5_delivery import (
+    build_arc_background_delivery_rows,
     build_story_graph,
     build_story_scope,
     build_story_summary_md,
@@ -148,16 +149,34 @@ def run_phase5(
     )
     title = enrich_plan_title(plan, story)
     plan["story_scope"] = build_story_scope(story, plan)
+    scope = plan["story_scope"]
     _write_json(out_dir / "story_plan.json", plan)
-    _write_json(out_dir / "story_scope.json", plan["story_scope"])
+    _write_json(out_dir / "story_scope.json", scope)
 
     glitch = load_glitch_profile(glitch_profile)
     delivery = select_delivery_rows(plan, glitch_ranges=glitch)
+    # Drop redundant story-wrap score footage when policy says title-only
+    if scope.get("ending_wrap_media_policy") == "title_card_only":
+        delivery = [
+            r
+            for r in delivery
+            if str(r.get("role") or "")
+            not in ("ending_story_wrap_score", "ending_final_scoreboard")
+        ]
+    # Inject arc-background rows (planner decision) before main arc footage
+    bg_rows = build_arc_background_delivery_rows(scope.get("background_plan") or {})
+    if bg_rows:
+        # Place after open title (added later) conceptually; prepend to body now
+        delivery = bg_rows + delivery
     sp = story.get("score_path") or []
     final_score = None
     if sp and isinstance(sp[-1], dict):
         final_score = sp[-1].get("score")
     delivery = insert_title_cards(delivery, title=title, final_score=final_score)
+    # Re-number after merges
+    for i, row in enumerate(delivery):
+        row["edl_index"] = i + 1
+        row["narrative_order"] = i + 1
     _write_json(out_dir / "candidate_edl.json", delivery)
 
     summary_md = build_story_summary_md(

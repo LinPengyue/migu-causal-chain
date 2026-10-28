@@ -35,12 +35,11 @@
 - 扩大优势比分确认：原片约 6407.7–6411.2 秒；比分确认（非进球动作）。
 
 ### 收尾
-- 终场/收尾画面：原片约 7857.4–7862.4 秒；窗口完整候选。
 - 标题卡（标题/说明卡）
 
 ## 故事范围（全场背景 vs 本次剪辑弧）
 
-本次剪辑主线是 T01「最后一次落后弧」上的扳平/反超（及弧内失球），不是默认收录全场每一次比分转折。整场比分背景见 full_match_score_path；弧前省略的转折见 prior_score_turns_omitted。
+本次剪辑主线是 T01「最后一次落后弧」；规划器可按需补充弧前背景摘要/关键比分牌，但不会默认剪成固定三事件，也不会强制纳入全部进球。整场轨迹见 full_match_score_path；弧前省略见 prior_score_turns_omitted；补入决策见 background_plan。
 
 ### 整场比分背景
 - 0:1 @ 1079.06s
@@ -79,6 +78,7 @@
 - 缺失证据标记：lead_extend_1_carrier_unresolved:event_000118
 - 缺失证据标记：lead_extend_2_carrier_unresolved:event_000155
 - 缺失证据标记：missing_live_goal_action:lead_extend_2
+- 缺失证据标记：ending_wrap_score_skipped_duplicate_of_go_ahead_board
 - 缺失证据标记：ending_full_time_needs_visual_verify
 
 ---
@@ -106,5 +106,4 @@
 | seg_lead_extend_1_goal_action_approach | 高潮 | lead_extend_1_goal_action_approach | 6305.199 | 6315.8 | ['event_000025'] | linked_event_ms | True | candidate_only / semantic_unverified |
 | seg_lead_extend_1_goal_action | 高潮 | lead_extend_1_goal_action | 6316.7 | 6327.199 | ['event_000025'] | linked_event_ms | True | candidate_only / semantic_unverified |
 | seg_lead_extend_1_scoreboard | 高潮 | lead_extend_1_scoreboard_anchor | 6407.7 | 6411.2 | [] | score_path_only | None | candidate_only / semantic_unverified |
-| seg_ending_story_wrap_score | 收尾 | ending_story_wrap_score | 7857.37 | 7862.37 | ['event_000155'] | score_path_only | None | candidate_only / semantic_unverified |
 | seg_title_close | 收尾 | story_wrap_title | None | None | [] | placeholder_title | None | candidate_only / semantic_unverified |

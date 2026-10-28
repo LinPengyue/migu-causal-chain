@@ -925,8 +925,28 @@ def compose_story_plan(
         "full_time_verified": False,
     }
 
-    # 故事收束用的比分确认（明确：非已核实终场哨声画面）
-    if final_score_node and final_score_t is not None:
+    # 故事收束比分画面：若与反超/最后进球记分牌同锚点，则不生成（避免 EDL 重复），改标题卡收束
+    go_ahead_node = milestones.get("go_ahead")
+    go_ahead_t = (
+        float(go_ahead_node["t_sec"])
+        if go_ahead_node and go_ahead_node.get("t_sec") is not None
+        else None
+    )
+    # Also redundant if final scoreboard coincides with last lead_extend board
+    last_extend_t = None
+    for ext in reversed(list(milestones.get("lead_extends") or [])):
+        if ext and ext.get("t_sec") is not None:
+            last_extend_t = float(ext["t_sec"])
+            break
+    wrap_redundant = final_score_t is not None and any(
+        abs(final_score_t - t) <= 1.0
+        for t in (go_ahead_t, last_extend_t)
+        if t is not None
+    )
+    ending_diag["ending_wrap_media_policy"] = (
+        "title_card_only" if wrap_redundant else "scoreboard_ok"
+    )
+    if final_score_node and final_score_t is not None and not wrap_redundant:
         win_ft = _window_from_t(
             final_score_t,
             status="score_path_only",
@@ -961,7 +981,7 @@ def compose_story_plan(
                 is_replay=False,
                 narration=(
                     f"故事收束·最终比分确认 {final_score_node.get('score')} @ {final_score_t}s"
-                    "（不是已核验的全场结束画面；可能与最后进球比分牌重合）。"
+                    "（不是已核验的全场结束画面）。"
                 ),
                 selection_reason="ending_story_wrap_score",
                 source_refs=[
@@ -988,6 +1008,8 @@ def compose_story_plan(
                 ],
             )
         )
+    elif wrap_redundant:
+        missing.append("ending_wrap_score_skipped_duplicate_of_go_ahead_board")
 
     ending = [
         e

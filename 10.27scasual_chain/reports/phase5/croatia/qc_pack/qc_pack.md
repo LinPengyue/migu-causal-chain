@@ -75,11 +75,3 @@
 - [OK] t=6409.45 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/croatia/qc_pack/frames/seg_lead_extend_1_scoreboard_mid_6409.4.jpg`
 - [OK] t=6410.20 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/croatia/qc_pack/frames/seg_lead_extend_1_scoreboard_out_minus_1_6410.2.jpg`
 
-### seg_ending_story_wrap_score · ending_story_wrap_score
-- 窗口 `7857.370`–`7862.370` · anchor=None · complete=None
-- checklist: `{"goal_inside_window": null, "not_scoreboard_as_goal": true, "glitch_demotion": true, "semantic_verified": false, "human_review_required": true}`
-- integrity: `None`
-- [OK] t=7858.37 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/croatia/qc_pack/frames/seg_ending_story_wrap_score_in_plus_1_7858.4.jpg`
-- [OK] t=7859.87 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/croatia/qc_pack/frames/seg_ending_story_wrap_score_mid_7859.9.jpg`
-- [OK] t=7861.37 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/croatia/qc_pack/frames/seg_ending_story_wrap_score_out_minus_1_7861.4.jpg`
-

@@ -472,56 +472,6 @@
       "narrative_order": 9,
       "source_media_order": 6880.94,
       "verification_status": "draft"
-    },
-    {
-      "segment_id": "seg_ending_story_wrap_score",
-      "beat": "收尾",
-      "role": "ending_story_wrap_score",
-      "event_ids": [
-        "event_000636"
-      ],
-      "frame_ids": [],
-      "evidence_refs": [
-        {
-          "kind": "rule_fact",
-          "used_as_fact": true,
-          "source": "final_score_path",
-          "score": "2:3",
-          "t_sec": 6881.94,
-          "note": "story_wrap_score_not_verified_full_time"
-        }
-      ],
-      "media_in": 6880.94,
-      "media_out": 6885.94,
-      "time_status": "score_path_only",
-      "shot_kind": "scoreboard_anchor",
-      "is_replay": false,
-      "linked_live_event_id": null,
-      "narration": "故事收束·最终比分确认 2:3 @ 6881.94s（不是已核验的全场结束画面；可能与最后进球比分牌重合）。",
-      "precise_claim": false,
-      "selection_reason": "ending_story_wrap_score",
-      "source_refs": [
-        {
-          "namespace": "unknown",
-          "id": "event_000636"
-        }
-      ],
-      "confidence": 0.65,
-      "time_provenance": {
-        "source": "score_path",
-        "t_sec": 6881.94,
-        "pipeline_verified": false,
-        "ending_status": "unverified_story_wrap",
-        "not_verified_full_time": true
-      },
-      "render_eligibility": "candidate_only",
-      "blocking_reasons": [
-        "ending_not_semantically_verified",
-        "score_path_only_not_render_ready"
-      ],
-      "narrative_order": 10,
-      "source_media_order": 6880.94,
-      "verification_status": "draft"
     }
   ],
   "evidence_refs": [
@@ -615,14 +565,6 @@
       "source": "replay_linked_to_live",
       "event_id": "event_000167",
       "linked_live_event_id": "causal:ann_0031:event_000160"
-    },
-    {
-      "kind": "rule_fact",
-      "used_as_fact": true,
-      "source": "final_score_path",
-      "score": "2:3",
-      "t_sec": 6881.94,
-      "note": "story_wrap_score_not_verified_full_time"
     }
   ],
   "event_ids": [
@@ -725,6 +667,7 @@
     "behind_carrier_unresolved:event_000456",
     "equalizer_carrier_unresolved:event_000560",
     "go_ahead_carrier_unresolved:event_000636",
+    "ending_wrap_score_skipped_duplicate_of_go_ahead_board",
     "ending_full_time_needs_visual_verify"
   ],
   "blocking_reasons": [
@@ -741,7 +684,7 @@
       "蓄力": "蓄力动作 射门（live，event_ms 未校准成片）。 蓄力动作 任意球（live，event_ms 未校准成片）。",
       "转折": "equalizer 进球动作候选 event_000117 @ 5657.621s（相对记分牌 Δ=-54.389s）。 equalizer 比分确认 2:2 @ 5712.01s（非进球剪辑点）。",
       "高潮": "go_ahead 进球动作候选 causal:ann_0031:event_000160 @ 6791.882s（相对记分牌 Δ=-90.058s）。 回放补充（关联 live causal:ann_0031:event_000160；默认不成片）。 go_ahead 比分确认 2:3 @ 6881.94s（非进球剪辑点）。",
-      "收尾": "故事收束·最终比分确认 2:3 @ 6881.94s（不是已核验的全场结束画面；可能与最后进球比分牌重合）。"
+      "收尾": ""
     },
     "title": "塞尔塔维戈 逆转 奥萨苏纳"
   },
@@ -1027,40 +970,6 @@
       "selection_reason": "score_path_board_anchor",
       "narration": "go_ahead 比分确认 2:3 @ 6881.94s（非进球剪辑点）。",
       "include_in_cut": false
-    },
-    {
-      "edl_index": 10,
-      "segment_id": "seg_ending_story_wrap_score",
-      "beat": "收尾",
-      "role": "ending_story_wrap_score",
-      "shot_kind": "scoreboard_anchor",
-      "is_replay": false,
-      "media_in": 6880.94,
-      "media_out": 6885.94,
-      "time_status": "score_path_only",
-      "time_provenance": {
-        "source": "score_path",
-        "t_sec": 6881.94,
-        "pipeline_verified": false,
-        "ending_status": "unverified_story_wrap",
-        "not_verified_full_time": true
-      },
-      "event_ids": [
-        "event_000636"
-      ],
-      "frame_ids": [],
-      "linked_live_event_id": null,
-      "narrative_order": 10,
-      "source_media_order": 6880.94,
-      "render_eligibility": "candidate_only",
-      "blocking_reasons": [
-        "ending_not_semantically_verified",
-        "score_path_only_not_render_ready"
-      ],
-      "confidence": 0.65,
-      "selection_reason": "ending_story_wrap_score",
-      "narration": "故事收束·最终比分确认 2:3 @ 6881.94s（不是已核验的全场结束画面；可能与最后进球比分牌重合）。",
-      "include_in_cut": false
     }
   ],
   "render_ready_edl": [],
@@ -1345,40 +1254,6 @@
       "confidence": 0.85,
       "selection_reason": "score_path_board_anchor",
       "narration": "go_ahead 比分确认 2:3 @ 6881.94s（非进球剪辑点）。",
-      "include_in_cut": false
-    },
-    {
-      "edl_index": 10,
-      "segment_id": "seg_ending_story_wrap_score",
-      "beat": "收尾",
-      "role": "ending_story_wrap_score",
-      "shot_kind": "scoreboard_anchor",
-      "is_replay": false,
-      "media_in": 6880.94,
-      "media_out": 6885.94,
-      "time_status": "score_path_only",
-      "time_provenance": {
-        "source": "score_path",
-        "t_sec": 6881.94,
-        "pipeline_verified": false,
-        "ending_status": "unverified_story_wrap",
-        "not_verified_full_time": true
-      },
-      "event_ids": [
-        "event_000636"
-      ],
-      "frame_ids": [],
-      "linked_live_event_id": null,
-      "narrative_order": 10,
-      "source_media_order": 6880.94,
-      "render_eligibility": "candidate_only",
-      "blocking_reasons": [
-        "ending_not_semantically_verified",
-        "score_path_only_not_render_ready"
-      ],
-      "confidence": 0.65,
-      "selection_reason": "ending_story_wrap_score",
-      "narration": "故事收束·最终比分确认 2:3 @ 6881.94s（不是已核验的全场结束画面；可能与最后进球比分牌重合）。",
       "include_in_cut": false
     }
   ],
@@ -1733,7 +1608,8 @@
         }
       ],
       "delivery_policy": "story_wrap_until_semantic_verify",
-      "full_time_verified": false
+      "full_time_verified": false,
+      "ending_wrap_media_policy": "title_card_only"
     },
     "render_problems": [
       "missing_render_ready_role:equalizer_goal_action",
@@ -1842,6 +1718,30 @@
       }
     ],
     "prior_turns_needed_for_context": true,
-    "scope_disclaimer": "本次剪辑主线是 T01「最后一次落后弧」上的扳平/反超（及弧内失球），不是默认收录全场每一次比分转折。整场比分背景见 full_match_score_path；弧前省略的转折见 prior_score_turns_omitted。"
+    "background_plan": {
+      "mode": "title_and_key_boards",
+      "reason": "prior_multi_turn_or_proto_lead_before_last_deficit",
+      "affects_comeback_understanding": true,
+      "boards_to_include": [
+        {
+          "score": "0:1",
+          "t_sec": 2071.43,
+          "delta_side": "right"
+        },
+        {
+          "score": "1:1",
+          "t_sec": 2660.82,
+          "delta_side": "left"
+        }
+      ],
+      "title_lines": [
+        "翻盘弧前情提要（非全场进球全集）",
+        "0:0 → 0:1 → 1:1",
+        "以下进入最后一次落后弧"
+      ],
+      "meaningful_prior_count": 2
+    },
+    "ending_wrap_media_policy": "title_card_only",
+    "scope_disclaimer": "本次剪辑主线是 T01「最后一次落后弧」；规划器可按需补充弧前背景摘要/关键比分牌，但不会默认剪成固定三事件，也不会强制纳入全部进球。整场轨迹见 full_match_score_path；弧前省略见 prior_score_turns_omitted；补入决策见 background_plan。"
   }
 }

@@ -16,6 +16,9 @@
 ## 五段叙事过程
 ### 铺垫
 - 标题卡（标题/说明卡）
+- 标题卡（标题/说明卡）
+- arc_background_scoreboard：原片约 2070.4–2073.9 秒；比分确认（非进球动作）。
+- arc_background_scoreboard：原片约 2659.8–2663.3 秒；比分确认（非进球动作）。
 - 对手造成落后的进球动作：原片约 3122.0–3144.0 秒；进球动作候选·窗口完整。
 - 落后比分确认：原片约 3198.7–3202.2 秒；比分确认（非进球动作）。
 
@@ -32,12 +35,11 @@
 - 反超比分确认：原片约 6880.9–6884.4 秒；比分确认（非进球动作）。
 
 ### 收尾
-- 终场/收尾画面：原片约 6880.9–6885.9 秒；窗口完整候选。
 - 标题卡（标题/说明卡）
 
 ## 故事范围（全场背景 vs 本次剪辑弧）
 
-本次剪辑主线是 T01「最后一次落后弧」上的扳平/反超（及弧内失球），不是默认收录全场每一次比分转折。整场比分背景见 full_match_score_path；弧前省略的转折见 prior_score_turns_omitted。
+本次剪辑主线是 T01「最后一次落后弧」；规划器可按需补充弧前背景摘要/关键比分牌，但不会默认剪成固定三事件，也不会强制纳入全部进球。整场轨迹见 full_match_score_path；弧前省略见 prior_score_turns_omitted；补入决策见 background_plan。
 
 ### 整场比分背景
 - 0:0 @ 425.71s
@@ -56,7 +58,9 @@
 - 0:0 @ 425.71s
 - 0:1 @ 2071.43s
 - 1:1 @ 2660.82s
-- 是否补入这些转折以帮助理解：由产品/审核决定；当前 `prior_turns_needed_for_context=True`。
+- 规划器背景决策：mode=`title_and_key_boards` · affects_understanding=`True` · reason=`prior_multi_turn_or_proto_lead_before_last_deficit`
+- 已规划补入关键弧前比分牌（非进球动作）：['0:1', '1:1']
+- 不会固定为「落后→扳平→反超」三事件模板，也不会强制纳入全部进球。
 
 ## 关键比分变化（记分牌锚点）
 - 比分确认 **0:0**（记分牌锚点约 425.71 秒；非进球动作时刻）
@@ -82,6 +86,7 @@
 - 缺失证据标记：behind_carrier_unresolved:event_000456
 - 缺失证据标记：equalizer_carrier_unresolved:event_000560
 - 缺失证据标记：go_ahead_carrier_unresolved:event_000636
+- 缺失证据标记：ending_wrap_score_skipped_duplicate_of_go_ahead_board
 - 缺失证据标记：ending_full_time_needs_visual_verify
 
 ---
@@ -98,6 +103,9 @@
 | 段 | 叙事位 | 角色 | 原片入点 | 原片出点 | 关联事件 | 时间状态 | 进球完整 | 核验 |
 |---|---|---|---|---|---|---|---|---|
 | seg_title_open | 铺垫 | story_title | None | None | [] | placeholder_title | None | candidate_only / semantic_unverified |
+| seg_arc_background_title | 铺垫 | arc_background_title | None | None | [] | placeholder_title | None | candidate_only / semantic_unverified |
+| seg_arc_background_board_1 | 铺垫 | arc_background_scoreboard | 2070.43 | 2073.93 | [] | score_path_only | None | candidate_only / semantic_unverified |
+| seg_arc_background_board_2 | 铺垫 | arc_background_scoreboard | 2659.82 | 2663.32 | [] | score_path_only | None | candidate_only / semantic_unverified |
 | seg_opponent_opening_goal_action | 铺垫 | opponent_opening_goal_action | 3121.968 | 3143.968 | ['causal:ann_0014:event_000073'] | linked_event_ms | True | candidate_only / semantic_unverified |
 | seg_setup_deficit | 铺垫 | deficit_scoreboard_anchor | 3198.66 | 3202.16 | [] | score_path_only | None | candidate_only / semantic_unverified |
 | seg_buildup_event_000458 | 蓄力 | buildup_action | 3204.75 | 3216.75 | ['event_000458'] | event_ms | None | candidate_only / semantic_unverified |
@@ -106,5 +114,4 @@
 | seg_equalizer_scoreboard | 转折 | equalizer_scoreboard_anchor | 5711.01 | 5714.51 | [] | score_path_only | None | candidate_only / semantic_unverified |
 | seg_go_ahead_goal_action | 高潮 | go_ahead_goal_action | 6779.882 | 6801.882 | ['causal:ann_0031:event_000160'] | linked_event_ms | True | candidate_only / semantic_unverified |
 | seg_go_ahead_scoreboard | 高潮 | go_ahead_scoreboard_anchor | 6880.94 | 6884.44 | [] | score_path_only | None | candidate_only / semantic_unverified |
-| seg_ending_story_wrap_score | 收尾 | ending_story_wrap_score | 6880.94 | 6885.94 | ['event_000636'] | score_path_only | None | candidate_only / semantic_unverified |
 | seg_title_close | 收尾 | story_wrap_title | None | None | [] | placeholder_title | None | candidate_only / semantic_unverified |

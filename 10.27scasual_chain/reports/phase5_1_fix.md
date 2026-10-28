@@ -62,7 +62,14 @@
 | 终场=最后比分牌 / 45s 误拒 | match_end 作 **未核验候选**（可远于 45s，有上限）；成片默认 **故事收束包装**，`full_time_verified=false` |
 | 多次领先场次范围不清 | `story_scope.json`：全场比分 vs 最后落后弧 vs 弧前省略转折 |
 
-法国–澳大利亚仍为待传保留测试，未针对性调参。
+## 5.1c 追加
+
+| 问题 | 通用修复 |
+|------|----------|
+| EDL 收尾重复最后比分牌 | 时间窗重叠检测；与 go_ahead/扩大牌同锚点则 `title_card_only` |
+| Scope 仅 JSON | `background_plan` 规划器决定是否补弧前标题/≤2 比分牌（奥萨苏纳已补；不强制三事件/全进球） |
+
+法国–澳大利亚：**首次零修改**见 `reports/phase5/france_australia_first_run/`（开场失球 live 缺失已如实记录）。
 
 ---
 

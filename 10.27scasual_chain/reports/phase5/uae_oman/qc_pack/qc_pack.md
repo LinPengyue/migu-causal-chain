@@ -47,11 +47,3 @@
 - [OK] t=6843.09 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/uae_oman/qc_pack/frames/seg_go_ahead_goal_action_anchor_6843.1.jpg`
 - [OK] t=6844.59 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/uae_oman/qc_pack/frames/seg_go_ahead_goal_action_anchor_plus_1_5_6844.6.jpg`
 
-### seg_ending_story_wrap_score · ending_story_wrap_score
-- 窗口 `6956.120`–`6961.120` · anchor=None · complete=None
-- checklist: `{"goal_inside_window": null, "not_scoreboard_as_goal": true, "glitch_demotion": true, "semantic_verified": false, "human_review_required": true}`
-- integrity: `None`
-- [OK] t=6957.12 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/uae_oman/qc_pack/frames/seg_ending_story_wrap_score_in_plus_1_6957.1.jpg`
-- [OK] t=6958.62 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/uae_oman/qc_pack/frames/seg_ending_story_wrap_score_mid_6958.6.jpg`
-- [OK] t=6960.12 → `/tmp/migu-va2c/10.27scasual_chain/_local_render/phase5/uae_oman/qc_pack/frames/seg_ending_story_wrap_score_out_minus_1_6960.1.jpg`
-

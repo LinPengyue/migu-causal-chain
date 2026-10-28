@@ -522,11 +522,22 @@ def select_delivery_rows(
             if shot != "title_card":
                 continue
         rows.append(row)
-    return _dedupe_windows_prefer_ending(rows)
+    return resolve_delivery_window_conflicts(rows)
 
 
-def _dedupe_windows_prefer_ending(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    """Same media window: keep ending_final_scoreboard over plain scoreboard."""
+def _interval_overlap_sec(a0: float, a1: float, b0: float, b1: float) -> float:
+    return max(0.0, min(a1, b1) - max(a0, b0))
+
+
+def resolve_delivery_window_conflicts(rows: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Detect overlapping media windows; ending must not repeat last scoreboard.
+
+    If story-wrap score footage overlaps a scoreboard already in the cut, drop the
+    wrap footage (title-card story wrap remains). Also collapse near-duplicate
+    identical windows.
+    """
+    drop: set = set()
+    # Pass 1: exact / near-identical windows
     by_win: Dict[Tuple[int, int], List[int]] = {}
     for i, r in enumerate(rows):
         tin, tout = _safe_float(r.get("media_in")), _safe_float(r.get("media_out"))
@@ -534,12 +545,11 @@ def _dedupe_windows_prefer_ending(rows: List[Dict[str, Any]]) -> List[Dict[str, 
             continue
         key = (int(round(tin * 100)), int(round(tout * 100)))
         by_win.setdefault(key, []).append(i)
-    drop: set = set()
     for idxs in by_win.values():
         if len(idxs) < 2:
             continue
         roles = [(j, str(rows[j].get("role") or "")) for j in idxs]
-        ending = [
+        wraps = [
             j
             for j, role in roles
             if role in ("ending_final_scoreboard", "ending_story_wrap_score")
@@ -547,13 +557,50 @@ def _dedupe_windows_prefer_ending(rows: List[Dict[str, Any]]) -> List[Dict[str, 
         boards = [
             j
             for j, role in roles
-            if "scoreboard" in role
+            if ("scoreboard" in role or role.endswith("_scoreboard_anchor"))
             and role not in ("ending_final_scoreboard", "ending_story_wrap_score")
         ]
-        if ending and boards:
-            drop.update(boards)
+        if wraps and boards:
+            # Prefer keeping the narrative scoreboard; drop redundant wrap footage
+            drop.update(wraps)
+        elif wraps and len(wraps) > 1:
+            drop.update(wraps[1:])
         elif len(boards) > 1:
             drop.update(boards[1:])
+
+    # Pass 2: partial overlap — wrap vs any earlier scoreboard / goal board
+    for i, r in enumerate(rows):
+        if i in drop:
+            continue
+        role = str(r.get("role") or "")
+        if role not in ("ending_story_wrap_score", "ending_final_scoreboard"):
+            continue
+        ai, ao = _safe_float(r.get("media_in")), _safe_float(r.get("media_out"))
+        if ai is None or ao is None:
+            continue
+        for j, o in enumerate(rows):
+            if i == j or j in drop:
+                continue
+            orole = str(o.get("role") or "")
+            if "scoreboard" not in orole and "goal_action" not in orole:
+                continue
+            if orole in ("ending_story_wrap_score", "ending_final_scoreboard"):
+                continue
+            bi, bo = _safe_float(o.get("media_in")), _safe_float(o.get("media_out"))
+            if bi is None or bo is None:
+                continue
+            ov = _interval_overlap_sec(ai, ao, bi, bo)
+            # Same in-point (±1s) or >50% of wrap duration overlapped → redundant
+            wrap_dur = max(1e-3, ao - ai)
+            if abs(ai - bi) <= 1.0 or ov / wrap_dur >= 0.5:
+                drop.add(i)
+                r.setdefault("blocking_reasons", [])
+                if isinstance(r["blocking_reasons"], list):
+                    r["blocking_reasons"] = list(r["blocking_reasons"]) + [
+                        "ending_wrap_overlaps_prior_scoreboard_use_title_only"
+                    ]
+                break
+
     out = [r for i, r in enumerate(rows) if i not in drop]
     for i, r in enumerate(out):
         r["edl_index"] = i + 1
@@ -770,6 +817,174 @@ def render_dual_delivery(
     return results
 
 
+def decide_arc_background_plan(
+    *,
+    prior: Sequence[Dict[str, Any]],
+    protagonist_side: Optional[str],
+    behind: Optional[Dict[str, Any]],
+) -> Dict[str, Any]:
+    """Generic planner: whether prior score turns are needed to understand the arc.
+
+    Does NOT force a fixed 3-event cut, and does NOT pull all prior goals.
+    Modes: none | title_summary | title_and_key_boards (≤2 scoreboards).
+    """
+    meaningful = [
+        p
+        for p in prior
+        if p.get("score") not in (None, "", "0:0") and p.get("delta_side") is not None
+    ]
+    if not meaningful:
+        return {
+            "mode": "none",
+            "reason": "no_meaningful_prior_score_changes",
+            "affects_comeback_understanding": False,
+            "boards_to_include": [],
+            "title_lines": [],
+        }
+
+    side = protagonist_side
+    proto_led = any(p.get("delta_side") == side for p in meaningful)
+    # Multiple lead changes before last deficit → viewers need background
+    multi_turn = len(meaningful) >= 2
+    affects = bool(proto_led or multi_turn)
+
+    title_lines = ["翻盘弧前情提要（非全场进球全集）"]
+    path_txt = " → ".join(str(p.get("score")) for p in prior if p.get("score"))
+    if path_txt:
+        title_lines.append(path_txt[:48])
+    title_lines.append("以下进入最后一次落后弧")
+
+    boards: List[Dict[str, Any]] = []
+    if affects and multi_turn:
+        # At most 2: first proto lead (if any), and last prior state before arc
+        first_lead = next((p for p in meaningful if p.get("delta_side") == side), None)
+        last_prior = meaningful[-1]
+        for node in (first_lead, last_prior):
+            if not node:
+                continue
+            if any(abs(float(node["t_sec"]) - float(b["t_sec"])) < 0.5 for b in boards):
+                continue
+            boards.append(dict(node))
+            if len(boards) >= 2:
+                break
+        mode = "title_and_key_boards"
+        reason = "prior_multi_turn_or_proto_lead_before_last_deficit"
+    elif affects:
+        mode = "title_summary"
+        reason = "prior_single_turn_summary_only"
+    else:
+        mode = "title_summary"
+        reason = "light_prior_context"
+
+    # Never include the behind_start board again (arc already covers deficit)
+    behind_t = _safe_float((behind or {}).get("t_sec"))
+    if behind_t is not None:
+        boards = [
+            b
+            for b in boards
+            if abs(float(b.get("t_sec")) - behind_t) > 1.0
+        ]
+
+    return {
+        "mode": mode if affects else "none",
+        "reason": reason if affects else "prior_does_not_materially_affect_arc_reading",
+        "affects_comeback_understanding": affects,
+        "boards_to_include": boards if affects and mode == "title_and_key_boards" else [],
+        "title_lines": title_lines if affects else [],
+        "meaningful_prior_count": len(meaningful),
+    }
+
+
+def build_arc_background_delivery_rows(
+    background_plan: Dict[str, Any],
+) -> List[Dict[str, Any]]:
+    """Materialize planner decision into delivery rows (title ± ≤2 scoreboards)."""
+    rows: List[Dict[str, Any]] = []
+    mode = background_plan.get("mode") or "none"
+    if mode == "none":
+        return rows
+    lines = list(background_plan.get("title_lines") or ["翻盘前情"])
+    rows.append(
+        {
+            "edl_index": 0,
+            "segment_id": "seg_arc_background_title",
+            "beat": "铺垫",
+            "role": "arc_background_title",
+            "shot_kind": "title_card",
+            "is_replay": False,
+            "media_in": None,
+            "media_out": None,
+            "time_status": "placeholder_title",
+            "time_provenance": {
+                "source": "story_scope_background_plan",
+                "pipeline_verified": False,
+            },
+            "event_ids": [],
+            "frame_ids": [],
+            "linked_live_event_id": None,
+            "narrative_order": 0,
+            "source_media_order": -2,
+            "render_eligibility": "candidate_only",
+            "blocking_reasons": ["phase5_candidate_delivery", "arc_background_summary"],
+            "confidence": 0.8,
+            "selection_reason": f"arc_background:{background_plan.get('reason')}",
+            "narration": "弧前比分背景摘要（规划器判定需要；非全部进球）",
+            "include_in_cut": True,
+            "placeholder_sec": 3.0,
+            "placeholder_lines": lines[:4],
+            "placeholder_lines_qc": lines[:3]
+            + [f"bg_mode={mode}", "candidate_only"],
+            "evidence_refs": [],
+            "source_refs": [],
+            "glitch_avoidance": [],
+            "goal_action_complete": None,
+        }
+    )
+    for i, node in enumerate(background_plan.get("boards_to_include") or []):
+        t = _safe_float(node.get("t_sec"))
+        if t is None:
+            continue
+        rows.append(
+            {
+                "edl_index": 0,
+                "segment_id": f"seg_arc_background_board_{i+1}",
+                "beat": "铺垫",
+                "role": "arc_background_scoreboard",
+                "shot_kind": "scoreboard_anchor",
+                "is_replay": False,
+                "media_in": round(max(0.0, t - 1.0), 3),
+                "media_out": round(t + 2.5, 3),
+                "time_status": "score_path_only",
+                "time_provenance": {
+                    "source": "score_path_prior_context",
+                    "t_sec": t,
+                    "pipeline_verified": False,
+                    "not_a_goal_action": True,
+                },
+                "event_ids": [],
+                "frame_ids": [],
+                "linked_live_event_id": None,
+                "narrative_order": 0,
+                "source_media_order": t,
+                "render_eligibility": "candidate_only",
+                "blocking_reasons": [
+                    "phase5_candidate_delivery",
+                    "arc_background_scoreboard_not_goal",
+                    "semantic_unverified",
+                ],
+                "confidence": 0.6,
+                "selection_reason": "arc_background_key_prior_score",
+                "narration": f"弧前背景比分 {node.get('score')} @ {t}s（非进球动作）",
+                "include_in_cut": True,
+                "evidence_refs": [],
+                "source_refs": [],
+                "glitch_avoidance": [],
+                "goal_action_complete": None,
+            }
+        )
+    return rows
+
+
 def build_story_scope(story: Dict[str, Any], plan: Dict[str, Any]) -> Dict[str, Any]:
     """Distinguish full-match score background vs selected last-comeback arc."""
     from story_video_agent.state import _comeback_score_steps
@@ -785,22 +1000,54 @@ def build_story_scope(story: Dict[str, Any], plan: Dict[str, Any]) -> Dict[str, 
     for n in score_path:
         t = _safe_float(n.get("t_sec"))
         if behind_t is not None and t is not None and t < behind_t - 1e-6:
-            prior.append({"score": n.get("score"), "t_sec": n.get("t_sec"), "delta_side": n.get("delta_side")})
+            prior.append(
+                {
+                    "score": n.get("score"),
+                    "t_sec": n.get("t_sec"),
+                    "delta_side": n.get("delta_side"),
+                }
+            )
         else:
-            arc_nodes.append({"score": n.get("score"), "t_sec": n.get("t_sec"), "delta_side": n.get("delta_side")})
-    # lead extends after go_ahead
+            arc_nodes.append(
+                {
+                    "score": n.get("score"),
+                    "t_sec": n.get("t_sec"),
+                    "delta_side": n.get("delta_side"),
+                }
+            )
     go_t = _safe_float((go_ahead or {}).get("t_sec"))
+    side = (plan.get("protagonist") or {}).get("side")
     extras = [
         n
         for n in score_path
         if go_t is not None
         and _safe_float(n.get("t_sec")) is not None
         and float(n["t_sec"]) > go_t + 1e-6
-        and n.get("delta_side") == (plan.get("protagonist") or {}).get("side")
+        and n.get("delta_side") == side
     ][:2]
+    background_plan = decide_arc_background_plan(
+        prior=prior, protagonist_side=str(side) if side else None, behind=behind
+    )
+    # Ending media: redundant if same anchor as go_ahead or last lead_extend board
+    final = score_path[-1] if score_path else None
+    final_t = _safe_float((final or {}).get("t_sec"))
+    last_ext_t = None
+    for ext in reversed(extras):
+        last_ext_t = _safe_float(ext.get("t_sec") if isinstance(ext, dict) else None)
+        if last_ext_t is not None:
+            break
+    wrap_media = "scoreboard_ok"
+    if final_t is not None and any(
+        abs(final_t - t) <= 1.0 for t in (go_t, last_ext_t) if t is not None
+    ):
+        wrap_media = "title_card_only"
     return {
         "full_match_score_path": [
-            {"score": n.get("score"), "t_sec": n.get("t_sec"), "delta_side": n.get("delta_side")}
+            {
+                "score": n.get("score"),
+                "t_sec": n.get("t_sec"),
+                "delta_side": n.get("delta_side"),
+            }
             for n in score_path
         ],
         "selected_arc": {
@@ -812,11 +1059,16 @@ def build_story_scope(story: Dict[str, Any], plan: Dict[str, Any]) -> Dict[str, 
             "score_nodes_in_arc": arc_nodes,
         },
         "prior_score_turns_omitted": prior,
-        "prior_turns_needed_for_context": len(prior) > 0,
+        "prior_turns_needed_for_context": bool(
+            background_plan.get("affects_comeback_understanding")
+        ),
+        "background_plan": background_plan,
+        "ending_wrap_media_policy": wrap_media,
         "scope_disclaimer": (
-            "本次剪辑主线是 T01「最后一次落后弧」上的扳平/反超（及弧内失球），"
-            "不是默认收录全场每一次比分转折。整场比分背景见 full_match_score_path；"
-            "弧前省略的转折见 prior_score_turns_omitted。"
+            "本次剪辑主线是 T01「最后一次落后弧」；规划器可按需补充弧前背景摘要/关键比分牌，"
+            "但不会默认剪成固定三事件，也不会强制纳入全部进球。"
+            "整场轨迹见 full_match_score_path；弧前省略见 prior_score_turns_omitted；"
+            "补入决策见 background_plan。"
         ),
     }
 
@@ -1055,10 +1307,19 @@ def build_story_summary_md(
         lines.append("### 弧前省略的比分转折（未默认剪入）")
         for n in prior:
             lines.append(f"- {n.get('score')} @ {n.get('t_sec')}s")
+        bg = scope.get("background_plan") or {}
         lines.append(
-            "- 是否补入这些转折以帮助理解：由产品/审核决定；"
-            f"当前 `prior_turns_needed_for_context="
-            f"{scope.get('prior_turns_needed_for_context')}`。"
+            f"- 规划器背景决策：mode=`{bg.get('mode')}` · "
+            f"affects_understanding=`{bg.get('affects_comeback_understanding')}` · "
+            f"reason=`{bg.get('reason')}`"
+        )
+        if bg.get("boards_to_include"):
+            lines.append(
+                f"- 已规划补入关键弧前比分牌（非进球动作）："
+                f"{[b.get('score') for b in bg['boards_to_include']]}"
+            )
+        lines.append(
+            "- 不会固定为「落后→扳平→反超」三事件模板，也不会强制纳入全部进球。"
         )
     lines.extend(
         [

@@ -70,6 +70,14 @@
       "delta_side": null
     }
   ],
-  "prior_turns_needed_for_context": true,
-  "scope_disclaimer": "本次剪辑主线是 T01「最后一次落后弧」上的扳平/反超（及弧内失球），不是默认收录全场每一次比分转折。整场比分背景见 full_match_score_path；弧前省略的转折见 prior_score_turns_omitted。"
+  "prior_turns_needed_for_context": false,
+  "background_plan": {
+    "mode": "none",
+    "reason": "no_meaningful_prior_score_changes",
+    "affects_comeback_understanding": false,
+    "boards_to_include": [],
+    "title_lines": []
+  },
+  "ending_wrap_media_policy": "title_card_only",
+  "scope_disclaimer": "本次剪辑主线是 T01「最后一次落后弧」；规划器可按需补充弧前背景摘要/关键比分牌，但不会默认剪成固定三事件，也不会强制纳入全部进球。整场轨迹见 full_match_score_path；弧前省略见 prior_score_turns_omitted；补入决策见 background_plan。"
 }

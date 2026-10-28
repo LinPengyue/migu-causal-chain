@@ -14,6 +14,39 @@
       "goal_action_complete": null
     },
     {
+      "id": "seg_arc_background_title",
+      "type": "story_segment",
+      "beat": "铺垫",
+      "role": "arc_background_title",
+      "media_in": null,
+      "media_out": null,
+      "time_status": "placeholder_title",
+      "shot_kind": "title_card",
+      "goal_action_complete": null
+    },
+    {
+      "id": "seg_arc_background_board_1",
+      "type": "story_segment",
+      "beat": "铺垫",
+      "role": "arc_background_scoreboard",
+      "media_in": 2070.43,
+      "media_out": 2073.93,
+      "time_status": "score_path_only",
+      "shot_kind": "scoreboard_anchor",
+      "goal_action_complete": null
+    },
+    {
+      "id": "seg_arc_background_board_2",
+      "type": "story_segment",
+      "beat": "铺垫",
+      "role": "arc_background_scoreboard",
+      "media_in": 2659.82,
+      "media_out": 2663.32,
+      "time_status": "score_path_only",
+      "shot_kind": "scoreboard_anchor",
+      "goal_action_complete": null
+    },
+    {
       "id": "seg_opponent_opening_goal_action",
       "type": "story_segment",
       "beat": "铺垫",
@@ -132,23 +165,6 @@
       "goal_action_complete": null
     },
     {
-      "id": "seg_ending_story_wrap_score",
-      "type": "story_segment",
-      "beat": "收尾",
-      "role": "ending_story_wrap_score",
-      "media_in": 6880.94,
-      "media_out": 6885.94,
-      "time_status": "score_path_only",
-      "shot_kind": "scoreboard_anchor",
-      "goal_action_complete": null
-    },
-    {
-      "id": "event:event_000636",
-      "type": "event",
-      "event_id": "event_000636",
-      "linked_from_segment": "seg_ending_story_wrap_score"
-    },
-    {
       "id": "seg_title_close",
       "type": "story_segment",
       "beat": "收尾",
@@ -211,6 +227,30 @@
   "edges": [
     {
       "source": "seg_title_open",
+      "target": "seg_arc_background_title",
+      "relation": "narrative_succession",
+      "evidence": "delivery_edl_order",
+      "semantic_verified": false,
+      "note": "剪辑叙事承接，非已证实因果"
+    },
+    {
+      "source": "seg_arc_background_title",
+      "target": "seg_arc_background_board_1",
+      "relation": "narrative_succession",
+      "evidence": "delivery_edl_order",
+      "semantic_verified": false,
+      "note": "剪辑叙事承接，非已证实因果"
+    },
+    {
+      "source": "seg_arc_background_board_1",
+      "target": "seg_arc_background_board_2",
+      "relation": "narrative_succession",
+      "evidence": "delivery_edl_order",
+      "semantic_verified": false,
+      "note": "剪辑叙事承接，非已证实因果"
+    },
+    {
+      "source": "seg_arc_background_board_2",
       "target": "seg_opponent_opening_goal_action",
       "relation": "narrative_succession",
       "evidence": "delivery_edl_order",
@@ -275,19 +315,27 @@
     },
     {
       "source": "seg_go_ahead_scoreboard",
-      "target": "seg_ending_story_wrap_score",
+      "target": "seg_title_close",
       "relation": "narrative_succession",
       "evidence": "delivery_edl_order",
       "semantic_verified": false,
       "note": "剪辑叙事承接，非已证实因果"
     },
     {
-      "source": "seg_ending_story_wrap_score",
-      "target": "seg_title_close",
-      "relation": "narrative_succession",
-      "evidence": "delivery_edl_order",
+      "source": "seg_arc_background_board_1",
+      "target": "seg_arc_background_board_2",
+      "relation": "temporal_before",
+      "evidence": "media_in_order",
       "semantic_verified": false,
-      "note": "剪辑叙事承接，非已证实因果"
+      "note": "原片时间先后（可核对时间戳）"
+    },
+    {
+      "source": "seg_arc_background_board_2",
+      "target": "seg_opponent_opening_goal_action",
+      "relation": "temporal_before",
+      "evidence": "media_in_order",
+      "semantic_verified": false,
+      "note": "原片时间先后（可核对时间戳）"
     },
     {
       "source": "seg_opponent_opening_goal_action",
@@ -340,14 +388,6 @@
     {
       "source": "seg_go_ahead_goal_action",
       "target": "seg_go_ahead_scoreboard",
-      "relation": "temporal_before",
-      "evidence": "media_in_order",
-      "semantic_verified": false,
-      "note": "原片时间先后（可核对时间戳）"
-    },
-    {
-      "source": "seg_go_ahead_scoreboard",
-      "target": "seg_ending_story_wrap_score",
       "relation": "temporal_before",
       "evidence": "media_in_order",
       "semantic_verified": false,
@@ -428,14 +468,6 @@
     {
       "source": "seg_go_ahead_goal_action",
       "target": "event:causal:ann_0031:event_000160",
-      "relation": "event_association",
-      "evidence": "segment_event_ids",
-      "semantic_verified": false,
-      "note": "镜头–事件规则关联；未做独立语义核验"
-    },
-    {
-      "source": "seg_ending_story_wrap_score",
-      "target": "event:event_000636",
       "relation": "event_association",
       "evidence": "segment_event_ids",
       "semantic_verified": false,
