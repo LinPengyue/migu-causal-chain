@@ -23,7 +23,8 @@ ID_NAMESPACES = frozenset(
 _GOAL_TYPES = frozenset({"进球", "乌龙球", "头球破门", "goal", "own_goal", "header_goal", "Goal"})
 _ASSIST_TYPES = frozenset({"助攻", "assist", "Assist"})
 # carrier 与 score 时间允许偏差（秒）；回放通常远大于此
-DEFAULT_TIME_SLACK_SEC = 120.0
+# 记分牌相对 live 进球常滞后；过窄会漏掉反超等关键动作（机制参数，非场次特例）
+DEFAULT_TIME_SLACK_SEC = 180.0
 
 
 def event_namespace(event: Dict[str, Any]) -> str:

@@ -44,19 +44,43 @@ _JSON_OBJ = re.compile(r"\{.*\}", re.DOTALL)
 
 PAD_BEFORE = 4.0
 PAD_AFTER = 8.0
+# 进球动作窗：传球铺垫 + 入网后庆祝（通用，非场次硬编码）
+GOAL_PAD_BEFORE = 12.0
+GOAL_PAD_AFTER = 10.0
+# 比分牌锚点仅短确认，避免久停远景
+SCOREBOARD_PAD_BEFORE = 1.0
+SCOREBOARD_PAD_AFTER = 2.5
 
 
 def _find_score_milestones(
     story: Dict[str, Any], side: str
-) -> Dict[str, Optional[Dict[str, Any]]]:
-    """与 Phase 2A `_comeback_score_steps` 对齐：最后一次落后弧上的扳平/反超。"""
+) -> Dict[str, Any]:
+    """与 Phase 2A `_comeback_score_steps` 对齐：最后一次落后弧上的扳平/反超/扩大。"""
     steps = _comeback_score_steps(story)
-    # 兼容旧键名
+    # 扩大优势：go_ahead 之后主角继续进球的 score_path 节点（非硬编码场次）
+    extras: List[Dict[str, Any]] = []
+    go = steps.get("go_ahead")
+    if go is not None:
+        go_t = float(go.get("t_sec") or -1)
+        for node in story.get("score_path") or []:
+            if not isinstance(node, dict):
+                continue
+            try:
+                t = float(node.get("t_sec"))
+            except (TypeError, ValueError):
+                continue
+            if t <= go_t + 1e-6:
+                continue
+            if node.get("delta_side") == side:
+                extras.append(node)
+            if len(extras) >= 2:
+                break
     return {
         "behind": steps.get("behind_start"),
         "behind_start": steps.get("behind_start"),
         "equalizer": steps.get("equalizer"),
         "go_ahead": steps.get("go_ahead"),
+        "lead_extends": extras,
     }
 
 
@@ -261,6 +285,7 @@ def compose_story_plan(
     segments: List[Dict[str, Any]] = []
     evidence_refs_global: List[Dict[str, Any]] = []
     all_event_ids: List[str] = []
+    used_live_goal_ids: set = set()
 
     def add_ref(ref: Dict[str, Any]) -> Dict[str, Any]:
         evidence_refs_global.append(ref)
@@ -280,11 +305,22 @@ def compose_story_plan(
             if c.get("story_role") == "铺垫" or str(c.get("event_id") or "").startswith("causal:")
         ]
         ranked = preferred or opener_cands
-        ranked = [c for c in ranked if float(c["t_sec"]) <= behind_score_t + 1e-6]
+        ranked = [
+            c
+            for c in ranked
+            if float(c["t_sec"]) <= behind_score_t + 1e-6
+            and str(c["event_id"]) not in used_live_goal_ids
+        ]
         ranked.sort(key=lambda c: abs(float(c["dt_to_score_sec"])))
         if ranked:
             best = ranked[0]
             live_id = str(best["event_id"])
+            used_live_goal_ids.add(live_id)
+            # 同源 causal 别名一并占用，避免重复绑定
+            raw = str((events.get(live_id) or {}).get("_causal_raw_event_id") or "")
+            if raw:
+                used_live_goal_ids.add(raw)
+            used_live_goal_ids.add(live_id.split(":")[-1] if live_id.startswith("causal:") else live_id)
             # 动作窗：传球铺垫 + 入网后庆祝；不用过窄的默认 PAD
             t_goal = float(best["t_sec"])
             win_g = {
@@ -591,7 +627,12 @@ def compose_story_plan(
         )
         mappings.append({"context": f"{role_prefix}_score", **link})
         # 比分确认锚点（不可成片）
-        win_sb = _window_from_t(score_t, status="score_path_only")
+        win_sb = _window_from_t(
+            score_t,
+            status="score_path_only",
+            pad_before=SCOREBOARD_PAD_BEFORE,
+            pad_after=SCOREBOARD_PAD_AFTER,
+        )
         sb_refs = [
             add_ref(
                 {
@@ -651,15 +692,30 @@ def compose_story_plan(
             )
         )
 
-        # 进球动作：优先 live 候选，而非 carrier 字符串
-        cands = find_live_goal_candidates(
-            events, score_t=score_t, role_hint=role_hint
-        )
+        # 进球动作：优先 live 候选，而非 carrier 字符串；已占用进球不再复用
+        cands = [
+            c
+            for c in find_live_goal_candidates(
+                events, score_t=score_t, role_hint=role_hint
+            )
+            if str(c["event_id"]) not in used_live_goal_ids
+            and str(c["event_id"]).split(":")[-1] not in used_live_goal_ids
+        ]
         live_id = None
         if cands:
             best = cands[0]
-            live_id = best["event_id"]
-            win_g = _window_from_t(best["t_sec"], status="linked_event_ms")
+            live_id = str(best["event_id"])
+            used_live_goal_ids.add(live_id)
+            used_live_goal_ids.add(live_id.split(":")[-1] if ":" in live_id else live_id)
+            raw = str((events.get(live_id) or {}).get("_causal_raw_event_id") or "")
+            if raw:
+                used_live_goal_ids.add(raw)
+            win_g = _window_from_t(
+                best["t_sec"],
+                status="linked_event_ms",
+                pad_before=GOAL_PAD_BEFORE,
+                pad_after=GOAL_PAD_AFTER,
+            )
             v_frames, v_refs, pipe_vlm = _attach_visual(
                 vis, vis_gaps, add_ref=add_ref, missing=missing
             )
@@ -836,6 +892,19 @@ def compose_story_plan(
             "verify_go_ahead_scoreboard",
         ),
     )
+    # 反超后继续扩大优势（动态，不假设 3:1/4:1）
+    for ei, ext_node in enumerate(milestones.get("lead_extends") or []):
+        add_goal_beat(
+            beat="高潮",
+            role_prefix=f"lead_extend_{ei + 1}",
+            score_node=ext_node,
+            role_hint="高潮",
+            vis_gaps=(
+                f"verify_lead_extend_{ei + 1}_goal_action",
+                f"locate_lead_extend_{ei + 1}_goal_action",
+                f"verify_lead_extend_{ei + 1}_scoreboard",
+            ),
+        )
 
     # ---------- 收尾 ----------
     ending = [

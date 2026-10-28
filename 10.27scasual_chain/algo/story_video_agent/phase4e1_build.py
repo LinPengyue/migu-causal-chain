@@ -1,4 +1,8 @@
-"""Phase 4E.1: glitch-avoiding edit + narrative packaging + loudness (offline).
+"""Phase 4E.1: Croatia-only historical edit (glitch-avoid + packaging).
+
+DEPRECATED for generic delivery. Phase 5 uses ``phase5_pipeline.py``.
+This module is retained for Croatia regression reference only; the generic
+entry must NOT import or auto-fallback to these hardcoded times/ranges.
 
 No paid API. preview-only; render_ready stays false; candidate_only.
 """

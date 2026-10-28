@@ -25,7 +25,7 @@ _CHUNK_SEC = 90.0
 _OCR_PAD_BEFORE = 2.0
 _OCR_PAD_AFTER = 6.0
 _ACTION_PAD = 8.0
-_GOAL_MATCH_SLACK = 120.0
+_GOAL_MATCH_SLACK = 180.0
 
 
 def load_t01_story(path: PathLike) -> Dict[str, Any]:
