@@ -1,0 +1,119 @@
+{
+  "schema": "video_driven_story_evidence_tasks_v1",
+  "story_type": "T01_comeback",
+  "discovery_grade": "story",
+  "semantic_verified": false,
+  "tasks": [
+    {
+      "task_id": "locate_opponent_opening_goal",
+      "why": "Confirm the live goal that put the protagonist behind (scoreboard lag ≠ action time).",
+      "search_media_range": {
+        "media_start_sec": 0.0,
+        "media_end_sec": 25.0,
+        "anchor_sec": 10.0
+      },
+      "expected_actions_or_relations": [
+        "live_goal",
+        "shot_on_target",
+        "net_or_celebration",
+        "not_replay_only"
+      ],
+      "required": true,
+      "evidence_status": "missing",
+      "existing_evidence": [],
+      "retrieval_budget_hint": "coarse 8s → refine 2s; stop after live goal + scoreboard consistency",
+      "stop_when": "live goal clip linked to this score step OR window exhausted unresolved",
+      "source": "score_timeline_hypothesis",
+      "not_from_events_json": true
+    },
+    {
+      "task_id": "locate_equalizer_goal",
+      "why": "Locate protagonist equalizer that ends the deficit spell.",
+      "search_media_range": {
+        "media_start_sec": 0.0,
+        "media_end_sec": 40.0,
+        "anchor_sec": 20.0
+      },
+      "expected_actions_or_relations": [
+        "live_goal",
+        "shot",
+        "buildup_cross_or_pass",
+        "celebration"
+      ],
+      "required": true,
+      "evidence_status": "missing",
+      "existing_evidence": [],
+      "retrieval_budget_hint": "coarse around scoreboard confirm; prefer action before OCR confirm",
+      "stop_when": "live equalizer verified or unresolved after refine",
+      "source": "score_timeline_hypothesis",
+      "not_from_events_json": true
+    },
+    {
+      "task_id": "locate_go_ahead_goal",
+      "why": "Locate go-ahead goal that completes the T01 comeback arc.",
+      "search_media_range": {
+        "media_start_sec": 0.0,
+        "media_end_sec": 40.0,
+        "anchor_sec": 30.0
+      },
+      "expected_actions_or_relations": [
+        "live_goal",
+        "shot",
+        "local_causal_candidates"
+      ],
+      "required": true,
+      "evidence_status": "missing",
+      "existing_evidence": [],
+      "retrieval_budget_hint": "same as equalizer; mandatory for story grade",
+      "stop_when": "live go-ahead verified or unresolved",
+      "source": "score_timeline_hypothesis",
+      "not_from_events_json": true
+    },
+    {
+      "task_id": "find_relevant_buildup",
+      "why": "Optional narrative context before equalizer (not full 18-class chain).",
+      "search_media_range": {
+        "media_start_sec": 0.0,
+        "media_end_sec": 25.0,
+        "anchor_sec": 20.0
+      },
+      "expected_actions_or_relations": [
+        "dangerous_attack",
+        "key_pass_or_cross",
+        "shot_attempt"
+      ],
+      "required": false,
+      "evidence_status": "missing",
+      "existing_evidence": [],
+      "retrieval_budget_hint": "single coarse pass; abort if no danger cues",
+      "stop_when": "one usable buildup window or none",
+      "source": "score_timeline_hypothesis",
+      "not_from_events_json": true
+    },
+    {
+      "task_id": "verify_story_ending",
+      "why": "Confirm final lead holds / match end context for wrap title.",
+      "search_media_range": {
+        "media_start_sec": 0.0,
+        "media_end_sec": 40.0,
+        "anchor_sec": 30.0
+      },
+      "expected_actions_or_relations": [
+        "final_scoreboard",
+        "match_end_or_stable_lead"
+      ],
+      "required": false,
+      "evidence_status": "missing",
+      "existing_evidence": [],
+      "retrieval_budget_hint": "sparse scoreboard checks only",
+      "stop_when": "final score consistent with path[-1]",
+      "source": "score_timeline_hypothesis",
+      "not_from_events_json": true
+    }
+  ],
+  "gates": {
+    "no_events_json": true,
+    "no_causal_json": true,
+    "render_ready": false
+  }
+}

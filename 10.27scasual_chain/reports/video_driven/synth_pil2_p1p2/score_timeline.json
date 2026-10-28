@@ -1,0 +1,67 @@
+{
+  "schema": "video_driven_score_timeline_v1",
+  "video": "/tmp/migu_vd_synth/synth_pil2.mp4",
+  "duration_sec": 40.0,
+  "nodes": [
+    {
+      "t_sec": 0.0,
+      "score": "0:0",
+      "opening": true,
+      "delta_side": null,
+      "carrier_event_id": "ocr@0.0"
+    },
+    {
+      "t_sec": 10.0,
+      "score": "0:1",
+      "opening": false,
+      "delta_side": "right",
+      "carrier_event_id": "ocr@10.0"
+    },
+    {
+      "t_sec": 20.0,
+      "score": "1:1",
+      "opening": false,
+      "delta_side": "left",
+      "carrier_event_id": "ocr@20.0"
+    },
+    {
+      "t_sec": 30.0,
+      "score": "2:1",
+      "opening": false,
+      "delta_side": "left",
+      "carrier_event_id": "ocr@30.0"
+    }
+  ],
+  "observation_count": 10,
+  "usable_ocr_count": 9,
+  "commit_diagnostics": [
+    {
+      "t_sec": 10.0,
+      "committed": "0:1",
+      "delta_side": "right",
+      "hits": 2,
+      "confidence_sample": 1.0
+    },
+    {
+      "t_sec": 20.0,
+      "committed": "1:1",
+      "delta_side": "left",
+      "hits": 2,
+      "confidence_sample": 1.0
+    },
+    {
+      "t_sec": 30.0,
+      "committed": "2:1",
+      "delta_side": "left",
+      "hits": 3,
+      "confidence_sample": 1.0
+    }
+  ],
+  "degraded": false,
+  "notes": [
+    "t_sec is media PTS / seek time, not match clock",
+    "scoreboard change time is confirmation observation, not goal action time",
+    "semantic_verified=false"
+  ],
+  "semantic_verified": false
+}

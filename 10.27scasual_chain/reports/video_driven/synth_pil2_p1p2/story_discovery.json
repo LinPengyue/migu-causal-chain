@@ -1,0 +1,112 @@
+{
+  "schema": "video_driven_story_discovery_v1",
+  "story_type": "T01_comeback",
+  "grade": "story",
+  "protagonist_side": "left",
+  "opponent_side": "right",
+  "teams": {
+    "left": null,
+    "right": null,
+    "status": "unresolved",
+    "note": "P1 MVP does not yet resolve team names from video alone"
+  },
+  "score_path": [
+    {
+      "t_sec": 0.0,
+      "score": "0:0",
+      "opening": true,
+      "delta_side": null,
+      "carrier_event_id": "ocr@0.0"
+    },
+    {
+      "t_sec": 10.0,
+      "score": "0:1",
+      "opening": false,
+      "delta_side": "right",
+      "carrier_event_id": "ocr@10.0"
+    },
+    {
+      "t_sec": 20.0,
+      "score": "1:1",
+      "opening": false,
+      "delta_side": "left",
+      "carrier_event_id": "ocr@20.0"
+    },
+    {
+      "t_sec": 30.0,
+      "score": "2:1",
+      "opening": false,
+      "delta_side": "left",
+      "carrier_event_id": "ocr@30.0"
+    }
+  ],
+  "last_deficit_arc": {
+    "spell": [
+      {
+        "t_sec": 10.0,
+        "score": "0:1",
+        "opening": false,
+        "delta_side": "right",
+        "carrier_event_id": "ocr@10.0"
+      }
+    ],
+    "equalizer": {
+      "t_sec": 20.0,
+      "score": "1:1",
+      "opening": false,
+      "delta_side": "left",
+      "carrier_event_id": "ocr@20.0"
+    },
+    "go_ahead": {
+      "t_sec": 30.0,
+      "score": "2:1",
+      "opening": false,
+      "delta_side": "left",
+      "carrier_event_id": "ocr@30.0"
+    },
+    "extras": []
+  },
+  "key_nodes": {
+    "equalizer": {
+      "t_sec": 20.0,
+      "score": "1:1",
+      "opening": false,
+      "delta_side": "left",
+      "carrier_event_id": "ocr@20.0"
+    },
+    "go_ahead": {
+      "t_sec": 30.0,
+      "score": "2:1",
+      "opening": false,
+      "delta_side": "left",
+      "carrier_event_id": "ocr@30.0"
+    },
+    "extras": [],
+    "search_hints": {
+      "equalizer": {
+        "media_start_sec": 0.0,
+        "media_end_sec": 40.0,
+        "anchor_sec": 20.0
+      },
+      "go_ahead": {
+        "media_start_sec": 0.0,
+        "media_end_sec": 40.0,
+        "anchor_sec": 30.0
+      }
+    }
+  },
+  "hypotheses": [
+    {
+      "id": "t01_last_deficit_comeback",
+      "status": "score_supported",
+      "detail": "path supports comeback for left; awaiting video evidence tasks"
+    }
+  ],
+  "semantic_verified": false,
+  "score_level_only": true,
+  "degraded_input": false,
+  "notes": [
+    "grade=story means score-path supports T01; evidence still required for semantic_verified",
+    "media PTS anchors are scoreboard confirmation times, not goal action times"
+  ]
+}
