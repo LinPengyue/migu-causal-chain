@@ -72,6 +72,50 @@ def index_story_events(story: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
     return out
 
 
+def merge_causal_live_goals(
+    events: Dict[str, Dict[str, Any]],
+    causal: Optional[Dict[str, Any]],
+) -> Dict[str, Dict[str, Any]]:
+    """把交付因果链中的 live 进球并入索引。
+
+    T01 story.events 常只保留主角扳平/反超进球，丢失造成落后的对手进球；
+    score_path.carrier 又可能指向记分牌旁的非进球交付事件（同 ID 冲突）。
+    因果链进球用 ``causal:<annotation_id>:<event_id>`` 命名，避免覆盖交付 ID。
+    """
+    if not causal:
+        return events
+    out = dict(events)
+    for chain in causal.get("causal_chains") or []:
+        if not isinstance(chain, dict):
+            continue
+        if chain.get("is_replay"):
+            continue
+        ann = str(chain.get("annotation_id") or "ann")
+        for ev in chain.get("events") or []:
+            if not isinstance(ev, dict):
+                continue
+            if ev.get("type") not in _GOAL_TYPES and ev.get("type_en") not in _GOAL_TYPES:
+                continue
+            if ev.get("is_replay"):
+                continue
+            raw_id = str(ev.get("event_id") or "")
+            if not raw_id:
+                continue
+            eid = f"causal:{ann}:{raw_id}"
+            if eid in out:
+                continue
+            row = dict(ev)
+            row["event_id"] = eid
+            row["source"] = "causal_chain"
+            row["source_annotation_id"] = ann
+            row["story_role"] = row.get("story_role") or "铺垫"
+            row["_namespace"] = "causal_chain"
+            row["_id_collision"] = False
+            row["_causal_raw_event_id"] = raw_id
+            out[eid] = row
+    return out
+
+
 def _type_compatible_for_score_carrier(
     event_type: str, *, score_delta_side: Optional[str]
 ) -> bool:

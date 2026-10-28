@@ -349,7 +349,8 @@ class Phase3A1Tests(unittest.TestCase):
 
     def test_croatia_and_none(self) -> None:
         hr = compose_story_plan(self.croatia, use_llm=False)
-        self.assertEqual(hr["story_tier"], "candidate")
+        # 修复 opening 失球后，克罗地亚可升为正式 story（铺垫+蓄力齐）
+        self.assertIn(hr["story_tier"], ("candidate", "story"))
         self.assertFalse(hr["render_ready"])
         ok, _ = validate_compose_plan(hr)
         self.assertTrue(ok)
@@ -359,6 +360,79 @@ class Phase3A1Tests(unittest.TestCase):
             self.assertEqual(n["verification_status"], "blocked_none")
             self.assertFalse(n["render_ready"])
             self.assertEqual(n["segments"], [])
+
+    def test_croatia_opponent_opening_goal_before_scoreboard(self) -> None:
+        """开场失球：因果 live 进球必须先于 0:1 记分牌，且不得用记分牌冒充动作。"""
+        causal_path = ROOT / "data" / "交付_out" / "2022-11-28 克罗地亚vs加拿大_causal.json"
+        if not causal_path.is_file():
+            self.skipTest("no croatia causal")
+        causal = json.loads(causal_path.read_text(encoding="utf-8"))
+        plan = compose_story_plan(self.croatia, use_llm=False, causal=causal)
+        opener = next(
+            s
+            for s in plan["segments"]
+            if s.get("segment_id") == "seg_opponent_opening_goal_action"
+        )
+        setup = next(
+            s for s in plan["segments"] if s.get("segment_id") == "seg_setup_deficit"
+        )
+        self.assertEqual(opener["role"], "opponent_opening_goal_action")
+        self.assertEqual(opener["shot_kind"], "live")
+        self.assertIsNotNone(opener.get("media_in"))
+        self.assertLess(float(opener["media_in"]), float(setup["media_in"]))
+        # 因果 Goal @980.137 → 动作窗应覆盖入网附近，远离 1079 记分牌
+        self.assertLess(float(opener["media_out"]), 1020.0)
+        self.assertGreaterEqual(float(setup["media_in"]), 1070.0)
+        # 记分牌窗缩短（约 4s）
+        self.assertLessEqual(
+            float(setup["media_out"]) - float(setup["media_in"]), 6.0
+        )
+        self.assertNotEqual(opener.get("time_status"), "score_path_only")
+        self.assertFalse(plan["render_ready"])
+
+    def test_synthetic_opening_deficit_requires_opponent_goal_segment(self) -> None:
+        story = {
+            "story_tier": "candidate",
+            "protagonist_side": "left",
+            "has_story": True,
+            "recognition": {"tier": "candidate", "beats": {"铺垫": [], "转折": ["g_eq"], "高潮": ["g_ga"]}},
+            "score_path": [
+                {"t_sec": 100.0, "score": "0:1", "opening": True, "delta_side": "right", "carrier_event_id": "board"},
+                {"t_sec": 200.0, "score": "1:1", "delta_side": "left", "carrier_event_id": "g_eq"},
+                {"t_sec": 300.0, "score": "2:1", "delta_side": "left", "carrier_event_id": "g_ga"},
+            ],
+            "events": [
+                {
+                    "event_id": "g_open",
+                    "type": "进球",
+                    "t_ms": 20000,
+                    "is_replay": False,
+                    "story_role": "铺垫",
+                },
+                {
+                    "event_id": "g_eq",
+                    "type": "进球",
+                    "t_ms": 190000,
+                    "is_replay": False,
+                    "story_role": "转折",
+                },
+                {
+                    "event_id": "g_ga",
+                    "type": "进球",
+                    "t_ms": 290000,
+                    "is_replay": False,
+                    "story_role": "高潮",
+                },
+            ],
+        }
+        plan = compose_story_plan(story, use_llm=False)
+        roles = [s.get("role") for s in plan["segments"]]
+        self.assertIn("opponent_opening_goal_action", roles)
+        opener = next(
+            s for s in plan["segments"] if s.get("role") == "opponent_opening_goal_action"
+        )
+        self.assertEqual(opener.get("event_ids"), ["g_open"])
+        self.assertAlmostEqual(float(opener["media_in"]), 8.0, places=1)
 
 
 if __name__ == "__main__":

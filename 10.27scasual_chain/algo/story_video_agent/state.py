@@ -208,6 +208,31 @@ def detect_gaps(
     ahead_t = float(go_ahead["t_sec"]) if go_ahead else None
     behind_t = float(behind["t_sec"]) if behind else 0.0
 
+    # --- 铺垫：对手造成落后的进球动作（opening deficit）---
+    opener_goal_t = _goal_anchor_near(index, behind_t, role="铺垫") if behind else None
+    if behind and opener_goal_t is None:
+        t0 = max(0.0, behind_t - _GOAL_MATCH_SLACK)
+        t1 = behind_t + 15.0
+        gaps.append(
+            {
+                "gap_id": "locate_opponent_opening_goal_action",
+                "kind": "action_localize",
+                "priority": 0,
+                "tool_hint": "goal_action_near_scoreboard",
+                "registerable": True,
+                "search_intervals": _split_search_intervals(t0, t1),
+                "seed_windows": [],
+                "score_anchor_sec": behind_t,
+                "goal_anchor_sec": None,
+                "anchor_status": "needs_search",
+                "adaptive_expand": True,
+                "note": (
+                    "缺少造成落后的对手进球动作；score_path 记分牌时间不可冒充失球过程。"
+                    f"在 [{t0:.1f},{t1:.1f}] 搜索 live 进球（含开场 opening 失球）。"
+                ),
+            }
+        )
+
     # --- 铺垫：整段落后→扳平 的候选搜索区间，不用单点短窗 ---
     if not beats.get("铺垫"):
         t0 = 0.0 if behind and behind.get("opening") else max(0.0, behind_t - 30.0)
@@ -228,8 +253,8 @@ def detect_gaps(
                 "search_intervals": intervals,
                 "seed_windows": seeds,
                 "score_anchor_sec": behind_t,
-                "goal_anchor_sec": None,
-                "anchor_status": "needs_search",
+                "goal_anchor_sec": opener_goal_t,
+                "anchor_status": "needs_search" if opener_goal_t is None else "goal_event",
                 "adaptive_expand": True,
                 "note": (
                     f"铺垫缺失（reason={reason or 'empty_beat'}）；"

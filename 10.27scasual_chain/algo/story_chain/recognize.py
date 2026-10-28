@@ -143,9 +143,11 @@ def recognize_comeback(events: Sequence[Dict[str, Any]]) -> Recognition:
     if not (equalizer.t_sec < go_ahead.t_sec):
         return Recognition(False, "beats_out_of_order", TIER_NONE, protagonist, beats)
 
+    # 失球铺垫：对手造成落后的记分节点（含开场即 0:n 的 opening 节点）。
+    # 旧逻辑跳过 opening，导致「开场即落后」场次永远 missing_setup、不展开对手进球。
     concede_ids: List[str] = []
     for node in spell:
-        if node.opening or node.delta_side == protagonist:
+        if (not node.opening) and node.delta_side == protagonist:
             continue
         if node.carrier_event_id:
             concede_ids.append(node.carrier_event_id)

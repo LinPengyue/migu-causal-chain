@@ -198,7 +198,8 @@ class ScorePathTests(unittest.TestCase):
         self.assertTrue(story["is_candidate"])
         self.assertGreater(len(story["events"]), 0)
 
-    def test_opening_deficit_without_setup_is_candidate(self) -> None:
+    def test_opening_deficit_carrier_is_setup_not_skipped(self) -> None:
+        """开场即 0:1 时 opening 失球 carrier 必须进入铺垫，不得再标 missing_setup。"""
         events = []
         events.extend(_hold(1, 10, "界外球", "0:1"))
         events.extend(_hold(10, 200, "界外球", "1:1"))
@@ -207,7 +208,34 @@ class ScorePathTests(unittest.TestCase):
         story = build_comeback_story(events, [], match_meta={"match_id": "croatia_like"})
         self.assertFalse(story["has_story"])
         self.assertTrue(story["is_candidate"])
-        self.assertEqual(story["no_story_reason"], "missing_setup")
+        # 有 opening carrier 后缺的是蓄力，不再是 missing_setup
+        self.assertEqual(story["no_story_reason"], "missing_buildup")
+        self.assertTrue(story["recognition"]["beats"].get("铺垫"))
+
+    def test_opening_deficit_matches_causal_goal_with_long_board_lag(self) -> None:
+        """记分牌滞后 ~99s 仍应匹配对手开场进球因果链（铺垫必须含进球动作）。"""
+        events = []
+        # 无 0:0；开场记分牌直接 0:1（对齐克罗地亚），carrier 为界外球非进球
+        events.extend(_hold(1, 1079, "界外球", "0:1"))
+        events.append(_event("att1", 2000, "角球", "0:1"))
+        events.append(_event("att2", 2500, "射门", "0:1", shot="Shot_Wide"))
+        events.extend(_hold(10, 3145, "界外球", "1:1"))
+        events.extend(_hold(20, 3697, "界外球", "2:1"))
+        events.append(_event("end", 7940, "比赛结束", "2:1"))
+        chains = [
+            _goal_chain("ann_opener", 980.0, [("传球", -2.0), ("传球", -1.0), ("进球", 0.0)]),
+            _goal_chain("ann_eq", 3065.0, [("进球", 0.0)]),
+            _goal_chain("ann_ahead", 3525.0, [("进球", 0.0)]),
+        ]
+        story = build_comeback_story(events, chains, match_meta={"match_id": "croatia_opener"})
+        setup_goals = [
+            row
+            for row in story["events"]
+            if row.get("story_role") == "铺垫" and row.get("type") == "进球"
+        ]
+        self.assertTrue(setup_goals, msg="opening deficit must emit opponent goal into 铺垫")
+        self.assertAlmostEqual(setup_goals[0]["t_ms"] / 1000.0, 980.0, places=1)
+        self.assertEqual(setup_goals[0].get("source_annotation_id"), "ann_opener")
 
 
 if __name__ == "__main__":

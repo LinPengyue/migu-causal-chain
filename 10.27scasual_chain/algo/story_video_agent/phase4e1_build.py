@@ -26,8 +26,9 @@ from story_video_agent.media import probe_video
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_VIDEO = Path("/mnt/data4/migu/2022-11-28 克罗地亚vs加拿大.mp4")
-OUT_DIR = ROOT / "_local_render" / "phase4e1"
+OUT_DIR = ROOT / "_local_render" / "phase4e1b"
 REPORTS = ROOT / "reports"
+REPORT_PREFIX = "phase4e1b"
 
 # Internal preview loudness target (not migu formal delivery spec)
 LOUDNORM_I = -16.0
@@ -115,19 +116,43 @@ def build_long_edl() -> List[Dict[str, Any]]:
         placeholder_sec=3.0,
         placeholder_lines=[
             "T01 克罗地亚逆转加拿大",
-            "落后 0:1  →  终场 4:1",
+            "失球 0:1  →  终场 4:1",
             "内部审核样片 · candidate_only",
         ],
+    )
+    add(
+        segment_id="seg_opponent_opening_goal_action",
+        beat="铺垫",
+        role="opponent_opening_goal_action",
+        shot_kind="live",
+        media_in=968.0,
+        media_out=990.0,
+        narration="加拿大先进球：传球→头球→入网≈981.5→庆祝（live；非 1079 记分牌）",
+        selection_reason="phase4e1b_local_opening_goal",
+        time_status="local_visual_candidate",
+        provenance={
+            "source": "local_frame_review",
+            "causal_goal_event_id": "event_000004",
+            "causal_goal_t_sec": 980.137,
+            "ball_in_net_sec": 981.5,
+            "header_contact_sec": 980.5,
+            "is_replay": False,
+            "broadcast_clock": "01:06-01:10",
+            "avoided_scoreboard_proxy_t_sec": 1079.06,
+            "pipeline_verified": False,
+        },
+        event_ids=["event_000004"],
+        confidence=0.78,
     )
     add(
         segment_id="seg_setup_deficit",
         beat="铺垫",
         role="deficit_scoreboard_anchor",
         shot_kind="scoreboard_anchor",
-        media_in=1075.06,
-        media_out=1085.06,
-        narration="0:1 落后记分牌（缩短至约10s）",
-        selection_reason="phase4e1_shorten_setup",
+        media_in=1078.06,
+        media_out=1082.06,
+        narration="0:1 比分确认（缩短≈4s；不替代失球动作）",
+        selection_reason="phase4e1b_shorten_setup_after_opening_goal",
         time_status="score_path_only",
         provenance={"source": "score_path", "t_sec": 1079.06, "pipeline_verified": False},
         confidence=0.9,
@@ -324,6 +349,7 @@ def build_short_edl() -> List[Dict[str, Any]]:
     long_rows = {r["segment_id"]: r for r in build_long_edl()}
     keep = [
         "seg_title_open",
+        "seg_opponent_opening_goal_action",
         "seg_setup_deficit",
         "seg_title_buildup",
         "seg_buildup_attack",
@@ -367,7 +393,7 @@ def build_plan(edl: List[Dict[str, Any]], *, variant: str) -> Dict[str, Any]:
         "story_id": "T01_comeback",
         "story_tier": "candidate",
         "match_id": "croatia_vs_canada_2022-11-28",
-        "phase": "4E.1",
+        "phase": "4E.1b",
         "variant": variant,
         "render_ready": False,
         "render_ready_edl": [],
@@ -380,6 +406,7 @@ def build_plan(edl: List[Dict[str, Any]], *, variant: str) -> Dict[str, Any]:
         },
         "notes": [
             "phase4e1: avoid source HEVC bitstream glitch spans; shorten boards; narrative titles; loudness",
+            "phase4e1b: insert opponent opening goal action before 0:1 scoreboard (cause of deficit)",
             "goal action timestamps unchanged unless window trimmed to skip source corruption",
         ],
         "source_glitch_ranges": [
@@ -397,7 +424,8 @@ def build_plan(edl: List[Dict[str, Any]], *, variant: str) -> Dict[str, Any]:
 
 def _score_overlay(role: str) -> List[str]:
     mapping = {
-        "deficit_scoreboard_anchor": ["比分 0:1", "逆境开局"],
+        "opponent_opening_goal_action": ["失球 → 0:1", "加拿大先进球"],
+        "deficit_scoreboard_anchor": ["比分 0:1", "逆境确认"],
         "buildup_attack": ["蓄力中"],
         "equalizer_goal_action": ["扳平 → 1:1"],
         "equalizer_scoreboard_anchor": ["1:1"],
@@ -611,13 +639,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         edl_path.write_text(json.dumps(edl, ensure_ascii=False, indent=2), encoding="utf-8")
         plan_path.write_text(json.dumps(plan, ensure_ascii=False, indent=2), encoding="utf-8")
         # also mirror into reports (small JSON)
-        (REPORTS / f"phase4e1_edl_{name}.json").write_text(
+        (REPORTS / f"{REPORT_PREFIX}_edl_{name}.json").write_text(
             json.dumps(edl, ensure_ascii=False, indent=2), encoding="utf-8"
         )
-        (REPORTS / f"phase4e1_plan_{name}.json").write_text(
+        (REPORTS / f"{REPORT_PREFIX}_plan_{name}.json").write_text(
             json.dumps(plan, ensure_ascii=False, indent=2), encoding="utf-8"
         )
-        out_mp4 = OUT_DIR / f"croatia_preview_phase4e1_{name}.mp4"
+        out_mp4 = OUT_DIR / f"croatia_preview_{REPORT_PREFIX}_{name}.mp4"
         work = OUT_DIR / f"work_{name}"
         print(f"[phase4e1] rendering {name} …", flush=True)
         result = render_variant(plan=plan, video=video, out_mp4=out_mp4, work_dir=work)

@@ -19,6 +19,7 @@ from story_video_agent.event_mapping import (
     find_replay_supplements,
     index_story_events,
     link_score_carrier,
+    merge_causal_live_goals,
     provenance_ref,
 )
 from story_video_agent.state import _comeback_score_steps
@@ -251,7 +252,7 @@ def compose_story_plan(
         plan["diagnostics"]["structure_problems"] = problems
         return plan
 
-    events = index_story_events(story)
+    events = merge_causal_live_goals(index_story_events(story), causal)
     vis = _visual_index(visual_evidence)
     milestones = _find_score_milestones(story, str(side or "left"))
     missing: List[str] = []
@@ -265,8 +266,127 @@ def compose_story_plan(
         evidence_refs_global.append(ref)
         return ref
 
-    # ---------- 铺垫：落后比分确认（scoreboard anchor，非进球）----------
+    # ---------- 铺垫：对手造成落后的进球动作（先于记分牌）----------
     behind = milestones.get("behind") or milestones.get("behind_start")
+    if behind:
+        behind_score_t = float(behind["t_sec"])
+        opener_cands = find_live_goal_candidates(
+            events, score_t=behind_score_t, role_hint="铺垫"
+        )
+        # 优先 story 已标 铺垫 的进球；否则取最接近记分牌且不晚于牌的候选
+        preferred = [
+            c
+            for c in opener_cands
+            if c.get("story_role") == "铺垫" or str(c.get("event_id") or "").startswith("causal:")
+        ]
+        ranked = preferred or opener_cands
+        ranked = [c for c in ranked if float(c["t_sec"]) <= behind_score_t + 1e-6]
+        ranked.sort(key=lambda c: abs(float(c["dt_to_score_sec"])))
+        if ranked:
+            best = ranked[0]
+            live_id = str(best["event_id"])
+            # 动作窗：传球铺垫 + 入网后庆祝；不用过窄的默认 PAD
+            t_goal = float(best["t_sec"])
+            win_g = {
+                "media_in": round(max(0.0, t_goal - 12.0), 3),
+                "media_out": round(t_goal + 10.0, 3),
+                "time_status": "linked_event_ms",
+            }
+            segments.append(
+                _mk_seg(
+                    segment_id="seg_opponent_opening_goal_action",
+                    beat="铺垫",
+                    role="opponent_opening_goal_action",
+                    event_ids=[live_id],
+                    frame_ids=[],
+                    evidence_refs=[
+                        add_ref(
+                            {
+                                "kind": "rule_fact",
+                                "used_as_fact": True,
+                                "source": "opponent_opening_live_goal",
+                                "event_id": live_id,
+                                "dt_to_score_sec": best.get("dt_to_score_sec"),
+                                "note": "cause_of_deficit_not_scoreboard",
+                            }
+                        )
+                    ],
+                    media_in=win_g["media_in"],
+                    media_out=win_g["media_out"],
+                    time_status="linked_event_ms",
+                    shot_kind="live",
+                    is_replay=False,
+                    narration=(
+                        f"率先失球动作 {live_id} @ {t_goal}s"
+                        f"（相对 0:1 记分牌 Δ={best.get('dt_to_score_sec')}s；非记分牌时间）。"
+                    ),
+                    selection_reason="opponent_opening_goal_near_behind_scoreboard",
+                    source_refs=[
+                        provenance_ref(
+                            namespace="t01_story_event"
+                            if not live_id.startswith("causal:")
+                            else "causal_chain",
+                            ref_id=live_id,
+                            extra={"shot_kind": "live", "role": "opponent_opening"},
+                        )
+                    ],
+                    confidence=float(best.get("confidence") or 0.6),
+                    time_provenance={
+                        "source": "linked_live_goal_event",
+                        "t_sec": t_goal,
+                        "score_anchor_t_sec": behind_score_t,
+                        "pipeline_verified": False,
+                        "granted_by": None,
+                    },
+                    render_eligibility="candidate_only",
+                    blocking_reasons=["awaiting_internal_media_verification"],
+                )
+            )
+            all_event_ids.append(live_id)
+            mappings.append(
+                {
+                    "context": "opponent_opening_goal",
+                    "status": "linked",
+                    "linked_event_id": live_id,
+                    "dt_to_score_sec": best.get("dt_to_score_sec"),
+                }
+            )
+        else:
+            missing.append("missing_live_goal_action:opponent_opening")
+            blocking.append("missing_opponent_opening_goal_action")
+            segments.append(
+                _mk_seg(
+                    segment_id="seg_opponent_opening_goal_pending",
+                    beat="铺垫",
+                    role="opponent_opening_goal_action",
+                    event_ids=[],
+                    frame_ids=[],
+                    evidence_refs=[],
+                    media_in=None,
+                    media_out=None,
+                    time_status="pending_localization",
+                    shot_kind="unknown",
+                    is_replay=False,
+                    narration="缺少造成落后的对手进球动作；记分牌时间不可冒充失球过程。",
+                    selection_reason="no_live_opponent_opening_goal_near_behind_board",
+                    source_refs=[
+                        provenance_ref(
+                            namespace="score_path_carrier",
+                            ref_id=str(behind.get("carrier_event_id") or f"score@{behind_score_t}"),
+                        )
+                    ],
+                    confidence=0.0,
+                    time_provenance={
+                        "source": "none",
+                        "score_anchor_t_sec": behind_score_t,
+                        "pipeline_verified": False,
+                    },
+                    render_eligibility="blocked",
+                    blocking_reasons=["missing_opponent_opening_goal_action"],
+                )
+            )
+
+    # ---------- 铺垫：落后比分确认（scoreboard anchor，非进球；缩短，不替代动作）----------
     if behind:
         carrier = str(behind.get("carrier_event_id") or "")
         link = link_score_carrier(
@@ -276,7 +396,13 @@ def compose_story_plan(
             require_live=False,
         )
         mappings.append({"context": "behind_score", **link})
-        win = _window_from_t(float(behind["t_sec"]), status="score_path_only")
+        # 缩短记分牌：约 4s，避免再次占满铺垫
+        win = _window_from_t(
+            float(behind["t_sec"]),
+            status="score_path_only",
+            pad_before=1.0,
+            pad_after=3.0,
+        )
         refs = [
             add_ref(
                 {
@@ -360,10 +486,14 @@ def compose_story_plan(
     setup_frames, setup_refs, _ = _attach_visual(
         vis, ["missing_setup_visual"], add_ref=add_ref, missing=missing
     )
-    if setup_frames and segments and segments[0]["segment_id"] == "seg_setup_deficit":
-        segments[0]["frame_ids"] = setup_frames
-        segments[0]["evidence_refs"].extend(setup_refs)
-        segments[0]["narration"] += " 附视觉观察（非已核实事实，除非 pipeline_verified）。"
+    setup_seg = next(
+        (s for s in segments if s.get("segment_id") == "seg_setup_deficit"),
+        None,
+    )
+    if setup_frames and setup_seg is not None:
+        setup_seg["frame_ids"] = setup_frames
+        setup_seg["evidence_refs"].extend(setup_refs)
+        setup_seg["narration"] += " 附视觉观察（非已核实事实，除非 pipeline_verified）。"
 
     # ---------- 蓄力：live，落在 behind→equalizer 之间 ----------
     eq_node = milestones.get("equalizer")

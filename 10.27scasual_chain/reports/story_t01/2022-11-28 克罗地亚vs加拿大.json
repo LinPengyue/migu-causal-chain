@@ -2,14 +2,14 @@
   "schema_version": "story-t01-1",
   "match_id": "2022-11-28 克罗地亚vs加拿大",
   "video_name": "2022-11-28 克罗地亚vs加拿大.mp4",
-  "has_story": false,
-  "is_candidate": true,
-  "story_tier": "candidate",
+  "has_story": true,
+  "is_candidate": false,
+  "story_tier": "story",
   "story_template_id": "T01_comeback",
   "chain_category": "故事链",
   "causal_chain_subtype": "逆风翻盘",
-  "story_label_zh": "逆风翻盘候选",
-  "no_story_reason": "missing_setup",
+  "story_label_zh": "逆风翻盘",
+  "no_story_reason": "",
   "protagonist_side": "left",
   "score_path": [
     {
@@ -49,14 +49,20 @@
     }
   ],
   "recognition": {
-    "present": false,
-    "tier": "candidate",
-    "is_candidate": true,
-    "reason": "missing_setup",
+    "present": true,
+    "tier": "story",
+    "is_candidate": false,
+    "reason": "",
     "protagonist_side": "left",
     "beats": {
-      "铺垫": [],
-      "蓄力": [],
+      "铺垫": [
+        "event_000004"
+      ],
+      "蓄力": [
+        "event_000007",
+        "event_000040",
+        "event_000074"
+      ],
       "转折": [
         "event_000068"
       ],
@@ -68,6 +74,102 @@
     }
   },
   "events": [
+    {
+      "event_id": "event_000001",
+      "type": "传球",
+      "type_en": "Pass",
+      "t_ms": 969094.0,
+      "bz_id": "8a113284-9175-367e-e635-683919312917-1785587263299",
+      "story_role": "铺垫",
+      "source": "causal_chain",
+      "source_annotation_id": "ann_0001",
+      "source_order": 0,
+      "source_chain_category": "结果链",
+      "source_chain_subtype": "抢断/反击/失误后直接进球链",
+      "is_replay": false,
+      "score_context": "0:1",
+      "order": 0
+    },
+    {
+      "event_id": "event_000002",
+      "type": "传球",
+      "type_en": "Pass",
+      "t_ms": 973683.0,
+      "bz_id": "a758072b-1375-0d0e-1aa4-37421fac8336-1785587388364",
+      "story_role": "铺垫",
+      "source": "causal_chain",
+      "source_annotation_id": "ann_0001",
+      "source_order": 1,
+      "source_chain_category": "结果链",
+      "source_chain_subtype": "抢断/反击/失误后直接进球链",
+      "is_replay": false,
+      "score_context": "0:1",
+      "order": 1
+    },
+    {
+      "event_id": "event_000003",
+      "type": "传球",
+      "type_en": "Pass",
+      "t_ms": 978783.0,
+      "bz_id": "36120a4d-060f-92ca-6e00-a0135abc5ae5-1785587479050",
+      "story_role": "铺垫",
+      "source": "causal_chain",
+      "source_annotation_id": "ann_0001",
+      "source_order": 2,
+      "source_chain_category": "结果链",
+      "source_chain_subtype": "抢断/反击/失误后直接进球链",
+      "is_replay": false,
+      "score_context": "0:1",
+      "order": 2
+    },
+    {
+      "event_id": "event_000004",
+      "type": "进球",
+      "type_en": "Goal",
+      "t_ms": 980137.0,
+      "bz_id": "2c632e5f-53e0-5806-6b26-e86c6f81b112-1782910960671",
+      "story_role": "铺垫",
+      "source": "causal_chain",
+      "source_annotation_id": "ann_0001",
+      "source_order": 3,
+      "source_chain_category": "结果链",
+      "source_chain_subtype": "抢断/反击/失误后直接进球链",
+      "is_replay": false,
+      "score_context": "0:1",
+      "order": 3
+    },
+    {
+      "event_id": "event_000007",
+      "type": "任意球",
+      "type_en": "free_kick",
+      "t_ms": 1157300.0,
+      "bz_id": "e2a5377d-7e3f-97cf-87af-3611bdf1adaa-1782911950174",
+      "story_role": "蓄力",
+      "source": "delivery_event",
+      "source_annotation_id": "",
+      "source_order": null,
+      "source_chain_category": "",
+      "source_chain_subtype": "",
+      "is_replay": false,
+      "score_context": "0:1",
+      "order": 4
+    },
+    {
+      "event_id": "event_000040",
+      "type": "射门",
+      "type_en": "shot",
+      "t_ms": 2204200.0,
+      "bz_id": "86e819f5-1cf0-a76d-22ef-b6eeb02b58cf-1782919882711",
+      "story_role": "蓄力",
+      "source": "delivery_event",
+      "source_annotation_id": "",
+      "source_order": null,
+      "source_chain_category": "",
+      "source_chain_subtype": "",
+      "is_replay": false,
+      "score_context": "0:1",
+      "order": 5
+    },
     {
       "event_id": "event_000021",
       "type": "进球",
@@ -82,7 +184,23 @@
       "source_chain_subtype": "",
       "is_replay": false,
       "score_context": "1:1",
-      "order": 0
+      "order": 6
+    },
+    {
+      "event_id": "event_000074",
+      "type": "任意球",
+      "type_en": "free_kick",
+      "t_ms": 3493700.0,
+      "bz_id": "13e0ff87-58f0-349d-d7a1-a34867b3f239-1782928040702",
+      "story_role": "蓄力",
+      "source": "delivery_event",
+      "source_annotation_id": "",
+      "source_order": null,
+      "source_chain_category": "",
+      "source_chain_subtype": "",
+      "is_replay": false,
+      "score_context": "1:1",
+      "order": 7
     },
     {
       "event_id": "event_000076",
@@ -98,23 +216,23 @@
       "source_chain_subtype": "",
       "is_replay": false,
       "score_context": "2:1",
-      "order": 1
+      "order": 8
     },
     {
-      "event_id": "event_000118",
-      "type": "犯规/被犯规",
-      "type_en": "foul",
-      "t_ms": 6408700.0,
-      "bz_id": "3477233d-4dd2-a61e-b0f1-3b5a3c72c95c-1782996218629",
+      "event_id": "event_000025",
+      "type": "进球",
+      "type_en": "Goal",
+      "t_ms": 6317199.0,
+      "bz_id": "0fd6243f-341b-e0b1-8191-5a8e67535ed7-1782994435364",
       "story_role": "高潮",
-      "source": "delivery_event",
-      "source_annotation_id": "",
-      "source_order": null,
-      "source_chain_category": "",
-      "source_chain_subtype": "",
+      "source": "causal_chain",
+      "source_annotation_id": "ann_0010",
+      "source_order": 0,
+      "source_chain_category": "结果链",
+      "source_chain_subtype": "抢断/反击/失误后直接进球链",
       "is_replay": false,
       "score_context": "3:1",
-      "order": 2
+      "order": 9
     },
     {
       "event_id": "event_000155",
@@ -130,7 +248,7 @@
       "source_chain_subtype": "",
       "is_replay": false,
       "score_context": "4:1",
-      "order": 3
+      "order": 10
     },
     {
       "event_id": "event_000159",
@@ -146,13 +264,13 @@
       "source_chain_subtype": "",
       "is_replay": false,
       "score_context": "4:1",
-      "order": 4
+      "order": 11
     }
   ],
   "algorithm": "t01_comeback_e2e",
   "stages": [
     "recognize_timeline",
-    "emit_candidate_chain"
+    "emit_story_chain"
   ],
   "events_file": "2022-11-28 克罗地亚vs加拿大.json",
   "causal_file": "2022-11-28 克罗地亚vs加拿大_causal.json"

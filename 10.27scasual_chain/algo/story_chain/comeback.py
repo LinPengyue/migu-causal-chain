@@ -9,7 +9,8 @@ from story_chain.score_path import ScoreNode, build_score_path, event_time_sec, 
 
 GOAL_TYPES = frozenset({"进球", "乌龙球", "头球破门"})
 DANGER_TERMINALS = frozenset({"扑救", "门线救险", "射门"})
-_GOAL_MATCH_BEFORE = 90.0
+# 记分牌确认常滞后进球动作；克罗地亚开场 0:1 约滞后 ~99s，90s 会漏匹配。
+_GOAL_MATCH_BEFORE = 120.0
 _GOAL_MATCH_AFTER = 15.0
 _CHAIN_EVENT_SLACK = 8.0
 
