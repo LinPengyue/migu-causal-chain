@@ -100,7 +100,7 @@ Proxy 403 blocked fresh DeepSeek during later runs; vision for the fifth goal wa
 8. `story_clean_candidate.mp4`
 9. `story_qc_candidate.mp4`
 10. this report
-11. Git commit SHA (see commit after this file)
+11. Git commit SHA: `5fc1a9e66e9a292df2c904e19d245a949e87295a`
 
 ## Forbidden inputs (honored)
 
