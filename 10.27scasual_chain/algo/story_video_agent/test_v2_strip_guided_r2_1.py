@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import unittest
 
+from story_video_agent.api_provider import ApiProvider
 from story_video_agent.v2_api_preflight import is_fatal_api_failure
 from story_video_agent.v2_enhanced_events import make_inferred_goal_event, should_emit_inferred_goal
 from story_video_agent.v2_event_guided_evidence import (
@@ -11,6 +12,7 @@ from story_video_agent.v2_event_guided_evidence import (
     localize_goal_action_times,
     merge_action_evidence_windows,
 )
+from story_video_agent.v2_goal_recovery_agent import V2GoalRecoveryAgent
 
 
 class TestFatalApi(unittest.TestCase):
@@ -134,6 +136,132 @@ class TestActionTiming(unittest.TestCase):
         self.assertTrue(agg["action_time_resolved"])
         self.assertEqual(agg["shot_action"]["media_sec"], 50.0)
         self.assertEqual(agg["goal_result"]["media_sec"], 52.5)
+
+    def test_aggregate_rejects_wide_shot_result_gap(self):
+        rows = [
+            {
+                "evidence": {
+                    "live_or_replay": "live",
+                    "shot_action": {"frame_id": "f_a", "media_sec": 6359.0},
+                    "goal_result": None,
+                }
+            },
+            {
+                "evidence": {
+                    "live_or_replay": "live",
+                    "shot_action": None,
+                    "goal_result": {"frame_id": "f_b", "media_sec": 6461.0},
+                }
+            },
+        ]
+        agg = merge_action_evidence_windows(rows)
+        self.assertFalse(agg["action_time_resolved"])
+        self.assertTrue(agg.get("rejected_wide_gap"))
+
+
+class TestEarlierThanScoreboardRule(unittest.TestCase):
+    def _agent(self) -> V2GoalRecoveryAgent:
+        api = ApiProvider(
+            force_mock=True,
+            require_real=False,
+            max_calls=8,
+            max_cost_usd=1.0,
+            max_completion_tokens=256,
+        )
+        return V2GoalRecoveryAgent(api=api, use_llm_planner=False)
+
+    def test_walks_earlier_after_scoreboard_after(self):
+        phases = [
+            {"phase": "early_third", "start_sec": 3145.98, "end_sec": 3329.77},
+            {"phase": "mid_third", "start_sec": 3329.77, "end_sec": 3513.56},
+            {"phase": "late_third_near_confirm", "start_sec": 3513.56, "end_sec": 3697.35},
+            {"phase": "refine_tail", "start_sec": 3652.35, "end_sec": 3697.35},
+        ]
+        state = {
+            "open_candidates": [
+                {
+                    "candidate_id": "mg_trans_2",
+                    "kind": "score_change_missing_goal",
+                    "score_before": [1, 1],
+                    "score_after": [2, 1],
+                    "score_confirmation_time": 3697.35,
+                    "previous_score_observation_time": 3145.98,
+                    "search_region": {"phases": phases},
+                    "n_observations": 1,
+                    "last_grade": "scoreboard_only",
+                    "last_window": {"start": 3652.35, "end": 3697.35},
+                    "last_score_pairs": [[2, 1]],
+                    "board_after_seen": True,
+                    "board_after_window": {"start": 3652.35, "end": 3697.35},
+                }
+            ],
+            "frames_remaining": 40,
+        }
+        d = self._agent().decide(state, 1, 10)
+        self.assertEqual(d["tool"], "refine")
+        self.assertEqual(d["reason"], "rule_search_earlier_than_scoreboard_after")
+        self.assertLessEqual(float(d["arguments"]["end"]), 3652.35 + 1e-6)
+        self.assertLess(float(d["arguments"]["start"]), float(d["arguments"]["end"]))
+
+    def test_keeps_walking_when_earlier_window_still_after(self):
+        state = {
+            "open_candidates": [
+                {
+                    "candidate_id": "mg_trans_2",
+                    "kind": "score_change_missing_goal",
+                    "score_before": [1, 1],
+                    "score_after": [2, 1],
+                    "score_confirmation_time": 3697.35,
+                    "previous_score_observation_time": 3145.98,
+                    "search_region": {
+                        "phases": [
+                            {"phase": "late", "start_sec": 3145.98, "end_sec": 3697.35},
+                        ]
+                    },
+                    "n_observations": 2,
+                    "last_grade": "goal_candidate",
+                    "last_window": {"start": 3577.35, "end": 3652.35},
+                    "last_score_pairs": [[2, 1]],
+                    "board_after_seen": True,
+                    "board_after_window": {"start": 3577.35, "end": 3652.35},
+                    "same_window_streak": 1,
+                }
+            ],
+            "frames_remaining": 40,
+        }
+        d = self._agent().decide(state, 2, 10)
+        self.assertEqual(d["reason"], "rule_search_earlier_than_scoreboard_after")
+        self.assertLessEqual(float(d["arguments"]["end"]), 3577.35 + 1e-6)
+
+    def test_short_frame_cite_binds_shot_time(self):
+        obs = {
+            "media_start_sec": 3577.35,
+            "media_end_sec": 3652.35,
+            "frames": [
+                {"frame_id": "f_0010_3637320", "actual_media_sec": 3637.32, "requested_media_sec": 3637.32},
+                {"frame_id": "f_0011_3652300", "actual_media_sec": 3652.3, "requested_media_sec": 3652.3},
+            ],
+            "perception": {
+                "notes": "Player shooting the ball towards the goal (f_0010). Keeper dive; ball not clearly into the net.",
+                "observed_actions": [
+                    "Player in black jersey shooting the ball towards the goal (f_0010)",
+                    "Goalkeeper diving to save the shot (f_0010)",
+                ],
+                "frame_ids": ["f_0010_3637320", "f_0011_3652300"],
+                "normalized_ok": True,
+            },
+        }
+        timing = localize_goal_action_times(
+            observation=obs,
+            evidence_hint={
+                "supporting_frame_ids": ["f_0010_3637320", "f_0011_3652300"],
+                "shooting_action_evidence": True,
+                "goal_result_evidence": False,
+            },
+        )
+        self.assertIsNotNone(timing["shot_action"])
+        self.assertAlmostEqual(timing["shot_action"]["media_sec"], 3637.32)
+        self.assertIsNone(timing["goal_result"])
 
 
 if __name__ == "__main__":

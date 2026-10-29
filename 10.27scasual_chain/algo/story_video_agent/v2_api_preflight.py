@@ -128,14 +128,34 @@ def list_models(cfg: EndpointConfig) -> Dict[str, Any]:
 def _tiny_or_file_b64(image_path: Optional[Path]) -> Tuple[str, str]:
     if image_path and Path(image_path).is_file():
         raw = Path(image_path).read_bytes()
-        return base64.b64encode(raw).decode("ascii"), "image/jpeg"
-    # 8x8 png
-    png = bytes.fromhex(
-        "89504e470d0a1a0a0000000d49484452000000080000000808020000004b6d29dc"
-        "000000017352474200aece1ce90000000467414d410000b18f0bfc6105000000097048597300000ec4"
-        "00000ec401952b0e1b0000001c4944415478da6360c0f00f000a00f1ff013f1e0a0d0000000049454e44ae426082"
-    )
-    return base64.b64encode(png).decode("ascii"), "image/png"
+        suffix = Path(image_path).suffix.lower()
+        mime = "image/jpeg" if suffix in {".jpg", ".jpeg"} else "image/png"
+        return base64.b64encode(raw).decode("ascii"), mime
+    # 32x32 PNG — many VLMs reject width/height <= 10.
+    try:
+        import struct
+        import zlib
+
+        def _chunk(tag: bytes, data: bytes) -> bytes:
+            return (
+                struct.pack(">I", len(data))
+                + tag
+                + data
+                + struct.pack(">I", zlib.crc32(tag + data) & 0xFFFFFFFF)
+            )
+
+        w = h = 32
+        raw_rows = b"".join(b"\x00" + (b"\x80\x80\x80" * w) for _ in range(h))
+        png = (
+            b"\x89PNG\r\n\x1a\n"
+            + _chunk(b"IHDR", struct.pack(">IIBBBBB", w, h, 8, 2, 0, 0, 0))
+            + _chunk(b"IDAT", zlib.compress(raw_rows, 9))
+            + _chunk(b"IEND", b"")
+        )
+        return base64.b64encode(png).decode("ascii"), "image/png"
+    except Exception:  # noqa: BLE001
+        # fallback minimal valid larger jpeg-ish via raw bytes already above
+        raise
 
 
 def probe_text(cfg: EndpointConfig) -> Dict[str, Any]:

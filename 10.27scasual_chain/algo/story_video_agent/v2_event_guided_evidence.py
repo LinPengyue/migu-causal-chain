@@ -9,7 +9,7 @@ from story_video_agent.v2_score_transitions import parse_score_pairs
 
 _FRAME_CITE = re.compile(r"\bf[_-]?\d{3,}\b|\bframe\s*#?\s*\d+", re.I)
 _SHOT = re.compile(
-    r"\b(?:shoot|shot|strike|header|volley|finish(?:es|ed)?|tap[- ]?in)\b|射门|头球|抽射|推射",
+    r"\b(?:shoot(?:s|ing)?|shot|strike|header|volley|finish(?:es|ed)?|tap[- ]?in)\b|射门|头球|抽射|推射",
     re.I,
 )
 _NET = re.compile(
@@ -28,12 +28,14 @@ _NEG_ACTION = re.compile(
 
 def _blob(observation: Dict[str, Any]) -> str:
     perc = observation.get("perception") or {}
+    # Join actions with " | " so keyword↔frame binding stays per-clause.
+    acts = " | ".join(str(a) for a in (perc.get("observed_actions") or []) if str(a).strip())
     parts = [
         str(perc.get("notes") or ""),
-        " ".join(str(a) for a in (perc.get("observed_actions") or [])),
+        acts,
         str(observation.get("notes") or ""),
     ]
-    return " | ".join(parts)
+    return " | ".join(p for p in parts if p)
 
 
 def _frame_ids(observation: Dict[str, Any]) -> List[str]:
@@ -201,20 +203,39 @@ def _frame_time_map(observation: Dict[str, Any]) -> Dict[str, float]:
     return out
 
 
+def _frame_id_aliases(fid: str) -> List[str]:
+    """Accept short VLM cites like f_0010 for store ids f_0010_3637320."""
+    fid = str(fid)
+    aliases = [fid]
+    m = re.match(r"(f_?\d{3,5})(?:_\d+)?$", fid, re.I)
+    if m:
+        short = m.group(1)
+        if short not in aliases:
+            aliases.append(short)
+        # also f0010 / f_0010 variants
+        digits = re.sub(r"^f_?", "", short, flags=re.I)
+        for alt in (f"f_{digits}", f"f{digits}", f"f-{digits}"):
+            if alt not in aliases:
+                aliases.append(alt)
+    return aliases
+
+
 def _frames_near_keyword(text: str, pattern: re.Pattern[str], known_ids: Sequence[str]) -> List[str]:
     """Heuristic: frame ids mentioned in the same clause as shot/net keywords."""
     hits: List[str] = []
     if not text:
         return hits
-    # split on sentence-ish boundaries
-    chunks = re.split(r"[;\n\.]|。|；", text)
+    # split on sentence-ish / list boundaries (VLM actions often joined with " | ")
+    chunks = re.split(r"[;\n\.\|]|。|；", text)
     for ch in chunks:
         if not pattern.search(ch):
             continue
         for fid in known_ids:
-            if re.search(rf"\b{re.escape(fid)}\b", ch, re.I):
-                if fid not in hits:
-                    hits.append(fid)
+            for alias in _frame_id_aliases(fid):
+                if re.search(rf"\b{re.escape(alias)}\b", ch, re.I):
+                    if fid not in hits:
+                        hits.append(fid)
+                    break
     return hits
 
 
@@ -308,29 +329,82 @@ def localize_goal_action_times(
     }
 
 
+# Shot→net for a single live goal should fit in a short action span.
+_MAX_SHOT_RESULT_GAP_SEC = 20.0
+
+
+def _live_rank(flag: Optional[str]) -> int:
+    """Lower is better: prefer pure live over mixed; skip pure replay upstream."""
+    f = str(flag or "unknown")
+    if f == "live":
+        return 0
+    if f == "unknown":
+        return 1
+    if f == "mixed":
+        return 2
+    return 3
+
+
 def merge_action_evidence_windows(rows: Sequence[Dict[str, Any]]) -> Dict[str, Any]:
-    """Aggregate shot/result evidence across adjacent live observations."""
-    shots = []
-    results = []
+    """Aggregate shot/result evidence across adjacent live observations.
+
+    Prefer (1) same observation row, (2) live > unknown > mixed, (3) tightest gap.
+    Never pair across a gap wider than _MAX_SHOT_RESULT_GAP_SEC.
+    """
     live_flags = []
-    for r in rows:
+    same_row_candidates = []
+    shots: List[tuple] = []  # (live_rank, media_sec, shot, row_id)
+    results: List[tuple] = []
+
+    for i, r in enumerate(rows):
         ev = r.get("evidence") or r
-        if ev.get("live_or_replay") == "replay":
+        flag = ev.get("live_or_replay")
+        if flag == "replay":
             continue
-        if ev.get("shot_action"):
-            shots.append(ev["shot_action"])
-        if ev.get("goal_result"):
-            results.append(ev["goal_result"])
-        live_flags.append(ev.get("live_or_replay"))
-    shot = min(shots, key=lambda x: float(x["media_sec"])) if shots else None
-    result = max(results, key=lambda x: float(x["media_sec"])) if results else None
-    ok = bool(shot) and bool(result) and float(result["media_sec"]) >= float(shot["media_sec"]) - 0.5
+        live_flags.append(flag)
+        lr = _live_rank(flag)
+        sh = ev.get("shot_action")
+        rs = ev.get("goal_result")
+        if sh and sh.get("media_sec") is not None:
+            shots.append((lr, float(sh["media_sec"]), sh, i))
+        if rs and rs.get("media_sec") is not None:
+            results.append((lr, float(rs["media_sec"]), rs, i))
+        # Same-row pair is strongest when both bound inside one observation.
+        if sh and rs and sh.get("media_sec") is not None and rs.get("media_sec") is not None:
+            gap = float(rs["media_sec"]) - float(sh["media_sec"])
+            if -0.5 <= gap <= _MAX_SHOT_RESULT_GAP_SEC:
+                same_row_candidates.append((lr, gap, sh, rs, flag))
+
+    best = None  # (live_rank, gap, shot, result, basis)
+    for lr, gap, sh, rs, flag in same_row_candidates:
+        key = (lr, gap)
+        if best is None or key < (best[0], best[1]):
+            best = (lr, gap, sh, rs, f"same_row_{flag or 'unknown'}")
+
+    if best is None:
+        for lr_s, ts, sh, i_s in shots:
+            for lr_r, tr, rs, i_r in results:
+                gap = tr - ts
+                if gap < -0.5 or gap > _MAX_SHOT_RESULT_GAP_SEC:
+                    continue
+                lr = max(lr_s, lr_r)
+                key = (lr, gap)
+                if best is None or key < (best[0], best[1]):
+                    best = (lr, gap, sh, rs, "cross_row")
+
+    shot = best[2] if best else None
+    result = best[3] if best else None
+    ok = bool(shot) and bool(result)
+    # Reject mixed-only pairs when a tighter/live alternative is absent but gap is ok —
+    # still allow emit; audit layer may flag.
     edit = None
     if shot and result:
         edit = {
             "media_in": round(float(shot["media_sec"]) - 2.0, 3),
             "media_out": round(float(result["media_sec"]) + 3.0, 3),
             "basis": "aggregated_shot_result_frames",
+            "pair_basis": best[4] if best else None,
+            "pair_live_rank": best[0] if best else None,
         }
     return {
         "shot_action": shot,
@@ -339,6 +413,8 @@ def merge_action_evidence_windows(rows: Sequence[Dict[str, Any]]) -> Dict[str, A
         "action_time_resolved": ok,
         "n_source_rows": len(rows),
         "live_or_replay_votes": sorted({str(x) for x in live_flags if x}),
+        "rejected_wide_gap": bool(shots and results and not ok),
+        "pair_basis": best[4] if best else None,
     }
 
 

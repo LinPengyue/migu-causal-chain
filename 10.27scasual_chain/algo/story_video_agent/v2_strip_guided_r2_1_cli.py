@@ -88,11 +88,42 @@ def main(argv: list[str] | None = None) -> int:
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
+    # Prefer a real video frame for vision preflight (many VLMs reject tiny synthetics).
+    preflight_image = None
+    if args.real and not args.skip_video:
+        probe = Path("/tmp/croatia_vlm_probe/f.jpg")
+        if not probe.is_file() and args.video.is_file():
+            try:
+                import subprocess as _sp
+
+                probe.parent.mkdir(parents=True, exist_ok=True)
+                _sp.run(
+                    [
+                        "ffmpeg",
+                        "-y",
+                        "-ss",
+                        "3600",
+                        "-i",
+                        str(args.video),
+                        "-frames:v",
+                        "1",
+                        "-q:v",
+                        "2",
+                        str(probe),
+                    ],
+                    capture_output=True,
+                    check=False,
+                )
+            except Exception:  # noqa: BLE001
+                probe = Path()
+        if probe.is_file():
+            preflight_image = probe
+
     # Always write a standalone preflight artifact first for real mode.
     if args.real and not args.skip_video:
         configs = load_endpoint_configs()
         roles = ("planner", "vision") if args.use_llm_planner else ("vision",)
-        pf = run_preflight(configs=configs, image_path=None, require_roles=roles)
+        pf = run_preflight(configs=configs, image_path=preflight_image, require_roles=roles)
         (out_dir / "api_preflight.json").write_text(
             json.dumps(pf, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
         )
@@ -141,6 +172,7 @@ def main(argv: list[str] | None = None) -> int:
             skip_video=bool(args.skip_video),
             candidate_ids=[args.candidate_id],
             require_preflight_check=bool(args.real) and not args.skip_video,
+            preflight_image=preflight_image,
         )
     except PreflightError as exc:
         report = {

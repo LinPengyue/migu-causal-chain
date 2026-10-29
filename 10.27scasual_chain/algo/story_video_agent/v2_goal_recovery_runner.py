@@ -305,6 +305,9 @@ def run_goal_recovery(
             "n_observations": 0,
             "last_grade": None,
             "last_window": None,
+            "last_score_pairs": [],
+            "board_after_seen": False,
+            "board_after_window": None,
             "evidence_rows": [],
             "search_status": c.get("search_status") or "pending_video",
         }
@@ -355,6 +358,15 @@ def run_goal_recovery(
                         "n_observations": c.get("n_observations"),
                         "last_grade": c.get("last_grade"),
                         "last_window": c.get("last_window"),
+                        "last_score_pairs": c.get("last_score_pairs"),
+                        "board_after_seen": c.get("board_after_seen"),
+                        "board_after_window": c.get("board_after_window"),
+                        "last_shot_action": c.get("last_shot_action"),
+                        "last_goal_result": c.get("last_goal_result"),
+                        "last_has_net": c.get("last_has_net"),
+                        "tried_dense_around_shot": c.get("tried_dense_around_shot"),
+                        "tried_dense_around_result": c.get("tried_dense_around_result"),
+                        "same_window_streak": c.get("same_window_streak"),
                         "nearby_predicted_strip_ids": c.get("nearby_predicted_strip_ids"),
                     }
                     for c in open_cands
@@ -490,6 +502,49 @@ def run_goal_recovery(
             c["n_observations"] = int(c.get("n_observations") or 0) + 1
             c["last_grade"] = evidence.get("grade")
             c["last_window"] = {"start": start, "end": end}
+            # Score pairs seen in this window — used by rule planner to walk earlier
+            # when the board already shows score_after (action predates confirmation).
+            pairs: List[List[int]] = []
+            for a in evidence.get("observed_action_sequence") or []:
+                if isinstance(a, dict) and a.get("kind") == "score_change" and a.get("score_after"):
+                    pairs.append(list(a["score_after"]))
+            for sp in evidence.get("score_pairs") or []:
+                if isinstance(sp, (list, tuple)) and len(sp) == 2:
+                    pairs.append([int(sp[0]), int(sp[1])])
+            c["last_score_pairs"] = pairs
+            after = c.get("score_after")
+            if after and any(tuple(p) == tuple(after) for p in pairs):
+                c["board_after_seen"] = True
+                baw = c.get("board_after_window")
+                # Keep the earliest window that still shows score_after as the
+                # back-search ceiling (action must be before this).
+                if not baw or float(start) < float(baw.get("start") or start) + 1e-6:
+                    c["board_after_window"] = {"start": start, "end": end}
+            # Surface partial shot/result localization for the rule planner.
+            if evidence.get("shot_action") and not c.get("tried_dense_around_shot"):
+                c["last_shot_action"] = evidence.get("shot_action")
+            if evidence.get("goal_result") and not c.get("tried_dense_around_result"):
+                c["last_goal_result"] = evidence.get("goal_result")
+            c["last_has_net"] = bool(evidence.get("goal_result_evidence") or evidence.get("has_net_keyword"))
+            c["same_window_streak"] = (
+                int(c.get("same_window_streak") or 0) + 1
+                if c.get("prev_window") == c.get("last_window")
+                else 1
+            )
+            c["prev_window"] = dict(c["last_window"])
+            # Detect densify-around-shot tool usage via tight window about prior shot.
+            prev_shot = c.get("last_shot_action") or {}
+            if prev_shot.get("media_sec") is not None and abs(
+                0.5 * (start + end) - float(prev_shot["media_sec"])
+            ) < 6.0 and (end - start) <= 14.0:
+                c["tried_dense_around_shot"] = True
+                c["last_shot_action"] = None
+            prev_res = c.get("last_goal_result") or {}
+            if prev_res.get("media_sec") is not None and abs(
+                0.5 * (start + end) - float(prev_res["media_sec"])
+            ) < 6.0 and (end - start) <= 14.0:
+                c["tried_dense_around_result"] = True
+                c["last_goal_result"] = None
 
             # Aggregate across adjacent non-replay windows for this candidate.
             agg = merge_action_evidence_windows(c.get("evidence_rows") or [])

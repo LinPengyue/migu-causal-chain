@@ -134,20 +134,146 @@ class V2GoalRecoveryAgent:
         n_obs = int(cand.get("n_observations") or 0)
         last_grade = cand.get("last_grade")
 
-        if last_grade == "goal_candidate" and cand.get("last_window"):
-            w = cand["last_window"]
-            mid = 0.5 * (float(w["start"]) + float(w["end"]))
+        # Sticky: once any window shows score_after, live action is earlier.
+        last_scores = cand.get("last_score_pairs") or []
+        score_after = cand.get("score_after")
+        score_before = cand.get("score_before")
+        after_t = tuple(score_after) if score_after else None
+        before_t = tuple(score_before) if score_before else None
+        board_already_after = bool(cand.get("board_after_seen"))
+        if not board_already_after and after_t and last_scores:
+            board_already_after = any(tuple(s) == after_t for s in last_scores)
+        last_still_after = bool(after_t and any(tuple(s) == after_t for s in last_scores))
+        last_has_before = bool(before_t and any(tuple(s) == before_t for s in last_scores))
+        streak = int(cand.get("same_window_streak") or 0)
+
+        def _region_start() -> float:
+            rs = None
+            for ph in phases:
+                try:
+                    rs = (
+                        float(ph["start_sec"])
+                        if rs is None
+                        else min(rs, float(ph["start_sec"]))
+                    )
+                except (TypeError, ValueError, KeyError):
+                    continue
+            if rs is None:
+                rs = float(cand.get("previous_score_observation_time") or 0.0)
+            return rs
+
+        def _walk_earlier(end_cap: float, reason: str) -> Dict[str, Any]:
+            chunk = 75.0
+            end = float(end_cap)
+            start = end - chunk
+            rs = _region_start()
+            if end <= rs + 8.0:
+                return {
+                    "type": "tool",
+                    "tool": "mark_unresolved",
+                    "arguments": {
+                        "candidate_id": cid,
+                        "why": "earlier_than_scoreboard_exhausted_without_shot_net",
+                    },
+                    "reason": "rule_earlier_exhaust",
+                }
+            start = max(rs, start)
+            end = max(start + 8.0, end)
             return {
                 "type": "tool",
                 "tool": "refine",
                 "arguments": {
                     "candidate_id": cid,
-                    "start": max(float(w["start"]), mid - 6.0),
-                    "end": min(float(w["end"]), mid + 6.0),
+                    "start": start,
+                    "end": end,
+                    "purpose": "dense" if (end - start) <= 45 else "coarse",
+                },
+                "reason": reason,
+            }
+
+        shot = cand.get("last_shot_action") or {}
+        result = cand.get("last_goal_result") or {}
+
+        # One densify around a bound shot even if the coarse window OCR'd score_after
+        # (scoreboard often updates a few seconds after the action).
+        if (
+            shot.get("media_sec") is not None
+            and not cand.get("last_has_net")
+            and not cand.get("tried_dense_around_shot")
+            and streak < 2
+        ):
+            t = float(shot["media_sec"])
+            return {
+                "type": "tool",
+                "tool": "refine",
+                "arguments": {
+                    "candidate_id": cid,
+                    "start": max(0.0, t - 5.0),
+                    "end": t + 7.0,
+                    "purpose": "dense",
+                },
+                "reason": "rule_dense_around_shot_frame",
+            }
+        # Bound net without shot → densify just before result frame.
+        if (
+            result.get("media_sec") is not None
+            and not shot.get("media_sec")
+            and not cand.get("tried_dense_around_result")
+            and streak < 2
+        ):
+            t = float(result["media_sec"])
+            return {
+                "type": "tool",
+                "tool": "refine",
+                "arguments": {
+                    "candidate_id": cid,
+                    "start": max(0.0, t - 8.0),
+                    "end": t + 4.0,
+                    "purpose": "dense",
+                },
+                "reason": "rule_dense_around_result_frame",
+            }
+
+        # Still seeing score_after after densify attempts → walk further back.
+        if board_already_after and last_still_after and cand.get("last_window"):
+            return _walk_earlier(
+                float(cand["last_window"]["start"]),
+                "rule_search_earlier_than_scoreboard_after",
+            )
+
+        # Partial candidate densify (once); avoid identical-window loops.
+        if last_grade == "goal_candidate" and cand.get("last_window") and streak < 2:
+            w = cand["last_window"]
+            # If we already saw score_before here, densify the late edge (transition).
+            mid = 0.5 * (float(w["start"]) + float(w["end"]))
+            if last_has_before or float(w["end"]) - float(w["start"]) > 20.0:
+                mid = float(w["start"]) + 0.72 * (float(w["end"]) - float(w["start"]))
+            return {
+                "type": "tool",
+                "tool": "refine",
+                "arguments": {
+                    "candidate_id": cid,
+                    "start": max(float(w["start"]), mid - 8.0),
+                    "end": min(float(w["end"]), mid + 8.0),
                     "purpose": "dense",
                 },
                 "reason": "rule_refine_partial",
             }
+
+        if board_already_after and cand.get("last_window"):
+            # Streak exhausted or scoreboard-only earlier hit → step back again.
+            return _walk_earlier(
+                float(cand["last_window"]["start"]),
+                "rule_search_earlier_than_scoreboard_after",
+            )
+        if board_already_after:
+            baw = cand.get("board_after_window") or {}
+            end_cap = float(
+                baw.get("start")
+                or cand.get("score_confirmation_time")
+                or 0.0
+            )
+            return _walk_earlier(end_cap, "rule_search_earlier_than_scoreboard_after")
         if n_obs >= max(3, len(phases)):
             return {
                 "type": "tool",
