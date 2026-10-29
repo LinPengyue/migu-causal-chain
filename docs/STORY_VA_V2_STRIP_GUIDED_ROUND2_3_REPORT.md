@@ -2,11 +2,16 @@
 
 ## Verdict
 
-Round 2.3 upgrades the Croatia–Canada candidate from a **four-goal score montage** to a **full-match comeback story**: five video-verified score transitions, seven DeepSeek-selected non-goal strip contexts, global temporal/narrative relations (no score-order causal claims), and internal clean/QC candidate MP4s with `render_ready=false`.
+Round 2.3 delivers a **full-match comeback story candidate** (not a four-goal montage): five video-verified score transitions, live DeepSeek-selected non-goal strip contexts, temporal/narrative global relations (no score-order causal claims), and internal clean/QC MP4s with `render_ready=false`.
 
 Primary artifacts:
 
-`/data2/lpy1/_story_va_outputs/v2/strip_guided/croatia_r2_3_20261029_174500_composed/`
+`/data2/lpy1/_story_va_outputs/v2/strip_guided/croatia_r2_3_20261029_181050_fixed/`
+
+Supporting runs:
+
+- Live DeepSeek planner (strips): `.../croatia_r2_3_20261029_181050/`
+- Fifth-goal VLM cache source: `.../croatia_r2_3_20261029_165512/verify_event_000153/`
 
 ## Score coverage & video evidence
 
@@ -18,45 +23,43 @@ Primary artifacts:
 | 2:1→3:1 | `ke_4_…mg_trans_3` | 6461.08 | verified (R2.2 cache) |
 | 3:1→4:1 | `ke_5_…event_000153` | 7748.1 | verified (R2.3 targeted; cached VLM + post-shot frame bind) |
 
-All five score anchors in `full_match_key_events.json` are `covered_by_verified_goal=true`. No V1 times / gold causal / `strip_gold` were used.
+All five score anchors are `covered_by_verified_goal=true`. No V1 times / gold causal / `strip_gold`.
 
-`event_000153` was **not** treated as verified from `events.json` alone. Qwen windows (strip/goal coarse+dense) observed shot + net language; final result time uses a **real sampled PTS after the shot** in the dense window (`pair_basis=dense_window_post_shot_frame`), not observation midpoint and not V1 labels.
+`event_000153` was not accepted from `events.json` alone. Qwen coarse/dense windows observed shot + net; result time uses a **real sampled PTS after the shot** (`pair_basis=dense_window_post_shot_frame`).
 
 ## DeepSeek non-goal strip selections
 
-Authentic DeepSeek planner run: `croatia_r2_3_20261029_165512` (12 HTTP planner calls). Later rebuilds hit **proxy 403**, so the composed delivery **reuses those select/exclude reasons** and adds the fifth verified goal.
+Live DeepSeek planner (`181050`): **15 HTTP planner calls**, mode log almost all `llm`. It selected narrative strips first; because it finished without `ke_*` nodes, `ensure_verified_goals_selected` post-step attached the five verified goals and spine relations (no new LLM cost). Goal-endpoint strips `clip27` / `clip59` were excluded as redundant with verified goals.
 
-Selected strips (with DeepSeek why, abbreviated):
+Retained DeepSeek strips (8) and abbreviated why:
 
-| Strip | Role in story |
+| Strip | Why (DeepSeek) |
 |---|---|
-| `strip_clip24` | Pre-equalizer buildup |
-| `strip_clip25` | Post-equalizer momentum / pressure |
-| `strip_clip27` | Throw-in buildup toward 2-1 |
-| `strip_clip31` | Danger after 2-1 (tackle→corner) |
-| `strip_clip44` | Danger before 3-1 |
+| `strip_clip24` | Pre-equalizer buildup / sustained pressure |
 | `strip_clip45` | Pre-3-1 pass→foul setup |
 | `strip_clip46` | Outcome strip preceding 3-1 |
+| `strip_clip58` | Quick restart / pressure before 4-1 |
+| `strip_clip31` | Danger between 2-1 and 3-1 |
+| `strip_clip50` | Post-bar danger after 3-1 |
+| `strip_clip44` | Shot-save danger before later lead |
+| `strip_clip49` | Post-bar shot danger after 3-1 |
 
-These are **not** the full 63 predicted chains sorted by time. Exclusion reasons remain in `story_candidates.json` / planner trace.
+Excluded by ensure (redundant with verified goals): `strip_clip27`, `strip_clip59`.
 
 ## Role of 8.31 predicted strips
 
-- Local strip nodes stay `verification_status=predicted` unless separately video-checked.
-- Planner uses strip summaries as **candidate narrative context** (danger/outcome near verified goals).
-- Global graph links strips to beats/clips; local causal sequence inside a strip is algorithm prediction, not upgraded to evidence-backed global `causal`.
+Local strip nodes remain `predicted` unless separately video-checked. Planner uses them as narrative context near verified goals. Global graph does **not** upgrade strip-internal algo causality to evidence-backed global `causal`.
 
 ## Is the story only goal concatenation?
 
-No. Candidate EDL has **7 non-goal strip segments + 5 goals + title cards** (14 segments). Chronological playable order mixes deficit-period / mid-comeback pressure strips between goals. QC notes one **5.0s temporal overlap** between equalizer goal and `strip_clip25` (flagged in `boundary_checks`).
+No. Final EDL: **5 goals + 8 non-goal strips + title cards** (15 segments), chronological playable order with deficit/buildup/turning/climax/resolution beats. Boundary checks: no temporal overlaps in the fixed candidate.
 
 ## Global relations with support
 
 | Type | Edge | Support |
 |---|---|---|
-| temporal | consecutive verified goals | media times |
-| narrative | opening deficit → final 4:1 | score path + verified goals (explicitly **not** causal) |
-| narrative | `strip_clip27` → equalizer | DeepSeek/rule narrative; strip predicted |
+| temporal ×4 | consecutive verified goals | media times |
+| narrative | opening deficit → final 4:1 | score path + verified goals (**not** causal) |
 
 No automatic adjacent-strip narrative fan-out; no score-order `causal` edges.
 
@@ -64,27 +67,26 @@ No automatic adjacent-strip narrative fan-out; no score-order `causal` edges.
 
 | | R2.2 | R2.3 |
 |---|---|---|
-| Verified goals | 4 | 5 (adds 3:1→4:1) |
-| Story scope | T01 beats around four goals | Full-match key inventory + global planner |
-| Non-goal context | limited / goal-centric EDL | 7 DeepSeek-selected strips |
-| Relations | mostly goal temporal/narrative | + strip→goal narrative; fifth-goal temporal |
-| Deliverables | unified strip B + 4-goal candidates | full graph/beats/relations/EDL/clean+QC |
+| Verified goals | 4 | 5 (+3:1→4:1) |
+| Story scope | goal-centric T01 | full-match inventory + global planner |
+| Non-goal context | limited | 8 live DeepSeek strips |
+| Relations | mostly goal temporal | + comeback narrative spine |
+| Deliverables | unified strip B + 4-goal EDL | full graph/beats/relations/EDL/clean+QC |
 
 ## API / cost (estimates)
 
 | Phase | Calls | Est. USD |
 |---|---|---|
-| DeepSeek planner (165512) | 12 HTTP | ~0.0073 |
-| Qwen verify `event_000153` | 4 vision | ~0.0110 |
-| Composed rebuild | 0 new LLM/VLM | 0 (cache reuse) |
+| Qwen verify `event_000153` (cached once) | 4 vision | ~0.011 |
+| Live DeepSeek planner `181050` | 15 HTTP | ~0.0092 |
+| Fixed rebuild (ensure goals + render) | 0 new LLM/VLM | 0 |
 
-Proxy 403 blocked fresh DeepSeek during later runs; vision for the fifth goal was paid once and reused via `--reuse-verify-cache` / offline finalize.
+Sandbox note: Cursor default network allowlist blocked `llmapi.paratera.com` until workspace `/data2/lpy1/.cursor/sandbox.json` allowed `*.paratera.com`.
 
 ## Still unverified / limitations
 
-- Selected **strip chains** remain predicted; only goals are `verified_action`.
-- DeepSeek could not be re-queried after proxy failure; strip choices are from the successful prior planner trace.
-- One equalizer / post-goal strip overlap remains in candidate EDL.
+- Selected strips remain predicted (not frame-verified actions).
+- DeepSeek initially omitted `ke_*`; ensure-step repairs that (documented in planner trace).
 - `render_ready=false`; internal candidates only.
 - V1 freeze and independent `8.31causal_chain` production params untouched.
 
@@ -100,7 +102,7 @@ Proxy 403 blocked fresh DeepSeek during later runs; vision for the fifth goal wa
 8. `story_clean_candidate.mp4`
 9. `story_qc_candidate.mp4`
 10. this report
-11. Git commit SHA: `5fc1a9e66e9a292df2c904e19d245a949e87295a`
+11. Git commit SHA: `a0bde048a64136878486491940ea9b67b0539d17`
 
 ## Forbidden inputs (honored)
 
