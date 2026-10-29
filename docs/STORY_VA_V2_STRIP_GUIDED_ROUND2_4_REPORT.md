@@ -41,4 +41,4 @@ See `story_quality_comparison.md` in the run directory.
 No gold/V1 times; no 8.31 production edits; no cross-match expansion; five verified goals preserved.
 
 ## Git
-Commit SHA filled at commit time.
+Commit SHA: `9988b94f16bbdd6be21e141ba50bbb89d97439fb`
