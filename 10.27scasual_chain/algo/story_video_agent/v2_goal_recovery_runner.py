@@ -11,6 +11,12 @@ from story_video_agent.api_provider import COST_DISCLAIMER, ApiProvider
 from story_video_agent.frames import FrameBudget, FrameStore
 from story_video_agent.media import probe_video
 from story_video_agent.vision_provider import VisionProvider
+from story_video_agent.v2_api_preflight import (
+    PreflightError,
+    is_fatal_api_failure,
+    require_preflight,
+    run_preflight,
+)
 from story_video_agent.v2_enhanced_events import (
     make_inferred_goal_event,
     merge_enhanced_events_payload,
@@ -18,13 +24,17 @@ from story_video_agent.v2_enhanced_events import (
     write_enhanced_bundle,
 )
 from story_video_agent.v2_event_adapter import load_events_json, planner_event_digest
-from story_video_agent.v2_event_guided_evidence import grade_with_frame_evidence
+from story_video_agent.v2_event_guided_evidence import (
+    grade_with_frame_evidence,
+    merge_action_evidence_windows,
+)
 from story_video_agent.v2_event_guided_relation import review_relations
 from story_video_agent.v2_goal_recovery_agent import V2GoalRecoveryAgent
 from story_video_agent.v2_missing_goal_detector import detect_missing_goals
 from story_video_agent.v2_phase_c1_toolbox import V2PhaseC1Toolbox
-from story_video_agent.v2_strip_adapter import adapt_strip_bundle, planner_strip_digest
+from story_video_agent.v2_strip_adapter import adapt_strip_bundle
 from story_video_agent.v2_strip_reinfer import (
+    analyze_inferred_in_strip_b,
     compare_strip_ab,
     events_to_timeline,
     load_or_run_baseline_A,
@@ -227,6 +237,9 @@ def run_goal_recovery(
     frame_budget: int = 56,
     use_llm_planner: bool = True,
     skip_video: bool = False,
+    candidate_ids: Optional[List[str]] = None,
+    require_preflight_check: bool = True,
+    preflight_image: Optional[Path] = None,
 ) -> Dict[str, Any]:
     t0 = time.time()
     out_dir = Path(out_dir)
@@ -234,6 +247,22 @@ def run_goal_recovery(
     ab_dir = out_dir / "strip_ab"
     enh_dir = out_dir / "enhanced"
     frames_dir = out_dir / "frames_r2"
+
+    preflight_report = None
+    if require_preflight_check and not skip_video and not api.force_mock:
+        # Vision-only roles if planner is rule-only
+        roles = ("vision",) if not use_llm_planner else ("planner", "vision")
+        preflight_report = run_preflight(
+            configs=api.configs,
+            image_path=preflight_image,
+            require_roles=roles,
+        )
+        _write(out_dir / "api_preflight.json", preflight_report)
+        if not preflight_report.get("passed"):
+            raise PreflightError(
+                preflight_report.get("failure_summary") or "preflight failed",
+                report=preflight_report,
+            )
 
     event_bundle = load_events_json(Path(events_path), input_source=input_source)
     event_digest = planner_event_digest(event_bundle)
@@ -259,6 +288,13 @@ def run_goal_recovery(
         predicted_strips=strip_a_adapted.get("chains") or [],
         match_id=event_bundle.get("match_id"),
     )
+    if candidate_ids:
+        allow = set(candidate_ids)
+        detector["missing_goal_candidates"] = [
+            c for c in (detector.get("missing_goal_candidates") or []) if c.get("candidate_id") in allow
+        ]
+        detector["n_missing"] = len(detector["missing_goal_candidates"])
+        detector["filtered_to_candidate_ids"] = list(allow)
     _write(out_dir / "missing_goal_candidates.json", detector)
 
     # Working state for candidates
@@ -269,6 +305,7 @@ def run_goal_recovery(
             "n_observations": 0,
             "last_grade": None,
             "last_window": None,
+            "evidence_rows": [],
             "search_status": c.get("search_status") or "pending_video",
         }
 
@@ -381,6 +418,33 @@ def run_goal_recovery(
             start = max(0.0, min(start, media.duration_sec - 1.0))
             end = max(start + 0.6, min(end, media.duration_sec))
             raw_obs = tools.execute(c1, {"start": start, "end": end, "task_id": cid})
+            perc = raw_obs.get("perception") or {}
+            # Fail fast on non-retryable provider errors (invalid model / auth).
+            if perc.get("error") or perc.get("provider_mode") == "degraded":
+                fatal_meta = {
+                    "http_status": 400 if "HTTP 400" in str(perc.get("message") or "") else 0,
+                    "failure_status": perc.get("failure_status"),
+                    "message": perc.get("message") or perc.get("error"),
+                }
+                # parse HTTP code from message when present
+                msg = str(perc.get("message") or "")
+                for code in (400, 401, 403):
+                    if f"HTTP {code}" in msg:
+                        fatal_meta["http_status"] = code
+                if is_fatal_api_failure(fatal_meta) or is_fatal_api_failure(
+                    {"failure_status": perc.get("failure_status"), "message": msg}
+                ):
+                    stop_reason = f"fatal_api:{perc.get('failure_status') or perc.get('error')}"
+                    row["observation"] = {
+                        "candidate_id": cid,
+                        "fatal_api": True,
+                        "perception_error": perc.get("error"),
+                        "message": msg[:300],
+                        "failure_status": perc.get("failure_status"),
+                    }
+                    trace.append(row)
+                    break
+
             span = float(raw_obs.get("media_end_sec") or end) - float(raw_obs.get("media_start_sec") or start)
             evidence = grade_with_frame_evidence(observation=raw_obs, window_span_sec=span)
             evid_i += 1
@@ -392,6 +456,11 @@ def run_goal_recovery(
                 "linked_event_ids": c.get("candidate_event_ids") or [],
                 "observed_media_in": raw_obs.get("media_start_sec"),
                 "observed_media_out": raw_obs.get("media_end_sec"),
+                "observation_window": evidence.get("observation_window"),
+                "shot_action": evidence.get("shot_action"),
+                "goal_result": evidence.get("goal_result"),
+                "edit_window": evidence.get("edit_window"),
+                "action_time_resolved": evidence.get("action_time_resolved"),
                 "supporting_frame_ids": evidence.get("supporting_frame_ids"),
                 "observed_actions": evidence.get("observed_action_sequence"),
                 "is_live": evidence.get("live_or_replay") in ("live", "mixed"),
@@ -399,7 +468,7 @@ def run_goal_recovery(
                 "live_or_replay": evidence.get("live_or_replay"),
                 "action_completeness": (
                     "shot_and_result"
-                    if evidence.get("shooting_action_evidence") and evidence.get("goal_result_evidence")
+                    if evidence.get("action_time_resolved")
                     else "partial"
                 ),
                 "visual_consistency": evidence.get("grade"),
@@ -413,32 +482,71 @@ def run_goal_recovery(
                     "score_confirmation_time": c.get("score_confirmation_time"),
                 },
                 "search_window": {"start": start, "end": end, "tool": c1},
+                "frames": raw_obs.get("frames"),
                 "render_ready": False,
             }
             verifications.append(vrow)
+            c.setdefault("evidence_rows", []).append(vrow)
             c["n_observations"] = int(c.get("n_observations") or 0) + 1
             c["last_grade"] = evidence.get("grade")
             c["last_window"] = {"start": start, "end": end}
 
-            if should_emit_inferred_goal(evidence):
-                mid = 0.5 * (
-                    float(vrow["observed_media_in"] or start) + float(vrow["observed_media_out"] or end)
-                )
+            # Aggregate across adjacent non-replay windows for this candidate.
+            agg = merge_action_evidence_windows(c.get("evidence_rows") or [])
+            emit_ev = dict(evidence)
+            if agg.get("action_time_resolved"):
+                emit_ev["shot_action"] = agg["shot_action"]
+                emit_ev["goal_result"] = agg["goal_result"]
+                emit_ev["edit_window"] = agg["edit_window"]
+                emit_ev["action_time_resolved"] = True
+                emit_ev["grade"] = "action_localized"
+                emit_ev["verification_status"] = "verified_action"
+                emit_ev["shooting_action_evidence"] = True
+                emit_ev["goal_result_evidence"] = True
+                if evidence.get("live_or_replay") != "replay":
+                    emit_ev["live_or_replay"] = evidence.get("live_or_replay") or "live"
+
+            if should_emit_inferred_goal(emit_ev):
+                shot = emit_ev["shot_action"]
+                result = emit_ev["goal_result"]
+                edit = emit_ev.get("edit_window") or {}
+                # Goal event time = result frame time (not observation midpoint).
+                action_t = float(result["media_sec"])
                 inf_id = f"inferred_goal_{cid}"
-                # avoid duplicates
                 if not any(x.get("inferred_event_id") == inf_id for x in inferred):
                     ge = make_inferred_goal_event(
                         inferred_event_id=inf_id,
-                        media_time_sec=mid,
-                        media_start_sec=float(vrow["observed_media_in"] or start),
-                        media_end_sec=float(vrow["observed_media_out"] or end),
+                        media_time_sec=action_t,
+                        media_start_sec=float(edit.get("media_in") or shot["media_sec"]),
+                        media_end_sec=float(edit.get("media_out") or result["media_sec"]),
                         related_score_transition=vrow["related_score_transition"],
-                        supporting_frame_ids=vrow.get("supporting_frame_ids") or [],
-                        supporting_video_windows=[vrow["search_window"]],
+                        supporting_frame_ids=list(
+                            dict.fromkeys(
+                                [shot.get("frame_id"), result.get("frame_id")]
+                                + list(vrow.get("supporting_frame_ids") or [])
+                            )
+                        ),
+                        supporting_video_windows=[
+                            r.get("search_window")
+                            for r in (c.get("evidence_rows") or [])
+                            if r.get("search_window")
+                        ],
+                        observation_windows=[
+                            {
+                                "media_in": r.get("observed_media_in"),
+                                "media_out": r.get("observed_media_out"),
+                                "evidence_id": r.get("evidence_id"),
+                            }
+                            for r in (c.get("evidence_rows") or [])
+                        ],
+                        shot_action=shot,
+                        goal_result=result,
+                        edit_window=edit,
                         verification_status="verified_action",
-                        confidence=max(0.0, 1.0 - float(evidence.get("uncertainty") or 0.5)),
-                        uncertainty=float(evidence.get("uncertainty") or 0.25),
-                        live_or_replay=str(evidence.get("live_or_replay") or "unknown"),
+                        confidence=max(0.0, 1.0 - float(emit_ev.get("uncertainty") or 0.5)),
+                        uncertainty=float(emit_ev.get("uncertainty") or 0.25),
+                        live_or_replay=str(emit_ev.get("live_or_replay") or "unknown"),
+                        notes="event_time=goal_result.media_sec; edit_window from shot/result frames",
                     )
                     inferred.append(ge)
                     localized.append(
@@ -446,11 +554,14 @@ def run_goal_recovery(
                             "clip_id": f"loc_{inf_id}",
                             "linked_inferred_event_id": inf_id,
                             "linked_candidate_id": cid,
-                            "media_in": ge["media_time"]["start_time_sec"],
-                            "media_out": ge["media_time"]["end_time_sec"],
+                            "media_in": ge["edit_window"]["media_in"],
+                            "media_out": ge["edit_window"]["media_out"],
+                            "shot_action_media_sec": shot.get("media_sec"),
+                            "goal_result_media_sec": result.get("media_sec"),
                             "supporting_frame_ids": ge["supporting_frame_ids"],
                             "verification_status": "verified_action",
                             "usable_for_edit_candidate": True,
+                            "as_story_node_candidate": True,
                             "render_ready": False,
                         }
                     )
@@ -465,10 +576,17 @@ def run_goal_recovery(
                 "candidate_id": cid,
                 "grade": evidence.get("grade"),
                 "verification_status": evidence.get("verification_status"),
+                "action_time_resolved": evidence.get("action_time_resolved"),
+                "shot_action": evidence.get("shot_action"),
+                "goal_result": evidence.get("goal_result"),
                 "window": {"start": start, "end": end},
                 "emitted_inferred": c.get("search_status") == "resolved_verified",
             }
             trace.append(row)
+
+            if c.get("search_status") == "resolved_verified" and candidate_ids and len(candidate_ids) == 1:
+                stop_reason = "single_candidate_verified"
+                break
 
             if store.budget.remaining <= 0:
                 stop_reason = "frame_budget_exhausted"
@@ -527,6 +645,10 @@ def run_goal_recovery(
         missing_candidates=detector.get("missing_goal_candidates") or [],
     )
     _write(out_dir / "strip_ab_compare.json", ab)
+    impact = analyze_inferred_in_strip_b(
+        strip_b=strip_b, inferred_events=inferred, timeline_b=timeline_b
+    )
+    _write(out_dir / "inferred_goal_strip_impact.json", impact)
 
     story = _build_story_from_recovery(
         event_digest=event_digest,
@@ -579,10 +701,13 @@ def run_goal_recovery(
         "strip_A_chains": strip_a.get("n_chains"),
         "strip_B_chains": strip_b.get("n_chains"),
         "strip_ab_compare": ab,
+        "inferred_goal_strip_impact": impact,
+        "api_preflight": preflight_report,
         "discovery_status": story["story_candidates"].get("discovery_status"),
         "elapsed_sec": agent_trace["elapsed_sec"],
         "api_stats": api_stats,
         "stop_reason": stop_reason,
+        "candidate_ids_filter": candidate_ids,
         "render_ready": False,
         "artifacts": {
             "missing_goal_candidates": str(out_dir / "missing_goal_candidates.json"),
@@ -590,7 +715,9 @@ def run_goal_recovery(
             "strip_A": str(ab_dir / "strip_A_original.json"),
             "strip_B": str(ab_dir / "strip_B_enhanced.json"),
             "strip_ab_compare": str(out_dir / "strip_ab_compare.json"),
+            "inferred_goal_strip_impact": str(out_dir / "inferred_goal_strip_impact.json"),
             "story_agent_trace": str(out_dir / "story_agent_trace.json"),
+            "api_preflight": str(out_dir / "api_preflight.json") if preflight_report else None,
         },
     }
     _write(out_dir / "cli_report.json", report)

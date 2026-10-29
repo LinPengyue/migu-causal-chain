@@ -25,8 +25,16 @@ def make_inferred_goal_event(
     uncertainty: float,
     live_or_replay: str = "unknown",
     notes: str = "",
+    shot_action: Optional[Dict[str, Any]] = None,
+    goal_result: Optional[Dict[str, Any]] = None,
+    observation_windows: Optional[Sequence[Dict[str, Any]]] = None,
+    edit_window: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
-    """Build a delivery-schema-compatible Goal event for strip re-inference."""
+    """Build a delivery-schema-compatible Goal event for strip re-inference.
+
+    media_time.event_time_sec MUST be the goal result (or shot) frame time —
+    never the midpoint of a coarse observation window.
+    """
     return {
         "event_id": inferred_event_id,
         "event_type_id": "soccer_goal",
@@ -50,17 +58,27 @@ def make_inferred_goal_event(
         "inferred_event_id": inferred_event_id,
         "supporting_frame_ids": list(supporting_frame_ids),
         "supporting_video_windows": list(supporting_video_windows),
+        "observation_windows": list(observation_windows or []),
+        "shot_action": shot_action,
+        "goal_result": goal_result,
+        "edit_window": edit_window
+        or {
+            "media_in": float(media_start_sec),
+            "media_out": float(media_end_sec),
+            "basis": "caller_provided",
+        },
         "verification_status": verification_status,
         "confidence": float(confidence),
         "uncertainty": float(uncertainty),
         "related_score_transition": related_score_transition,
         "notes": notes or "Inferred Goal from video evidence; not from gold",
+        "as_story_node_candidate": verification_status == "verified_action",
         "render_ready": False,
     }
 
 
 def should_emit_inferred_goal(evidence: Dict[str, Any]) -> bool:
-    """Only emit when shot+net frame evidence localized and not pure replay."""
+    """Only emit when shot+net frame times are resolved and not pure replay."""
     if evidence.get("grade") != "action_localized":
         return False
     if evidence.get("verification_status") != "verified_action":
@@ -70,6 +88,12 @@ def should_emit_inferred_goal(evidence: Dict[str, Any]) -> bool:
     if not evidence.get("shooting_action_evidence"):
         return False
     if not evidence.get("goal_result_evidence"):
+        return False
+    if not evidence.get("action_time_resolved"):
+        return False
+    if not (evidence.get("shot_action") or {}).get("media_sec"):
+        return False
+    if not (evidence.get("goal_result") or {}).get("media_sec"):
         return False
     return True
 

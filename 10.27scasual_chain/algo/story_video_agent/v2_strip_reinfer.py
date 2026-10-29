@@ -229,6 +229,66 @@ def compare_strip_ab(
     }
 
 
+def analyze_inferred_in_strip_b(
+    *,
+    strip_b: Dict[str, Any],
+    inferred_events: Sequence[Dict[str, Any]],
+    timeline_b: Sequence[Dict[str, Any]],
+) -> Dict[str, Any]:
+    """Report whether verified Goals entered timeline/chains/outcome — never drop story nodes."""
+    rows = []
+    for ge in inferred_events:
+        eid = str(ge.get("event_id") or ge.get("inferred_event_id"))
+        in_timeline = any(str(e.get("event_id")) == eid for e in timeline_b)
+        tl_type = next((e.get("type") for e in timeline_b if str(e.get("event_id")) == eid), None)
+        chain_hits = []
+        for c in strip_b.get("chains") or []:
+            ids = [str(x) for x in (c.get("event_ids") or [])]
+            keys = c.get("event_keys") or []
+            if eid in ids or any(len(k) > 1 and k[1] == "goal" and eid in ids for k in keys):
+                chain_hits.append(
+                    {
+                        "clip_id": c.get("clip_id"),
+                        "chain_category": c.get("chain_category"),
+                        "template_id": c.get("template_id"),
+                        "first_event": c.get("first_event"),
+                        "last_event": c.get("last_event"),
+                        "t0_ms": c.get("t0_ms"),
+                        "t1_ms": c.get("t1_ms"),
+                        "event_keys": keys,
+                    }
+                )
+        outcome_hits = [h for h in chain_hits if h.get("chain_category") == "outcome" or h.get("last_event") == "goal"]
+        classified_other = [h for h in chain_hits if h not in outcome_hits]
+        rows.append(
+            {
+                "inferred_event_id": eid,
+                "verification_status": ge.get("verification_status"),
+                "shot_action": ge.get("shot_action"),
+                "goal_result": ge.get("goal_result"),
+                "edit_window": ge.get("edit_window"),
+                "in_timeline": in_timeline,
+                "timeline_type": tl_type,
+                "n_chains_containing": len(chain_hits),
+                "outcome_or_goal_endpoint_chains": outcome_hits,
+                "other_category_chains": classified_other,
+                "outcome_classification_ok": bool(outcome_hits),
+                "as_story_node_candidate": True,  # retain even if outcome classify fails
+                "story_node_retained_despite_non_outcome": bool(chain_hits) and not outcome_hits,
+                "notes": (
+                    "Video-verified Goal retained as story node even if strip template ≠ outcome"
+                    if ge.get("verification_status") == "verified_action"
+                    else "not verified"
+                ),
+            }
+        )
+    return {
+        "schema": "v2_inferred_goal_strip_impact_v1",
+        "rows": rows,
+        "render_ready": False,
+    }
+
+
 def load_or_run_baseline_A(
     *,
     events_path: Path,

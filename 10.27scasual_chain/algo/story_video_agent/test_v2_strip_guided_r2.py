@@ -104,6 +104,9 @@ class TestEnhancedEvents(unittest.TestCase):
                     "live_or_replay": "live",
                     "shooting_action_evidence": True,
                     "goal_result_evidence": True,
+                    "action_time_resolved": True,
+                    "shot_action": {"frame_id": "f_1", "media_sec": 10.0},
+                    "goal_result": {"frame_id": "f_2", "media_sec": 11.5},
                 }
             )
         )
