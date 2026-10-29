@@ -15,6 +15,7 @@ from story_video_agent.v2_strip_guided_r2_3_memory import V2R23StoryMemory
 from story_video_agent.v2_strip_guided_r2_3_planner import (
     V2R23StoryPlanner,
     apply_planner_decision,
+    ensure_verified_goals_selected,
     finalize_relations,
     summarize_strips_for_planner,
 )
@@ -122,6 +123,42 @@ class TestPlannerRule(unittest.TestCase):
         edl = build_r23_candidate_edl(story_graph=sg)
         self.assertGreaterEqual(edl["n_goal_segments"], 2)
         self.assertFalse(edl["render_ready"])
+
+    def test_ensure_adds_missing_verified_goals(self):
+        mem = V2R23StoryMemory()
+        mem.key_events = [
+            {
+                "key_event_id": "ke_1",
+                "score_before": None,
+                "score_after": [0, 1],
+                "media_time_sec": 100.0,
+                "inferred_event_id": "g0",
+            },
+            {
+                "key_event_id": "ke_2",
+                "score_before": [0, 1],
+                "score_after": [1, 1],
+                "media_time_sec": 200.0,
+                "inferred_event_id": "g1",
+            },
+        ]
+        # Simulate DeepSeek selecting only a strip
+        apply_planner_decision(
+            mem,
+            {
+                "type": "tool",
+                "tool": "select_node",
+                "arguments": {"node_id": "strip_clipX", "beat": "buildup", "why": "llm"},
+            },
+        )
+        actions = ensure_verified_goals_selected(mem)
+        self.assertTrue(actions)
+        self.assertIn("ke_1", mem.selected_node_ids)
+        self.assertIn("ke_2", mem.selected_node_ids)
+        self.assertIn("strip_clipX", mem.selected_node_ids)
+        rel = finalize_relations(mem)
+        types = {r["relation_type"] for r in rel["relations"]}
+        self.assertIn("temporal", types)
 
 
 if __name__ == "__main__":

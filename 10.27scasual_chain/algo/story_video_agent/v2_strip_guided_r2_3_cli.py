@@ -34,6 +34,7 @@ from story_video_agent.v2_strip_guided_r2_3_memory import V2R23StoryMemory
 from story_video_agent.v2_strip_guided_r2_3_planner import (
     V2R23StoryPlanner,
     apply_planner_decision,
+    ensure_verified_goals_selected,
     finalize_relations,
     summarize_strips_for_planner,
 )
@@ -304,6 +305,17 @@ def main(argv: Optional[List[str]] = None) -> int:
             stop_reason = str((decision.get("arguments") or {}).get("reason") or "finish")
             break
 
+    # DeepSeek may finish with strips only — always attach verified goals + basic relations.
+    ensure_actions = ensure_verified_goals_selected(memory)
+    if ensure_actions:
+        trace.append(
+            {
+                "step": "ensure_verified_goals",
+                "actions": ensure_actions,
+                "note": "Post-LLM guarantee: select all video-verified ke_ goals and temporal/narrative spine",
+            }
+        )
+
     rel_doc = finalize_relations(memory)
     _write(out_dir / "story_relations.json", rel_doc)
     _write(
@@ -314,6 +326,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             "stop_reason": stop_reason,
             "planner_mode_log": planner.planner_mode_log,
             "steps": trace,
+            "ensure_verified_goals": ensure_actions,
             "memory_snapshot": memory.snapshot(),
             "api_stats": api.stats.summary(),
             "render_ready": False,

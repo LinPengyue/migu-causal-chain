@@ -27,10 +27,12 @@ A) Tool: {"type":"tool","tool": TOOL, "arguments":{...}, "reason":"..."}
    - propose_relation: {"source_node_id":"...","target_node_id":"...","relation_type":"temporal|narrative|causal|correction","explanation":"...","supporting_event_ids":[],"supporting_strip_ids":[],"supporting_evidence_ids":[]}
    - request_video_check: {"node_id":"strip_...","start":sec,"end":sec,"purpose":"coarse|dense|live_replay","why":"..."}
    - finish_story: {"discovery_status":"story_candidate|partial_story|unresolved","reason":"..."}
-B) Do NOT select all strips. Prefer 1–3 non-goal buildup/danger strips that support the comeback arc.
-C) Causal relations REQUIRE supporting_evidence_ids; score-order alone → temporal or narrative only.
-D) Never invent media times. Never claim unverified Goals are verified.
-E) One tool/finish per turn; compact JSON.
+B) MUST select every video-verified key goal (node_id starting with ke_) into an appropriate beat before finish_story.
+C) Do NOT select all strips. Prefer 2–4 non-goal buildup/danger strips that support the comeback arc.
+D) Goal-endpoint strips that only duplicate a verified ke_ goal should be excluded, not used as the goal itself.
+E) Causal relations REQUIRE supporting_evidence_ids; score-order alone → temporal or narrative only.
+F) Never invent media times. Never claim unverified Goals are verified.
+G) One tool/finish per turn; compact JSON.
 """
 
 
@@ -434,6 +436,101 @@ def apply_planner_decision(memory: V2R23StoryMemory, decision: Dict[str, Any]) -
         memory.discovery_status = str(args.get("discovery_status") or "partial_story")
         return {"finished": True, "discovery_status": memory.discovery_status, "reason": args.get("reason")}
     return {"error": f"unknown_tool:{tool}"}
+
+
+def ensure_verified_goals_selected(memory: V2R23StoryMemory) -> List[Dict[str, Any]]:
+    """Hard guarantee: every verified key goal is selected with score-role beats + basic relations.
+
+    DeepSeek may focus on strips and finish without picking ke_* nodes; this repairs that
+    without inventing times or dropping authentic strip selections.
+    """
+    actions: List[Dict[str, Any]] = []
+    planner = V2R23StoryPlanner(api=ApiProvider(force_mock=True, require_real=False, max_calls=0), use_llm=False)
+    for ke in memory.key_events:
+        nid = ke["key_event_id"]
+        if nid in memory.selected_node_ids:
+            # still refresh beat if missing
+            beat = planner._beat_for_key_event(ke, memory.key_events)
+            if not any(nid in (memory.beat_assignments.get(b) or []) for b in memory.beat_assignments):
+                memory.beat_assignments.setdefault(beat, []).append(nid)
+            continue
+        beat = planner._beat_for_key_event(ke, memory.key_events)
+        why = f"video-verified goal for score {ke.get('score_before')}->{ke.get('score_after')}"
+        dec = {
+            "type": "tool",
+            "tool": "select_node",
+            "arguments": {"node_id": nid, "beat": beat, "why": why},
+            "reason": "ensure_verified_goal",
+        }
+        obs = apply_planner_decision(memory, dec)
+        actions.append({"decision": dec, "observation": obs})
+
+    # Drop goal-endpoint predicted strips that collide with a verified goal result (±20s)
+    goal_ts = [float(k.get("media_time_sec") or 0) for k in memory.key_events]
+    for s in list(memory.strip_summaries):
+        nid = s["node_id"]
+        if nid not in memory.selected_node_ids:
+            continue
+        if s.get("last_event") != "goal" and s.get("category") != "outcome":
+            continue
+        t1 = float(s.get("t1_sec") or 0)
+        if any(abs(t1 - gt) <= 20.0 for gt in goal_ts if gt > 0):
+            # remove from selection
+            memory.selected_node_ids = [x for x in memory.selected_node_ids if x != nid]
+            for b, members in memory.beat_assignments.items():
+                memory.beat_assignments[b] = [x for x in members if x != nid]
+            memory.exclusion_reasons[nid] = (
+                "goal-endpoint strip redundant with video-verified ke_ goal (ensure_verified_goals)"
+            )
+            if nid not in memory.excluded_node_ids:
+                memory.excluded_node_ids.append(nid)
+            actions.append({"excluded_redundant_goal_strip": nid})
+
+    # Ensure temporal edges between consecutive verified goals
+    goal_ids = [k["key_event_id"] for k in memory.key_events if k["key_event_id"] in memory.selected_node_ids]
+    existing = {(r.get("source_node_id"), r.get("target_node_id"), r.get("relation_type")) for r in memory.relations}
+    for i in range(len(goal_ids) - 1):
+        key = (goal_ids[i], goal_ids[i + 1], "temporal")
+        if key in existing:
+            continue
+        dec = {
+            "type": "tool",
+            "tool": "propose_relation",
+            "arguments": {
+                "source_node_id": goal_ids[i],
+                "target_node_id": goal_ids[i + 1],
+                "relation_type": "temporal",
+                "explanation": "Verified goals ordered by media time",
+                "supporting_event_ids": [],
+                "supporting_strip_ids": [],
+                "supporting_evidence_ids": [],
+            },
+            "reason": "ensure_temporal_goals",
+        }
+        obs = apply_planner_decision(memory, dec)
+        actions.append({"decision": dec, "observation": obs})
+    if len(goal_ids) >= 2:
+        narr = (goal_ids[0], goal_ids[-1], "narrative")
+        if narr not in existing:
+            dec = {
+                "type": "tool",
+                "tool": "propose_relation",
+                "arguments": {
+                    "source_node_id": goal_ids[0],
+                    "target_node_id": goal_ids[-1],
+                    "relation_type": "narrative",
+                    "explanation": "Comeback arc: opening deficit to later lead (narrative, not causal proof)",
+                    "supporting_event_ids": [k.get("inferred_event_id") for k in memory.key_events],
+                    "supporting_strip_ids": [],
+                    "supporting_evidence_ids": [],
+                },
+                "reason": "ensure_narrative_comeback",
+            }
+            obs = apply_planner_decision(memory, dec)
+            actions.append({"decision": dec, "observation": obs})
+    if memory.discovery_status in {"", "unresolved", None} or not memory.discovery_status:
+        memory.discovery_status = "story_candidate" if len(goal_ids) >= 3 else "partial_story"
+    return actions
 
 
 def finalize_relations(memory: V2R23StoryMemory) -> Dict[str, Any]:
