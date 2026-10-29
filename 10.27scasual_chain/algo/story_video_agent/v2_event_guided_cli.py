@@ -1,4 +1,4 @@
-"""Event-Guided CLI — MP4 + events.json story discovery (preserves A/B/C-1)."""
+"""Event-Guided CLI Round 2 — modes: agent | rule | fixed."""
 
 from __future__ import annotations
 
@@ -61,37 +61,29 @@ def _make_api(*, real: bool, max_calls: int, max_cost: float, max_completion_tok
 
 
 def main(argv: list[str] | None = None) -> int:
-    p = argparse.ArgumentParser(
-        description="V2 Event-Guided Multimodal Story Agent (MP4 + events.json)"
-    )
+    p = argparse.ArgumentParser(description="V2 Event-Guided Round 2")
     p.add_argument("--video", type=Path, required=True)
-    p.add_argument("--events", type=Path, required=True, help="events.json (no causal.json)")
+    p.add_argument("--events", type=Path, required=True)
     p.add_argument("--out-dir", type=Path, required=True)
+    p.add_argument("--input-source", choices=list(INPUT_SOURCES), default="human_corrected")
     p.add_argument(
-        "--input-source",
-        choices=list(INPUT_SOURCES),
-        default="human_corrected",
-        help="human_corrected (dev) or upstream_detected (prod adapter tag)",
+        "--planner-mode",
+        choices=["agent", "rule", "fixed"],
+        default="agent",
+        help="agent=DeepSeek mid-loop; rule=Event-Rule baseline; fixed=no VLM search",
     )
-    p.add_argument(
-        "--gold-story-graph",
-        type=Path,
-        default=None,
-        help="Offline action gold ONLY (never model input)",
-    )
-    p.add_argument(
-        "--causal-offline",
-        type=Path,
-        default=None,
-        help="causal.json for post-hoc relation report ONLY",
-    )
+    p.add_argument("--gold-story-graph", type=Path, default=None)
+    p.add_argument("--gold-edl", type=Path, default=None)
+    p.add_argument("--causal-offline", type=Path, default=None)
+    p.add_argument("--focus-event-ids", type=str, default="", help="comma-separated for targeted runs")
     p.add_argument("--real", action="store_true")
-    p.add_argument("--max-steps", type=int, default=12)
-    p.add_argument("--frame-budget", type=int, default=48)
-    p.add_argument("--max-api-calls", type=int, default=24)
-    p.add_argument("--max-cost-usd", type=float, default=1.0)
+    p.add_argument("--max-steps", type=int, default=16)
+    p.add_argument("--frame-budget", type=int, default=64)
+    p.add_argument("--max-api-calls", type=int, default=28)
+    p.add_argument("--max-cost-usd", type=float, default=1.5)
     p.add_argument("--max-completion-tokens", type=int, default=8192)
     p.add_argument("--no-llm-planner", action="store_true")
+    p.add_argument("--no-export-clips", action="store_true")
     args = p.parse_args(argv)
 
     if not args.video.is_file():
@@ -100,18 +92,20 @@ def main(argv: list[str] | None = None) -> int:
     if not args.events.is_file():
         print(f"missing events {args.events}", file=sys.stderr)
         return 2
-    # Hard refuse if user passes causal as events
-    name = args.events.name.lower()
-    if "causal" in name:
+    if "causal" in args.events.name.lower():
         print("REFUSE: do not pass causal.json as --events", file=sys.stderr)
         return 2
 
     os.environ.setdefault("STORY_PLANNER_REQUEST_PROFILE", "video_rsi")
     os.environ.setdefault("STORY_VLM_REQUEST_PROFILE", "video_rsi")
 
+    focus = [x.strip() for x in args.focus_event_ids.split(",") if x.strip()] or None
+
     try:
+        # fixed mode needs no real API
+        real = bool(args.real) and args.planner_mode != "fixed"
         api = _make_api(
-            real=args.real,
+            real=real,
             max_calls=args.max_api_calls,
             max_cost=args.max_cost_usd,
             max_completion_tokens=args.max_completion_tokens,
@@ -122,39 +116,58 @@ def main(argv: list[str] | None = None) -> int:
             out_dir=args.out_dir,
             api=api,
             input_source=args.input_source,
+            planner_mode=args.planner_mode,
             max_steps=args.max_steps,
             frame_budget=args.frame_budget,
             use_llm_planner=not args.no_llm_planner,
             gold_story_graph=args.gold_story_graph,
+            gold_edl=args.gold_edl,
             causal_path_offline=args.causal_offline,
+            export_review_clips=not args.no_export_clips,
+            focus_event_ids=focus,
         )
     except ApiConfigError as exc:
         print(f"CONFIG: {exc}", file=sys.stderr)
         return 3
     except Exception as exc:  # noqa: BLE001
         print(f"ERROR: {exc}", file=sys.stderr)
-        return 1
+        raise
 
+    weak = (
+        ((result.get("offline_eval") or {}).get("action_localization_eval") or {}).get(
+            "weak_reference_goals"
+        )
+        or {}
+    )
     report = {
-        "schema": "v2_event_guided_cli_report_v1",
+        "schema": "v2_event_guided_cli_report_v2",
         "commit_sha": _git_sha(),
-        "mode": "event_guided",
+        "mode": f"event_{args.planner_mode}",
+        "planner_mode": args.planner_mode,
         "video": str(args.video),
         "events": str(args.events),
         "input_source": args.input_source,
         "out_dir": str(args.out_dir),
-        "real": bool(args.real),
-        "mock": not bool(args.real),
+        "real": bool(args.real) and args.planner_mode != "fixed",
         "discovery_status": (result.get("discovery") or {}).get("discovery_status"),
-        "n_score_changes": (result.get("discovery") or {}).get("n_score_changes"),
+        "n_localized": (result.get("discovery") or {}).get("n_localized"),
         "grade_counts": (result.get("evidence") or {}).get("grade_counts"),
-        "action_recall": ((result.get("offline_eval") or {}).get("action_eval") or {}).get(
-            "recall"
-        ),
+        "strict_localization_recall_weak_ref": weak.get("strict_localization_recall"),
+        "loose_candidate_recall_weak_ref": weak.get("loose_candidate_recall"),
+        "strict_action_gold_n": (
+            ((result.get("offline_eval") or {}).get("action_localization_eval") or {})
+            .get("strict_action_gold")
+            or {}
+        ).get("n_refs"),
+        "relation_verification": {
+            "n_accepted": (result.get("relation_verification") or {}).get("n_accepted"),
+            "n_rejected": (result.get("relation_verification") or {}).get("n_rejected"),
+            "n_downgraded": (result.get("relation_verification") or {}).get("n_downgraded"),
+        },
+        "n_llm_mid_loop": (result.get("autonomous_search_trace") or {}).get("n_llm_mid_loop"),
         "elapsed_sec": (result.get("agent_trace") or {}).get("elapsed_sec"),
         "frames_used": (result.get("agent_trace") or {}).get("frames_used"),
         "api_stats": (result.get("agent_trace") or {}).get("api_stats"),
-        "event_bundle_meta": result.get("event_bundle_meta"),
         "render_ready": False,
     }
     args.out_dir.mkdir(parents=True, exist_ok=True)

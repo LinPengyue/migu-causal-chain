@@ -1,4 +1,4 @@
-"""Event-Guided planner: DeepSeek uses event times as anchors; invents story structure."""
+"""Event-Guided planner Round 2 — DeepSeek mid-loop candidate search (agent mode)."""
 
 from __future__ import annotations
 
@@ -12,35 +12,44 @@ from story_video_agent.v2_phase_c1_toolbox import V2PhaseC1Toolbox
 
 _JSON_OBJ = re.compile(r"\{.*\}", re.DOTALL)
 
-PLANNER_SYSTEM = """You are Story Video Agent V2 Event-Guided mode.
-Inputs you MAY use: raw football event detections (id/type/times/scoreboard/live-replay)
-AND Qwen video observations from tools. You MUST NOT assume pre-labeled story roles or
-causal chains — none are provided.
+PLANNER_SYSTEM = """You are Story Video Agent V2 Event-Guided AGENT mode.
+You search for live GOAL ACTIONS using a candidate event board + Qwen video tools.
+No causal.json, story roles, or pre-made story graph are provided.
 
-Target story TYPE to evaluate: T01 (comeback / reverse a deficit by EITHER side).
-If one side trails then later leads (e.g. 0-1 → 1-1 → 2-1), that IS a T01 story_candidate —
-do NOT reject because the final margin is large or the leading team looks "dominant".
+Target: T01 comeback (either side trails then later leads) if evidence supports it.
 
-Return one JSON object:
-- Tool: {"type":"tool","tool":"<name>","arguments":{"start":..,"end":..,"task_id":"..."}}
-- Finish: {"type":"answer","answer":"<story_candidate|partial_story|no_comeback|unresolved>",
-  "reason":"...",
-  "beats":{"setup":{"event_ids":[],"media_start":null,"media_end":null,"note":""},
-           "turning":{...},"climax":{...},"resolution":{...}},
-  "relations":[{"from_event_id":"...","to_event_id":"...","kind":"temporal|causal|narrative","note":""}]}
-
-Tools (Qwen verifies real video): coarse_search, refine_window, dense_action_inspect,
-read_scoreboard_window, verify_live_replay.
+Return ONE JSON object per turn:
+A) Meta/board tool (no video):
+ {"type":"tool","tool":"list_candidates"|"list_anchors"|"select_candidate"|"reject_candidate"|"shift_search"|"confirm_localization",
+  "arguments":{...}}
+B) Video tool (Qwen):
+ {"type":"tool","tool":"observe_window",
+  "arguments":{"start":0,"end":10,"candidate_event_id":"event_xxx","purpose":"dense|coarse|live_replay|scoreboard"}}
+C) Finish:
+ {"type":"answer","answer":"story_candidate|partial_story|no_comeback|unresolved","reason":"...",
+  "beats":{...},
+  "relations":[{"from_event_id":"...","to_event_id":"...","relation_type":"temporal|causal|narrative",
+    "supporting_evidence_ids":["ev_..."],"explanation":"...","verification_status":"proposed"}]}
 
 Rules:
-1. Event times are SEARCH ANCHORS only — Score_Recognition board state ≠ proven goal action.
-2. Prefer verifying LIVE windows slightly BEFORE scoreboard jumps for shot/net action.
-3. Invent temporal/causal/narrative relations yourself; do not copy annotation schemas.
-4. Never invent timestamps outside observed event windows / tool results.
-5. One tool call per turn; compact JSON; no chain-of-thought.
-6. Finish with story_candidate only if deficit→level→lead is supported by score anchors
-   AND at least some action verification exists; else partial_story / unresolved.
+1. YOU choose which candidate and which media window — do not blindly use fixed offsets.
+2. If observation is celebration/scoreboard-only or midfield, OR scoreboard already shows the NEW score without a live shot/net, shift_search earlier with a LARGE delta (-40 to -90). Prefer virtual_*early150* probes when Score_Recognition lags.
+3. confirm_localization ONLY when the latest observe_window for that candidate has
+   shooting_action_evidence=true AND goal_result_evidence=true. If confirm is denied,
+   you MUST observe_window or shift_search — never spam confirm_localization.
+4. causal edges MUST include supporting_evidence_ids from real observations; never claim equalizer caused go-ahead from order alone.
+5. One tool/answer per turn; compact JSON.
 """
+
+META_TOOLS = {
+    "list_candidates",
+    "list_anchors",
+    "select_candidate",
+    "reject_candidate",
+    "shift_search",
+    "confirm_localization",
+}
+VIDEO_PURPOSES = {"dense", "coarse", "live_replay", "scoreboard"}
 
 
 class V2EventGuidedAgent:
@@ -50,29 +59,36 @@ class V2EventGuidedAgent:
         duration: float,
         tools: V2PhaseC1Toolbox,
         api: ApiProvider,
+        planner_mode: str = "agent",
         use_llm_planner: bool = True,
         planner_temperature: float = 0.1,
     ) -> None:
         self.duration = float(duration)
         self.tools = tools
         self.api = api
-        self.use_llm_planner = bool(use_llm_planner)
+        self.planner_mode = planner_mode  # agent | rule
+        self.use_llm_planner = bool(use_llm_planner) and planner_mode == "agent"
         self.planner_temperature = float(planner_temperature)
         self.decision_attempts: List[Dict[str, Any]] = []
         self.argument_error: Optional[Dict[str, Any]] = None
         self.planner_mode_log: List[str] = []
-        self._pending_anchor_idx = 0
 
     def decide(self, memory: Any, step: int, max_steps: int) -> Dict[str, Any]:
         self.decision_attempts = []
         self.argument_error = None
         remaining = max_steps - step
         rule = self._rule_policy(memory, remaining)
-        # Spend Qwen budget on anchor verification via rule policy; call DeepSeek
-        # for autonomous beat/relation synthesis when anchors are done or last steps.
-        want_llm = bool(self.use_llm_planner) and (
-            remaining <= 2 or str(rule.get("type")) == "answer"
+
+        # Anti-loop: if planner spammed denied confirms, force rule recovery.
+        recent = memory.autonomous_decisions[-4:]
+        confirm_spam = (
+            len(recent) >= 3
+            and all(r.get("tool") == "confirm_localization" for r in recent[-3:])
         )
+        want_llm = bool(self.use_llm_planner) and not confirm_spam
+        if confirm_spam:
+            self.planner_mode_log.append("rule_recover_confirm_spam")
+        # Agent mode: LLM on every step except force terminal on last step still via LLM
         for attempt in range(2):
             raw = rule
             parse_mode = "rule_policy"
@@ -80,22 +96,22 @@ class V2EventGuidedAgent:
                 try:
                     llm = self._propose_llm(memory, remaining, step=step, max_steps=max_steps)
                     if isinstance(llm, dict) and "type" in llm:
-                        # On last step force answer; otherwise accept tool or answer
                         if remaining <= 1 and llm.get("type") != "answer":
-                            self.planner_mode_log.append("llm_non_terminal_ignored")
+                            # force finish synthesis via LLM retry content or rule terminal
+                            raw = self._terminal_from_memory(memory, reason="last_step_force_answer")
+                            parse_mode = "rule_terminal_forced"
+                            self.planner_mode_log.append("llm_non_terminal_forced_rule")
                         else:
                             raw = llm
                             parse_mode = "llm_api"
-                            self.planner_mode_log.append(
-                                "llm_terminal" if remaining <= 2 else "llm"
-                            )
+                            self.planner_mode_log.append("llm_mid" if remaining > 1 else "llm_terminal")
                     else:
                         self.planner_mode_log.append("llm_fallback_rule")
                 except Exception:  # noqa: BLE001
                     self.planner_mode_log.append("llm_error_fallback_rule")
                     raw = rule
             else:
-                self.planner_mode_log.append("rule_verify")
+                self.planner_mode_log.append("rule_baseline")
 
             record: Dict[str, Any] = {
                 "attempt": attempt,
@@ -106,14 +122,16 @@ class V2EventGuidedAgent:
             self.decision_attempts.append(record)
             try:
                 decision = self._normalize(raw, remaining)
-                if decision["type"] == "tool":
-                    decision = dict(
-                        decision,
-                        arguments=self.tools.normalize_arguments(
-                            decision["tool"], decision.get("arguments") or {}
-                        ),
-                    )
                 record.update(status="accepted", decision=decision)
+                memory.log_autonomy(
+                    {
+                        "step": step,
+                        "parse_mode": parse_mode,
+                        "decision_type": decision.get("type"),
+                        "tool": decision.get("tool"),
+                        "used_llm": parse_mode == "llm_api",
+                    }
+                )
                 return decision
             except (ValueError, TypeError, ToolArgumentError) as exc:
                 record.update(status="rejected", error=str(exc))
@@ -122,178 +140,142 @@ class V2EventGuidedAgent:
                     record.update(status="accepted_terminal_fallback", decision=terminal)
                     return terminal
                 if attempt:
-                    if isinstance(exc, ToolArgumentError):
-                        self.argument_error = {
-                            "error": "ToolArgumentError",
-                            "message": str(exc),
-                        }
-                        return self._terminal_from_memory(
-                            memory, reason=f"repair_exhausted:{exc}"
-                        )
-                    raise ValueError("invalid_decision: " + str(exc)) from exc
+                    self.argument_error = {"error": type(exc).__name__, "message": str(exc)}
+                    return self._terminal_from_memory(memory, reason=f"repair_exhausted:{exc}")
                 continue
         raise ValueError("invalid_decision: exhausted")
 
-    def _verify_anchors(self, memory: Any) -> List[Dict[str, Any]]:
-        """Anchors needing video check: initial deficit board + each score_change."""
-        facts = memory.facts_for_planner(remaining=99)
-        out: List[Dict[str, Any]] = []
-        for a in facts.get("score_anchors") or []:
-            if a.get("kind") in ("initial_score", "score_change"):
-                out.append(a)
-        return out
+    def finish_from_memory(self, memory: Any, *, reason: str) -> Dict[str, Any]:
+        return self._terminal_from_memory(memory, reason=reason)
 
-    def _score_changes(self, memory: Any) -> List[Dict[str, Any]]:
-        return [a for a in self._verify_anchors(memory) if a.get("kind") == "score_change"]
-
+    # --- rule baseline (Event-Rule / recovery) ---
     def _rule_policy(self, memory: Any, remaining: int) -> Dict[str, Any]:
         if remaining <= 1:
             return self._terminal_from_memory(memory, reason="budget_or_last_step")
 
-        anchors = self._verify_anchors(memory)
-        verified_ids = {
-            str(v.get("task_id") or "")
-            for v in memory.verifications
-            if v.get("task_id")
-        }
-        # Walk anchors: dense inspect → live/replay. Replay-tagged boards look further back.
-        for i, a in enumerate(anchors):
-            tid = f"anchor_{i}_{a.get('event_id')}"
-            t = float(a["event_time_sec"])
-            et = str(a.get("event_type") or "")
-            weak_type = et not in {"Goal", "Shot", "Save"}
-            if a.get("is_replay") or weak_type:
-                lookback = 120.0
-            elif a.get("kind") == "initial_score":
-                lookback = 100.0
-            else:
-                lookback = 40.0
-            dense_id = tid + "_dense"
-            replay_id = tid + "_live"
-            if dense_id not in verified_ids:
-                # Score_Recognition often lags live goals — center well before board event
-                mid = max(0.0, t - min(70.0, lookback * 0.65))
-                start = max(0.0, mid - 5.0)
+        board = memory.board
+        # Prefer open/observing candidates near score changes, search earlier.
+        # CRITICAL: after shift_search must observe — never shift in a loop.
+        cands = board.list_candidates()
+
+        def _priority(c: Dict[str, Any]) -> tuple:
+            et = str(c.get("event_type") or "")
+            # early150 probes and Goal/Shot first
+            if et == "score_lag_probe" and "early150" in str(c.get("candidate_event_id")):
+                return (0, float(c.get("event_time_sec") or 0))
+            if et in {"Goal", "Shot"}:
+                return (1, float(c.get("event_time_sec") or 0))
+            if et == "score_lag_probe":
+                return (2, float(c.get("event_time_sec") or 0))
+            return (3, float(c.get("event_time_sec") or 0))
+
+        cands = sorted(cands, key=_priority)
+        for c in cands:
+            if c["status"] in ("localized", "rejected"):
+                continue
+            eid = c["candidate_event_id"]
+            full = board.get(eid) or {}
+            n_obs = int(c.get("n_observations") or 0)
+            attempts = int(full.get("search_attempts") or 0)
+            center = float(c.get("search_center_sec") or c.get("event_time_sec") or 0)
+            pending = bool(full.get("pending_observe_after_shift"))
+
+            def _observe(cen: float) -> Dict[str, Any]:
+                start = max(0.0, cen - 5.0)
                 end = min(self.duration, start + 10.0)
-                if end - start < 1.0:
-                    end = min(self.duration, start + 2.0)
                 return {
                     "type": "tool",
-                    "tool": "dense_action_inspect",
+                    "tool": "observe_window",
                     "arguments": {
                         "start": round(start, 2),
                         "end": round(end, 2),
-                        "task_id": dense_id,
-                    },
-                }
-            if replay_id not in verified_ids:
-                start = max(0.0, t - lookback)
-                # Cap to verify_live_replay max (~16s) — use a slice near expected live action
-                start = max(0.0, t - min(lookback, 14.0))
-                end = min(self.duration, start + 12.0)
-                return {
-                    "type": "tool",
-                    "tool": "verify_live_replay",
-                    "arguments": {
-                        "start": round(start, 2),
-                        "end": round(end, 2),
-                        "task_id": replay_id,
+                        "candidate_event_id": eid,
+                        "purpose": "dense",
                     },
                 }
 
-        if anchors and len(memory.verifications) < 2:
-            a = anchors[0]
-            t = float(a["event_time_sec"])
+            if n_obs == 0 or pending:
+                return _observe(center)
+            if attempts >= 5 and c["status"] != "localized":
+                return {
+                    "type": "tool",
+                    "tool": "reject_candidate",
+                    "arguments": {
+                        "candidate_event_id": eid,
+                        "reason": "rule_exhausted_no_frame_bound_action",
+                    },
+                }
+            # After an observation without localization: shift once, next turn observes.
             return {
                 "type": "tool",
-                "tool": "coarse_search",
-                "arguments": {
-                    "start": round(max(0.0, t - 40.0), 2),
-                    "end": round(min(self.duration, t + 20.0), 2),
-                    "task_id": "fallback_coarse",
-                },
+                "tool": "shift_search",
+                "arguments": {"candidate_event_id": eid, "delta_sec": -60.0},
             }
-        return self._terminal_from_memory(memory, reason="anchors_verified")
-
-    def finish_from_memory(self, memory: Any, *, reason: str) -> Dict[str, Any]:
-        """Public terminal synthesis used by runner on budget exhaustion."""
-        return self._terminal_from_memory(memory, reason=reason)
+        return self._terminal_from_memory(memory, reason="rule_candidates_exhausted")
 
     def _terminal_from_memory(self, memory: Any, *, reason: str) -> Dict[str, Any]:
-        anchors = self._verify_anchors(memory)
+        anchors = memory.board.list_anchors()
         changes = [a for a in anchors if a.get("kind") == "score_change"]
         pairs = []
-        for a in memory.event_digest.get("score_anchors") or []:
+        for a in anchors:
             if a.get("kind") == "initial_score" and a.get("score_pair"):
                 pairs.append(tuple(a["score_pair"]))
             if a.get("kind") == "score_change" and a.get("score_after"):
                 pairs.append(tuple(a["score_after"]))
         status = "unresolved"
-        if len(changes) >= 1 and pairs:
-            status = "partial_story"
+        if len(pairs) >= 2:
             first, later = pairs[0], pairs[-1]
-            if first[0] < first[1] and later[0] > later[1]:
-                status = "story_candidate"
-            elif first[1] < first[0] and later[1] > later[0]:
-                status = "story_candidate"
-        if memory.verifications and status == "unresolved" and changes:
-            status = "partial_story"
+            if (first[0] < first[1] and later[0] > later[1]) or (
+                first[1] < first[0] and later[1] > later[0]
+            ):
+                status = "story_candidate" if memory.evidence_records or memory.verifications else "partial_story"
+            else:
+                status = "partial_story"
 
+        localized = memory.board.localized()
         beats = {
-            "setup": {"event_ids": [], "note": "inferred_from_score_anchors"},
+            "setup": {"event_ids": [], "note": "inferred"},
             "turning": {"event_ids": [], "note": ""},
             "climax": {"event_ids": [], "note": ""},
             "resolution": {"event_ids": [], "note": ""},
         }
-        relations: List[Dict[str, Any]] = []
-        # Prefer initial deficit event as setup; else first change
-        setup_src = next((a for a in anchors if a.get("kind") == "initial_score"), None)
-        if setup_src is None and changes:
-            setup_src = changes[0]
-        if setup_src:
-            beats["setup"]["event_ids"] = [setup_src.get("event_id")]
-            beats["setup"]["media_start"] = max(0.0, float(setup_src["event_time_sec"]) - 40)
-            beats["setup"]["media_end"] = float(setup_src["event_time_sec"])
+        if anchors:
+            setup = next((a for a in anchors if a.get("kind") == "initial_score"), None)
+            if setup:
+                beats["setup"]["event_ids"] = [setup.get("event_id")]
         if changes:
             beats["turning"]["event_ids"] = [changes[0].get("event_id")]
-            beats["turning"]["media_start"] = max(0.0, float(changes[0]["event_time_sec"]) - 20)
-            beats["turning"]["media_end"] = float(changes[0]["event_time_sec"])
-            if setup_src:
-                relations.append(
-                    {
-                        "from_event_id": setup_src.get("event_id"),
-                        "to_event_id": changes[0].get("event_id"),
-                        "kind": "temporal",
-                        "note": "deficit_then_level_or_next_change",
-                    }
-                )
-                relations.append(
-                    {
-                        "from_event_id": setup_src.get("event_id"),
-                        "to_event_id": changes[0].get("event_id"),
-                        "kind": "narrative",
-                        "note": "inferred_setup_to_turning",
-                    }
-                )
             if len(changes) >= 2:
                 beats["climax"]["event_ids"] = [changes[1].get("event_id")]
-                beats["climax"]["media_start"] = max(
-                    0.0, float(changes[1]["event_time_sec"]) - 20
-                )
-                beats["climax"]["media_end"] = float(changes[1]["event_time_sec"])
-                relations.append(
-                    {
-                        "from_event_id": changes[0].get("event_id"),
-                        "to_event_id": changes[1].get("event_id"),
-                        "kind": "causal",
-                        "note": "inferred_momentum_after_level_or_prior_goal",
-                    }
-                )
             beats["resolution"]["event_ids"] = [changes[-1].get("event_id")]
-            beats["resolution"]["media_start"] = max(
-                0.0, float(changes[-1]["event_time_sec"]) - 15
+
+        # Relations: temporal only in rule fallback — NEVER auto-causal
+        relations: List[Dict[str, Any]] = []
+        loc_ids = [c["candidate_event_id"] for c in localized]
+        evid_ids = [e.get("candidate_event_id") for e in memory.evidence_records]
+        chain = loc_ids or [c.get("event_id") for c in changes]
+        for i in range(len(chain) - 1):
+            relations.append(
+                {
+                    "from_event_id": chain[i],
+                    "to_event_id": chain[i + 1],
+                    "relation_type": "temporal",
+                    "supporting_evidence_ids": [x for x in evid_ids if x][:2],
+                    "explanation": "time-ordered score or localized events",
+                    "verification_status": "proposed",
+                }
             )
-            beats["resolution"]["media_end"] = float(changes[-1]["event_time_sec"])
+            # narrative optional weak link
+            relations.append(
+                {
+                    "from_event_id": chain[i],
+                    "to_event_id": chain[i + 1],
+                    "relation_type": "narrative",
+                    "supporting_evidence_ids": [],
+                    "explanation": "same T01 score-path narrative (not causal proof)",
+                    "verification_status": "proposed",
+                }
+            )
 
         return {
             "type": "answer",
@@ -311,12 +293,18 @@ class V2EventGuidedAgent:
             "step": step,
             "max_steps": max_steps,
             "remaining": remaining,
-            "tools": self.tools.descriptions(),
+            "meta_tools": sorted(META_TOOLS),
+            "video_tool": {
+                "name": "observe_window",
+                "purposes": sorted(VIDEO_PURPOSES),
+                "maps_to": {
+                    "dense": "dense_action_inspect",
+                    "coarse": "coarse_search",
+                    "live_replay": "verify_live_replay",
+                    "scoreboard": "read_scoreboard_window",
+                },
+            },
             "facts": facts,
-            "instruction": (
-                "Verify goal-like actions near score anchors with tools, then finish "
-                "with autonomously inferred beats/relations. No annotated causal input."
-            ),
         }
         mock = json.dumps(self._rule_policy(memory, remaining), ensure_ascii=False)
         raw = self.api.chat(
@@ -350,14 +338,42 @@ class V2EventGuidedAgent:
         if t == "tool":
             if remaining <= 1:
                 raise ValueError("last step must answer, not tool")
-            name = raw.get("tool")
-            if name not in self.tools.descriptions():
-                raise ValueError(f"unknown tool {name}")
-            return {
-                "type": "tool",
-                "tool": name,
-                "arguments": raw.get("arguments") or {},
-            }
+            name = str(raw.get("tool") or "")
+            args = raw.get("arguments") or {}
+            if not isinstance(args, dict):
+                raise ToolArgumentError("arguments must be object")
+            if name in META_TOOLS:
+                return {"type": "tool", "tool": name, "arguments": args}
+            if name == "observe_window":
+                return {"type": "tool", "tool": name, "arguments": args}
+            # legacy C1 tool names → wrap as observe_window
+            if name in {
+                "coarse_search",
+                "refine_window",
+                "dense_action_inspect",
+                "read_scoreboard_window",
+                "verify_live_replay",
+            }:
+                purpose = {
+                    "coarse_search": "coarse",
+                    "refine_window": "dense",
+                    "dense_action_inspect": "dense",
+                    "read_scoreboard_window": "scoreboard",
+                    "verify_live_replay": "live_replay",
+                }[name]
+                return {
+                    "type": "tool",
+                    "tool": "observe_window",
+                    "arguments": {
+                        "start": args.get("start"),
+                        "end": args.get("end"),
+                        "candidate_event_id": args.get("candidate_event_id")
+                        or args.get("task_id")
+                        or "unknown",
+                        "purpose": purpose,
+                    },
+                }
+            raise ValueError(f"unknown tool {name}")
         if t == "answer":
             ans = str(raw.get("answer") or "unresolved")
             allowed = {
@@ -365,10 +381,7 @@ class V2EventGuidedAgent:
                 "partial_story",
                 "no_comeback",
                 "unresolved",
-                "finish_localization",
             }
-            if ans == "finish_localization":
-                ans = "unresolved"
             if ans not in allowed:
                 ans = "unresolved"
             return {
