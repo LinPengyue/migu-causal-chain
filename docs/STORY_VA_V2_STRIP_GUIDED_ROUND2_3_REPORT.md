@@ -102,7 +102,7 @@ Sandbox note: Cursor default network allowlist blocked `llmapi.paratera.com` unt
 8. `story_clean_candidate.mp4`
 9. `story_qc_candidate.mp4`
 10. this report
-11. Git commit SHA: `a0bde048a64136878486491940ea9b67b0539d17`
+11. Git commit SHA: `650097ab8e358921b00c2b8c518088ef7bf47c5f`
 
 ## Forbidden inputs (honored)
 
