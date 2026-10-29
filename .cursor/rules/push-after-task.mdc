@@ -1,0 +1,13 @@
+---
+description: After completing a delivered task, push commits to GitHub
+alwaysApply: true
+---
+
+# Push completed work to GitHub
+
+When a task is finished and local commits exist that are not on the remote:
+
+1. Push the current branch to `origin` at https://github.com/LinPengyue/migu-causal-chain
+2. Do this without waiting for an extra push request if the user already established this standing preference
+3. Do not force-push to main/master unless explicitly asked
+4. After push, report the remote branch and commit SHAs that were published
