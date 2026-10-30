@@ -61,3 +61,7 @@ candidate_ready_for_human_review = true
 - `PYTHONPATH=algo python3 -m unittest story_video_agent.test_v2_strip_guided_r2_8 -v` → OK  
 - R2.7 负例：`all_negatives_detected=true`，且 `n_gray=0` 同时 `n_band>0`  
 - DeepSeek/Qwen/Story Planner：**未调用**（API=0，token=0）
+
+## 交付 commit
+
+`f296891` (`f29689175fca6c8d40f01e1df6d93eb1cb82282d`)
