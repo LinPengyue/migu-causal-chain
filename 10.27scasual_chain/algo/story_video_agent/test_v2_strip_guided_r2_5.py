@@ -1,13 +1,17 @@
-"""Round 2.5 unit tests — tight live goal windows (no real API)."""
+"""Round 2.5 unit tests — strict live gates (no real API)."""
 
 from __future__ import annotations
 
+import tempfile
 import unittest
+from pathlib import Path
 
+from story_video_agent.v2_strip_guided_r2_5_event_replay_audit import audit_event_replay_fields
 from story_video_agent.v2_strip_guided_r2_5_live_only import (
     build_live_only_edl,
     classify_live_replay,
     goal_live_core_window,
+    locate_continuous_live_goal_window,
 )
 
 
@@ -20,7 +24,7 @@ class TestGoalWindow(unittest.TestCase):
         }
         w = goal_live_core_window(ke)
         self.assertTrue(w["ok"])
-        self.assertGreaterEqual(w["media_in"], 3558.0)  # not 3556.32 (shot-6)
+        self.assertGreaterEqual(w["media_in"], 3558.0)
         self.assertLessEqual(w["media_out"], 3571.0)
         self.assertLess(w["media_in"], 3562.32)
         self.assertGreater(w["media_out"], 3566.64)
@@ -28,12 +32,111 @@ class TestGoalWindow(unittest.TestCase):
 
 class TestReplayClassify(unittest.TestCase):
     def test_replay_keyword(self):
-        r = classify_live_replay({"observed_actions": ["slow-mo replay of the goal"], "notes": "回放"})
+        r = classify_live_replay(
+            {"observed_actions": ["slow-mo replay of the goal"], "notes": "回放"}
+        )
         self.assertEqual(r["live_or_replay"], "replay")
 
-    def test_live_badge(self):
-        r = classify_live_replay({"observed_actions": ["直播 badge visible", "player shoots"], "notes": ""})
+    def test_live_badge_alone_is_unknown(self):
+        r = classify_live_replay(
+            {"observed_actions": ["直播 badge visible in corner", "player stands"], "notes": ""}
+        )
+        self.assertEqual(r["live_or_replay"], "unknown")
+        self.assertTrue(r["badge_alone_not_sufficient"])
+
+    def test_live_action_evidence(self):
+        r = classify_live_replay(
+            {
+                "observed_actions": [
+                    "wide tactical live play continuing",
+                    "player shoots toward goal",
+                    "ball into the net",
+                    "not a replay",
+                ],
+                "notes": "match clock visible",
+            }
+        )
         self.assertEqual(r["live_or_replay"], "live")
+
+    def test_not_a_replay_negation(self):
+        r = classify_live_replay(
+            {
+                "observed_actions": [
+                    "player strikes the ball",
+                    "ball enters the net",
+                    "This appears to be live match play, not a replay, evidenced by continuous motion",
+                ],
+                "notes": "broadcast_state=live_action",
+            }
+        )
+        self.assertEqual(r["live_or_replay"], "live")
+        self.assertFalse(r["has_replay_keyword"])
+
+    def test_lack_of_slow_motion_not_replay(self):
+        r = classify_live_replay(
+            {
+                "observed_actions": [
+                    "player strikes the ball",
+                    "ball enters the net",
+                    "Visuals indicate live match play due to continuous motion and lack of slow-motion artifacts",
+                ],
+                "notes": "broadcast_state=live_action match clock visible",
+            }
+        )
+        self.assertEqual(r["live_or_replay"], "live")
+        self.assertFalse(r["has_replay_keyword"])
+
+    def test_replay_package_is_replay(self):
+        r = classify_live_replay(
+            {
+                "observed_actions": ["live broadcast replay package of the goal"],
+                "notes": "broadcast_state=replay",
+            }
+        )
+        self.assertEqual(r["live_or_replay"], "replay")
+
+    def test_striking_counts_as_shot(self):
+        r = classify_live_replay(
+            {
+                "observed_actions": [
+                    "Croatia player #9 striking the ball with right foot",
+                    "Ball entering the net",
+                    "broadcast_state=live_action wide tactical view",
+                ],
+                "notes": "",
+            }
+        )
+        self.assertEqual(r["live_or_replay"], "live")
+        blob = " ".join(r["observed_actions"])
+        self.assertRegex(blob, r"striking")
+
+
+class TestLocateLive(unittest.TestCase):
+    def test_trims_before_replay(self):
+        timeline = {
+            "runs": [
+                {
+                    "phase": "live",
+                    "media_in": 3552.0,
+                    "media_out": 3569.0,
+                    "has_shot": True,
+                    "has_net": True,
+                },
+                {"phase": "replay", "media_in": 3571.0, "media_out": 3580.0, "has_shot": True, "has_net": True},
+            ],
+            "slices": [
+                {"media_in": 3552.0, "media_out": 3556.0, "phase": "live", "has_shot": False, "has_net": False},
+                {"media_in": 3560.0, "media_out": 3564.0, "phase": "live", "has_shot": True, "has_net": False},
+                {"media_in": 3564.0, "media_out": 3569.0, "phase": "live", "has_shot": False, "has_net": True},
+                {"media_in": 3571.0, "media_out": 3575.0, "phase": "replay", "has_shot": True, "has_net": True},
+            ],
+        }
+        loc = locate_continuous_live_goal_window(
+            timeline=timeline, shot_sec=3562.32, result_sec=3566.64
+        )
+        self.assertTrue(loc["ok"])
+        self.assertLessEqual(loc["media_out"], 3571.0)
+        self.assertLess(loc["media_in"], 3562.32)
 
 
 class TestEdlBuilder(unittest.TestCase):
@@ -44,11 +147,11 @@ class TestEdlBuilder(unittest.TestCase):
                 "score_before": [1, 1],
                 "score_after": [2, 1],
                 "pass": True,
-                "accepted_media_in": 3560.8,
-                "accepted_media_out": 3569.1,
+                "accepted_media_in": 3552.0,
+                "accepted_media_out": 3568.5,
                 "verified_shot_sec": 3562.32,
                 "verified_result_sec": 3566.64,
-                "observation": {"live_or_replay": "live"},
+                "live_or_replay": "live",
             }
         ]
         strips = [
@@ -81,8 +184,48 @@ class TestEdlBuilder(unittest.TestCase):
         self.assertEqual(edl["n_goal_segments"], 1)
         self.assertEqual(edl["n_non_goal_strip_segments"], 0)
         goal_seg = next(s for s in edl["segments"] if s.get("role") == "goal")
-        self.assertAlmostEqual(goal_seg["media_in"], 3560.8)
+        self.assertAlmostEqual(goal_seg["media_in"], 3552.0)
         self.assertNotAlmostEqual(goal_seg["media_in"], 3556.32)
+
+
+class TestEventReplayAudit(unittest.TestCase):
+    def test_counts_without_defaulting_missing(self):
+        doc = {
+            "events": [
+                {
+                    "event_id": "e1",
+                    "event_type": "Pass",
+                    "media_time": {"start_time_sec": 10.0, "end_time_sec": 12.0},
+                    "video_context": {
+                        "broadcast_phase": "LIVE",
+                        "is_replay": False,
+                        "is_slow_motion": False,
+                        "replay_of_event_id": None,
+                    },
+                },
+                {
+                    "event_id": "e2",
+                    "event_type": "Save",
+                    "media_time": {"start_time_sec": 20.0, "end_time_sec": 25.0},
+                    "video_context": {
+                        "broadcast_phase": "REPLAY",
+                        "is_replay": True,
+                        "is_slow_motion": False,
+                        "replay_of_event_id": None,
+                    },
+                },
+            ]
+        }
+        with tempfile.TemporaryDirectory() as td:
+            p = Path(td) / "events.json"
+            p.write_text(__import__("json").dumps(doc), encoding="utf-8")
+            audit = audit_event_replay_fields(
+                events_path=p,
+                edl_spans=[{"segment_id": "g", "role": "goal", "media_in": 19.0, "media_out": 22.0}],
+            )
+        self.assertEqual(audit["is_replay_counts"]["True"], 1)
+        self.assertEqual(audit["is_replay_counts"]["False"], 1)
+        self.assertEqual(audit["edl_span_coverage"][0]["n_overlapping_replay"], 1)
 
 
 if __name__ == "__main__":

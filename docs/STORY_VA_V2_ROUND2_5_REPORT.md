@@ -1,60 +1,97 @@
-# Story VA V2 — Round 2.5 Live-Only Report
+# Story VA V2 — Round 2.5 Live-Only Acceptance Fix Report
 
 ## Verdict
 
-Round 2.5 **passes** live-only acceptance for Croatia–Canada:
-
-- 2:1 go-ahead goal retained with **tight live core** covering shot `3562.32` and result `3566.64` (PTS unchanged).
-- All **five** verified goals pass integrity (shot + net + not replay).
-- Clean/QC live-only candidates generated; `render_ready=false`.
+R2.5 **acceptance-fix** for Croatia–Canada: five verified goals now pass **window + final-MP4 visual** gates. `story_complete_candidate=true`, `render_ready=false`.
 
 Artifacts:
 
+`/data2/lpy1/_story_va_outputs/v2/strip_guided/croatia_r2_5_fix_20261030_094019/`
+
+Prior failing candidate (badge/PTS autofill):  
 `/data2/lpy1/_story_va_outputs/v2/strip_guided/croatia_r2_5_20261029_211351/`
 
-## Task 1 — Root cause of “missing” 2:1
+## Task 1 — Original `events.json` replay fields
 
-R2.4 EDL/FFmpeg **did include** `ke_3` at `3556.32–3571.64`, which already covered the verified strike and net.
+Source: `/data2/lpy1/causal-chain2/8.31causal_chain/data/交付_out/2022-11-28 克罗地亚vs加拿大.json`
 
-Root cause was **over-padding in Story Graph clip construction** (`shot - 6s` and `edit_out + 2s`), expanding beyond verified `edit_window` `3560.32–3569.64`. Extra head/tail angles make the live goal harder to read and can feel “overwritten” when reviewing the story cut. Verified PTS were **not** wrong; window construction was.
+From `event_replay_field_audit.json` (real file counts, not schema inference):
 
-R2.5 fix: `goal_live_core_window` clamps to a tight live core around verified shot→result (**does not use shot−6**). Final 2:1 window: **`3560.82–3569.14`**.
+| Field | Result |
+|---|---|
+| `video_context` | 159 / 159 |
+| `is_replay` | False 145, True 14 |
+| `broadcast_phase` | LIVE 145, REPLAY 14 |
+| `is_slow_motion` | False 159 (likely underlabeled — **not** treated as proof of no slow-mo) |
+| EDL span coverage | **7 spans uncovered** (incl. most goal neighborhoods) |
 
-Diagnosis JSON: `ke3_2_1_diagnosis.json`.
+Policy: overlapping REPLAY labels feed the broadcast timeline; uncovered spans require video observation and **must not** default `is_replay=false`.
 
-## Task 2 — Live-only constraint
+## Task 2 — Live-only gate fixes
 
-Qwen audits classify live/replay via 直播 / 回放 / slow-mo cues. Segments that are replay, mixed, or **live-unconfirmed** are excluded from Clean EDL.
+Removed acceptance loopholes in `v2_strip_guided_r2_5_live_only.py`:
 
-`replay_segment_audit.json` records per-segment outcomes. Unconfirmed strip `strip_clip58` was dropped when vision frame budget was exhausted (cannot enter Clean without live confirmation).
+1. Persistent **直播 badge ≠ live action**.
+2. Verified PTS **never** auto-fill missing shot/net observation.
+3. `unknown` / `replay` / `mixed` cannot hard-pass without dense live confirmation.
+4. Replay classifier uses **positive** cues only (`replay package`, `replay angle`, `broadcast_state=replay`, …) and strips negations (`not a replay`, `lack of slow-motion artifacts`).
+5. Multi-slice `broadcast_timeline` + tight dense core (`shot−6 … result+2.2`), trimmed by event REPLAY overlaps.
 
-## Task 3 — Five-goal checklist
+## Task 3 — Relocated live goal windows
 
-From `goal_clip_integrity_audit.json` (playback map in story time):
+| Goal | Accepted media (sec) | Notes |
+|---|---|---|
+| →0:1 | 976.063–985.563 | Approach + shot + net (was truncated near net) |
+| 0:1→1:1 | 3103.88–3108.72 | Tight live core before trailing replay wording |
+| **1:1→2:1** | **3557.32–3569.64** | Includes approach through net; PTS 3562.32 / 3566.64 unchanged as anchors |
+| 2:1→3:1 | 6452.1–6464.08 | Trimmed before event_000119 REPLAY @6467.64 |
+| 3:1→4:1 | 7740.78–7751.6 | Extended enough for net + short live celebration |
 
-| Goal | Shot | Result | Live window | Story play | Pass |
-|---|---|---|---|---|---|
-| →0:1 | 982.063 | 982.063 | 980.563–984.563 | 2.5–6.5 | yes |
-| 0:1→1:1 | 3105.08 | 3107.72 | 3103.58–3110.22 | 24.5–31.14 | yes |
-| **1:1→2:1** | **3562.32** | **3566.64** | **3560.82–3569.14** | **31.14–39.46** | **yes** |
-| 2:1→3:1 | 6457.1 | 6461.08 | 6455.6–6463.58 | 75.46–83.44 | yes |
-| 3:1→4:1 | 7746.78 | 7748.1 | 7745.28–7750.6 | 83.44–88.76 | yes |
+## Task 4 — Final MP4 visual audit (mandatory)
 
-## Task 4 — Outputs
+`final_mp4_visual_audit.json` observes the **rendered** `story_clean_live_only.mp4` (not EDL alone).
 
-- `story_clean_live_only.mp4`
-- `story_qc_live_only.mp4`
-- `goal_clip_integrity_audit.json`
-- `replay_segment_audit.json`
+All five goals: `pass=true` with frame evidence for approach / shot / net (celebration where visible). Story play mapping for QC is in the audit + EDL.
+
+Acceptance from `cli_report.json`:
+
+- `go_ahead_2_1_present`: true  
+- `five_goals_live_complete`: true  
+- `final_mp4_visual_pass`: true  
+
+## Outputs
+
+- `story_clean_live_only.mp4` / `story_qc_live_only.mp4`
+- `event_replay_field_audit.json`
+- `broadcast_timeline.json`
+- `goal_live_window_audit.json`
+- `final_mp4_visual_audit.json`
 - `edl_live_only.json`
+- `before_after_video_issues.json`
+- `replay_segment_audit.json`
 - this report
 
-Kept 3 live-confirmed non-goal strips (24/45/46) from R2.4 selection; dropped unconfirmed `clip58`.
+Non-goal strips kept: 3 (live-confirmed from R2.4 selection after timeline).
 
 ## Constraints
 
-No gold/V1 times; no 8.31 production edits; five verified goal times reused; `render_ready=false`.
+No gold / strip_gold / V1 times; no 8.31 or V1 edits; `render_ready=false`.
+
+## Before → after (failed R2.5 → fix)
+
+| Issue | Before | After |
+|---|---|---|
+| Pass without final MP4 audit | `all_five_goals_pass=true` on EDL/Qwen keywords | Final MP4 visual gate required |
+| 直播 badge as live proof | Allowed | Rejected unless live-action evidence |
+| PTS autofill shot/net | Allowed | Forbidden |
+| 0:1 missing approach | ~980.5–984.5 | 976.1–985.6 |
+| 2:1 multi-angle / unclear live | Tight core only, badge pass | 3557–3569 + final MP4 pass |
+| 4:1 early truncate | ~7745–7750 | 7740.8–7751.6 |
+
+## Tests
+
+`python -m unittest story_video_agent.test_v2_strip_guided_r2_5`
 
 ## Git
 
-Commit SHA: `a5d8c030093a77bba734580584e7b325f0a40ac5`
+Delivery commit SHA: `22dda05847ff02104abcec45aa85964e6de3090c`
