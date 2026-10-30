@@ -53,3 +53,7 @@ Other goals unchanged from R2.6 first-live windows (0:1/1:1/4:1); 4:1 celebratio
 - First-live vs alternate-angle still needs human judgment (auto tools insufficient).
 
 `render_ready=false`
+
+## Delivery commit
+
+`1eb5a92` (`1eb5a92e900e52894c524ef355a572761a8b6945`)
