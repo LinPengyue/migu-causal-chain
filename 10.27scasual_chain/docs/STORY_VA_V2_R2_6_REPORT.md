@@ -2,7 +2,7 @@
 
 Generated: 2026-10-30T04:21:58.400093+00:00
 Branch: `story-va-video-driven`
-Workspace HEAD at report write: 
+Delivery commit: `81a5f4c` (`d8d4789` content + SHA stamp)
 
 ## 1. What was fixed
 
@@ -64,4 +64,5 @@ Workspace HEAD at report write:
 
 ## Delivery commit
 
+`81a5f4c` on `story-va-video-driven`
 
