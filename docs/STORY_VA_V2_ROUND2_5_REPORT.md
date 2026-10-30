@@ -94,4 +94,4 @@ No gold / strip_gold / V1 times; no 8.31 or V1 edits; `render_ready=false`.
 
 ## Git
 
-Delivery commit SHA: `22dda05847ff02104abcec45aa85964e6de3090c`
+Delivery commit SHA: `2af37c4b6a55c902c9a9e8a1ebfa831f206a43c9`
