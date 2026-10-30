@@ -1,0 +1,167 @@
+{
+  "schema": "v2_r28_qc_summary_v1",
+  "artifact_root": "/data2/lpy1/_story_va_outputs/v2/strip_guided/croatia_r2_8_visual_gate",
+  "story_mp4": "/data2/lpy1/_story_va_outputs/v2/strip_guided/croatia_r2_8_visual_gate/story_clean_live_only.mp4",
+  "story_duration_sec": 141.551,
+  "story_bytes": 68331285,
+  "edl_duration_sec": 141.35,
+  "gates": {
+    "live_only": true,
+    "all_five_goals_verified_first_live": true,
+    "final_mp4_visual_pass": false,
+    "visual_qc_pass": false,
+    "blocked_source_corruption": true,
+    "blocked_reason": "g31_source_band_glitch_during_live_shot_irrecoverable_without_clean_source_or_user_exception",
+    "story_complete_candidate": false,
+    "candidate_ready_for_human_review": true,
+    "render_ready": false
+  },
+  "full_scan": {
+    "n_samples": 309,
+    "n_anomalies": 24,
+    "n_gray_anomalies": 0,
+    "n_band_macroblock_anomalies": 24,
+    "gates": {
+      "gray_clean": true,
+      "band_macroblock_clean": false,
+      "visual_qc_pass": false,
+      "blocked_source_corruption": true,
+      "render_ready": false
+    },
+    "r28_checks": {
+      "g21_trimmed_past_58s_source_band": true,
+      "g21_open_anomaly_count": 0,
+      "g31_source_band_still_present": true,
+      "g31_corrupt_play_approx": 83.7,
+      "blocked_source_corruption": true,
+      "visual_qc_pass": false,
+      "render_ready": false
+    },
+    "anomaly_times": [
+      18.4,
+      18.6,
+      18.8,
+      19.0,
+      73.55,
+      74.0,
+      75.0,
+      76.0,
+      77.0,
+      80.0,
+      81.0,
+      82.0,
+      84.0,
+      84.1,
+      84.2,
+      84.3,
+      84.4,
+      84.5,
+      84.6,
+      84.7,
+      84.8,
+      84.9,
+      85.0,
+      85.1
+    ]
+  },
+  "r27_negative_regression": {
+    "n_samples": 100,
+    "n_anomalies": 31,
+    "n_gray_anomalies": 0,
+    "n_band_macroblock_anomalies": 31,
+    "regression": {
+      "all_negatives_detected": true,
+      "hits": [
+        {
+          "start": 58.0,
+          "end": 59.5,
+          "detected": true
+        },
+        {
+          "start": 85.5,
+          "end": 87.5,
+          "detected": true
+        }
+      ],
+      "misses": [],
+      "n_anomalies_in_scan": 31,
+      "n_gray_only": 0,
+      "policy": "gray_zero_is_insufficient_when_band_negatives_exist"
+    },
+    "gray_only_would_miss_p0": true
+  },
+  "goal_mapping": {
+    "schema": "v2_r28_goal_mapping_v1",
+    "goals": [
+      {
+        "segment_id": "edl_g01",
+        "source_media_in": 975.8,
+        "source_media_out": 988.0,
+        "shot_sec": 982.063,
+        "result_sec": 982.063,
+        "story_play_in": 2.5,
+        "story_play_out": 14.7,
+        "story_shot": 8.763,
+        "story_net": 8.763,
+        "source_corruption_during_live_shot": false,
+        "delivery_gate": null
+      },
+      {
+        "segment_id": "edl_g11",
+        "source_media_in": 3055.0,
+        "source_media_out": 3082.0,
+        "shot_sec": 3064.5,
+        "result_sec": 3069.3,
+        "story_play_in": 30.35,
+        "story_play_out": 57.35,
+        "story_shot": 39.85,
+        "story_net": 44.65,
+        "source_corruption_during_live_shot": false,
+        "delivery_gate": null
+      },
+      {
+        "segment_id": "edl_g21",
+        "source_media_in": 3517.0,
+        "source_media_out": 3533.0,
+        "shot_sec": 3524.0,
+        "result_sec": 3527.7,
+        "story_play_in": 57.35,
+        "story_play_out": 73.35,
+        "story_shot": 64.35,
+        "story_net": 68.05,
+        "source_corruption_during_live_shot": false,
+        "delivery_gate": null
+      },
+      {
+        "segment_id": "edl_g31",
+        "source_media_in": 6305.0,
+        "source_media_out": 6332.0,
+        "shot_sec": 6314.0,
+        "result_sec": 6320.0,
+        "story_play_in": 73.35,
+        "story_play_out": 100.35,
+        "story_shot": 82.35,
+        "story_net": 88.35,
+        "source_corruption_during_live_shot": true,
+        "delivery_gate": "BLOCKED_SOURCE_CORRUPTION"
+      },
+      {
+        "segment_id": "edl_g41",
+        "source_media_in": 7740.0,
+        "source_media_out": 7760.0,
+        "shot_sec": 7746.78,
+        "result_sec": 7748.1,
+        "story_play_in": 103.85,
+        "story_play_out": 123.85,
+        "story_shot": 110.63,
+        "story_net": 111.95,
+        "source_corruption_during_live_shot": false,
+        "delivery_gate": null
+      }
+    ],
+    "render_ready": false
+  },
+  "api_calls": 0,
+  "tokens": 0,
+  "render_ready": false
+}
