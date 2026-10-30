@@ -2,7 +2,7 @@
 
 Generated: 2026-10-30T04:21:58.400093+00:00
 Branch: `story-va-video-driven`
-Workspace HEAD at report write: `7123b2c9297eb2707c7e51db9efd04758808415b`
+Workspace HEAD at report write: 
 
 ## 1. What was fixed
 
@@ -61,3 +61,7 @@ Workspace HEAD at report write: `7123b2c9297eb2707c7e51db9efd04758808415b`
 ## 8. Policy
 
 `render_ready=false` until explicit human approval.
+
+## Delivery commit
+
+
