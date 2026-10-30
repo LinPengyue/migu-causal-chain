@@ -40,3 +40,8 @@ V1 phase5 仅作离线诊断，未进入 V2 推理输入。
 6. 负例测试：有射门入网但是回放 → 判定 replay，不得验收通过
 
 `render_ready=false`。未改 V1 / 8.31 events，未重跑付费 Goal Recovery / Story Planner。
+
+## Delivery
+
+- Commit: `17ba4d7` (`story-va-video-driven`)
+- Offline artifacts: `/data2/lpy1/_story_va_outputs/v2/strip_guided/croatia_r2_5_rootcause_20261030/`
