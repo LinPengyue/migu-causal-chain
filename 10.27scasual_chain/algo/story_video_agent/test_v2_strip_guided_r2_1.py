@@ -133,6 +133,21 @@ class TestActionTiming(unittest.TestCase):
             },
         ]
         agg = merge_action_evidence_windows(rows)
+        # Cross-row shot/net stitch is forbidden (replay false-positive guard).
+        self.assertFalse(agg["action_time_resolved"])
+        self.assertTrue(agg.get("rejected_cross_row_stitch"))
+
+    def test_aggregate_same_row_resolves(self):
+        rows = [
+            {
+                "evidence": {
+                    "live_or_replay": "live",
+                    "shot_action": {"frame_id": "f_a", "media_sec": 50.0},
+                    "goal_result": {"frame_id": "f_b", "media_sec": 52.5},
+                }
+            },
+        ]
+        agg = merge_action_evidence_windows(rows)
         self.assertTrue(agg["action_time_resolved"])
         self.assertEqual(agg["shot_action"]["media_sec"], 50.0)
         self.assertEqual(agg["goal_result"]["media_sec"], 52.5)
@@ -143,13 +158,6 @@ class TestActionTiming(unittest.TestCase):
                 "evidence": {
                     "live_or_replay": "live",
                     "shot_action": {"frame_id": "f_a", "media_sec": 6359.0},
-                    "goal_result": None,
-                }
-            },
-            {
-                "evidence": {
-                    "live_or_replay": "live",
-                    "shot_action": None,
                     "goal_result": {"frame_id": "f_b", "media_sec": 6461.0},
                 }
             },

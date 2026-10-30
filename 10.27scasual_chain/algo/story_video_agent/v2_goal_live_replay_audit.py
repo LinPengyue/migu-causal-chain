@@ -252,8 +252,10 @@ def audit_inferred_goal(
             issues.append("shot_after_earlier_live_net_suggests_replay_window")
 
     score_tr = (inferred_event.get("related_score_transition") or {}).get("score_confirmation_time")
+    score_order_anomaly = False
     if tr is not None and score_tr is not None and float(tr) > float(score_tr) + 1.0:
         issues.append("result_after_score_confirmation")
+        score_order_anomaly = True
 
     if ts is not None and tr is not None and float(tr) - float(ts) > 20.0:
         issues.append("shot_result_gap_exceeds_20s")
@@ -265,12 +267,22 @@ def audit_inferred_goal(
 
     splice_risk = bool(issues)
     corrected = None
-    if splice_risk and proposal and proposal.get("verification_status") == "verified_action":
+    if (
+        splice_risk
+        and proposal
+        and proposal.get("verification_status") == "verified_action"
+        and not score_order_anomaly
+    ):
+        # Never auto-rebind past a score-order violation — that needs anomaly audit.
         corrected = proposal
         issues.append("proposed_live_rebind")
 
     status = "ok"
-    if splice_risk and corrected:
+    if score_order_anomaly:
+        # Hard anomaly: live action after board already shows the new score → replay/wrong confirm.
+        status = "rejected_score_order_anomaly"
+        issues.append("score_order_anomaly_requires_audit")
+    elif splice_risk and corrected:
         status = "corrected_live_rebind"
     elif splice_risk and proposal and proposal.get("shot_action") is None:
         status = "needs_shot_localization"
@@ -285,6 +297,7 @@ def audit_inferred_goal(
         "inferred_event_id": inferred_event.get("inferred_event_id") or inferred_event.get("event_id"),
         "status": status,
         "issues": issues,
+        "score_order_anomaly": score_order_anomaly,
         "original_shot_sec": ts,
         "original_result_sec": tr,
         "mined_counts": {

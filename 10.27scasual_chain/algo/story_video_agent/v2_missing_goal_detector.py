@@ -45,8 +45,23 @@ def _strip_covers_goalish(chain: Dict[str, Any]) -> bool:
     return False
 
 
+def _is_live_board(e: Dict[str, Any]) -> bool:
+    """Prefer LIVE non-replay scoreboard observations as confirmation anchors."""
+    if e.get("is_replay") is True:
+        return False
+    phase = str(e.get("broadcast_phase") or "").upper()
+    if phase == "REPLAY":
+        return False
+    return True
+
+
 def build_score_trajectory(events: Sequence[Dict[str, Any]]) -> Dict[str, Any]:
-    """Stable score path from whitelisted score_pair observations."""
+    """Stable score path from whitelisted score_pair observations.
+
+    When the chronologically first sighting of a new score is on a REPLAY row,
+    prefer the earliest subsequent LIVE observation of the same score (if any)
+    as the confirmation point. Still record the replay-first anomaly.
+    """
     timed = [
         e
         for e in events
@@ -54,25 +69,77 @@ def build_score_trajectory(events: Sequence[Dict[str, Any]]) -> Dict[str, Any]:
     ]
     timed.sort(key=lambda e: float(e["event_time_sec"]))
     points: List[Dict[str, Any]] = []
+    anomalies: List[Dict[str, Any]] = []
     prev = None
-    for e in timed:
+    i = 0
+    while i < len(timed):
+        e = timed[i]
         pair = _pair(e["score_pair"])
         if pair is None:
+            i += 1
             continue
-        if prev is None or pair != prev:
-            points.append(
-                {
-                    "score": list(pair),
-                    "event_id": e["event_id"],
-                    "event_time_sec": float(e["event_time_sec"]),
-                    "media_start_sec": e.get("media_start_sec"),
-                    "media_end_sec": e.get("media_end_sec"),
-                    "event_type": e.get("event_type"),
-                    "is_replay": e.get("is_replay"),
-                    "is_change": prev is not None and pair != prev,
-                }
-            )
-            prev = pair
+        if prev is not None and pair == prev:
+            i += 1
+            continue
+        chosen = e
+        replay_first = not _is_live_board(e)
+        if replay_first:
+            # Look ahead for earliest LIVE same-score observation.
+            for j in range(i + 1, len(timed)):
+                e2 = timed[j]
+                p2 = _pair(e2["score_pair"])
+                if p2 != pair:
+                    break
+                if _is_live_board(e2):
+                    anomalies.append(
+                        {
+                            "kind": "score_change_first_seen_on_replay",
+                            "score": list(pair),
+                            "replay_event_id": e["event_id"],
+                            "replay_event_time_sec": float(e["event_time_sec"]),
+                            "preferred_live_event_id": e2["event_id"],
+                            "preferred_live_event_time_sec": float(e2["event_time_sec"]),
+                            "note": (
+                                "First board sighting was REPLAY; confirmation moved to "
+                                "earliest LIVE same-score observation. Live goal action "
+                                "must still precede this confirmation."
+                            ),
+                        }
+                    )
+                    chosen = e2
+                    break
+            else:
+                anomalies.append(
+                    {
+                        "kind": "score_change_only_seen_on_replay",
+                        "score": list(pair),
+                        "replay_event_id": e["event_id"],
+                        "replay_event_time_sec": float(e["event_time_sec"]),
+                        "note": (
+                            "No LIVE board observation for this score — confirmation_is_replay; "
+                            "do not auto-verify inferred goals without score-order audit."
+                        ),
+                    }
+                )
+        points.append(
+            {
+                "score": list(pair),
+                "event_id": chosen["event_id"],
+                "event_time_sec": float(chosen["event_time_sec"]),
+                "media_start_sec": chosen.get("media_start_sec"),
+                "media_end_sec": chosen.get("media_end_sec"),
+                "event_type": chosen.get("event_type"),
+                "is_replay": chosen.get("is_replay"),
+                "is_change": prev is not None and pair != prev,
+                "first_sighting_event_id": e["event_id"],
+                "first_sighting_is_replay": bool(e.get("is_replay")),
+                "confirmation_preferred_live": _is_live_board(chosen),
+            }
+        )
+        prev = pair
+        # Advance past all observations of this score state
+        while i < len(timed) and _pair(timed[i]["score_pair"]) == pair:
+            i += 1
     anchors = score_transition_anchors(list(events))
     return {
         "schema": "v2_score_trajectory_v1",
@@ -80,6 +147,7 @@ def build_score_trajectory(events: Sequence[Dict[str, Any]]) -> Dict[str, Any]:
         "n_unique_states": len(points),
         "points": points,
         "anchors": anchors,
+        "anomalies": anomalies,
         "note": "Score_Recognition is board state, not proven goal action time",
     }
 
@@ -309,6 +377,9 @@ def detect_missing_goals(
         # Replay-tagged confirmation: still a candidate, but flag for careful verify.
         t_prev = float(prev_p["event_time_sec"])
         t_conf = float(cur_p["event_time_sec"])
+        conf_replay = bool(cur_p.get("is_replay")) or not cur_p.get(
+            "confirmation_preferred_live", True
+        )
         goals = _nearby_goal_events(events, t0=t_prev, t1=t_conf)
         nearby_goalish_strips = _nearby_strips(strips, center_sec=t_conf, pad_sec=90.0)
         # Also check strips whose window overlaps (t_prev, t_conf]
@@ -363,7 +434,8 @@ def detect_missing_goals(
                     "score_confirmation_time": t_conf,
                     "previous_score_observation_time": t_prev,
                     "confirmation_event_id": cur_p["event_id"],
-                    "confirmation_is_replay": cur_p.get("is_replay"),
+                    "confirmation_is_replay": conf_replay or bool(cur_p.get("is_replay")),
+                    "score_order_audit_required": True,
                     "candidate_event_ids": _candidate_event_ids(
                         events, t0=region["search_start_sec"], t1=region["search_end_sec"]
                     ),
@@ -388,7 +460,8 @@ def detect_missing_goals(
                 "score_confirmation_time": t_conf,
                 "previous_score_observation_time": t_prev,
                 "confirmation_event_id": cur_p["event_id"],
-                "confirmation_is_replay": cur_p.get("is_replay"),
+                "confirmation_is_replay": conf_replay or bool(cur_p.get("is_replay")),
+                "score_order_audit_required": True,
                 "candidate_event_ids": _candidate_event_ids(
                     events, t0=region["search_start_sec"], t1=region["search_end_sec"]
                 ),
@@ -397,6 +470,11 @@ def detect_missing_goals(
                 "search_status": "pending_video",
                 "goals_added": added,
                 "verification_status": "unresolved",
+                "note": (
+                    "confirmation_is_replay — refuse auto-verify if action time ≥ confirmation"
+                    if (conf_replay or cur_p.get("is_replay"))
+                    else None
+                ),
                 "render_ready": False,
             }
         )

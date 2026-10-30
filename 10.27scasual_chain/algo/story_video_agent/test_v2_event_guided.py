@@ -82,6 +82,82 @@ class TestEventAdapter(unittest.TestCase):
         self.assertEqual(std["score_pair"], [0, 1])
         self.assertNotIn("criticality", std["attributes"])
 
+    def test_scores_score_recognition_fallback(self):
+        """Foul rows often only store board under scores.score_recognition."""
+        raw = {
+            "event_id": "event_000118",
+            "event_type": "Foul_Being_fouled",
+            "media_time": {
+                "event_time_sec": 6408.70,
+                "start_time_sec": 6400.65,
+                "end_time_sec": 6412.65,
+            },
+            "video_context": {"broadcast_phase": "LIVE", "is_replay": False},
+            "attributes": {},
+            "scores": {"score_recognition": "3:1"},
+        }
+        std = sanitize_raw_event(raw)
+        assert std is not None
+        self.assertEqual(std["score_pair"], [3, 1])
+        self.assertEqual(std["score_source"], "scores.score_recognition")
+
+    def test_prefer_live_over_replay_score_change(self):
+        payload = {
+            "match_id": "t",
+            "events": [
+                {
+                    "event_id": "e_live_21",
+                    "event_type": "Shot",
+                    "media_time": {
+                        "event_time_sec": 3697.0,
+                        "start_time_sec": 3690.0,
+                        "end_time_sec": 3700.0,
+                    },
+                    "video_context": {"broadcast_phase": "LIVE", "is_replay": False},
+                    "attributes": {"Score_Recognition": ["2:1"]},
+                },
+                {
+                    "event_id": "e_replay_31",
+                    "event_type": "Substitution",
+                    "media_time": {
+                        "event_time_sec": 6479.0,
+                        "start_time_sec": 6467.0,
+                        "end_time_sec": 6480.0,
+                    },
+                    "video_context": {"broadcast_phase": "REPLAY", "is_replay": True},
+                    "attributes": {"Score_Recognition": ["3:1"]},
+                },
+                {
+                    "event_id": "e_live_31",
+                    "event_type": "Foul_Being_fouled",
+                    "media_time": {
+                        "event_time_sec": 6408.7,
+                        "start_time_sec": 6400.0,
+                        "end_time_sec": 6412.0,
+                    },
+                    "video_context": {"broadcast_phase": "LIVE", "is_replay": False},
+                    "attributes": {},
+                    "scores": {"score_recognition": "3:1"},
+                },
+            ],
+        }
+        # Reorder: live 3:1 before replay 3:1 chronologically
+        payload["events"] = [
+            payload["events"][0],
+            payload["events"][2],
+            payload["events"][1],
+        ]
+        with tempfile.TemporaryDirectory() as td:
+            p = Path(td) / "events.json"
+            p.write_text(json.dumps(payload), encoding="utf-8")
+            bundle = load_events_json(p, input_source="human_corrected")
+            changes = [
+                a for a in score_transition_anchors(bundle["events"]) if a["kind"] == "score_change"
+            ]
+            self.assertEqual(changes[-1]["score_after"], [3, 1])
+            self.assertEqual(changes[-1]["event_id"], "e_live_31")
+            self.assertFalse(changes[-1]["is_replay"])
+
     def test_refuse_causal_payload(self):
         with tempfile.TemporaryDirectory() as td:
             p = Path(td) / "bad.json"

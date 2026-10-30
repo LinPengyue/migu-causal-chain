@@ -124,18 +124,12 @@ def audit_final_mp4_goals(
                 continue
             lr = classify_live_replay(raw)
             blob = _blob_from_raw(raw)
-            for pk, rx in _PHASE.items():
-                if rx.search(blob):
+            probe_phases = {pk: bool(rx.search(blob)) for pk, rx in _PHASE.items()}
+            for pk, hit in probe_phases.items():
+                if hit:
                     phase_hits[pk] = True
-            # Trailing celebration-only probe: don't mark whole goal mixed if earlier probes live.
+            # Do NOT upgrade mixed→live for late celebration; mixed fails acceptance.
             status = lr["live_or_replay"]
-            if (
-                name == "late_result"
-                and status == "mixed_or_ambiguous"
-                and phase_hits["celebrate"]
-                and not lr.get("has_replay_keyword")
-            ):
-                status = "live" if lr.get("has_live_action_evidence") else status
             statuses.append(status)
             observations.append(
                 {
@@ -147,46 +141,59 @@ def audit_final_mp4_goals(
                     "badge_alone": lr.get("badge_alone_not_sufficient"),
                     "blob_excerpt": lr.get("blob_excerpt", "")[:350],
                     "observed_actions": lr.get("observed_actions") or [],
+                    "probe_phases": probe_phases,
                 }
             )
 
         fail: List[str] = []
         strong_replay = any(s == "replay" for s in statuses)
+        has_mixed = any(s == "mixed_or_ambiguous" for s in statuses)
         has_live = any(s == "live" for s in statuses)
-        early_mid = statuses[:2] if len(statuses) >= 2 else list(statuses)
-        late_only_mixed = (
-            len(statuses) >= 3
-            and statuses[-1] == "mixed_or_ambiguous"
-            and all(s == "live" for s in statuses[:-1])
-        )
-        core_has_mixed = any(s == "mixed_or_ambiguous" for s in early_mid)
+        # Shot+net must co-occur on the SAME live probe — no cross-probe stitch.
+        same_probe_complete = False
+        for obs in observations:
+            if obs.get("live_or_replay") != "live":
+                continue
+            pp = obs.get("probe_phases") or {}
+            if pp.get("shot") and pp.get("net"):
+                same_probe_complete = True
+                break
+            blob = str(obs.get("blob_excerpt") or "")
+            acts = " ".join(str(a) for a in (obs.get("observed_actions") or []))
+            text = f"{blob} {acts}"
+            if _SHOT.search(text) and _NET.search(text):
+                same_probe_complete = True
+                break
 
-        if strong_replay:
+        if strong_replay or has_mixed:
             fail.append("final_mp4_contains_replay_or_mixed")
-        elif core_has_mixed and not has_live:
-            fail.append("final_mp4_contains_replay_or_mixed")
-        elif core_has_mixed and has_live and not (phase_hits["shot"] and phase_hits["net"]):
-            fail.append("final_mp4_contains_replay_or_mixed")
-        # late_only_mixed after proven live shot+net: keep with note (celebration/multicam wording)
         if not has_live:
             fail.append("final_mp4_live_unconfirmed")
         if not phase_hits["shot"]:
             fail.append("final_mp4_missing_shot_action")
         if not phase_hits["net"]:
             fail.append("final_mp4_missing_net_result")
+        if phase_hits["shot"] and phase_hits["net"] and not same_probe_complete:
+            fail.append("final_mp4_shot_net_cross_probe_stitch")
         truncated = bool(phase_hits["shot"] and not phase_hits["net"])
         if truncated:
             fail.append("possible_early_truncation_before_net")
 
-        live_ok = has_live and not strong_replay
-        if all(s == "mixed_or_ambiguous" for s in statuses):
-            live_ok = False
-            if "final_mp4_contains_replay_or_mixed" not in fail:
-                fail.append("final_mp4_contains_replay_or_mixed")
-        passed = len(fail) == 0 and live_ok and phase_hits["shot"] and phase_hits["net"]
-        if passed and late_only_mixed:
-            # Record but do not fail: live core already verified in earlier probes.
-            pass
+        # Score-order: live net must precede trusted score confirmation when known.
+        result_sec = row.get("result_sec") or g.get("verified_result_sec")
+        conf = g.get("score_confirmation_time")
+        if result_sec is not None and conf is not None:
+            if float(result_sec) > float(conf) + 1.0:
+                fail.append("final_mp4_result_after_score_confirmation")
+
+        live_ok = has_live and not strong_replay and not has_mixed
+        passed = (
+            len(fail) == 0
+            and live_ok
+            and phase_hits["shot"]
+            and phase_hits["net"]
+            and same_probe_complete
+        )
 
         goals_out.append(
             {
@@ -204,13 +211,14 @@ def audit_final_mp4_goals(
                     "shot_action": phase_hits["shot"],
                     "net_result": phase_hits["net"],
                     "celebration": phase_hits["celebrate"],
+                    "same_live_probe_shot_and_net": same_probe_complete,
                 },
                 "live_or_replay_final": (
                     "replay"
-                    if any(s == "replay" for s in statuses)
+                    if strong_replay
                     else (
                         "mixed_or_ambiguous"
-                        if any(s == "mixed_or_ambiguous" for s in statuses)
+                        if has_mixed
                         else ("live" if live_ok else "unknown")
                     )
                 ),
@@ -218,7 +226,10 @@ def audit_final_mp4_goals(
                 "observations": observations,
                 "pass": passed,
                 "fail_reasons": fail,
-                "note": "Acceptance based on rendered MP4 observation, not EDL/PTS alone",
+                "note": (
+                    "Acceptance based on rendered MP4 observation, not EDL/PTS alone. "
+                    "Any mixed/replay probe fails; shot+net must share one live probe."
+                ),
             }
         )
 
@@ -233,7 +244,9 @@ def audit_final_mp4_goals(
         "goals": goals_out,
         "render_ready": False,
         "policy": (
-            "Any goal lacking complete live shot+net OR containing replay → whole story fails. "
-            "Historical shot/result PTS must not substitute for final-frame observation."
+            "Any goal lacking complete live shot+net OR containing replay/mixed → whole story fails. "
+            "late_only_mixed is NOT accepted. Shot+net must appear on the same live probe "
+            "(no cross-probe stitch). Historical shot/result PTS must not substitute for "
+            "final-frame observation."
         ),
     }

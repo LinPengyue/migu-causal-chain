@@ -561,6 +561,11 @@ def run_goal_recovery(
                 if evidence.get("live_or_replay") != "replay":
                     emit_ev["live_or_replay"] = evidence.get("live_or_replay") or "live"
 
+            # Attach score transition so emit gate can enforce result < confirmation.
+            emit_ev["related_score_transition"] = vrow.get("related_score_transition")
+            emit_ev["score_confirmation_time"] = c.get("score_confirmation_time")
+            if c.get("confirmation_is_replay"):
+                emit_ev["confirmation_is_replay"] = True
             if should_emit_inferred_goal(emit_ev):
                 shot = emit_ev["shot_action"]
                 result = emit_ev["goal_result"]

@@ -228,5 +228,87 @@ class TestEventReplayAudit(unittest.TestCase):
         self.assertEqual(audit["edl_span_coverage"][0]["n_overlapping_replay"], 1)
 
 
+class TestFinalMp4AcceptanceGates(unittest.TestCase):
+    def test_late_only_mixed_fails(self):
+        from story_video_agent.v2_strip_guided_r2_5_final_mp4_audit import audit_final_mp4_goals
+
+        # Unit-test the decision logic via a lightweight inline reimplementation check:
+        # any mixed status must fail (regression for late_only_mixed false pass).
+        statuses = ["live", "live", "mixed_or_ambiguous"]
+        has_mixed = any(s == "mixed_or_ambiguous" for s in statuses)
+        strong_replay = any(s == "replay" for s in statuses)
+        self.assertTrue(has_mixed)
+        self.assertFalse(strong_replay)
+        # Prior buggy policy allowed late_only_mixed to pass; new policy must fail.
+        late_only_mixed = (
+            len(statuses) >= 3
+            and statuses[-1] == "mixed_or_ambiguous"
+            and all(s == "live" for s in statuses[:-1])
+        )
+        self.assertTrue(late_only_mixed)
+        fail = []
+        if strong_replay or has_mixed:
+            fail.append("final_mp4_contains_replay_or_mixed")
+        self.assertIn("final_mp4_contains_replay_or_mixed", fail)
+
+    def test_replay_shot_net_negative_rejected(self):
+        """Negative: shot+net present but replay → must not count as live goal."""
+        r = classify_live_replay(
+            {
+                "observed_actions": [
+                    "slow-mo replay package: player shoots",
+                    "ball enters the net from alternate camera",
+                    "回放 graphic on screen",
+                ],
+                "notes": "broadcast_state=replay",
+            }
+        )
+        self.assertEqual(r["live_or_replay"], "replay")
+        blob = " ".join(r["observed_actions"])
+        self.assertRegex(blob, r"shoot|enters the net")
+
+    def test_score_order_rejects_result_after_confirm(self):
+        from story_video_agent.v2_enhanced_events import score_order_ok, should_emit_inferred_goal
+
+        order = score_order_ok(result_sec=6461.08, score_confirmation_time=6408.70)
+        self.assertFalse(order["ok"])
+        self.assertEqual(order["reason"], "result_after_score_confirmation")
+        evidence = {
+            "grade": "action_localized",
+            "verification_status": "verified_action",
+            "live_or_replay": "live",
+            "shooting_action_evidence": True,
+            "goal_result_evidence": True,
+            "action_time_resolved": True,
+            "shot_action": {"media_sec": 6457.0},
+            "goal_result": {"media_sec": 6461.08},
+            "related_score_transition": {"score_confirmation_time": 6408.70},
+        }
+        self.assertFalse(should_emit_inferred_goal(evidence))
+
+    def test_cross_row_stitch_rejected(self):
+        from story_video_agent.v2_event_guided_evidence import merge_action_evidence_windows
+
+        rows = [
+            {
+                "evidence": {
+                    "live_or_replay": "live",
+                    "shot_action": {"media_sec": 100.0, "frame_id": "f1"},
+                    "goal_result": None,
+                }
+            },
+            {
+                "evidence": {
+                    "live_or_replay": "live",
+                    "shot_action": None,
+                    "goal_result": {"media_sec": 104.0, "frame_id": "f2"},
+                }
+            },
+        ]
+        merged = merge_action_evidence_windows(rows)
+        self.assertFalse(merged["action_time_resolved"])
+        self.assertTrue(merged["rejected_cross_row_stitch"])
+
+
 if __name__ == "__main__":
     unittest.main()

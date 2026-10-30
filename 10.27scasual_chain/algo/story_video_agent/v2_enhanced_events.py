@@ -77,13 +77,47 @@ def make_inferred_goal_event(
     }
 
 
+def score_order_ok(
+    *,
+    result_sec: Optional[float],
+    score_confirmation_time: Optional[float],
+    tolerance_sec: float = 1.0,
+) -> Dict[str, Any]:
+    """Live goal result must precede (or equal) the trusted scoreboard confirmation."""
+    if result_sec is None or score_confirmation_time is None:
+        return {
+            "ok": False,
+            "reason": "missing_result_or_confirmation",
+            "anomaly": True,
+        }
+    tr = float(result_sec)
+    tc = float(score_confirmation_time)
+    if tr > tc + float(tolerance_sec):
+        return {
+            "ok": False,
+            "reason": "result_after_score_confirmation",
+            "anomaly": True,
+            "result_sec": tr,
+            "score_confirmation_time": tc,
+            "delta_sec": round(tr - tc, 3),
+        }
+    return {
+        "ok": True,
+        "reason": "result_before_or_at_confirmation",
+        "anomaly": False,
+        "result_sec": tr,
+        "score_confirmation_time": tc,
+        "delta_sec": round(tr - tc, 3),
+    }
+
+
 def should_emit_inferred_goal(evidence: Dict[str, Any]) -> bool:
     """Only emit when shot+net frame times are resolved and not pure replay."""
     if evidence.get("grade") != "action_localized":
         return False
     if evidence.get("verification_status") != "verified_action":
         return False
-    if evidence.get("live_or_replay") == "replay":
+    if evidence.get("live_or_replay") in {"replay", "mixed", "mixed_or_ambiguous"}:
         return False
     if not evidence.get("shooting_action_evidence"):
         return False
@@ -95,6 +129,21 @@ def should_emit_inferred_goal(evidence: Dict[str, Any]) -> bool:
         return False
     if not (evidence.get("goal_result") or {}).get("media_sec"):
         return False
+    # Score-order gate: refuse auto-verify when net is after score confirmation.
+    conf = None
+    rst = evidence.get("related_score_transition") or {}
+    if isinstance(rst, dict):
+        conf = rst.get("score_confirmation_time")
+    if conf is None:
+        conf = evidence.get("score_confirmation_time")
+    if conf is not None:
+        order = score_order_ok(
+            result_sec=float(evidence["goal_result"]["media_sec"]),
+            score_confirmation_time=float(conf),
+        )
+        evidence["score_order_check"] = order
+        if not order["ok"]:
+            return False
     return True
 
 

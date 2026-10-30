@@ -107,13 +107,30 @@ def sanitize_raw_event(raw: Dict[str, Any]) -> Optional[Dict[str, Any]]:
 
     scoreboard = None
     score_pair = None
+    score_source = None
     sr = attrs.get("Score_Recognition")
     if isinstance(sr, list) and sr:
         scoreboard = str(sr[0])
         score_pair = _parse_score_token(scoreboard)
+        score_source = "attributes.Score_Recognition"
     elif isinstance(sr, str) and sr:
         scoreboard = sr
         score_pair = _parse_score_token(sr)
+        score_source = "attributes.Score_Recognition"
+    # Fallback: many Foul_Being_fouled rows only store the board under scores.score_recognition
+    # (not attributes). Without this, first LIVE 3:1 @ event_000118 is skipped and the
+    # trajectory wrongly anchors on a later REPLAY Substitution.
+    if score_pair is None:
+        scores_in = raw.get("scores") if isinstance(raw.get("scores"), dict) else {}
+        sr2 = scores_in.get("score_recognition")
+        if isinstance(sr2, str) and sr2.strip():
+            scoreboard = sr2.strip()
+            score_pair = _parse_score_token(scoreboard)
+            score_source = "scores.score_recognition"
+        elif isinstance(sr2, list) and sr2:
+            scoreboard = str(sr2[0]).strip()
+            score_pair = _parse_score_token(scoreboard)
+            score_source = "scores.score_recognition"
 
     return {
         "schema": "v2_standard_event_v1",
@@ -126,6 +143,7 @@ def sanitize_raw_event(raw: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         "event_time_sec": float(etime) if etime is not None else None,
         "scoreboard": scoreboard,
         "score_pair": list(score_pair) if score_pair else None,
+        "score_source": score_source,
         "is_replay": bool(vc.get("is_replay")) if vc.get("is_replay") is not None else None,
         "broadcast_phase": vc.get("broadcast_phase"),
         "is_slow_motion": bool(vc.get("is_slow_motion")) if vc.get("is_slow_motion") is not None else None,
@@ -194,8 +212,19 @@ def load_events_json(
     }
 
 
+def _board_is_live(e: Dict[str, Any]) -> bool:
+    if e.get("is_replay") is True:
+        return False
+    if str(e.get("broadcast_phase") or "").upper() == "REPLAY":
+        return False
+    return True
+
+
 def score_transition_anchors(events: Sequence[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    """Detect scoreboard state changes from whitelisted Score_Recognition only."""
+    """Detect scoreboard state changes from whitelisted Score_Recognition only.
+
+    Prefer earliest LIVE observation of a new score when the first sighting is REPLAY.
+    """
     timed = [
         e
         for e in events
@@ -204,38 +233,56 @@ def score_transition_anchors(events: Sequence[Dict[str, Any]]) -> List[Dict[str,
     timed.sort(key=lambda e: float(e["event_time_sec"]))
     anchors: List[Dict[str, Any]] = []
     prev = None
-    for e in timed:
+    i = 0
+    while i < len(timed):
+        e = timed[i]
         pair = tuple(e["score_pair"])
+        if prev is not None and pair == prev:
+            i += 1
+            continue
+        chosen = e
+        if prev is not None and not _board_is_live(e):
+            for j in range(i + 1, len(timed)):
+                e2 = timed[j]
+                if tuple(e2["score_pair"]) != pair:
+                    break
+                if _board_is_live(e2):
+                    chosen = e2
+                    break
         if prev is None:
-            prev = pair
             anchors.append(
                 {
                     "kind": "initial_score",
                     "score_pair": list(pair),
-                    "event_id": e["event_id"],
-                    "event_time_sec": e["event_time_sec"],
-                    "media_start_sec": e["media_start_sec"],
-                    "media_end_sec": e["media_end_sec"],
-                    "event_type": e["event_type"],
-                    "is_replay": e.get("is_replay"),
+                    "event_id": chosen["event_id"],
+                    "event_time_sec": chosen["event_time_sec"],
+                    "media_start_sec": chosen["media_start_sec"],
+                    "media_end_sec": chosen["media_end_sec"],
+                    "event_type": chosen["event_type"],
+                    "is_replay": chosen.get("is_replay"),
+                    "first_sighting_event_id": e["event_id"],
+                    "first_sighting_is_replay": bool(e.get("is_replay")),
                 }
             )
-            continue
-        if pair != prev:
+        else:
             anchors.append(
                 {
                     "kind": "score_change",
                     "score_before": list(prev),
                     "score_after": list(pair),
-                    "event_id": e["event_id"],
-                    "event_time_sec": e["event_time_sec"],
-                    "media_start_sec": e["media_start_sec"],
-                    "media_end_sec": e["media_end_sec"],
-                    "event_type": e["event_type"],
-                    "is_replay": e.get("is_replay"),
+                    "event_id": chosen["event_id"],
+                    "event_time_sec": chosen["event_time_sec"],
+                    "media_start_sec": chosen["media_start_sec"],
+                    "media_end_sec": chosen["media_end_sec"],
+                    "event_type": chosen["event_type"],
+                    "is_replay": chosen.get("is_replay"),
+                    "first_sighting_event_id": e["event_id"],
+                    "first_sighting_is_replay": bool(e.get("is_replay")),
                 }
             )
-            prev = pair
+        prev = pair
+        while i < len(timed) and tuple(timed[i]["score_pair"]) == pair:
+            i += 1
     return anchors
 
 

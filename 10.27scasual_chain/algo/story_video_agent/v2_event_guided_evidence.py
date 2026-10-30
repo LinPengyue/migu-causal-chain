@@ -377,32 +377,34 @@ def merge_action_evidence_windows(rows: Sequence[Dict[str, Any]]) -> Dict[str, A
 
     best = None  # (live_rank, gap, shot, result, basis)
     for lr, gap, sh, rs, flag in same_row_candidates:
+        # Refuse mixed/ambiguous same-row pairs as completeness evidence.
+        if flag in {"mixed", "mixed_or_ambiguous", "replay"}:
+            continue
         key = (lr, gap)
         if best is None or key < (best[0], best[1]):
             best = (lr, gap, sh, rs, f"same_row_{flag or 'unknown'}")
 
-    if best is None:
-        for lr_s, ts, sh, i_s in shots:
-            for lr_r, tr, rs, i_r in results:
-                gap = tr - ts
-                if gap < -0.5 or gap > _MAX_SHOT_RESULT_GAP_SEC:
-                    continue
-                lr = max(lr_s, lr_r)
-                key = (lr, gap)
-                if best is None or key < (best[0], best[1]):
-                    best = (lr, gap, sh, rs, "cross_row")
+    # Do NOT stitch shot from one observation with net from another.
+    # Cross-row pairing previously caused false verified_action on replay packages.
+    cross_row_rejected = False
+    rejected_wide_gap = False
+    if best is None and shots and results:
+        shot_rows = {i for *_, i in shots}
+        result_rows = {i for *_, i in results}
+        if shot_rows & result_rows:
+            rejected_wide_gap = True
+        else:
+            cross_row_rejected = True
 
     shot = best[2] if best else None
     result = best[3] if best else None
     ok = bool(shot) and bool(result)
-    # Reject mixed-only pairs when a tighter/live alternative is absent but gap is ok —
-    # still allow emit; audit layer may flag.
     edit = None
     if shot and result:
         edit = {
             "media_in": round(float(shot["media_sec"]) - 2.0, 3),
             "media_out": round(float(result["media_sec"]) + 3.0, 3),
-            "basis": "aggregated_shot_result_frames",
+            "basis": "same_observation_shot_result_frames",
             "pair_basis": best[4] if best else None,
             "pair_live_rank": best[0] if best else None,
         }
@@ -413,7 +415,8 @@ def merge_action_evidence_windows(rows: Sequence[Dict[str, Any]]) -> Dict[str, A
         "action_time_resolved": ok,
         "n_source_rows": len(rows),
         "live_or_replay_votes": sorted({str(x) for x in live_flags if x}),
-        "rejected_wide_gap": bool(shots and results and not ok),
+        "rejected_wide_gap": rejected_wide_gap,
+        "rejected_cross_row_stitch": cross_row_rejected,
         "pair_basis": best[4] if best else None,
     }
 
