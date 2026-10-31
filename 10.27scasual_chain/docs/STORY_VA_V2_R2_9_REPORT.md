@@ -78,4 +78,5 @@ candidate_ready_for_human_review = true
 
 ## 交付 commit
 
- ()
+- 功能提交: 
+- HEAD:  ()
