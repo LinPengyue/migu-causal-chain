@@ -75,3 +75,7 @@ candidate_ready_for_human_review = true
 ```
 
 用户选择未变：提供干净同次首次直播 3:1 源，或书面接受已知源花屏例外。
+
+## 交付 commit
+
+ ()
