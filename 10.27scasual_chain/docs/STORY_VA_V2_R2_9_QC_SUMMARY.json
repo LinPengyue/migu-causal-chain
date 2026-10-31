@@ -1,0 +1,131 @@
+{
+  "schema": "v2_r29_qc_summary_v1",
+  "artifact_root": "/data2/lpy1/_story_va_outputs/v2/strip_guided/croatia_r2_9_targeted_qc",
+  "story_mp4": "/data2/lpy1/_story_va_outputs/v2/strip_guided/croatia_r2_9_targeted_qc/story_clean_live_only.mp4",
+  "story_duration_sec": 130.049,
+  "story_bytes": 62424445,
+  "edl_duration_sec": 129.85,
+  "gates": {
+    "live_only": true,
+    "all_five_goals_verified_first_live": true,
+    "final_mp4_visual_pass": false,
+    "visual_qc_pass": false,
+    "blocked_source_corruption": true,
+    "blocked_reason": "g31_source_band_glitch_during_live_shot_irrecoverable_without_clean_source_or_user_exception",
+    "story_complete_candidate": false,
+    "candidate_ready_for_human_review": true,
+    "render_ready": false
+  },
+  "diagnosis": {
+    "schema": "v2_r29_defect_diagnosis_v1",
+    "defects": [
+      {
+        "label": "r28_story_51s",
+        "edl_segment": "edl_g11",
+        "story_t_r28": 51.0,
+        "source_pts": 3075.65,
+        "verdict": "decode_or_render_error",
+        "evidence": {
+          "r28_frame": "/data2/lpy1/_story_va_outputs/v2/strip_guided/croatia_r2_9_targeted_qc/frames_r28/51_00_r28_51.000.jpg",
+          "src_frame": "/data2/lpy1/_story_va_outputs/v2/strip_guided/croatia_r2_9_targeted_qc/frames_src/51_00_src_3075.650.jpg",
+          "work_frame": "/data2/lpy1/_story_va_outputs/v2/strip_guided/croatia_r2_9_targeted_qc/frames_work/51_00_work_20.650.jpg",
+          "note": "source+work clean (green_bad_blocks=0); R2.8 final had green_bad_blocks>=2; R2.8 QC anomalies near 51: none"
+        },
+        "fix": "trim g11 media_out 3082→3074.5 (nonessential crowd close-up after net)"
+      },
+      {
+        "label": "r28_story_60_5s",
+        "edl_segment": "edl_g21",
+        "story_t_r28": 60.5,
+        "source_pts": 3520.15,
+        "verdict": "source_corruption",
+        "evidence": {
+          "r28_frame": "/data2/lpy1/_story_va_outputs/v2/strip_guided/croatia_r2_9_targeted_qc/frames_r28/60_50_r28_60.500.jpg",
+          "src_frame": "/data2/lpy1/_story_va_outputs/v2/strip_guided/croatia_r2_9_targeted_qc/frames_src/60_50_src_3520.150.jpg",
+          "work_frame": "/data2/lpy1/_story_va_outputs/v2/strip_guided/croatia_r2_9_targeted_qc/frames_work/60_50_work_3.150.jpg",
+          "note": "source/work/final agree on local macroblock around 3520.15; same continuous first-live attack"
+        },
+        "fix": "raise g21 media_in 3517→3521; shot 3524/net 3527.7 kept"
+      },
+      {
+        "label": "g31_3_1",
+        "verdict": "source_corruption",
+        "delivery_gate": "BLOCKED_SOURCE_CORRUPTION",
+        "note": "No new clean first-live copy; no re-encode attempt"
+      }
+    ],
+    "render_ready": false,
+    "api_calls": 0,
+    "tokens": 0
+  },
+  "full_scan": {
+    "n_samples": 208,
+    "n_anomalies": 43,
+    "n_gray_anomalies": 0,
+    "n_band_macroblock_anomalies": 43,
+    "gates": {
+      "gray_clean": true,
+      "band_macroblock_clean": false,
+      "visual_qc_pass": false,
+      "blocked_source_corruption": true,
+      "render_ready": false
+    },
+    "r29_checks": {
+      "g11_trimmed_media_out": 3074.5,
+      "g21_media_in": 3521.0,
+      "spot_checks": [
+        {
+          "tag": "g11_near_end",
+          "t": 49.6,
+          "kind": null,
+          "score": 3.5,
+          "green_bad_blocks": 0.0,
+          "neon": 9.539473684210526e-05,
+          "block_edge": 16.674304962158203
+        },
+        {
+          "tag": "g21_start",
+          "t": 50.050000000000004,
+          "kind": null,
+          "score": 3.5,
+          "green_bad_blocks": 0.0,
+          "neon": 0.0002631578947368421,
+          "block_edge": 13.179306030273438
+        },
+        {
+          "tag": "g21_1s",
+          "t": 50.85,
+          "kind": null,
+          "score": 3.5,
+          "green_bad_blocks": 0.0,
+          "neon": 6.085526315789473e-05,
+          "block_edge": 13.427777290344238
+        },
+        {
+          "tag": "g21_shot",
+          "t": 52.85,
+          "kind": null,
+          "score": 3.5,
+          "green_bad_blocks": 0.0,
+          "neon": 2.4671052631578947e-05,
+          "block_edge": 13.164667129516602
+        },
+        {
+          "tag": "g31_corrupt",
+          "t": 72.20000000000036,
+          "kind": "soft_green_macroblock_salad",
+          "score": 7.0,
+          "green_bad_blocks": 3.0,
+          "neon": 1.6447368421052632e-06,
+          "block_edge": 15.969913482666016
+        }
+      ],
+      "blocked_source_corruption": true,
+      "visual_qc_pass": false,
+      "render_ready": false
+    }
+  },
+  "api_calls": 0,
+  "tokens": 0,
+  "render_ready": false
+}

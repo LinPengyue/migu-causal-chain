@@ -88,6 +88,24 @@ def frame_corruption_features(im) -> Dict[str, float]:
     gx = np.abs(np.diff(mid.mean(2), axis=1))
     high_gx = float((gx > 45).mean())
 
+    # Short-lived green/gray macroblock salad (R2.9 51s/60.5s miss class).
+    # Count 8x8 blocks dominated by unnatural green OR near-gray high-energy blocks.
+    bh8, bw8 = h // 8, w // 8
+    green_bad_blocks = 0
+    gray_bad_blocks = 0
+    for i in range(bh8):
+        for j in range(bw8):
+            patch = im[i * 8 : (i + 1) * 8, j * 8 : (j + 1) * 8]
+            pr, pg, pb = patch[:, :, 0], patch[:, :, 1], patch[:, :, 2]
+            if (((pg > 150) & ((pg - pr) > 40) & ((pg - pb) > 20)).mean() > 0.30):
+                green_bad_blocks += 1
+            pch = patch.max(2) - patch.min(2)
+            if ((pch < 18) & (patch.mean(2) > 90) & (patch.mean(2) < 210)).mean() > 0.55:
+                # flat gray salad only counts when local edge energy is high vs neighbors
+                if float(np.abs(np.diff(patch.mean(2), axis=1)).mean()) > 8.0:
+                    gray_bad_blocks += 1
+    soft_green_mask = float(((g > 150) & ((g - r) > 40) & ((g - b) > 20)).mean())
+
     std = float(im.std())
     mean = float(im.mean())
     return {
@@ -102,6 +120,9 @@ def frame_corruption_features(im) -> Dict[str, float]:
         "band_peak": band_peak,
         "high_gx": high_gx,
         "chroma_mean": float(chroma.mean()),
+        "green_bad_blocks": float(green_bad_blocks),
+        "gray_bad_blocks": float(gray_bad_blocks),
+        "soft_green_mask": soft_green_mask,
     }
 
 
@@ -144,6 +165,21 @@ def classify_frame_features(
         if feat["neon"] >= 0.005 and d_blk >= 3.0 and d_neon >= 0.003:
             score += 2.5
             reasons.append("temporal_neon_block_jump")
+        d_green = abs(feat.get("green_bad_blocks", 0.0) - prev_feat.get("green_bad_blocks", 0.0))
+        if feat.get("green_bad_blocks", 0.0) >= 3 and d_green >= 3:
+            score += 3.0
+            reasons.append("temporal_green_macroblock_burst")
+
+    # R2.9: brief green/gray macroblock salad that older neon thresholds missed
+    if feat.get("green_bad_blocks", 0.0) >= 4:
+        score += 4.0 + min(feat["green_bad_blocks"] / 4.0, 4.0)
+        reasons.append("green_macroblock_salad")
+    elif feat.get("green_bad_blocks", 0.0) >= 2 and feat.get("soft_green_mask", 0.0) >= 0.0002:
+        score += 3.5
+        reasons.append("soft_green_macroblock_salad")
+    if feat.get("gray_bad_blocks", 0.0) >= 8 and feat.get("block_edge", 0.0) >= 12.0:
+        score += 3.5
+        reasons.append("gray_white_macroblock_salad")
 
     detail["score"] = round(score, 3)
     detail["reasons"] = reasons
