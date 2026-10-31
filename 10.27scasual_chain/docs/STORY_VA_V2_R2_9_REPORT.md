@@ -79,4 +79,4 @@ candidate_ready_for_human_review = true
 ## 交付 commit
 
 - 功能提交: `b4526cc`（EDL/检测器/测试/报告主体）
-- HEAD: `529233b`
+- HEAD: `8ed540b`
