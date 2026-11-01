@@ -247,3 +247,193 @@ def independent_discovery_check(
         "verified_by": "score_transition_checker",
         "render_ready": False,
     }
+
+
+def _normalize_timeline_rows(timeline: Sequence[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    rows: List[Dict[str, Any]] = []
+    for i, row in enumerate(timeline):
+        if "left" in row and "right" in row:
+            L, R = int(row["left"]), int(row["right"])
+        elif "score" in row and isinstance(row["score"], (list, tuple)) and len(row["score"]) == 2:
+            L, R = int(row["score"][0]), int(row["score"][1])
+        else:
+            continue
+        rows.append(
+            {
+                "index": i,
+                "score": (L, R),
+                "left": L,
+                "right": R,
+                "media_start_sec": row.get("media_start_sec", row.get("event_time_sec")),
+                "media_end_sec": row.get("media_end_sec"),
+                "raw": row,
+            }
+        )
+    return rows
+
+
+def _find_arcs_for_side(rows: Sequence[Dict[str, Any]], side: str) -> List[Dict[str, Any]]:
+    """Find every completed (and open) deficit→equalizer→go_ahead arc for one board side."""
+    arcs: List[Dict[str, Any]] = []
+    i = 0
+    n = len(rows)
+    while i < n:
+        trail = _side_trailing(rows[i]["left"], rows[i]["right"])
+        if trail != side:
+            i += 1
+            continue
+        deficit = rows[i]
+        j = i + 1
+        equalizer = None
+        go_ahead = None
+        while j < n:
+            L, R = rows[j]["left"], rows[j]["right"]
+            if equalizer is None:
+                if L == R:
+                    equalizer = rows[j]
+                elif _side_trailing(L, R) != side and (L + R) > sum(deficit["score"]):
+                    # Lead change without a draw observation — mark incomplete.
+                    break
+                j += 1
+                continue
+            # After equalizer: wait for this side to lead.
+            if side == "left" and L > R:
+                go_ahead = rows[j]
+                break
+            if side == "right" and R > L:
+                go_ahead = rows[j]
+                break
+            # If this side falls behind again before leading, restart from here.
+            if _side_trailing(L, R) == side:
+                break
+            j += 1
+        complete = equalizer is not None and go_ahead is not None
+        arcs.append(
+            {
+                "protagonist_side": side,
+                "complete": complete,
+                "deficit_score": list(deficit["score"]),
+                "deficit_index": deficit["index"],
+                "deficit_media_start_sec": deficit.get("media_start_sec"),
+                "equalizer_score": list(equalizer["score"]) if equalizer else None,
+                "equalizer_index": equalizer["index"] if equalizer else None,
+                "equalizer_media_start_sec": equalizer.get("media_start_sec") if equalizer else None,
+                "go_ahead_score": list(go_ahead["score"]) if go_ahead else None,
+                "go_ahead_index": go_ahead["index"] if go_ahead else None,
+                "go_ahead_media_start_sec": go_ahead.get("media_start_sec") if go_ahead else None,
+                "score_confirmation_sec": {
+                    "deficit": deficit.get("media_start_sec"),
+                    "equalizer": equalizer.get("media_start_sec") if equalizer else None,
+                    "go_ahead": go_ahead.get("media_start_sec") if go_ahead else None,
+                },
+                "goal_action_sec": {
+                    "deficit": None,
+                    "equalizer": None,
+                    "go_ahead": None,
+                    "note": "Unset until video-verified; score_confirmation_sec is board time only",
+                },
+                "confidence_reason": (
+                    f"{side} completed deficit→level→lead"
+                    if complete
+                    else f"{side} partial arc (missing equalizer and/or go-ahead)"
+                ),
+            }
+        )
+        # Continue scanning after this deficit (allow multiple arcs per side).
+        i = (equalizer["index"] + 1) if equalizer is not None else i + 1
+    return arcs
+
+
+def analyze_last_deficit_arcs(
+    timeline: Sequence[Dict[str, Any]],
+    *,
+    team_names: Optional[Dict[str, str]] = None,
+) -> Dict[str, Any]:
+    """Enumerate left/right comeback arcs; select the final winning last-deficit arc.
+
+    Does not hardcode match scores. Unknown team names stay as board sides.
+    """
+    rows = _normalize_timeline_rows(timeline)
+    team_names = dict(team_names or {})
+    left_name = team_names.get("team_1") or team_names.get("left") or team_names.get("home")
+    right_name = team_names.get("team_2") or team_names.get("right") or team_names.get("away")
+
+    all_arcs = _find_arcs_for_side(rows, "left") + _find_arcs_for_side(rows, "right")
+    complete = [a for a in all_arcs if a.get("complete")]
+    abandoned = [a for a in all_arcs if not a.get("complete")]
+
+    final_score = list(rows[-1]["score"]) if rows else None
+    final_winner: Optional[str] = None
+    if final_score is not None:
+        if final_score[0] > final_score[1]:
+            final_winner = "left"
+        elif final_score[1] > final_score[0]:
+            final_winner = "right"
+
+    selected: Optional[Dict[str, Any]] = None
+    status = "unresolved"
+    if not rows:
+        status = "unresolved"
+    elif not complete:
+        # Equalize-only or never trailed then led.
+        if any(a.get("equalizer_score") for a in all_arcs) and not any(a.get("go_ahead_score") for a in all_arcs):
+            status = "partial_story"
+        elif final_winner and not any(
+            _side_trailing(r["left"], r["right"]) == final_winner for r in rows
+        ):
+            status = "no_comeback"
+        elif not any(_side_trailing(r["left"], r["right"]) for r in rows):
+            status = "no_comeback"
+        else:
+            status = "partial_story" if all_arcs else "no_comeback"
+    else:
+        # Prefer complete arc whose protagonist is the final winner; else latest go-ahead.
+        pool = [a for a in complete if final_winner is None or a["protagonist_side"] == final_winner]
+        if not pool:
+            pool = complete
+            status = "partial_story"
+        else:
+            status = "story_candidate"
+        selected = max(pool, key=lambda a: int(a.get("go_ahead_index") or -1))
+        abandoned = [a for a in all_arcs if a is not selected]
+
+    if selected is not None:
+        side = selected["protagonist_side"]
+        selected = {
+            **selected,
+            "protagonist_team_name": left_name if side == "left" else right_name,
+            "board_side_mapping": {
+                "left": left_name,
+                "right": right_name,
+                "note": "Names from events.teams only; never invented",
+            },
+            "roles": ["opening_deficit", "equalizer", "go_ahead"],
+            "n_arc_goals": 3,
+        }
+
+    return {
+        "schema": "v2_last_deficit_arc_v1",
+        "timeline": [{"score": list(r["score"]), "media_start_sec": r.get("media_start_sec")} for r in rows],
+        "final_score": final_score,
+        "final_winner_side": final_winner,
+        "all_arcs": all_arcs,
+        "selected_arc": selected,
+        "abandoned_arcs": abandoned,
+        "status": status,
+        "legacy_first_deficit_analysis": analyze_score_transitions(timeline),
+        "notes": [
+            "Prefer last complete deficit→equalizer→go_ahead for the final winning side",
+            "score_confirmation_sec ≠ goal_action_sec",
+            "Does not prove live goal localization",
+        ],
+        "render_ready": False,
+    }
+
+
+def select_last_deficit_arc(
+    timeline: Sequence[Dict[str, Any]],
+    *,
+    team_names: Optional[Dict[str, str]] = None,
+) -> Dict[str, Any]:
+    """Convenience wrapper returning selected_arc payload for planner/EDL."""
+    return analyze_last_deficit_arcs(timeline, team_names=team_names)

@@ -104,11 +104,23 @@ def _nearest_strip(chains: List[Dict[str, Any]], t: float) -> Optional[Dict[str,
     return best
 
 
+def _is_croatia_legacy_match(match_id: str) -> bool:
+    mid = str(match_id or "")
+    low = mid.lower()
+    return ("克罗地亚" in mid and "加拿大" in mid) or ("croatia" in low and "canada" in low)
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     p = argparse.ArgumentParser(description="V2 Strip-Guided Round 2.3 full-match story")
     p.add_argument("--video", type=Path, required=True)
     p.add_argument("--events", type=Path, required=True)
     p.add_argument("--out-dir", type=Path, required=True)
+    p.add_argument(
+        "--match-id",
+        type=str,
+        default=None,
+        help="Optional explicit match id; required for non-Croatia runs (use v2_g1_cross_match_cli for cross-match)",
+    )
     p.add_argument("--r22-dir", type=Path, default=DEFAULT_R22)
     p.add_argument("--algo-root", type=Path, default=DEFAULT_ALGO)
     p.add_argument("--input-source", choices=list(INPUT_SOURCES), default="human_corrected")
@@ -136,13 +148,51 @@ def main(argv: Optional[List[str]] = None) -> int:
     # Prefer LLM when real unless explicitly disabled.
     use_llm = (bool(args.real) or bool(args.use_llm_planner)) and not bool(args.no_llm_planner)
 
+    # Path-level refuse of causal/gold before load (cross-match safety net).
+    from story_video_agent.v2_g0_cross_match_preflight import (
+        assert_match_id_consistent,
+        assert_verify_cache_entry,
+        reject_forbidden_input_path,
+        sha256_file,
+    )
+
+    gate = reject_forbidden_input_path(Path(args.events))
+    if not gate.get("ok"):
+        _write(out_dir / "cli_report.json", {"status": "aborted_forbidden_input", "gate": gate, "render_ready": False})
+        return 2
+
     event_bundle = load_events_json(args.events, input_source=args.input_source)
     digest = planner_event_digest(event_bundle)
     _write(out_dir / "event_digest.json", digest)
-    match_id = str(event_bundle.get("match_id") or args.events.stem)
+    match_id = str(args.match_id or event_bundle.get("match_id") or args.events.stem)
+    if args.match_id:
+        mid_gate = assert_match_id_consistent(
+            cli_match_id=str(args.match_id), events_match_id=str(event_bundle.get("match_id") or "")
+        )
+        if not mid_gate.get("ok"):
+            _write(
+                out_dir / "cli_report.json",
+                {"status": "aborted_match_id_mismatch", "gate": mid_gate, "render_ready": False},
+            )
+            return 2
+
+    # Legacy Croatia-only default R22: refuse silent cross-match reuse.
+    r22 = Path(args.r22_dir)
+    using_default_croatia_r22 = r22.resolve() == Path(DEFAULT_R22).resolve()
+    if using_default_croatia_r22 and not _is_croatia_legacy_match(match_id):
+        _write(
+            out_dir / "cli_report.json",
+            {
+                "status": "aborted_croatia_default_r22_for_cross_match",
+                "match_id": match_id,
+                "r22_dir": str(r22),
+                "note": "Use v2_g1_cross_match_cli.py for cross-match; do not reuse Croatia DEFAULT_R22",
+                "render_ready": False,
+            },
+        )
+        return 2
 
     # Load R2.2 strip B + verified goals (no re-VLM for those)
-    r22 = Path(args.r22_dir)
     verified = load_r22_verified_goals(r22)
     strip_b = json.loads((r22 / "predicted_strip_chains_B.json").read_text(encoding="utf-8"))
     chains = list(strip_b.get("chains") or [])
@@ -166,10 +216,37 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     if args.reuse_verify_cache and unverified:
         cache_root = Path(args.reuse_verify_cache)
+        # Bind cache to current match/media/events — fail closed without provenance.
+        events_sha = sha256_file(Path(args.events))
+        video_sha_path = out_dir / "video_sha256.txt"
+        if video_sha_path.is_file():
+            video_sha = video_sha_path.read_text(encoding="utf-8").strip().split()[0]
+        else:
+            video_sha = sha256_file(Path(args.video))
+            video_sha_path.write_text(video_sha + "\n", encoding="utf-8")
+        expected_prov = {
+            "match_id": match_id,
+            "video_sha256": video_sha,
+            "events_sha256": events_sha,
+            "strip_provenance": str((strip_b or {}).get("strip_provenance") or f"r22:{r22}"),
+        }
         for ug in unverified:
             eid = str(ug.get("event_id"))
-            cached = cache_root / f"verify_{eid}" / "original_goal_verify.json"
+            vdir_cache = cache_root / f"verify_{eid}"
+            cached = vdir_cache / "original_goal_verify.json"
             vdir = out_dir / f"verify_{eid}"
+            bind = assert_verify_cache_entry(expected=expected_prov, cache_dir=vdir_cache, event_id=eid)
+            if not bind.get("ok"):
+                unresolved_original.append(
+                    {
+                        **ug,
+                        "search_status": "unresolved_cache_rejected",
+                        "verify_path": str(cached),
+                        "cache_gate": bind,
+                        "note": "Verify cache rejected (missing/mismatched provenance); no silent Croatia fallback",
+                    }
+                )
+                continue
             if cached.is_file():
                 prev = json.loads(cached.read_text(encoding="utf-8"))
                 verify_report = finalize_original_goal_from_verifications(
