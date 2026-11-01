@@ -132,7 +132,8 @@ class TestGenericEdl(unittest.TestCase):
         self.assertEqual(edl["segments"], [])
         self.assertFalse(edl["render_ready"])
 
-    def test_video_verified_rejects_out_of_range_pts(self):
+    def test_video_verified_rejects_out_of_range_or_fake_status(self):
+        """Status-only / OOR claims must fail closed (unresolved), not upgrade."""
         arc = {
             "protagonist_side": "left",
             "deficit_score": [0, 1],
@@ -152,15 +153,25 @@ class TestGenericEdl(unittest.TestCase):
                 "media_out": 99999,
             }
         ]
-        with self.assertRaises(GenericEdlError):
-            compose_generic_t01_edl(
-                match_id="X",
-                selected_arc=arc,
-                arc_status="story_candidate",
-                goals=goals,
-                video_duration_sec=100.0,
-                level="video_verified",
-            )
+        edl = compose_generic_t01_edl(
+            match_id="X",
+            selected_arc=arc,
+            arc_status="story_candidate",
+            goals=goals,
+            video_duration_sec=100.0,
+            level="video_verified",
+            expected_identity={
+                "match_id": "X",
+                "video_sha256": "v",
+                "events_sha256": "e",
+                "strip_provenance": "s",
+            },
+        )
+        segs = [s for s in edl["segments"] if s.get("role") == "opening_deficit"]
+        self.assertTrue(segs)
+        self.assertEqual(segs[0].get("verification_status"), "unresolved")
+        self.assertFalse(edl.get("verified_first_live"))
+        self.assertFalse(edl["render_ready"])
 
 
 class TestG1CliGates(unittest.TestCase):

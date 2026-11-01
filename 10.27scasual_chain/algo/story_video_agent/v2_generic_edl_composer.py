@@ -72,19 +72,20 @@ def _arc_goal_slots(selected_arc: Dict[str, Any]) -> List[Dict[str, Any]]:
     return slots
 
 
-def _verification_level(goal: Optional[Dict[str, Any]]) -> str:
-    if not goal:
-        return "score_only"
-    vs = str(goal.get("verification_status") or goal.get("status") or "")
-    if vs in ("verified_first_live", "verified_action", "video_verified"):
-        if goal.get("shot_sec") is not None and goal.get("net_sec") is not None and goal.get("live_or_replay") == "live":
-            return "video_verified"
-        return "event_candidate"
-    if goal.get("nearby_predicted_strip_ids") or goal.get("strip_chain_id"):
-        return "predicted_strip_candidate"
-    if goal.get("candidate_event_ids") or goal.get("event_id"):
-        return "event_candidate"
-    return "score_only"
+def _verification_level(
+    goal: Optional[Dict[str, Any]],
+    *,
+    expected_identity: Optional[Dict[str, str]] = None,
+    video_duration_sec: Optional[float] = None,
+) -> str:
+    """Fail closed via v2_video_evidence_gate — status strings alone never upgrade."""
+    from story_video_agent.v2_video_evidence_gate import verification_level_for_edl
+
+    return verification_level_for_edl(
+        goal,
+        expected_identity=expected_identity,
+        video_duration_sec=video_duration_sec,
+    )
 
 
 def compose_generic_t01_edl(
@@ -97,6 +98,7 @@ def compose_generic_t01_edl(
     context_nodes: Optional[Sequence[Dict[str, Any]]] = None,
     video_duration_sec: Optional[float] = None,
     level: str = "structure_only",
+    expected_identity: Optional[Dict[str, str]] = None,
 ) -> Dict[str, Any]:
     """Build candidate EDL. level=structure_only|video_verified."""
     if level not in ("structure_only", "video_verified"):
@@ -140,7 +142,9 @@ def compose_generic_t01_edl(
     for slot in _arc_goal_slots(selected_arc):
         role = slot["role"]
         g = goal_by_role.get(role)
-        vlevel = _verification_level(g)
+        vlevel = _verification_level(
+            g, expected_identity=expected_identity, video_duration_sec=video_duration_sec
+        )
         conf_t = slot.get("score_confirmation_sec")
         action_t = None if g is None else g.get("goal_action_sec", g.get("net_sec") or g.get("shot_sec"))
         if action_t is None:
