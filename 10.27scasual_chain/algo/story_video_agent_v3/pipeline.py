@@ -90,11 +90,55 @@ def _check_inputs(match_id: str, events: Path, strips: Path, video: Path) -> Dic
     }
 
 
+def _hydrate_events_from_source_ids(
+    *,
+    source_event_ids: Sequence[Any],
+    raw_by_id: Dict[str, Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    """Frozen 8.31 strips often ship event_ids without embedded event payloads.
+
+    V3 hydrates V1-shaped event rows from the raw match events JSON only.
+    Never invents Goal / causal edges / confidence.
+    """
+    out: List[Dict[str, Any]] = []
+    for eid in source_event_ids or []:
+        key = str(eid)
+        raw = raw_by_id.get(key)
+        if not raw:
+            continue
+        t_sec = raw.get("event_time_sec")
+        t_ms = int(round(float(t_sec) * 1000.0)) if t_sec is not None else None
+        t0 = raw.get("media_start_sec")
+        t1 = raw.get("media_end_sec")
+        out.append({
+            "event_id": key,
+            "type": raw.get("event_type") or raw.get("type"),
+            "t_ms": t_ms,
+            "t0_ms": int(round(float(t0) * 1000.0)) if t0 is not None else t_ms,
+            "t1_ms": int(round(float(t1) * 1000.0)) if t1 is not None else t_ms,
+            "mapping_status": "hydrated_from_raw_event_ids",
+            "prediction_source": SOURCE,
+            "verification_status": "unverified",
+        })
+    return out
+
+
 def to_predicted_causal(
-    adapted: Dict[str, Any], *, match_id: str, hashes: Dict[str, str]
+    adapted: Dict[str, Any],
+    *,
+    match_id: str,
+    hashes: Dict[str, str],
+    raw_events: Optional[Sequence[Dict[str, Any]]] = None,
 ) -> Dict[str, Any]:
     """V1-compatible chain fields, explicitly unverified and never promoted to Goal."""
+    raw_by_id = {
+        str(e["event_id"]): e
+        for e in (raw_events or [])
+        if e.get("event_id") is not None
+    }
     out: List[Dict[str, Any]] = []
+    n_hydrated = 0
+    n_empty_events = 0
     for c in adapted["chains"]:
         evs = []
         for e in c.get("event_sequence") or []:
@@ -104,13 +148,30 @@ def to_predicted_causal(
                 "t1_ms": e.get("t1_ms"), "mapping_status": e.get("mapping_status"),
                 "prediction_source": SOURCE, "verification_status": "unverified",
             })
+        if not evs and c.get("source_event_ids"):
+            evs = _hydrate_events_from_source_ids(
+                source_event_ids=c.get("source_event_ids") or [],
+                raw_by_id=raw_by_id,
+            )
+            if evs:
+                n_hydrated += 1
+        if not evs:
+            n_empty_events += 1
+        # Prefer hydrated first/last types when strip only stored opaque tokens like "pass"
+        first_event = c.get("first_event")
+        last_event = c.get("last_event")
+        if evs:
+            if not first_event or str(first_event).lower() in {"pass", "unknown", "none"}:
+                first_event = evs[0].get("type") or first_event
+            if not last_event or str(last_event).lower() in {"pass", "unknown", "none"}:
+                last_event = evs[-1].get("type") or last_event
         out.append({
             "chain_id": c["strip_chain_id"],
             "chain_category": c.get("predicted_category"),
             "template_id": c.get("predicted_template_id"),
             "predicted_label": c.get("predicted_label"),
-            "first_event": c.get("first_event"),
-            "last_event": c.get("last_event"),
+            "first_event": first_event,
+            "last_event": last_event,
             "t0_ms": c["t0_ms"], "t1_ms": c["t1_ms"],
             "event_ids": c.get("source_event_ids") or [],
             "events": evs,
@@ -131,6 +192,8 @@ def to_predicted_causal(
         "input_hashes": hashes,
         "n_predicted_chains": len(out),
         "n_dropped": adapted.get("n_dropped"),
+        "n_chains_hydrated_from_raw_ids": n_hydrated,
+        "n_chains_with_empty_events": n_empty_events,
         "chain_diagnostics": adapted.get("chain_diagnostics") or [],
         "causal_chains": out,
         "caution": "V1 field compatibility only; not human causal truth, not verified Goal.",
@@ -291,25 +354,64 @@ def _safe_edl(plan: Dict[str, Any]) -> List[Dict[str, Any]]:
     return selected + pending
 
 
-def _evidence_tasks(arc: Optional[Dict[str, Any]], edl: Sequence[Dict[str, Any]]) -> Dict[str, Any]:
+def _opening_score_before(
+    arc: Dict[str, Any], score_path: Sequence[Dict[str, Any]]
+) -> Optional[List[int]]:
+    """Previous board before opening deficit — never invent a goal action time."""
+    deficit = list(arc.get("deficit_score") or [])
+    if len(deficit) != 2:
+        return None
+    prev: Optional[List[int]] = None
+    for row in score_path:
+        raw = row.get("score")
+        if isinstance(raw, str) and ":" in raw:
+            a, b = raw.split(":", 1)
+            sc = [int(a), int(b)]
+        elif isinstance(raw, (list, tuple)) and len(raw) == 2:
+            sc = [int(raw[0]), int(raw[1])]
+        else:
+            continue
+        if sc == deficit:
+            return prev
+        prev = sc
+    return prev
+
+
+def _evidence_tasks(
+    arc: Optional[Dict[str, Any]],
+    edl: Sequence[Dict[str, Any]],
+    *,
+    score_path: Optional[Sequence[Dict[str, Any]]] = None,
+) -> Dict[str, Any]:
     if not arc:
         return {"schema": "v3_evidence_tasks_v1", "tasks": [], "render_ready": False}
     anchors = arc.get("score_confirmation_sec") or {}
+    opening_before = _opening_score_before(arc, score_path or [])
     tasks = []
     for role, anchor in zip(CRITICAL, ("deficit", "equalizer", "go_ahead")):
+        if role == "opening_deficit":
+            score_before = opening_before
+            score_after = arc.get("deficit_score")
+        elif role == "equalizer":
+            score_before = arc.get("deficit_score")
+            score_after = arc.get("equalizer_score")
+        else:
+            score_before = arc.get("equalizer_score")
+            score_after = arc.get("go_ahead_score")
         tasks.append({
             "role": role,
-            "score_before": None if role == "opening_deficit" else
-                (arc.get("deficit_score") if role == "equalizer" else arc.get("equalizer_score")),
-            "score_after": arc.get("deficit_score") if role == "opening_deficit" else
-                (arc.get("equalizer_score") if role == "equalizer" else arc.get("go_ahead_score")),
+            "score_before": score_before,
+            "score_after": score_after,
             "score_confirmation_sec": anchors.get(anchor),
             "goal_action_sec": None,
+            "media_in": None,
+            "media_out": None,
             "needs": ["first_live_continuous_clip", "observed_shot",
                       "observed_net", "attacking_team_match",
                       "not_replay", "source_pts", "identity_bound_media"],
             "search_policy": "targeted_only_no_unbounded_scan",
             "status": "unresolved",
+            "verification_status": "unresolved",
             "render_ready": False,
         })
     return {"schema": "v3_evidence_tasks_v1", "tasks": tasks,
@@ -326,7 +428,12 @@ def run_structure(
     adapted = adapt_strip_bundle(predicted_strips, events_path=events, match_id=match_id)
     if adapted["n_dropped"]:
         raise V3InputError(f"Predicted chains dropped during adaptation: {adapted['n_dropped']}")
-    predicted = to_predicted_causal(adapted, match_id=match_id, hashes=hashes)
+    predicted = to_predicted_causal(
+        adapted,
+        match_id=match_id,
+        hashes=hashes,
+        raw_events=event_bundle["events"],
+    )
     timeline = _score_timeline_from_events(event_bundle["events"])
     arc_pack = analyze_last_deficit_arcs(timeline, team_names=event_bundle["team_names"])
     selected = arc_pack.get("selected_arc")
@@ -357,15 +464,24 @@ def run_structure(
     graph["structure_ok"] = ok
     graph["structure_problems"] = errors
     graph["render_ready"] = False
-    tasks = _evidence_tasks(selected, edl)
+    tasks = _evidence_tasks(selected, edl, score_path=score_path)
     report = {
         "schema": SCHEMA, "status": "ok_structure_dry_run" if ok and selected else "blocked_structure",
         "match_id": match_id,
         "n_predictions": predicted["n_predicted_chains"],
         "n_adapted": adapted["n_adapted"],
+        "n_dropped": predicted.get("n_dropped"),
+        "n_chains_hydrated_from_raw_ids": predicted.get("n_chains_hydrated_from_raw_ids"),
+        "n_chains_with_empty_events": predicted.get("n_chains_with_empty_events"),
         "selected_arc_side": (selected or {}).get("protagonist_side"),
         "selected_arc_team": (selected or {}).get("protagonist_team_name"),
+        "selected_arc_scores": {
+            "deficit": (selected or {}).get("deficit_score"),
+            "equalizer": (selected or {}).get("equalizer_score"),
+            "go_ahead": (selected or {}).get("go_ahead_score"),
+        } if selected else None,
         "n_buildup_candidates": len(buildup),
+        "buildup_event_ids": [b.get("event_id") for b in buildup],
         "n_critical_goal_tasks": len(tasks["tasks"]),
         "n_video_verified_goals": 0,
         "story_graph_structure_ok": ok,
@@ -375,11 +491,33 @@ def run_structure(
                  "audit_predicted_chain_recall_and_story_structure"),
         "input_hashes": hashes,
         "note": "V3 adaptation / V1 story+graph+EDL dry-run only, not video evidence.",
+        "structure_vs_editorial_coverage": {
+            "graph_ok": ok,
+            "has_buildup_from_predicted_strips": len(buildup) > 0,
+            "warning_if_zero_buildup": (
+                None if buildup else
+                "Zero predicted-strip buildup in deficit→equalizer window; "
+                "do not treat structure_ok alone as editorial story coverage pass"
+            ),
+        },
     }
     # All files written under new empty V3 directory, never V1/V2 outputs.
     out.mkdir(parents=True, exist_ok=False) if not out.exists() else None
     dump(out / "predicted_causal.json", predicted)
     dump(out / "selected_arc.json", arc_pack)
+    dump(out / "buildup_candidates.json", {
+        "schema": "v3_buildup_candidates_v1",
+        "n": len(buildup),
+        "window": {
+            "deficit_confirm_sec": (selected or {}).get("score_confirmation_sec", {}).get("deficit")
+            if selected else None,
+            "equalizer_confirm_sec": (selected or {}).get("score_confirmation_sec", {}).get("equalizer")
+            if selected else None,
+        },
+        "candidates": buildup,
+        "note": "Editorial context from predicted strips ∩ raw LIVE events; unverified",
+        "render_ready": False,
+    })
     dump(out / "story_view.json", story)
     dump(out / "story_plan.json", plan)
     dump(out / "story_graph.json", graph)

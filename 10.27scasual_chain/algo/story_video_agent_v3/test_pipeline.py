@@ -6,7 +6,12 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from .pipeline import V3InputError, run_structure, _candidate_buildup
+from .pipeline import (
+    V3InputError,
+    run_structure,
+    _candidate_buildup,
+    to_predicted_causal,
+)
 from .gate import review_evidence
 
 
@@ -164,6 +169,55 @@ class TestV3Synthetic(unittest.TestCase):
         predicted["causal_chains"][0]["predicted_label"] = "进球"
         self.assertEqual(_candidate_buildup(predicted, arc,
             allowed_events=[raw_live]), [])
+
+    def test_hydrate_events_from_source_ids_when_sequence_empty(self):
+        """Real G1 strip_A_original has event_ids but empty embedded events."""
+        adapted = {
+            "n_dropped": 0,
+            "chain_diagnostics": [],
+            "chains": [{
+                "strip_chain_id": "strip_clip00",
+                "predicted_category": "special",
+                "predicted_template_id": "T",
+                "predicted_label": None,
+                "first_event": "pass",
+                "last_event": "pass",
+                "t0_ms": 230000,
+                "t1_ms": 240000,
+                "source_event_ids": ["action1"],
+                "event_sequence": [],
+                "confidence": None,
+                "confidence_field": None,
+                "margin": None,
+            }],
+        }
+        raw = [{
+            "event_id": "action1",
+            "event_type": "Shot",
+            "event_time_sec": 231.0,
+            "media_start_sec": 230.0,
+            "media_end_sec": 232.0,
+            "broadcast_phase": "LIVE",
+            "is_replay": False,
+        }]
+        pred = to_predicted_causal(
+            adapted,
+            match_id="m",
+            hashes={"events_sha256": "e", "strips_sha256": "s", "video_sha256": "v", "mode": "reinfer_A_original"},
+            raw_events=raw,
+        )
+        self.assertEqual(pred["n_chains_hydrated_from_raw_ids"], 1)
+        self.assertEqual(pred["n_chains_with_empty_events"], 0)
+        chain = pred["causal_chains"][0]
+        self.assertEqual(len(chain["events"]), 1)
+        self.assertEqual(chain["events"][0]["type"], "Shot")
+        self.assertEqual(chain["events"][0]["t_ms"], 231000)
+        self.assertEqual(chain["events"][0]["mapping_status"], "hydrated_from_raw_event_ids")
+        self.assertIsNone(chain["goal_action_sec"])
+        arc = {"score_confirmation_sec": {"deficit": 200.0, "equalizer": 300.0}}
+        buildup = _candidate_buildup(pred, arc, allowed_events=raw)
+        self.assertEqual(len(buildup), 1)
+        self.assertEqual(buildup[0]["event_id"], "action1")
 
     def test_v2_gate_rejects_status_only_scoreboard_and_replay(self):
         with tempfile.TemporaryDirectory() as tmp:
