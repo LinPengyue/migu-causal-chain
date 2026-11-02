@@ -24,9 +24,12 @@ def _gate_goal(goal: Dict[str, Any], expected: Dict[str, str],
         return {"ok": False, "reason": "not_unambiguous_first_live", "level": "unresolved"}
     # Additional fail-closed constraints: V2 checks media/semantic log,
     # V3 must also require affirmative video observations before calling V2.
-    if not all(goal.get(k) is True for k in
-               ("observed_shot", "observed_net", "first_live_visual_ok",
-                "attacking_team_match", "claims_continuous_live")):
+    team_ok = (goal.get("attacking_team_match") is True or
+               (goal.get("is_own_goal") is True and
+                goal.get("own_goal_attribution_verified") is True))
+    if not team_ok or not all(goal.get(k) is True for k in
+                              ("observed_shot", "observed_net",
+                               "first_live_visual_ok", "claims_continuous_live")):
         return {"ok": False, "reason": "incomplete_shot_net_team_first_live", "level": "unresolved"}
     if goal.get("net_seen_only_in_replay") or goal.get("wrong_team_shot"):
         return {"ok": False, "reason": "replay_or_wrong_attacker", "level": "unresolved"}
@@ -112,11 +115,17 @@ def review_evidence(
                     })
     n_pass = sum(1 for x in decisions.values()
                  if x.get("ok") and x.get("level") == "video_verified")
+    n_auto = sum(1 for x in decisions.values() if x.get("ok") and
+                 x.get("semantic_verification_class") == AUTOMATED)
+    n_human = sum(1 for x in decisions.values() if x.get("ok") and
+                  x.get("semantic_verification_class") == HUMAN_REVIEWED)
     report = {
         "schema": "v3_critical_video_gate_v1",
         "match_id": expected["match_id"],
         "n_critical": len(CRITICAL),
         "n_video_verified": n_pass,
+        "n_agent_auto_verified": n_auto,
+        "n_human_video_reviewed": n_human,
         "all_critical_video_verified": n_pass == len(CRITICAL),
         "decisions": decisions,
         "status": "candidate_for_visual_qc" if n_pass == len(CRITICAL) else "blocked_missing_goal_evidence",
