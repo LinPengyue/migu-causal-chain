@@ -165,19 +165,21 @@ def _score_path(timeline: Sequence[Dict[str, Any]]) -> List[Dict[str, Any]]:
 
 def _candidate_buildup(
     predicted: Dict[str, Any], arc: Dict[str, Any], *,
-    allowed_event_ids: Sequence[str]
+    allowed_events: Sequence[Dict[str, Any]]
 ) -> List[Dict[str, Any]]:
     """Pick editorial context from real predicted chains, NOT synthetic goal events."""
     t0 = (arc.get("score_confirmation_sec") or {}).get("deficit")
     t1 = (arc.get("score_confirmation_sec") or {}).get("equalizer")
     if t0 is None or t1 is None:
         return []
-    permitted = set(allowed_event_ids)
+    known = {str(e["event_id"]): e for e in allowed_events if e.get("event_id")}
+    permitted = set(known)
     candidates = []
     for chain in predicted["causal_chains"]:
         if chain.get("last_event") in GOALISH or chain.get("first_event") in GOALISH:
             continue
-        if "进球" in str(chain.get("predicted_label") or ""):
+        label = str(chain.get("predicted_label") or "").lower()
+        if any(word in label for word in ("进球", "破门", "入网", "goal")):
             continue
         start = float(chain["t0_ms"]) / 1000.0
         if not float(t0) <= start < float(t1):
@@ -189,6 +191,16 @@ def _candidate_buildup(
         if not evs:
             continue
         e = evs[-1]
+        raw_event = known.get(str(e["event_id"])) or {}
+        # A guessed strip is not proof of a LIVE broadcast; only use it as
+        # editable context when the underlying event explicitly says LIVE.
+        if raw_event.get("is_replay") is not False or str(
+            raw_event.get("broadcast_phase") or ""
+        ).upper() != "LIVE":
+            continue
+        source_t = raw_event.get("event_time_sec")
+        if source_t is None or abs(float(e["t_ms"]) / 1000.0 - float(source_t)) > 5.0:
+            continue
         candidates.append({
             "event_id": str(e["event_id"]), "type": str(e.get("type") or "unknown"),
             "t_ms": e["t_ms"], "story_role": "蓄力",
@@ -196,6 +208,9 @@ def _candidate_buildup(
             "prediction_source": SOURCE, "prediction_confidence": chain.get("confidence"),
             "verification_status": "unverified", "is_replay": False,
             "time_provenance": "unverified_predicted_event",
+            "raw_broadcast_phase": "LIVE",
+            "broadcast_phase_source": "raw_event_video_context",
+            "temporal_consistency_checked": True,
         })
     # Max 5 diverse chronologically spread candidates. No inferred causal relationship.
     candidates.sort(key=lambda x: float(x["t_ms"]))
@@ -312,8 +327,9 @@ def run_structure(
     timeline = _score_timeline_from_events(event_bundle["events"])
     arc_pack = analyze_last_deficit_arcs(timeline, team_names=event_bundle["team_names"])
     selected = arc_pack.get("selected_arc")
-    raw_ids = [e["event_id"] for e in event_bundle["events"] if e.get("event_id")]
-    buildup = _candidate_buildup(predicted, selected, allowed_event_ids=raw_ids) if selected else []
+    buildup = _candidate_buildup(
+        predicted, selected, allowed_events=event_bundle["events"]
+    ) if selected else []
     score_path = _score_path(timeline)
     story = _story_view(match_id, score_path, arc_pack, buildup)
     # V1 is read-only. Deliberately do NOT supply predicted Goal chains to
