@@ -137,6 +137,81 @@ def evaluate_video_verification_claim(
             "render_ready": False,
         }
 
+    # G2.3: hypothesized search hints must never masquerade as observed net / first-live
+    evidence_status = str(goal.get("evidence_status") or "")
+    hyp = goal.get("hypothesized_result_sec")
+    if hyp is None:
+        hyp = goal.get("search_end_hint_sec")
+    net = goal.get("net_sec")
+    mo = goal.get("media_out")
+    if evidence_status in {"SHOT_ONLY_NET_UNRESOLVED", "SHOT_ONLY"}:
+        return {
+            "ok": False,
+            "level": PENDING,
+            "reason": "shot_only_net_unresolved_cannot_verify_first_live",
+            "evidence_status": evidence_status,
+            "claimed_status": claimed_status,
+            "render_ready": False,
+        }
+    if hyp is not None and net is not None and abs(float(net) - float(hyp)) < 1e-6 and not goal.get("observed_net"):
+        return {
+            "ok": False,
+            "level": PENDING,
+            "reason": "hypothesized_result_misrepresented_as_net_sec",
+            "hypothesized_result_sec": float(hyp),
+            "claimed_status": claimed_status,
+            "render_ready": False,
+        }
+    if hyp is not None and mo is not None and float(hyp) > float(mo) + 1e-6 and goal.get("observed_net"):
+        return {
+            "ok": False,
+            "level": "rejected_pts",
+            "reason": "observed_net_claim_but_hyp_or_net_past_media_out",
+            "render_ready": False,
+        }
+    if net is not None and mo is not None and float(net) > float(mo) + 1e-6:
+        return {
+            "ok": False,
+            "level": "rejected_pts",
+            "reason": "net_sec_after_media_out",
+            "net_sec": float(net),
+            "media_out": float(mo),
+            "render_ready": False,
+        }
+    if goal.get("net_seen_only_in_replay") or goal.get("net_after_replay_transition"):
+        return {
+            "ok": False,
+            "level": "rejected_replay_or_ambiguous",
+            "reason": "net_only_after_replay_transition",
+            "render_ready": False,
+        }
+    if goal.get("wrong_team_shot") or goal.get("ordinary_shot_score_changes_later_only"):
+        return {
+            "ok": False,
+            "level": PENDING,
+            "reason": "wrong_team_or_ordinary_shot_not_goal",
+            "render_ready": False,
+        }
+    if goal.get("claims_continuous_live") and not (
+        goal.get("observed_net") and goal.get("observed_shot") and goal.get("first_live_visual_ok")
+    ):
+        # Event broadcast_phase=LIVE alone is insufficient
+        if claimed_status in ("verified_first_live", "verified_action", "video_verified") or semantic_class == AUTOMATED:
+            return {
+                "ok": False,
+                "level": PENDING,
+                "reason": "claims_continuous_live_without_observed_shot_net_first_live",
+                "render_ready": False,
+            }
+    if goal.get("event_broadcast_phase") == "LIVE" and not goal.get("observed_net"):
+        if claimed_status in ("verified_first_live", "verified_action", "video_verified"):
+            return {
+                "ok": False,
+                "level": PENDING,
+                "reason": "event_live_label_alone_not_first_live_proof",
+                "render_ready": False,
+            }
+
     id_gate = assert_identity_binding(
         expected=expected_identity,
         claimed=goal.get("identity") or goal.get("provenance") or {},

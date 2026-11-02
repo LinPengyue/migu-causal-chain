@@ -214,6 +214,49 @@ def score_order_reject(
     }
 
 
+def annotate_shot_only_evidence(
+    *,
+    media_in: float,
+    media_out: float,
+    shot_sec: Optional[float],
+    hypothesized_result_sec: Optional[float],
+    observed_net_sec: Optional[float] = None,
+    event_broadcast_phase: Optional[str] = None,
+) -> Dict[str, Any]:
+    """Fail-closed shot/net evidence labels. Never promote hyp_net into verified net_sec."""
+    hyp = float(hypothesized_result_sec) if hypothesized_result_sec is not None else None
+    observed_net = float(observed_net_sec) if observed_net_sec is not None else None
+    mo = float(media_out)
+    mi = float(media_in)
+    hyp_outside_clip = bool(hyp is not None and hyp > mo + 1e-6)
+    has_observed_net = observed_net is not None and mi - 1e-6 <= observed_net <= mo + 1e-6
+    if has_observed_net:
+        evidence_status = "SHOT_AND_NET_IN_WINDOW_UNVERIFIED"
+        # Still not auto-verified; net_sec only when observed inside window
+        net_sec: Optional[float] = observed_net
+        claims_continuous_live = False  # requires visual first-live audit, not event LIVE alone
+    else:
+        evidence_status = "SHOT_ONLY_NET_UNRESOLVED"
+        net_sec = None
+        claims_continuous_live = False
+    return {
+        "evidence_status": evidence_status,
+        "shot_sec": shot_sec,
+        # Do NOT put shot+4 into net_sec — search/sort boundary only:
+        "hypothesized_result_sec": hyp,
+        "search_end_hint_sec": hyp,
+        "net_sec": net_sec,
+        "observed_net": has_observed_net,
+        "hyp_net_outside_clip": hyp_outside_clip,
+        "claims_continuous_live": claims_continuous_live,
+        "event_broadcast_phase": event_broadcast_phase,
+        "event_live_is_not_visual_first_live_proof": True,
+        "verification_status": "unresolved",
+        "semantic_verification_class": NOT_VERIFIED,
+        "render_ready": False,
+    }
+
+
 def live_shots_before_confirm(
     events: Sequence[Dict[str, Any]],
     *,
@@ -336,8 +379,9 @@ def propose_first_live_windows(
 
     for s in near_shots:
         shot_t = float(s["event_time_sec"])
-        hyp_net = min(shot_t + 4.0, conf)
-        so = score_order_reject(hypothesized_net_sec=hyp_net, score_confirmation_sec=conf)
+        # shot+4 is ONLY a search/sort hint — never observed net evidence
+        search_end_hint = min(shot_t + 4.0, conf)
+        so = score_order_reject(hypothesized_net_sec=search_end_hint, score_confirmation_sec=conf)
         if not so.get("ok"):
             proposals.append(
                 {
@@ -346,13 +390,16 @@ def propose_first_live_windows(
                     "rejected": True,
                     "score_order": so,
                     "shot_sec": shot_t,
-                    "net_sec": hyp_net,
+                    "hypothesized_result_sec": search_end_hint,
+                    "search_end_hint_sec": search_end_hint,
+                    "net_sec": None,
+                    "evidence_status": "SHOT_ONLY_NET_UNRESOLVED",
                     "reason": "rejected_score_order_anomaly",
                 }
             )
             continue
         located = locate_continuous_live_goal_window(
-            timeline=timeline, shot_sec=shot_t, result_sec=hyp_net
+            timeline=timeline, shot_sec=shot_t, result_sec=search_end_hint
         )
         # Prefer event media span; use R2.5 locate only as bridgeability check, then clamp tightly.
         if s.get("media_start_sec") is not None and s.get("media_end_sec") is not None:
@@ -388,9 +435,17 @@ def propose_first_live_windows(
                 }
             )
             continue
-        # Strong boost: continuous LIVE shot before confirm beats any confirm-anchored alt
+        # Strong boost: LIVE shot before confirm beats confirm-anchored alts (still unresolved)
         live_replay_trim = 1 if trim_notes else 0
         priority = -500.0 + float(s["_rank"]) - 50.0 * live_replay_trim
+        evidence = annotate_shot_only_evidence(
+            media_in=mi,
+            media_out=mo,
+            shot_sec=shot_t,
+            hypothesized_result_sec=search_end_hint,
+            observed_net_sec=None,  # zero-API path never invents observed net
+            event_broadcast_phase="LIVE",
+        )
         proposals.append(
             {
                 "candidate_id": f"{role}_first_live_shot_{s['event_id']}",
@@ -398,8 +453,6 @@ def propose_first_live_windows(
                 "rejected": False,
                 "media_in": round(mi, 3),
                 "media_out": round(mo, 3),
-                "shot_sec": shot_t,
-                "net_sec": hyp_net,
                 "shot_event_id": s.get("event_id"),
                 "located_window": located,
                 "score_order": so,
@@ -408,12 +461,11 @@ def propose_first_live_windows(
                     media_in=mi, media_out=mo, score_confirmation_sec=conf, kind="first_live_shot"
                 ),
                 "priority": priority,
-                "claims_continuous_live": True,
-                "verification_status": "unresolved",
-                "semantic_verification_class": NOT_VERIFIED,
+                **evidence,
                 "note": (
-                    "Zero-API proposal: LIVE Shot (score!=after) + R2.5 locate/trim at REPLAY; "
-                    "shot/net hypothesized — NOT video-semantic verified"
+                    "Zero-API proposal: LIVE Shot event + R2.5 locate/trim at REPLAY. "
+                    "hypothesized_result_sec=shot+4 search hint only; net_sec=null until observed; "
+                    "evidence_status=SHOT_ONLY_NET_UNRESOLVED; NOT video-semantic verified"
                 ),
             }
         )
@@ -586,7 +638,10 @@ def materialize_first_live_pack(
                     "shot_action_seen": "pending_human",
                     "ball_in_net_seen": "pending_human",
                     "first_live_not_replay": "pending_human",
-                    "score_order_net_before_or_at_confirm": not bool(
+                    "evidence_status": p.get("evidence_status") or "review_pending",
+                    "hypothesized_result_sec": p.get("hypothesized_result_sec"),
+                    "net_sec_is_observed_only": p.get("net_sec") is not None,
+                    "score_order_hint_ok": not bool(
                         (p.get("score_order") or {}).get("score_order_anomaly")
                     ),
                     "continuous_clip_no_stitch": bool(cut.get("ok")),
@@ -835,6 +890,9 @@ def run_g22_first_live(
                     "media_out": pack["top1"].get("media_out"),
                     "shot_sec": pack["top1"].get("shot_sec"),
                     "net_sec": pack["top1"].get("net_sec"),
+                    "hypothesized_result_sec": pack["top1"].get("hypothesized_result_sec"),
+                    "evidence_status": pack["top1"].get("evidence_status"),
+                    "claims_continuous_live": pack["top1"].get("claims_continuous_live"),
                     "clip_path": pack["top1"].get("clip_path"),
                     "g21_human_top1_judgment": human,
                     "needs_earlier_search": pack.get("needs_earlier_search"),
