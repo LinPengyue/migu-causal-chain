@@ -30,7 +30,6 @@ from story_video_agent.vision_provider import (
     VisionProvider,
     _extract_json_obj,
     classify_normalization_failure,
-    normalize_evidence,
 )
 from story_video_agent.v2_video_evidence_gate import AUTOMATED, NOT_VERIFIED
 
@@ -428,6 +427,97 @@ def _parse_goal_fields(raw: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+def _validate_cited_frame_ids(
+    raw: Dict[str, Any], *, allowed: Sequence[str]
+) -> List[str]:
+    """Accept goal-verify JSON that cites frame_ids without requiring observed_actions."""
+    allowed_set = set(allowed)
+    raw_cited = raw.get("frame_ids")
+    if raw_cited is None:
+        raw_cited = raw.get("cited_frame_ids")
+    if not isinstance(raw_cited, list) or not raw_cited:
+        # Fall back to union of shot/net/live ids if model omitted top-level frame_ids
+        raw_cited = []
+        for k in ("shot_frame_ids", "net_frame_ids", "live_frame_ids"):
+            raw_cited.extend(list(raw.get(k) or []))
+    if not raw_cited:
+        raise EvidenceNormalizationError(
+            "model did not cite any frame_ids", failure_status="empty_json"
+        )
+    cited: List[str] = []
+    invalid: List[str] = []
+    for item in raw_cited:
+        fid = str(item)
+        if fid in allowed_set:
+            if fid not in cited:
+                cited.append(fid)
+        else:
+            invalid.append(fid)
+    if invalid:
+        raise EvidenceNormalizationError(
+            f"invalid frame_ids cited: {invalid}", failure_status="invalid_frame_id"
+        )
+    if not cited:
+        raise EvidenceNormalizationError(
+            "no valid frame_ids after filtering", failure_status="invalid_frame_id"
+        )
+    return cited
+
+
+def normalize_goal_verify_response(
+    raw: Dict[str, Any],
+    *,
+    gap_id: str,
+    frame_ids: Sequence[str],
+    frame_bindings: Sequence[Dict[str, Any]],
+    provider_mode: str,
+    model: str = "",
+    raw_response_excerpt: str = "",
+) -> Dict[str, Any]:
+    """Goal-verify normalizer: frame_id bind + goal fields; does NOT require observed_actions."""
+    if provider_mode == "degraded":
+        raise EvidenceNormalizationError(
+            "degraded provider response cannot be observed", failure_status="degraded"
+        )
+    cited = _validate_cited_frame_ids(raw, allowed=frame_ids)
+    goal_fields = _parse_goal_fields(raw)
+    # Synthesize actions for downstream logs only (not verification proof)
+    synth_actions = []
+    if goal_fields.get("observed_shot"):
+        synth_actions.append("shot")
+    if goal_fields.get("observed_net"):
+        synth_actions.append("ball_in_net")
+    if goal_fields.get("live_or_replay"):
+        synth_actions.append(f"broadcast_{goal_fields['live_or_replay']}")
+    return {
+        "gap_id": gap_id,
+        "observed_actions": synth_actions,
+        "possible_teams": list(raw.get("possible_teams") or []),
+        "story_relation": str(raw.get("notes") or raw.get("attacking_side_notes") or ""),
+        "confidence": goal_fields.get("confidence") or 0.0,
+        "frame_ids": cited,
+        "notes": goal_fields.get("notes") or "",
+        "goal_fields": goal_fields,
+        "frame_time_bindings": [
+            {
+                "frame_id": b["frame_id"],
+                "requested_media_sec": b.get("requested_media_sec"),
+                "actual_media_sec": b.get("actual_media_sec"),
+                "pts_status": b.get("pts_status"),
+            }
+            for b in frame_bindings
+            if b.get("frame_id") in cited
+        ],
+        "provider_mode": provider_mode,
+        "model": model,
+        "raw_response_excerpt": (raw_response_excerpt or "")[:4000],
+        "normalized_ok": True,
+        "observation_only": True,
+        "fact_verified": False,
+        "schema": "v3_goal_verify_normalized_v1",
+    }
+
+
 def call_goal_verify_round(
     *,
     api: ApiProvider,
@@ -485,6 +575,7 @@ def call_goal_verify_round(
     mode = str(raw_resp.get("provider_mode") or raw_resp.get("provider") or "")
     if mode == "openai_compatible":
         mode = "real"
+    content = str(raw_resp.get("content") or "")
     if raw_resp.get("error") or mode == "degraded":
         return {
             "round": round_name,
@@ -495,22 +586,23 @@ def call_goal_verify_round(
             "provider_mode": "degraded",
             "usage": raw_resp.get("usage"),
             "est_cost_usd": raw_resp.get("est_cost_usd"),
+            "raw_response_excerpt": content[:4000],
             "vlm_inference": None,
             "normalized_evidence": None,
         }
 
     try:
-        raw = _extract_json_obj(str(raw_resp.get("content") or ""))
-        evidence = normalize_evidence(
+        raw = _extract_json_obj(content)
+        evidence = normalize_goal_verify_response(
             raw,
             gap_id=gap_id,
             frame_ids=frame_ids,
             frame_bindings=bindings,
             provider_mode=mode if mode in ("mock", "real", "cache") else "mock",
             model=str(raw_resp.get("model") or ""),
-            raw_response_excerpt=str(raw_resp.get("content") or "")[:800],
+            raw_response_excerpt=content,
         )
-        goal_fields = _parse_goal_fields(raw)
+        goal_fields = evidence.get("goal_fields") or _parse_goal_fields(raw)
         return {
             "round": round_name,
             "ok": True,
@@ -518,6 +610,7 @@ def call_goal_verify_round(
             "usage": raw_resp.get("usage"),
             "est_cost_usd": raw_resp.get("est_cost_usd"),
             "cost_disclaimer": raw_resp.get("cost_disclaimer") or COST_DISCLAIMER,
+            "raw_response_excerpt": content[:4000],
             "vlm_inference": {
                 **goal_fields,
                 "raw_keys": sorted(raw.keys()),
@@ -528,6 +621,13 @@ def call_goal_verify_round(
             "cited_frame_ids": evidence.get("frame_ids") or [],
         }
     except EvidenceNormalizationError as exc:
+        # Still surface partial goal fields if JSON parsed
+        partial = None
+        try:
+            raw = _extract_json_obj(content)
+            partial = _parse_goal_fields(raw)
+        except Exception:
+            partial = None
         return {
             "round": round_name,
             "ok": False,
@@ -538,9 +638,10 @@ def call_goal_verify_round(
             "provider_mode": mode,
             "usage": raw_resp.get("usage"),
             "est_cost_usd": raw_resp.get("est_cost_usd"),
-            "raw_response_excerpt": str(raw_resp.get("content") or "")[:800],
-            "vlm_inference": None,
+            "raw_response_excerpt": content[:4000],
+            "vlm_inference": partial,
             "normalized_evidence": None,
+            "partial_parse": True,
         }
 
 
@@ -888,15 +989,16 @@ def run_remote_vlm_verification(
             }
         rounds.append(r2)
 
-    # Pick best inference (prefer later ok round with net, else last ok)
+    # Pick best inference (prefer later round with net; allow partial_parse fields)
     best_inf = None
     best_round = None
     for r in rounds:
-        if not r.get("ok"):
+        inf = r.get("vlm_inference")
+        if not inf:
             continue
-        best_inf = r.get("vlm_inference")
+        best_inf = inf
         best_round = r.get("round")
-        if best_inf and best_inf.get("observed_net") is True:
+        if inf.get("observed_net") is True and r.get("ok"):
             break
 
     all_frames = list(frames1) + list(r2_frames)

@@ -8,6 +8,7 @@ from story_video_agent.api_provider import ApiConfigError
 from .remote_vlm_verify import (
     cross_check_visible_evidence,
     make_api,
+    normalize_goal_verify_response,
     scrub_config_audit,
 )
 
@@ -124,6 +125,32 @@ class CrossCheckTests(unittest.TestCase):
         )
         self.assertIn("replay_not_first_live", cross["evidence_gaps"])
         self.assertFalse(cross["visible_crosscheck"]["replay_excluded"])
+
+
+class GoalNormalizeTests(unittest.TestCase):
+    def test_goal_json_without_observed_actions_accepted(self):
+        raw = {
+            "observed_shot": False,
+            "observed_net": False,
+            "attacking_team_match": True,
+            "live_or_replay": "live",
+            "claims_continuous_live": True,
+            "shot_frame_ids": [],
+            "net_frame_ids": [],
+            "uncertain": ["observed_net"],
+            "confidence": 0.5,
+            "frame_ids": ["f1"],
+            "notes": "aftermath only",
+        }
+        evid = normalize_goal_verify_response(
+            raw,
+            gap_id="t",
+            frame_ids=["f1"],
+            frame_bindings=[{"frame_id": "f1", "actual_media_sec": 1.0}],
+            provider_mode="real",
+        )
+        self.assertTrue(evid["normalized_ok"])
+        self.assertEqual(evid["goal_fields"]["observed_net"], False)
 
 
 class ConfigAuditTests(unittest.TestCase):
