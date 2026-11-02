@@ -49,8 +49,11 @@ def review_evidence(
 ) -> Dict[str, Any]:
     run = Path(v3_run_dir).resolve()
     dest = Path(output_dir).resolve()
-    if "v3" not in {p.lower() for p in dest.parts}:
+    parts = {p.lower() for p in dest.parts}
+    if "v3" not in parts:
         raise V3InputError("Verification output must have v3/ path component")
+    if "v1" in parts or "v2" in parts:
+        raise V3InputError("Refusing V1/V2 path nesting in V3 verification output")
     if dest == run or dest in run.parents:
         raise V3InputError("Do not overwrite V3 structure dry-run root")
     if dest.exists() and any(dest.iterdir()):
