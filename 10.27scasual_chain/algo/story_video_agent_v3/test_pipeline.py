@@ -6,7 +6,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from .pipeline import V3InputError, run_structure
+from .pipeline import V3InputError, run_structure, _candidate_buildup
 from .gate import review_evidence
 
 
@@ -138,6 +138,32 @@ class TestV3Synthetic(unittest.TestCase):
                 run_structure(match_id="A", events=events,
                               predicted_strips=strips, video=video,
                               out_dir=td / "v3" / "gold")
+
+
+    def test_buildup_uses_only_matching_raw_live_evidence(self):
+        arc = {"score_confirmation_sec": {"deficit": 200.0, "equalizer": 300.0}}
+        predicted = {"causal_chains": [{
+            "chain_id": "p1", "t0_ms": 230000, "last_event": "shot",
+            "first_event": "pass", "predicted_label": "射门机会",
+            "confidence": 0.6,
+            "events": [{"event_id": "action1", "type": "shot", "t_ms": 231000}],
+        }]}
+        raw_live = {"event_id": "action1", "event_type": "Shot",
+                    "event_time_sec": 231.0, "broadcast_phase": "LIVE",
+                    "is_replay": False}
+        ok = _candidate_buildup(predicted, arc, allowed_events=[raw_live])
+        self.assertEqual(len(ok), 1)
+        self.assertEqual(ok[0]["verification_status"], "unverified")
+        self.assertEqual(ok[0]["source_chain_id"], "p1")
+        self.assertEqual(_candidate_buildup(predicted, arc,
+            allowed_events=[{**raw_live, "is_replay": True}]), [])
+        self.assertEqual(_candidate_buildup(predicted, arc,
+            allowed_events=[{**raw_live, "event_time_sec": 240.0}]), [])
+        self.assertEqual(_candidate_buildup(predicted, arc,
+            allowed_events=[{**raw_live, "event_type": "Pass"}]), [])
+        predicted["causal_chains"][0]["predicted_label"] = "进球"
+        self.assertEqual(_candidate_buildup(predicted, arc,
+            allowed_events=[raw_live]), [])
 
     def test_v2_gate_rejects_status_only_scoreboard_and_replay(self):
         with tempfile.TemporaryDirectory() as tmp:
