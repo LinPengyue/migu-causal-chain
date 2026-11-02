@@ -170,6 +170,133 @@ def _chain_events_from_ids(
     return rows
 
 
+def build_outcome_chains_from_recovered_goals(
+    *,
+    recovered_goals: Sequence[Dict[str, Any]],
+    raw_by_id: Dict[str, Dict[str, Any]],
+    start_ann_index: int = 0,
+) -> List[Dict[str, Any]]:
+    """Attach V3-recovered LIVE Goal terminals as 结果链 without mutating 8.31 strip JSON.
+
+    If linked strip antecedents exist with Shot/Corner/etc., prepend them; otherwise
+    emit a standalone Goal terminal (no invented causal predecessors).
+    """
+    chains: List[Dict[str, Any]] = []
+    for i, g in enumerate(recovered_goals):
+        if not g.get("single_goal_increment"):
+            continue
+        action = g.get("goal_action_sec")
+        if action is None:
+            continue
+        confirm = float(g["score_confirmation_sec"])
+        if abs(float(action) - confirm) < 0.5:
+            continue  # refuse board-as-action
+        if g.get("is_replay"):
+            continue  # final EDL path: live only
+        ante: List[Dict[str, Any]] = []
+        linked = g.get("linked_strip_chain_ids") or []
+        used_ids = set()
+        if linked:
+            # Take closest strip's pre-goal detector events (no Goal invention there)
+            top = linked[0]
+            for eid in top.get("event_ids") or []:
+                raw = raw_by_id.get(str(eid))
+                if not raw or raw.get("event_time_sec") is None:
+                    continue
+                if float(raw["event_time_sec"]) > float(action) + 0.5:
+                    continue
+                if str(eid) in used_ids:
+                    continue
+                used_ids.add(str(eid))
+                en = raw.get("event_type")
+                ante.append({
+                    "event_id": str(eid),
+                    "order": len(ante),
+                    "type": _zh_type(en),
+                    "type_en": str(en) if en is not None else None,
+                    "t_ms": float(raw["event_time_sec"]) * 1000.0,
+                    "bz_id": "",
+                    "source": "8.31_strip_antecedent",
+                    "verification_status": "unverified",
+                })
+            # Keep last few antecedents only
+            if len(ante) > 6:
+                ante = ante[-6:]
+                for j, e in enumerate(ante):
+                    e["order"] = j
+        # Also include nearby Shot/Corner before action if not already present
+        for ev in g.get("nearby_events") or []:
+            if ev.get("is_replay"):
+                continue
+            if ev.get("event_type") not in {"Shot", "Corner_kick", "Free_kick"}:
+                continue
+            t = float(ev["media_sec"])
+            if t > float(action) + 0.5 or t < float(action) - 90.0:
+                continue
+            eid = str(ev.get("event_id"))
+            if eid in used_ids:
+                continue
+            used_ids.add(eid)
+            ante.append({
+                "event_id": eid,
+                "order": len(ante),
+                "type": _zh_type(ev.get("event_type")),
+                "type_en": ev.get("event_type"),
+                "t_ms": t * 1000.0,
+                "bz_id": "",
+                "source": "nearby_detector_event",
+                "verification_status": "unverified",
+            })
+        goal_id = f"v3_goal_{g.get('candidate_id')}"
+        goal_ev = {
+            "event_id": goal_id,
+            "order": len(ante),
+            "type": "进球",
+            "type_en": "Goal",
+            "t_ms": float(action) * 1000.0,
+            "bz_id": "",
+            "source": "v3_goal_recovery",
+            "verification_status": g.get("verification_status"),
+            "score_before": g.get("score_before"),
+            "score_after": g.get("score_after"),
+            "score_confirmation_sec": confirm,
+            "is_replay": False,
+        }
+        events = ante + [goal_ev]
+        for j, e in enumerate(events):
+            e["order"] = j
+        has_ante = len(ante) > 0
+        ann = f"v3_outcome_{start_ann_index + i:04d}"
+        chains.append({
+            "annotation_id": ann,
+            "bz_id": "",
+            "chain_category": "结果链",
+            "causal_chain_subtype": "V3进球恢复链" if has_ante else "V3独立进球终端",
+            "causal_chain_other_name": "",
+            "is_replay": False,
+            "segment_time_sketch": "",
+            "segment_time_video": "",
+            "events": events,
+            "prediction_source": "v3_goal_recovery+optional_8.31_antecedent",
+            "strip_clip_id": (linked[0].get("clip_id") if linked else None),
+            "template_id": (linked[0].get("template_id") if linked else None),
+            "t0_ms": events[0]["t_ms"],
+            "t1_ms": goal_ev["t_ms"],
+            "verification_status": g.get("verification_status"),
+            "human_causal_relation": None,
+            "causal_relation_proven": has_ante,
+            "goal_candidate_id": g.get("candidate_id"),
+            "live_only": True,
+            "note": (
+                "Outcome chain synthesized in V3 adapter; 8.31 strip file unchanged. "
+                "Standalone Goal when antecedents unproven."
+                if not has_ante else
+                "Antecedents linked from 8.31/nearby detector events; relation unverified."
+            ),
+        })
+    return chains
+
+
 def strip_chains_to_v1_causal(
     *,
     strip: Dict[str, Any],
@@ -180,8 +307,9 @@ def strip_chains_to_v1_causal(
     team_2_name: str = "",
     team_1_color: str = "",
     team_2_color: str = "",
+    recovered_goals: Optional[Sequence[Dict[str, Any]]] = None,
 ) -> Dict[str, Any]:
-    """Build a V1-shaped causal document from 8.31 strip + raw events only."""
+    """Build a V1-shaped causal document from 8.31 strip + optional V3 Goal recovery."""
     raw_by_id = _index_raw(raw_events)
     transitions = score_transitions_from_events(raw_events)
 
@@ -229,8 +357,32 @@ def strip_chains_to_v1_causal(
         })
         cat_counts[cat_zh] = cat_counts.get(cat_zh, 0) + 1
 
+    outcome_chains = build_outcome_chains_from_recovered_goals(
+        recovered_goals=recovered_goals or [],
+        raw_by_id=raw_by_id,
+        start_ann_index=len(chains_out),
+    )
+    for ch in outcome_chains:
+        chains_out.append(ch)
+        cat_counts["结果链"] = cat_counts.get("结果链", 0) + 1
+        for e in ch.get("events") or []:
+            if e.get("type") in {"进球", "乌龙球", "头球破门"}:
+                n_goal_terminals += 1
+
     n_raw = len(raw_by_id)
     coverage = (len(covered_ids) / n_raw) if n_raw else 0.0
+    if recovered_goals:
+        n_resolved = sum(
+            1 for g in recovered_goals
+            if g.get("single_goal_increment") and g.get("goal_action_sec") is not None
+        )
+        n_unresolved = sum(
+            1 for g in recovered_goals
+            if g.get("single_goal_increment") and g.get("goal_action_sec") is None
+        )
+    else:
+        n_resolved = 0
+        n_unresolved = sum(1 for t in transitions if t.get("single_goal_increment"))
 
     doc = {
         "schema_version": "1.0-min",
@@ -241,35 +393,36 @@ def strip_chains_to_v1_causal(
         "team_1_color": team_1_color,
         "team_2_color": team_2_color,
         "causal_chains": chains_out,
-        # Explicit V3 audit section — not consumed by stock V1 as Goal truth
         "v3_adapter": {
             "schema": "v3_v1_causal_adapter_v1",
-            "prediction_source": "causal_chain6_predicted",
+            "prediction_source": "causal_chain6_predicted+v3_goal_recovery",
             "forbidden_inputs": ["*_causal.json", "strip_gold.json", "human Goal t_ms"],
             "n_raw_events": n_raw,
             "n_unique_events_in_chains": len(covered_ids),
             "event_id_coverage": round(coverage, 6),
             "category_counts_zh": cat_counts,
             "n_goal_terminals_in_adapted_chains": n_goal_terminals,
-            "n_outcome_chains_en": sum(
+            "n_v3_outcome_chains": len(outcome_chains),
+            "n_outcome_chains_en_from_strip": sum(
                 1 for c in (strip.get("chains") or [])
                 if str(c.get("chain_category") or "").lower() == "outcome"
             ),
             "score_transitions": transitions,
             "n_score_transitions": len(transitions),
-            "n_unresolved_goal_actions": sum(
-                1 for t in transitions if t.get("single_goal_increment")
-            ),
+            "n_recovered_goal_actions": n_resolved,
+            "n_unresolved_goal_actions": n_unresolved,
+            "strip_file_mutated": False,
             "gaps": [
-                "detector_events_have_no_Goal_type",
-                "8.31_strip_has_zero_outcome_chains_when_no_Goal_terminals",
-                "human_causal_Goal_rows_are_annotation_layer_not_detector_rows",
-                "V1_GOAL_TYPES_require_Chinese_Goal_terminals_with_t_ms",
+                g for g in [
+                    "detector_events_have_no_native_Goal_type",
+                    "8.31_strip_outcome_still_zero_without_v3_injection",
+                    None if n_resolved else "some_or_all_goal_actions_still_unresolved",
+                ] if g
             ],
             "render_ready": False,
             "note": (
-                "Adapted chains are V1-schema compatible for non-goal structure. "
-                "Goal action times remain unresolved; do not copy human causal."
+                "V3 injects LIVE Goal 结果链 from recovered action times; "
+                "8.31 strip JSON left unchanged. Replay goals excluded."
             ),
         },
     }
@@ -285,6 +438,7 @@ def build_from_paths(
     video_name: str,
     team_1_name: str = "",
     team_2_name: str = "",
+    recovered_goals: Optional[Sequence[Dict[str, Any]]] = None,
 ) -> Dict[str, Any]:
     strip = json.loads(Path(strip_path).read_text(encoding="utf-8"))
     # Refuse gold-shaped strip payloads
@@ -300,6 +454,7 @@ def build_from_paths(
         video_name=video_name,
         team_1_name=team_1_name,
         team_2_name=team_2_name,
+        recovered_goals=recovered_goals,
     )
     out = Path(out_path)
     out.parent.mkdir(parents=True, exist_ok=True)
