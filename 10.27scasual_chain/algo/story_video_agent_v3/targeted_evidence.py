@@ -1,9 +1,10 @@
-"""V3-P2 targeted critical-goal evidence retrieval (no unbounded scan, no paid API).
+"""V3 targeted critical-goal evidence retrieval (P2 packaging + P3 localization hook).
 
 Builds finite retrieval tasks from score windows + optional historical candidate
 clues (match-specific handoff paths). Never hardcodes PTS into the ranking
-algorithm. Produces evidence packs that V3 gate can consume; remains unresolved
-without contiguous LIVE shot/net proof.
+algorithm. P3 adds first-live localization that distinguishes candidate extraction
+from goal-action verification. Produces evidence packs that V3 gate can consume;
+remains unresolved without contiguous LIVE shot/net proof / accepted semantic class.
 """
 from __future__ import annotations
 
@@ -14,6 +15,7 @@ import subprocess
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence
 
+from .first_live_localize import run_first_live_localization
 from .pipeline import CRITICAL, dump
 
 
@@ -138,32 +140,44 @@ def build_role_retrieval_task(
     max_candidates: int = 4,
     max_video_read_sec: float = 120.0,
 ) -> Dict[str, Any]:
+    """Legacy P2 window planner. Prefer first_live_localize for P3 runs."""
     conf = task_row.get("score_confirmation_sec")
     windows = []
-    # Primary: historical clues first (budgeted)
-    for c in clues[:max_candidates]:
-        windows.append({
-            "media_in": c["media_in"],
-            "media_out": c["media_out"],
-            "origin": "historical_clue",
-            "candidate_id": c.get("candidate_id"),
-            "clip_path_existing": c.get("clip_path"),
-        })
-    # Secondary: earlier-search blocks before confirmation (not late_third hug)
-    if conf is not None and len(windows) < max_candidates:
+    # Prefer pre-confirm uncovered blocks before re-cutting historical clues
+    if conf is not None:
         c = float(conf)
+        covered = [(float(x["media_in"]), float(x["media_out"])) for x in clues
+                   if x.get("media_in") is not None and x.get("media_out") is not None]
         for i, end in enumerate([c - 5.0, c - 45.0, c - 85.0]):
             if len(windows) >= max_candidates:
                 break
             if end <= 20:
                 continue
             start = max(0.0, end - 35.0)
+            cover = 0.0
+            for a, b in covered:
+                cover += max(0.0, min(b, end) - max(a, start)) / max(1e-6, end - start)
             windows.append({
                 "media_in": round(start, 3),
                 "media_out": round(end, 3),
                 "origin": "pre_confirm_search_block",
                 "block_index": i,
+                "historical_cover_frac": round(cover, 3),
+                "priority": 500 - i * 40 - cover * 200,
             })
+    for c in clues:
+        if len(windows) >= max_candidates:
+            break
+        windows.append({
+            "media_in": c["media_in"],
+            "media_out": c["media_out"],
+            "origin": "historical_clue",
+            "candidate_id": c.get("candidate_id"),
+            "clip_path_existing": c.get("clip_path"),
+            "priority": 200,
+        })
+    windows.sort(key=lambda w: -float(w.get("priority") or 0))
+    windows = windows[:max_candidates]
     budget = sum(max(0.0, float(w["media_out"]) - float(w["media_in"])) for w in windows)
     return {
         "role": role,
@@ -176,12 +190,15 @@ def build_role_retrieval_task(
             "reject_replay": True,
             "attacking_team_must_match_score_delta": True,
             "no_score_confirm_as_goal_action": True,
+            "prefer_uncovered_over_historical_recut": True,
             "max_candidates": max_candidates,
             "max_video_read_sec": max_video_read_sec,
         },
         "candidate_windows": windows,
         "planned_video_read_sec": round(budget, 3),
         "status": "pending_local_audit",
+        "candidate_extraction_only": True,
+        "goal_action_verified": False,
         "render_ready": False,
     }
 
@@ -372,8 +389,98 @@ def run_targeted_evidence_pass(
         "n_video_verified": 0,
         "n_agent_auto_verified": 0,
         "n_human_video_supported": 0,
+        "n_candidate_extracted_ok": sum(
+            1 for rows in audits.values() for r in rows if (r.get("clip_export") or {}).get("ok")
+        ),
+        "n_goal_action_verified_ok": 0,
         "critical_video_evidence_pass": False,
+        "distinction": {
+            "candidate_extraction_success": True,
+            "goal_action_verification_success": False,
+            "note": "P2-compatible packaging pass; use run_p3_localization_pass for semantic labels",
+        },
         "video_read_sec_approx": round(video_read, 3),
+        "render_ready": False,
+    })
+    return pack
+
+
+def run_p3_localization_pass(
+    *,
+    v3_run_dir: Path,
+    video: Path,
+    events_path: Path,
+    out_dir: Path,
+    match_tag: str,
+    g22_root: Path,
+    prefer_roles: Optional[Sequence[str]] = None,
+    human_score_observations: Optional[Sequence[Dict[str, Any]]] = None,
+    human_review_by_candidate: Optional[Dict[str, Dict[str, Any]]] = None,
+    frame_notes_by_candidate: Optional[Dict[str, Dict[str, Any]]] = None,
+    max_candidates_per_role: int = 4,
+    skip_ocr: bool = False,
+) -> Dict[str, Any]:
+    """P3 path: score-bound search + budgeted candidates + semantic labels (no fake auto-verify)."""
+    run = Path(v3_run_dir)
+    dest = Path(out_dir)
+    if dest.exists() and any(dest.iterdir()):
+        raise RuntimeError(f"Refusing nonempty evidence out dir: {dest}")
+    dest.mkdir(parents=True, exist_ok=True)
+    tasks = json.loads((run / "critical_goal_evidence_tasks.json").read_text(encoding="utf-8"))
+    provenance = json.loads((run / "provenance.json").read_text(encoding="utf-8"))
+    identity = {
+        "match_id": provenance["match_id"],
+        "video_sha256": provenance["input_hashes"]["video_sha256"],
+        "events_sha256": provenance["input_hashes"]["events_sha256"],
+        "strip_provenance": provenance["input_hashes"]["strips_sha256"],
+    }
+    order = list(prefer_roles or CRITICAL)
+    for r in CRITICAL:
+        if r not in order:
+            order.append(r)
+
+    summaries = []
+    goals: List[Dict[str, Any]] = []
+    for role in order:
+        task_row = next((t for t in tasks.get("tasks") or [] if t.get("role") == role), None)
+        if not task_row:
+            continue
+        clues = load_historical_candidate_clues(match_tag=match_tag, role=role, g22_root=g22_root)
+        result = run_first_live_localization(
+            video=video,
+            role=role,
+            task_row=task_row,
+            out_dir=dest / role,
+            events_path=events_path,
+            historical_clues=clues,
+            human_score_observations=human_score_observations,
+            human_review_by_candidate=human_review_by_candidate,
+            frame_notes_by_candidate=frame_notes_by_candidate,
+            identity=identity,
+            max_candidates=max_candidates_per_role,
+            skip_ocr=skip_ocr,
+        )
+        summaries.append(result["summary"])
+        goals.extend(result["pack"].get("goals") or [])
+
+    pack = {
+        "schema": "v3_targeted_evidence_pack_v1",
+        "match_id": identity["match_id"],
+        "match_tag": match_tag,
+        "goals": goals,
+        "n_agent_auto_verified": sum(1 for g in goals if g.get("agent_auto_verified")),
+        "n_human_video_supported": sum(1 for g in goals if g.get("human_video_supported")),
+        "n_candidate_extracted_ok": sum(1 for g in goals if g.get("candidate_extracted_ok")),
+        "n_goal_action_verified_ok": sum(1 for g in goals if g.get("goal_action_verified_ok")),
+        "summaries": summaries,
+        "note": "P3 localization pack; extraction ≠ verification",
+        "render_ready": False,
+    }
+    dump(dest / "evidence_pack.json", pack)
+    dump(dest / "localization_run_report.json", {
+        "schema": "v3_p3_localization_run_v1",
+        "match_tag": match_tag,
+        "summaries": summaries,
         "render_ready": False,
     })
     return pack
