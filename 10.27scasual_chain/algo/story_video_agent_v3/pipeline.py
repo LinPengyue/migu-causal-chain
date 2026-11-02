@@ -19,6 +19,7 @@ from story_video_agent.v2_g0_cross_match_preflight import (
 from story_video_agent.v2_g1_cross_match_cli import _score_timeline_from_events
 from story_video_agent.v2_score_transitions import analyze_last_deficit_arcs
 from story_video_agent.v2_strip_adapter import adapt_strip_bundle
+from story_video_agent.v2_strip_reinfer import norm_type
 from story_video_agent.narrative_composer import compose_story_plan
 from story_video_agent.phase5_delivery import (
     build_story_graph, build_story_scope, select_delivery_rows, validate_story_graph,
@@ -200,6 +201,8 @@ def _candidate_buildup(
             continue
         source_t = raw_event.get("event_time_sec")
         if source_t is None or abs(float(e["t_ms"]) / 1000.0 - float(source_t)) > 5.0:
+            continue
+        if norm_type(e.get("type")) != norm_type(raw_event.get("event_type")):
             continue
         candidates.append({
             "event_id": str(e["event_id"]), "type": str(e.get("type") or "unknown"),
