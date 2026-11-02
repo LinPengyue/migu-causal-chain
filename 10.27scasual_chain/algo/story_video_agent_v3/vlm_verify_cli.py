@@ -33,6 +33,19 @@ def main(argv: Optional[List[str]] = None) -> int:
                    help="Allow real HTTP (still needs --i-approve-budget)")
     p.add_argument("--i-approve-budget", action="store_true",
                    help="Explicit budget approval for billed vision calls")
+    p.add_argument(
+        "--observation-only",
+        action="store_true",
+        default=True,
+        help="Force agent_auto_verified=false (default; first real trial)",
+    )
+    p.add_argument(
+        "--allow-auto-verify",
+        action="store_true",
+        help="Opt out of observation-only (still needs full cross-checks; never opens Gate)",
+    )
+    p.add_argument("--continuous-clip", type=Path,
+                   help="Optional existing accurate continuous clip for continuity check")
     args = p.parse_args(argv)
 
     def _pair(s: str):
@@ -44,6 +57,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             max_calls=args.max_calls,
             max_cost_usd=args.max_cost_usd,
             max_completion_tokens=args.max_completion_tokens,
+            apply_overrides=True,
         )
         args.out_dir.mkdir(parents=True, exist_ok=True)
         path = args.out_dir / "api_config_audit_zero_http.json"
@@ -54,6 +68,12 @@ def main(argv: Optional[List[str]] = None) -> int:
             "path": str(path),
             "ready_for_real_when_approved": audit.get("ready_for_real_when_approved"),
             "models": audit.get("models"),
+            "effective_caps": audit.get("provider_global_caps"),
+            "vision_effective_output_token_limit": (audit.get("vision") or {}).get(
+                "effective_output_token_limit"
+            ),
+            "compat_checks": audit.get("compat_checks"),
+            "request_body_audit": audit.get("request_body_audit"),
             "render_ready": False,
         }, ensure_ascii=False, indent=2))
         return 0
@@ -65,6 +85,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     if args.score_bounds_json and args.score_bounds_json.is_file():
         bounds = json.loads(args.score_bounds_json.read_text(encoding="utf-8"))
 
+    observation_only = not bool(args.allow_auto_verify)
     summary = run_remote_vlm_verification(
         video=args.video,
         media_in=args.media_in,
@@ -80,15 +101,24 @@ def main(argv: Optional[List[str]] = None) -> int:
         max_calls=args.max_calls,
         max_cost_usd=args.max_cost_usd,
         max_completion_tokens=args.max_completion_tokens,
+        observation_only=observation_only,
+        continuous_clip_path=args.continuous_clip,
+        run_gate=False,
     )
     print(json.dumps({
         "status": "ok",
         "provider_mode": summary.get("provider_mode"),
+        "observation_only": summary.get("observation_only"),
         "agent_auto_verified": summary.get("agent_auto_verified"),
         "verification_status": summary.get("verification_status"),
         "semantic_label": summary.get("semantic_label"),
+        "structurally_ready_for_automated_verify": summary.get(
+            "structurally_ready_for_automated_verify"
+        ),
+        "gate_opened": summary.get("gate_opened"),
         "http_attempts": summary.get("http_attempts"),
         "output_budget_exceeded": summary.get("output_budget_exceeded"),
+        "effective_caps": summary.get("effective_caps"),
         "out_dir": str(args.out_dir),
         "render_ready": False,
     }, ensure_ascii=False, indent=2))

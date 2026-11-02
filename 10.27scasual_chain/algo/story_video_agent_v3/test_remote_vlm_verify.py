@@ -32,14 +32,15 @@ class CrossCheckTests(unittest.TestCase):
                 "observed_net": True,
                 "live_or_replay": "live",
                 "attacking_team_match": True,
+                "claims_continuous_live": True,
                 "confidence": 0.99,
                 "shot_frame_ids": ["f1"],
                 "net_frame_ids": ["f2"],
                 "uncertain": ["something_unclear"],
             },
             frames=[
-                {"frame_id": "f1", "requested_media_sec": 1.0, "actual_media_sec": 1.0},
-                {"frame_id": "f2", "requested_media_sec": 1.5, "actual_media_sec": 1.5},
+                {"frame_id": "f1", "requested_media_sec": 1.0, "actual_media_sec": 1.0, "path": "/tmp/nope1.jpg"},
+                {"frame_id": "f2", "requested_media_sec": 1.5, "actual_media_sec": 1.5, "path": "/tmp/nope2.jpg"},
             ],
             score_bounds={
                 "last_before_obs": {"media_sec": 0.5},
@@ -47,6 +48,7 @@ class CrossCheckTests(unittest.TestCase):
             },
             media_in=0.0,
             media_out=3.0,
+            continuous_clip_ok=True,
         )
         self.assertTrue(cross["auto_upgrade_from_confidence_blocked"])
         self.assertFalse(cross["structurally_ready_for_automated_verify"])
@@ -59,18 +61,69 @@ class CrossCheckTests(unittest.TestCase):
                 "observed_net": True,
                 "live_or_replay": "live",
                 "attacking_team_match": True,
+                "claims_continuous_live": True,
                 "confidence": 0.9,
                 "shot_frame_ids": ["f1"],
                 "net_frame_ids": [],
                 "uncertain": [],
             },
-            frames=[{"frame_id": "f1", "requested_media_sec": 1.0}],
+            frames=[{"frame_id": "f1", "requested_media_sec": 1.0, "path": "/tmp/x.jpg"}],
             score_bounds=None,
             media_in=0.0,
             media_out=2.0,
+            continuous_clip_ok=True,
         )
         self.assertIn("net_claimed_without_net_frame_ids", cross["evidence_gaps"])
         self.assertFalse(cross["structurally_ready_for_automated_verify"])
+
+    def test_shot_after_net_pts_rejected(self):
+        cross = cross_check_visible_evidence(
+            vlm_inference={
+                "observed_shot": True,
+                "observed_net": True,
+                "live_or_replay": "live",
+                "attacking_team_match": True,
+                "claims_continuous_live": True,
+                "shot_frame_ids": ["f_shot"],
+                "net_frame_ids": ["f_net"],
+                "uncertain": [],
+                "confidence": 0.8,
+            },
+            frames=[
+                {"frame_id": "f_shot", "actual_media_sec": 2.5, "path": __file__},
+                {"frame_id": "f_net", "actual_media_sec": 1.0, "path": __file__},
+            ],
+            score_bounds=None,
+            media_in=0.0,
+            media_out=3.0,
+            continuous_clip_ok=True,
+        )
+        self.assertIn("shot_pts_after_net_pts", cross["evidence_gaps"])
+        self.assertFalse(cross["structurally_ready_for_automated_verify"])
+
+    def test_replay_excluded(self):
+        cross = cross_check_visible_evidence(
+            vlm_inference={
+                "observed_shot": True,
+                "observed_net": True,
+                "live_or_replay": "replay",
+                "attacking_team_match": True,
+                "claims_continuous_live": True,
+                "shot_frame_ids": ["f1"],
+                "net_frame_ids": ["f2"],
+                "uncertain": [],
+            },
+            frames=[
+                {"frame_id": "f1", "actual_media_sec": 1.0, "path": __file__},
+                {"frame_id": "f2", "actual_media_sec": 1.2, "path": __file__},
+            ],
+            score_bounds=None,
+            media_in=0.0,
+            media_out=3.0,
+            continuous_clip_ok=True,
+        )
+        self.assertIn("replay_not_first_live", cross["evidence_gaps"])
+        self.assertFalse(cross["visible_crosscheck"]["replay_excluded"])
 
 
 class ConfigAuditTests(unittest.TestCase):

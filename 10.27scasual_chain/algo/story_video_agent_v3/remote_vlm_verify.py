@@ -53,14 +53,112 @@ GOAL_VERIFY_SCHEMA_HINT = {
 }
 
 
+def apply_trial_env_overrides(
+    *,
+    max_calls: int = 3,
+    max_cost_usd: float = 0.5,
+    max_completion_tokens: int = 2048,
+    disable_thinking: bool = True,
+) -> Dict[str, Any]:
+    """Override shell env for a B-opening trial without editing the gitignored secrets file.
+
+    Uses stricter project caps: calls/cost/tokens as given. Forces vision video_rsi so
+    Thinking is sent as thinking={type:disabled} (mutually exclusive with flat thinking).
+    """
+    before = {
+        "STORY_API_MAX_CALLS": os.environ.get("STORY_API_MAX_CALLS"),
+        "STORY_API_MAX_COST_USD": os.environ.get("STORY_API_MAX_COST_USD"),
+        "STORY_API_MAX_COMPLETION_TOKENS": os.environ.get("STORY_API_MAX_COMPLETION_TOKENS"),
+        "STORY_VLM_MAX_COMPLETION_TOKENS": os.environ.get("STORY_VLM_MAX_COMPLETION_TOKENS"),
+        "STORY_VLM_REQUEST_PROFILE": os.environ.get("STORY_VLM_REQUEST_PROFILE"),
+        "STORY_VLM_SEND_THINKING": os.environ.get("STORY_VLM_SEND_THINKING"),
+        "STORY_VLM_ENABLE_THINKING": os.environ.get("STORY_VLM_ENABLE_THINKING"),
+        "STORY_VLM_THINKING_OBJECT_DISABLED": os.environ.get("STORY_VLM_THINKING_OBJECT_DISABLED"),
+        "STORY_VLM_TOKEN_PARAM": os.environ.get("STORY_VLM_TOKEN_PARAM"),
+        "STORY_API_TOKEN_PARAM": os.environ.get("STORY_API_TOKEN_PARAM"),
+    }
+    os.environ["STORY_API_MAX_CALLS"] = str(int(max_calls))
+    os.environ["STORY_API_MAX_COST_USD"] = str(float(max_cost_usd))
+    os.environ["STORY_API_MAX_COMPLETION_TOKENS"] = str(int(max_completion_tokens))
+    os.environ["STORY_VLM_MAX_COMPLETION_TOKENS"] = str(int(max_completion_tokens))
+    os.environ.setdefault("STORY_API_TOKEN_PARAM", "max_tokens")
+    os.environ.setdefault("STORY_VLM_TOKEN_PARAM", "max_tokens")
+    if disable_thinking:
+        os.environ["STORY_VLM_REQUEST_PROFILE"] = "video_rsi"
+        # Ensure flat thinking flags are not opted-in
+        os.environ.pop("STORY_VLM_SEND_THINKING", None)
+        os.environ.pop("STORY_VLM_ENABLE_THINKING", None)
+        os.environ.pop("STORY_VLM_THINKING_BUDGET", None)
+    after = {k: os.environ.get(k) for k in before}
+    return {"before": before, "after": after, "disable_thinking": disable_thinking}
+
+
+def preview_effective_vision_request(
+    *,
+    max_calls: int = 3,
+    max_cost_usd: float = 0.5,
+    max_completion_tokens: int = 2048,
+) -> Dict[str, Any]:
+    """Build a scrubbed chat/completions body audit (no messages, no key, no HTTP)."""
+    api = ApiProvider(
+        force_mock=True,
+        max_calls=max_calls,
+        max_cost_usd=max_cost_usd,
+        max_completion_tokens=max_completion_tokens,
+        required_roles=("vision",),
+    )
+    cfg = api.configs["vision"]
+    # Minimal dummy messages for body shape only
+    _body, audit = api.build_chat_request_body(
+        cfg,
+        messages=[{"role": "user", "content": "ping"}],
+        temperature=float(cfg.default_temperature if cfg.default_temperature is not None else 0.0),
+    )
+    # Drop any accidental content leakage
+    return {
+        "vision_endpoint": cfg.to_dict(),
+        "effective_output_token_limit": api.effective_output_token_limit(cfg),
+        "global_caps": {
+            "max_calls": api.max_calls,
+            "max_cost_usd": api.max_cost_usd,
+            "max_completion_tokens": api.max_completion_tokens,
+        },
+        "request_body_audit": audit,
+        "compat_checks": {
+            "sends_both_token_params": audit.get("sends_both_token_params"),
+            "sends_both_thinking_formats": audit.get("sends_both_thinking_formats"),
+            "thinking_disabled_object": audit.get("thinking_object_disabled_sent"),
+            "flat_thinking_sent": audit.get("thinking_params_sent"),
+            "token_param_sent": audit.get("token_param_sent"),
+            "token_limit_sent": audit.get("token_limit_sent"),
+            "stream_false": audit.get("stream_sent") is False,
+            "paratera_thinking_object_documented": audit.get("paratera_thinking_object_documented"),
+            "vendor_note": (
+                "video_rsi sends max_tokens + thinking={type:disabled} + stream=false; "
+                "Paratera docs do not document thinking object — profile is opt-in offline-safe."
+            ),
+        },
+        "http_requests_sent": 0,
+    }
+
+
 def scrub_config_audit(
     *,
     max_calls: int = 3,
     max_cost_usd: float = 0.5,
     max_completion_tokens: int = 2048,
     tcp_probe: bool = True,
+    apply_overrides: bool = True,
 ) -> Dict[str, Any]:
     """Zero-HTTP config check: models, caps, key presence, optional TCP. No secrets."""
+    env_override_report = None
+    if apply_overrides:
+        env_override_report = apply_trial_env_overrides(
+            max_calls=max_calls,
+            max_cost_usd=max_cost_usd,
+            max_completion_tokens=max_completion_tokens,
+            disable_thinking=True,
+        )
     configs = load_endpoint_configs()
     caps = resolve_effective_caps(
         max_calls=max_calls,
@@ -72,8 +170,14 @@ def scrub_config_audit(
         max_calls=max_calls,
         max_cost_usd=max_cost_usd,
         max_completion_tokens=max_completion_tokens,
+        required_roles=("vision",),
     )
     status = api.status()
+    req_preview = preview_effective_vision_request(
+        max_calls=max_calls,
+        max_cost_usd=max_cost_usd,
+        max_completion_tokens=max_completion_tokens,
+    )
     net: List[Dict[str, Any]] = []
     if tcp_probe:
         seen = set()
@@ -100,12 +204,14 @@ def scrub_config_audit(
                 })
     vision = status["vision"]
     planner = status["planner"]
+    compat = req_preview.get("compat_checks") or {}
     return {
         "schema": "v3_api_config_audit_zero_http_v1",
         "http_requests_sent": 0,
         "api_enabled_env": api_enabled(),
         "STORY_API_ENABLE": os.environ.get("STORY_API_ENABLE"),
         "STORY_API_SMOKE": os.environ.get("STORY_API_SMOKE"),
+        "env_overrides": env_override_report,
         "models": {"planner": planner.get("model"), "vision": vision.get("model")},
         "base_urls": {
             "planner": planner.get("base_url"),
@@ -118,13 +224,17 @@ def scrub_config_audit(
         "vision": {
             "request_profile": vision.get("request_profile"),
             "token_param": vision.get("token_param"),
-            "max_completion_tokens": vision.get("max_completion_tokens"),
+            "max_completion_tokens_role": vision.get("max_completion_tokens"),
             "send_thinking_params": vision.get("send_thinking_params"),
             "thinking_object_disabled": vision.get("thinking_object_disabled"),
             "default_temperature": vision.get("default_temperature"),
             "configured": bool(configs["vision"].configured()),
+            "effective_output_token_limit": req_preview.get("effective_output_token_limit"),
         },
         "effective_caps": caps,
+        "provider_global_caps": req_preview.get("global_caps"),
+        "request_body_audit": req_preview.get("request_body_audit"),
+        "compat_checks": compat,
         "network_tcp_probes": net,
         "provider_status_mode": status.get("mode"),
         "cost_disclaimer": COST_DISCLAIMER,
@@ -132,21 +242,33 @@ def scrub_config_audit(
         "ready_for_real_when_approved": bool(
             configs["vision"].configured()
             and vision.get("api_key_set")
-            and any(x.get("tcp_443") == "ok" for x in net)
+            and (
+                (not tcp_probe)
+                or any(x.get("tcp_443") == "ok" for x in net)
+            )
+            and compat.get("token_limit_sent") == max_completion_tokens
+            and compat.get("stream_false") is True
+            and not compat.get("sends_both_token_params")
+            and not compat.get("sends_both_thinking_formats")
+            and (
+                compat.get("thinking_disabled_object") is True
+                or compat.get("flat_thinking_sent") is False
+            )
         ),
         "recommendations": {
             "max_http_calls_first_trial": 3,
             "disable_thinking": True,
-            "prefer_STORY_VLM_REQUEST_PROFILE": "video_rsi",
-            "suggested_max_completion_tokens": 2048,
-            "note_env_cap_tight": (
-                "If STORY_API_MAX_COMPLETION_TOKENS is very low (e.g. 256), "
-                "raise it for vision JSON or responses may truncate / empty_json."
-            ),
+            "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+            "STORY_API_MAX_COMPLETION_TOKENS": 2048,
+            "STORY_VLM_MAX_COMPLETION_TOKENS": 2048,
+            "STORY_API_MAX_CALLS": 3,
+            "STORY_API_MAX_COST_USD": 0.5,
+            "first_real_run_observation_only": True,
         },
         "note": (
             "Zero HTTP chat/completions. Keys never printed. "
-            "Real billed vision requires --enable-real-api AND --i-approve-budget."
+            "Real billed vision requires --enable-real-api AND --i-approve-budget. "
+            "First real trial keeps agent_auto_verified=false (observation_only)."
         ),
     }
 
@@ -160,15 +282,18 @@ def make_api(
     max_completion_tokens: int = 2048,
 ) -> ApiProvider:
     """Build ApiProvider. Real mode only when both enable flags are set."""
+    apply_trial_env_overrides(
+        max_calls=max_calls,
+        max_cost_usd=max_cost_usd,
+        max_completion_tokens=max_completion_tokens,
+        disable_thinking=True,
+    )
     if enable_real_api and not i_approve_budget:
         raise ApiConfigError(
             "Refusing real API: --enable-real-api set but --i-approve-budget missing"
         )
     if enable_real_api and i_approve_budget:
-        # Ensure STORY_API_ENABLE so require_real path is consistent with V2
-        os.environ.setdefault("STORY_API_ENABLE", "1")
-        # Prefer thinking disabled for VLM unless user already set profile
-        os.environ.setdefault("STORY_VLM_REQUEST_PROFILE", "video_rsi")
+        os.environ["STORY_API_ENABLE"] = "1"
         return ApiProvider(
             force_mock=False,
             require_real=True,
@@ -419,6 +544,14 @@ def call_goal_verify_round(
         }
 
 
+def _frame_time_sec(frame: Dict[str, Any]) -> Optional[float]:
+    for k in ("actual_media_sec", "requested_media_sec"):
+        v = frame.get(k)
+        if isinstance(v, (int, float)):
+            return float(v)
+    return None
+
+
 def cross_check_visible_evidence(
     *,
     vlm_inference: Optional[Dict[str, Any]],
@@ -426,18 +559,35 @@ def cross_check_visible_evidence(
     score_bounds: Optional[Dict[str, Any]],
     media_in: float,
     media_out: float,
+    continuous_clip_ok: bool = False,
+    continuous_clip_path: Optional[str] = None,
 ) -> Dict[str, Any]:
-    """Separate visible/score constraints from VLM claims. Never trust VLM alone."""
+    """Separate visible/score constraints from VLM claims. Never trust VLM alone.
+
+    Extra hard checks beyond shot/net booleans + legal frame_ids:
+    - shot_sec <= net_sec (PTS / requested media time order)
+    - continuous single-source clip evidence when available
+    - cited frame files must exist (visibility)
+    - LIVE required; replay / unknown blocks first-live verify
+    - score-order: candidate must not be post first_after board
+    """
     gaps: List[str] = []
-    ok_bits: Dict[str, bool] = {
+    by_id = {str(f["frame_id"]): f for f in frames if f.get("frame_id")}
+    ok_bits: Dict[str, Any] = {
         "frames_have_pts_or_requested": bool(frames),
         "window_nonempty": float(media_out) > float(media_in) + 0.2,
+        "continuous_clip_ok": bool(continuous_clip_ok),
+        "continuous_clip_path": continuous_clip_path,
+        "shot_before_net_ok": None,
+        "cited_frames_exist": None,
+        "replay_excluded": None,
+        "score_order_ok": None,
     }
     if not frames:
         gaps.append("no_frames")
+
     last_b = (score_bounds or {}).get("last_before_obs") or {}
     first_a = (score_bounds or {}).get("first_after_obs") or {}
-    # Action window should not start after first_after board (post-score risk)
     if first_a.get("media_sec") is not None and media_in >= float(first_a["media_sec"]) + 2.0:
         gaps.append("candidate_starts_after_first_after_score")
         ok_bits["score_order_ok"] = False
@@ -447,21 +597,75 @@ def cross_check_visible_evidence(
         gaps.append("candidate_ends_well_before_last_before_score")
 
     inf = vlm_inference or {}
-    # VLM claims recorded but not accepted as facts yet
     claimed_shot = inf.get("observed_shot") is True
     claimed_net = inf.get("observed_net") is True
-    claimed_live = inf.get("live_or_replay") == "live"
+    live_label = str(inf.get("live_or_replay") or "unknown").lower()
+    claimed_live = live_label == "live"
     claimed_team = inf.get("attacking_team_match") is True
-    cited = set(inf.get("shot_frame_ids") or []) | set(inf.get("net_frame_ids") or [])
-    allowed = {f["frame_id"] for f in frames}
+    shot_ids = [str(x) for x in (inf.get("shot_frame_ids") or [])]
+    net_ids = [str(x) for x in (inf.get("net_frame_ids") or [])]
+    cited = set(shot_ids) | set(net_ids) | {str(x) for x in (inf.get("frame_ids") or [])}
+    allowed = set(by_id)
+
+    # --- replay exclusion ---
+    if live_label == "replay":
+        gaps.append("replay_not_first_live")
+        ok_bits["replay_excluded"] = False
+    elif live_label == "unknown":
+        gaps.append("live_or_replay_unknown")
+        ok_bits["replay_excluded"] = False
+    else:
+        ok_bits["replay_excluded"] = claimed_live
+
     if cited - allowed:
         gaps.append("vlm_cited_unknown_frame_ids")
-    if claimed_shot and not (inf.get("shot_frame_ids") or []):
+
+    # --- evidence visibility: cited paths must exist ---
+    missing_files = []
+    for fid in sorted(cited & allowed):
+        p = Path(str(by_id[fid].get("path") or ""))
+        if not p.is_file():
+            missing_files.append(fid)
+    if missing_files:
+        gaps.append("cited_frame_files_missing")
+        ok_bits["cited_frames_exist"] = False
+    else:
+        ok_bits["cited_frames_exist"] = bool(cited) or not (claimed_shot or claimed_net)
+
+    if claimed_shot and not shot_ids:
         gaps.append("shot_claimed_without_shot_frame_ids")
         claimed_shot = False
-    if claimed_net and not (inf.get("net_frame_ids") or []):
+    if claimed_net and not net_ids:
         gaps.append("net_claimed_without_net_frame_ids")
         claimed_net = False
+
+    # --- shot → net PTS order ---
+    shot_sec = None
+    net_sec = None
+    if shot_ids and shot_ids[0] in by_id:
+        shot_sec = _frame_time_sec(by_id[shot_ids[0]])
+    if net_ids and net_ids[0] in by_id:
+        net_sec = _frame_time_sec(by_id[net_ids[0]])
+    if claimed_shot and claimed_net:
+        if shot_sec is None or net_sec is None:
+            gaps.append("shot_or_net_pts_unavailable")
+            ok_bits["shot_before_net_ok"] = False
+        elif shot_sec > net_sec + 1e-3:
+            gaps.append("shot_pts_after_net_pts")
+            ok_bits["shot_before_net_ok"] = False
+        else:
+            ok_bits["shot_before_net_ok"] = True
+            # Both times must lie inside candidate window (+small pad)
+            pad = 0.75
+            if not (media_in - pad <= shot_sec <= media_out + pad):
+                gaps.append("shot_sec_outside_candidate_window")
+            if not (media_in - pad <= net_sec <= media_out + pad):
+                gaps.append("net_sec_outside_candidate_window")
+
+    # --- continuous clip ---
+    if not continuous_clip_ok:
+        gaps.append("continuous_clip_not_confirmed")
+
     if inf.get("uncertain"):
         gaps.append("vlm_listed_uncertainties")
     if not claimed_net:
@@ -472,40 +676,52 @@ def cross_check_visible_evidence(
         gaps.append("live_unconfirmed")
     if not claimed_team:
         gaps.append("attacking_team_unconfirmed")
+    if inf.get("claims_continuous_live") is not True:
+        gaps.append("vlm_did_not_claim_continuous_live")
 
-    # High confidence alone never enough
     conf = inf.get("confidence")
-    auto_upgrade_blocked = True
     reasons_block = [
+        "vlm_booleans_alone_insufficient",
+        "require_shot_net_pts_order",
+        "require_continuous_clip",
+        "require_cited_frame_files_exist",
+        "require_replay_excluded_live_only",
+        "require_score_order_and_empty_uncertain",
         "possible_first_live_cannot_auto_upgrade_from_vlm_confidence",
-        "require_shot_and_net_frame_citations_plus_live_plus_team_plus_score_order",
+        "first_real_trial_forces_observation_only",
     ]
     accept_verified = (
         claimed_shot
         and claimed_net
         and claimed_live
         and claimed_team
-        and ok_bits.get("score_order_ok")
+        and ok_bits.get("score_order_ok") is True
+        and ok_bits.get("shot_before_net_ok") is True
+        and ok_bits.get("cited_frames_exist") is True
+        and ok_bits.get("replay_excluded") is True
+        and ok_bits.get("continuous_clip_ok") is True
         and not (cited - allowed)
-        and not gaps  # strict: any uncertainty blocks auto verify
+        and not gaps
     )
-    # Even if accept_verified structureally true, mock mode must not claim automated verify
     return {
         "vlm_claims": {
             "observed_shot": claimed_shot,
             "observed_net": claimed_net,
-            "live_or_replay": inf.get("live_or_replay"),
+            "live_or_replay": live_label,
             "attacking_team_match": claimed_team,
             "confidence": conf,
+            "claims_continuous_live": inf.get("claims_continuous_live"),
         },
+        "derived_times": {"shot_sec": shot_sec, "net_sec": net_sec},
         "visible_crosscheck": ok_bits,
         "evidence_gaps": gaps,
-        "auto_upgrade_from_confidence_blocked": auto_upgrade_blocked,
+        "auto_upgrade_from_confidence_blocked": True,
         "block_reasons": reasons_block,
         "structurally_ready_for_automated_verify": bool(accept_verified),
         "note": (
-            "VLM inference ≠ verified fact. Cross-check must pass AND provider_mode=real "
-            "AND automated semantic log written before Gate may accept automated_video_verified."
+            "VLM inference ≠ verified fact. Legal frame_ids + shot/net=true are NOT enough. "
+            "Need shot→net PTS order, continuous clip, visible cited frames, LIVE (not replay), "
+            "score-order, and empty uncertain. First real trial keeps observation_only."
         ),
     }
 
@@ -528,8 +744,18 @@ def run_remote_vlm_verification(
     max_completion_tokens: int = 2048,
     round1_frames: int = 8,
     round2_frames: int = 12,
+    observation_only: bool = True,
+    continuous_clip_path: Optional[Path] = None,
+    run_gate: bool = False,
 ) -> Dict[str, Any]:
-    """Multi-round dense verify inside candidate window only (no full-match expand)."""
+    """Multi-round dense verify inside candidate window only (no full-match expand).
+
+    ``observation_only=True`` (default for first real trial) forces
+    ``agent_auto_verified=false`` even if structural checks would pass.
+    ``run_gate`` must stay False — this module never opens V2 Gate.
+    """
+    if run_gate:
+        raise RuntimeError("remote_vlm_verify refuses to open V2 Gate (run_gate must be false)")
     dest = Path(out_dir)
     if dest.exists() and any(dest.iterdir()):
         raise RuntimeError(f"Refusing nonempty VLM verify out dir: {dest}")
@@ -540,6 +766,7 @@ def run_remote_vlm_verification(
         max_cost_usd=max_cost_usd,
         max_completion_tokens=max_completion_tokens,
         tcp_probe=True,
+        apply_overrides=True,
     )
     dump(dest / "api_config_audit_zero_http.json", audit)
 
@@ -552,6 +779,38 @@ def run_remote_vlm_verification(
     )
     vision = VisionProvider(api=api, force_mock=bool(api.force_mock))
     dump(dest / "api_provider_status.json", api.status())
+    dump(dest / "effective_vision_request_preview.json", preview_effective_vision_request(
+        max_calls=max_calls,
+        max_cost_usd=max_cost_usd,
+        max_completion_tokens=max_completion_tokens,
+    ))
+
+    # Continuous clip: reuse provided accurate cut or encode one for continuity proof
+    from .first_live_localize import cut_accurate_clip
+
+    clip_path = Path(continuous_clip_path) if continuous_clip_path else (
+        dest / "clips" / f"{role}_{int(media_in)}_{int(media_out)}_continuous_accurate.mp4"
+    )
+    continuous_ok = False
+    continuous_meta: Dict[str, Any]
+    if clip_path.is_file() and clip_path.stat().st_size > 1000:
+        continuous_ok = True
+        continuous_meta = {
+            "ok": True,
+            "path": str(clip_path),
+            "reused_existing": True,
+            "continuous_source": True,
+            "stitched": False,
+        }
+    else:
+        continuous_meta = cut_accurate_clip(
+            video=video,
+            media_in=float(media_in),
+            media_out=float(media_out),
+            out_mp4=clip_path,
+        )
+        continuous_ok = bool(continuous_meta.get("ok"))
+    dump(dest / "continuous_clip.json", continuous_meta)
 
     gap_id = f"v3_p3_{role}_goal_verify"
     frames_dir = dest / "frames"
@@ -647,20 +906,26 @@ def run_remote_vlm_verification(
         score_bounds=score_bounds,
         media_in=media_in,
         media_out=media_out,
+        continuous_clip_ok=continuous_ok,
+        continuous_clip_path=str(clip_path) if continuous_ok else None,
     )
 
     usage = api.stats.summary()
     provider_mode = "mock" if api.force_mock or not api.require_real else "real"
-    # Automated verify ONLY in real mode with structural readiness and no gaps
+    # Structural readiness is diagnostic only on first trial.
+    structurally_ready = bool(cross.get("structurally_ready_for_automated_verify"))
     can_auto = (
-        provider_mode == "real"
-        and cross.get("structurally_ready_for_automated_verify")
+        (not observation_only)
+        and provider_mode == "real"
+        and structurally_ready
         and not cross.get("evidence_gaps")
     )
+    derived = (cross.get("derived_times") or {})
     semantic_log = {
         "schema": "v3_automated_semantic_log_v1",
         "role": role,
         "provider_mode": provider_mode,
+        "observation_only": bool(observation_only),
         "best_round": best_round,
         "vlm_inference": best_inf,
         "visible_crosscheck": cross,
@@ -669,44 +934,52 @@ def run_remote_vlm_verification(
         "observed_net": False,
         "live": False,
         "attacking_team_match": False,
-        "continuous": False,
-        "shot_sec": None,
-        "net_sec": None,
-        "note": "Defaults fail-closed; only flipped when can_auto",
+        "continuous": continuous_ok,
+        "shot_sec": derived.get("shot_sec"),
+        "net_sec": derived.get("net_sec"),
+        "continuous_clip_path": str(clip_path) if continuous_ok else None,
+        "gate_opened": False,
+        "note": (
+            "Fail-closed. First real trial uses observation_only=true → "
+            "agent_auto_verified stays false; V2 Gate is never opened here."
+        ),
     }
     if can_auto and best_inf:
-        # Map cited frames to PTS
-        by_id = {f["frame_id"]: f for f in all_frames}
-        shot_ids = best_inf.get("shot_frame_ids") or []
-        net_ids = best_inf.get("net_frame_ids") or []
-        shot_sec = None
-        net_sec = None
-        if shot_ids and shot_ids[0] in by_id:
-            fr = by_id[shot_ids[0]]
-            shot_sec = fr.get("actual_media_sec") or fr.get("requested_media_sec")
-        if net_ids and net_ids[0] in by_id:
-            fr = by_id[net_ids[0]]
-            net_sec = fr.get("actual_media_sec") or fr.get("requested_media_sec")
         semantic_log.update({
             "verified_first_live": True,
             "observed_shot": True,
             "observed_net": True,
             "live": True,
             "attacking_team_match": True,
-            "continuous": bool(best_inf.get("claims_continuous_live")),
-            "shot_sec": shot_sec,
-            "net_sec": net_sec,
+            "continuous": continuous_ok and bool(best_inf.get("claims_continuous_live")),
             "semantic_verification_class": AUTOMATED,
         })
     else:
         semantic_log["semantic_verification_class"] = NOT_VERIFIED
-        semantic_log["remain_unresolved_reason"] = (
-            "mock_path" if provider_mode != "real"
-            else ("crosscheck_gaps:" + ",".join(cross.get("evidence_gaps") or ["unknown"]))
-        )
+        reasons = []
+        if observation_only:
+            reasons.append("observation_only_first_trial")
+        if provider_mode != "real":
+            reasons.append("mock_or_non_real_provider")
+        if cross.get("evidence_gaps"):
+            reasons.append("crosscheck_gaps:" + ",".join(cross.get("evidence_gaps") or []))
+        if not structurally_ready:
+            reasons.append("structurally_not_ready")
+        semantic_log["remain_unresolved_reason"] = ";".join(reasons) or "unresolved"
 
     log_path = dest / "automated_semantic_log.json"
     dump(log_path, semantic_log)
+
+    # Keep possible_first_live when net still unclear / observation-only
+    net_clear = bool((best_inf or {}).get("observed_net")) and "observed_net_unconfirmed" not in (
+        cross.get("evidence_gaps") or []
+    )
+    if semantic_log.get("verified_first_live"):
+        label = "verified_first_live"
+        vstatus = "verified_first_live"
+    else:
+        label = "possible_first_live"
+        vstatus = "unresolved"
 
     summary = {
         "schema": "v3_remote_vlm_verify_summary_v1",
@@ -715,6 +988,7 @@ def run_remote_vlm_verification(
         "media_out": media_out,
         "enable_real_api": enable_real_api,
         "i_approve_budget": i_approve_budget,
+        "observation_only": bool(observation_only),
         "provider_mode": provider_mode,
         "n_rounds": len(rounds),
         "rounds": [
@@ -723,25 +997,32 @@ def run_remote_vlm_verification(
                 "ok": r.get("ok"),
                 "provider_mode": r.get("provider_mode"),
                 "failure_status": r.get("failure_status"),
+                "message": r.get("message"),
                 "observed_shot": (r.get("vlm_inference") or {}).get("observed_shot"),
                 "observed_net": (r.get("vlm_inference") or {}).get("observed_net"),
                 "live_or_replay": (r.get("vlm_inference") or {}).get("live_or_replay"),
+                "attacking_team_match": (r.get("vlm_inference") or {}).get("attacking_team_match"),
+                "shot_frame_ids": (r.get("vlm_inference") or {}).get("shot_frame_ids"),
+                "net_frame_ids": (r.get("vlm_inference") or {}).get("net_frame_ids"),
+                "cited_frame_ids": r.get("cited_frame_ids"),
+                "uncertain": (r.get("vlm_inference") or {}).get("uncertain"),
                 "confidence": (r.get("vlm_inference") or {}).get("confidence"),
+                "notes": (r.get("vlm_inference") or {}).get("notes"),
                 "usage": r.get("usage"),
                 "est_cost_usd": r.get("est_cost_usd"),
             }
             for r in rounds
         ],
         "crosscheck": cross,
+        "derived_times": derived,
+        "net_clear_after_crosscheck": net_clear,
+        "continuous_clip": continuous_meta,
         "automated_semantic_log_path": str(log_path),
-        "agent_auto_verified": bool(semantic_log.get("verified_first_live")),
-        "verification_status": (
-            "verified_first_live" if semantic_log.get("verified_first_live") else "unresolved"
-        ),
-        "semantic_label": (
-            "verified_first_live" if semantic_log.get("verified_first_live")
-            else "possible_first_live"
-        ),
+        "agent_auto_verified": False if observation_only else bool(semantic_log.get("verified_first_live")),
+        "verification_status": vstatus if not observation_only else "unresolved",
+        "semantic_label": label if not observation_only else "possible_first_live",
+        "structurally_ready_for_automated_verify": structurally_ready,
+        "gate_opened": False,
         "api_usage": usage,
         "http_attempts": usage.get("http_attempts"),
         "output_budget_exceeded": bool(api.status().get("output_budget_exceeded")),
@@ -749,6 +1030,17 @@ def run_remote_vlm_verification(
         "render_ready": False,
         "vision_stats": vision.stats.to_dict(),
         "config_audit_path": str(dest / "api_config_audit_zero_http.json"),
+        "effective_caps": {
+            "max_calls": api.max_calls,
+            "max_cost_usd": api.max_cost_usd,
+            "max_completion_tokens": api.max_completion_tokens,
+            "vision_effective_output_token_limit": api.effective_output_token_limit(
+                api.configs["vision"]
+            ),
+            "vision_request_profile": api.configs["vision"].request_profile,
+            "vision_token_param": api.configs["vision"].token_param,
+            "vision_thinking_object_disabled": api.configs["vision"].thinking_object_disabled,
+        },
     }
     dump(dest / "rounds_full.json", rounds)
     dump(dest / "vlm_verify_summary.json", summary)
