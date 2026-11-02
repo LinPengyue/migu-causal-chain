@@ -231,86 +231,27 @@ def _candidate_buildup(
     predicted: Dict[str, Any], arc: Dict[str, Any], *,
     allowed_events: Sequence[Dict[str, Any]]
 ) -> List[Dict[str, Any]]:
-    """Pick editorial context from real predicted chains, NOT synthetic goal events."""
-    t0 = (arc.get("score_confirmation_sec") or {}).get("deficit")
-    t1 = (arc.get("score_confirmation_sec") or {}).get("equalizer")
-    if t0 is None or t1 is None:
-        return []
-    known = {str(e["event_id"]): e for e in allowed_events if e.get("event_id")}
-    permitted = set(known)
-    candidates = []
-    for chain in predicted["causal_chains"]:
-        if chain.get("last_event") in GOALISH or chain.get("first_event") in GOALISH:
-            continue
-        label = str(chain.get("predicted_label") or "").lower()
-        if any(word in label for word in ("进球", "破门", "入网", "goal")):
-            continue
-        start = float(chain["t0_ms"]) / 1000.0
-        if not float(t0) <= start < float(t1):
-            continue
-        evs = [e for e in chain.get("events") or []
-               if e.get("event_id") and str(e["event_id"]) in permitted
-               and str(e.get("type") or "") not in GOALISH
-               and e.get("t_ms") is not None]
-        if not evs:
-            continue
-        e = evs[-1]
-        raw_event = known.get(str(e["event_id"])) or {}
-        # A guessed strip is not proof of a LIVE broadcast; only use it as
-        # editable context when the underlying event explicitly says LIVE.
-        if raw_event.get("is_replay") is not False or str(
-            raw_event.get("broadcast_phase") or ""
-        ).upper() != "LIVE":
-            continue
-        source_t = raw_event.get("event_time_sec")
-        if source_t is None or abs(float(e["t_ms"]) / 1000.0 - float(source_t)) > 5.0:
-            continue
-        if norm_type(e.get("type")) != norm_type(raw_event.get("event_type")):
-            continue
-        candidates.append({
-            "event_id": str(e["event_id"]), "type": str(e.get("type") or "unknown"),
-            "t_ms": e["t_ms"], "story_role": "蓄力",
-            "source": "predicted_causal", "source_chain_id": chain["chain_id"],
-            "prediction_source": SOURCE, "prediction_confidence": chain.get("confidence"),
-            "verification_status": "unverified", "is_replay": False,
-            "time_provenance": "unverified_predicted_event",
-            "raw_broadcast_phase": "LIVE",
-            "broadcast_phase_source": "raw_event_video_context",
-            "temporal_consistency_checked": True,
-        })
-    # Max 5 diverse chronologically spread candidates. No inferred causal relationship.
-    candidates.sort(key=lambda x: float(x["t_ms"]))
-    if len(candidates) > MAX_BUILDUP:
-        idx = [round(i * (len(candidates) - 1) / (MAX_BUILDUP - 1))
-               for i in range(MAX_BUILDUP)]
-        candidates = [candidates[i] for i in idx]
-    unique = {c["event_id"]: c for c in candidates}
-    return sorted(unique.values(), key=lambda x: float(x["t_ms"]))
+    """Editorial 蓄力 from predicted strips ∩ raw LIVE (see narrative.select_editorial_buildup)."""
+    from .narrative import select_editorial_buildup
+    return select_editorial_buildup(
+        predicted, arc, allowed_events=allowed_events, max_n=MAX_BUILDUP
+    )
 
 
 def _story_view(
     match_id: str, score_path: List[Dict[str, Any]],
-    arc_pack: Dict[str, Any], buildup: List[Dict[str, Any]]
+    arc_pack: Dict[str, Any], buildup: List[Dict[str, Any]],
+    *,
+    opening_score_before: Optional[List[int]] = None,
 ) -> Dict[str, Any]:
-    arc = arc_pack.get("selected_arc")
-    side = arc.get("protagonist_side") if arc else None
-    return {
-        "schema_version": "v3_v1_story_view_v1",
-        "match_id": match_id,
-        "story_tier": "candidate" if arc else "none",
-        "is_candidate": bool(arc), "has_story": False,
-        "protagonist_side": side,
-        "recognition": {"tier": "candidate" if arc else "none",
-                        "protagonist_side": side,
-                        "present": False,
-                        "beats": {"铺垫": [], "蓄力": [x["event_id"] for x in buildup],
-                                  "转折": [], "高潮": [], "收尾": []}},
-        "score_path": score_path,
-        "events": buildup,
-        "no_story_reason": None if arc else arc_pack.get("status"),
-        "note": "V1-compatible structure view; goals remain unresolved.",
-        "render_ready": False,
-    }
+    from .narrative import build_t01_story_view
+    return build_t01_story_view(
+        match_id=match_id,
+        score_path=score_path,
+        arc_pack=arc_pack,
+        buildup=buildup,
+        opening_score_before=opening_score_before,
+    )
 
 
 def _safe_edl(plan: Dict[str, Any]) -> List[Dict[str, Any]]:
@@ -441,7 +382,10 @@ def run_structure(
         predicted, selected, allowed_events=event_bundle["events"]
     ) if selected else []
     score_path = _score_path(timeline)
-    story = _story_view(match_id, score_path, arc_pack, buildup)
+    opening_before = _opening_score_before(selected, score_path) if selected else None
+    story = _story_view(
+        match_id, score_path, arc_pack, buildup, opening_score_before=opening_before
+    )
     # V1 is read-only. Deliberately do NOT supply predicted Goal chains to
     # V1 merge_causal_live_goals: it expects action-time causal truth.
     safe_causal = {"match_id": match_id,
@@ -465,6 +409,13 @@ def run_structure(
     graph["structure_problems"] = errors
     graph["render_ready"] = False
     tasks = _evidence_tasks(selected, edl, score_path=score_path)
+    from .narrative import narrative_completeness_report
+    completeness = narrative_completeness_report(
+        story=story, plan=plan, edl=edl, predicted=predicted,
+        buildup=buildup, tasks=tasks,
+    )
+    # Prefer graph validator flag when available
+    completeness["gates"]["graph_structure_pass"] = bool(ok)
     report = {
         "schema": SCHEMA, "status": "ok_structure_dry_run" if ok and selected else "blocked_structure",
         "match_id": match_id,
@@ -486,14 +437,20 @@ def run_structure(
         "n_video_verified_goals": 0,
         "story_graph_structure_ok": ok,
         "story_graph_problems": errors,
+        "story_semantic_pass": bool(completeness.get("gates", {}).get("story_semantic_pass")),
+        "critical_video_evidence_pass": False,
+        "narrative_completeness_verdict": completeness.get("verdict"),
+        "recognition_beats": (story.get("recognition") or {}).get("beats"),
         "api_calls": 0, "render_ready": False,
         "next": ("v2_targeted_goal_verification" if ok and selected else
                  "audit_predicted_chain_recall_and_story_structure"),
         "input_hashes": hashes,
-        "note": "V3 adaptation / V1 story+graph+EDL dry-run only, not video evidence.",
+        "note": "V3-P2 narrative roles + unresolved goal placeholders; not video-verified cut.",
         "structure_vs_editorial_coverage": {
             "graph_ok": ok,
             "has_buildup_from_predicted_strips": len(buildup) > 0,
+            "story_semantic_pass": bool(completeness.get("gates", {}).get("story_semantic_pass")),
+            "critical_video_evidence_pass": False,
             "warning_if_zero_buildup": (
                 None if buildup else
                 "Zero predicted-strip buildup in deficit→equalizer window; "
@@ -523,6 +480,7 @@ def run_structure(
     dump(out / "story_graph.json", graph)
     dump(out / "candidate_edl.json", edl)
     dump(out / "critical_goal_evidence_tasks.json", tasks)
+    dump(out / "narrative_completeness_report.json", completeness)
     dump(out / "provenance.json", {
         "schema": "v3_provenance_v1", "match_id": match_id,
         "prediction_source": SOURCE, "prediction_mode": hashes["mode"],

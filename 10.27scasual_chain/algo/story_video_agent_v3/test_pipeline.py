@@ -27,6 +27,15 @@ def _events(path: Path, mid: str, scores) -> None:
             "attributes": {"Score_Recognition": [f"{score[0]}:{score[1]}"]},
             "video_context": {"broadcast_phase": "LIVE", "is_replay": False},
         })
+    # Editorial 蓄力 anchor strictly between first deficit (~200) and equalizer (~300)
+    rows.append({
+        "event_id": "event_buildup_shot",
+        "event_type": "Shot",
+        "media_time": {"start_time_sec": 248.0, "end_time_sec": 252.0,
+                       "event_time_sec": 250.0},
+        "attributes": {},
+        "video_context": {"broadcast_phase": "LIVE", "is_replay": False},
+    })
     path.write_text(json.dumps({
         "match_id": mid, "teams": {
             "team_1": {"name": "LeftFC"}, "team_2": {"name": "RightFC"}},
@@ -35,9 +44,26 @@ def _events(path: Path, mid: str, scores) -> None:
 
 
 def _strips(path: Path, mid: str, count: int = 4) -> None:
+    """Place strip windows across score timeline; include deficit→equalizer 蓄力 band.
+
+    Synthetic scores use t=100+100*i, so first-deficit→equalizer is ~(200, 300).
+    """
     chains = []
-    for i in range(count):
-        t = 100 + 15 * i
+    # times chosen so at least one chain sits strictly inside (deficit, equalizer)
+    times = [110, 220, 250, 280, 320][:count]
+    if count > len(times):
+        times = [100 + 20 * i for i in range(count)]
+        times[min(1, count - 1)] = 220
+    for i, t in enumerate(times):
+        eid = f"event_{min(i, 3):06d}"
+        # Map mid-window strips onto score-event ids that exist (event_000001 at t=200, etc.)
+        if 200 < t < 300:
+            eid = "event_buildup_shot"
+            etype = "Shot"
+            et_ms = 250000
+        else:
+            etype = "Pass"
+            et_ms = int(t * 1000)
         chains.append({
             "clip_id": f"clip_{i}",
             "t0_ms": t * 1000, "t1_ms": (t + 5) * 1000,
@@ -45,9 +71,8 @@ def _strips(path: Path, mid: str, count: int = 4) -> None:
             "pred_chain_label_zh": "射门机会",
             "chain_category": "danger",
             "prob_top1": 0.5 + i / (count * 4),
-            "event_ids": [f"event_{i % 4:06d}"],
-            "events": [{"event_id": f"event_{i % 4:06d}",
-                        "type": "射门", "t_ms": t * 1000}],
+            "event_ids": [eid],
+            "events": [{"event_id": eid, "type": etype, "t_ms": et_ms}],
         })
     path.write_text(json.dumps({
         "match_id": mid, "mode": "reinfer_A_original",
@@ -90,6 +115,20 @@ class TestV3Synthetic(unittest.TestCase):
             self.assertTrue(all(g["goal_action_sec"] is None
                                 and g["media_in"] is None
                                 and not g["include_in_cut"] for g in goals))
+            story = json.loads((run / "story_view.json").read_text())
+            beats = (story.get("recognition") or {}).get("beats") or {}
+            for beat in ("铺垫", "蓄力", "转折", "高潮", "收尾"):
+                self.assertTrue(beats.get(beat), msg=f"missing beat {beat}")
+            self.assertTrue(story.get("has_story"))
+            comp = json.loads((run / "narrative_completeness_report.json").read_text())
+            self.assertTrue(comp["role_coverage_complete"])
+            self.assertFalse(comp["gates"]["critical_video_evidence_pass"])
+            self.assertFalse(comp["render_ready"])
+            # Goal narrative placeholders must not invent action times
+            placeholders = [e for e in story["events"] if e.get("narrative_placeholder")]
+            self.assertGreaterEqual(len(placeholders), 3)
+            self.assertTrue(all(p.get("goal_action_sec") is None for p in placeholders
+                                if p.get("critical_goal_role")))
 
     def test_b_selects_right_last_arc_not_left_earlier_arc(self):
         with tempfile.TemporaryDirectory() as tmp:
