@@ -152,6 +152,7 @@ def _task_for_issue(
             "target_segment_id": None,
             "evidence_status": "UNRESOLVED_TARGET",
             "risk": "issue_does_not_bind_to_single_existing_segment",
+            "requires_video_evidence": False,
         })
         return base
     start, end = _num(row.get("media_in")), _num(row.get("media_out"))
@@ -212,6 +213,9 @@ def select_ids(raw: Dict[str, Any], candidates: Sequence[Dict[str, Any]]) -> Lis
         raise ValueError("model suggested non-existent task")
     if len(values) != len(set(values)):
         raise ValueError("duplicate model-selected task IDs")
+    mandatory_p0 = [x["task_id"] for x in candidates if x["severity"] == "P0"][:MAX_TASKS]
+    if not set(mandatory_p0).issubset(values):
+        raise ValueError("cannot skip unresolved P0 repair tasks")
     return values
 
 
@@ -244,7 +248,7 @@ def compile_proposal(
         "source_render_ready": False,
         "render_ready": False,
         "edl_modified": False,
-        "requires_stage3_video_evidence": bool(selected),
+        "requires_stage3_video_evidence": any(t["search_windows"] for t in selected),
         "stage2_status": "PROPOSAL_ONLY",
         "release_decision": "NOT_AUTHORIZED",
         "max_revision_rounds_in_later_stage": 3,
