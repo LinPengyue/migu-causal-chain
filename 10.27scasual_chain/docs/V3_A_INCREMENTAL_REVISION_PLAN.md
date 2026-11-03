@@ -18,7 +18,7 @@ V3-A adds a constrained, evidence-based repair layer: Planner reviews story gaps
 
 No model observation alone grants ground truth, precise timestamps or production release.
 
-## Stage 1: code committed; local runs and empirical audit pending
+## Stage 1: real-run audit completed and confirmed by Cursor (2026-11-03)
 
 Read-only module:
 - algo/story_video_agent_v3/quality_audit.py
@@ -47,9 +47,37 @@ Read-only real-run command (use actual $RUN_DIR):
 
     PYTHONPATH=10.27scasual_chain/algo python -m story_video_agent_v3.quality_audit --phase5-dir "$RUN_DIR/04_phase5" --rendered-video "$RUN_DIR/04_phase5/story_qc.mp4" --out "$RUN_DIR/v3a_quality_audit.json"
 
-If the video is missing, omit --rendered-video. This stage neither modifies EDL nor triggers paid API. Run on A/B/C/France and manually verify representative findings. Report failures, false positives and false negatives; commit/push is not evidence that tests passed.
+If the video is missing, omit --rendered-video. This stage neither modifies EDL nor triggers paid API. Cursor stage-1 verification: 10/10 tests passed on A/B/C/France artifacts; A/B/C structural proxy passed but remained NOT_AUTHORIZED. France failed with P0 missing opponent-opening goal action (coverage 66.7). Title-card freezes are P2 warnings, not proven corruption. Full details in docs/V3_A_STAGE1_EVALUATION.md at commit 68430e8.
 
-## Stage 2: constrained Planner (not implemented yet)
+## Stage 2: constrained Planner proposal-only implementation committed; real-run verification pending
+
+
+### Stage-2 first increment (already coded)
+
+Files:
+- algo/story_video_agent_v3/planner_stage2.py
+- tests/test_v3a_planner_stage2.py
+
+Scope: turn Stage-1 concrete P0/P1 issues into bounded video-evidence tasks, using T01 selected-arc score anchors and immutable existing EDL references. France P0 creates a request to find the opponent opening LIVE goal action, with a bounded lookback from the **score-confirmation** timestamp; it does **not** trust an unverified Goal atom or claim any recovered goal.
+
+Default is deterministic offline (no API). Optional LLM may only select/order IDs from the trusted task set; it cannot invent new events, times or edits. Real HTTP is gated by both \`--enable-real-llm\` and \`--approve-api-cost\` together with \`STORY_API_ENABLE=1\`. DO NOT set these for initial checks.
+
+Local tests:
+
+    PYTHONPATH=10.27scasual_chain/algo python -m unittest discover -s 10.27scasual_chain/tests -p 'test_v3a_planner_stage2.py' -v
+
+Run offline on an existing unmodified Phase5 output (example with the FR run directory):
+
+    PYTHONPATH=10.27scasual_chain/algo python -m story_video_agent_v3.planner_stage2 --phase5-dir "$RUN_DIR/04_phase5" --out "$RUN_DIR/v3a_stage2_planner_proposal.json"
+
+For A/B phase5_p1_polish, set \`--phase5-dir\` to its actual folder. The audit file defaults to \`$PHASE5/v3a_quality_audit.json\`; use \`--audit\` for an alternate path. Existing proposal output is never overwritten.
+
+Outputs: \`selected_tasks\`, source SHA-256, bounded search windows, confidence/evidence status UNVERIFIED, and hard gates. Every proposal has \`edl_modified=false\`, \`render_ready=false\`, \`release_decision=NOT_AUTHORIZED\`. Search windows are hypotheses bound to score confirmation, never proof of a first LIVE goal.
+
+Validation gate: re-run 10 Stage-1 and 11 Stage-2 tests; then run the offline Planner on A/B/C/FR. Expected FR targeted request and no P2 title-freeze-induced repair. Check predicted search windows against source video duration before Stage-3 tool dispatch.
+
+This first increment is **not yet full LLM narrative composition**. Stage-2 next increment will add score/causal-aware story-revision intents and an explicit controlled patch contract, still subject to independent evidence and no mutation of the frozen V3-R result.
+
 
 Inputs: T01 selected arc, score path, predicted causal chain, event provenance, current EDL, verifier's concrete issues.
 
@@ -83,4 +111,4 @@ Every revision must identify its target defect, record before/after evidence and
 
 ## Next gate
 
-Run and validate Stage-1 audit on actual untouched V3-R outputs, then design/test constrained Planner patches on the development branch. Preserve real V3-R vs V3-A comparison under the same input and matched budgets.
+Stage-1 is audited. Next require local Stage-2 unit tests and four-match offline proposals; only then add evidence search or Planner patch application. Preserve V3-R baseline and compare matched-budget revisions. No official release claims.
