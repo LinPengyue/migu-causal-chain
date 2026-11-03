@@ -102,11 +102,12 @@ class V3APlannerStage2Tests(unittest.TestCase):
             self.assertEqual("issue_000", out["selected_tasks"][0]["task_id"])
             self.assertFalse(out["edl_modified"])
 
-    def test_empty_model_selection_does_not_fabricate_repairs(self):
+    def test_empty_model_selection_cannot_skip_p0(self):
         s, p, e, a = example()
         out = compile_proposal(s, p, e, a, llm_response={"selected_task_ids": []})
-        self.assertEqual([], out["selected_tasks"])
-        self.assertEqual("validated_llm_selection", out["mode"])
+        self.assertEqual(1, len(out["selected_tasks"]))
+        self.assertEqual("rule_fallback", out["mode"])
+        self.assertIn("cannot skip unresolved P0", out["mode_reason"])
         self.assertEqual(1, out["candidate_task_count"])
 
     def test_cross_match_leakage_rejected(self):
