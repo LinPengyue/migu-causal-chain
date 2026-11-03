@@ -23,7 +23,8 @@ DECODE_ERROR = re.compile(
     re.IGNORECASE,
 )
 BLACK = re.compile(r"black_start:([0-9.]+)\s+black_end:([0-9.]+)")
-FREEZE = re.compile(r"freeze_start:\s*([0-9.]+).*?freeze_end:\s*([0-9.]+)", re.DOTALL)
+FREEZE_START = re.compile(r"freeze_start:\s*([0-9.]+)")
+FREEZE_END = re.compile(r"freeze_end:\s*([0-9.]+)")
 
 
 def _number(value: Any) -> Optional[float]:
@@ -75,6 +76,18 @@ def _issue(kind: str, severity: str, target: str, detail: str) -> Dict[str, str]
     }
 
 
+def _freeze_intervals(log: str, duration: float) -> List[Dict[str, float]]:
+    """Include trailing freeze without an end event; it can be an intentional end card."""
+    starts = [float(x) for x in FREEZE_START.findall(log)]
+    ends = [float(x) for x in FREEZE_END.findall(log)]
+    intervals = []
+    for i, start in enumerate(starts):
+        end = ends[i] if i < len(ends) else duration
+        if end >= start:
+            intervals.append({"start": start, "end": round(end, 3)})
+    return intervals
+
+
 def scan_rendered_video(path: Optional[Path]) -> Dict[str, Any]:
     """Optional technical screening of rendered MP4; not semantic/visual certification.
 
@@ -108,7 +121,7 @@ def scan_rendered_video(path: Optional[Path]) -> Dict[str, Any]:
         log = run.stderr or ""
         errors = [line.strip()[:240] for line in log.splitlines() if DECODE_ERROR.search(line)]
         black = [{"start": float(a), "end": float(b)} for a, b in BLACK.findall(log)]
-        freezes = [{"start": float(a), "end": float(b)} for a, b in FREEZE.findall(log)]
+        freezes = _freeze_intervals(log, duration)
         return {
             "status": "SCREENED" if run.returncode == 0 else "SCAN_FAILED",
             "score": max(0, 100 - min(100, 25 * len(errors))) if run.returncode == 0 else None,
