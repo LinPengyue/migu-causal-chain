@@ -11,7 +11,6 @@ import argparse
 import hashlib
 import json
 import math
-import os
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 
@@ -167,9 +166,7 @@ def _task_for_issue(
         }],
     })
     if start is not None and end is not None and end > start:
-        midpoint = (start + end) / 2
-        base["search_windows"] = _intervals(midpoint)[:2]
-        # Keep inspected windows near source cut, not blindly seek 180s back.
+        # Inspect near source cut; no 180-second search for an existing segment.
         base["search_windows"] = [
             {"start": round(max(0.0, start - 4.0), 3),
              "end": round(min(start + MAX_WINDOW_SPAN_SEC, end + 4.0), 3)}
