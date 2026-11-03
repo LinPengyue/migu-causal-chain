@@ -60,7 +60,7 @@ Files:
 
 Scope: turn Stage-1 concrete P0/P1 issues into bounded video-evidence tasks, using T01 selected-arc score anchors and immutable existing EDL references. France P0 creates a request to find the opponent opening LIVE goal action, with a bounded lookback from the **score-confirmation** timestamp; it does **not** trust an unverified Goal atom or claim any recovered goal.
 
-Default is deterministic offline (no API). Optional LLM may only select/order IDs from the trusted task set; it cannot invent new events, times or edits. Real HTTP is gated by both \`--enable-real-llm\` and \`--approve-api-cost\` together with \`STORY_API_ENABLE=1\`. DO NOT set these for initial checks.
+Default is deterministic offline (no API). Optional LLM may only select/order IDs from the trusted task set; it cannot invent new events, times or edits, and must not omit a pending P0 task (otherwise deterministic fallback). Real HTTP is gated by both \`--enable-real-llm\` and \`--approve-api-cost\` together with \`STORY_API_ENABLE=1\`. DO NOT set these for initial checks.
 
 Local tests:
 
