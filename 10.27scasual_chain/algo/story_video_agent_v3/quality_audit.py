@@ -40,7 +40,7 @@ def _number(value: Any) -> Optional[float]:
 
 def _clip(row: Dict[str, Any]) -> bool:
     start, end = _number(row.get("media_in")), _number(row.get("media_out"))
-    return bool(row.get("include_in_cut", True)) and start is not None and end is not None and end > start
+    return bool(row.get("include_in_cut", True)) and start is not None and end is not None and start >= 0 and end > start
 
 
 def _goal(row: Dict[str, Any]) -> bool:
@@ -69,6 +69,7 @@ def _issue(kind: str, severity: str, target: str, detail: str) -> Dict[str, str]
             "beat_order_inversion": "review_narrative_order",
             "duplicated_goal_event": "resolve_event_to_goal_mapping",
             "technical_decode_error": "inspect_source_and_render",
+            "known_integrity_failure": "repair_or_replace_corrupt_clip",
             "possible_image_anomaly": "manually_review_flagged_intervals",
         }.get(kind, "investigate"),
     }
@@ -163,6 +164,14 @@ def evaluate(
         issues.append(_issue("goal_window_incomplete", "P0", ",".join(incomplete[:8]),
                              "Goal action is explicitly marked incomplete by upstream EDL."))
 
+    integrity = [str(r.get("segment_id") or r.get("role")) for r in rows
+                 if _clip(r) and (r.get("integrity_failure") or any(
+                     str(b).startswith(("goal_integrity_failed:", "blocked_source_corruption"))
+                     for b in (r.get("blocking_reasons") or [])))]
+    if integrity:
+        issues.append(_issue("known_integrity_failure", "P0", ",".join(integrity[:8]),
+                             "Source/EDL already flags an integrity problem; do not silently pass."))
+
     replay = [str(r.get("segment_id") or r.get("role")) for r in rows
               if _goal(r) and r.get("is_replay") and "supplement" not in str(r.get("role") or "")]
     if replay:
@@ -205,6 +214,7 @@ def evaluate(
 
     # Fail-closed: a structural score cannot certify true visual story coverage.
     blockers = [i for i in issues if i["severity"] == "P0"]
+    structural_proxy_pass = len(blockers) == 0 and coverage_score == 100.0 and coherence_score == 100.0
     return {
         "schema": "v3a_story_quality_audit_v1",
         "mode": "READ_ONLY_RULE_BASELINE",
@@ -228,7 +238,7 @@ def evaluate(
         "unverified": ["live_vs_replay_visual_truth", "VLM_semantics", "shot_event_grounding"],
         "input_missing_evidence": list(plan.get("missing_evidence") or []),
         "revision_requests": [i for i in issues if i["severity"] in ("P0", "P1")],
-        "candidate_quality_pass": len(blockers) == 0 and coverage_score == 100.0,
+        "structural_proxy_pass": structural_proxy_pass,
         "render_ready": False,
         "release_decision": "NOT_AUTHORIZED",
         "note": "Scores are deterministic structural proxies, not calibrated quality or semantic release certification.",
@@ -251,7 +261,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     output = args.out or (directory / "v3a_quality_audit.json")
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps({"report": str(output), "candidate_quality_pass": result["candidate_quality_pass"],
+    print(json.dumps({"report": str(output), "structural_proxy_pass": result["structural_proxy_pass"],
                       "render_ready": False, "release_decision": result["release_decision"],
                       "issues": len(result["diagnostic_issues"])}, ensure_ascii=False))
     return 0
