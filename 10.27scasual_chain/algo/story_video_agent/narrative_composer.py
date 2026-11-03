@@ -544,6 +544,21 @@ def compose_story_plan(
             for eid, e in events.items()
             if e.get("story_role") == "蓄力" and not e.get("is_replay")
         ]
+    def _related_is_opponent(ev: Dict[str, Any]) -> bool:
+        """True when Related_Player points at the non-protagonist team."""
+        attrs = ev.get("attributes") or {}
+        rp = attrs.get("Related_Player") or []
+        if isinstance(rp, str):
+            rp = [rp]
+        joined = ",".join(str(x) for x in rp)
+        if not joined:
+            return False
+        if str(side) == "left" and "2队" in joined:
+            return True
+        if str(side) == "right" and "1队" in joined:
+            return True
+        return False
+
     live_buildup = 0
     for eid in buildup_ids:
         ev = events.get(str(eid))
@@ -552,6 +567,23 @@ def compose_story_plan(
             continue
         if ev.get("is_replay") or ev.get("_id_collision"):
             continue
+        ev_type = str(ev.get("type") or ev.get("event_type") or ev.get("type_en") or "")
+        is_setpiece = ev_type.lower() in {
+            "corner_kick",
+            "corner",
+            "角球",
+            "free_kick",
+            "任意球",
+        }
+        # Set-piece buildup needs team attribution; otherwise narrative role is unresolved.
+        if is_setpiece:
+            rp = (ev.get("attributes") or {}).get("Related_Player")
+            if not rp:
+                missing.append(f"buildup_dropped_unattributed_setpiece:{eid}")
+                continue
+            if _related_is_opponent(ev):
+                missing.append(f"buildup_dropped_opponent_setpiece:{eid}")
+                continue
         t = None
         if ev.get("t_ms") is not None:
             t = float(ev["t_ms"]) / 1000.0

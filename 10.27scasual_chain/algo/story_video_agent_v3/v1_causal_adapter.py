@@ -12,10 +12,14 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 from .pipeline import dump
 
-# Detector English → V1 Chinese labels (non-goal only). No Goal invention.
+# Detector / enriched-atom English → V1 Chinese labels.
+# Goal/Assist only when present as real event_type rows (e.g. atom fill); never invented here.
 _EN_TO_ZH = {
     "Pass": "传球",
     "Shot": "射门",
+    "Goal": "进球",
+    "Own_goal": "乌龙球",
+    "Assist": "助攻",
     "Save": "扑救",
     "Corner_kick": "角球",
     "Free_kick": "任意球",

@@ -84,6 +84,7 @@ def _normalize_clip_filter(
     height: int,
     fps: int,
     overlay_lines: Sequence[str],
+    overlay_anchor: str = "top_left",
 ) -> str:
     font = _esc_drawtext(_font_file())
     # scale+pad to exact canvas, then drawtext overlays
@@ -92,10 +93,13 @@ def _normalize_clip_filter(
         f"pad={width}:{height}:(ow-iw)/2:(oh-ih)/2,"
         f"fps={fps},setsar=1"
     )
-    y = 40
-    for line in overlay_lines:
-        if not line:
-            continue
+    lines = [ln for ln in overlay_lines if ln]
+    # Avoid colliding with broadcast scoreboard (top-left): clean delivery uses bottom.
+    if overlay_anchor == "bottom_left":
+        y = max(40, int(height) - 40 - 40 * max(1, len(lines)))
+    else:
+        y = 40
+    for line in lines:
         t = _esc_drawtext(line)
         vf += (
             f",drawtext=fontfile={font}:text='{t}':fontsize=28:"
@@ -120,6 +124,7 @@ def _cut_segment(
     accurate_seek: bool = True,
     seek_pad_sec: float = 20.0,
     audio_filter: Optional[str] = None,
+    overlay_anchor: str = "top_left",
 ) -> Dict[str, Any]:
     """Cut+reencode one segment.
 
@@ -130,7 +135,11 @@ def _cut_segment(
     dur = max(0.04, float(media_out) - float(media_in))
     media_in = float(media_in)
     vf = _normalize_clip_filter(
-        width=width, height=height, fps=fps, overlay_lines=overlay_lines
+        width=width,
+        height=height,
+        fps=fps,
+        overlay_lines=overlay_lines,
+        overlay_anchor=overlay_anchor,
     )
     af = audio_filter or f"aresample={DEFAULT_AUDIO_RATE}"
     out_path.parent.mkdir(parents=True, exist_ok=True)

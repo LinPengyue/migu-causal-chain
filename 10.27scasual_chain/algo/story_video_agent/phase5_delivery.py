@@ -601,10 +601,58 @@ def resolve_delivery_window_conflicts(rows: List[Dict[str, Any]]) -> List[Dict[s
                     ]
                 break
 
+    # Pass 3: buildup that largely overlaps a goal_action is a near-duplicate cut
+    for i, r in enumerate(rows):
+        if i in drop:
+            continue
+        role = str(r.get("role") or "")
+        if "buildup" not in role:
+            continue
+        ai, ao = _safe_float(r.get("media_in")), _safe_float(r.get("media_out"))
+        if ai is None or ao is None:
+            continue
+        build_dur = max(1e-3, ao - ai)
+        for j, o in enumerate(rows):
+            if i == j or j in drop:
+                continue
+            orole = str(o.get("role") or "")
+            if "goal_action" not in orole:
+                continue
+            bi, bo = _safe_float(o.get("media_in")), _safe_float(o.get("media_out"))
+            if bi is None or bo is None:
+                continue
+            ov = _interval_overlap_sec(ai, ao, bi, bo)
+            if ov / build_dur >= 0.5 or abs(ai - bi) <= 1.0:
+                drop.add(i)
+                r.setdefault("blocking_reasons", [])
+                if isinstance(r["blocking_reasons"], list):
+                    r["blocking_reasons"] = list(r["blocking_reasons"]) + [
+                        "buildup_overlaps_goal_action_duplicate"
+                    ]
+                break
+
     out = [r for i, r in enumerate(rows) if i not in drop]
     for i, r in enumerate(out):
         r["edl_index"] = i + 1
         r["narrative_order"] = i + 1
+    return out
+
+
+_UNRELIABLE_MINUTE = re.compile(
+    r"(?:(?<=反超)|(?<=扳平)|(?<=失球)|(?<=蓄力)|(?<=高潮)|(?<=转折)|(?<=铺垫))"
+    r"\s*\d{1,3}\s*[′'ʹ`]?"
+    r"|\b\d{1,3}\s*[′'ʹ`]"
+)
+
+
+def _strip_unreliable_minute_marks(lines: Sequence[str]) -> List[str]:
+    """Drop match-minute burn-ins when clock provenance is not verified."""
+    out: List[str] = []
+    for raw in lines:
+        s = _UNRELIABLE_MINUTE.sub("", str(raw or ""))
+        s = re.sub(r"\s{2,}", " ", s).strip(" ·|-")
+        if s:
+            out.append(s)
     return out
 
 
@@ -637,13 +685,15 @@ def _score_label_from_plan(plan: Dict[str, Any], role: str) -> List[str]:
         lines = ["终场"]
     if beat and beat not in lines:
         lines = [beat] + lines
-    return lines[:3]
+    # Never invent match minutes; strip any that leaked into beat/narration.
+    return _strip_unreliable_minute_marks(lines)[:3]
 
 
 def _clean_overlays(plan: Dict[str, Any], row: Dict[str, Any]) -> List[str]:
     """Business-facing: no tech banners on live footage.
 
     Title cards use placeholder_lines (clean). Gameplay: light narrative cue only.
+    No unreliable match-minute marks (e.g. 「57′」).
     """
     role = str(row.get("role") or "")
     if row.get("shot_kind") == "title_card":
@@ -738,6 +788,9 @@ def render_dual_delivery(
                 overlays = overlay_fn(plan, row)
                 af = f"aresample={DEFAULT_AUDIO_RATE},dynaudnorm=f=150:g=15"
                 try:
+                    # Clean: bottom-left to avoid stacking on broadcast scoreboard
+                    # (top-left collision previously misread as fake minute marks).
+                    anchor = "bottom_left" if variant == "clean" else "top_left"
                     rec = _cut_segment(
                         ffmpeg=ffmpeg,
                         src=Path(media.path),
@@ -751,6 +804,7 @@ def render_dual_delivery(
                         overlay_lines=overlays,
                         accurate_seek=True,
                         audio_filter=af,
+                        overlay_anchor=anchor,
                     )
                     ffmpeg_log.append(rec)
                     meta["cut"] = True
