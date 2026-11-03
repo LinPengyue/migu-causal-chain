@@ -10,7 +10,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "algo"))
-from story_video_agent_v3.quality_audit import evaluate  # noqa: E402
+from story_video_agent_v3.quality_audit import evaluate, _freeze_intervals  # noqa: E402
 
 
 def make_inputs():
@@ -105,6 +105,14 @@ class V3AQualityAuditTests(unittest.TestCase):
         report = evaluate(story, plan, edl)
         self.assertIsNone(report["dimensions"]["story_element_coverage"]["score"])
         self.assertFalse(report["structural_proxy_pass"])
+
+    def test_freeze_scan_keeps_trailing_end_card(self):
+        log = ("freeze_start: 0\\nfreeze_end: 3.04\\n"
+               "freeze_start: 108.76\\n")
+        self.assertEqual(
+            [{"start": 0.0, "end": 3.04}, {"start": 108.76, "end": 111.873}],
+            _freeze_intervals(log, 111.873),
+        )
 
     def test_order_inversion_creates_diagnostic(self):
         story, plan, edl = make_inputs()
