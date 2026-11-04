@@ -21,7 +21,7 @@ import threading
 import time
 import urllib.error
 import urllib.request
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, replace
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
@@ -954,8 +954,16 @@ class ApiProvider:
         cache_key: Optional[str] = None,
         mock_content: Optional[str] = None,
         allow_degraded_fallback: bool = False,
+        stats_role: Optional[str] = None,
+        config_override: Optional[EndpointConfig] = None,
     ) -> Dict[str, Any]:
-        cfg = self.configs[role]
+        """Chat against endpoint `role`.
+
+        stats_role: optional billing/accounting label (e.g. verifier using planner endpoint).
+        config_override: optional EndpointConfig clone (e.g. thinking_object_disabled for Verifier).
+        """
+        cfg = config_override or self.configs[role]
+        account_role = str(stats_role or role)
         if temperature is None:
             if cfg.default_temperature is not None:
                 temperature = float(cfg.default_temperature)
@@ -965,10 +973,11 @@ class ApiProvider:
             cached = dict(self._cache[cache_key])
             cached["cached"] = True
             cached["provider_mode"] = "cache"
+            cached["logical_role"] = account_role
             usage = cached.get("usage") or {}
             self.stats.add(
                 ApiCallRecord(
-                    role=role,
+                    role=account_role,
                     model=str(cached.get("model") or cfg.model or "mock"),
                     ok=True,
                     mode="cache",
@@ -993,10 +1002,11 @@ class ApiProvider:
                 "provider_mode": "mock",
                 "cached": False,
                 "est_cost_usd": 0.0,
+                "logical_role": account_role,
             }
             self.stats.add(
                 ApiCallRecord(
-                    role=role, model="mock", ok=True, mode="mock", elapsed_sec=0.0
+                    role=account_role, model="mock", ok=True, mode="mock", elapsed_sec=0.0
                 )
             )
             if cache_key:
@@ -1077,10 +1087,13 @@ class ApiProvider:
                         "output_budget_exceeded": exceeded,
                     },
                     "finish_reason": usage_audit.get("finish_reason") or "",
+                    "logical_role": account_role,
+                    "http_ok": True,
+                    "empty_content": not bool(str(content or "").strip()),
                 }
                 self.stats.add(
                     ApiCallRecord(
-                        role=role,
+                        role=account_role,
                         model=cfg.model,
                         ok=True,
                         mode="real",
@@ -1094,14 +1107,21 @@ class ApiProvider:
                         attempt_index=attempt,
                         request_token_param=str(req_audit.get("token_param_sent") or ""),
                         request_token_limit=req_audit.get("token_limit_sent"),
-                        request_thinking_sent=bool(req_audit.get("thinking_params_sent")),
+                        request_thinking_sent=bool(
+                            req_audit.get("thinking_params_sent")
+                            or req_audit.get("thinking_object_disabled_sent")
+                        ),
                         finish_reason=str(usage_audit.get("finish_reason") or ""),
                         reasoning_tokens=usage_audit.get("reasoning_tokens"),
                         visible_output_chars=int(
                             usage_audit.get("visible_output_chars") or 0
                         ),
                         output_budget_exceeded=exceeded,
-                        failure_status="output_budget_exceeded" if exceeded else "",
+                        failure_status=(
+                            "EMPTY_MODEL_CONTENT"
+                            if not str(content or "").strip()
+                            else ("output_budget_exceeded" if exceeded else "")
+                        ),
                     )
                 )
                 if cache_key:
@@ -1110,11 +1130,11 @@ class ApiProvider:
             except Exception as exc:  # noqa: BLE001
                 retryable, http_status, last_err = _classify_error(exc)
                 failure_status = failure_status_from_exc(exc)
-                _safe_log_error(role, last_err)
+                _safe_log_error(account_role, last_err)
                 if http_started:
                     self.stats.add(
                         ApiCallRecord(
-                            role=role,
+                            role=account_role,
                             model=cfg.model,
                             ok=False,
                             mode="real",
@@ -1134,7 +1154,7 @@ class ApiProvider:
         elapsed = time.perf_counter() - t0
         self.stats.add(
             ApiCallRecord(
-                role=role,
+                role=account_role,
                 model=cfg.model,
                 ok=False,
                 mode="degraded",
@@ -1207,6 +1227,53 @@ class ApiProvider:
         key = "plan:" + hashlib.sha1(key_src.encode("utf-8")).hexdigest()[:28]
         return self.chat(
             role="planner",
+            stats_role="planner",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+            cache_key=key,
+            mock_content=json.dumps(mock_decision, ensure_ascii=False),
+            allow_degraded_fallback=False,
+        )
+
+    def verify_decision(
+        self,
+        *,
+        system_prompt: str,
+        user_prompt: str,
+        mock_decision: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        """Verifier call: same planner endpoint, separate stats_role=verifier.
+
+        Prefer low visible-reasoning cost when the endpoint already supports
+        Video-RSI thinking={{type:disabled}} (request_profile=video_rsi or
+        STORY_PLANNER_THINKING_OBJECT_DISABLED / STORY_VERIFIER_THINKING_OBJECT_DISABLED).
+        Does not invent undocumented Paratera fields.
+        """
+        base = self.configs["planner"]
+        prefer_no_think = (_env("STORY_VERIFIER_THINKING_OBJECT_DISABLED") or "").strip().lower() in (
+            "1", "true", "yes", "on",
+        )
+        # Reuse planner video_rsi / thinking_object_disabled if already configured.
+        use_disabled = bool(
+            prefer_no_think
+            or base.thinking_object_disabled
+            or base.request_profile == "video_rsi"
+        )
+        override = None
+        if use_disabled and not (
+            base.send_thinking_params
+            and (base.enable_thinking is not None or base.thinking_budget is not None)
+        ):
+            override = replace(base, thinking_object_disabled=True)
+        cfg_fp = (override or base).cache_fingerprint()
+        key_src = f"verify|{cfg_fp}|{system_prompt}|{user_prompt}"
+        key = "verify:" + hashlib.sha1(key_src.encode("utf-8")).hexdigest()[:28]
+        return self.chat(
+            role="planner",
+            stats_role="verifier",
+            config_override=override,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},

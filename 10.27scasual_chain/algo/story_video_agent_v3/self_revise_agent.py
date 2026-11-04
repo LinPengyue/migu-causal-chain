@@ -22,7 +22,7 @@ import json
 import math
 import os
 from pathlib import Path
-from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple  # Tuple used by window/role helpers
 
 from story_video_agent.api_provider import (
     COST_DISCLAIMER,
@@ -106,11 +106,30 @@ ALLOWED_TOOLS = {"extract_frames", "vlm_observe", "widen_search"}
 TOOL_ALIASES = {
     "frames": "extract_frames",
     "extract": "extract_frames",
+    "extract_frames": "extract_frames",
     "observe": "vlm_observe",
     "vlm": "vlm_observe",
     "vision": "vlm_observe",
+    "vlm_observe": "vlm_observe",
     "widen": "widen_search",
     "search_widen": "widen_search",
+    "widen_search": "widen_search",
+    # Observed real-model aliases (France round-1)
+    "observe_goal_action_window": "vlm_observe",
+    "verify_segment_visual_truth": "vlm_observe",
+    "review_segment_scope": "vlm_observe",
+    "observe_window": "vlm_observe",
+    "check_visual_truth": "vlm_observe",
+}
+# Story-role shorthand → EDL role + preferred score anchor key
+TARGET_ROLE_MAP = {
+    "opponent_opening": ("opponent_opening_goal_action", "behind_start"),
+    "opponent_opening_goal_action": ("opponent_opening_goal_action", "behind_start"),
+    "behind_start": ("opponent_opening_goal_action", "behind_start"),
+    "equalizer": ("equalizer_goal_action", "equalizer"),
+    "equalizer_goal_action": ("equalizer_goal_action", "equalizer"),
+    "go_ahead": ("go_ahead_goal_action", "go_ahead"),
+    "go_ahead_goal_action": ("go_ahead_goal_action", "go_ahead"),
 }
 
 
@@ -144,10 +163,12 @@ def _normalize_tool(raw: Any) -> Optional[str]:
     s = str(raw or "").strip()
     if s in ALLOWED_TOOLS:
         return s
-    low = s.lower()
+    low = s.lower().replace("-", "_")
     if low in TOOL_ALIASES:
         return TOOL_ALIASES[low]
-    if "vlm" in low or "vision" in low or "observe" in low:
+    if "vlm" in low or "vision" in low or "observe" in low or "verify_segment" in low or "visual_truth" in low:
+        return "vlm_observe"
+    if "review_segment" in low or "scope" in low:
         return "vlm_observe"
     if "frame" in low or "extract" in low:
         return "extract_frames"
@@ -155,34 +176,46 @@ def _normalize_tool(raw: Any) -> Optional[str]:
         return "widen_search"
     return None
 
+
+def _tool_field(tr: Mapping[str, Any]) -> Any:
+    for k in ("tool", "tool_name", "toolName", "name", "op"):
+        if tr.get(k) not in (None, ""):
+            return tr.get(k)
+    return None
+
+
 PLANNER_SYSTEM = """You are a football story-video revision Planner.
 Diagnose the CURRENT story cut against T01 selected-arc goals and narrative needs.
 Return ONLY JSON with keys:
   diagnoses, revision_intents, video_tool_requests, notes.
-You MAY identify missing critical elements, coherence gaps, unnecessary shots,
-and which video tools to call next.
-You MUST NOT invent scores, goal events, or absolute media timestamps.
-Every search_window must cite an anchor_id from trusted_anchors (code expands
-lookback). Cite evidence_refs from provided artifacts only.
+video_tool_requests[].tool must be one of: vlm_observe, extract_frames, widen_search
+  (aliases like observe_goal_action_window are accepted by the executor).
+Each tool request needs anchor_id from trusted_anchors. Prefer absolute
+search_windows {start,end} in media seconds OR relative
+{start_offset_sec,end_offset_sec} on that same anchor (executor converts).
+revision_intents need action in {search_add,replace,trim,drop,reorder,keep,mark_unresolved}
+plus role and/or anchor_id when proposing search_add.
+You MUST NOT invent scores, goal events, or free absolute media timestamps
+without citing a trusted anchor.
 Selecting a tool requests observation; it does NOT verify first LIVE goal.
 Do not claim render_ready or production release.
 """
 
-VERIFIER_SYSTEM = """You are a football story-video semantic Verifier.
-Return ONLY JSON with keys:
-  issues, dimensions, revision_suggestions, quality_delta_vs_baseline,
-  hard_vetoes, evidence_of_improvement.
-dimensions MUST be an object with exactly:
+VERIFIER_SYSTEM = """Football story-video Verifier. Reply with compact JSON ONLY. No prose, no chain-of-thought.
+Keys: issues, dimensions, revision_suggestions, quality_delta_vs_baseline,
+hard_vetoes, evidence_of_improvement.
+dimensions MUST include exactly:
   story_element_coverage, narrative_coherence, image_content_quality
-Each dimension value: {status, summary, evidence_refs, problems[]}
-  status in: improved|unchanged|regressed|unknown|insufficient_evidence
-Each issue: issue_id, severity(P0|P1|P2), dimension, target_segment_id,
+Each: {status, summary, evidence_refs, problems[]}
+  status: improved|unchanged|regressed|unknown|insufficient_evidence
+issues: issue_id, severity(P0|P1|P2), dimension, target_segment_id,
 problem, evidence_refs, suggested_fix.
-hard_vetoes: list of hard failures (wrong score/team, replay_as_first_live,
-missing_required_node, severe_corruption) with evidence_refs.
-evidence_of_improvement: list of {claim, evidence_refs} — never self-grade alone.
-Observations are NOT first-LIVE proof. Do not invent timestamps or scores.
-Never set render_ready true. If evidence is insufficient, say so explicitly.
+hard_vetoes ONLY for confirmed severe fact errors with evidence_refs:
+  wrong_score_or_team, replay_as_first_live, severe_corruption, invented_event_or_time.
+Do NOT put missing story coverage (e.g. missing opening) in hard_vetoes —
+put it in issues / dimensions.story_element_coverage as a repair signal.
+evidence_of_improvement: [{claim, evidence_refs}]. Observations are NOT first-LIVE proof.
+Never invent timestamps/scores. Never set render_ready true.
 """
 
 VLM_SYSTEM_HINT = (
@@ -913,11 +946,185 @@ def compact_context(
     }
 
 
-def _parse_model_json(content: str) -> Dict[str, Any]:
-    obj = _extract_json_obj(content)
+def _parse_model_json(content: str, *, empty_code: str = "EMPTY_MODEL_CONTENT") -> Dict[str, Any]:
+    text = str(content or "").strip()
+    if not text:
+        raise ValueError(empty_code)
+    try:
+        obj = _extract_json_obj(text)
+    except Exception as exc:
+        # Remap vision-provider empty wording for Planner/Verifier paths.
+        msg = str(exc)
+        if "empty" in msg.lower():
+            raise ValueError(empty_code) from exc
+        raise
     if not isinstance(obj, dict):
         raise ValueError("model JSON must be an object")
     return obj
+
+
+def _anchor_t_sec(anchor: Mapping[str, Any]) -> Optional[float]:
+    if anchor.get("kind") == "existing_edl_segment":
+        return _num(anchor.get("media_in"))
+    return _num(anchor.get("t_sec"))
+
+
+def _clip_abs_window(
+    start: float,
+    end: float,
+    *,
+    video_duration: Optional[float],
+) -> Optional[Dict[str, float]]:
+    if end <= start:
+        return None
+    s, e = float(start), float(end)
+    if s < 0:
+        s = 0.0
+    if video_duration is not None:
+        dur = float(video_duration)
+        if s > dur + 1e-6:
+            return None
+        e = min(e, dur)
+    if e - s < 0.5:
+        return None
+    if e - s > MAX_WINDOW_SPAN + 1e-6:
+        e = s + MAX_WINDOW_SPAN
+    return {"start": round(s, 3), "end": round(e, 3)}
+
+
+def _resolve_relative_windows(
+    raw_windows: Sequence[Any],
+    *,
+    default_anchor: Mapping[str, Any],
+    by_id: Mapping[str, Mapping[str, Any]],
+    video_duration: Optional[float],
+) -> Tuple[List[Dict[str, float]], List[Dict[str, Any]]]:
+    """Convert relative offset windows or absolute start/end; reject free inventions."""
+    out: List[Dict[str, float]] = []
+    rejects: List[Dict[str, Any]] = []
+    for w in raw_windows:
+        if not isinstance(w, dict):
+            rejects.append({"raw": w, "reason": "window_not_object",
+                            "suggested_fix": "use {start,end} or {start_offset_sec,end_offset_sec}"})
+            continue
+        aid = str(w.get("anchor_id") or default_anchor.get("anchor_id") or "")
+        anchor = by_id.get(aid) or default_anchor
+        if aid and aid not in by_id and aid != str(default_anchor.get("anchor_id")):
+            rejects.append({
+                "raw": w, "reason": "window_unknown_anchor",
+                "suggested_fix": f"cite trusted anchor_id; got {aid!r}",
+            })
+            continue
+        t0 = _anchor_t_sec(anchor)
+        if t0 is None:
+            rejects.append({"raw": w, "reason": "anchor_missing_time",
+                            "suggested_fix": "anchor must have t_sec or media_in"})
+            continue
+        # Absolute media times
+        abs_start, abs_end = _num(w.get("start")), _num(w.get("end"))
+        off_s, off_e = _num(w.get("start_offset_sec")), _num(w.get("end_offset_sec"))
+        if abs_start is not None and abs_end is not None:
+            # Absolute times must still be near the cited anchor (not free PTS invent).
+            # Allow within LOOKBACK+AFTER+small margin of anchor time / EDL span.
+            if anchor.get("kind") == "existing_edl_segment":
+                lo = float(anchor["media_in"]) - LOOKBACK_SEC
+                hi = float(anchor["media_out"]) + AFTER_ANCHOR_SEC + MAX_WINDOW_SPAN
+            else:
+                lo = float(t0) - LOOKBACK_SEC - 30.0
+                hi = float(t0) + AFTER_ANCHOR_SEC + MAX_WINDOW_SPAN
+            if abs_start < lo - 1e-3 or abs_end > hi + 1e-3:
+                rejects.append({
+                    "raw": w, "reason": "absolute_window_outside_anchor_bound",
+                    "suggested_fix": "keep absolute window within anchor lookback/after envelope",
+                })
+                continue
+            clipped = _clip_abs_window(abs_start, abs_end, video_duration=video_duration)
+            if clipped is None:
+                rejects.append({"raw": w, "reason": "absolute_window_invalid_or_oob",
+                                "suggested_fix": "ensure end>start and within video duration"})
+                continue
+            out.append(clipped)
+            continue
+        if off_s is not None and off_e is not None:
+            clipped = _clip_abs_window(
+                float(t0) + float(off_s), float(t0) + float(off_e),
+                video_duration=video_duration,
+            )
+            if clipped is None:
+                rejects.append({
+                    "raw": w, "reason": "relative_window_invalid_or_oob",
+                    "suggested_fix": "offsets must yield in-range end>start vs anchor t_sec",
+                })
+                continue
+            out.append(clipped)
+            continue
+        rejects.append({
+            "raw": w, "reason": "window_missing_start_end_or_offsets",
+            "suggested_fix": "provide start/end or start_offset_sec/end_offset_sec",
+        })
+    return out, rejects
+
+
+def _map_role_and_anchor(
+    *,
+    role: Any,
+    anchor_id: Any,
+    target: Any,
+    target_segment_id: Any,
+    action_text: Any,
+    by_id: Mapping[str, Mapping[str, Any]],
+) -> Tuple[Optional[str], Optional[str], Optional[str]]:
+    """Return (role, anchor_id, map_note)."""
+    role_s = str(role or "").strip() or None
+    aid = str(anchor_id or "").strip() or None
+    tgt = str(target or target_segment_id or "").strip() or None
+    note = None
+
+    if not role_s and isinstance(action_text, str) and "goal_action" in action_text:
+        role_s = action_text.replace("insert_", "").replace("add_", "").replace("Locate/recover ", "")
+        if " " in role_s:
+            role_s = None
+
+    # target shorthand
+    key = None
+    for cand in (tgt, role_s):
+        if not cand:
+            continue
+        low = cand.lower().replace(" ", "_")
+        if low in TARGET_ROLE_MAP:
+            key = low
+            break
+        if low.endswith("_goal_action") and low in TARGET_ROLE_MAP:
+            key = low
+            break
+        # strip seg_ prefix
+        if low.startswith("seg_"):
+            low2 = low[4:]
+            if low2 in TARGET_ROLE_MAP:
+                key = low2
+                break
+
+    if key:
+        mapped_role, arc_key = TARGET_ROLE_MAP[key]
+        role_s = role_s or mapped_role
+        prefer = f"score_node:{arc_key}"
+        if not aid and prefer in by_id:
+            aid = prefer
+            note = f"mapped_target:{key}->{prefer}"
+        elif not aid:
+            # try edl role match
+            for a in by_id.values():
+                if a.get("kind") == "existing_edl_segment" and str(a.get("role") or "") == mapped_role:
+                    aid = str(a["anchor_id"])
+                    note = f"mapped_target_edl:{key}->{aid}"
+                    break
+        role_s = mapped_role
+
+    if aid and aid not in by_id:
+        return role_s, None, f"unknown_anchor:{aid}"
+    if aid and aid in by_id:
+        return role_s, aid, note
+    return role_s, None, note
 
 
 def validate_planner_output(
@@ -926,7 +1133,7 @@ def validate_planner_output(
     trusted_anchors: Sequence[Mapping[str, Any]],
     video_duration: Optional[float],
 ) -> Dict[str, Any]:
-    """Reject invented times; expand windows only from cited anchors."""
+    """Normalize real-model Planner JSON; reject invented free PTS; record drops."""
     by_id = {str(a["anchor_id"]): a for a in trusted_anchors}
     diagnoses = raw.get("diagnoses")
     if not isinstance(diagnoses, list):
@@ -942,79 +1149,187 @@ def validate_planner_output(
         else:
             norm_refs = []
         clean_diag.append({
-            "issue_id": str(d.get("issue_id") or d.get("diagnosis_id") or f"diag_{i:03d}"),
+            "issue_id": str(d.get("issue_id") or d.get("id") or d.get("diagnosis_id") or f"diag_{i:03d}"),
             "problem": str(d.get("problem") or d.get("detail") or "")[:800],
             "severity": d.get("severity") if d.get("severity") in ("P0", "P1", "P2") else "P2",
             "target_segment_id": d.get("target_segment_id") or d.get("target"),
             "story_element": d.get("story_element") or d.get("kind"),
             "evidence_refs": norm_refs,
-            "expected_improvement": str(d.get("expected_improvement") or d.get("suggested_fix") or "")[:400],
+            "expected_improvement": str(d.get("expected_improvement") or d.get("suggested_action") or "")[:400],
         })
+
     intents = raw.get("revision_intents")
     if not isinstance(intents, list):
         intents = []
-    clean_intents = []
-    dropped_intents = []
+    clean_intents: List[Dict[str, Any]] = []
+    dropped_intents: List[Dict[str, Any]] = []
     for i, it in enumerate(intents[:MAX_DIAGNOSES]):
         if not isinstance(it, dict):
+            dropped_intents.append({
+                "raw": it, "reason": "intent_not_object",
+                "suggested_fix": "each revision_intent must be an object",
+            })
             continue
         action = _normalize_action(it.get("action"))
         if action is None:
-            dropped_intents.append({"raw_action": it.get("action"), "reason": "unmapped_action"})
+            dropped_intents.append({
+                "raw": it, "reason": "unmapped_action",
+                "suggested_fix": (
+                    "use search_add|replace|trim|drop|reorder|keep|mark_unresolved "
+                    f"(got {it.get('action')!r})"
+                ),
+            })
             continue
-        # Prefer explicit role; else recover from verbose action strings.
-        role = it.get("role")
-        if not role and isinstance(it.get("action"), str) and "goal_action" in it["action"]:
-            role = it["action"].replace("insert_", "").replace("add_", "")
+        role, aid, map_note = _map_role_and_anchor(
+            role=it.get("role"),
+            anchor_id=it.get("anchor_id"),
+            target=it.get("target"),
+            target_segment_id=it.get("target_segment_id"),
+            action_text=it.get("action"),
+            by_id=by_id,
+        )
+        if action == "search_add" and not (role or aid):
+            dropped_intents.append({
+                "raw": it, "reason": "search_add_missing_role_or_anchor",
+                "suggested_fix": "set role (e.g. opponent_opening_goal_action) and/or trusted anchor_id",
+                "map_note": map_note,
+            })
+            continue
+        if map_note and str(map_note).startswith("unknown_anchor:"):
+            dropped_intents.append({
+                "raw": it, "reason": "unknown_anchor",
+                "suggested_fix": "cite anchor_id from trusted_anchors",
+                "map_note": map_note,
+            })
+            continue
         clean_intents.append({
-            "intent_id": str(it.get("intent_id") or f"intent_{i:03d}"),
+            "intent_id": str(it.get("intent_id") or it.get("id") or f"intent_{i:03d}"),
             "action": action,
             "raw_action": it.get("action"),
             "issue_id": it.get("issue_id"),
-            "target_segment_id": it.get("target_segment_id"),
+            "target_segment_id": it.get("target_segment_id") or it.get("target"),
             "role": role,
-            "anchor_id": it.get("anchor_id"),
-            "rationale": str(it.get("rationale") or "")[:600],
+            "anchor_id": aid,
+            "rationale": str(it.get("rationale") or it.get("action") or "")[:600],
             "expected_improvement": str(it.get("expected_improvement") or "")[:400],
             "risk": str(it.get("risk") or "")[:400],
             "evidence_refs": it.get("evidence_refs") if isinstance(it.get("evidence_refs"), list) else [],
+            "map_note": map_note,
         })
+
     tools = raw.get("video_tool_requests")
     if not isinstance(tools, list):
         tools = []
-    clean_tools = []
-    dropped_tools = []
+    raw_tool_count = sum(1 for t in tools if isinstance(t, dict))
+    clean_tools: List[Dict[str, Any]] = []
+    dropped_tools: List[Dict[str, Any]] = []
     for i, tr in enumerate(tools[:MAX_TOOL_REQUESTS]):
         if not isinstance(tr, dict):
+            dropped_tools.append({
+                "raw": tr, "reason": "tool_not_object",
+                "suggested_fix": "each video_tool_request must be an object",
+                "was_recoverable": False,
+            })
             continue
-        tool = _normalize_tool(tr.get("tool"))
+        raw_tool_val = _tool_field(tr)
+        tool = _normalize_tool(raw_tool_val)
         if tool is None:
-            dropped_tools.append({"raw_tool": tr.get("tool"), "reason": "unmapped_tool"})
+            dropped_tools.append({
+                "raw": tr, "reason": "unmapped_tool",
+                "suggested_fix": (
+                    "set tool/tool_name to vlm_observe|extract_frames|widen_search "
+                    f"(got {raw_tool_val!r})"
+                ),
+                "was_recoverable": False,
+            })
             continue
         aid = str(tr.get("anchor_id") or "")
+        # Infer anchor from target when missing
+        if not aid:
+            _role, inferred, _n = _map_role_and_anchor(
+                role=tr.get("role"),
+                anchor_id=None,
+                target=tr.get("target"),
+                target_segment_id=tr.get("target_segment_id"),
+                action_text=None,
+                by_id=by_id,
+            )
+            aid = inferred or ""
         if aid not in by_id:
-            dropped_tools.append({"raw_tool": tr.get("tool"), "anchor_id": aid, "reason": "unknown_anchor"})
+            dropped_tools.append({
+                "raw": tr, "reason": "unknown_anchor",
+                "suggested_fix": "cite anchor_id from trusted_anchors",
+                "was_recoverable": bool(_normalize_tool(raw_tool_val)),
+            })
             continue
-        windows = expand_windows_from_anchor(by_id[aid], video_duration=video_duration)
-        # Optional refine: allow listing subset indices only, not free timestamps
-        idx = tr.get("window_indices")
-        if isinstance(idx, list) and idx:
-            picked = []
-            for j in idx:
-                if isinstance(j, int) and 0 <= j < len(windows):
-                    picked.append(windows[j])
-            windows = picked or windows[:3]
+        default_windows = expand_windows_from_anchor(by_id[aid], video_duration=video_duration)
+        windows_source = "trusted_anchor_expansion"
+        windows: List[Dict[str, float]] = []
+        raw_wins = tr.get("search_windows")
+        if isinstance(raw_wins, list) and raw_wins:
+            windows, win_rejects = _resolve_relative_windows(
+                raw_wins, default_anchor=by_id[aid], by_id=by_id, video_duration=video_duration,
+            )
+            for rj in win_rejects:
+                dropped_tools.append({
+                    "raw": {"tool": raw_tool_val, "window": rj.get("raw"), "anchor_id": aid},
+                    "reason": rj.get("reason"),
+                    "suggested_fix": rj.get("suggested_fix"),
+                    "was_recoverable": False,
+                })
+            if windows:
+                windows_source = "anchor_relative_or_absolute_normalized"
+            else:
+                # Fall back to trusted expansion rather than dropping the whole tool
+                windows = default_windows[:3]
+                windows_source = "trusted_anchor_expansion_after_window_reject"
         else:
-            windows = windows[:3]
+            idx = tr.get("window_indices")
+            if isinstance(idx, list) and idx:
+                picked = []
+                for j in idx:
+                    if isinstance(j, int) and 0 <= j < len(default_windows):
+                        picked.append(default_windows[j])
+                windows = picked or default_windows[:3]
+                windows_source = "trusted_anchor_window_indices"
+            else:
+                windows = default_windows[:3]
+        if not windows:
+            dropped_tools.append({
+                "raw": tr, "reason": "no_valid_windows",
+                "suggested_fix": "provide relative offsets on trusted anchor or omit windows for default expansion",
+                "was_recoverable": True,
+            })
+            continue
+        question = str(
+            tr.get("question") or tr.get("reason") or tr.get("detail") or ""
+        )[:600]
         clean_tools.append({
             "request_id": str(tr.get("request_id") or f"tool_{i:03d}"),
             "tool": tool,
+            "raw_tool": raw_tool_val,
             "issue_id": tr.get("issue_id"),
             "anchor_id": aid,
-            "question": str(tr.get("question") or "")[:600],
-            "search_windows": windows,
-            "windows_source": "trusted_anchor_expansion",
+            "question": question,
+            "search_windows": windows[:3],
+            "windows_source": windows_source,
         })
+
+    # Silent-drop guard: model emitted tools that look recoverable but none survived.
+    recoverable_raw = 0
+    for tr in tools:
+        if not isinstance(tr, dict):
+            continue
+        if _normalize_tool(_tool_field(tr)) is not None:
+            recoverable_raw += 1
+    silent_drop_violation = bool(recoverable_raw > 0 and len(clean_tools) == 0)
+    if silent_drop_violation:
+        raise ValueError(
+            "planner_normalization_silent_drop: "
+            f"{recoverable_raw} recoverable tool request(s) produced 0 clean tools; "
+            "refusing to report Planner success. See dropped_tools for reasons."
+        )
+
     if not clean_diag and not clean_intents and not clean_tools:
         raise ValueError("planner produced no usable diagnoses/intents/tools after validation")
     return {
@@ -1023,6 +1338,9 @@ def validate_planner_output(
         "video_tool_requests": clean_tools,
         "dropped_intents": dropped_intents,
         "dropped_tools": dropped_tools,
+        "raw_tool_count": raw_tool_count,
+        "recoverable_raw_tool_count": recoverable_raw,
+        "silent_drop_violation": False,
         "notes": (
             json.dumps(raw.get("notes"), ensure_ascii=False)
             if isinstance(raw.get("notes"), (dict, list))
@@ -1074,13 +1392,42 @@ def validate_verifier_output(raw: Mapping[str, Any]) -> Dict[str, Any]:
             "evidence_refs": d.get("evidence_refs") if isinstance(d.get("evidence_refs"), list) else [],
             "problems": d.get("problems") if isinstance(d.get("problems"), list) else [],
         }
-    hard = raw.get("hard_vetoes") if isinstance(raw.get("hard_vetoes"), list) else []
+    hard_raw = raw.get("hard_vetoes") if isinstance(raw.get("hard_vetoes"), list) else []
+    # Coverage gaps (missing opening etc.) are repair signals, not loop-stopping fact errors.
+    coverage_veto_kinds = {
+        "missing_required_node", "missing_story_element", "missing_opening",
+        "incomplete_coverage", "missing_goal_action",
+    }
+    hard: List[Any] = []
+    demoted_coverage: List[Any] = []
+    for hv in hard_raw:
+        if isinstance(hv, dict):
+            kind = str(hv.get("kind") or hv.get("code") or hv.get("type") or "").lower()
+            text = str(hv.get("problem") or hv.get("detail") or hv.get("summary") or "").lower()
+            if kind in coverage_veto_kinds or (
+                "missing" in text and ("opening" in text or "coverage" in text or "node" in text)
+                and "replay" not in text and "score" not in text and "corrupt" not in text
+            ):
+                demoted_coverage.append(hv)
+                clean.append({
+                    "issue_id": str(hv.get("issue_id") or f"demoted_{len(clean):03d}"),
+                    "severity": "P0",
+                    "dimension": "story_element_coverage",
+                    "target_segment_id": hv.get("target_segment_id") or hv.get("target"),
+                    "problem": str(hv.get("problem") or hv.get("detail") or kind or "missing_coverage")[:800],
+                    "evidence_refs": hv.get("evidence_refs") if isinstance(hv.get("evidence_refs"), list) else [],
+                    "suggested_fix": "revise_coverage_via_planner_tools",
+                    "demoted_from_hard_veto": True,
+                })
+                continue
+        hard.append(hv)
     eoi = raw.get("evidence_of_improvement") if isinstance(raw.get("evidence_of_improvement"), list) else []
     return {
         "issues": clean,
         "dimensions": dimensions,
         "dimension_notes": dimensions,  # backward-compatible alias
         "hard_vetoes": hard,
+        "demoted_coverage_vetoes": demoted_coverage,
         "evidence_of_improvement": eoi,
         "revision_suggestions": raw.get("revision_suggestions") if isinstance(raw.get("revision_suggestions"), list) else [],
         "quality_delta_vs_baseline": str(raw.get("quality_delta_vs_baseline") or "")[:600],
@@ -1176,60 +1523,118 @@ def call_llm_verifier(
             "usage": {"real_requests": 0},
             "est_cost_usd": 0.0,
             "attempts": [{"provider_mode": "offline_fixture", "ok": True}],
+            "http_ok": True,
+            "generation_ok": True,
+            "structured_ok": True,
         }
     attempts: List[Dict[str, Any]] = []
     last: Dict[str, Any] = {}
     for attempt in range(max(1, int(max_retries) + 1)):
         try:
-            resp = api.plan_decision(
-                system_prompt=VERIFIER_SYSTEM,
-                user_prompt=json.dumps(payload, ensure_ascii=False),
-                mock_decision={"error": "mock_not_allowed_for_self_revise_agent"},
-            )
+            # Prefer verify_decision (stats_role=verifier; optional no-thinking override).
+            if hasattr(api, "verify_decision"):
+                resp = api.verify_decision(  # type: ignore[attr-defined]
+                    system_prompt=VERIFIER_SYSTEM,
+                    user_prompt=json.dumps(payload, ensure_ascii=False),
+                    mock_decision={"error": "mock_not_allowed_for_self_revise_agent"},
+                )
+            else:
+                resp = api.plan_decision(
+                    system_prompt=VERIFIER_SYSTEM,
+                    user_prompt=json.dumps(payload, ensure_ascii=False),
+                    mock_decision={"error": "mock_not_allowed_for_self_revise_agent"},
+                )
         except (ApiConfigError, ApiCallError) as exc:
             last = {
                 "ok": False,
                 "provider_mode": "degraded",
                 "error": f"{type(exc).__name__}:{exc}",
                 "attempt": attempt,
+                "http_ok": False,
+                "generation_ok": False,
+                "structured_ok": False,
+                "failure_code": "HTTP_OR_TRANSPORT",
             }
             attempts.append(dict(last))
-            # Retry only transient transport failures
             msg = str(exc).lower()
             if "502" in msg or "timeout" in msg or "proxy" in msg or "503" in msg:
                 continue
             break
         mode = str(resp.get("provider_mode") or "")
         content = str(resp.get("content") or "")
+        usage = resp.get("usage") or {}
+        reasoning_tokens = None
+        details = usage.get("completion_tokens_details")
+        if isinstance(details, dict) and details.get("reasoning_tokens") is not None:
+            try:
+                reasoning_tokens = int(details["reasoning_tokens"])
+            except (TypeError, ValueError):
+                reasoning_tokens = None
+        http_ok = mode == "real" and not resp.get("error")
         if mode != "real" or resp.get("error"):
             last = {
                 "ok": False,
                 "provider_mode": mode or "degraded",
                 "error": str(resp.get("error") or f"verifier_not_real:{mode}"),
                 "raw_excerpt": content[:2000],
-                "usage": resp.get("usage"),
+                "usage": usage,
                 "est_cost_usd": resp.get("est_cost_usd"),
                 "attempt": attempt,
+                "http_ok": False,
+                "generation_ok": False,
+                "structured_ok": False,
+                "failure_code": "HTTP_OR_PROVIDER",
+                "reasoning_tokens": reasoning_tokens,
             }
             attempts.append(dict(last))
             err_l = str(last["error"]).lower()
             if "502" in err_l or "timeout" in err_l or "proxy" in err_l or "503" in err_l:
                 continue
             break
-        try:
-            raw = _parse_model_json(content)
-            validated = validate_verifier_output(raw)
-        except Exception as exc:
+        if not content.strip():
             last = {
                 "ok": False,
                 "provider_mode": mode,
-                "error": f"verifier_parse_or_validate:{type(exc).__name__}:{exc}",
-                "raw_excerpt": content[:2000],
-                "usage": resp.get("usage"),
+                "error": "EMPTY_MODEL_CONTENT",
+                "failure_code": "EMPTY_MODEL_CONTENT",
+                "raw_excerpt": "",
+                "usage": usage,
                 "est_cost_usd": resp.get("est_cost_usd"),
                 "attempt": attempt,
+                "http_ok": True,
+                "generation_ok": False,
+                "structured_ok": False,
+                "reasoning_tokens": reasoning_tokens,
+                "note": (
+                    "HTTP succeeded but visible content empty "
+                    "(often reasoning consumed output budget)."
+                ),
             }
             attempts.append(dict(last))
+            # Retry once more — model may return short JSON on next try
+            continue
+        try:
+            raw = _parse_model_json(content, empty_code="EMPTY_MODEL_CONTENT")
+            validated = validate_verifier_output(raw)
+        except Exception as exc:
+            code = "EMPTY_MODEL_CONTENT" if "EMPTY_MODEL_CONTENT" in str(exc) else "STRUCTURED_PARSE_FAIL"
+            last = {
+                "ok": False,
+                "provider_mode": mode,
+                "error": f"{code}:{type(exc).__name__}:{exc}",
+                "failure_code": code,
+                "raw_excerpt": content[:2000],
+                "usage": usage,
+                "est_cost_usd": resp.get("est_cost_usd"),
+                "attempt": attempt,
+                "http_ok": True,
+                "generation_ok": bool(content.strip()),
+                "structured_ok": False,
+                "reasoning_tokens": reasoning_tokens,
+            }
+            attempts.append(dict(last))
+            if code == "EMPTY_MODEL_CONTENT":
+                continue
             break
         return {
             "ok": True,
@@ -1238,15 +1643,27 @@ def call_llm_verifier(
             "raw": raw,
             "validated": validated,
             "raw_excerpt": content[:4000],
-            "usage": resp.get("usage"),
+            "usage": usage,
             "est_cost_usd": resp.get("est_cost_usd"),
             "cost_disclaimer": COST_DISCLAIMER,
-            "attempts": attempts + [{"attempt": attempt, "ok": True, "provider_mode": mode}],
+            "attempts": attempts + [{
+                "attempt": attempt, "ok": True, "provider_mode": mode,
+                "http_ok": True, "generation_ok": True, "structured_ok": True,
+            }],
+            "http_ok": True,
+            "generation_ok": True,
+            "structured_ok": True,
+            "reasoning_tokens": reasoning_tokens,
+            "logical_role": "verifier",
         }
     # Never silently treat as rule-success
     last = dict(last or {"ok": False, "error": "verifier_unknown_failure", "provider_mode": "degraded"})
     last["ok"] = False
     last["attempts"] = attempts
+    last.setdefault("http_ok", False)
+    last.setdefault("generation_ok", False)
+    last.setdefault("structured_ok", False)
+    last.setdefault("logical_role", "verifier")
     last["rule_fallback_success"] = False
     return last
 

@@ -125,7 +125,10 @@ class V3ASelfReviseAgentTests(unittest.TestCase):
             trusted_anchors=anchors,
             video_duration=500.0,
         )
-        self.assertEqual(out["video_tool_requests"][0]["windows_source"], "trusted_anchor_expansion")
+        self.assertIn(
+            out["video_tool_requests"][0]["windows_source"],
+            ("trusted_anchor_expansion", "trusted_anchor_window_indices"),
+        )
         self.assertTrue(out["video_tool_requests"][0]["search_windows"])
 
     def test_search_add_does_not_invent_media_times(self):
