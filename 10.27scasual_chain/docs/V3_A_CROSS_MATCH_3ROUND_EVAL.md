@@ -4,6 +4,7 @@
 **分支：** `story-va-v3-a`  
 **实验代码 SHA：** `2fc6b165f4b2b84a115d296689d3e061d6ff9ece`  
 **文档 HEAD（评测时工作区）：** `8ad2baf430f0ef8ea82067e62992c1f0fc78b75d`  
+**本报告提交：** `179a223761b3dcdaf445524c517bcf2dff824e0a`  
 **工作区：** 干净；`2fc6b16..HEAD` 仅含既有法国场评估文档。  
 **配置（统一）：** 真实 API · `max_rounds=3` · `max_calls=24` · `max_cost_usd=0.30`/场 · `quality_threshold=75` · `--no-stop-on-quality-threshold` · `max_completion-tokens=2048`  
 **输入：** 各场 `04_phase5`（V3-R）+ `predicted_causal_live_goals_only.json` + 原始视频 + `v3a_stage2_planner_proposal.json`  
