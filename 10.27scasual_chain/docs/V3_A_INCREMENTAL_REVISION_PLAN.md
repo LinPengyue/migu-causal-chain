@@ -2,6 +2,8 @@
 
 Date: 2026-11-03. Development branch: story-va-v3-a.
 
+**Agreed design priority:** See `docs/V3_A_AGREED_DESIGN_CONTRACT.md`. This is the source-of-truth for the original user-approved V3-A goal: model-driven incremental repair of the intact V3-R, not replacement of V3-R, rule-only optimization, France-only goal recovery, or an LLM restricted to selecting rule-generated task IDs. Existing stages are preparatory components; they do not yet deliver the complete real-API Planner/VLM/Verifier/three-round feedback loop.
+
 ## Frozen baseline
 
 - Code-only backup branch: story-va-v3-r-frozen-20261103
@@ -49,7 +51,7 @@ Read-only real-run command (use actual $RUN_DIR):
 
 If the video is missing, omit --rendered-video. This stage neither modifies EDL nor triggers paid API. Cursor stage-1 verification: 10/10 tests passed on A/B/C/France artifacts; A/B/C structural proxy passed but remained NOT_AUTHORIZED. France failed with P0 missing opponent-opening goal action (coverage 66.7). Title-card freezes are P2 warnings, not proven corruption. Full details in docs/V3_A_STAGE1_EVALUATION.md at commit 68430e8.
 
-## Stage 2: constrained Planner proposal-only implementation committed; real-run verification pending
+## Stage 2: offline evidence-task Planner validated (21/21 total Stage-1+2 tests); full LLM story Planner still pending
 
 
 ### Stage-2 first increment (already coded)
@@ -85,7 +87,7 @@ Planner has two jobs: (1) improve story coverage/narrative transitions without c
 
 Allow only proposals: keep/add/replace/trim/reorder/drop/mark_unresolved. Require target_segment_id, issue_id, evidence_refs, expected benefit and risk, and ensure a validator rejects invented events and timestamps. Default to offline/mock before paid calls.
 
-## Stage 3: conditional VLM + tool acquisition (not implemented yet)
+## Stage 3: source-frame search code + optional VLM interface committed; real API-driven evidence loop still pending
 
 Trigger only when a known problem exists:
 - event/video time conflict;
@@ -111,4 +113,4 @@ Every revision must identify its target defect, record before/after evidence and
 
 ## Next gate
 
-Stage-1 is audited. Next require local Stage-2 unit tests and four-match offline proposals; only then add evidence search or Planner patch application. Preserve V3-R baseline and compare matched-budget revisions. No official release claims.
+Stage-1 and Stage-2 offline validation is reported (21/21 tests; A/B/C no structural P0 task; FR one P0 opponent opening task). Stage-3 source-frame code is committed pending actual media tests and inspection. Crucially, the next main architectural task is **real API LLM Planner story diagnosis**, including independent story-quality diagnosis beyond rule-identified P0s, followed by selective VLM evidence and guarded local patches. Preserve V3-R and do not equate the offline rule baseline with completed V3-A Agent capability.
