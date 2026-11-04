@@ -320,18 +320,19 @@ class AcceptPathTests(unittest.TestCase):
 
     def test_verifier_failure_never_counts_as_success(self):
         d = decide_accept(
-            baseline_audit={"hard_gate_findings": [{"severity": "P0"}],
-                            "dimensions": {"story_element_coverage": {"score": 66},
+            baseline_audit={"hard_gate_findings": [],
+                            "dimensions": {"story_element_coverage": {"score": 100},
                                            "story_coherence": {"score": 100}}},
             candidate_audit={"hard_gate_findings": [],
                              "dimensions": {"story_element_coverage": {"score": 100},
                                             "story_coherence": {"score": 100}}},
             verifier={"ok": False, "provider_mode": "degraded", "error": "502",
                       "rule_fallback_success": False},
-            revision_meta={"applied": [{"status": "applied_evidence_bound", "action": "search_add"}]},
+            revision_meta={"applied": [{"status": "applied", "action": "drop", "segment_id": "seg_filler"}]},
+            semantic_verification_status="NOT_EVALUATED",
         )
         self.assertFalse(d["accept"])
-        self.assertIn("model_verifier_failed", d["reasons"])
+        self.assertTrue(any("verifier_failed" in r or "degraded" in r for r in d["reasons"]))
 
 
 class MultiWindowFeedbackTests(unittest.TestCase):

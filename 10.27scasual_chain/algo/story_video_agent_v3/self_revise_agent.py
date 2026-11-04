@@ -37,6 +37,13 @@ from story_video_agent.vision_provider import _extract_json_obj
 
 from .quality_audit import evaluate as quality_evaluate
 from .remote_vlm_verify import apply_trial_env_overrides
+from .hybrid_fallback import (
+    build_orchestration_status,
+    build_rule_planner_fallback,
+    run_dual_verifier,
+    run_ffmpeg_observe_without_vlm,
+    run_rule_verifier,
+)
 
 SCHEMA = "v3a_self_revise_run_v1"
 MAX_ROUNDS = 3
@@ -1442,8 +1449,13 @@ def decide_accept(
     revision_meta: Mapping[str, Any],
     baseline_edl: Optional[Sequence[Dict[str, Any]]] = None,
     candidate_edl: Optional[Sequence[Dict[str, Any]]] = None,
+    semantic_verification_status: Optional[str] = None,
 ) -> Dict[str, Any]:
-    """Accept via P0-repair or evidence-backed quality improvement (not model self-score alone)."""
+    """Accept via P0-repair or evidence-backed quality improvement (not model self-score alone).
+
+    Hybrid rule: newly bound goal-action cuts require semantic verification.
+    API Verifier failure must not pretend semantic pass; workflow may still complete degraded.
+    """
     base_p0 = sum(1 for f in (baseline_audit.get("hard_gate_findings") or []) if f.get("severity") == "P0")
     cand_p0 = sum(1 for f in (candidate_audit.get("hard_gate_findings") or []) if f.get("severity") == "P0")
     applied = revision_meta.get("applied") or []
@@ -1452,13 +1464,21 @@ def decide_accept(
     pending_only = bool(applied) and all(
         a.get("status") in ("pending_evidence_slot", "recorded") for a in applied
     ) and not evidence_bound and not soft_applied
+    goal_binds = [
+        a for a in evidence_bound
+        if "goal" in str(a.get("action") or "") or "goal_action" in str(a.get("segment_id") or a.get("role") or "")
+        or a.get("action") in ("search_add", "replace")
+    ]
+    sem = semantic_verification_status or (
+        "PASSED" if verifier.get("ok") else "NOT_EVALUATED"
+    )
 
     reasons: List[str] = []
     path = None
     accept = False
 
-    if not verifier.get("ok"):
-        reasons.append("model_verifier_failed")
+    if goal_binds and sem not in ("PASSED",):
+        reasons.append("goal_bind_requires_semantic_verification")
         return {
             "accept": False,
             "path": None,
@@ -1466,6 +1486,21 @@ def decide_accept(
             "baseline_p0": base_p0,
             "candidate_p0": cand_p0,
             "pending_only": pending_only,
+            "semantic_verification_status": sem,
+            "model_quality_delta": "",
+            "verifier_self_score_alone_insufficient": True,
+        }
+
+    if not verifier.get("ok"):
+        reasons.append("model_verifier_failed_or_degraded")
+        return {
+            "accept": False,
+            "path": None,
+            "reasons": reasons,
+            "baseline_p0": base_p0,
+            "candidate_p0": cand_p0,
+            "pending_only": pending_only,
+            "semantic_verification_status": sem,
             "model_quality_delta": "",
             "verifier_self_score_alone_insufficient": True,
         }
@@ -1609,6 +1644,10 @@ def run_self_revise(
     planner_fixture: Optional[Path] = None,
     verifier_fixture: Optional[Path] = None,
     skip_vlm: bool = False,
+    allow_degraded_offline: bool = False,
+    inject_planner_failure: bool = False,
+    inject_vlm_failure: bool = False,
+    inject_verifier_failure: bool = False,
 ) -> Dict[str, Any]:
     phase5_dir = phase5_dir.resolve()
     out_dir = out_dir.resolve()
@@ -1697,6 +1736,17 @@ def run_self_revise(
     observations_acc: List[Dict[str, Any]] = []
     agent_success = False
     abort_reason = None
+    fallback_reasons: List[str] = []
+    last_rule_status = "NOT_RUN"
+    last_semantic_status = "NOT_EVALUATED"
+    degraded_mode = bool(allow_degraded_offline or real_mode or fixture_mode)
+
+    # Baseline rule report always available for degraded delivery
+    baseline_rule = run_rule_verifier(story, plan, baseline_edl)
+    last_rule_status = baseline_rule.get("rule_verification_status") or "RAN_WITH_FINDINGS"
+    (out_dir / "baseline_rule_verifier.json").write_text(
+        json.dumps(baseline_rule, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
 
     n_rounds = max(1, min(int(max_rounds), MAX_ROUNDS))
     for r in range(1, n_rounds + 1):
@@ -1711,8 +1761,9 @@ def run_self_revise(
             json.dumps(ctx, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
         )
 
-        if not real_mode and not fixture_mode:
+        if not degraded_mode:
             abort_reason = "real_api_not_enabled_or_not_approved"
+            fallback_reasons.append(abort_reason)
             rounds.append({
                 "round": r,
                 "aborted": True,
@@ -1721,52 +1772,95 @@ def run_self_revise(
             })
             break
 
-        try:
-            planner = call_llm_planner(api, ctx, fixture=p_fix if r == 1 else (p_fix if fixture_mode else None))
-        except (ApiConfigError, ApiCallError) as exc:
-            planner = {"ok": False, "error": f"{type(exc).__name__}:{exc}", "provider_mode": "degraded"}
+        # --- Planner (API → rule fallback) ---
+        planner: Dict[str, Any]
+        if inject_planner_failure:
+            planner = {"ok": False, "error": "injected:ApiCallError:502 Bad Gateway", "provider_mode": "degraded"}
+        else:
+            try:
+                planner = call_llm_planner(
+                    api, ctx, fixture=p_fix if (fixture_mode or r == 1 and p_fix) else None,
+                )
+            except (ApiConfigError, ApiCallError) as exc:
+                planner = {"ok": False, "error": f"{type(exc).__name__}:{exc}", "provider_mode": "degraded"}
+        if not planner.get("ok"):
+            fallback_reasons.append(f"planner:{planner.get('error') or 'failed'}")
+            planner = build_rule_planner_fallback(
+                story, plan, current_edl, baseline_audit if r == 1 else best["audit"],
+                video_duration=video_duration,
+                fallback_reason=str(planner.get("error") or "planner_api_failed"),
+            )
         (round_dir / "planner_result.json").write_text(
             json.dumps(planner, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
         )
-        if not planner.get("ok"):
-            abort_reason = f"planner_failed:{planner.get('error')}"
-            rounds.append({"round": r, "planner": planner, "aborted": True, "reason": abort_reason})
-            break
-
         validated = planner["validated"]
+
+        # --- VLM / ffmpeg observe ---
         obs_pack: Dict[str, Any] = {"observations": [], "any_real_ok": False}
-        if not skip_vlm and enrich_video and validated.get("video_tool_requests"):
-            if real_mode:
+        tools = validated.get("video_tool_requests") or []
+        if not skip_vlm and tools:
+            if inject_vlm_failure:
+                if enrich_video:
+                    try:
+                        obs_pack = run_ffmpeg_observe_without_vlm(
+                            video=enrich_video, work_dir=round_dir / "ffmpeg_fallback",
+                            tool_requests=tools,
+                        )
+                    except (OSError, ValueError) as exc:
+                        obs_pack = {
+                            "observations": [], "any_real_ok": False,
+                            "vlm_fallback": True, "semantic_status": "UNKNOWN",
+                            "error": f"{type(exc).__name__}:{exc}",
+                        }
+                else:
+                    obs_pack = {
+                        "observations": [], "any_real_ok": False,
+                        "vlm_fallback": True, "semantic_status": "UNKNOWN",
+                        "error": "injected_vlm_failure_no_video",
+                    }
+                fallback_reasons.append("vlm:injected_or_api_failed_ffmpeg_fallback")
+            elif real_mode and enrich_video:
                 try:
                     obs_pack = run_vlm_observations(
-                        api,
-                        video=enrich_video,
-                        work_dir=round_dir / "vlm",
-                        tool_requests=validated["video_tool_requests"],
+                        api, video=enrich_video, work_dir=round_dir / "vlm", tool_requests=tools,
                     )
+                    if not obs_pack.get("any_real_ok") and obs_pack.get("observations"):
+                        # Partial failure: keep technical frames if any; else ffmpeg fallback
+                        if all(not o.get("ok") or o.get("provider_mode") == "degraded" for o in obs_pack["observations"]):
+                            fallback_reasons.append("vlm:all_rounds_failed")
+                            obs_pack = run_ffmpeg_observe_without_vlm(
+                                video=enrich_video, work_dir=round_dir / "ffmpeg_fallback",
+                                tool_requests=tools,
+                            )
                 except (ApiConfigError, ApiCallError, OSError, ValueError) as exc:
-                    obs_pack = {
-                        "observations": [],
-                        "any_real_ok": False,
-                        "error": f"{type(exc).__name__}:{exc}",
-                    }
-            elif fixture_mode:
+                    fallback_reasons.append(f"vlm:{type(exc).__name__}")
+                    try:
+                        obs_pack = run_ffmpeg_observe_without_vlm(
+                            video=enrich_video, work_dir=round_dir / "ffmpeg_fallback",
+                            tool_requests=tools,
+                        )
+                    except (OSError, ValueError) as exc2:
+                        obs_pack = {
+                            "observations": [], "any_real_ok": False,
+                            "semantic_status": "UNKNOWN",
+                            "error": f"{type(exc2).__name__}:{exc2}",
+                        }
+            elif fixture_mode and not inject_vlm_failure:
                 obs_pack = {
                     "observations": [{
-                        "request_id": "fixture_obs",
-                        "ok": True,
+                        "request_id": "fixture_obs", "ok": True,
                         "provider_mode": "offline_fixture",
-                        "fact_verified": False,
-                        "observation_only": True,
-                        "vlm": {
-                            "visible_content": "fixture: no real frames",
-                            "observation_only": True,
-                            "fact_verified": False,
-                        },
+                        "fact_verified": False, "observation_only": True,
+                        "vlm": {"visible_content": "fixture", "observation_only": True,
+                                "fact_verified": False},
                     }],
-                    "any_real_ok": False,
-                    "note": "fixture_skip_real_vlm",
+                    "any_real_ok": False, "note": "fixture_skip_real_vlm",
                 }
+            elif allow_degraded_offline and enrich_video:
+                obs_pack = run_ffmpeg_observe_without_vlm(
+                    video=enrich_video, work_dir=round_dir / "ffmpeg_fallback", tool_requests=tools,
+                )
+                fallback_reasons.append("vlm:offline_degraded_ffmpeg_only")
         (round_dir / "vlm_observations.json").write_text(
             json.dumps(obs_pack, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
         )
@@ -1779,7 +1873,7 @@ def run_self_revise(
 
         tw_by_anchor: Dict[str, List[Dict[str, Any]]] = {}
         sa_by_anchor: Dict[str, float] = {}
-        for tr in validated.get("video_tool_requests") or []:
+        for tr in tools:
             aid = str(tr.get("anchor_id") or "")
             if aid:
                 tw_by_anchor[aid] = list(tr.get("search_windows") or [])
@@ -1787,10 +1881,16 @@ def run_self_revise(
             if a.get("kind") == "T01_selected_arc_score_node" and _num(a.get("t_sec")) is not None:
                 sa_by_anchor[str(a["anchor_id"])] = float(a["t_sec"])
 
+        # Rule-fallback planner must not invent semantic EDL binds without VLM support
+        intents = list(validated.get("revision_intents") or [])
+        if planner.get("fallback"):
+            intents = [
+                it for it in intents
+                if it.get("action") in ("search_add", "mark_unresolved", "keep")
+            ]
+
         cand_edl, rev_meta = apply_candidate_revision(
-            current_edl,
-            validated.get("revision_intents") or [],
-            obs_pack.get("observations") or [],
+            current_edl, intents, obs_pack.get("observations") or [],
             trusted_windows_by_anchor=tw_by_anchor,
             score_anchor_by_anchor_id=sa_by_anchor,
         )
@@ -1812,36 +1912,55 @@ def run_self_revise(
             "planner_diagnoses": validated.get("diagnoses"),
             "revision_meta": rev_meta,
             "observations": [{
-                "request_id": o.get("request_id"),
-                "ok": o.get("ok"),
-                "provider_mode": o.get("provider_mode"),
-                "window": o.get("window"),
-                "vlm": o.get("vlm"),
-                "fact_verified": False,
+                "request_id": o.get("request_id"), "ok": o.get("ok"),
+                "provider_mode": o.get("provider_mode"), "window": o.get("window"),
+                "vlm": o.get("vlm"), "fact_verified": False,
+                "semantic_status": o.get("semantic_status"),
             } for o in (obs_pack.get("observations") or [])],
             "window_schedule_log": obs_pack.get("window_schedule_log") or [],
             "constraints": ctx["constraints"],
         }
-        try:
-            verifier = call_llm_verifier(api, ver_payload, fixture=v_fix if fixture_mode else None)
-        except (ApiConfigError, ApiCallError) as exc:
-            verifier = {
-                "ok": False,
-                "error": f"{type(exc).__name__}:{exc}",
-                "provider_mode": "degraded",
-                "rule_fallback_success": False,
-            }
-        (round_dir / "verifier_result.json").write_text(
-            json.dumps(verifier, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+
+        def _api_ver_fn(payload, fixture=None):
+            if inject_verifier_failure:
+                return {
+                    "ok": False, "provider_mode": "degraded",
+                    "error": "injected:ApiCallError:502 Bad Gateway",
+                    "attempts": [{"ok": False, "error": "injected_502"}],
+                    "rule_fallback_success": False,
+                }
+            try:
+                return call_llm_verifier(api, payload, fixture=fixture if fixture_mode else fixture)
+            except (ApiConfigError, ApiCallError) as exc:
+                return {
+                    "ok": False, "provider_mode": "degraded",
+                    "error": f"{type(exc).__name__}:{exc}",
+                    "rule_fallback_success": False,
+                }
+
+        dual = run_dual_verifier(
+            story=story, plan=plan,
+            baseline_edl=baseline_edl, candidate_edl=cand_edl,
+            api_verifier_fn=_api_ver_fn,
+            api_payload=ver_payload,
+            fixture=v_fix if fixture_mode and not inject_verifier_failure else None,
+        )
+        if not dual.get("ok_for_semantic_accept"):
+            fallback_reasons.append(f"verifier:{dual.get('fallback_reason') or dual.get('error') or 'degraded'}")
+        last_rule_status = dual.get("rule_verification_status") or last_rule_status
+        last_semantic_status = dual.get("semantic_verification_status") or "NOT_EVALUATED"
+        (round_dir / "dual_verifier.json").write_text(
+            json.dumps(dual, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
         )
 
         decision = decide_accept(
             baseline_audit=baseline_audit if r == 1 else best["audit"],
             candidate_audit=cand_audit,
-            verifier=verifier,
+            verifier=dual,
             revision_meta=rev_meta,
             baseline_edl=baseline_edl,
             candidate_edl=cand_edl,
+            semantic_verification_status=last_semantic_status,
         )
         (round_dir / "accept_decision.json").write_text(
             json.dumps(decision, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
@@ -1851,17 +1970,21 @@ def run_self_revise(
             "round": r,
             "planner_ok": True,
             "planner_provider_mode": planner.get("provider_mode"),
+            "planner_fallback": bool(planner.get("fallback")),
             "planner_model": planner.get("model"),
             "diagnoses": validated.get("diagnoses"),
-            "revision_intents": validated.get("revision_intents"),
-            "video_tool_requests": validated.get("video_tool_requests"),
+            "revision_intents": intents,
+            "video_tool_requests": tools,
             "vlm_any_real_ok": obs_pack.get("any_real_ok"),
-            "verifier_ok": verifier.get("ok"),
-            "verifier_provider_mode": verifier.get("provider_mode"),
+            "vlm_fallback": bool(obs_pack.get("vlm_fallback")),
+            "verifier_ok": dual.get("ok"),
+            "verifier_provider_mode": dual.get("provider_mode"),
+            "rule_verification_status": last_rule_status,
+            "semantic_verification_status": last_semantic_status,
             "revision_meta": rev_meta,
             "accept_decision": decision,
             "est_cost_usd_planner": planner.get("est_cost_usd"),
-            "est_cost_usd_verifier": verifier.get("est_cost_usd"),
+            "est_cost_usd_verifier": (dual.get("api") or {}).get("est_cost_usd"),
         }
         rounds.append(round_rec)
 
@@ -1870,31 +1993,58 @@ def run_self_revise(
             best = {"edl": cand_edl, "audit": cand_audit, "round": r, "accepted": True}
             agent_success = True
         else:
-            # rollback candidate; keep baseline/best
             current_edl = copy.deepcopy(best["edl"])
 
-        # Clear fixture reuse after first round in fixture mode still ok; real mode continues
         if real_mode and api is not None:
             usage = api.stats.summary()
             if api.max_calls is not None and usage.get("http_attempts", 0) >= api.max_calls:
                 abort_reason = "max_calls_reached"
+                fallback_reasons.append(abort_reason)
                 break
             if api.max_cost_usd is not None and usage.get("est_cost_usd_real", 0) >= api.max_cost_usd:
                 abort_reason = "max_cost_reached"
+                fallback_reasons.append(abort_reason)
                 break
 
     usage = api.stats.summary() if api is not None else {}
-    # Honest success: real provider participation when required
     real_participation = False
     if real_mode:
         real_participation = any(
-            (rr.get("planner_provider_mode") == "real") or (rr.get("verifier_provider_mode") == "real")
+            (rr.get("planner_provider_mode") == "real")
+            or (rr.get("verifier_provider_mode") == "real")
             or rr.get("vlm_any_real_ok")
             for rr in rounds if not rr.get("aborted")
         )
-        if not real_participation:
+        if not real_participation and agent_success:
+            # Do not claim multimodal success without real providers
             agent_success = False
-            abort_reason = abort_reason or "no_real_provider_participation"
+            fallback_reasons.append("no_real_provider_participation")
+
+    agent_contributed = bool(
+        best.get("accepted") and agent_success and (
+            (real_mode and real_participation) or (fixture_mode and not any(
+                x.startswith("planner:") or x.startswith("vlm:") or x.startswith("verifier:")
+                for x in fallback_reasons
+            ))
+        )
+    )
+    workflow_completed = True  # degraded path still completes unless hard crash
+    orch = build_orchestration_status(
+        workflow_completed=workflow_completed,
+        rule_verification_status=str(last_rule_status),
+        semantic_verification_status=str(last_semantic_status),
+        fallback_reasons=fallback_reasons,
+        accepted_revision=bool(best.get("accepted")),
+        agent_contributed_improvement=agent_contributed,
+        best_preserved=True,
+    )
+
+    # Final rule report on best EDL (baseline if nothing accepted)
+    final_rule = run_rule_verifier(story, plan, best["edl"])
+    (out_dir / "final_rule_verifier.json").write_text(
+        json.dumps(final_rule, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    orch["rule_verification_status"] = final_rule.get("rule_verification_status") or orch["rule_verification_status"]
 
     summary = {
         "schema": SCHEMA,
@@ -1913,17 +2063,17 @@ def run_self_revise(
         "rounds": rounds,
         "best_round": best.get("round"),
         "accepted_any_revision": bool(best.get("accepted")),
-        "agent_claimed_success": bool(agent_success and real_participation if real_mode else agent_success and fixture_mode),
+        "agent_claimed_success": bool(agent_contributed),
         "abort_reason": abort_reason,
         "api_usage": usage,
         "cost_disclaimer": COST_DISCLAIMER,
         "edl_modified_frozen_phase5": False,
-        "render_ready": False,
-        "release_decision": "NOT_AUTHORIZED",
+        "unresolved_risks": list(baseline_audit.get("revision_requests") or []) if not best.get("accepted") else [],
         "note": (
-            "Acceptance requires real model participation (when real mode), hard-gate "
-            "improvement, and honest failure reporting. VLM observations never certify first LIVE."
+            "Degraded execution success != multimodal self-revision success. "
+            "VLM observations never certify first LIVE. Semantic scores stay NOT_EVALUATED on API failure."
         ),
+        **orch,
     }
     (out_dir / "self_revise_summary.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
@@ -1958,6 +2108,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     p.add_argument("--planner-fixture", type=Path, default=None)
     p.add_argument("--verifier-fixture", type=Path, default=None)
     p.add_argument("--skip-vlm", action="store_true")
+    p.add_argument("--allow-degraded-offline", action="store_true",
+                   help="Allow rule/ffmpeg degraded completion without real API")
     p.add_argument("--config-audit-only", action="store_true")
     args = p.parse_args(argv)
 
@@ -2005,6 +2157,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             planner_fixture=args.planner_fixture,
             verifier_fixture=args.verifier_fixture,
             skip_vlm=args.skip_vlm,
+            allow_degraded_offline=args.allow_degraded_offline,
         )
     except Exception as exc:
         print(json.dumps({
