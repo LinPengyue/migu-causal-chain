@@ -184,8 +184,11 @@ def _tool_field(tr: Mapping[str, Any]) -> Any:
     return None
 
 
-PLANNER_SYSTEM = """You are a football story-video revision Planner.
-Diagnose the CURRENT story cut against T01 selected-arc goals and narrative needs.
+PLANNER_SYSTEM = """You are a match-agnostic football story-video revision Planner.
+Diagnose the CURRENT story cut against THIS match's T01 selected-arc and narrative needs.
+Do not assume a fixed goal count, score path, or that any specific beat is missing.
+If prior_round_feedback is present, address unresolved issues and verifier findings;
+do not blindly repeat the same plan without incorporating that feedback.
 Return ONLY JSON with keys:
   diagnoses, revision_intents, video_tool_requests, notes.
 video_tool_requests[].tool must be one of: vlm_observe, extract_frames, widen_search
@@ -195,6 +198,8 @@ search_windows {start,end} in media seconds OR relative
 {start_offset_sec,end_offset_sec} on that same anchor (executor converts).
 revision_intents need action in {search_add,replace,trim,drop,reorder,keep,mark_unresolved}
 plus role and/or anchor_id when proposing search_add.
+You MAY improve coverage, coherence, shot relevance, live-vs-replay risk, or drop
+redundant cuts — choose the highest-value local change for THIS cut.
 You MUST NOT invent scores, goal events, or free absolute media timestamps
 without citing a trusted anchor.
 Selecting a tool requests observation; it does NOT verify first LIVE goal.
@@ -203,19 +208,28 @@ Do not claim render_ready or production release.
 
 VERIFIER_SYSTEM = """Football story-video Verifier. Reply with compact JSON ONLY. No prose, no chain-of-thought.
 Keys: issues, dimensions, revision_suggestions, quality_delta_vs_baseline,
-hard_vetoes, evidence_of_improvement.
-dimensions MUST include exactly:
-  story_element_coverage, narrative_coherence, image_content_quality
-Each: {status, summary, evidence_refs, problems[]}
+hard_vetoes, evidence_of_improvement, live_segment_assessments.
+dimensions MUST include exactly these four:
+  story_element_coverage, narrative_coherence, image_content_quality, live_authenticity
+Each dimension: {status, summary, score, evidence_refs, problems[]}
   status: improved|unchanged|regressed|unknown|insufficient_evidence
+  score: number 0-100 OR null when not evaluated (never invent 0/100 for unknown)
+live_authenticity scores broadcast first-LIVE risk generically (any match):
+  prefer live_segment_assessments[] with
+  {segment_id, live_status, score, evidence_refs, reason}
+  live_status in:
+    FIRST_LIVE_VERIFIED|LIKELY_LIVE|SUSPECTED_REPLAY|CONFIRMED_REPLAY|UNKNOWN
+  VLM observation alone cannot set FIRST_LIVE_VERIFIED.
 issues: issue_id, severity(P0|P1|P2), dimension, target_segment_id,
 problem, evidence_refs, suggested_fix.
 hard_vetoes ONLY for confirmed severe fact errors with evidence_refs:
   wrong_score_or_team, replay_as_first_live, severe_corruption, invented_event_or_time.
-Do NOT put missing story coverage (e.g. missing opening) in hard_vetoes —
-put it in issues / dimensions.story_element_coverage as a repair signal.
-evidence_of_improvement: [{claim, evidence_refs}]. Observations are NOT first-LIVE proof.
-Never invent timestamps/scores. Never set render_ready true.
+Do NOT put missing story coverage in hard_vetoes — use issues /
+dimensions.story_element_coverage as a repair signal.
+SUSPECTED_REPLAY lowers live_authenticity score and feeds next-round repair;
+CONFIRMED_REPLAY as primary goal cut is a hard_veto.
+evidence_of_improvement: [{claim, evidence_refs}]. Never invent timestamps/scores.
+Never set render_ready true. Be match-agnostic: judge against THIS cut's story scope.
 """
 
 VLM_SYSTEM_HINT = (
@@ -589,7 +603,13 @@ def build_bound_segment_from_observations(
     score_anchor_sec: Optional[float],
 ) -> Dict[str, Any]:
     """Construct a candidate cut from real frame PTS + structured VLM fields."""
-    role = str(intent.get("role") or "opponent_opening_goal_action")
+    role = str(intent.get("role") or "").strip()
+    if not role:
+        return {
+            "ok": False,
+            "reason": "bound_segment_requires_explicit_role",
+            "tried": 0,
+        }
     issue_id = intent.get("issue_id")
     matched = [
         o for o in observations
@@ -758,16 +778,17 @@ def composite_quality_score(
     img = image_quality_score(audit)
 
     api_dims = (verifier_validated or {}).get("dimensions") or {}
+    # Equal-weight across evaluated dims only (experimental; not calibrated).
     for name, rule_score, api_key in (
         ("story_element_coverage", cov, "story_element_coverage"),
         ("narrative_coherence", coh, "narrative_coherence"),
         ("image_content_quality", img, "image_content_quality"),
+        ("live_authenticity", None, "live_authenticity"),
     ):
         api_d = api_dims.get(api_key) if isinstance(api_dims.get(api_key), dict) else {}
         status = str(api_d.get("status") or "")
         api_score = _safe_float(api_d.get("score"))
         if status in ("NOT_EVALUATED", "UNKNOWN", "insufficient_evidence", "unknown"):
-            # Prefer rule proxy if present; else UNKNOWN (not 0).
             if rule_score is not None:
                 dims_out[name] = {"score": rule_score, "source": "rule_proxy", "status": "EVALUATED"}
                 numeric.append(rule_score)
@@ -781,7 +802,6 @@ def composite_quality_score(
             dims_out[name] = {"score": rule_score, "source": "rule_proxy", "status": "EVALUATED"}
             numeric.append(rule_score)
         else:
-            # story_coherence key alias in Stage-1
             if name == "narrative_coherence" and coh is not None:
                 dims_out[name] = {"score": coh, "source": "rule_proxy", "status": "EVALUATED"}
                 numeric.append(coh)
@@ -789,7 +809,6 @@ def composite_quality_score(
                 dims_out[name] = {"score": None, "source": None, "status": "UNKNOWN"}
                 unknown.append(name)
 
-    # Alias: Stage-1 uses story_coherence
     if "narrative_coherence" not in dims_out and coh is not None:
         dims_out["narrative_coherence"] = {"score": coh, "source": "rule_proxy", "status": "EVALUATED"}
         numeric.append(coh)
@@ -800,7 +819,11 @@ def composite_quality_score(
         "dimensions": dims_out,
         "unknown_dimensions": unknown,
         "evaluated_count": len(numeric),
-        "note": "UNKNOWN dims excluded from average; never coerced to 0 or 100.",
+        "equal_weight": True,
+        "note": (
+            "Equal-weight mean over EVALUATED dims only; UNKNOWN excluded "
+            "(never coerced to 0 or 100). Cross-round compare shared dims."
+        ),
     }
 
 
@@ -843,9 +866,14 @@ def compact_context(
     predicted_causal: Optional[Mapping[str, Any]] = None,
     stage2_proposal: Optional[Mapping[str, Any]] = None,
     prior_observations: Optional[Sequence[Mapping[str, Any]]] = None,
+    prior_round_feedback: Optional[Mapping[str, Any]] = None,
     video_duration: Optional[float] = None,
 ) -> Dict[str, Any]:
-    """Pack planner/verifier inputs; keep payload small and evidence-labelled."""
+    """Pack planner/verifier inputs; keep payload small and evidence-labelled.
+
+    prior_round_feedback carries last-round diagnoses / verifier issues / unresolved
+    items so Round N+1 is not a blind re-call of the same Planner.
+    """
     anchors = build_trusted_anchors(plan, edl)
     arc = (plan.get("story_scope") or {}).get("selected_arc") or {}
     edl_brief = [{
@@ -933,12 +961,15 @@ def compact_context(
         "stage1_structural_proxy_pass": audit.get("structural_proxy_pass"),
         "stage2_selected_tasks": s2_tasks,
         "predicted_causal_sample": chains_brief,
-        "prior_observations": list(prior_observations or [])[-4:],
+        "prior_observations": list(prior_observations or [])[-6:],
+        "prior_round_feedback": prior_round_feedback or None,
         "constraints": {
             "cannot_invent_scores_or_goal_facts": True,
             "cannot_invent_absolute_timestamps": True,
             "must_cite_trusted_anchors_for_search": True,
             "vlm_is_observation_only": True,
+            "match_agnostic_general_agent": True,
+            "do_not_assume_fixed_goal_count_or_score_path": True,
             "max_diagnoses": MAX_DIAGNOSES,
             "max_video_tool_requests": MAX_TOOL_REQUESTS,
             "render_ready": False,
@@ -1191,7 +1222,7 @@ def validate_planner_output(
         if action == "search_add" and not (role or aid):
             dropped_intents.append({
                 "raw": it, "reason": "search_add_missing_role_or_anchor",
-                "suggested_fix": "set role (e.g. opponent_opening_goal_action) and/or trusted anchor_id",
+                "suggested_fix": "set role (goal_action role for THIS story arc) and/or trusted anchor_id",
                 "map_note": map_note,
             })
             continue
@@ -1376,7 +1407,10 @@ def validate_verifier_output(raw: Mapping[str, Any]) -> Dict[str, Any]:
     if not dim_src and isinstance(raw.get("dimension_notes"), dict):
         dim_src = raw["dimension_notes"]
     required_dims = (
-        "story_element_coverage", "narrative_coherence", "image_content_quality",
+        "story_element_coverage",
+        "narrative_coherence",
+        "image_content_quality",
+        "live_authenticity",
     )
     dimensions: Dict[str, Any] = {}
     for name in required_dims:
@@ -1384,14 +1418,54 @@ def validate_verifier_output(raw: Mapping[str, Any]) -> Dict[str, Any]:
         status = str(d.get("status") or "unknown")
         if status not in (
             "improved", "unchanged", "regressed", "unknown", "insufficient_evidence",
+            "NOT_EVALUATED",
         ):
             status = "unknown"
+        score = _safe_float(d.get("score"))
+        if status in ("unknown", "insufficient_evidence", "NOT_EVALUATED") and score is None:
+            # Preserve explicit null; never coerce unknown → 0/100
+            pass
+        elif score is not None:
+            score = max(0.0, min(100.0, float(score)))
         dimensions[name] = {
             "status": status,
             "summary": str(d.get("summary") or d.get("note") or "")[:600],
+            "score": score,
             "evidence_refs": d.get("evidence_refs") if isinstance(d.get("evidence_refs"), list) else [],
             "problems": d.get("problems") if isinstance(d.get("problems"), list) else [],
         }
+    live_seg = raw.get("live_segment_assessments")
+    live_segment_assessments: List[Dict[str, Any]] = []
+    if isinstance(live_seg, list):
+        allowed_live = {
+            "FIRST_LIVE_VERIFIED", "LIKELY_LIVE", "SUSPECTED_REPLAY",
+            "CONFIRMED_REPLAY", "UNKNOWN",
+        }
+        for row in live_seg[:24]:
+            if not isinstance(row, dict):
+                continue
+            st = str(row.get("live_status") or "UNKNOWN").upper()
+            if st not in allowed_live:
+                st = "UNKNOWN"
+            sc = _safe_float(row.get("score"))
+            if st == "UNKNOWN":
+                sc = None
+            elif sc is not None:
+                sc = max(0.0, min(100.0, float(sc)))
+            live_segment_assessments.append({
+                "segment_id": str(row.get("segment_id") or "")[:120],
+                "live_status": st,
+                "score": sc,
+                "evidence_refs": row.get("evidence_refs") if isinstance(row.get("evidence_refs"), list) else [],
+                "reason": str(row.get("reason") or "")[:400],
+            })
+        # If dimension score missing, derive equal-weight mean of known segment scores
+        if dimensions["live_authenticity"].get("score") is None and live_segment_assessments:
+            known = [x["score"] for x in live_segment_assessments if x.get("score") is not None]
+            if known:
+                dimensions["live_authenticity"]["score"] = round(sum(known) / len(known), 2)
+                if dimensions["live_authenticity"]["status"] in ("unknown", "NOT_EVALUATED"):
+                    dimensions["live_authenticity"]["status"] = "unchanged"
     hard_raw = raw.get("hard_vetoes") if isinstance(raw.get("hard_vetoes"), list) else []
     # Coverage gaps (missing opening etc.) are repair signals, not loop-stopping fact errors.
     coverage_veto_kinds = {
@@ -1426,6 +1500,7 @@ def validate_verifier_output(raw: Mapping[str, Any]) -> Dict[str, Any]:
         "issues": clean,
         "dimensions": dimensions,
         "dimension_notes": dimensions,  # backward-compatible alias
+        "live_segment_assessments": live_segment_assessments,
         "hard_vetoes": hard,
         "demoted_coverage_vetoes": demoted_coverage,
         "evidence_of_improvement": eoi,
@@ -2150,11 +2225,17 @@ def decide_accept(
     dim_improved = any(
         isinstance(dims.get(k), dict) and dims[k].get("status") == "improved"
         and (dims[k].get("evidence_refs") or dims[k].get("summary"))
-        for k in ("story_element_coverage", "narrative_coherence", "image_content_quality")
+        for k in (
+            "story_element_coverage", "narrative_coherence",
+            "image_content_quality", "live_authenticity",
+        )
     )
     dim_regressed = any(
         isinstance(dims.get(k), dict) and dims[k].get("status") == "regressed"
-        for k in ("story_element_coverage", "narrative_coherence", "image_content_quality")
+        for k in (
+            "story_element_coverage", "narrative_coherence",
+            "image_content_quality", "live_authenticity",
+        )
     )
     cov_b, cov_c = coverage_score(baseline_audit), coverage_score(candidate_audit)
     coh_b, coh_c = coherence_score(baseline_audit), coherence_score(candidate_audit)
@@ -2403,6 +2484,7 @@ def run_self_revise(
     inject_vlm_failure: bool = False,
     inject_verifier_failure: bool = False,
     quality_threshold: float = DEFAULT_QUALITY_THRESHOLD,
+    stop_on_quality_threshold: bool = True,
 ) -> Dict[str, Any]:
     phase5_dir = phase5_dir.resolve()
     out_dir = out_dir.resolve()
@@ -2489,6 +2571,7 @@ def run_self_revise(
         "accepted": False,
     }
     observations_acc: List[Dict[str, Any]] = []
+    prior_round_feedback: Optional[Dict[str, Any]] = None
     agent_success = False
     abort_reason = None
     fallback_reasons: List[str] = []
@@ -2510,7 +2593,9 @@ def run_self_revise(
         ctx = compact_context(
             story=story, plan=plan, edl=current_edl, audit=baseline_audit if r == 1 else best["audit"],
             predicted_causal=pc, stage2_proposal=s2,
-            prior_observations=observations_acc, video_duration=video_duration,
+            prior_observations=observations_acc,
+            prior_round_feedback=prior_round_feedback,
+            video_duration=video_duration,
         )
         (round_dir / "planner_context.json").write_text(
             json.dumps(ctx, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
@@ -2659,6 +2744,23 @@ def run_self_revise(
             json.dumps(rev_meta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
         )
 
+        # Critical goal/score segments for live_authenticity (match-agnostic)
+        critical_rows = []
+        for row in cand_edl:
+            if not isinstance(row, dict) or not row.get("include_in_cut", True):
+                continue
+            role = str(row.get("role") or "")
+            if "goal_action" in role or "scoreboard" in role or row.get("is_replay") is not None:
+                critical_rows.append({
+                    "segment_id": row.get("segment_id"),
+                    "role": role,
+                    "media_in": row.get("media_in"),
+                    "media_out": row.get("media_out"),
+                    "is_replay": row.get("is_replay"),
+                    "first_live_status": row.get("first_live_status"),
+                    "agent_bound": row.get("agent_bound"),
+                    "evidence_status": row.get("evidence_status"),
+                })
         ver_payload = {
             "baseline_hard_gates": baseline_audit.get("hard_gate_findings"),
             "candidate_hard_gates": cand_audit.get("hard_gate_findings"),
@@ -2666,6 +2768,8 @@ def run_self_revise(
             "candidate_dimensions": cand_audit.get("dimensions"),
             "planner_diagnoses": validated.get("diagnoses"),
             "revision_meta": rev_meta,
+            "critical_segments_for_live_authenticity": critical_rows[:20],
+            "prior_round_feedback": prior_round_feedback,
             "observations": [{
                 "request_id": o.get("request_id"), "ok": o.get("ok"),
                 "provider_mode": o.get("provider_mode"), "window": o.get("window"),
@@ -2723,6 +2827,10 @@ def run_self_revise(
             json.dumps(decision, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
         )
 
+        validated_ver = dual.get("validated") or {}
+        four_dim_scores = composite_quality_score(
+            cand_audit, verifier_validated=validated_ver,
+        )
         round_rec = {
             "round": r,
             "planner_ok": True,
@@ -2740,6 +2848,9 @@ def run_self_revise(
             "semantic_verification_status": last_semantic_status,
             "revision_meta": rev_meta,
             "accept_decision": decision,
+            "four_dimension_scores": four_dim_scores,
+            "live_segment_assessments": validated_ver.get("live_segment_assessments") or [],
+            "prior_feedback_consumed": bool(prior_round_feedback),
             "est_cost_usd_planner": planner.get("est_cost_usd"),
             "est_cost_usd_verifier": (dual.get("api") or {}).get("est_cost_usd"),
         }
@@ -2754,14 +2865,41 @@ def run_self_revise(
                 "accepted": True,
                 "pending_verification": bool(decision.get("pending_verification")),
                 "path": decision.get("path"),
+                "four_dimension_scores": four_dim_scores,
             }
             agent_success = True
         else:
             current_edl = copy.deepcopy(best["edl"])
 
-        # Quality threshold met without severe errors / pending goals → stop optimizing.
+        # Feed next round: diagnoses, verifier issues, unresolved, accept reasons
+        prior_round_feedback = {
+            "from_round": r,
+            "accepted": bool(decision.get("accept") or decision.get("loop_retain")),
+            "accept_path": decision.get("path"),
+            "accept_reasons": decision.get("reasons"),
+            "diagnoses": validated.get("diagnoses") or [],
+            "verifier_issues": validated_ver.get("issues") or [],
+            "hard_vetoes": validated_ver.get("hard_vetoes") or [],
+            "live_segment_assessments": validated_ver.get("live_segment_assessments") or [],
+            "dimension_scores": four_dim_scores,
+            "revision_meta_summary": {
+                "evidence_bound_count": rev_meta.get("evidence_bound_count"),
+                "pending_count": rev_meta.get("pending_count"),
+                "applied": [
+                    {k: a.get(k) for k in ("action", "status", "segment_id", "role")}
+                    for a in (rev_meta.get("applied") or [])
+                ],
+            },
+            "unresolved_guidance": (
+                "Continue improving other story aspects even if some P0 remain; "
+                "prefer evidence-backed local edits; treat SUSPECTED_REPLAY as repair signal."
+            ),
+        }
+
+        # Optional early stop (experiment may disable to force full N rounds).
         if (
-            decision.get("accept")
+            stop_on_quality_threshold
+            and decision.get("accept")
             and decision.get("meets_quality_threshold")
             and not decision.get("pending_verification")
             and not severe_hard_findings(cand_audit)
@@ -2923,7 +3061,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                    help="Allow rule/ffmpeg degraded completion without real API")
     p.add_argument(
         "--quality-threshold", type=float, default=DEFAULT_QUALITY_THRESHOLD,
-        help="Experimental composite stop threshold (default 75; not calibrated)",
+        help="Experimental composite reference (default 75; not calibrated)",
+    )
+    p.add_argument(
+        "--no-stop-on-quality-threshold", action="store_true",
+        help="Run all max_rounds even if composite meets quality_threshold",
     )
     p.add_argument("--config-audit-only", action="store_true")
     args = p.parse_args(argv)
@@ -2974,6 +3116,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             skip_vlm=args.skip_vlm,
             allow_degraded_offline=args.allow_degraded_offline,
             quality_threshold=args.quality_threshold,
+            stop_on_quality_threshold=not args.no_stop_on_quality_threshold,
         )
     except Exception as exc:
         print(json.dumps({

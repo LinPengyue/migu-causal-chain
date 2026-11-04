@@ -18,6 +18,7 @@ SEMANTIC_DIMS = (
     "story_element_coverage",
     "narrative_coherence",
     "image_content_quality",
+    "live_authenticity",
 )
 
 
