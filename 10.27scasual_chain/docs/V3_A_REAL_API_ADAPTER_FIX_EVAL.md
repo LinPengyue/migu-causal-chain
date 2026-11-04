@@ -43,6 +43,21 @@
 76 / 76 OK  (test_v3a_*.py，含 test_v3a_real_api_adapter_fix)
 ```
 
+## 真实复测（适配修复后，`max_rounds=1`）
+
+**目录：** `…/v3a_self_revise_fr_real_20261104_r2_adapter/`  
+**代码 SHA：** `ad760e3`
+
+| 项 | 结果 |
+|----|------|
+| 完整执行 | 是；Planner+VLM×3+Verifier 均 **real**；费用分账 planner/vision/verifier 分开 |
+| 费用 | ≈ **$0.0133**（http 5 ok / 0 fail） |
+| EDL | 工作副本新增 `opponent_opening_goal_action` `[1385.65,1415.65]`；`first_live=NOT_VERIFIED`；冻结 V3-R **未改** |
+| `decide_accept(loop)` | `p0_repair` 保留候选 |
+| `decide_release` | **拒绝**（`release_blocked_pending_goal_segments`） |
+| 候选 MP4 | `v3a_candidate_render/story_clean.mp4`（≈41MB）、`story_qc.mp4`（≈46MB）；时长 ≈142s |
+| 成片质量宣称 | **否** — 仅为候选预览；opening 未核验为首次 LIVE；`render_ready=false` |
+
 ## 下一步
 
-授权后跑 France `max_rounds=1` 真实复测；**不得**仅凭适配修复宣称故事效果改善。
+人工抽查 `[1385.65,1415.65]` 是否确为 opening LIVE；未核验前不得当作正式改善。
