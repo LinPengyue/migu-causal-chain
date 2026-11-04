@@ -1,7 +1,7 @@
 # V3-A 法国场真实 API 单轮联调（max_rounds=1）
 
 **日期：** 2026-11-04  
-**分支 / SHA：** `story-va-v3-a` @ `e1a21d2365c710324acf20d53ae2e2afa0cc7080`（联调前 HEAD；本报告提交另计）  
+**分支 / SHA：** `story-va-v3-a` @ `26916528add523d9507a31553073f587c5e6387b`（联调代码基线 `e1a21d2`）  
 **冻结 V3-R：** 未修改（`04_phase5/candidate_edl.json` sha256 `96ec2e66…`；`story_qc.mp4` `756084bc…`）  
 **输出目录：**  
 `/data2/lpy1/_story_va_outputs/v3/plan2/closed_loop_FR_france_australia_zeroshot/v3a_self_revise_fr_real_20261104_r1/`  
