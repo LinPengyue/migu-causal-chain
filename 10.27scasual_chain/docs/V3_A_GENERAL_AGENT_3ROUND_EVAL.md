@@ -158,7 +158,7 @@ Context 含 R2 诊断（边界偏晚、live UNKNOWN）与观察。Planner 再次
 |----|-----|
 | 单元测试 | `python -m unittest tests.test_v3a_general_agent` → OK (5) |
 | 实验代码 SHA | `2fc6b165f4b2b84a115d296689d3e061d6ff9ece` |
-| 本评估文档提交 | （push 后填入；见仓库 `story-va-v3-a`） |
+| 本评估文档提交 | `bc4ba573fa8f53f42e02635c86f196c7ec952d6d` |
 
 ---
 
