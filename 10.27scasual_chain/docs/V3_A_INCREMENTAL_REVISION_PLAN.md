@@ -87,30 +87,35 @@ Planner has two jobs: (1) improve story coverage/narrative transitions without c
 
 Allow only proposals: keep/add/replace/trim/reorder/drop/mark_unresolved. Require target_segment_id, issue_id, evidence_refs, expected benefit and risk, and ensure a validator rejects invented events and timestamps. Default to offline/mock before paid calls.
 
-## Stage 3: source-frame search code + optional VLM interface committed; real API-driven evidence loop still pending
+## Stage 3–4 pivot implemented: `self_revise_agent` (2026-11-04)
 
-Trigger only when a known problem exists:
-- event/video time conflict;
-- omitted mandatory story element, even with no time-conflict;
-- ambiguous LIVE/REPLAY or shot relevance;
-- incomplete goal/buildup context;
-- suspected broken source or rendered clip requiring replacement.
+Keep Stage-1/2 and frozen V3-R as baselines. **Do not** spend primary effort adding more diagnostic rules. Aligns with `V3_A_AGREED_DESIGN_CONTRACT.md`.
 
-Use event-anchored local searches first; bounded widening only after diagnostics. Log frames, timestamps, source identity, budget, model/provider mode and fallback. VLM observation is NOT verification; isolated frames cannot certify the first LIVE broadcast.
+Module: `algo/story_video_agent_v3/self_revise_agent.py` (+ `tests/test_v3a_self_revise_agent.py`). Docs: `V3_A_AGENT_SELF_REVISE.md`, France run `V3_A_AGENT_FR_MIN_EVAL.md`.
 
-## Stage 4: quality verifier and max-three-round repair (not implemented yet)
+1. **Real LLM Planner** diagnoses gaps/coherence beyond rule ID ranking; cites `trusted_anchors`; code expands windows. No invented scores/goals/free timestamps.
+2. **Real VLM observe** on planner windows (FrameStore + ApiProvider vision). Observation-only: never certifies first LIVE.
+3. **Model Verifier** + Stage-1 hard gates; concrete per-dimension issues. API failure is reported honestly (no rule/mock success claim).
+4. **Max 3 rounds** with accept/rollback on working copies only; frozen Phase5 never mutated.
+5. **France-first real API** gated by `--enable-real-api --i-approve-budget` + `STORY_API_ENABLE=1` and call/cost caps.
 
-Three dimensions:
-1. Story element coverage: structural and separately visual-confirmed coverage.
-2. Narrative coherence: transitions, relevance, causality and omissions.
-3. Video integrity: decoder diagnostics plus independent visual review for glitches.
+France min real run (`v3a_self_revise_fr_min_20261104_r3`): Planner+VLM **real** participation proven; Verifier hit proxy 502 (honest fail); **no EDL accept / no quality improvement claim yet**. Estimated real cost ≈ $0.008.
 
-Hard vetoes override averages: wrong team/score, replay as primary LIVE, indispensable story action omitted, unverified invented events/times, or confirmed major corruption.
-
-Calibrate proposed scoring thresholds on manual A/B/C/France reviews and held-out matches. Do not invent universal threshold values.
-
-Every revision must identify its target defect, record before/after evidence and preserve previous EDL. Accept only if it improves that defect without new P0 failures or critical regressions. Roll back otherwise. Stop after three rounds, retain the best audited candidate with unresolved issues, and never force render_ready=true.
+```bash
+set -a; source /path/to/phase4a_paratera.env; set +a
+export STORY_API_ENABLE=1
+ROOT=/data2/lpy1/_story_va_outputs/v3/plan2/closed_loop_FR_france_australia_zeroshot
+OUT=$ROOT/v3a_self_revise_fr_min_$(date +%Y%m%d_%H%M%S)
+PYTHONPATH=10.27scasual_chain/algo python -m story_video_agent_v3.self_revise_agent \
+  --phase5-dir "$ROOT/04_phase5" \
+  --video "/mnt/data4/migu/2022年11月23日 法国vs澳大利亚.mp4" \
+  --predicted-causal "$ROOT/03_v1_adapt/predicted_causal_live_goals_only.json" \
+  --stage2-proposal "$ROOT/v3a_stage2_planner_proposal.json" \
+  --out-dir "$OUT" \
+  --max-rounds 1 --max-calls 8 --max-cost-usd 1.0 \
+  --enable-real-api --i-approve-budget
+```
 
 ## Next gate
 
-Stage-1 and Stage-2 offline validation is reported (21/21 tests; A/B/C no structural P0 task; FR one P0 opponent opening task). Stage-3 source-frame code is committed pending actual media tests and inspection. Crucially, the next main architectural task is **real API LLM Planner story diagnosis**, including independent story-quality diagnosis beyond rule-identified P0s, followed by selective VLM evidence and guarded local patches. Preserve V3-R and do not equate the offline rule baseline with completed V3-A Agent capability.
+Continue FR multi-round real-API loop until Verifier succeeds and an evidence-bound candidate improves hard gates without regressing good cuts; only then consider A/B/C narrative diagnosis. Preserve V3-R. Acceptance = real model participation **and** verifiable story-quality improvement — not exit code alone.
