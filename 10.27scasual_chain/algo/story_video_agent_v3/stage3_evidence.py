@@ -10,7 +10,6 @@ from __future__ import annotations
 import argparse
 import json
 import math
-import os
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
@@ -186,6 +185,44 @@ def sample_media(
     return windows, store
 
 
+def _make_contact_sheet(windows: Sequence[Dict[str, Any]], destination: Path) -> Dict[str, Any]:
+    """Human-review aid; captions are bound to requested timestamps, not VLM claims."""
+    try:
+        from PIL import Image, ImageDraw, ImageOps
+    except ImportError:
+        return {
+            "status": "UNAVAILABLE", "reason": "Pillow not installed",
+            "frame_manifest_still_available": True,
+        }
+    frames = [
+        (w["window_index"], row) for w in windows for row in w.get("frames") or []
+    ]
+    if not frames:
+        return {"status": "EMPTY", "reason": "no frames"}
+    width, height, label_h, columns = 360, 210, 44, 3
+    nrows = (len(frames) + columns - 1) // columns
+    canvas = Image.new("RGB", (width * columns, (height + label_h) * nrows), "white")
+    draw = ImageDraw.Draw(canvas)
+    for i, (win_idx, row) in enumerate(frames):
+        x = (i % columns) * width
+        y = (i // columns) * (height + label_h)
+        with Image.open(str(row["path"])) as raw:
+            tile = ImageOps.fit(raw.convert("RGB"), (width, height))
+        canvas.paste(tile, (x, y))
+        label = (
+            f"W{win_idx} req={row['requested_media_sec']:.2f}s "
+            f"pts={row['actual_media_sec'] if row['actual_media_sec'] is not None else '?'}"
+        )
+        draw.text((x + 5, y + height + 4), label, fill="black")
+        draw.text((x + 5, y + height + 22), str(row["frame_id"]), fill="black")
+    canvas.save(destination, quality=85)
+    return {
+        "status": "CREATED", "path": str(destination),
+        "frames": len(frames), "columns": columns,
+        "note": "Coarse still-image index only; not proof of first-live goal.",
+    }
+
+
 def _observe_windows(
     windows: List[Dict[str, Any]], *,
     task_id: str, enable_real_vlm: bool,
@@ -227,8 +264,8 @@ def _observe_windows(
         observed = vision.describe_frames(
             gap_id=task_id,
             gap_note=(
-                "Find visual CLUES for the opponent opening goal in France-Australia "
-                "broadcast. A score change does not prove first-live goal action. "
+                "Find visual CLUES for the opponent goal that caused the selected comeback arc deficit. "
+                "A score change does not prove first-live goal action. "
                 "Do not assume a replay or celebration is a live goal. "
                 f"Scanned source interval [{win['media_start_sec']}, {win['media_end_sec']}]."
             ),
@@ -300,6 +337,7 @@ def run(
         samples_per_window=samples_per_window, frame_budget=frame_budget,
     )
     store.write_manifest(out_dir / "frame_manifest.json")
+    contact_sheet = _make_contact_sheet(windows, out_dir / "contact_sheet.jpg")
     observations, api_report = _observe_windows(
         windows, task_id=str(task["task_id"]), enable_real_vlm=enable_real_vlm,
     )
@@ -315,7 +353,8 @@ def run(
         },
         "score_anchor_sec": task.get("score_anchor_sec"),
         "score_anchor_kind": "score_confirmation_only_not_goal_action",
-        "search_windows": windows, "frame_budget_used": store.budget.used,
+        "search_windows": windows, "contact_sheet": contact_sheet,
+        "frame_budget_used": store.budget.used,
         "frame_budget_max": store.budget.max_frames,
         "vlm_observations": observations, "vlm_execution": api_report,
         "negative_goal_atom_used_as_truth": False,
