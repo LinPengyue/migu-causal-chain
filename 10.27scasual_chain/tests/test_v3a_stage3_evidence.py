@@ -1,7 +1,6 @@
 """V3-A Stage-3 zero-billed safety tests; synthetic source, no real API."""
 from __future__ import annotations
 
-import copy
 import json
 import shutil
 import sys
@@ -178,10 +177,11 @@ class Stage3EvidenceTests(unittest.TestCase):
             self.assertEqual(0, result["vlm_execution"]["real_requests"])
             self.assertTrue((out / "stage3_evidence.json").is_file())
             self.assertTrue((out / "frame_manifest.json").is_file())
-            self.assertEqual([w["frame_id"] for item in result["search_windows"]
-                              for w in item["frames"] if w["frame_id"]],
-                             [w["frame_id"] for item in result["search_windows"]
-                              for w in item["frames"]])
+            sampled = [w for item in result["search_windows"] for w in item["frames"]]
+            self.assertEqual(1, len(sampled))
+            self.assertTrue(Path(sampled[0]["path"]).is_file())
+            self.assertIn(sampled[0]["time_reliability"],
+                          {"PTS_MISSING", "PTS_DRIFT_REVIEW", "PTS_WITHIN_TOLERANCE"})
             with self.assertRaisesRegex(ValueError, "already exists"):
                 run(phase5=phase, proposal_path=proposal_path,
                     video=video, out_dir=out, samples_per_window=1, frame_budget=3)
