@@ -48,6 +48,27 @@ from .hybrid_fallback import (
 SCHEMA = "v3a_self_revise_run_v1"
 MAX_ROUNDS = 3
 MAX_DIAGNOSES = 8
+# Experimental loop/release composite threshold — not a calibrated production standard.
+DEFAULT_QUALITY_THRESHOLD = 75.0
+# Confirmed severe fact errors that hard-block loop retain (not mere missing coverage).
+LOOP_HARD_VETO_KINDS = frozenset({
+    "replay_as_primary",
+    "replay_as_first_live",
+    "duplicated_goal_event",
+    "known_integrity_failure",
+    "technical_decode_error",
+    "bad_media_window",
+    "invented_event_or_time",
+    "wrong_score_or_team",
+    "wrong_attribution",
+    "wrong_score",
+    "wrong_team",
+})
+# Stage-1 P0 kinds that are feedback for Planner, not loop-stopping by themselves.
+LOOP_FEEDBACK_P0_KINDS = frozenset({
+    "missing_story_element",
+    "goal_window_incomplete",
+})
 MAX_TOOL_REQUESTS = 4
 MAX_FRAMES_PER_REQUEST = 4
 LOOKBACK_SEC = 180.0
@@ -663,6 +684,121 @@ def coherence_score(audit: Mapping[str, Any]) -> Optional[float]:
         )
     except (TypeError, ValueError):
         return None
+
+
+def image_quality_score(audit: Mapping[str, Any]) -> Optional[float]:
+    """Map Stage-1 image_quality scan to 0–100 or None (UNKNOWN / not evaluated)."""
+    iq = (audit.get("dimensions") or {}).get("image_quality")
+    if not isinstance(iq, dict) or not iq:
+        return None
+    if iq.get("decode_error_count"):
+        return 0.0
+    # Screened but no severe decode errors → provisional structural pass, not calibrated.
+    if iq.get("scanned") or iq.get("path") or "decode_error_count" in iq:
+        anomalies = bool(iq.get("possible_black_intervals") or iq.get("possible_freeze_intervals"))
+        return 70.0 if anomalies else 90.0
+    return None
+
+
+def _safe_float(x: Any) -> Optional[float]:
+    try:
+        if x is None or isinstance(x, bool):
+            return None
+        v = float(x)
+        return v if v == v else None
+    except (TypeError, ValueError):
+        return None
+
+
+def composite_quality_score(
+    audit: Mapping[str, Any],
+    *,
+    verifier_validated: Optional[Mapping[str, Any]] = None,
+) -> Dict[str, Any]:
+    """Average of evaluated dims only. UNKNOWN/NOT_EVALUATED never become 0."""
+    dims_out: Dict[str, Any] = {}
+    numeric: List[float] = []
+    unknown: List[str] = []
+
+    cov = coverage_score(audit)
+    coh = coherence_score(audit)
+    img = image_quality_score(audit)
+
+    api_dims = (verifier_validated or {}).get("dimensions") or {}
+    for name, rule_score, api_key in (
+        ("story_element_coverage", cov, "story_element_coverage"),
+        ("narrative_coherence", coh, "narrative_coherence"),
+        ("image_content_quality", img, "image_content_quality"),
+    ):
+        api_d = api_dims.get(api_key) if isinstance(api_dims.get(api_key), dict) else {}
+        status = str(api_d.get("status") or "")
+        api_score = _safe_float(api_d.get("score"))
+        if status in ("NOT_EVALUATED", "UNKNOWN", "insufficient_evidence", "unknown"):
+            # Prefer rule proxy if present; else UNKNOWN (not 0).
+            if rule_score is not None:
+                dims_out[name] = {"score": rule_score, "source": "rule_proxy", "status": "EVALUATED"}
+                numeric.append(rule_score)
+            else:
+                dims_out[name] = {"score": None, "source": "api", "status": "UNKNOWN"}
+                unknown.append(name)
+        elif api_score is not None:
+            dims_out[name] = {"score": api_score, "source": "api", "status": status or "EVALUATED"}
+            numeric.append(api_score)
+        elif rule_score is not None:
+            dims_out[name] = {"score": rule_score, "source": "rule_proxy", "status": "EVALUATED"}
+            numeric.append(rule_score)
+        else:
+            # story_coherence key alias in Stage-1
+            if name == "narrative_coherence" and coh is not None:
+                dims_out[name] = {"score": coh, "source": "rule_proxy", "status": "EVALUATED"}
+                numeric.append(coh)
+            else:
+                dims_out[name] = {"score": None, "source": None, "status": "UNKNOWN"}
+                unknown.append(name)
+
+    # Alias: Stage-1 uses story_coherence
+    if "narrative_coherence" not in dims_out and coh is not None:
+        dims_out["narrative_coherence"] = {"score": coh, "source": "rule_proxy", "status": "EVALUATED"}
+        numeric.append(coh)
+
+    composite = round(sum(numeric) / len(numeric), 2) if numeric else None
+    return {
+        "composite": composite,
+        "dimensions": dims_out,
+        "unknown_dimensions": unknown,
+        "evaluated_count": len(numeric),
+        "note": "UNKNOWN dims excluded from average; never coerced to 0 or 100.",
+    }
+
+
+def severe_hard_findings(audit: Mapping[str, Any]) -> List[Dict[str, Any]]:
+    """Confirmed severe fact/technical errors (loop hard block). Missing coverage is excluded."""
+    out: List[Dict[str, Any]] = []
+    for f in audit.get("hard_gate_findings") or []:
+        if not isinstance(f, dict):
+            continue
+        kind = str(f.get("kind") or f.get("issue_kind") or "")
+        if kind in LOOP_HARD_VETO_KINDS:
+            out.append(dict(f))
+        elif kind in LOOP_FEEDBACK_P0_KINDS:
+            continue
+        elif str(f.get("severity")) == "P0" and kind not in LOOP_FEEDBACK_P0_KINDS:
+            # Unknown P0 kinds: treat as severe only if explicitly marked confirmed.
+            if f.get("confirmed") or f.get("fact_verified"):
+                out.append(dict(f))
+    return out
+
+
+def feedback_findings(audit: Mapping[str, Any]) -> List[Dict[str, Any]]:
+    """Non-blocking diagnostics for Planner (missing elements, soft issues)."""
+    out: List[Dict[str, Any]] = []
+    for f in (audit.get("hard_gate_findings") or []) + (audit.get("diagnostic_issues") or []):
+        if not isinstance(f, dict):
+            continue
+        kind = str(f.get("kind") or "")
+        if kind in LOOP_FEEDBACK_P0_KINDS or str(f.get("severity")) in ("P1", "P2"):
+            out.append(dict(f))
+    return out
 
 
 def compact_context(
@@ -1437,8 +1573,8 @@ def apply_candidate_revision(
 
 
 def hard_gate_blocks(audit: Mapping[str, Any]) -> bool:
-    findings = audit.get("hard_gate_findings") or []
-    return any(str(f.get("severity")) == "P0" for f in findings if isinstance(f, dict))
+    """True only for confirmed severe fact/technical errors (not missing-element feedback)."""
+    return bool(severe_hard_findings(audit))
 
 
 def decide_accept(
@@ -1450,93 +1586,144 @@ def decide_accept(
     baseline_edl: Optional[Sequence[Dict[str, Any]]] = None,
     candidate_edl: Optional[Sequence[Dict[str, Any]]] = None,
     semantic_verification_status: Optional[str] = None,
+    quality_threshold: float = DEFAULT_QUALITY_THRESHOLD,
+    mode: str = "loop",
 ) -> Dict[str, Any]:
-    """Accept via P0-repair or evidence-backed quality improvement (not model self-score alone).
+    """Loop retain vs release are separate.
 
-    Hybrid rule: newly bound goal-action cuts require semantic verification.
-    API Verifier failure must not pretend semantic pass; workflow may still complete degraded.
+    Loop (`mode=loop`): serve Agent self-revision — keep partial improvements even if
+    feedback P0 (e.g. missing opening) remain; block only confirmed severe errors /
+    important regressions. Unverified goal binds may be retained as pending proposals
+    (`release_eligible=False`).
+
+    Release (`mode=release`): final delivery gate — no pending unverified primary goals,
+    no severe errors, composite threshold when scores exist. Prefer `decide_release()`.
     """
+    if mode == "release":
+        return decide_release(
+            baseline_audit=baseline_audit,
+            candidate_audit=candidate_audit,
+            verifier=verifier,
+            revision_meta=revision_meta,
+            baseline_edl=baseline_edl,
+            candidate_edl=candidate_edl,
+            semantic_verification_status=semantic_verification_status,
+            quality_threshold=quality_threshold,
+        )
+
     base_p0 = sum(1 for f in (baseline_audit.get("hard_gate_findings") or []) if f.get("severity") == "P0")
     cand_p0 = sum(1 for f in (candidate_audit.get("hard_gate_findings") or []) if f.get("severity") == "P0")
+    base_severe = severe_hard_findings(baseline_audit)
+    cand_severe = severe_hard_findings(candidate_audit)
     applied = revision_meta.get("applied") or []
     evidence_bound = [a for a in applied if a.get("status") == "applied_evidence_bound"]
-    soft_applied = [a for a in applied if a.get("status") == "applied" and a.get("action") in ("drop", "trim")]
+    soft_applied = [a for a in applied if a.get("status") == "applied" and a.get("action") in ("drop", "trim", "reorder")]
+    pending_slots = [a for a in applied if a.get("status") == "pending_evidence_slot"]
     pending_only = bool(applied) and all(
         a.get("status") in ("pending_evidence_slot", "recorded") for a in applied
     ) and not evidence_bound and not soft_applied
     goal_binds = [
         a for a in evidence_bound
-        if "goal" in str(a.get("action") or "") or "goal_action" in str(a.get("segment_id") or a.get("role") or "")
+        if "goal" in str(a.get("action") or "")
+        or "goal_action" in str(a.get("segment_id") or a.get("role") or "")
         or a.get("action") in ("search_add", "replace")
     ]
     sem = semantic_verification_status or (
-        "PASSED" if verifier.get("ok") else "NOT_EVALUATED"
+        "PASSED" if verifier.get("ok") and verifier.get("ok_for_semantic_accept", verifier.get("ok"))
+        else "NOT_EVALUATED"
     )
-
-    reasons: List[str] = []
-    path = None
-    accept = False
-
-    if goal_binds and sem not in ("PASSED",):
-        reasons.append("goal_bind_requires_semantic_verification")
-        return {
-            "accept": False,
-            "path": None,
-            "reasons": reasons,
-            "baseline_p0": base_p0,
-            "candidate_p0": cand_p0,
-            "pending_only": pending_only,
-            "semantic_verification_status": sem,
-            "model_quality_delta": "",
-            "verifier_self_score_alone_insufficient": True,
-        }
-
-    if not verifier.get("ok"):
-        reasons.append("model_verifier_failed_or_degraded")
-        return {
-            "accept": False,
-            "path": None,
-            "reasons": reasons,
-            "baseline_p0": base_p0,
-            "candidate_p0": cand_p0,
-            "pending_only": pending_only,
-            "semantic_verification_status": sem,
-            "model_quality_delta": "",
-            "verifier_self_score_alone_insufficient": True,
-        }
-
+    api_ok = bool(verifier.get("ok"))
     validated = verifier.get("validated") or {}
+    reasons: List[str] = []
+    path: Optional[str] = None
+    accept = False
+    pending_verification = False
+    release_eligible = False
+
+    # Confirmed model hard vetoes always block
     if validated.get("hard_vetoes"):
         reasons.append("verifier_hard_veto")
         return {
-            "accept": False, "path": None, "reasons": reasons,
-            "baseline_p0": base_p0, "candidate_p0": cand_p0,
+            "accept": False,
+            "loop_retain": False,
+            "path": None,
+            "reasons": reasons,
+            "baseline_p0": base_p0,
+            "candidate_p0": cand_p0,
             "pending_only": pending_only,
+            "pending_verification": False,
+            "release_eligible": False,
             "hard_vetoes": validated.get("hard_vetoes"),
+            "semantic_verification_status": sem,
+            "gate": "loop",
+            "verifier_self_score_alone_insufficient": True,
         }
 
-    if pending_only or (not evidence_bound and not soft_applied):
-        reasons.append("no_evidence_bound_or_safe_edit")
+    # New confirmed severe findings vs baseline
+    if len(cand_severe) > len(base_severe):
+        reasons.append("new_confirmed_severe_error")
         return {
-            "accept": False, "path": None, "reasons": reasons,
-            "baseline_p0": base_p0, "candidate_p0": cand_p0,
-            "pending_only": True,
+            "accept": False,
+            "loop_retain": False,
+            "path": None,
+            "reasons": reasons + [f.get("kind") or "?" for f in cand_severe],
+            "baseline_p0": base_p0,
+            "candidate_p0": cand_p0,
+            "pending_only": pending_only,
+            "pending_verification": False,
+            "release_eligible": False,
+            "severe_findings": cand_severe,
+            "semantic_verification_status": sem,
+            "gate": "loop",
+            "verifier_self_score_alone_insufficient": True,
         }
+
+    if not api_ok:
+        reasons.append("api_verifier_degraded_rule_track_active")
+        # Do not fail the round solely because API Verifier 502'd.
+
+    if pending_only or (not evidence_bound and not soft_applied and not pending_slots):
+        if not evidence_bound and not soft_applied:
+            reasons.append("no_evidence_bound_or_safe_edit")
+            return {
+                "accept": False,
+                "loop_retain": False,
+                "path": None,
+                "reasons": reasons,
+                "baseline_p0": base_p0,
+                "candidate_p0": cand_p0,
+                "pending_only": True,
+                "pending_verification": False,
+                "release_eligible": False,
+                "semantic_verification_status": sem,
+                "gate": "loop",
+                "verifier_self_score_alone_insufficient": True,
+            }
 
     regressions: List[str] = []
     if baseline_edl is not None and candidate_edl is not None:
         for reg in important_segments_regressed(baseline_edl, candidate_edl):
             reasons.append("important_goal_regressed:" + reg)
             regressions.append(reg)
-
-    if cand_p0 > base_p0:
-        reasons.append("new_or_worsened_p0")
+    if regressions:
         return {
-            "accept": False, "path": None, "reasons": reasons,
-            "baseline_p0": base_p0, "candidate_p0": cand_p0, "pending_only": pending_only,
+            "accept": False,
+            "loop_retain": False,
+            "path": None,
+            "reasons": reasons,
+            "baseline_p0": base_p0,
+            "candidate_p0": cand_p0,
+            "pending_only": pending_only,
+            "pending_verification": False,
+            "release_eligible": False,
+            "regressions": regressions,
+            "semantic_verification_status": sem,
+            "gate": "loop",
+            "verifier_self_score_alone_insufficient": True,
         }
 
-    # Evidence of improvement cannot be empty model prose alone
+    # Worsened total P0 count with no compensating improvement is still rejected,
+    # but missing-element P0 alone does not force reject when coverage rises.
     eoi = validated.get("evidence_of_improvement") or []
     dims = validated.get("dimensions") or {}
     has_structured_eoi = any(
@@ -1548,54 +1735,104 @@ def decide_accept(
         and (dims[k].get("evidence_refs") or dims[k].get("summary"))
         for k in ("story_element_coverage", "narrative_coherence", "image_content_quality")
     )
+    dim_regressed = any(
+        isinstance(dims.get(k), dict) and dims[k].get("status") == "regressed"
+        for k in ("story_element_coverage", "narrative_coherence", "image_content_quality")
+    )
     cov_b, cov_c = coverage_score(baseline_audit), coverage_score(candidate_audit)
     coh_b, coh_c = coherence_score(baseline_audit), coherence_score(candidate_audit)
     structural_cov_up = cov_b is not None and cov_c is not None and cov_c > cov_b + 1e-6
     structural_coh_up = coh_b is not None and coh_c is not None and coh_c > coh_b + 1e-6
     structural_improve = structural_cov_up or structural_coh_up
+    p0_reduced = cand_p0 < base_p0
+    local_improve = structural_improve or dim_improved or p0_reduced or has_structured_eoi
 
-    # Path A: P0 repair
-    if cand_p0 < base_p0 and cand_p0 == 0 and evidence_bound:
-        if any("important_goal_regressed" in r for r in reasons):
-            accept = False
-        else:
+    if dim_regressed and not structural_improve and not p0_reduced:
+        reasons.append("dimension_regressed_without_compensating_gain")
+        return {
+            "accept": False,
+            "loop_retain": False,
+            "path": None,
+            "reasons": reasons,
+            "baseline_p0": base_p0,
+            "candidate_p0": cand_p0,
+            "coverage_baseline": cov_b,
+            "coverage_candidate": cov_c,
+            "coherence_baseline": coh_b,
+            "coherence_candidate": coh_c,
+            "pending_verification": False,
+            "release_eligible": False,
+            "semantic_verification_status": sem,
+            "gate": "loop",
+            "verifier_self_score_alone_insufficient": True,
+        }
+
+    # Unverified goal binds: keep as pending proposal for next rounds; not release-ready.
+    if goal_binds and sem not in ("PASSED",):
+        if structural_improve or p0_reduced or evidence_bound:
             accept = True
-            path = "p0_repair"
-            reasons.append("p0_resolved_with_evidence_bound_edit")
-            if not (has_structured_eoi or structural_improve or dim_improved):
-                # Structural P0 clear is itself verifiable evidence
-                reasons.append("structural_hard_gate_clearance")
-
-    # Path B: quality improvement without P0
-    elif base_p0 == 0 and cand_p0 == 0 and (evidence_bound or soft_applied):
-        if any("important_goal_regressed" in r for r in reasons):
-            accept = False
-        elif structural_improve or dim_improved:
-            if has_structured_eoi or structural_improve:
-                accept = True
-                path = "quality_improvement"
-                reasons.append("quality_improved_with_verifiable_evidence")
-            else:
-                reasons.append("dimension_improved_without_evidence_refs")
-                accept = False
+            pending_verification = True
+            path = "loop_pending_verification"
+            reasons.append("goal_bind_retained_as_pending_proposal")
+            reasons.append("not_release_ready_until_semantic_verification")
         else:
-            reasons.append("no_verifiable_quality_delta")
+            reasons.append("goal_bind_without_improvement_signal")
             accept = False
+
+    elif cand_p0 < base_p0 and cand_p0 == 0 and evidence_bound:
+        accept = True
+        path = "p0_repair"
+        reasons.append("p0_resolved_with_evidence_bound_edit")
+        if not (has_structured_eoi or structural_improve or dim_improved):
+            reasons.append("structural_hard_gate_clearance")
+        if sem == "PASSED" and not cand_severe:
+            release_eligible = False  # still needs decide_release / product auth
+    elif p0_reduced and (evidence_bound or soft_applied or structural_improve):
+        accept = True
+        path = "partial_improvement"
+        reasons.append("partial_p0_or_coverage_improve_loop_retain")
+        if cand_p0 > 0:
+            reasons.append("feedback_p0_still_open_continue_loop")
+    elif (evidence_bound or soft_applied) and (structural_improve or dim_improved or has_structured_eoi):
+        if has_structured_eoi or structural_improve or (soft_applied and dim_improved):
+            accept = True
+            path = "quality_improvement"
+            reasons.append("quality_improved_with_verifiable_evidence")
+        else:
+            reasons.append("dimension_improved_without_evidence_refs")
+            accept = False
+    elif soft_applied and structural_improve:
+        accept = True
+        path = "quality_improvement"
+        reasons.append("quality_improved_with_verifiable_evidence")
     else:
         if cand_p0 > 0:
-            reasons.append("p0_still_open")
+            reasons.append("feedback_p0_still_open")
+        if not local_improve:
+            reasons.append("no_verifiable_quality_delta")
         if not evidence_bound and not soft_applied:
             reasons.append("no_evidence_bound_or_safe_edit")
-        if cand_p0 < base_p0 and cand_p0 > 0:
-            reasons.append("partial_p0_reduction_insufficient")
 
     # Model self-rating alone never suffices
-    if accept and not (structural_improve or evidence_bound or soft_applied or has_structured_eoi or path == "p0_repair"):
+    if accept and not (
+        structural_improve or evidence_bound or soft_applied or has_structured_eoi
+        or path in ("p0_repair", "partial_improvement", "loop_pending_verification")
+    ):
         accept = False
+        pending_verification = False
         reasons.append("model_self_score_alone_insufficient")
+
+    scores = composite_quality_score(candidate_audit, verifier_validated=validated)
+    meets_threshold = (
+        scores.get("composite") is not None
+        and float(scores["composite"]) >= float(quality_threshold)
+        and not cand_severe
+        and not pending_verification
+    )
 
     return {
         "accept": bool(accept),
+        "loop_retain": bool(accept),
         "path": path,
         "reasons": reasons or (["accepted"] if accept else ["rejected"]),
         "baseline_p0": base_p0,
@@ -1606,9 +1843,109 @@ def decide_accept(
         "coherence_candidate": coh_c,
         "model_quality_delta": str(validated.get("quality_delta_vs_baseline") or ""),
         "pending_only": pending_only,
+        "pending_verification": bool(pending_verification),
+        "release_eligible": bool(release_eligible),
+        "meets_quality_threshold": bool(meets_threshold),
+        "quality_threshold": float(quality_threshold),
+        "composite_scores": scores,
+        "feedback_findings": feedback_findings(candidate_audit),
+        "severe_findings": cand_severe,
         "evidence_bound_edits": len(evidence_bound),
         "regressions": regressions,
+        "semantic_verification_status": sem,
+        "api_verifier_ok": api_ok,
+        "gate": "loop",
         "verifier_self_score_alone_insufficient": True,
+        "note": (
+            "Loop retain != final release. Unverified goals stay pending. "
+            f"Threshold {quality_threshold} is experimental, not calibrated."
+        ),
+    }
+
+
+def decide_release(
+    *,
+    baseline_audit: Mapping[str, Any],
+    candidate_audit: Mapping[str, Any],
+    verifier: Mapping[str, Any],
+    revision_meta: Mapping[str, Any],
+    baseline_edl: Optional[Sequence[Dict[str, Any]]] = None,
+    candidate_edl: Optional[Sequence[Dict[str, Any]]] = None,
+    semantic_verification_status: Optional[str] = None,
+    quality_threshold: float = DEFAULT_QUALITY_THRESHOLD,
+) -> Dict[str, Any]:
+    """Final delivery gate — stricter than loop retain. Never auto-authorizes product release."""
+    del baseline_audit, baseline_edl  # release judges the candidate as delivered state
+    reasons: List[str] = []
+    cand_severe = severe_hard_findings(candidate_audit)
+    validated = verifier.get("validated") or {}
+    sem = semantic_verification_status or (
+        "PASSED" if verifier.get("ok") else "NOT_EVALUATED"
+    )
+    applied = revision_meta.get("applied") or []
+    evidence_bound = [a for a in applied if a.get("status") == "applied_evidence_bound"]
+    goal_binds = [
+        a for a in evidence_bound
+        if "goal_action" in str(a.get("segment_id") or a.get("role") or "")
+        or a.get("action") in ("search_add", "replace")
+    ]
+    unverified_goals: List[str] = []
+    if candidate_edl is not None:
+        for r in candidate_edl:
+            if not isinstance(r, dict) or not r.get("include_in_cut", True):
+                continue
+            role = str(r.get("role") or "")
+            if "goal_action" not in role:
+                continue
+            pending = (
+                r.get("first_live_status") == "NOT_VERIFIED"
+                or (r.get("agent_bound") and not r.get("agent_auto_verified"))
+            )
+            if pending:
+                unverified_goals.append(str(r.get("segment_id") or role))
+
+    scores = composite_quality_score(candidate_audit, verifier_validated=validated)
+    release_ok = True
+    if cand_severe or validated.get("hard_vetoes"):
+        release_ok = False
+        reasons.append("release_blocked_severe_or_veto")
+    if goal_binds and sem != "PASSED":
+        release_ok = False
+        reasons.append("release_blocked_unverified_goal_bind")
+    if unverified_goals:
+        release_ok = False
+        reasons.append("release_blocked_pending_goal_segments")
+    if scores.get("composite") is None:
+        release_ok = False
+        reasons.append("release_blocked_scores_unknown")
+    elif float(scores["composite"]) < float(quality_threshold):
+        release_ok = False
+        reasons.append("release_blocked_below_quality_threshold")
+    if not verifier.get("ok") or sem in ("NOT_EVALUATED", "UNKNOWN", "DEGRADED"):
+        release_ok = False
+        reasons.append("release_blocked_semantic_not_evaluated")
+    if not reasons and release_ok:
+        reasons.append("structurally_eligible_but_product_auth_still_required")
+
+    return {
+        "accept": False,
+        "loop_retain": False,
+        "release_eligible": bool(release_ok),
+        "path": "release_gate",
+        "reasons": reasons,
+        "pending_verification": bool(unverified_goals),
+        "unverified_goal_segments": unverified_goals,
+        "severe_findings": cand_severe,
+        "composite_scores": scores,
+        "quality_threshold": float(quality_threshold),
+        "semantic_verification_status": sem,
+        "release_decision": "NOT_AUTHORIZED",
+        "render_ready": False,
+        "gate": "release",
+        "note": (
+            "Final delivery gate is independent of loop retain. "
+            "Unverified goals and API-degraded semantics cannot be formally released."
+        ),
     }
 
 
@@ -1648,6 +1985,7 @@ def run_self_revise(
     inject_planner_failure: bool = False,
     inject_vlm_failure: bool = False,
     inject_verifier_failure: bool = False,
+    quality_threshold: float = DEFAULT_QUALITY_THRESHOLD,
 ) -> Dict[str, Any]:
     phase5_dir = phase5_dir.resolve()
     out_dir = out_dir.resolve()
@@ -1958,9 +2296,11 @@ def run_self_revise(
             candidate_audit=cand_audit,
             verifier=dual,
             revision_meta=rev_meta,
-            baseline_edl=baseline_edl,
+            baseline_edl=best["edl"] if best.get("accepted") else baseline_edl,
             candidate_edl=cand_edl,
             semantic_verification_status=last_semantic_status,
+            quality_threshold=quality_threshold,
+            mode="loop",
         )
         (round_dir / "accept_decision.json").write_text(
             json.dumps(decision, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
@@ -1988,12 +2328,29 @@ def run_self_revise(
         }
         rounds.append(round_rec)
 
-        if decision.get("accept"):
+        if decision.get("accept") or decision.get("loop_retain"):
             current_edl = cand_edl
-            best = {"edl": cand_edl, "audit": cand_audit, "round": r, "accepted": True}
+            best = {
+                "edl": cand_edl,
+                "audit": cand_audit,
+                "round": r,
+                "accepted": True,
+                "pending_verification": bool(decision.get("pending_verification")),
+                "path": decision.get("path"),
+            }
             agent_success = True
         else:
             current_edl = copy.deepcopy(best["edl"])
+
+        # Quality threshold met without severe errors / pending goals → stop optimizing.
+        if (
+            decision.get("accept")
+            and decision.get("meets_quality_threshold")
+            and not decision.get("pending_verification")
+            and not severe_hard_findings(cand_audit)
+        ):
+            abort_reason = "quality_threshold_met"
+            break
 
         if real_mode and api is not None:
             usage = api.stats.summary()
@@ -2046,6 +2403,34 @@ def run_self_revise(
     )
     orch["rule_verification_status"] = final_rule.get("rule_verification_status") or orch["rule_verification_status"]
 
+    # Separate final delivery gate (never confused with loop retain).
+    last_rev_meta = {}
+    last_dual: Dict[str, Any] = {"ok": False, "validated": {}}
+    for rr in reversed(rounds):
+        if rr.get("accept_decision"):
+            last_rev_meta = rr.get("revision_meta") or {}
+            break
+    dual_path = out_dir / f"round_{best.get('round') or 1:02d}" / "dual_verifier.json"
+    if dual_path.is_file():
+        try:
+            last_dual = json.loads(dual_path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            last_dual = {"ok": False, "validated": {}}
+    release = decide_release(
+        baseline_audit=baseline_audit,
+        candidate_audit=best.get("audit") or baseline_audit,
+        verifier=last_dual if isinstance(last_dual, dict) else {"ok": False},
+        revision_meta=last_rev_meta,
+        candidate_edl=best["edl"],
+        semantic_verification_status=last_semantic_status,
+        quality_threshold=quality_threshold,
+    )
+    (out_dir / "release_gate.json").write_text(
+        json.dumps(release, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    orch["release_decision"] = "NOT_AUTHORIZED"
+    orch["render_ready"] = False
+
     summary = {
         "schema": SCHEMA,
         "match_id": plan.get("match_id") or story.get("match_id"),
@@ -2063,15 +2448,24 @@ def run_self_revise(
         "rounds": rounds,
         "best_round": best.get("round"),
         "accepted_any_revision": bool(best.get("accepted")),
+        "pending_verification": bool(best.get("pending_verification")),
         "agent_claimed_success": bool(agent_contributed),
         "abort_reason": abort_reason,
+        "quality_threshold": float(quality_threshold),
+        "release_gate": release,
         "api_usage": usage,
         "cost_disclaimer": COST_DISCLAIMER,
         "edl_modified_frozen_phase5": False,
-        "unresolved_risks": list(baseline_audit.get("revision_requests") or []) if not best.get("accepted") else [],
+        "unresolved_risks": (
+            list(feedback_findings(best.get("audit") or baseline_audit))
+            + list(severe_hard_findings(best.get("audit") or baseline_audit))
+        ),
         "note": (
+            "Loop retain != release eligibility. "
             "Degraded execution success != multimodal self-revision success. "
-            "VLM observations never certify first LIVE. Semantic scores stay NOT_EVALUATED on API failure."
+            "VLM observations never certify first LIVE. "
+            "UNKNOWN/NOT_EVALUATED semantic scores are not coerced to 0/100. "
+            f"Quality threshold {quality_threshold} is experimental."
         ),
         **orch,
     }
@@ -2110,6 +2504,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     p.add_argument("--skip-vlm", action="store_true")
     p.add_argument("--allow-degraded-offline", action="store_true",
                    help="Allow rule/ffmpeg degraded completion without real API")
+    p.add_argument(
+        "--quality-threshold", type=float, default=DEFAULT_QUALITY_THRESHOLD,
+        help="Experimental composite stop threshold (default 75; not calibrated)",
+    )
     p.add_argument("--config-audit-only", action="store_true")
     args = p.parse_args(argv)
 
@@ -2158,6 +2556,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             verifier_fixture=args.verifier_fixture,
             skip_vlm=args.skip_vlm,
             allow_degraded_offline=args.allow_degraded_offline,
+            quality_threshold=args.quality_threshold,
         )
     except Exception as exc:
         print(json.dumps({

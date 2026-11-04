@@ -319,6 +319,7 @@ class AcceptPathTests(unittest.TestCase):
         self.assertTrue(any(f["severity"] == "P0" for f in audit["hard_gate_findings"]))
 
     def test_verifier_failure_never_counts_as_success(self):
+        # API 502 alone with no quality delta must not claim success / loop retain.
         d = decide_accept(
             baseline_audit={"hard_gate_findings": [],
                             "dimensions": {"story_element_coverage": {"score": 100},
@@ -327,12 +328,15 @@ class AcceptPathTests(unittest.TestCase):
                              "dimensions": {"story_element_coverage": {"score": 100},
                                             "story_coherence": {"score": 100}}},
             verifier={"ok": False, "provider_mode": "degraded", "error": "502",
-                      "rule_fallback_success": False},
+                      "rule_fallback_success": False,
+                      "validated": {"hard_vetoes": [], "dimensions": {},
+                                    "evidence_of_improvement": []}},
             revision_meta={"applied": [{"status": "applied", "action": "drop", "segment_id": "seg_filler"}]},
             semantic_verification_status="NOT_EVALUATED",
         )
         self.assertFalse(d["accept"])
-        self.assertTrue(any("verifier_failed" in r or "degraded" in r for r in d["reasons"]))
+        self.assertFalse(d.get("release_eligible"))
+        self.assertTrue(any("degraded" in r or "no_verifiable" in r for r in d["reasons"]))
 
 
 class MultiWindowFeedbackTests(unittest.TestCase):

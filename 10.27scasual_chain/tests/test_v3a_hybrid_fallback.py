@@ -102,23 +102,51 @@ class HybridFallbackUnitTests(unittest.TestCase):
         for it in fb["validated"]["revision_intents"]:
             self.assertIn(it["action"], ("search_add", "mark_unresolved", "keep"))
 
-    def test_goal_bind_refused_without_semantic(self):
+    def test_goal_bind_loop_pending_but_not_release(self):
+        from story_video_agent_v3.self_revise_agent import decide_release
         d = decide_accept(
-            baseline_audit={"hard_gate_findings": [{"severity": "P0"}],
+            baseline_audit={"hard_gate_findings": [{"severity": "P0", "kind": "missing_story_element"}],
                             "dimensions": {"story_element_coverage": {"score": 66},
                                            "story_coherence": {"score": 100}}},
             candidate_audit={"hard_gate_findings": [],
                              "dimensions": {"story_element_coverage": {"score": 100},
                                             "story_coherence": {"score": 100}}},
-            verifier={"ok": False, "validated": {"dimensions": not_evaluated_semantic_block()}},
+            verifier={"ok": False, "validated": {
+                "dimensions": not_evaluated_semantic_block(),
+                "hard_vetoes": [], "evidence_of_improvement": [],
+            }},
             revision_meta={"applied": [{
                 "status": "applied_evidence_bound", "action": "search_add",
                 "segment_id": "seg_opponent_opening_goal_action",
+                "role": "opponent_opening_goal_action",
             }]},
             semantic_verification_status="NOT_EVALUATED",
         )
-        self.assertFalse(d["accept"])
-        self.assertIn("goal_bind_requires_semantic_verification", d["reasons"])
+        self.assertTrue(d["accept"])
+        self.assertEqual(d["path"], "loop_pending_verification")
+        self.assertTrue(d["pending_verification"])
+        self.assertFalse(d["release_eligible"])
+        rel = decide_release(
+            baseline_audit=d and {"hard_gate_findings": []},
+            candidate_audit={"hard_gate_findings": [],
+                             "dimensions": {"story_element_coverage": {"score": 100},
+                                            "story_coherence": {"score": 100}}},
+            verifier={"ok": False, "validated": {"dimensions": not_evaluated_semantic_block(),
+                                                  "hard_vetoes": []}},
+            revision_meta={"applied": [{
+                "status": "applied_evidence_bound", "action": "search_add",
+                "segment_id": "seg_opponent_opening_goal_action",
+                "role": "opponent_opening_goal_action",
+            }]},
+            candidate_edl=[{
+                "segment_id": "seg_opponent_opening_goal_action",
+                "role": "opponent_opening_goal_action",
+                "include_in_cut": True, "agent_bound": True,
+                "first_live_status": "NOT_VERIFIED",
+            }],
+            semantic_verification_status="NOT_EVALUATED",
+        )
+        self.assertFalse(rel["release_eligible"])
 
 
 class HybridOrchestrationFaultTests(unittest.TestCase):
