@@ -41,7 +41,8 @@ def fixture():
     }
     proposal = compile_proposal(story, plan, edl, audit)
     hashes = {"story": "a", "plan": "b", "edl": "c", "audit": "d"}
-    proposal["source_sha256"] = hashes
+    # Keep proposed snapshot independent from observed on-disk hashes.
+    proposal["source_sha256"] = dict(hashes)
     return proposal, story, plan, edl, audit, hashes
 
 
