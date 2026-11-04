@@ -46,6 +46,12 @@ MAX_FRAMES_PER_REQUEST = 4
 LOOKBACK_SEC = 180.0
 AFTER_ANCHOR_SEC = 15.0
 MAX_WINDOW_SPAN = 30.0
+MIN_BOUND_SPAN = 2.0
+MAX_BOUND_SPAN = 40.0
+SCORE_ANCHOR_EXCLUSION_SEC = 3.0
+MAX_WINDOWS_OBSERVE = 3
+MAX_FOLLOWUP_WINDOWS = 2
+VERIFIER_MAX_RETRIES = 2
 ALLOWED_ACTIONS = {
     "search_add", "replace", "trim", "drop", "reorder", "keep", "mark_unresolved",
 }
@@ -135,21 +141,31 @@ Do not claim render_ready or production release.
 """
 
 VERIFIER_SYSTEM = """You are a football story-video semantic Verifier.
-Given the candidate EDL, hard-gate findings, and VLM observations, return ONLY JSON:
-  issues, dimension_notes, revision_suggestions, quality_delta_vs_baseline.
-Each issue needs: issue_id, severity(P0|P1|P2), dimension, target_segment_id,
+Return ONLY JSON with keys:
+  issues, dimensions, revision_suggestions, quality_delta_vs_baseline,
+  hard_vetoes, evidence_of_improvement.
+dimensions MUST be an object with exactly:
+  story_element_coverage, narrative_coherence, image_content_quality
+Each dimension value: {status, summary, evidence_refs, problems[]}
+  status in: improved|unchanged|regressed|unknown|insufficient_evidence
+Each issue: issue_id, severity(P0|P1|P2), dimension, target_segment_id,
 problem, evidence_refs, suggested_fix.
-Dimensions: story_element_coverage, narrative_coherence, shot_relevance,
-image_content_quality.
-Observations are NOT proof of first LIVE. Do not invent timestamps or scores.
-Never set render_ready true. If evidence is insufficient, say so.
+hard_vetoes: list of hard failures (wrong score/team, replay_as_first_live,
+missing_required_node, severe_corruption) with evidence_refs.
+evidence_of_improvement: list of {claim, evidence_refs} — never self-grade alone.
+Observations are NOT first-LIVE proof. Do not invent timestamps or scores.
+Never set render_ready true. If evidence is insufficient, say so explicitly.
 """
 
 VLM_SYSTEM_HINT = (
     "Describe only what is visible in the provided frames. "
     "Relate to the planner question. Flag suspected omissions or wrong shots. "
-    "Suggest next search only using program-provided media times. "
-    "Never claim first-LIVE or goal fact verified from these frames alone."
+    "If this window lacks goal-action evidence, say so; do NOT infer the whole "
+    "match lacks the goal. Suggest next_search_request only within program-"
+    "provided allowed_windows (by index or start/end copied from that list). "
+    "Optional structured fields: observed_shot, observed_net, live_or_replay, "
+    "supports_bound_segment, candidate_goal_action_span{start,end}, "
+    "scoreboard_only. Never set fact_verified true. observation_only must be true."
 )
 
 
@@ -263,6 +279,383 @@ def expand_windows_from_anchor(
         out.append({"start": round(cur, 3), "end": round(stop, 3)})
         cur = stop
     return out
+
+
+def _frame_pts(frame: Mapping[str, Any]) -> Optional[float]:
+    return _num(frame.get("actual_media_sec")) or _num(frame.get("requested_media_sec"))
+
+
+def _span_inside_windows(start: float, end: float, windows: Sequence[Mapping[str, Any]]) -> bool:
+    for w in windows:
+        ws, we = _num(w.get("start")), _num(w.get("end"))
+        if ws is None or we is None:
+            continue
+        if start >= ws - 1e-3 and end <= we + 1e-3:
+            return True
+    return False
+
+
+def _overlap_window(start: float, end: float, windows: Sequence[Mapping[str, Any]]) -> Optional[Dict[str, float]]:
+    best = None
+    best_ov = 0.0
+    for w in windows:
+        ws, we = _num(w.get("start")), _num(w.get("end"))
+        if ws is None or we is None:
+            continue
+        lo, hi = max(start, ws), min(end, we)
+        ov = hi - lo
+        if ov > best_ov:
+            best_ov = ov
+            best = {"start": float(ws), "end": float(we)}
+    return best if best_ov > 0.5 else None
+
+
+def parse_next_search_request(
+    raw: Any,
+    *,
+    allowed_windows: Sequence[Mapping[str, Any]],
+    prior_window: Mapping[str, Any],
+) -> Optional[Dict[str, Any]]:
+    """Map VLM next_search_request onto an allowed trusted window (no free timestamps)."""
+    if raw is None or raw is False:
+        return None
+    windows = [{"start": float(w["start"]), "end": float(w["end"])} for w in allowed_windows]
+    if not windows:
+        return None
+    idx = None
+    start = end = None
+    reason = "vlm_next_search"
+    if isinstance(raw, int):
+        idx = raw
+    elif isinstance(raw, str):
+        reason = raw[:200]
+        # "window 2" / "index 2"
+        for token in raw.replace(",", " ").split():
+            if token.isdigit():
+                idx = int(token)
+                break
+    elif isinstance(raw, dict):
+        reason = str(raw.get("reason") or raw.get("why") or reason)[:200]
+        if isinstance(raw.get("window_index"), int):
+            idx = int(raw["window_index"])
+        start = _num(raw.get("start"))
+        end = _num(raw.get("end"))
+        # Also accept nested window
+        nested = raw.get("window") if isinstance(raw.get("window"), dict) else None
+        if nested:
+            start = start if start is not None else _num(nested.get("start"))
+            end = end if end is not None else _num(nested.get("end"))
+    if idx is not None and 0 <= idx < len(windows):
+        nxt = windows[idx]
+        if abs(nxt["start"] - float(prior_window.get("start", -1))) < 1e-6 and abs(
+            nxt["end"] - float(prior_window.get("end", -1))
+        ) < 1e-6:
+            return None
+        return {
+            "start": nxt["start"], "end": nxt["end"],
+            "reason": reason, "selection": f"allowed_index:{idx}",
+            "prior_window": dict(prior_window),
+        }
+    if start is not None and end is not None and end > start:
+        # Must match an allowed window (copy), not invent a free span.
+        for i, w in enumerate(windows):
+            if abs(w["start"] - start) < 0.51 and abs(w["end"] - end) < 0.51:
+                if abs(w["start"] - float(prior_window.get("start", -1))) < 1e-6:
+                    return None
+                return {
+                    "start": w["start"], "end": w["end"],
+                    "reason": reason, "selection": f"allowed_match:{i}",
+                    "prior_window": dict(prior_window),
+                }
+        hit = _overlap_window(start, end, windows)
+        if hit and not (
+            abs(hit["start"] - float(prior_window.get("start", -1))) < 1e-6
+            and abs(hit["end"] - float(prior_window.get("end", -1))) < 1e-6
+        ):
+            return {
+                **hit,
+                "reason": reason + "|snapped_to_allowed_overlap",
+                "selection": "allowed_overlap",
+                "prior_window": dict(prior_window),
+                "rejected_free_span": {"start": start, "end": end},
+            }
+        return {
+            "rejected": True,
+            "reason": "next_search_outside_trusted_windows",
+            "requested": {"start": start, "end": end},
+            "prior_window": dict(prior_window),
+        }
+    # Default: advance to the next unused window after prior
+    ps = _num(prior_window.get("start"))
+    for i, w in enumerate(windows):
+        if ps is not None and w["start"] > ps + 1e-6:
+            return {
+                "start": w["start"], "end": w["end"],
+                "reason": reason or "advance_to_next_allowed_window",
+                "selection": f"sequential_next:{i}",
+                "prior_window": dict(prior_window),
+            }
+    return None
+
+
+def select_followup_windows(
+    *,
+    allowed_windows: Sequence[Mapping[str, Any]],
+    observed: Sequence[Mapping[str, Any]],
+    max_followups: int = MAX_FOLLOWUP_WINDOWS,
+) -> Tuple[List[Dict[str, float]], List[Dict[str, Any]]]:
+    """After negative/partial observations, pick different allowed windows."""
+    used = set()
+    log: List[Dict[str, Any]] = []
+    for o in observed:
+        w = o.get("window") or {}
+        used.add((round(float(w.get("start", -1)), 3), round(float(w.get("end", -1)), 3)))
+    follow: List[Dict[str, float]] = []
+    for o in observed:
+        vlm = o.get("vlm") if isinstance(o.get("vlm"), dict) else {}
+        prior = o.get("window") or {}
+        # Negative / incomplete window must not conclude match-level absence.
+        neg = bool(vlm.get("scoreboard_only")) or (
+            vlm.get("observed_shot") is False and vlm.get("observed_net") is False
+        ) or ("0-0" in str(vlm.get("visible_content") or "") and not vlm.get("supports_bound_segment"))
+        if not neg and not vlm.get("next_search_request"):
+            continue
+        nxt = parse_next_search_request(
+            vlm.get("next_search_request") if vlm.get("next_search_request") is not None else "next",
+            allowed_windows=allowed_windows,
+            prior_window=prior,
+        )
+        if not nxt or nxt.get("rejected"):
+            if nxt:
+                log.append(nxt)
+            continue
+        key = (round(nxt["start"], 3), round(nxt["end"], 3))
+        if key in used:
+            log.append({**nxt, "skipped": "already_observed"})
+            continue
+        used.add(key)
+        follow.append({"start": nxt["start"], "end": nxt["end"]})
+        log.append({**nxt, "scheduled": True})
+        if len(follow) >= max_followups:
+            break
+    return follow, log
+
+
+def authorize_bound_segment(
+    *,
+    media_in: float,
+    media_out: float,
+    role: str,
+    frames: Sequence[Mapping[str, Any]],
+    vlm: Mapping[str, Any],
+    trusted_windows: Sequence[Mapping[str, Any]],
+    score_anchor_sec: Optional[float] = None,
+) -> Dict[str, Any]:
+    """Independent gate: VLM alone never grants verified_first_live."""
+    denies: List[str] = []
+    checks: Dict[str, Any] = {
+        "first_live_verified": False,
+        "observation_only": True,
+    }
+    span = media_out - media_in
+    if span < MIN_BOUND_SPAN or span > MAX_BOUND_SPAN:
+        denies.append("span_out_of_bounds")
+    pts_ok = all(_num(f.get("actual_media_sec")) is not None for f in frames) and bool(frames)
+    checks["pts_present"] = pts_ok
+    if not pts_ok:
+        denies.append("missing_actual_pts")
+    if not _span_inside_windows(media_in, media_out, trusted_windows):
+        # Allow span that overlaps a trusted window and is fully inside union of lookback
+        if trusted_windows:
+            union_lo = min(float(w["start"]) for w in trusted_windows)
+            union_hi = max(float(w["end"]) for w in trusted_windows)
+            if not (media_in >= union_lo - 1e-3 and media_out <= union_hi + 1e-3):
+                denies.append("outside_trusted_search_union")
+            else:
+                checks["inside_trusted_union"] = True
+        else:
+            denies.append("no_trusted_windows")
+    else:
+        checks["inside_trusted_window"] = True
+    if score_anchor_sec is not None:
+        mid = 0.5 * (media_in + media_out)
+        # Scoreboard confirmation time must not masquerade as goal-action cut.
+        if abs(mid - float(score_anchor_sec)) <= SCORE_ANCHOR_EXCLUSION_SEC:
+            denies.append("score_confirmation_time_cannot_be_goal_action")
+        if abs(media_in - float(score_anchor_sec)) <= 0.5 and abs(media_out - (float(score_anchor_sec) + 4)) <= 1.0:
+            denies.append("looks_like_scoreboard_anchor_clip")
+        checks["not_score_anchor_masquerade"] = "score_confirmation_time_cannot_be_goal_action" not in denies
+    if vlm.get("fact_verified") is True:
+        denies.append("vlm_overclaim_fact_verified")
+    if str(vlm.get("live_or_replay") or "").lower() == "replay":
+        denies.append("replay_cannot_bind_primary_goal")
+    if vlm.get("scoreboard_only") is True:
+        denies.append("scoreboard_only_not_goal_action")
+    supports = bool(vlm.get("supports_bound_segment")) or (
+        vlm.get("observed_shot") is True and vlm.get("observed_net") is True
+    )
+    cand_span = vlm.get("candidate_goal_action_span")
+    if isinstance(cand_span, dict):
+        cs, ce = _num(cand_span.get("start")), _num(cand_span.get("end"))
+        if cs is not None and ce is not None and ce > cs:
+            supports = True
+    checks["vlm_supports_bound"] = supports
+    if not supports:
+        denies.append("vlm_lacks_goal_action_support_fields")
+    if not role or "goal_action" not in role:
+        # Non-goal roles can bind with weaker supports if explicitly requested
+        if "goal_action" not in role and not denies:
+            pass
+    allow = len(denies) == 0
+    return {
+        "allow": allow,
+        "denies": denies,
+        "checks": checks,
+        "media_in": round(media_in, 3),
+        "media_out": round(media_out, 3),
+        "role": role,
+        "evidence_status": "CANDIDATE_BOUND_UNVERIFIED_FIRST_LIVE" if allow else "REJECTED",
+        "first_live_status": "NOT_VERIFIED",
+        "agent_auto_verified": False,
+    }
+
+
+def build_bound_segment_from_observations(
+    *,
+    intent: Mapping[str, Any],
+    observations: Sequence[Mapping[str, Any]],
+    trusted_windows: Sequence[Mapping[str, Any]],
+    score_anchor_sec: Optional[float],
+) -> Dict[str, Any]:
+    """Construct a candidate cut from real frame PTS + structured VLM fields."""
+    role = str(intent.get("role") or "opponent_opening_goal_action")
+    issue_id = intent.get("issue_id")
+    matched = [
+        o for o in observations
+        if o.get("ok") and (issue_id is None or o.get("issue_id") == issue_id or not o.get("issue_id"))
+    ]
+    if not matched:
+        matched = [o for o in observations if o.get("ok")]
+    for o in matched:
+        vlm = o.get("vlm") if isinstance(o.get("vlm"), dict) else {}
+        frames = list(o.get("frames") or [])
+        pts = [_frame_pts(f) for f in frames]
+        pts = [p for p in pts if p is not None]
+        if not pts:
+            continue
+        # Prefer explicit candidate span if it cites times inside observed PTS range
+        cand = vlm.get("candidate_goal_action_span")
+        if isinstance(cand, dict):
+            mi, mo = _num(cand.get("start")), _num(cand.get("end"))
+        else:
+            mi = mo = None
+        if mi is None or mo is None or mo <= mi:
+            mi, mo = min(pts) - 1.0, max(pts) + 1.0
+        # Clamp to observed window
+        win = o.get("window") or {}
+        ws, we = _num(win.get("start")), _num(win.get("end"))
+        if ws is not None:
+            mi = max(mi, ws)
+        if we is not None:
+            mo = min(mo, we)
+        if mo - mi < MIN_BOUND_SPAN:
+            continue
+        auth = authorize_bound_segment(
+            media_in=float(mi),
+            media_out=float(mo),
+            role=role,
+            frames=frames,
+            vlm=vlm,
+            trusted_windows=trusted_windows,
+            score_anchor_sec=score_anchor_sec,
+        )
+        if not auth["allow"]:
+            continue
+        return {
+            "ok": True,
+            "authorization": auth,
+            "segment": {
+                "segment_id": f"seg_{role}",
+                "role": role,
+                "media_in": auth["media_in"],
+                "media_out": auth["media_out"],
+                "include_in_cut": True,
+                "is_replay": False,
+                "shot_kind": "goal_action_candidate",
+                "goal_action_complete": True,
+                "event_ids": list(intent.get("event_ids") or []),
+                "agent_bound": True,
+                "evidence_status": auth["evidence_status"],
+                "first_live_status": "NOT_VERIFIED",
+                "agent_auto_verified": False,
+                "binding_observation_id": o.get("request_id"),
+                "binding_frame_ids": [f.get("frame_id") for f in frames],
+                "anchor_id": intent.get("anchor_id"),
+            },
+            "observation_ref": o.get("request_id"),
+        }
+    return {
+        "ok": False,
+        "reason": "no_observation_passed_independent_binding_gate",
+        "tried": len(matched),
+    }
+
+
+def important_goal_segment_ids(edl: Sequence[Dict[str, Any]]) -> List[str]:
+    out = []
+    for r in edl:
+        role = str(r.get("role") or "")
+        if "goal_action" in role and r.get("include_in_cut", True) and r.get("shot_kind") != "title_card":
+            sid = str(r.get("segment_id") or "")
+            if sid:
+                out.append(sid)
+    return out
+
+
+def important_segments_regressed(
+    baseline: Sequence[Dict[str, Any]],
+    candidate: Sequence[Dict[str, Any]],
+) -> List[str]:
+    """Detect unintended damage to previously correct key goal cuts."""
+    base = {str(r.get("segment_id")): r for r in baseline if r.get("segment_id")}
+    cand = {str(r.get("segment_id")): r for r in candidate if r.get("segment_id")}
+    regressions = []
+    for sid in important_goal_segment_ids(baseline):
+        b, c = base.get(sid), cand.get(sid)
+        if c is None or c.get("include_in_cut", True) is False:
+            # Allowed only if baseline row was agent-drop intentional — still flag
+            regressions.append(sid + ":removed_or_excluded")
+            continue
+        if b is None:
+            continue
+        # Large unexpected media shift without agent_trim/agent_bound markers
+        b_in, b_out = _num(b.get("media_in")), _num(b.get("media_out"))
+        c_in, c_out = _num(c.get("media_in")), _num(c.get("media_out"))
+        if None not in (b_in, b_out, c_in, c_out):
+            if abs(b_in - c_in) > 2.0 or abs(b_out - c_out) > 2.0:
+                if not (c.get("agent_trim") or c.get("agent_bound") or b.get("agent_bound")):
+                    regressions.append(sid + ":media_shifted")
+        if c.get("is_replay") and not b.get("is_replay"):
+            regressions.append(sid + ":became_replay")
+    return regressions
+
+
+def coverage_score(audit: Mapping[str, Any]) -> Optional[float]:
+    try:
+        return float(
+            ((audit.get("dimensions") or {}).get("story_element_coverage") or {}).get("score")
+        )
+    except (TypeError, ValueError):
+        return None
+
+
+def coherence_score(audit: Mapping[str, Any]) -> Optional[float]:
+    try:
+        return float(
+            ((audit.get("dimensions") or {}).get("story_coherence") or {}).get("score")
+        )
+    except (TypeError, ValueError):
+        return None
 
 
 def compact_context(
@@ -504,18 +897,48 @@ def validate_verifier_output(raw: Mapping[str, Any]) -> Dict[str, Any]:
     for i, iss in enumerate(issues[:MAX_DIAGNOSES]):
         if not isinstance(iss, dict):
             continue
+        refs = iss.get("evidence_refs")
+        if isinstance(refs, list):
+            refs = [{"ref": x} if isinstance(x, str) else x for x in refs]
+        else:
+            refs = []
         clean.append({
             "issue_id": str(iss.get("issue_id") or f"v_{i:03d}"),
             "severity": iss.get("severity") if iss.get("severity") in ("P0", "P1", "P2") else "P2",
             "dimension": str(iss.get("dimension") or "unknown"),
             "target_segment_id": iss.get("target_segment_id"),
             "problem": str(iss.get("problem") or "")[:800],
-            "evidence_refs": iss.get("evidence_refs") if isinstance(iss.get("evidence_refs"), list) else [],
+            "evidence_refs": refs,
             "suggested_fix": str(iss.get("suggested_fix") or "")[:400],
         })
+    dim_src = raw.get("dimensions") if isinstance(raw.get("dimensions"), dict) else {}
+    if not dim_src and isinstance(raw.get("dimension_notes"), dict):
+        dim_src = raw["dimension_notes"]
+    required_dims = (
+        "story_element_coverage", "narrative_coherence", "image_content_quality",
+    )
+    dimensions: Dict[str, Any] = {}
+    for name in required_dims:
+        d = dim_src.get(name) if isinstance(dim_src.get(name), dict) else {}
+        status = str(d.get("status") or "unknown")
+        if status not in (
+            "improved", "unchanged", "regressed", "unknown", "insufficient_evidence",
+        ):
+            status = "unknown"
+        dimensions[name] = {
+            "status": status,
+            "summary": str(d.get("summary") or d.get("note") or "")[:600],
+            "evidence_refs": d.get("evidence_refs") if isinstance(d.get("evidence_refs"), list) else [],
+            "problems": d.get("problems") if isinstance(d.get("problems"), list) else [],
+        }
+    hard = raw.get("hard_vetoes") if isinstance(raw.get("hard_vetoes"), list) else []
+    eoi = raw.get("evidence_of_improvement") if isinstance(raw.get("evidence_of_improvement"), list) else []
     return {
         "issues": clean,
-        "dimension_notes": raw.get("dimension_notes") if isinstance(raw.get("dimension_notes"), dict) else {},
+        "dimensions": dimensions,
+        "dimension_notes": dimensions,  # backward-compatible alias
+        "hard_vetoes": hard,
+        "evidence_of_improvement": eoi,
         "revision_suggestions": raw.get("revision_suggestions") if isinstance(raw.get("revision_suggestions"), list) else [],
         "quality_delta_vs_baseline": str(raw.get("quality_delta_vs_baseline") or "")[:600],
         "validated": True,
@@ -599,6 +1022,7 @@ def call_llm_verifier(
     payload: Mapping[str, Any],
     *,
     fixture: Optional[Mapping[str, Any]] = None,
+    max_retries: int = VERIFIER_MAX_RETRIES,
 ) -> Dict[str, Any]:
     if fixture is not None:
         return {
@@ -608,45 +1032,182 @@ def call_llm_verifier(
             "raw": fixture,
             "usage": {"real_requests": 0},
             "est_cost_usd": 0.0,
+            "attempts": [{"provider_mode": "offline_fixture", "ok": True}],
         }
-    resp = api.plan_decision(
-        system_prompt=VERIFIER_SYSTEM,
-        user_prompt=json.dumps(payload, ensure_ascii=False),
-        mock_decision={"error": "mock_not_allowed_for_self_revise_agent"},
-    )
-    mode = str(resp.get("provider_mode") or "")
-    content = str(resp.get("content") or "")
-    if mode != "real" or resp.get("error"):
+    attempts: List[Dict[str, Any]] = []
+    last: Dict[str, Any] = {}
+    for attempt in range(max(1, int(max_retries) + 1)):
+        try:
+            resp = api.plan_decision(
+                system_prompt=VERIFIER_SYSTEM,
+                user_prompt=json.dumps(payload, ensure_ascii=False),
+                mock_decision={"error": "mock_not_allowed_for_self_revise_agent"},
+            )
+        except (ApiConfigError, ApiCallError) as exc:
+            last = {
+                "ok": False,
+                "provider_mode": "degraded",
+                "error": f"{type(exc).__name__}:{exc}",
+                "attempt": attempt,
+            }
+            attempts.append(dict(last))
+            # Retry only transient transport failures
+            msg = str(exc).lower()
+            if "502" in msg or "timeout" in msg or "proxy" in msg or "503" in msg:
+                continue
+            break
+        mode = str(resp.get("provider_mode") or "")
+        content = str(resp.get("content") or "")
+        if mode != "real" or resp.get("error"):
+            last = {
+                "ok": False,
+                "provider_mode": mode or "degraded",
+                "error": str(resp.get("error") or f"verifier_not_real:{mode}"),
+                "raw_excerpt": content[:2000],
+                "usage": resp.get("usage"),
+                "est_cost_usd": resp.get("est_cost_usd"),
+                "attempt": attempt,
+            }
+            attempts.append(dict(last))
+            err_l = str(last["error"]).lower()
+            if "502" in err_l or "timeout" in err_l or "proxy" in err_l or "503" in err_l:
+                continue
+            break
+        try:
+            raw = _parse_model_json(content)
+            validated = validate_verifier_output(raw)
+        except Exception as exc:
+            last = {
+                "ok": False,
+                "provider_mode": mode,
+                "error": f"verifier_parse_or_validate:{type(exc).__name__}:{exc}",
+                "raw_excerpt": content[:2000],
+                "usage": resp.get("usage"),
+                "est_cost_usd": resp.get("est_cost_usd"),
+                "attempt": attempt,
+            }
+            attempts.append(dict(last))
+            break
         return {
-            "ok": False,
-            "provider_mode": mode or "degraded",
-            "error": str(resp.get("error") or f"verifier_not_real:{mode}"),
-            "raw_excerpt": content[:2000],
-            "usage": resp.get("usage"),
-            "est_cost_usd": resp.get("est_cost_usd"),
-        }
-    try:
-        raw = _parse_model_json(content)
-        validated = validate_verifier_output(raw)
-    except Exception as exc:
-        return {
-            "ok": False,
+            "ok": True,
             "provider_mode": mode,
-            "error": f"verifier_parse_or_validate:{type(exc).__name__}:{exc}",
-            "raw_excerpt": content[:2000],
+            "model": resp.get("model"),
+            "raw": raw,
+            "validated": validated,
+            "raw_excerpt": content[:4000],
             "usage": resp.get("usage"),
             "est_cost_usd": resp.get("est_cost_usd"),
+            "cost_disclaimer": COST_DISCLAIMER,
+            "attempts": attempts + [{"attempt": attempt, "ok": True, "provider_mode": mode}],
         }
+    # Never silently treat as rule-success
+    last = dict(last or {"ok": False, "error": "verifier_unknown_failure", "provider_mode": "degraded"})
+    last["ok"] = False
+    last["attempts"] = attempts
+    last["rule_fallback_success"] = False
+    return last
+
+
+def _observe_one_window(
+    api: ApiProvider,
+    *,
+    store: FrameStore,
+    tr: Mapping[str, Any],
+    win: Mapping[str, Any],
+    allowed_windows: Sequence[Mapping[str, Any]],
+    request_id: str,
+) -> Dict[str, Any]:
+    start, end = float(win["start"]), float(win["end"])
+    times = store.sample_times(start, end, count=min(MAX_FRAMES_PER_REQUEST, 4))
+    frames = []
+    for t in times:
+        rec = store.extract_at(
+            t,
+            gap_id=str(tr.get("request_id") or "obs"),
+            tool="self_revise_observe",
+        )
+        frames.append(rec.to_dict())
+    prompt = (
+        f"{VLM_SYSTEM_HINT}\n"
+        f"Planner question: {tr.get('question')}\n"
+        f"issue_id: {tr.get('issue_id')}\n"
+        f"anchor_id: {tr.get('anchor_id')}\n"
+        f"window: [{start:.3f},{end:.3f}]\n"
+        f"allowed_windows: {json.dumps(list(allowed_windows), ensure_ascii=False)}\n"
+        "A negative finding in THIS window does not prove the goal is absent from the match.\n"
+        "Return JSON keys: visible_content, story_relation, suspected_errors,"
+        "shot_suggestions, next_search_request, cited_frame_ids, confidence,"
+        "observed_shot, observed_net, live_or_replay, supports_bound_segment,"
+        "candidate_goal_action_span, scoreboard_only,"
+        "fact_verified(false), observation_only(true)."
+    )
+    mock_obj = {
+        "visible_content": "mock_forbidden",
+        "fact_verified": False,
+        "observation_only": True,
+        "cited_frame_ids": [f["frame_id"] for f in frames[:1]],
+    }
+    paths = [Path(f["path"]) for f in frames]
+    fids = [f["frame_id"] for f in frames]
+    bindings = [{
+        "frame_id": f["frame_id"],
+        "requested_media_sec": f.get("requested_media_sec"),
+        "actual_media_sec": f.get("actual_media_sec"),
+        "pts_status": f.get("pts_status"),
+    } for f in frames]
+    try:
+        raw_resp = api.vision_json(
+            prompt=prompt,
+            frame_paths=paths,
+            frame_ids=fids,
+            mock_obj=mock_obj,
+            frame_bindings=bindings,
+        )
+    except (ApiConfigError, ApiCallError) as exc:
+        return {
+            "request_id": request_id,
+            "issue_id": tr.get("issue_id"),
+            "anchor_id": tr.get("anchor_id"),
+            "ok": False,
+            "error": f"{type(exc).__name__}:{exc}",
+            "provider_mode": "degraded",
+            "frames": frames,
+            "window": {"start": start, "end": end},
+            "fact_verified": False,
+            "observation_only": True,
+        }
+    mode = str(raw_resp.get("provider_mode") or "")
+    if mode == "openai_compatible":
+        mode = "real"
+    content = str(raw_resp.get("content") or "")
+    parsed = None
+    parse_error = None
+    try:
+        parsed = _parse_model_json(content)
+    except Exception as exc:
+        parse_error = f"{type(exc).__name__}:{exc}"
+    ok = mode == "real" and not raw_resp.get("error") and parsed is not None
+    if parsed is not None:
+        # Hard force: never let a single VLM pass claim first-LIVE verification
+        parsed["fact_verified"] = False
+        parsed["observation_only"] = True
     return {
-        "ok": True,
+        "request_id": request_id,
+        "issue_id": tr.get("issue_id"),
+        "anchor_id": tr.get("anchor_id"),
+        "ok": ok,
         "provider_mode": mode,
-        "model": resp.get("model"),
-        "raw": raw,
-        "validated": validated,
-        "raw_excerpt": content[:4000],
-        "usage": resp.get("usage"),
-        "est_cost_usd": resp.get("est_cost_usd"),
-        "cost_disclaimer": COST_DISCLAIMER,
+        "model": raw_resp.get("model"),
+        "error": None if ok else (str(raw_resp.get("error") or parse_error or f"not_real:{mode}")),
+        "frames": frames,
+        "window": {"start": start, "end": end},
+        "vlm": parsed,
+        "raw_excerpt": content[:3000],
+        "usage": raw_resp.get("usage"),
+        "est_cost_usd": raw_resp.get("est_cost_usd"),
+        "fact_verified": False,
+        "observation_only": True,
+        "allowed_windows": list(allowed_windows),
     }
 
 
@@ -656,9 +1217,11 @@ def run_vlm_observations(
     video: Path,
     work_dir: Path,
     tool_requests: Sequence[Mapping[str, Any]],
-    frame_budget: int = 12,
+    frame_budget: int = 16,
+    max_windows_per_request: int = MAX_WINDOWS_OBSERVE,
+    max_followups: int = MAX_FOLLOWUP_WINDOWS,
 ) -> Dict[str, Any]:
-    """Extract real frames for planner windows and call VLM; observation-only."""
+    """Observe multiple trusted windows; schedule follow-ups from VLM feedback."""
     work_dir.mkdir(parents=True, exist_ok=True)
     media = probe_video(video)
     store = FrameStore(
@@ -667,106 +1230,61 @@ def run_vlm_observations(
         budget=FrameBudget(max_frames=frame_budget),
     )
     observations: List[Dict[str, Any]] = []
+    schedule_log: List[Dict[str, Any]] = []
     for tr in tool_requests:
         if tr.get("tool") not in ("extract_frames", "vlm_observe", "widen_search"):
             continue
-        windows = tr.get("search_windows") or []
+        windows = list(tr.get("search_windows") or [])
         if not windows:
             continue
-        win = windows[0]
-        start, end = float(win["start"]), float(win["end"])
-        times = store.sample_times(start, end, count=min(MAX_FRAMES_PER_REQUEST, 4))
-        frames = []
-        for ti, t in enumerate(times):
-            rec = store.extract_at(
-                t,
-                gap_id=str(tr.get("request_id") or "obs"),
-                tool="self_revise_observe",
+        # Observe up to N initial windows (not only the first)
+        initial = windows[: max(1, int(max_windows_per_request))]
+        local_obs: List[Dict[str, Any]] = []
+        for i, win in enumerate(initial):
+            rid = f"{tr.get('request_id') or 'tool'}_w{i}"
+            obs = _observe_one_window(
+                api, store=store, tr=tr, win=win,
+                allowed_windows=windows, request_id=rid,
             )
-            frames.append(rec.to_dict())
-        prompt = (
-            f"{VLM_SYSTEM_HINT}\n"
-            f"Planner question: {tr.get('question')}\n"
-            f"issue_id: {tr.get('issue_id')}\n"
-            f"anchor_id: {tr.get('anchor_id')}\n"
-            f"window: [{start:.3f},{end:.3f}]\n"
-            "Return JSON keys: visible_content, story_relation, suspected_errors,"
-            "shot_suggestions, next_search_request, cited_frame_ids, confidence,"
-            "fact_verified(false), observation_only(true)."
+            local_obs.append(obs)
+            observations.append(obs)
+        follow, flog = select_followup_windows(
+            allowed_windows=windows,
+            observed=local_obs,
+            max_followups=max_followups,
         )
-        mock_obj = {
-            "visible_content": "mock_forbidden",
-            "story_relation": "",
-            "suspected_errors": [],
-            "shot_suggestions": [],
-            "next_search_request": None,
-            "cited_frame_ids": [f["frame_id"] for f in frames[:1]],
-            "confidence": 0.0,
-            "fact_verified": False,
-            "observation_only": True,
-        }
-        paths = [Path(f["path"]) for f in frames]
-        fids = [f["frame_id"] for f in frames]
-        bindings = [{
-            "frame_id": f["frame_id"],
-            "requested_media_sec": f.get("requested_media_sec"),
-            "actual_media_sec": f.get("actual_media_sec"),
-            "pts_status": f.get("pts_status"),
-        } for f in frames]
-        try:
-            raw_resp = api.vision_json(
-                prompt=prompt,
-                frame_paths=paths,
-                frame_ids=fids,
-                mock_obj=mock_obj,
-                frame_bindings=bindings,
-            )
-        except (ApiConfigError, ApiCallError) as exc:
-            observations.append({
-                "request_id": tr.get("request_id"),
-                "ok": False,
-                "error": f"{type(exc).__name__}:{exc}",
-                "provider_mode": "degraded",
-                "frames": frames,
-                "fact_verified": False,
-                "observation_only": True,
+        schedule_log.extend(flog)
+        for j, win in enumerate(follow):
+            # Skip if already observed
+            if any(
+                abs(float((o.get("window") or {}).get("start", -1)) - float(win["start"])) < 1e-6
+                for o in local_obs
+            ):
+                continue
+            rid = f"{tr.get('request_id') or 'tool'}_follow{j}"
+            schedule_log.append({
+                "scheduled_followup": True,
+                "request_id": rid,
+                "window": win,
+                "reason": "vlm_observation_feedback",
+                "prior_windows": [o.get("window") for o in local_obs],
             })
-            continue
-        mode = str(raw_resp.get("provider_mode") or "")
-        if mode == "openai_compatible":
-            mode = "real"
-        content = str(raw_resp.get("content") or "")
-        parsed = None
-        parse_error = None
-        try:
-            parsed = _parse_model_json(content)
-        except Exception as exc:
-            parse_error = f"{type(exc).__name__}:{exc}"
-        ok = mode == "real" and not raw_resp.get("error") and parsed is not None
-        if parsed is not None:
-            parsed["fact_verified"] = False
-            parsed["observation_only"] = True
-        observations.append({
-            "request_id": tr.get("request_id"),
-            "issue_id": tr.get("issue_id"),
-            "anchor_id": tr.get("anchor_id"),
-            "ok": ok,
-            "provider_mode": mode,
-            "model": raw_resp.get("model"),
-            "error": None if ok else (str(raw_resp.get("error") or parse_error or f"not_real:{mode}")),
-            "frames": frames,
-            "window": {"start": start, "end": end},
-            "vlm": parsed,
-            "raw_excerpt": content[:3000],
-            "usage": raw_resp.get("usage"),
-            "est_cost_usd": raw_resp.get("est_cost_usd"),
-            "fact_verified": False,
-            "observation_only": True,
-        })
+            obs = _observe_one_window(
+                api, store=store, tr=tr, win=win,
+                allowed_windows=windows, request_id=rid,
+            )
+            obs["followup"] = True
+            local_obs.append(obs)
+            observations.append(obs)
     return {
         "observations": observations,
         "frame_manifest": store.manifest,
+        "window_schedule_log": schedule_log,
         "any_real_ok": any(o.get("ok") and o.get("provider_mode") == "real" for o in observations),
+        "note": (
+            "Negative observation in one window is local only; "
+            "it does not prove match-level absence of the story element."
+        ),
     }
 
 
@@ -774,18 +1292,18 @@ def apply_candidate_revision(
     baseline_edl: Sequence[Dict[str, Any]],
     intents: Sequence[Mapping[str, Any]],
     observations: Sequence[Mapping[str, Any]],
+    *,
+    trusted_windows_by_anchor: Optional[Mapping[str, Sequence[Mapping[str, Any]]]] = None,
+    score_anchor_by_anchor_id: Optional[Mapping[str, float]] = None,
 ) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
-    """Conservative working-copy edits only. Prefer mark_unresolved until evidence exists.
-
-    Does NOT invent new media timestamps. search_add only records a pending slot
-    when VLM observed something useful; still leaves media_in/out null until a
-    later evidence-bound stage fills them from frame PTS.
-    """
+    """Apply evidence-bound working-copy edits; never invent media times."""
     edl = copy.deepcopy(list(baseline_edl))
     applied: List[Dict[str, Any]] = []
     rejected: List[Dict[str, Any]] = []
     by_id = {str(r.get("segment_id")): i for i, r in enumerate(edl)}
     obs_ok = [o for o in observations if o.get("ok")]
+    tw_map = trusted_windows_by_anchor or {}
+    sa_map = score_anchor_by_anchor_id or {}
     for it in intents:
         action = it.get("action")
         sid = it.get("target_segment_id")
@@ -794,20 +1312,29 @@ def apply_candidate_revision(
             continue
         if action == "drop":
             if sid and sid in by_id:
-                # Soft-drop: mark excluded rather than deleting history
+                role = str(edl[by_id[sid]].get("role") or "")
+                # Do not drop critical goal_action without explicit allow_drop_goal flag
+                if "goal_action" in role and not it.get("allow_drop_goal"):
+                    rejected.append({
+                        "intent": it.get("intent_id"),
+                        "reason": "refuse_drop_critical_goal_without_flag",
+                    })
+                    continue
                 edl[by_id[sid]]["include_in_cut"] = False
                 edl[by_id[sid]]["agent_drop_reason"] = it.get("rationale")
-                applied.append({"intent": it.get("intent_id"), "action": "drop", "segment_id": sid})
+                applied.append({
+                    "intent": it.get("intent_id"), "action": "drop", "segment_id": sid,
+                    "status": "applied", "evidence_refs": it.get("evidence_refs") or [],
+                })
             else:
                 rejected.append({"intent": it.get("intent_id"), "reason": "missing_segment"})
             continue
         if action == "trim" and sid and sid in by_id:
-            # Trim only within existing bounds using observation frame PTS midpoints — never invent.
             frames = []
             for o in obs_ok:
                 if o.get("issue_id") == it.get("issue_id"):
                     frames.extend(o.get("frames") or [])
-            pts = [_num(f.get("actual_media_sec")) or _num(f.get("requested_media_sec")) for f in frames]
+            pts = [_frame_pts(f) for f in frames]
             pts = [p for p in pts if p is not None]
             row = edl[by_id[sid]]
             mi, mo = _num(row.get("media_in")), _num(row.get("media_out"))
@@ -818,33 +1345,88 @@ def apply_candidate_revision(
             if not (mi - 1e-3 <= lo <= mo + 1e-3 and mi - 1e-3 <= hi <= mo + 1e-3):
                 rejected.append({"intent": it.get("intent_id"), "reason": "pts_outside_segment"})
                 continue
-            # Shrink toward observed span but keep >=2s
             new_in = max(mi, lo - 1.0)
             new_out = min(mo, hi + 1.0)
-            if new_out - new_in < 2.0:
+            if new_out - new_in < MIN_BOUND_SPAN:
                 rejected.append({"intent": it.get("intent_id"), "reason": "trim_too_short"})
                 continue
             row["media_in"], row["media_out"] = round(new_in, 3), round(new_out, 3)
             row["agent_trim"] = True
-            applied.append({"intent": it.get("intent_id"), "action": "trim", "segment_id": sid,
-                            "media_in": row["media_in"], "media_out": row["media_out"]})
+            applied.append({
+                "intent": it.get("intent_id"), "action": "trim", "segment_id": sid,
+                "status": "applied_evidence_bound",
+                "media_in": row["media_in"], "media_out": row["media_out"],
+            })
             continue
         if action in ("search_add", "replace"):
-            # Do not fabricate a finished goal cut. Record pending evidence slot only.
+            aid = str(it.get("anchor_id") or "")
+            trusted = list(tw_map.get(aid) or [])
+            # Fallback: union of windows mentioned on matching observations
+            if not trusted:
+                for o in obs_ok:
+                    trusted.extend(o.get("allowed_windows") or [])
+                    w = o.get("window")
+                    if isinstance(w, dict) and _num(w.get("start")) is not None:
+                        trusted.append(w)
+            score_anchor = sa_map.get(aid)
+            bound = build_bound_segment_from_observations(
+                intent=it,
+                observations=obs_ok,
+                trusted_windows=trusted,
+                score_anchor_sec=score_anchor,
+            )
+            if not bound.get("ok"):
+                applied.append({
+                    "intent": it.get("intent_id"),
+                    "action": action,
+                    "status": "pending_evidence_slot",
+                    "role": it.get("role"),
+                    "anchor_id": aid,
+                    "bind_failure": bound,
+                    "note": "no independent PTS/VLM gate passed; not written to EDL",
+                })
+                continue
+            seg = bound["segment"]
+            new_sid = str(seg["segment_id"])
+            if action == "replace" and sid and sid in by_id:
+                edl[by_id[sid]]["include_in_cut"] = False
+                edl[by_id[sid]]["agent_replaced_by"] = new_sid
+            # Insert / upsert bound segment
+            if new_sid in by_id:
+                edl[by_id[new_sid]] = seg
+            else:
+                # Place before first scoreboard after title when adding opening
+                insert_at = 1 if edl else 0
+                for i, row in enumerate(edl):
+                    if "scoreboard" in str(row.get("role") or "") or "deficit" in str(row.get("role") or ""):
+                        insert_at = i
+                        break
+                edl.insert(insert_at, seg)
+                by_id = {str(r.get("segment_id")): i for i, r in enumerate(edl)}
             applied.append({
                 "intent": it.get("intent_id"),
                 "action": action,
-                "status": "pending_evidence_slot",
-                "role": it.get("role"),
-                "anchor_id": it.get("anchor_id"),
-                "note": "no_media_times_invented; requires Stage evidence binding",
+                "status": "applied_evidence_bound",
+                "segment_id": new_sid,
+                "media_in": seg["media_in"],
+                "media_out": seg["media_out"],
+                "evidence_status": seg.get("evidence_status"),
+                "first_live_status": "NOT_VERIFIED",
+                "authorization": bound.get("authorization"),
+                "observation_ref": bound.get("observation_ref"),
             })
             continue
         if action == "reorder":
             rejected.append({"intent": it.get("intent_id"), "reason": "reorder_requires_explicit_order_list"})
             continue
         rejected.append({"intent": it.get("intent_id"), "reason": f"unsupported_or_unsafe:{action}"})
-    return edl, {"applied": applied, "rejected": rejected, "edl_row_count": len(edl)}
+    return edl, {
+        "applied": applied,
+        "rejected": rejected,
+        "edl_row_count": len(edl),
+        "evidence_bound_count": sum(1 for a in applied if a.get("status") == "applied_evidence_bound"),
+        "pending_count": sum(1 for a in applied if a.get("status") == "pending_evidence_slot"),
+    }
 
 
 def hard_gate_blocks(audit: Mapping[str, Any]) -> bool:
@@ -858,42 +1440,140 @@ def decide_accept(
     candidate_audit: Mapping[str, Any],
     verifier: Mapping[str, Any],
     revision_meta: Mapping[str, Any],
+    baseline_edl: Optional[Sequence[Dict[str, Any]]] = None,
+    candidate_edl: Optional[Sequence[Dict[str, Any]]] = None,
 ) -> Dict[str, Any]:
-    """Accept only with evidence of improvement and no new P0 hard gates."""
+    """Accept via P0-repair or evidence-backed quality improvement (not model self-score alone)."""
     base_p0 = sum(1 for f in (baseline_audit.get("hard_gate_findings") or []) if f.get("severity") == "P0")
     cand_p0 = sum(1 for f in (candidate_audit.get("hard_gate_findings") or []) if f.get("severity") == "P0")
     applied = revision_meta.get("applied") or []
-    meaningful = [a for a in applied if a.get("action") in ("trim", "drop") or a.get("status") == "pending_evidence_slot"]
-    model_delta = ""
-    if verifier.get("ok"):
-        model_delta = str((verifier.get("validated") or {}).get("quality_delta_vs_baseline") or "")
-    # Structural improvement: fewer P0 hard gates
-    improved_gates = cand_p0 < base_p0
-    # Without bound media times, pending slots alone do not count as story improvement
-    improved = improved_gates
-    accept = bool(improved and cand_p0 == 0)
-    reason = []
-    if not meaningful:
-        reason.append("no_safe_revision_applied")
-    if not improved:
-        reason.append("no_hard_gate_improvement")
-    if cand_p0 > base_p0:
-        reason.append("new_or_worsened_p0")
-        accept = False
-    if cand_p0 > 0 and not improved_gates:
-        reason.append("p0_still_open")
-        accept = False
+    evidence_bound = [a for a in applied if a.get("status") == "applied_evidence_bound"]
+    soft_applied = [a for a in applied if a.get("status") == "applied" and a.get("action") in ("drop", "trim")]
+    pending_only = bool(applied) and all(
+        a.get("status") in ("pending_evidence_slot", "recorded") for a in applied
+    ) and not evidence_bound and not soft_applied
+
+    reasons: List[str] = []
+    path = None
+    accept = False
+
     if not verifier.get("ok"):
-        reason.append("model_verifier_failed")
-        # Do not accept on verifier failure
+        reasons.append("model_verifier_failed")
+        return {
+            "accept": False,
+            "path": None,
+            "reasons": reasons,
+            "baseline_p0": base_p0,
+            "candidate_p0": cand_p0,
+            "pending_only": pending_only,
+            "model_quality_delta": "",
+            "verifier_self_score_alone_insufficient": True,
+        }
+
+    validated = verifier.get("validated") or {}
+    if validated.get("hard_vetoes"):
+        reasons.append("verifier_hard_veto")
+        return {
+            "accept": False, "path": None, "reasons": reasons,
+            "baseline_p0": base_p0, "candidate_p0": cand_p0,
+            "pending_only": pending_only,
+            "hard_vetoes": validated.get("hard_vetoes"),
+        }
+
+    if pending_only or (not evidence_bound and not soft_applied):
+        reasons.append("no_evidence_bound_or_safe_edit")
+        return {
+            "accept": False, "path": None, "reasons": reasons,
+            "baseline_p0": base_p0, "candidate_p0": cand_p0,
+            "pending_only": True,
+        }
+
+    regressions: List[str] = []
+    if baseline_edl is not None and candidate_edl is not None:
+        for reg in important_segments_regressed(baseline_edl, candidate_edl):
+            reasons.append("important_goal_regressed:" + reg)
+            regressions.append(reg)
+
+    if cand_p0 > base_p0:
+        reasons.append("new_or_worsened_p0")
+        return {
+            "accept": False, "path": None, "reasons": reasons,
+            "baseline_p0": base_p0, "candidate_p0": cand_p0, "pending_only": pending_only,
+        }
+
+    # Evidence of improvement cannot be empty model prose alone
+    eoi = validated.get("evidence_of_improvement") or []
+    dims = validated.get("dimensions") or {}
+    has_structured_eoi = any(
+        isinstance(x, dict) and (x.get("evidence_refs") or x.get("claim"))
+        for x in eoi
+    )
+    dim_improved = any(
+        isinstance(dims.get(k), dict) and dims[k].get("status") == "improved"
+        and (dims[k].get("evidence_refs") or dims[k].get("summary"))
+        for k in ("story_element_coverage", "narrative_coherence", "image_content_quality")
+    )
+    cov_b, cov_c = coverage_score(baseline_audit), coverage_score(candidate_audit)
+    coh_b, coh_c = coherence_score(baseline_audit), coherence_score(candidate_audit)
+    structural_cov_up = cov_b is not None and cov_c is not None and cov_c > cov_b + 1e-6
+    structural_coh_up = coh_b is not None and coh_c is not None and coh_c > coh_b + 1e-6
+    structural_improve = structural_cov_up or structural_coh_up
+
+    # Path A: P0 repair
+    if cand_p0 < base_p0 and cand_p0 == 0 and evidence_bound:
+        if any("important_goal_regressed" in r for r in reasons):
+            accept = False
+        else:
+            accept = True
+            path = "p0_repair"
+            reasons.append("p0_resolved_with_evidence_bound_edit")
+            if not (has_structured_eoi or structural_improve or dim_improved):
+                # Structural P0 clear is itself verifiable evidence
+                reasons.append("structural_hard_gate_clearance")
+
+    # Path B: quality improvement without P0
+    elif base_p0 == 0 and cand_p0 == 0 and (evidence_bound or soft_applied):
+        if any("important_goal_regressed" in r for r in reasons):
+            accept = False
+        elif structural_improve or dim_improved:
+            if has_structured_eoi or structural_improve:
+                accept = True
+                path = "quality_improvement"
+                reasons.append("quality_improved_with_verifiable_evidence")
+            else:
+                reasons.append("dimension_improved_without_evidence_refs")
+                accept = False
+        else:
+            reasons.append("no_verifiable_quality_delta")
+            accept = False
+    else:
+        if cand_p0 > 0:
+            reasons.append("p0_still_open")
+        if not evidence_bound and not soft_applied:
+            reasons.append("no_evidence_bound_or_safe_edit")
+        if cand_p0 < base_p0 and cand_p0 > 0:
+            reasons.append("partial_p0_reduction_insufficient")
+
+    # Model self-rating alone never suffices
+    if accept and not (structural_improve or evidence_bound or soft_applied or has_structured_eoi or path == "p0_repair"):
         accept = False
+        reasons.append("model_self_score_alone_insufficient")
+
     return {
-        "accept": accept,
-        "reasons": reason or ["accepted_structural_improvement"],
+        "accept": bool(accept),
+        "path": path,
+        "reasons": reasons or (["accepted"] if accept else ["rejected"]),
         "baseline_p0": base_p0,
         "candidate_p0": cand_p0,
-        "model_quality_delta": model_delta,
-        "pending_only": all(a.get("status") == "pending_evidence_slot" for a in meaningful) if meaningful else False,
+        "coverage_baseline": cov_b,
+        "coverage_candidate": cov_c,
+        "coherence_baseline": coh_b,
+        "coherence_candidate": coh_c,
+        "model_quality_delta": str(validated.get("quality_delta_vs_baseline") or ""),
+        "pending_only": pending_only,
+        "evidence_bound_edits": len(evidence_bound),
+        "regressions": regressions,
+        "verifier_self_score_alone_insufficient": True,
     }
 
 
@@ -1091,9 +1771,28 @@ def run_self_revise(
             json.dumps(obs_pack, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
         )
         observations_acc.extend(obs_pack.get("observations") or [])
+        if obs_pack.get("window_schedule_log"):
+            (round_dir / "window_schedule_log.json").write_text(
+                json.dumps(obs_pack.get("window_schedule_log"), ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+
+        tw_by_anchor: Dict[str, List[Dict[str, Any]]] = {}
+        sa_by_anchor: Dict[str, float] = {}
+        for tr in validated.get("video_tool_requests") or []:
+            aid = str(tr.get("anchor_id") or "")
+            if aid:
+                tw_by_anchor[aid] = list(tr.get("search_windows") or [])
+        for a in ctx.get("trusted_anchors") or []:
+            if a.get("kind") == "T01_selected_arc_score_node" and _num(a.get("t_sec")) is not None:
+                sa_by_anchor[str(a["anchor_id"])] = float(a["t_sec"])
 
         cand_edl, rev_meta = apply_candidate_revision(
-            current_edl, validated.get("revision_intents") or [], obs_pack.get("observations") or [],
+            current_edl,
+            validated.get("revision_intents") or [],
+            obs_pack.get("observations") or [],
+            trusted_windows_by_anchor=tw_by_anchor,
+            score_anchor_by_anchor_id=sa_by_anchor,
         )
         cand_phase = round_dir / "candidate_phase5"
         write_phase5_workdir(cand_phase, story=story, plan=plan, edl=cand_edl, rendered=None)
@@ -1108,6 +1807,8 @@ def run_self_revise(
         ver_payload = {
             "baseline_hard_gates": baseline_audit.get("hard_gate_findings"),
             "candidate_hard_gates": cand_audit.get("hard_gate_findings"),
+            "baseline_dimensions": baseline_audit.get("dimensions"),
+            "candidate_dimensions": cand_audit.get("dimensions"),
             "planner_diagnoses": validated.get("diagnoses"),
             "revision_meta": rev_meta,
             "observations": [{
@@ -1118,21 +1819,29 @@ def run_self_revise(
                 "vlm": o.get("vlm"),
                 "fact_verified": False,
             } for o in (obs_pack.get("observations") or [])],
+            "window_schedule_log": obs_pack.get("window_schedule_log") or [],
             "constraints": ctx["constraints"],
         }
         try:
             verifier = call_llm_verifier(api, ver_payload, fixture=v_fix if fixture_mode else None)
         except (ApiConfigError, ApiCallError) as exc:
-            verifier = {"ok": False, "error": f"{type(exc).__name__}:{exc}", "provider_mode": "degraded"}
+            verifier = {
+                "ok": False,
+                "error": f"{type(exc).__name__}:{exc}",
+                "provider_mode": "degraded",
+                "rule_fallback_success": False,
+            }
         (round_dir / "verifier_result.json").write_text(
             json.dumps(verifier, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
         )
 
         decision = decide_accept(
-            baseline_audit=baseline_audit,
+            baseline_audit=baseline_audit if r == 1 else best["audit"],
             candidate_audit=cand_audit,
             verifier=verifier,
             revision_meta=rev_meta,
+            baseline_edl=baseline_edl,
+            candidate_edl=cand_edl,
         )
         (round_dir / "accept_decision.json").write_text(
             json.dumps(decision, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
