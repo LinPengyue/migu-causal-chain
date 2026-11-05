@@ -16,7 +16,7 @@
 
 测试：10.27scasual_chain/tests/test_v3a_A_vlm_smoke.py
 
-先加载服务器已有 Qwen API 安全环境变量，不要打印或提交 Key。
+先加载服务器已有 Qwen API 安全环境变量，不要打印或提交 Key。必须显式设置 STORY_VLM_MODEL 且名称能识别为 Qwen（包含 qwen，不区分大小写）；否则预检失败，避免意外继承 DeepSeek Planner 模型。
 
 ## 1. 零付费测试与预检
 
