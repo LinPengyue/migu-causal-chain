@@ -175,6 +175,10 @@ def run_fresh_e2e(
             raise FileNotFoundError(f"Missing {key}: {path}")
         if path == root or root in path.parents:
             raise ValueError("Output directory cannot contain input sources")
+    if sources["events"].name == "events_enriched.json" or "01_enrich" in sources["events"].parts:
+        raise ValueError("Raw events required; enriched historical events are forbidden")
+    if sources["causal_atoms"].name.startswith("predicted_causal") or "03_v1_adapt" in sources["causal_atoms"].parts:
+        raise ValueError("Raw human causal file required for atom extraction, not predicted chains")
     if root.exists() and any(root.iterdir()):
         raise FileExistsError(f"Fresh output directory must be empty: {root}")
     if history_root is not None and root == Path(history_root).resolve():
@@ -187,6 +191,31 @@ def run_fresh_e2e(
     try:
         # The human causal file is only handed to the atomic enrichment stage.
         report["sources"] = {key: file_record(path) for key, path in sources.items()}
+        report["execution_plan"] = {
+            "algo_root": str(Path(algo_root).resolve()),
+            "settings": {"strip_profile": "production", "rule_composer_use_llm": False,
+                         "max_rounds": max_rounds, "max_calls": max_calls,
+                         "max_cost_usd": max_cost_usd, "max_completion_tokens": max_completion_tokens},
+            "stages": [
+                {"name": "atomic_enrichment", "implementation": "atomic_event_enrich.enrich_files",
+                 "inputs": ["sources.events", "sources.causal_atoms"], "output": "01_enrich/events_enriched.json"},
+                {"name": "strip_831", "implementation": "v2_strip_reinfer.run_strip_predict/AlgoStripAdapter",
+                 "inputs": ["01_enrich/events_enriched.json"], "output": "02_strip831/strip_A_original.json"},
+                {"name": "v1_adapter", "implementation": "v1_causal_adapter.strip_chains_to_v1_causal",
+                 "inputs": ["02_strip831/strip_A_original.json", "01_enrich/events_enriched.json"],
+                 "output": "03_v1_adapt/predicted_causal_live_goals_only.json"},
+                {"name": "v3r", "implementation": "phase5_pipeline.run_phase5",
+                 "inputs": ["03_v1_adapt/predicted_causal_live_goals_only.json", "01_enrich/events_enriched.json", "sources.video"],
+                 "output": "04_phase5/candidate_edl.json"},
+                {"name": "v3a", "implementation": "self_revise_agent.run_self_revise",
+                 "inputs": ["04_phase5/candidate_edl.json", "03_v1_adapt/predicted_causal_live_goals_only.json", "sources.video"],
+                 "output": "05_v3a/best_candidate_edl.json"},
+                {"name": "render", "implementation": "phase5_delivery.render_dual_delivery",
+                 "inputs": ["05_v3a/best_candidate_edl.json", "sources.video"],
+                 "output": "06_candidate_render/story_clean.mp4"},
+            ],
+            "limitation": "atomic_event_enrich currently infers atom replay flag from human chain is_replay; do not claim fully independent video LIVE classification",
+        }
         report["historical_trace"] = historical_trace(history_root, sources)
         report["git"] = git_info(Path(algo_root).resolve().parent)
         write_json(root / "00_input_manifest.json", report)
@@ -205,6 +234,8 @@ def run_fresh_e2e(
                 raise RuntimeError(f"Fresh upstream stage missing output: {p}")
         manifest = read_json(phase5 / "phase5_manifest.json")
         actual_inputs = manifest.get("inputs") or {}
+        if Path(actual_inputs.get("video", "")).resolve() != sources["video"]:
+            raise RuntimeError("Phase5 did not consume this run\u0027s raw video")
         if Path(actual_inputs.get("causal", "")).resolve() != predicted.resolve():
             raise RuntimeError("Phase5 did not consume this run's predicted causal")
         if Path(actual_inputs.get("events", "")).resolve() != (baseline_root / "01_enrich/events_enriched.json").resolve():
