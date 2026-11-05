@@ -109,6 +109,11 @@ def configure_vision() -> tuple[Any, dict[str, Any]]:
     """Build audited Qwen request with one HTTP attempt, zero retries, no network."""
     from story_video_agent.api_provider import ApiProvider
 
+    # Fail closed: vision must explicitly select Qwen, not silently inherit
+    # the DeepSeek Planner model via load_endpoint_configs() fallback.
+    explicit_vision_model = (os.environ.get("STORY_VLM_MODEL") or "").strip()
+    if not explicit_vision_model or "qwen" not in explicit_vision_model.lower():
+        raise ValueError("Explicit STORY_VLM_MODEL identifying Qwen is required")
     os.environ["STORY_API_ENABLE"] = "1"
     # Existing shell caps may be stricter (256 tokens); set explicit one-shot limits
     # in this process only, never modify the server env file.
