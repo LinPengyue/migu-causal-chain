@@ -8,7 +8,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from story_video_agent_v3.fresh_e2e_cli import (
-    compare_history, edl_rows, historical_trace, run_fresh_e2e, validate_render_rows,
+    compare_history, edl_diff, edl_rows, historical_trace, run_fresh_e2e, validate_render_rows,
 )
 
 
@@ -148,6 +148,14 @@ class FreshE2ETests(unittest.TestCase):
                               algo_root=self.root, enable_real_api=True, i_approve_budget=True)
         self.assertEqual(self.calls, [])
         self.assertEqual(json.loads((self.out / "fresh_e2e_summary.json").read_text())["status"], "failed")
+
+    def test_edl_diff_tracks_changed_window_without_claiming_improvement(self):
+        candidate = [dict(row) for row in self.edl]
+        candidate[1]["media_in"] = 8
+        diff = edl_diff(self.edl, candidate)
+        self.assertFalse(diff["exactly_equal"])
+        self.assertEqual(diff["changed_segments"][0]["segment_id"], "goal")
+        self.assertIn("media_in", diff["changed_segments"][0]["changed_fields"])
 
     def test_nonempty_output_rejected(self):
         self.out.mkdir()
