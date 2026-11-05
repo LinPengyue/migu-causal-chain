@@ -153,6 +153,41 @@ def git_info(repo_root: Path) -> Dict[str, Any]:
     return {"commit": git("rev-parse", "HEAD"), "dirty": None if status is None else bool(status)}
 
 
+def preflight_real_api(*, max_calls: int, max_cost_usd: float, max_completion_tokens: int) -> Dict[str, Any]:
+    """Check real Planner/VLM endpoint configuration before expensive video work.
+
+    This sends no HTTP requests, does not expose credentials, and does not
+    claim the endpoint is reachable. The budget is an estimate, not a bill cap.
+    """
+    from story_video_agent.api_provider import ApiProvider
+    from .remote_vlm_verify import apply_trial_env_overrides
+
+    apply_trial_env_overrides(
+        max_calls=max_calls, max_cost_usd=max_cost_usd,
+        max_completion_tokens=max_completion_tokens, disable_thinking=True,
+    )
+    provider = ApiProvider(
+        require_real=True, force_mock=False,
+        max_calls=max_calls, max_cost_usd=max_cost_usd,
+        max_completion_tokens=max_completion_tokens,
+        required_roles=("planner", "vision"),
+    )
+    status = provider.status()
+    if not status.get("planner_ready") or not status.get("vision_ready"):
+        raise RuntimeError("Real Planner/VLM API configuration incomplete")
+    return {
+        "configured": True,
+        "http_attempts": 0,
+        "planner": status["planner"],
+        "vision": status["vision"],
+        "max_calls": status["max_calls"],
+        "max_cost_usd_estimate": status["max_cost_usd"],
+        "max_completion_tokens": status["max_completion_tokens"],
+        "cost_disclaimer": status["cost_disclaimer"],
+        "note": "Configuration check only; no network or model response was tested.",
+    }
+
+
 def run_fresh_e2e(
     *, match_id: str, events: Path, causal_atoms: Path, video: Path,
     out_dir: Path, algo_root: Path, history_root: Optional[Path] = None,
@@ -191,6 +226,12 @@ def run_fresh_e2e(
                               "render_ready": False, "release_decision": "NOT_AUTHORIZED"}
     try:
         # The human causal file is only handed to the atomic enrichment stage.
+        if enable_real_api:
+            report["api_preflight"] = preflight_real_api(
+                max_calls=max_calls, max_cost_usd=max_cost_usd,
+                max_completion_tokens=max_completion_tokens,
+            )
+            write_json(root / "api_preflight.json", report["api_preflight"])
         report["sources"] = {key: file_record(path) for key, path in sources.items()}
         report["execution_plan"] = {
             "algo_root": str(Path(algo_root).resolve()),
@@ -254,6 +295,7 @@ def run_fresh_e2e(
             max_calls=max_calls, max_cost_usd=max_cost_usd,
             max_completion_tokens=max_completion_tokens,
             allow_degraded_offline=not enable_real_api, skip_vlm=not enable_real_api,
+            stop_on_quality_threshold=False,
         )
         if Path(agent.get("phase5_dir", "")).resolve() != phase5.resolve():
             raise RuntimeError("V3-A switched away from the fresh V3-R baseline")
@@ -261,9 +303,22 @@ def run_fresh_e2e(
         best_edl = edl_rows(read_json(agent_dir / "best_candidate_edl.json"))
         if not agent.get("accepted_any_revision") and best_edl != baseline_edl:
             raise RuntimeError("No accepted revision but best EDL differs from fresh V3-R")
-        active = validate_render_rows(best_edl)
+        # Unsafe accepted revisions are preserved for audit but never rendered.
+        # A rejected candidate falls back to the freshly generated V3-R EDL.
+        render_selection = "agent_candidate" if agent.get("accepted_any_revision") else "baseline_unchanged"
+        render_edl = best_edl
+        try:
+            active = validate_render_rows(render_edl)
+        except ValueError as exc:
+            if not agent.get("accepted_any_revision"):
+                raise  # unsafe baseline is a real failure, not a successful fallback
+            render_selection = "baseline_safety_fallback"
+            report["candidate_rejected_reason"] = f"{type(exc).__name__}: {exc}"
+            render_edl = baseline_edl
+            active = validate_render_rows(render_edl)
+        report["render_selection"] = render_selection
         render_dir = root / "06_candidate_render"
-        write_json(render_dir / "candidate_edl.json", best_edl)
+        write_json(render_dir / "candidate_edl.json", render_edl)
         rendered = render_dual_delivery(
             plan=read_json(phase5 / "story_plan.json"), video=sources["video"],
             out_dir=render_dir, delivery_edl=active,
@@ -271,21 +326,37 @@ def run_fresh_e2e(
         for name in ("story_clean.mp4", "story_qc.mp4"):
             if not (render_dir / name).is_file():
                 raise RuntimeError(f"Candidate render missing {name}")
+        usage = agent.get("api_usage") or {}
+        rounds = agent.get("rounds") or []
+        real_planner = any(r.get("planner_provider_mode") == "real" for r in rounds)
+        real_vision = any(r.get("vlm_any_real_ok") for r in rounds)
+        real_verifier = any(r.get("verifier_provider_mode") == "real" for r in rounds)
         report["agent"] = {"summary": str(agent_dir / "self_revise_summary.json"),
                            "best_round": agent.get("best_round"),
                            "accepted_any_revision": bool(agent.get("accepted_any_revision")),
                            "agent_claimed_success": bool(agent.get("agent_claimed_success")),
-                           "api_usage": agent.get("api_usage")}
+                           "api_usage": usage,
+                           "real_planner": real_planner,
+                           "real_vision": real_vision,
+                           "real_verifier": real_verifier,
+                           "real_multimodal_round_trip": real_planner and real_vision and real_verifier,
+                           "rounds_executed": agent.get("rounds_executed"),
+                           "abort_reason": agent.get("abort_reason")}
         report["render"] = rendered
         report["lineage"] = {
             key: file_record((baseline_root if key not in {"v3a_edl", "v3a_video"} else root) / rel)
             for key, rel in STAGE_FILES.items()
         }
         report["historical_comparison"] = compare_history(baseline_root, history_root)
-        report["status"] = "completed_candidate_only"
+        report["status"] = (
+            "completed_real_multimodal_candidate_only"
+            if enable_real_api and report["agent"]["real_multimodal_round_trip"]
+            else "completed_degraded_candidate_only"
+        )
         report["note"] = (
-            "Fresh V3-R and V3-A are connected. Offline mode is degraded, not multimodal "
-            "Agent success. Rendered candidate is NOT first-LIVE certified or production ready. "
+            "The candidate is NOT first-LIVE certified or production ready. "
+            "Real API configured does not imply successful real model participation. "
+            "Model cost is an estimate, not an invoice cap. "
             "Historical P1 polish is comparison-only, not a pipeline input."
         )
         write_json(root / "fresh_e2e_summary.json", report)
