@@ -65,11 +65,12 @@ class FreshE2ETests(unittest.TestCase):
 
     def fake_agent(self, **kw):
         self.calls.append(("agent", kw))
-        dump(kw["out_dir"] / "best_candidate_edl.json", self.edl)
-        dump(kw["out_dir"] / "self_revise_summary.json", {"best_round": 0})
-        return {"phase5_dir": str(kw["phase5_dir"]), "best_round": 0,
-                "accepted_any_revision": False, "agent_claimed_success": False,
-                "api_usage": {"http_attempts": 0}}
+        accepted = bool(getattr(self, "agent_accept", False))
+        dump(kw["out_dir"] / "best_candidate_edl.json", getattr(self, "best_edl", self.edl))
+        dump(kw["out_dir"] / "self_revise_summary.json", {"best_round": 1 if accepted else 0})
+        return {"phase5_dir": str(kw["phase5_dir"]), "best_round": 1 if accepted else 0,
+                "accepted_any_revision": accepted, "agent_claimed_success": False,
+                "api_usage": {"http_attempts": 0}, "rounds": [], "rounds_executed": 3}
 
     def fake_render(self, **kw):
         self.calls.append(("render", kw))
@@ -90,7 +91,7 @@ class FreshE2ETests(unittest.TestCase):
 
     def test_fresh_run_wires_only_new_outputs(self):
         result = self.run_fake()
-        self.assertEqual(result["status"], "completed_candidate_only")
+        self.assertEqual(result["status"], "completed_degraded_candidate_only")
         self.assertFalse(result["render_ready"])
         self.assertEqual([x[0] for x in self.calls], ["match", "agent", "render"])
         agent = self.calls[1][1]
@@ -99,11 +100,54 @@ class FreshE2ETests(unittest.TestCase):
         self.assertIsNone(agent["audit_path"])
         self.assertFalse(agent["enable_real_api"])
         self.assertTrue(agent["allow_degraded_offline"])
+        self.assertFalse(agent["stop_on_quality_threshold"])
         self.assertEqual(agent["predicted_causal"],
                          self.out / "01_to_04_fresh_v3r/03_v1_adapt/predicted_causal_live_goals_only.json")
         self.assertTrue(result["lineage"]["v3a_video"]["exists"])
         self.assertIsNone(result["historical_comparison"]["files"]["polish_edl_reference_only"]["fresh"])
         self.assertTrue((self.history / "04_phase5_p1_polish/candidate_edl.json").exists())
+
+    def test_unsafe_agent_revision_falls_back_to_fresh_baseline(self):
+        self.agent_accept = True
+        self.best_edl = self.edl + [
+            {"segment_id": "replay", "role": "go_ahead_goal_action",
+             "media_in": 30, "media_out": 42, "is_replay": True}
+        ]
+        result = self.run_fake()
+        self.assertEqual(result["render_selection"], "baseline_safety_fallback")
+        self.assertIn("replay", result["candidate_rejected_reason"])
+        self.assertEqual(edl_rows(json.loads((self.out / "06_candidate_render/candidate_edl.json").read_text())), self.edl)
+        self.assertEqual(edl_rows(json.loads((self.out / "05_v3a/best_candidate_edl.json").read_text())), self.best_edl)
+
+    def test_real_api_mode_passes_approval_and_requires_real_participation(self):
+        with patch("story_video_agent_v3.fresh_e2e_cli.preflight_real_api",
+                   return_value={"configured": True, "http_attempts": 0}), \
+             patch("story_video_agent_v3.closed_loop_cli.run_match", side_effect=self.fake_match), \
+             patch("story_video_agent_v3.self_revise_agent.run_self_revise", side_effect=self.fake_agent), \
+             patch("story_video_agent.phase5_delivery.render_dual_delivery", side_effect=self.fake_render), \
+             patch("story_video_agent_v3.self_revise_agent.find_duplicate_goal_cuts", return_value=[]):
+            result = run_fresh_e2e(match_id="A_uae_oman", events=self.sources["events"],
+                                   causal_atoms=self.sources["causal_atoms"],
+                                   video=self.sources["video"], out_dir=self.out,
+                                   algo_root=self.root, enable_real_api=True, i_approve_budget=True)
+        self.assertEqual(result["status"], "completed_degraded_candidate_only")
+        self.assertTrue(self.calls[1][1]["enable_real_api"])
+        self.assertTrue(self.calls[1][1]["i_approve_budget"])
+        self.assertFalse(self.calls[1][1]["skip_vlm"])
+        self.assertFalse(self.calls[1][1]["stop_on_quality_threshold"])
+        self.assertFalse(result["agent"]["real_multimodal_round_trip"])
+
+    def test_preflight_missing_keys_fails_before_video_processing(self):
+        from story_video_agent.api_provider import ApiConfigError
+        with patch("story_video_agent_v3.fresh_e2e_cli.preflight_real_api",
+                   side_effect=ApiConfigError("planner key missing")):
+            with self.assertRaises(ApiConfigError):
+                run_fresh_e2e(match_id="A_uae_oman", events=self.sources["events"],
+                              causal_atoms=self.sources["causal_atoms"],
+                              video=self.sources["video"], out_dir=self.out,
+                              algo_root=self.root, enable_real_api=True, i_approve_budget=True)
+        self.assertEqual(self.calls, [])
+        self.assertEqual(json.loads((self.out / "fresh_e2e_summary.json").read_text())["status"], "failed")
 
     def test_nonempty_output_rejected(self):
         self.out.mkdir()
