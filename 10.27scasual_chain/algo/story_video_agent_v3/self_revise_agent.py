@@ -55,6 +55,9 @@ LOOP_HARD_VETO_KINDS = frozenset({
     "replay_as_primary",
     "replay_as_first_live",
     "duplicated_goal_event",
+    "duplicate_canonical_goal_role",
+    "overlapping_goal_windows",
+    "baseline_goal_media_regressed",
     "known_integrity_failure",
     "technical_decode_error",
     "bad_media_window",
@@ -80,6 +83,14 @@ SCORE_ANCHOR_EXCLUSION_SEC = 3.0
 MAX_WINDOWS_OBSERVE = 3
 MAX_FOLLOWUP_WINDOWS = 2
 VERIFIER_MAX_RETRIES = 2
+# Overlap / identity thresholds for duplicate-cut guards (match-agnostic).
+ROLE_WINDOW_OVERLAP_IOU = 0.45
+P1_POLISH_DIRNAME = "04_phase5_p1_polish"
+RAW_PHASE5_DIRNAME = "04_phase5"
+ROLE_QUALIFIER_SUFFIXES = (
+    "_live", "_candidate", "_unverified", "_pending",
+    "_approach", "_incomplete", "_reaction", "_transition",
+)
 ALLOWED_ACTIONS = {
     "search_add", "replace", "trim", "drop", "reorder", "keep", "mark_unresolved",
 }
@@ -275,6 +286,129 @@ def _edl_rows(edl: Any) -> List[Dict[str, Any]]:
             if isinstance(v, list):
                 return [r for r in v if isinstance(r, dict)]
     return []
+
+
+def canonical_story_role(role: Any) -> str:
+    """Strip synonymous qualifiers so opening/_live map to one story role family."""
+    r = str(role or "").strip()
+    changed = True
+    while changed and r:
+        changed = False
+        for suf in ROLE_QUALIFIER_SUFFIXES:
+            if r.endswith(suf):
+                r = r[: -len(suf)]
+                changed = True
+                break
+    return r
+
+
+def _media_iou(a_in: float, a_out: float, b_in: float, b_out: float) -> float:
+    inter = max(0.0, min(a_out, b_out) - max(a_in, b_in))
+    union = max(a_out, b_out) - min(a_in, b_in)
+    if union <= 1e-9:
+        return 0.0
+    return inter / union
+
+
+def active_cut_rows(edl: Sequence[Mapping[str, Any]]) -> List[Dict[str, Any]]:
+    return [
+        dict(r) for r in edl
+        if isinstance(r, Mapping) and r.get("include_in_cut", True) is not False
+    ]
+
+
+def find_duplicate_goal_cuts(
+    edl: Sequence[Mapping[str, Any]],
+    *,
+    overlap_iou: float = ROLE_WINDOW_OVERLAP_IOU,
+) -> List[Dict[str, Any]]:
+    """Detect accidental same-role / high-overlap goal cuts (not narrative reuse of distinct roles)."""
+    rows = [
+        r for r in active_cut_rows(edl)
+        if "goal_action" in str(r.get("role") or "") and r.get("shot_kind") != "title_card"
+    ]
+    dups: List[Dict[str, Any]] = []
+    # Same canonical role appearing more than once
+    by_role: Dict[str, List[Mapping[str, Any]]] = {}
+    for r in rows:
+        by_role.setdefault(canonical_story_role(r.get("role")), []).append(r)
+    for role, group in by_role.items():
+        if len(group) < 2:
+            continue
+        dups.append({
+            "kind": "duplicate_canonical_role",
+            "role": role,
+            "segment_ids": [str(x.get("segment_id") or "") for x in group],
+        })
+    # High media overlap within goal_action family (same event risk)
+    for i in range(len(rows)):
+        ai, ao = _num(rows[i].get("media_in")), _num(rows[i].get("media_out"))
+        if ai is None or ao is None or ao <= ai:
+            continue
+        for j in range(i + 1, len(rows)):
+            bi, bo = _num(rows[j].get("media_in")), _num(rows[j].get("media_out"))
+            if bi is None or bo is None or bo <= bi:
+                continue
+            iou = _media_iou(ai, ao, bi, bo)
+            same_family = canonical_story_role(rows[i].get("role")) == canonical_story_role(rows[j].get("role"))
+            if iou >= overlap_iou or (same_family and iou >= 0.2):
+                dups.append({
+                    "kind": "overlapping_goal_windows",
+                    "iou": round(iou, 3),
+                    "segment_ids": [
+                        str(rows[i].get("segment_id") or ""),
+                        str(rows[j].get("segment_id") or ""),
+                    ],
+                    "roles": [str(rows[i].get("role") or ""), str(rows[j].get("role") or "")],
+                })
+    return dups
+
+
+def resolve_phase5_baseline(
+    phase5_dir: Path,
+    *,
+    prefer_p1_polish: bool = True,
+) -> Dict[str, Any]:
+    """Prefer sibling ``04_phase5_p1_polish`` when present (accepted V3-R polish).
+
+    Match-agnostic: no team names or fixed goal timestamps. Callers that pass an
+    explicit polish dir keep it; ``--no-prefer-p1-polish`` disables the switch.
+    """
+    requested = phase5_dir.resolve()
+    meta: Dict[str, Any] = {
+        "requested_phase5_dir": str(requested),
+        "resolved_phase5_dir": str(requested),
+        "prefer_p1_polish": bool(prefer_p1_polish),
+        "switched_to_p1_polish": False,
+        "reason": "requested_path_used",
+        "requested_edl_sha256": None,
+        "resolved_edl_sha256": None,
+    }
+    req_edl = requested / "candidate_edl.json"
+    if req_edl.is_file():
+        meta["requested_edl_sha256"] = _sha(req_edl)
+        meta["resolved_edl_sha256"] = meta["requested_edl_sha256"]
+    if not prefer_p1_polish:
+        meta["reason"] = "prefer_p1_polish_disabled"
+        return {"path": requested, **meta}
+    if requested.name == P1_POLISH_DIRNAME:
+        meta["reason"] = "already_p1_polish"
+        return {"path": requested, **meta}
+    sibling = requested.parent / P1_POLISH_DIRNAME
+    if (
+        requested.name == RAW_PHASE5_DIRNAME
+        and (sibling / "candidate_edl.json").is_file()
+        and (sibling / "story_plan.json").is_file()
+        and (sibling / "t01_story.json").is_file()
+    ):
+        resolved = sibling.resolve()
+        meta["resolved_phase5_dir"] = str(resolved)
+        meta["switched_to_p1_polish"] = True
+        meta["reason"] = "sibling_04_phase5_p1_polish_preferred_as_accepted_v3r"
+        meta["resolved_edl_sha256"] = _sha(resolved / "candidate_edl.json")
+        return {"path": resolved, **meta}
+    meta["reason"] = "no_sibling_p1_polish_or_not_raw_phase5"
+    return {"path": requested, **meta}
 
 
 def build_trusted_anchors(plan: Mapping[str, Any], edl: Sequence[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -661,7 +795,8 @@ def build_bound_segment_from_observations(
                 "media_in": auth["media_in"],
                 "media_out": auth["media_out"],
                 "include_in_cut": True,
-                "is_replay": False,
+                # NOT_VERIFIED must not be coerced into a live/non-replay claim.
+                "is_replay": None,
                 "shot_kind": "goal_action_candidate",
                 "goal_action_complete": True,
                 "event_ids": list(intent.get("event_ids") or []),
@@ -697,27 +832,42 @@ def important_segments_regressed(
     baseline: Sequence[Dict[str, Any]],
     candidate: Sequence[Dict[str, Any]],
 ) -> List[str]:
-    """Detect unintended damage to previously correct key goal cuts."""
+    """Detect unintended damage to previously correct key goal cuts.
+
+    ``agent_bound=True`` alone does **not** exempt media drift: unverified binds
+    must not silently expand/replace a previously valid goal window.
+    """
     base = {str(r.get("segment_id")): r for r in baseline if r.get("segment_id")}
     cand = {str(r.get("segment_id")): r for r in candidate if r.get("segment_id")}
     regressions = []
     for sid in important_goal_segment_ids(baseline):
         b, c = base.get(sid), cand.get(sid)
         if c is None or c.get("include_in_cut", True) is False:
-            # Allowed only if baseline row was agent-drop intentional — still flag
-            regressions.append(sid + ":removed_or_excluded")
+            # Drop of baseline goal still flagged; decide_accept may allow intentional drop.
+            if not (isinstance(c, dict) and c.get("agent_drop_reason")):
+                regressions.append(sid + ":removed_or_excluded")
             continue
         if b is None:
             continue
-        # Large unexpected media shift without agent_trim/agent_bound markers
         b_in, b_out = _num(b.get("media_in")), _num(b.get("media_out"))
         c_in, c_out = _num(c.get("media_in")), _num(c.get("media_out"))
-        if None not in (b_in, b_out, c_in, c_out):
-            if abs(b_in - c_in) > 2.0 or abs(b_out - c_out) > 2.0:
-                if not (c.get("agent_trim") or c.get("agent_bound") or b.get("agent_bound")):
+        baseline_ok = b_in is not None and b_out is not None and b_out > b_in
+        if baseline_ok and None not in (c_in, c_out):
+            shifted = abs(b_in - c_in) > 2.0 or abs(b_out - c_out) > 2.0
+            if shifted:
+                verified = (
+                    c.get("first_live_status") == "FIRST_LIVE_VERIFIED"
+                    or c.get("agent_auto_verified") is True
+                )
+                # Modest shrink via explicit trim is allowed; expansions / jumps need verification.
+                shrunk = (c_out - c_in) <= (b_out - b_in) + 0.5 and c.get("agent_trim")
+                if not verified and not shrunk:
                     regressions.append(sid + ":media_shifted")
-        if c.get("is_replay") and not b.get("is_replay"):
+        if c.get("is_replay") is True and b.get("is_replay") is not True:
             regressions.append(sid + ":became_replay")
+    # Also catch duplicate synonym inserts that leave baseline goal while adding _live twin
+    for dup in find_duplicate_goal_cuts(candidate):
+        regressions.append("duplicate:" + str(dup.get("kind")) + ":" + ",".join(dup.get("segment_ids") or []))
     return regressions
 
 
@@ -1995,6 +2145,33 @@ def apply_candidate_revision(
             continue
         if action in ("search_add", "replace"):
             aid = str(it.get("anchor_id") or "")
+            role_req = str(it.get("role") or "").strip()
+            canon = canonical_story_role(role_req)
+            # search_add: refuse synonym / overlapping duplicates of an already-correct cut
+            if action == "search_add" and canon:
+                existing_same = []
+                for row in edl:
+                    if row.get("include_in_cut", True) is False:
+                        continue
+                    if canonical_story_role(row.get("role")) != canon:
+                        continue
+                    if "goal_action" not in str(row.get("role") or ""):
+                        continue
+                    mi, mo = _num(row.get("media_in")), _num(row.get("media_out"))
+                    if mi is not None and mo is not None and mo > mi:
+                        existing_same.append(row)
+                if existing_same:
+                    rejected.append({
+                        "intent": it.get("intent_id"),
+                        "reason": "duplicate_role_or_window_already_present",
+                        "role": role_req,
+                        "canonical_role": canon,
+                        "existing_segment_ids": [
+                            str(r.get("segment_id") or "") for r in existing_same
+                        ],
+                        "note": "use replace with evidence if the existing cut must change",
+                    })
+                    continue
             trusted = list(tw_map.get(aid) or [])
             # Fallback: union of windows mentioned on matching observations
             if not trusted:
@@ -2023,14 +2200,76 @@ def apply_candidate_revision(
                 continue
             seg = bound["segment"]
             new_sid = str(seg["segment_id"])
-            if action == "replace" and sid and sid in by_id:
-                edl[by_id[sid]]["include_in_cut"] = False
-                edl[by_id[sid]]["agent_replaced_by"] = new_sid
+            new_in, new_out = _num(seg.get("media_in")), _num(seg.get("media_out"))
+            overlap_reject = False
+            if new_in is not None and new_out is not None and action == "search_add":
+                for row in edl:
+                    if row.get("include_in_cut", True) is False:
+                        continue
+                    if "goal_action" not in str(row.get("role") or ""):
+                        continue
+                    oi, oo = _num(row.get("media_in")), _num(row.get("media_out"))
+                    if oi is None or oo is None:
+                        continue
+                    iou = _media_iou(new_in, new_out, oi, oo)
+                    same = canonical_story_role(row.get("role")) == canonical_story_role(seg.get("role"))
+                    if iou >= ROLE_WINDOW_OVERLAP_IOU or (same and iou >= 0.2):
+                        rejected.append({
+                            "intent": it.get("intent_id"),
+                            "reason": "overlapping_existing_goal_window",
+                            "iou": round(iou, 3),
+                            "existing_segment_id": str(row.get("segment_id") or ""),
+                        })
+                        overlap_reject = True
+                        break
+            if overlap_reject:
+                continue
+            if action == "replace":
+                target_row = edl[by_id[sid]] if sid and sid in by_id else None
+                ti = to = None
+                if target_row is not None:
+                    ti, to = _num(target_row.get("media_in")), _num(target_row.get("media_out"))
+                baseline_valid = (
+                    ti is not None and to is not None and to > ti
+                    and target_row.get("is_replay") is not True
+                )
+                expanding = (
+                    new_in is not None and new_out is not None and ti is not None and to is not None
+                    and (abs(ti - new_in) > 2.0 or abs(to - new_out) > 2.0)
+                )
+                if (
+                    baseline_valid and expanding
+                    and seg.get("first_live_status") == "NOT_VERIFIED"
+                    and not seg.get("agent_auto_verified")
+                ):
+                    rejected.append({
+                        "intent": it.get("intent_id"),
+                        "reason": "unverified_replace_of_existing_goal_window",
+                        "target_segment_id": sid,
+                        "note": "NOT_VERIFIED bind cannot displace an existing timed goal cut",
+                    })
+                    continue
+                retire_ids = set()
+                if sid:
+                    retire_ids.add(str(sid))
+                for row in edl:
+                    if (
+                        "goal_action" in str(row.get("role") or "")
+                        and canonical_story_role(row.get("role")) == canonical_story_role(seg.get("role"))
+                    ):
+                        retire_ids.add(str(row.get("segment_id") or ""))
+                for rid in retire_ids:
+                    if rid and rid in by_id and rid != new_sid:
+                        edl[by_id[rid]]["include_in_cut"] = False
+                        edl[by_id[rid]]["agent_replaced_by"] = new_sid
+                        edl[by_id[rid]]["agent_drop_reason"] = (
+                            edl[by_id[rid]].get("agent_drop_reason")
+                            or f"replaced_by:{new_sid}"
+                        )
             # Insert / upsert bound segment
             if new_sid in by_id:
                 edl[by_id[new_sid]] = seg
             else:
-                # Place before first scoreboard after title when adding opening
                 insert_at = 1 if edl else 0
                 for i, row in enumerate(edl):
                     if "scoreboard" in str(row.get("role") or "") or "deficit" in str(row.get("role") or ""):
@@ -2038,6 +2277,8 @@ def apply_candidate_revision(
                         break
                 edl.insert(insert_at, seg)
                 by_id = {str(r.get("segment_id")): i for i, r in enumerate(edl)}
+            if action == "replace" and sid and sid in by_id and sid != new_sid:
+                edl[by_id[sid]]["include_in_cut"] = False
             applied.append({
                 "intent": it.get("intent_id"),
                 "action": action,
@@ -2197,6 +2438,22 @@ def decide_accept(
         for reg in important_segments_regressed(baseline_edl, candidate_edl):
             reasons.append("important_goal_regressed:" + reg)
             regressions.append(reg)
+        for dup in find_duplicate_goal_cuts(candidate_edl):
+            tag = "duplicate_goal_cut:" + str(dup.get("kind"))
+            reasons.append(tag)
+            regressions.append(tag)
+    # New SUSPECTED_REPLAY on in-cut goals vs baseline is not an automatic quality win
+    live_assess = validated.get("live_segment_assessments") or []
+    new_suspected = []
+    for a in live_assess:
+        if not isinstance(a, dict):
+            continue
+        if str(a.get("live_status") or "") != "SUSPECTED_REPLAY":
+            continue
+        new_suspected.append(str(a.get("segment_id") or "unknown"))
+    if new_suspected and evidence_bound:
+        reasons.append("new_or_present_suspected_replay:" + ",".join(new_suspected[:6]))
+
     if regressions:
         return {
             "accept": False,
@@ -2319,6 +2576,20 @@ def decide_accept(
         accept = False
         pending_verification = False
         reasons.append("model_self_score_alone_insufficient")
+
+    # Suspected replay on bound goals cannot be auto-accepted as quality improvement
+    if accept and new_suspected and path in ("quality_improvement", "loop_pending_verification"):
+        accept = False
+        pending_verification = False
+        path = None
+        reasons.append("refuse_auto_accept_with_suspected_replay")
+
+    # Unverified replacement / synonym add that only widens coverage proxy is not improvement
+    if accept and candidate_edl is not None and baseline_edl is not None:
+        if find_duplicate_goal_cuts(candidate_edl):
+            accept = False
+            path = None
+            reasons.append("refuse_accept_duplicate_goal_cuts")
 
     scores = composite_quality_score(candidate_audit, verifier_validated=validated)
     meets_threshold = (
@@ -2470,6 +2741,7 @@ def run_self_revise(
     predicted_causal: Optional[Path] = None,
     stage2_proposal: Optional[Path] = None,
     audit_path: Optional[Path] = None,
+    prefer_p1_polish: bool = True,
     enable_real_api: bool = False,
     i_approve_budget: bool = False,
     max_rounds: int = 2,
@@ -2486,11 +2758,22 @@ def run_self_revise(
     quality_threshold: float = DEFAULT_QUALITY_THRESHOLD,
     stop_on_quality_threshold: bool = True,
 ) -> Dict[str, Any]:
-    phase5_dir = phase5_dir.resolve()
+    baseline_resolve = resolve_phase5_baseline(phase5_dir, prefer_p1_polish=prefer_p1_polish)
+    phase5_dir = Path(baseline_resolve["path"]).resolve()
+    baseline_resolve_public = {
+        k: (str(v) if isinstance(v, Path) else v)
+        for k, v in baseline_resolve.items()
+        if k != "path"
+    }
+    baseline_resolve_public["path"] = str(phase5_dir)
     out_dir = out_dir.resolve()
     if out_dir.exists() and any(out_dir.iterdir()):
         raise ValueError(f"out_dir must be empty/new: {out_dir}")
     out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "baseline_resolution.json").write_text(
+        json.dumps(baseline_resolve_public, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    baseline_resolve = baseline_resolve_public
 
     story = _load_json(phase5_dir / "t01_story.json")
     plan = _load_json(phase5_dir / "story_plan.json")
@@ -2502,7 +2785,9 @@ def run_self_revise(
         # Read-only structural audit into out_dir; does not touch freeze dir
         tmp = out_dir / "_baseline_phase5"
         write_phase5_workdir(tmp, story=story, plan=plan, edl=edl_obj, rendered=phase5_dir / "story_qc.mp4")
-        baseline_audit = audit_phase5_dir(tmp, rendered_video=None)
+        baseline_audit = audit_phase5_dir(
+            tmp, rendered_video=None, baseline_edl=None,
+        )
         (out_dir / "baseline_quality_audit.json").write_text(
             json.dumps(baseline_audit, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
         )
@@ -2736,7 +3021,9 @@ def run_self_revise(
         )
         cand_phase = round_dir / "candidate_phase5"
         write_phase5_workdir(cand_phase, story=story, plan=plan, edl=cand_edl, rendered=None)
-        cand_audit = audit_phase5_dir(cand_phase, rendered_video=None)
+        cand_audit = audit_phase5_dir(
+            cand_phase, rendered_video=None, baseline_edl=baseline_edl,
+        )
         (round_dir / "candidate_quality_audit.json").write_text(
             json.dumps(cand_audit, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
         )
@@ -2990,6 +3277,7 @@ def run_self_revise(
         "schema": SCHEMA,
         "match_id": plan.get("match_id") or story.get("match_id"),
         "phase5_dir": str(phase5_dir),
+        "baseline_resolution": baseline_resolve,
         "out_dir": str(out_dir),
         "frozen_inputs_untouched": True,
         "source_sha256": source_sha,
@@ -3033,11 +3321,19 @@ def run_self_revise(
     return summary
 
 
-def audit_phase5_dir(phase5: Path, rendered_video: Optional[Path] = None) -> Dict[str, Any]:
+def audit_phase5_dir(
+    phase5: Path,
+    rendered_video: Optional[Path] = None,
+    baseline_edl: Optional[Sequence[Dict[str, Any]]] = None,
+) -> Dict[str, Any]:
     story = _load_json(phase5 / "t01_story.json")
     plan = _load_json(phase5 / "story_plan.json")
     edl = _load_json(phase5 / "candidate_edl.json")
-    return quality_evaluate(story, plan, edl, rendered_video=rendered_video)
+    return quality_evaluate(
+        story, plan, edl,
+        rendered_video=rendered_video,
+        baseline_edl=baseline_edl,
+    )
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
@@ -3068,6 +3364,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         help="Run all max_rounds even if composite meets quality_threshold",
     )
     p.add_argument("--config-audit-only", action="store_true")
+    p.add_argument(
+        "--no-prefer-p1-polish", action="store_true",
+        help="Do not auto-switch 04_phase5 → sibling 04_phase5_p1_polish when present",
+    )
     args = p.parse_args(argv)
 
     if args.config_audit_only:
@@ -3105,6 +3405,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             predicted_causal=args.predicted_causal,
             stage2_proposal=args.stage2_proposal,
             audit_path=args.audit,
+            prefer_p1_polish=not args.no_prefer_p1_polish,
             enable_real_api=args.enable_real_api,
             i_approve_budget=args.i_approve_budget,
             max_rounds=args.max_rounds,

@@ -59,6 +59,32 @@ def _role(row: Dict[str, Any], prefix: str) -> bool:
     )
 
 
+ROLE_QUALIFIER_SUFFIXES = (
+    "_live", "_candidate", "_unverified", "_pending",
+    "_approach", "_incomplete", "_reaction", "_transition",
+)
+OVERLAP_IOU_DUP = 0.45
+
+
+def _canonical_role(role: Any) -> str:
+    r = str(role or "").strip()
+    changed = True
+    while changed and r:
+        changed = False
+        for suf in ROLE_QUALIFIER_SUFFIXES:
+            if r.endswith(suf):
+                r = r[: -len(suf)]
+                changed = True
+                break
+    return r
+
+
+def _iou(a_in: float, a_out: float, b_in: float, b_out: float) -> float:
+    inter = max(0.0, min(a_out, b_out) - max(a_in, b_in))
+    union = max(a_out, b_out) - min(a_in, b_in)
+    return 0.0 if union <= 1e-9 else inter / union
+
+
 def _issue(kind: str, severity: str, target: str, detail: str) -> Dict[str, str]:
     return {
         "kind": kind, "severity": severity, "target": target, "detail": detail,
@@ -69,11 +95,102 @@ def _issue(kind: str, severity: str, target: str, detail: str) -> Dict[str, str]
             "bad_media_window": "repair_or_drop_invalid_cut",
             "beat_order_inversion": "review_narrative_order",
             "duplicated_goal_event": "resolve_event_to_goal_mapping",
+            "duplicate_canonical_goal_role": "drop_synonym_or_use_replace",
+            "overlapping_goal_windows": "resolve_accidental_duplicate_cut",
+            "baseline_goal_media_regressed": "restore_or_verify_before_accept",
             "technical_decode_error": "inspect_source_and_render",
             "known_integrity_failure": "repair_or_replace_corrupt_clip",
             "possible_image_anomaly": "manually_review_flagged_intervals",
         }.get(kind, "investigate"),
     }
+
+
+def compare_edl_non_regression(
+    baseline_edl: Sequence[Dict[str, Any]],
+    candidate_edl: Sequence[Dict[str, Any]],
+) -> List[Dict[str, str]]:
+    """Relative-to-V3-R checks: accidental duplicates and unverified goal window drift."""
+    issues: List[Dict[str, str]] = []
+    cand_rows = [r for r in candidate_edl if isinstance(r, dict) and r.get("include_in_cut", True)]
+    goals = [r for r in cand_rows if "goal_action" in str(r.get("role") or "") and r.get("shot_kind") != "title_card"]
+    by_canon: Dict[str, List[Dict[str, Any]]] = {}
+    for r in goals:
+        by_canon.setdefault(_canonical_role(r.get("role")), []).append(r)
+    for role, group in by_canon.items():
+        if len(group) > 1:
+            ids = ",".join(str(x.get("segment_id") or "") for x in group)
+            issues.append(_issue(
+                "duplicate_canonical_goal_role", "P0", ids,
+                f"Multiple in-cut goal segments share canonical role '{role}' "
+                "(synonym insert / failed replace). Distinct narrative roles are OK.",
+            ))
+    for i in range(len(goals)):
+        ai, ao = _number(goals[i].get("media_in")), _number(goals[i].get("media_out"))
+        if ai is None or ao is None:
+            continue
+        for j in range(i + 1, len(goals)):
+            bi, bo = _number(goals[j].get("media_in")), _number(goals[j].get("media_out"))
+            if bi is None or bo is None:
+                continue
+            iou = _iou(ai, ao, bi, bo)
+            same = _canonical_role(goals[i].get("role")) == _canonical_role(goals[j].get("role"))
+            # High overlap of same-family goals = accidental duplicate; different roles may narratively reuse.
+            if same and iou >= 0.2:
+                issues.append(_issue(
+                    "overlapping_goal_windows", "P0",
+                    f"{goals[i].get('segment_id')},{goals[j].get('segment_id')}",
+                    f"Same-role-family goal windows overlap (iou={iou:.2f}).",
+                ))
+            elif (not same) and iou >= OVERLAP_IOU_DUP:
+                issues.append(_issue(
+                    "overlapping_goal_windows", "P1",
+                    f"{goals[i].get('segment_id')},{goals[j].get('segment_id')}",
+                    f"Distinct roles but highly overlapping source windows (iou={iou:.2f}); review.",
+                ))
+    base_by_id = {
+        str(r.get("segment_id")): r
+        for r in baseline_edl if isinstance(r, dict) and r.get("segment_id")
+    }
+    for sid, b in base_by_id.items():
+        if "goal_action" not in str(b.get("role") or ""):
+            continue
+        if b.get("include_in_cut", True) is False:
+            continue
+        b_in, b_out = _number(b.get("media_in")), _number(b.get("media_out"))
+        if b_in is None or b_out is None:
+            continue
+        c = next((r for r in cand_rows if str(r.get("segment_id")) == sid), None)
+        if c is None:
+            # Retire via replace/drop is OK if marked; otherwise flag
+            retired = next(
+                (r for r in candidate_edl
+                 if isinstance(r, dict) and str(r.get("segment_id")) == sid
+                 and r.get("include_in_cut") is False),
+                None,
+            )
+            if retired is None or not (
+                retired.get("agent_drop_reason") or retired.get("agent_replaced_by")
+            ):
+                issues.append(_issue(
+                    "baseline_goal_media_regressed", "P1", sid,
+                    "Baseline goal cut missing from candidate without explicit drop/replace mark.",
+                ))
+            continue
+        c_in, c_out = _number(c.get("media_in")), _number(c.get("media_out"))
+        if c_in is None or c_out is None:
+            continue
+        if abs(b_in - c_in) > 2.0 or abs(b_out - c_out) > 2.0:
+            verified = (
+                c.get("first_live_status") == "FIRST_LIVE_VERIFIED"
+                or c.get("agent_auto_verified") is True
+            )
+            if not verified:
+                issues.append(_issue(
+                    "baseline_goal_media_regressed", "P0", sid,
+                    "Goal media window drifted vs V3-R baseline without first-live verification.",
+                ))
+    return issues
+
 
 
 def _freeze_intervals(log: str, duration: float) -> List[Dict[str, float]]:
@@ -141,10 +258,13 @@ def scan_rendered_video(path: Optional[Path]) -> Dict[str, Any]:
 def evaluate(
     story: Dict[str, Any], plan: Dict[str, Any], edl: Sequence[Dict[str, Any]],
     *, rendered_video: Optional[Path] = None,
+    baseline_edl: Optional[Sequence[Dict[str, Any]]] = None,
 ) -> Dict[str, Any]:
     """Deterministic diagnosis: separates EDL proxies, hard defects, unknown semantics."""
     rows = [r for r in edl if isinstance(r, dict) and r.get("include_in_cut", True)]
     issues: List[Dict[str, str]] = []
+    if baseline_edl is not None:
+        issues.extend(compare_edl_non_regression(list(baseline_edl), list(edl)))
     arc = (plan.get("story_scope") or {}).get("selected_arc") or {}
     tier = str(plan.get("story_tier") or story.get("story_tier") or "none")
     requirements: List[Dict[str, Any]] = []
