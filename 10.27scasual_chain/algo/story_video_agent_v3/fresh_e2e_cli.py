@@ -149,7 +149,8 @@ def git_info(repo_root: Path) -> Dict[str, Any]:
         p = subprocess.run(["git", "-C", str(repo_root), *args],
                            text=True, capture_output=True, check=False)
         return p.stdout.strip() if p.returncode == 0 else None
-    return {"commit": git("rev-parse", "HEAD"), "dirty": bool(git("status", "--porcelain"))}
+    status = git("status", "--porcelain")
+    return {"commit": git("rev-parse", "HEAD"), "dirty": None if status is None else bool(status)}
 
 
 def run_fresh_e2e(
@@ -235,7 +236,7 @@ def run_fresh_e2e(
         manifest = read_json(phase5 / "phase5_manifest.json")
         actual_inputs = manifest.get("inputs") or {}
         if Path(actual_inputs.get("video", "")).resolve() != sources["video"]:
-            raise RuntimeError("Phase5 did not consume this run\u0027s raw video")
+            raise RuntimeError("Phase5 did not consume this run's raw video")
         if Path(actual_inputs.get("causal", "")).resolve() != predicted.resolve():
             raise RuntimeError("Phase5 did not consume this run's predicted causal")
         if Path(actual_inputs.get("events", "")).resolve() != (baseline_root / "01_enrich/events_enriched.json").resolve():
