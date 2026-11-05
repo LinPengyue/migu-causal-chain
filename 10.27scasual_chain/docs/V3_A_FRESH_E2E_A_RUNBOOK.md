@@ -96,3 +96,25 @@ fresh_e2e_A_20261105_offline/
 **已验证**：5 个 mock/stub 编排测试在隔离 Python 环境通过，覆盖输入输出接线、历史只读、双预算授权、回放拒绝和非空目录保护。
 
 **尚未验证**：仓库完整测试、服务器上真实 A 场全链路、视频渲染结果、真实 DeepSeek/Qwen 增益。
+## 2026-11-05：用户批准阿曼 A 场真实 API 端到端一次
+
+本分支新增 `scripts/run_v3a_fresh_A_real.sh`，只针对 A 场封装通用集成入口。用户批准了**一次**真实 API 试验，不等于批准自动续跑或跨场付费。
+
+服务器独立 worktree 中先安全加载原有 DeepSeek / Qwen 端点环境变量（`STORY_LLM_BASE_URL`、`STORY_LLM_API_KEY`、`STORY_LLM_MODEL`、`STORY_VLM_MODEL`，必要时 `STORY_VLM_BASE_URL`、`STORY_VLM_API_KEY`）；**不要把密钥粘贴进聊天、命令行参数或 Git**。执行：
+
+~~~bash
+bash 10.27scasual_chain/scripts/run_v3a_fresh_A_real.sh
+~~~
+
+本脚本会先执行单元测试，然后用 `--enable-real-api --i-approve-budget` 执行 3 轮（不因实验质量阈值提前停止），最多 24 次 HTTP 尝试，预估成本上限 USD 0.30、每次输出最多 2048 tokens。**预估费用不是账单硬上限**。输出目录自动以时间戳命名，不能覆盖历史结果。
+
+真实 API 端点配置预检发生在重新处理视频之前；无密钥则失败，不能静默当成 mock 成功。新增 `api_preflight.json`（不含密钥）、`fresh_e2e_summary.json.agent.real_planner/real_vision/real_verifier`、`real_multimodal_round_trip` 与 `render_selection`。
+
+- `completed_real_multimodal_candidate_only`：至少有真实 Planner、Vision、Verifier 参与（不代表视频质量提升）。
+- `completed_degraded_candidate_only`：未完成全部三类真实模型参与；不得宣称真实 Agent 成功。
+- `baseline_safety_fallback`：Agent 修订未通过回放/重复剪辑检查，视频回退到**本次** V3-R 初稿；不丢弃被拒 EDL 的审计证据。
+- `failed`：查看 `fresh_e2e_summary.json.error`，禁止将部分结果当成功。
+
+验收需要实际读取 `05_v3a/self_revise_summary.json` 每轮 Planner/VLM/Verifier、`api_usage.real_ok/real_failures/est_cost_usd_real`，以及新旧 EDL diff；再看片比较 V3-R raw、V3-A candidate、历史 P1 polish，重点检查 opening 是否重复、三个进球是否首次 LIVE、是否有比分滞后误锚和镜头节奏退化。
+
+**本聊天只完成了 GitHub 代码/运行脚本提交，没有服务器 shell / 私有 MP4 / API 密钥访问，因此没有执行真实 API 或渲染。**
