@@ -73,6 +73,30 @@ def edl_rows(obj: Any) -> list[dict[str, Any]]:
     raise ValueError("EDL must be a list or an object containing segment rows")
 
 
+def edl_diff(baseline: list[dict[str, Any]], candidate: list[dict[str, Any]]) -> Dict[str, Any]:
+    """Read-only EDL delta, independent of the Planner's claimed improvement."""
+    old = {str(r.get("segment_id") or f"row_{i}"): r for i, r in enumerate(baseline)}
+    new = {str(r.get("segment_id") or f"row_{i}"): r for i, r in enumerate(candidate)}
+    added = sorted(set(new) - set(old))
+    removed = sorted(set(old) - set(new))
+    changed = []
+    for sid in sorted(set(old) & set(new)):
+        fields = sorted(k for k in set(old[sid]) | set(new[sid]) if old[sid].get(k) != new[sid].get(k))
+        if fields:
+            changed.append({
+                "segment_id": sid,
+                "changed_fields": fields,
+                "baseline": {k: old[sid].get(k) for k in ("role", "media_in", "media_out", "include_in_cut", "is_replay", "first_live_status")},
+                "candidate": {k: new[sid].get(k) for k in ("role", "media_in", "media_out", "include_in_cut", "is_replay", "first_live_status")},
+            })
+    return {
+        "baseline_count": len(baseline), "candidate_count": len(candidate),
+        "added_segment_ids": added, "removed_segment_ids": removed,
+        "changed_segments": changed,
+        "exactly_equal": baseline == candidate,
+    }
+
+
 def validate_render_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Renderer does not honor include_in_cut itself: filter here explicitly."""
     active = [dict(row) for row in rows if row.get("include_in_cut", True) is not False]
@@ -303,6 +327,7 @@ def run_fresh_e2e(
         best_edl = edl_rows(read_json(agent_dir / "best_candidate_edl.json"))
         if not agent.get("accepted_any_revision") and best_edl != baseline_edl:
             raise RuntimeError("No accepted revision but best EDL differs from fresh V3-R")
+        report["agent_edl_diff_vs_fresh_v3r"] = edl_diff(baseline_edl, best_edl)
         # Unsafe accepted revisions are preserved for audit but never rendered.
         # A rejected candidate falls back to the freshly generated V3-R EDL.
         render_selection = "agent_candidate" if agent.get("accepted_any_revision") else "baseline_unchanged"
@@ -317,6 +342,7 @@ def run_fresh_e2e(
             render_edl = baseline_edl
             active = validate_render_rows(render_edl)
         report["render_selection"] = render_selection
+        report["render_edl_diff_vs_fresh_v3r"] = edl_diff(baseline_edl, render_edl)
         render_dir = root / "06_candidate_render"
         write_json(render_dir / "candidate_edl.json", render_edl)
         rendered = render_dual_delivery(
