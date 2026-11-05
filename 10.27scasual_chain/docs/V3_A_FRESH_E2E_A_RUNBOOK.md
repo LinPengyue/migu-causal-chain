@@ -93,9 +93,9 @@ fresh_e2e_A_20261105_offline/
 5. 即使成功输出 MP4，仍是 candidate_only，render_ready=false，不等于首次 LIVE 视觉验收。
 6. 真实 API 三轮需要另外批准，使用 --enable-real-api --i-approve-budget 双门禁，并设置费用/调用上限。当前没有批准或运行。
 
-**已验证**：5 个 mock/stub 编排测试在隔离 Python 环境通过，覆盖输入输出接线、历史只读、双预算授权、回放拒绝和非空目录保护。
+**待在服务器执行**：新增的 mock/stub 编排测试（现含真实 API 授权传参、配置失败预检、回放回退、EDL 差异等），尚未在本次会话实际执行，不得标记为 PASS。
 
-**尚未验证**：仓库完整测试、服务器上真实 A 场全链路、视频渲染结果、真实 DeepSeek/Qwen 增益。
+**尚未验证**：新增测试、仓库完整测试、服务器上真实 A 场全链路、视频渲染结果、真实 DeepSeek/Qwen 增益。
 ## 2026-11-05：用户批准阿曼 A 场真实 API 端到端一次
 
 本分支新增 `scripts/run_v3a_fresh_A_real.sh`，只针对 A 场封装通用集成入口。用户批准了**一次**真实 API 试验，不等于批准自动续跑或跨场付费。
@@ -118,3 +118,5 @@ bash 10.27scasual_chain/scripts/run_v3a_fresh_A_real.sh
 验收需要实际读取 `05_v3a/self_revise_summary.json` 每轮 Planner/VLM/Verifier、`api_usage.real_ok/real_failures/est_cost_usd_real`，以及新旧 EDL diff；再看片比较 V3-R raw、V3-A candidate、历史 P1 polish，重点检查 opening 是否重复、三个进球是否首次 LIVE、是否有比分滞后误锚和镜头节奏退化。
 
 **本聊天只完成了 GitHub 代码/运行脚本提交，没有服务器 shell / 私有 MP4 / API 密钥访问，因此没有执行真实 API 或渲染。**
+
+新增 `fresh_e2e_summary.json.agent_edl_diff_vs_fresh_v3r` 和 `render_edl_diff_vs_fresh_v3r`，记录修订候选与实际渲染 EDL 相对本次 V3-R 的变化；模型声称的质量改善不能替代实际视频 QC。
