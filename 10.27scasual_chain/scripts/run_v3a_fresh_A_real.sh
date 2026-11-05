@@ -27,7 +27,7 @@ if [[ -z "${STORY_LLM_BASE_URL:-${OPENAI_BASE_URL:-}}" || -z "${STORY_LLM_API_KE
   echo "ERROR Planner API env incomplete. Load secrets in the shell first (do not commit them)." >&2
   exit 2
 fi
-if [[ -z "${STORY_VLM_MODEL:-${STORY_LLM_MODEL:-${OPENAI_MODEL:-}}}" ]]; then
+if [[ -z "${STORY_VLM_MODEL:-}" ]]; then
   echo "ERROR VLM model env incomplete." >&2
   exit 2
 fi
@@ -35,7 +35,7 @@ fi
 python -m unittest discover -s 10.27scasual_chain/tests -p 'test_v3a_fresh_e2e.py' -v
 
 echo "A match real API run; output: $OUT"
-echo "3 rounds / <=24 HTTP attempts / <=$0.30 estimated API cost (not a hard billing cap)"
+echo "3 rounds / at most 24 HTTP attempts / estimated USD 0.30 cap (not a hard billing cap)"
 python -m story_video_agent_v3.fresh_e2e_cli \
   --match-id "$MATCH" \
   --events "$EVENTS" \
