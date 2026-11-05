@@ -331,6 +331,12 @@ def run_fresh_e2e(
         real_planner = any(r.get("planner_provider_mode") == "real" for r in rounds)
         real_vision = any(r.get("vlm_any_real_ok") for r in rounds)
         real_verifier = any(r.get("verifier_provider_mode") == "real" for r in rounds)
+        complete_real_rounds = [
+            r.get("round") for r in rounds
+            if r.get("planner_provider_mode") == "real"
+            and bool(r.get("vlm_any_real_ok"))
+            and r.get("verifier_provider_mode") == "real"
+        ]
         report["agent"] = {"summary": str(agent_dir / "self_revise_summary.json"),
                            "best_round": agent.get("best_round"),
                            "accepted_any_revision": bool(agent.get("accepted_any_revision")),
@@ -339,7 +345,8 @@ def run_fresh_e2e(
                            "real_planner": real_planner,
                            "real_vision": real_vision,
                            "real_verifier": real_verifier,
-                           "real_multimodal_round_trip": real_planner and real_vision and real_verifier,
+                           "real_multimodal_round_trip": bool(complete_real_rounds),
+                           "complete_real_rounds": complete_real_rounds,
                            "rounds_executed": agent.get("rounds_executed"),
                            "abort_reason": agent.get("abort_reason")}
         report["render"] = rendered
