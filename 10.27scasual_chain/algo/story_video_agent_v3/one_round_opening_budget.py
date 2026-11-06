@@ -415,23 +415,71 @@ def evidence_gap_for_opening(
 def filter_tools_to_focus(
     tools: Sequence[Mapping[str, Any]],
     *,
-    focus_segment_id: str = OPENING_SEGMENT_ID,
+    focus_segment_id: Optional[str] = None,
+    focus_segment_ids: Optional[Sequence[str]] = None,
     max_tools: int = ONE_ROUND_MAX_VLM_TOOLS,
 ) -> Dict[str, Any]:
+    """Keep tool requests whose anchor mentions any focus segment id.
+
+    Match-agnostic: callers pass whatever segment_ids need observation.
+    Multiple pending segments must NOT be collapsed to the first id only.
+    """
+    ids: List[str] = []
+    for x in focus_segment_ids or []:
+        s = str(x or "").strip()
+        if s and s not in ids:
+            ids.append(s)
+    if focus_segment_id:
+        s = str(focus_segment_id).strip()
+        if s and s not in ids:
+            ids.append(s)
+    if not ids:
+        # No focus list → do not invent a match-specific segment; cap tools only.
+        capped_all = [dict(t) for t in tools if isinstance(t, dict)][: max(0, int(max_tools))]
+        return {
+            "tools": capped_all,
+            "dropped": (
+                [{"reason": "over_max_vlm_tools", "raw": t} for t in list(tools)[max_tools:]]
+                if len(tools) > max_tools
+                else []
+            ),
+            "focus_segment_ids": [],
+            "matched_focus_ids": [],
+            "note": "no_focus_ids_passthrough_capped",
+        }
     kept: List[Dict[str, Any]] = []
     dropped: List[Dict[str, Any]] = []
     for tr in tools:
         if not isinstance(tr, dict):
             continue
         aid = str(tr.get("anchor_id") or "")
-        if focus_segment_id in aid:
-            kept.append(dict(tr))
+        sid = str(tr.get("segment_id") or "")
+        matched = next((fid for fid in ids if fid in aid or fid == sid), None)
+        if matched:
+            row = dict(tr)
+            row["_matched_focus_segment_id"] = matched
+            kept.append(row)
         else:
-            dropped.append({"anchor_id": aid, "reason": "outside_focus_segment"})
+            dropped.append({
+                "anchor_id": aid,
+                "reason": "outside_focus_segments",
+                "focus_segment_ids": list(ids),
+            })
     capped = kept[: max(0, int(max_tools))]
     if len(kept) > max_tools:
-        dropped.extend({"reason": "over_max_vlm_tools", "raw": t} for t in kept[max_tools:])
-    return {"tools": capped, "dropped": dropped}
+        dropped.extend(
+            {"reason": "over_max_vlm_tools", "raw": t} for t in kept[max_tools:]
+        )
+    return {
+        "tools": capped,
+        "dropped": dropped,
+        "focus_segment_ids": list(ids),
+        "matched_focus_ids": sorted({
+            str(t.get("_matched_focus_segment_id"))
+            for t in capped
+            if t.get("_matched_focus_segment_id")
+        }),
+    }
 
 
 def enforce_provider_one_round_budget(api: Any, *, max_calls: int = ONE_ROUND_MAX_HTTP) -> Dict[str, Any]:

@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Sequence
 
-from story_video_agent.frames import FrameBudget, FrameStore
+from story_video_agent.frames import FrameBudget, FrameBudgetExhausted, FrameStore
 from story_video_agent.media import probe_video
 
 from .story_timeline import build_story_timeline, story_time_to_media
@@ -28,12 +28,25 @@ def _extract_ordered(
     times: Sequence[float],
     *,
     gap_id: str,
-) -> List[Dict[str, Any]]:
+) -> Dict[str, Any]:
+    """Extract frames; FrameBudgetExhausted becomes a local soft failure (never abort Agent)."""
     frames: List[Dict[str, Any]] = []
-    for t in times:
-        rec = store.extract_at(float(t), gap_id=gap_id, tool="story_layered_observe")
-        frames.append(rec.to_dict())
-    return frames
+    exhausted = False
+    error: Optional[str] = None
+    try:
+        for t in times:
+            rec = store.extract_at(float(t), gap_id=gap_id, tool="story_layered_observe")
+            frames.append(rec.to_dict())
+    except FrameBudgetExhausted as exc:
+        exhausted = True
+        error = f"FrameBudgetExhausted:{exc}"
+    return {
+        "frames": frames,
+        "frame_count": len(frames),
+        "frame_budget_exhausted": exhausted,
+        "error": error,
+        "ok": bool(frames) and not exhausted,
+    }
 
 
 def observe_layers(
@@ -81,10 +94,16 @@ def observe_layers(
         per = max(2, global_frame_count // len(spans))
         g_frames: List[Dict[str, Any]] = []
         g_times: List[float] = []
+        g_errors: List[str] = []
         for i, (a, b) in enumerate(spans):
             ts = _even_times(a, b, per)
             g_times.extend(ts)
-            g_frames.extend(_extract_ordered(store, ts, gap_id=f"global_span_{i}"))
+            pack = _extract_ordered(store, ts, gap_id=f"global_span_{i}")
+            g_frames.extend(pack["frames"])
+            if pack.get("error"):
+                g_errors.append(str(pack["error"]))
+            if pack.get("frame_budget_exhausted"):
+                break
         layers["global"] = {
             "scope": "finished_story_mp4",
             "story_duration_sec": story_dur,
@@ -92,11 +111,13 @@ def observe_layers(
             "sample_times_story_sec": [round(t, 3) for t in g_times],
             "frame_count": len(g_frames),
             "frames": g_frames,
+            "frame_budget_exhausted": bool(g_errors),
+            "errors": g_errors or None,
             "observation_method": "ordered_multi_frame_spans",
             "claims_full_video_watch": False,
             "note": (
                 "Global layer samples open/mid/late contiguous spans of the finished cut; "
-                "not equivalent to watching every frame."
+                "not equivalent to watching every frame. FrameBudgetExhausted is soft-fail."
             ),
         }
         method_notes.append("global_ordered_multi_frame_spans")
@@ -149,7 +170,7 @@ def observe_layers(
             a = max(0.0, a)
             b = min(story_dur, max(a + 0.5, b))
             ts = _even_times(a, b, paragraph_frame_count)
-            frames = _extract_ordered(
+            pack = _extract_ordered(
                 pstore, ts, gap_id=f"para_{iss.get('issue_id') or 'x'}"
             )
             layers["paragraph"].append(
@@ -158,12 +179,16 @@ def observe_layers(
                     "category": iss.get("category"),
                     "story_time_range": [a, b],
                     "sample_times_story_sec": [round(t, 3) for t in ts],
-                    "frame_count": len(frames),
-                    "frames": frames,
+                    "frame_count": pack["frame_count"],
+                    "frames": pack["frames"],
+                    "frame_budget_exhausted": pack.get("frame_budget_exhausted"),
+                    "error": pack.get("error"),
                     "observation_method": "ordered_multi_frame_paragraph",
                     "claims_full_video_watch": False,
                 }
             )
+            if pack.get("frame_budget_exhausted"):
+                break
         method_notes.append("paragraph_ordered_frames")
 
     # --- Local: source PTS around media windows for flagged / goal segments ---
@@ -200,7 +225,7 @@ def observe_layers(
                 0.5 * (mi + mo),
                 max(mi + 0.3, mo - 0.3),
             ][:local_frame_count]
-            frames = _extract_ordered(lstore, ts, gap_id=f"local_{sid}")
+            pack = _extract_ordered(lstore, ts, gap_id=f"local_{sid}")
             layers["local"].append(
                 {
                     "segment_id": sid,
@@ -208,12 +233,16 @@ def observe_layers(
                     "media_window": [mi, mo],
                     "story_time_range": [seg.get("story_in"), seg.get("story_out")],
                     "sample_times_media_sec": [round(t, 3) for t in ts],
-                    "frame_count": len(frames),
-                    "frames": frames,
+                    "frame_count": pack["frame_count"],
+                    "frames": pack["frames"],
+                    "frame_budget_exhausted": pack.get("frame_budget_exhausted"),
+                    "error": pack.get("error"),
                     "observation_method": "ordered_boundary_and_mid_frames",
                     "claims_full_video_watch": False,
                 }
             )
+            if pack.get("frame_budget_exhausted"):
+                break
         method_notes.append("local_source_boundary_frames")
 
     semantic_provider_used = False

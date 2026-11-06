@@ -222,31 +222,136 @@ def structural_diagnosis(
                 )
             )
 
-    # Buildup density between opening deficit and equalizer (structure only).
-    opening = next((s for s in media_segs if "opponent_opening" in str(s.get("role") or "")), None)
-    equalizer = next((s for s in media_segs if "equalizer_goal" in str(s.get("role") or "")), None)
-    if opening and equalizer:
+    # --- Narrative beat order (role-family, match-agnostic) ---
+    def _family(role: str) -> str:
+        r = str(role or "")
+        if "opponent_opening" in r or r.startswith("opening"):
+            return "opening"
+        if "buildup" in r or "deficit" in r or "setup" in r:
+            return "development"
+        if "equalizer" in r:
+            return "turn"
+        if "go_ahead" in r or "winner" in r or "climax" in r:
+            return "climax"
+        if "wrap" in r or "ending" in r or "close" in r or "aftermath" in r:
+            return "ending"
+        if "title" in r:
+            return "title"
+        if "goal_action" in r:
+            return "goal"
+        return "other"
+
+    family_order = [_family(s.get("role")) for s in media_segs]
+    # Development / buildup appearing after climax on the story timeline.
+    climax_idxs = [i for i, f in enumerate(family_order) if f == "climax"]
+    if climax_idxs:
+        first_climax = climax_idxs[0]
+        late_dev = [
+            media_segs[i]
+            for i, f in enumerate(family_order)
+            if i > first_climax and f == "development"
+        ]
+        if late_dev:
+            issues.append(
+                _issue(
+                    issue_id="development_after_climax",
+                    story_time_range=[
+                        float(media_segs[first_climax]["story_in"]),
+                        float(late_dev[-1]["story_out"]),
+                    ],
+                    segment_ids=[s["segment_id"] for s in late_dev],
+                    observation=(
+                        "Development/buildup-role cuts appear after the first climax-role cut "
+                        "on the finished story timeline."
+                    ),
+                    narrative_problem=(
+                        "Story beat order may invert rising action and climax; verify whether "
+                        "post-climax material is aftermath or misplaced pressure footage."
+                    ),
+                    severity="major",
+                    suggested_fix="reorder_or_relabel_or_drop_post_climax_buildup",
+                    evidence_sufficiency="structure_inferred",
+                    category="narrative_order",
+                )
+            )
+
+    # Turn (equalizer) before any opening/deficit setup when both exist.
+    opening = next((s for s in media_segs if _family(s.get("role")) == "opening"), None)
+    turn = next((s for s in media_segs if _family(s.get("role")) == "turn"), None)
+    if opening and turn and float(turn["story_in"]) < float(opening["story_in"]):
+        issues.append(
+            _issue(
+                issue_id="turn_before_opening",
+                story_time_range=[float(turn["story_in"]), float(opening["story_out"])],
+                segment_ids=[turn["segment_id"], opening["segment_id"]],
+                observation="Turn/equalizer-role cut precedes opening-role cut on story timeline.",
+                narrative_problem=(
+                    "Narrative chronology may be inverted (turn before establishing opening)."
+                ),
+                severity="major",
+                suggested_fix="reorder_story_beats",
+                evidence_sufficiency="structure_inferred",
+                category="narrative_order",
+            )
+        )
+
+    # Scoreboard/confirm cut placed before its paired goal_action (same role stem).
+    for i, s in enumerate(media_segs):
+        role = str(s.get("role") or "")
+        if "scoreboard" not in role:
+            continue
+        stem = role.replace("_scoreboard_anchor", "").replace("_scoreboard", "")
+        later_action = next(
+            (
+                t
+                for t in media_segs[i + 1 :]
+                if stem and stem in str(t.get("role") or "") and "goal_action" in str(t.get("role") or "")
+            ),
+            None,
+        )
+        if later_action:
+            issues.append(
+                _issue(
+                    issue_id=f"scoreboard_before_action_{s['segment_id']}",
+                    story_time_range=[float(s["story_in"]), float(later_action["story_out"])],
+                    segment_ids=[s["segment_id"], later_action["segment_id"]],
+                    observation=(
+                        f"Scoreboard/confirm role '{role}' appears before paired goal_action "
+                        f"'{later_action.get('role')}'."
+                    ),
+                    narrative_problem=(
+                        "Result confirmation before the action break can break causal storytelling."
+                    ),
+                    severity="major",
+                    suggested_fix="place_action_before_scoreboard_or_drop_premature_confirm",
+                    evidence_sufficiency="structure_inferred",
+                    category="narrative_causality",
+                )
+            )
+
+    # Buildup density between opening and turn (structure only; still needs video verify).
+    if opening and turn and float(opening["story_out"]) <= float(turn["story_in"]):
         between = [
             s
             for s in media_segs
             if float(opening["story_out"]) - 1e-6
             <= float(s["story_in"])
-            < float(equalizer["story_in"]) + 1e-6
+            < float(turn["story_in"]) + 1e-6
         ]
         between_media = sum(float(s["duration_sec"]) for s in between)
         if between_media < 6.0:
             issues.append(
                 _issue(
-                    issue_id="sparse_pre_equalizer_bridge",
-                    story_time_range=[float(opening["story_out"]), float(equalizer["story_in"])],
+                    issue_id="sparse_pre_turn_bridge",
+                    story_time_range=[float(opening["story_out"]), float(turn["story_in"])],
                     segment_ids=[s["segment_id"] for s in between],
                     observation=(
-                        f"Only {between_media:.1f}s of media between opening-goal related cut and "
-                        "equalizer goal_action."
+                        f"Only {between_media:.1f}s of media between opening-role cut and "
+                        "turn-role cut."
                     ),
                     narrative_problem=(
-                        "Pressure/buildup before the equalizer may be thin; confirm by watching "
-                        "story midsection — do not treat this alone as a confirmed defect."
+                        "Rising action / pressure before the turn may be thin; confirm by watching "
+                        "the story midsection — do not treat this alone as a confirmed defect."
                     ),
                     severity="minor",
                     suggested_fix="verify_buildup_or_search_bridge_footage",

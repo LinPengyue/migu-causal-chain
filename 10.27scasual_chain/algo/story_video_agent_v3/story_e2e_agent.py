@@ -36,12 +36,18 @@ class StoryE2EInputs:
     match_json: Path
     source_mp4: Path
     out_dir: Path
-    # Optional frozen V3-R baseline for regression (Oman etc.)
+    # Optional frozen V3-R baseline for regression (any match).
     phase5_dir: Optional[Path] = None
     initial_story_mp4: Optional[Path] = None
     baseline_edl: Optional[Path] = None
     story_plan: Optional[Path] = None
     t01_story: Optional[Path] = None
+    # Fresh V3-R path (JSON+MP4 alone is insufficient without events/causal atoms).
+    events_json: Optional[Path] = None
+    causal_atoms_json: Optional[Path] = None
+    match_id: Optional[str] = None
+    algo_root: Optional[Path] = None
+    run_fresh_v3r: bool = False
     skip_vlm: bool = True
     enable_real_api: bool = False
     i_approve_budget: bool = False
@@ -51,6 +57,9 @@ class StoryE2EInputs:
     fixture_revision: Optional[Mapping[str, Any]] = None
     fixture_verifier: Optional[Mapping[str, Any]] = None
     max_rounds: int = MAX_ROUNDS
+    max_calls: int = 5
+    max_cost_usd: float = 0.10
+    max_retries: int = 0
 
 
 def _read_json(path: Path) -> Any:
@@ -68,7 +77,14 @@ def _copy_or_link(src: Path, dst: Path) -> None:
 
 
 def resolve_baseline(inp: StoryE2EInputs) -> Dict[str, Any]:
-    """Locate or stage V3-R baseline artifacts under out_dir/00_baseline."""
+    """Locate or stage V3-R baseline artifacts under out_dir/00_baseline.
+
+    Honest input contract:
+    - match_json + source_mp4 alone do NOT produce Phase5; V3-R needs events +
+      causal atoms (or a reused Phase5 directory).
+    - When run_fresh_v3r=True and events/causal are provided, invoke closed_loop
+      run_match to generate Phase5 under out_dir (never mutate foreign Phase5).
+    """
     base_dir = inp.out_dir / "00_baseline"
     base_dir.mkdir(parents=True, exist_ok=True)
     phase5 = inp.phase5_dir
@@ -76,6 +92,47 @@ def resolve_baseline(inp: StoryE2EInputs) -> Dict[str, Any]:
     plan_path = inp.story_plan
     mp4_path = inp.initial_story_mp4
     t01_path = inp.t01_story
+    fresh_meta: Optional[Dict[str, Any]] = None
+
+    raw_only = (
+        inp.match_json.is_file()
+        and inp.source_mp4.is_file()
+        and phase5 is None
+        and edl_path is None
+        and not inp.run_fresh_v3r
+    )
+
+    if inp.run_fresh_v3r:
+        events = inp.events_json
+        causal = inp.causal_atoms_json
+        if events is None or causal is None or not events.is_file() or not causal.is_file():
+            return {
+                "ok": False,
+                "missing": ["events_json", "causal_atoms_json"],
+                "reuse_frozen_v3r": False,
+                "raw_json_mp4_sufficient": False,
+                "paths": {},
+                "note": (
+                    "run_fresh_v3r requires --events-json and --causal-atoms-json in addition "
+                    "to match JSON + source MP4. Match JSON alone is not a V3-R input."
+                ),
+            }
+        from .closed_loop_cli import run_match
+
+        fresh_root = inp.out_dir / "01_to_04_fresh_v3r"
+        fresh_root.mkdir(parents=True, exist_ok=True)
+        algo = inp.algo_root or Path(__file__).resolve().parents[2]
+        mid = inp.match_id or inp.match_json.stem
+        fresh_meta = run_match(
+            match_id=str(mid),
+            events_path=events,
+            causal_atoms_path=causal,
+            video=inp.source_mp4,
+            out_dir=fresh_root,
+            algo_root=Path(algo),
+            skip_render=False,
+        )
+        phase5 = fresh_root / "04_phase5"
 
     if phase5 and phase5.is_dir():
         edl_path = edl_path or (phase5 / "candidate_edl.json")
@@ -95,16 +152,20 @@ def resolve_baseline(inp: StoryE2EInputs) -> Dict[str, Any]:
     staged = {
         "phase5_dir": str(phase5) if phase5 else None,
         "missing": missing,
-        "reuse_frozen_v3r": bool(phase5 and not missing),
+        "reuse_frozen_v3r": bool(phase5 and not missing and not inp.run_fresh_v3r),
+        "ran_fresh_v3r": bool(inp.run_fresh_v3r and not missing),
+        "raw_json_mp4_sufficient": False,
+        "raw_only_attempt_detected": bool(raw_only),
+        "fresh_meta": fresh_meta,
         "paths": {},
     }
 
     if missing:
         staged["ok"] = False
         staged["note"] = (
-            "Fresh V3-R generation from match JSON is not invoked in offline dry-run; "
-            "provide --phase5-dir or explicit baseline paths. Full fresh V3-R remains "
-            "available via fresh_e2e_cli / closed_loop when authorized."
+            "V3-A story E2E requires a V3-R Phase5 baseline (EDL + plan + initial MP4). "
+            "match_json + source_mp4 alone are NOT sufficient. Provide --phase5-dir for "
+            "regression, or --run-fresh-v3r with --events-json and --causal-atoms-json."
         )
         return staged
 
@@ -206,6 +267,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
     audit: Dict[str, Any] = {
         "schema": SCHEMA,
         "started_unix": t0,
+        "out_dir": str(out),
         "inputs": {
             "match_json": str(inp.match_json),
             "source_mp4": str(inp.source_mp4),
@@ -213,6 +275,9 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             "skip_vlm": inp.skip_vlm,
             "enable_real_api": inp.enable_real_api,
             "i_approve_budget": inp.i_approve_budget,
+            "run_fresh_v3r": inp.run_fresh_v3r,
+            "max_calls": inp.max_calls,
+            "max_cost_usd": inp.max_cost_usd,
         },
         "http_calls": 0,
         "est_cost_usd": 0.0,
@@ -228,13 +293,43 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         audit["error"] = "real_api_requested_without_budget_approval"
         write_json(out / "story_e2e_audit.json", audit)
         return audit
-    if inp.enable_real_api:
-        audit["error"] = (
-            "real_api_not_invoked_in_this_build_pass; complete offline path first "
-            "and obtain fresh budget authorization"
-        )
-        # Continue offline rather than calling paid APIs.
-        inp = StoryE2EInputs(**{**inp.__dict__, "enable_real_api": False, "skip_vlm": True})
+
+    paid_api = None
+    if inp.enable_real_api and inp.i_approve_budget:
+        from .story_paid_eval import build_capped_provider, provider_usage
+
+        if int(inp.max_calls) > 5 or float(inp.max_cost_usd) > 0.10 or int(inp.max_rounds) > 1:
+            audit["error"] = (
+                "paid_eval_refused_budget_exceeds_frozen_protocol "
+                "(max_rounds<=1, max_calls<=5, max_cost_usd<=0.10, retries=0)"
+            )
+            write_json(out / "story_e2e_audit.json", audit)
+            return audit
+        try:
+            paid_api = build_capped_provider(
+                max_calls=int(inp.max_calls),
+                max_cost_usd=float(inp.max_cost_usd),
+            )
+            st = paid_api.status()
+            if not st.get("planner_ready") or not st.get("vision_ready"):
+                audit["error"] = "paid_api_config_incomplete"
+                audit["api_status_safe"] = {
+                    "planner_ready": st.get("planner_ready"),
+                    "vision_ready": st.get("vision_ready"),
+                }
+                write_json(out / "story_e2e_audit.json", audit)
+                return audit
+            audit["api_preflight"] = {
+                "configured": True,
+                "max_calls": paid_api.max_calls,
+                "max_cost_usd_estimate": paid_api.max_cost_usd,
+                "max_retries": 0,
+                "cost_is_estimate_not_invoice_cap": True,
+            }
+        except Exception as exc:  # noqa: BLE001
+            audit["error"] = f"paid_api_init_failed:{type(exc).__name__}:{exc}"
+            write_json(out / "story_e2e_audit.json", audit)
+            return audit
 
     baseline = resolve_baseline(inp)
     write_json(out / "00_baseline_resolve.json", baseline)
@@ -289,15 +384,63 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             initial_story_mp4=best_mp4,
             source_video=inp.source_mp4,
         )
-        # Observe
+        # Observe (ffmpeg layers always; optional paid VLM critic)
         obs = observe_layers(
             story_mp4=best_mp4,
             source_mp4=inp.source_mp4,
             edl=best_edl,
             work_dir=round_dir / "observe",
             diagnosis_issues=diag.get("issues") or [],
-            skip_vlm=True if not inp.enable_real_api else inp.skip_vlm,
+            skip_vlm=True,  # VLM is invoked explicitly below when authorized
         )
+        vlm_critic = None
+        llm_rev = None
+        if paid_api is not None:
+            from .story_paid_eval import (
+                provider_usage,
+                run_llm_revision_planner,
+                run_vlm_story_critic,
+            )
+
+            try:
+                vlm_critic = run_vlm_story_critic(
+                    paid_api,
+                    observations=obs,
+                    diagnosis=diag,
+                    audit_dir=round_dir / "paid_api",
+                )
+            except Exception as exc:  # noqa: BLE001
+                vlm_critic = {"ok": False, "error": f"{type(exc).__name__}:{exc}"}
+            write_json(round_dir / "vlm_story_critic.json", vlm_critic or {})
+            if vlm_critic and vlm_critic.get("ok"):
+                obs = dict(obs)
+                obs["semantic_provider_used"] = True
+                obs["fixture_or_offline"] = False
+                obs["vlm_results"] = [vlm_critic]
+                derived = []
+                for di in vlm_critic.get("derived_issues") or []:
+                    if not isinstance(di, dict):
+                        continue
+                    di = dict(di)
+                    di.setdefault("evidence_sufficiency", "observed")
+                    di.setdefault("suggested_fix", "revise_with_evidence")
+                    di.setdefault("story_time_range", [0.0, 0.0])
+                    di.setdefault("segment_ids", [])
+                    derived.append(di)
+                obs["derived_issues"] = derived
+            usage = provider_usage(paid_api)
+            http_calls = int(usage.get("http_attempts") or http_calls)
+            est_cost = float(usage.get("est_cost_usd_real") or est_cost)
+            round_rec["api_usage_after_vlm"] = usage
+            if http_calls >= int(inp.max_calls) or est_cost >= float(inp.max_cost_usd):
+                audit["budget_stop"] = {
+                    "reason": "cap_reached_after_vlm",
+                    "http_calls": http_calls,
+                    "est_cost_usd": est_cost,
+                }
+                # Fail closed: no further paid calls.
+                paid_api = None
+
         diag = merge_observation_into_diagnosis(diag, obs)
         write_diagnosis(round_dir / "story_diagnosis.json", diag)
         gates["story_diagnosis_valid"] = bool(diag.get("story_diagnosis_valid"))
@@ -308,15 +451,55 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         fixture_intents = None
         if inp.fixture_revision:
             fixture_intents = inp.fixture_revision.get("revision_intents")
-            if inp.fixture_revision.get("decision"):
-                # allow fixture to force decision path via intents
-                pass
         rev = plan_from_diagnosis(
             diag,
             observations=obs,
-            offline=not inp.enable_real_api,
+            offline=paid_api is None,
             fixture_intents=fixture_intents,
         )
+        if paid_api is not None and fixture_intents is None:
+            from .story_paid_eval import provider_usage, run_llm_revision_planner
+
+            try:
+                llm_rev = run_llm_revision_planner(
+                    paid_api,
+                    diagnosis=diag,
+                    vlm_critic=vlm_critic or {},
+                    protected_goal_ids=list(diag.get("protected_goal_segment_ids") or []),
+                    audit_dir=round_dir / "paid_api",
+                )
+            except Exception as exc:  # noqa: BLE001
+                llm_rev = {"ok": False, "error": f"{type(exc).__name__}:{exc}"}
+            write_json(round_dir / "llm_revision_planner.json", llm_rev or {})
+            if llm_rev and llm_rev.get("ok"):
+                rev = {
+                    **rev,
+                    "decision": llm_rev.get("decision") or rev.get("decision"),
+                    "revision_intents": llm_rev.get("revision_intents") or rev.get("revision_intents"),
+                    "rationale": llm_rev.get("rationale") or rev.get("rationale"),
+                    "provider_mode": llm_rev.get("provider_mode"),
+                    "offline": False,
+                    "semantic_confirmation": bool(obs.get("semantic_provider_used")),
+                }
+            else:
+                # Paid planner failed → fail closed to UNRESOLVED, do not pretend KEEP.
+                rev = {
+                    **rev,
+                    "decision": "UNRESOLVED",
+                    "rationale": f"llm_revision_planner_failed:{(llm_rev or {}).get('error')}",
+                    "offline": False,
+                }
+            usage = provider_usage(paid_api)
+            http_calls = int(usage.get("http_attempts") or http_calls)
+            est_cost = float(usage.get("est_cost_usd_real") or est_cost)
+            round_rec["api_usage_after_rp"] = usage
+            if http_calls >= int(inp.max_calls) or est_cost >= float(inp.max_cost_usd):
+                audit["budget_stop"] = {
+                    "reason": "cap_reached_after_revision_planner",
+                    "http_calls": http_calls,
+                    "est_cost_usd": est_cost,
+                }
+                paid_api = None
         if inp.fixture_revision and inp.fixture_revision.get("decision"):
             rev["decision"] = inp.fixture_revision["decision"]
             if fixture_intents is None and rev["decision"] == "KEEP":
@@ -377,7 +560,49 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             gates["candidate_rendered"] = False
         write_json(round_dir / "candidate_render.json", render_info)
 
-        # Verifier
+        # Verifier (optional paid LLM when revising under remaining budget)
+        fixture_v = inp.fixture_verifier
+        if (
+            paid_api is not None
+            and final_decision == "REVISE"
+            and edl_changed
+            and fixture_v is None
+        ):
+            from .fresh_e2e_cli import edl_diff
+            from .story_paid_eval import provider_usage, run_llm_verifier
+            from .story_video_verifier import probe_video_pair
+
+            try:
+                llm_v = run_llm_verifier(
+                    paid_api,
+                    baseline_summary={
+                        "mp4": str(best_mp4),
+                        "segment_count": len(best_edl),
+                        "protected_goals": diag.get("protected_goal_segment_ids"),
+                    },
+                    candidate_summary={
+                        "mp4": str(candidate_mp4) if candidate_mp4 else None,
+                        "segment_count": len(candidate_edl),
+                    },
+                    edl_delta=edl_diff(best_edl, candidate_edl),
+                    video_probe=probe_video_pair(
+                        baseline_mp4=best_mp4, candidate_mp4=candidate_mp4
+                    ),
+                    audit_dir=round_dir / "paid_api",
+                )
+                write_json(round_dir / "llm_verifier.json", llm_v)
+                if llm_v.get("ok") and isinstance(llm_v.get("validated"), dict):
+                    fixture_v = llm_v["validated"]
+                usage = provider_usage(paid_api)
+                http_calls = int(usage.get("http_attempts") or http_calls)
+                est_cost = float(usage.get("est_cost_usd_real") or est_cost)
+                round_rec["api_usage_after_verifier"] = usage
+            except Exception as exc:  # noqa: BLE001
+                write_json(
+                    round_dir / "llm_verifier.json",
+                    {"ok": False, "error": f"{type(exc).__name__}:{exc}"},
+                )
+
         vfix = verify_story_revision(
             story=story or plan,
             plan=plan,
@@ -386,7 +611,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             baseline_mp4=best_mp4,
             candidate_mp4=candidate_mp4,
             decision=final_decision,
-            fixture=inp.fixture_verifier,
+            fixture=fixture_v,
         )
         write_json(round_dir / "verifier_report.json", vfix)
         gates["semantic_verification_passed"] = (

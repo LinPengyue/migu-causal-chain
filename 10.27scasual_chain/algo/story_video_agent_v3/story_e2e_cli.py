@@ -38,6 +38,14 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--story-plan", type=Path, default=None)
     p.add_argument("--initial-story-mp4", type=Path, default=None)
     p.add_argument("--t01-story", type=Path, default=None)
+    p.add_argument("--events-json", type=Path, default=None,
+                   help="Raw events for fresh V3-R (required with --run-fresh-v3r)")
+    p.add_argument("--causal-atoms-json", type=Path, default=None,
+                   help="Human causal atoms for fresh V3-R")
+    p.add_argument("--match-id", type=str, default=None)
+    p.add_argument("--algo-root", type=Path, default=None)
+    p.add_argument("--run-fresh-v3r", action="store_true", default=False,
+                   help="Generate Phase5 from events+causal+video (not JSON alone)")
     p.add_argument("--offline", action="store_true", default=True)
     p.add_argument("--enable-real-api", action="store_true", default=False)
     p.add_argument("--i-approve-budget", action="store_true", default=False)
@@ -45,6 +53,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--force-render-candidate", action="store_true", default=False)
     p.add_argument("--no-smoke-render", action="store_true", default=False)
     p.add_argument("--max-rounds", type=int, default=3)
+    p.add_argument("--max-calls", type=int, default=5)
+    p.add_argument("--max-cost-usd", type=float, default=0.10)
     p.add_argument("--fixture-revision", type=Path, default=None)
     p.add_argument("--fixture-verifier", type=Path, default=None)
     return p
@@ -79,6 +89,11 @@ def main(argv: list[str] | None = None) -> int:
         baseline_edl=args.baseline_edl.resolve() if args.baseline_edl else None,
         story_plan=args.story_plan.resolve() if args.story_plan else None,
         t01_story=args.t01_story.resolve() if args.t01_story else None,
+        events_json=args.events_json.resolve() if args.events_json else None,
+        causal_atoms_json=args.causal_atoms_json.resolve() if args.causal_atoms_json else None,
+        match_id=args.match_id,
+        algo_root=args.algo_root.resolve() if args.algo_root else None,
+        run_fresh_v3r=bool(args.run_fresh_v3r),
         skip_vlm=True if args.offline or not args.enable_real_api else False,
         enable_real_api=bool(args.enable_real_api),
         i_approve_budget=bool(args.i_approve_budget),
@@ -88,6 +103,9 @@ def main(argv: list[str] | None = None) -> int:
         fixture_revision=fixture_revision,
         fixture_verifier=fixture_verifier,
         max_rounds=int(args.max_rounds),
+        max_calls=int(args.max_calls),
+        max_cost_usd=float(args.max_cost_usd),
+        max_retries=0,
     )
     t0 = time.time()
     audit = run_story_e2e(inp)

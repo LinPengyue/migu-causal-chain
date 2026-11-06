@@ -31,7 +31,7 @@ from story_video_agent.api_provider import (
     ApiProvider,
     api_enabled,
 )
-from story_video_agent.frames import FrameBudget, FrameStore
+from story_video_agent.frames import FrameBudget, FrameBudgetExhausted, FrameStore
 from story_video_agent.media import probe_video
 from story_video_agent.vision_provider import _extract_json_obj
 
@@ -2135,13 +2135,31 @@ def _observe_one_window(
     else:
         times = store.sample_times(start, end, count=min(MAX_FRAMES_PER_REQUEST, 4))
     frames = []
-    for t in times:
-        rec = store.extract_at(
-            t,
-            gap_id=str(tr.get("request_id") or "obs"),
-            tool="self_revise_observe",
-        )
-        frames.append(rec.to_dict())
+    try:
+        for t in times:
+            rec = store.extract_at(
+                t,
+                gap_id=str(tr.get("request_id") or "obs"),
+                tool="self_revise_observe",
+            )
+            frames.append(rec.to_dict())
+    except FrameBudgetExhausted as exc:
+        # Do not abort the whole Agent: return a local failed observation.
+        return {
+            "request_id": request_id,
+            "issue_id": tr.get("issue_id"),
+            "anchor_id": tr.get("anchor_id"),
+            "ok": False,
+            "error": f"FrameBudgetExhausted:{exc}",
+            "provider_mode": "degraded",
+            "frames": frames,
+            "window": {"start": start, "end": end},
+            "fact_verified": False,
+            "observation_only": True,
+            "unresolved": True,
+            "frame_budget_exhausted": True,
+            "allowed_windows": list(allowed_windows),
+        }
     prompt = (
         f"{VLM_SYSTEM_HINT}\n"
         f"Planner question: {tr.get('question')}\n"
@@ -2931,13 +2949,49 @@ def decide_accept(
     # but missing-element P0 alone does not force reject when coverage rises.
     eoi = validated.get("evidence_of_improvement") or []
     dims = validated.get("dimensions") or {}
+    # Model claim text alone is insufficient. Improvement EOI must cite video /
+    # frame / observation refs (match-agnostic kinds), not bare score deltas.
+    _VIDEO_EOI_KINDS = frozenset({
+        "frame", "frames", "video", "media", "observation", "vlm", "clip",
+        "story_mp4", "source_mp4", "candidate_mp4", "baseline_mp4",
+        "actual_media_sec", "pts",
+    })
+
+    def _refs_video_backed(refs: Any) -> bool:
+        if not isinstance(refs, list) or not refs:
+            return False
+        for ref in refs:
+            if not isinstance(ref, dict):
+                continue
+            kind = str(ref.get("kind") or ref.get("type") or "").lower()
+            if kind in _VIDEO_EOI_KINDS:
+                return True
+            # Explicit media/frame identifiers also count.
+            if any(ref.get(k) for k in ("frame_id", "media_sec", "path", "clip_path")):
+                return True
+            # Common observation/frame ref tokens (not free-text "claim" alone).
+            token = str(ref.get("ref") or ref.get("id") or "").lower()
+            if token and any(
+                t in token
+                for t in ("obs", "frame", "vlm", "clip", "media", "pts", "mp4", "video")
+            ):
+                return True
+        return False
+
     has_structured_eoi = any(
-        isinstance(x, dict) and (x.get("evidence_refs") or x.get("claim"))
+        isinstance(x, dict) and _refs_video_backed(x.get("evidence_refs"))
+        for x in eoi
+    )
+    # Bare claim without video refs must never drive ACCEPT.
+    has_claim_only_eoi = any(
+        isinstance(x, dict)
+        and x.get("claim")
+        and not _refs_video_backed(x.get("evidence_refs"))
         for x in eoi
     )
     dim_improved = any(
         isinstance(dims.get(k), dict) and dims[k].get("status") == "improved"
-        and (dims[k].get("evidence_refs") or dims[k].get("summary"))
+        and _refs_video_backed(dims[k].get("evidence_refs"))
         for k in (
             "story_element_coverage", "narrative_coherence",
             "image_content_quality", "live_authenticity",
@@ -3000,8 +3054,10 @@ def decide_accept(
 
     # Unverified goal binds with evaluated verifier may still be research-only.
     # Verifier API failure / NOT_EVALUATED must NOT update best via loop_pending_verification.
+    # Structural proxy improvement alone must not promote goal binds without video EOI.
+    video_improve_signal = bool(has_structured_eoi or dim_improved or evidence_bound)
     if goal_binds and sem not in ("PASSED",):
-        if verifier_unevaluated and (structural_improve or p0_reduced or evidence_bound):
+        if verifier_unevaluated and (video_improve_signal or p0_reduced):
             accept = False
             pending_verification = False
             pending_proposal_only = True
@@ -3009,14 +3065,18 @@ def decide_accept(
             reasons.append("verifier_unevaluated_refuse_best_update")
             reasons.append("pending_proposal_only_not_accepted_edl")
             reasons.append("not_release_ready_until_semantic_verification")
-        elif structural_improve or p0_reduced or evidence_bound:
+        elif video_improve_signal or p0_reduced:
             accept = True
             pending_verification = True
             path = "loop_pending_verification"
             reasons.append("goal_bind_retained_as_pending_proposal")
             reasons.append("not_release_ready_until_semantic_verification")
+            if structural_improve and not video_improve_signal:
+                reasons.append("structural_proxy_ignored_without_video_eoi")
         else:
-            reasons.append("goal_bind_without_improvement_signal")
+            reasons.append("goal_bind_without_video_backed_improvement_signal")
+            if structural_improve:
+                reasons.append("structural_proxy_improve_insufficient_for_goal_bind")
             accept = False
 
     elif cand_p0 < base_p0 and cand_p0 == 0 and evidence_bound:
@@ -3033,18 +3093,24 @@ def decide_accept(
         reasons.append("partial_p0_or_coverage_improve_loop_retain")
         if cand_p0 > 0:
             reasons.append("feedback_p0_still_open_continue_loop")
-    elif (evidence_bound or soft_applied) and (structural_improve or dim_improved or has_structured_eoi):
-        if has_structured_eoi or structural_improve or (soft_applied and dim_improved):
+    elif (evidence_bound or soft_applied) and (dim_improved or has_structured_eoi):
+        # Soft/evidence edits may retain only with video-backed improvement evidence.
+        # Structural score bumps alone (coverage/coherence proxies) are insufficient.
+        if has_structured_eoi or dim_improved:
             accept = True
             path = "quality_improvement"
-            reasons.append("quality_improved_with_verifiable_evidence")
+            reasons.append("quality_improved_with_video_backed_evidence")
         else:
-            reasons.append("dimension_improved_without_evidence_refs")
+            reasons.append("dimension_improved_without_video_evidence_refs")
             accept = False
-    elif soft_applied and structural_improve:
-        accept = True
-        path = "quality_improvement"
-        reasons.append("quality_improved_with_verifiable_evidence")
+    elif soft_applied and structural_improve and not (has_structured_eoi or dim_improved):
+        # Explicit refusal: rule coverage/coherence up + soft edit ≠ story quality proof.
+        reasons.append("structural_proxy_improve_without_video_evidence")
+        accept = False
+        if verifier_unevaluated:
+            pending_proposal_only = True
+            reasons.append("verifier_unevaluated_refuse_best_update")
+            reasons.append("pending_proposal_only_not_accepted_edl")
     else:
         if cand_p0 > 0:
             reasons.append("feedback_p0_still_open")
@@ -3052,15 +3118,21 @@ def decide_accept(
             reasons.append("no_verifiable_quality_delta")
         if not evidence_bound and not soft_applied:
             reasons.append("no_evidence_bound_or_safe_edit")
+        if has_claim_only_eoi:
+            reasons.append("claim_only_eoi_ignored_without_video_refs")
 
     # Model self-rating alone never suffices
     if accept and not (
-        structural_improve or evidence_bound or soft_applied or has_structured_eoi
+        evidence_bound or soft_applied or has_structured_eoi or dim_improved
         or path in ("p0_repair", "partial_improvement", "loop_pending_verification")
     ):
         accept = False
         pending_verification = False
         reasons.append("model_self_score_alone_insufficient")
+    if accept and has_claim_only_eoi and not (has_structured_eoi or dim_improved or evidence_bound):
+        accept = False
+        pending_verification = False
+        reasons.append("refuse_accept_claim_only_improvement_without_video_evidence")
 
     # Suspected replay on bound goals cannot be auto-accepted as quality improvement
     if accept and new_suspected and path in ("quality_improvement", "loop_pending_verification"):
@@ -3517,10 +3589,11 @@ def run_self_revise(
         tool_filter_meta: Optional[Dict[str, Any]] = None
         if focus_segment_ids:
             from .one_round_opening_budget import filter_tools_to_focus
-            # Single focus id for Oman opening experiment; multi-id → first match any.
-            focus_id = str(focus_segment_ids[0])
+            # Multi-focus: keep tools for ANY listed segment (do not collapse to [0]).
             tool_filter_meta = filter_tools_to_focus(
-                tools, focus_segment_id=focus_id, max_tools=vlm_tool_cap,
+                tools,
+                focus_segment_ids=[str(x) for x in focus_segment_ids],
+                max_tools=vlm_tool_cap,
             )
             tools = list(tool_filter_meta.get("tools") or [])
             (round_dir / "tool_focus_filter.json").write_text(

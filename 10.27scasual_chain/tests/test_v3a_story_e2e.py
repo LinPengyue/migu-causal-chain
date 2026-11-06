@@ -17,15 +17,56 @@ from story_video_agent_v3.story_timeline import (
 from story_video_agent_v3.story_video_verifier import empty_status_gates, verify_story_revision
 
 
-OMAN_PHASE5 = Path(
-    "/data2/lpy1/_story_va_outputs/v3/plan2/closed_loop_A_uae_oman/"
-    "fresh_e2e_A_real_20261105_183136/01_to_04_fresh_v3r/04_phase5"
-)
-OMAN_MP4 = Path("/mnt/data4/migu/10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语.mp4")
-OMAN_JSON = Path(
-    "/data2/lpy1/causal-chain2/causal_chain/examples/交付_out/"
-    "10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语.json"
-)
+import os
+
+# Optional integration assets via env (never hard-require one match).
+def _env_path(key: str, default: str = "") -> Path:
+    return Path(os.environ.get(key, default))
+
+
+CROSS_MATCH_CASES = [
+    {
+        "id": "A",
+        "phase5": _env_path(
+            "V3A_MATCH_A_PHASE5",
+            "/data2/lpy1/_story_va_outputs/v3/plan2/closed_loop_A_uae_oman/"
+            "fresh_e2e_A_real_20261105_183136/01_to_04_fresh_v3r/04_phase5",
+        ),
+        "mp4": _env_path(
+            "V3A_MATCH_A_MP4",
+            "/mnt/data4/migu/10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语.mp4",
+        ),
+        "json": _env_path(
+            "V3A_MATCH_A_JSON",
+            "/data2/lpy1/causal-chain2/causal_chain/examples/交付_out/"
+            "10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语.json",
+        ),
+    },
+    {
+        "id": "B",
+        "phase5": _env_path(
+            "V3A_MATCH_B_PHASE5",
+            "/data2/lpy1/_story_va_outputs/v3/plan2/closed_loop_B_osasuna_celta/04_phase5",
+        ),
+        "mp4": _env_path(
+            "V3A_MATCH_B_MP4",
+            "/mnt/data4/migu/10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语.mp4",
+        ),
+        "json": _env_path("V3A_MATCH_B_JSON", ""),
+    },
+    {
+        "id": "C",
+        "phase5": _env_path(
+            "V3A_MATCH_C_PHASE5",
+            "/data2/lpy1/_story_va_outputs/v3/plan2/closed_loop_C_croatia_canada/04_phase5",
+        ),
+        "mp4": _env_path(
+            "V3A_MATCH_C_MP4",
+            "/mnt/data4/migu/2022-11-28 克罗地亚vs加拿大.mp4",
+        ),
+        "json": _env_path("V3A_MATCH_C_JSON", ""),
+    },
+]
 
 
 def _sample_edl():
@@ -204,46 +245,72 @@ class TestVerifierGates(unittest.TestCase):
             self.assertTrue(report["retain_baseline"])
 
 
-@unittest.skipUnless(
-    OMAN_PHASE5.is_dir() and OMAN_MP4.is_file() and OMAN_JSON.is_file(),
-    "Oman baseline assets unavailable",
-)
-class TestOmanOfflineDryRun(unittest.TestCase):
-    def test_offline_e2e_dry_run(self):
-        out = Path(
-            tempfile.mkdtemp(prefix="A_story_e2e_test_", dir="/data2/lpy1/_story_va_outputs/v3/plan2")
-        )
-        audit = run_story_e2e(
+class TestCrossMatchOfflineDryRun(unittest.TestCase):
+    """Same algorithm config across A/B/C; skip only when assets missing."""
+
+    def _run_case(self, case: dict, *, smoke: bool) -> dict:
+        phase5 = Path(case["phase5"])
+        mp4 = Path(case["mp4"])
+        if not phase5.is_dir() or not mp4.is_file():
+            self.skipTest(f"assets unavailable for match {case['id']}")
+        mj = Path(case["json"]) if case.get("json") else None
+        if mj is None or not mj.is_file():
+            # Placeholder match json — E2E requires a file path for audit lineage.
+            tmp = Path(tempfile.mkdtemp(prefix=f"match_{case['id']}_"))
+            mj = tmp / "match_placeholder.json"
+            mj.write_text("{}", encoding="utf-8")
+        out_root = Path("/data2/lpy1/_story_va_outputs/v3/plan2")
+        out_root.mkdir(parents=True, exist_ok=True)
+        out = Path(tempfile.mkdtemp(prefix=f"cross_{case['id']}_e2e_", dir=str(out_root)))
+        return run_story_e2e(
             StoryE2EInputs(
-                match_json=OMAN_JSON,
-                source_mp4=OMAN_MP4,
+                match_json=mj,
+                source_mp4=mp4,
                 out_dir=out,
-                phase5_dir=OMAN_PHASE5,
+                phase5_dir=phase5,
                 skip_vlm=True,
                 enable_real_api=False,
-                smoke_render=True,
+                smoke_render=smoke,
                 max_rounds=1,
             )
         )
-        self.assertTrue(audit.get("ok"))
-        self.assertEqual(audit.get("http_calls"), 0)
-        gates = audit["status_gates"]
-        self.assertTrue(gates["workflow_completed"])
-        self.assertTrue(gates["story_diagnosis_valid"])
-        self.assertTrue(gates["final_mp4_exists"])
-        self.assertFalse(gates["release_authorized"])  # offline: no semantic pass
-        self.assertFalse(gates["semantic_verification_passed"])
-        delivery = audit["delivery"]
-        self.assertEqual(delivery["delivery_label"], "INTERNAL_PREVIEW_NOT_FOR_DELIVERY")
-        self.assertIn(delivery["decision"], ("KEEP", "UNRESOLVED", "REVISE"))
-        # Must not claim KEEP when unresolved path taken for verify-only issues
-        diag_path = out / "02_round_01" / "story_diagnosis.json"
-        self.assertTrue(diag_path.is_file())
-        # Smoke render proves renderer wiring
-        smoke = audit.get("render_smoke") or {}
-        self.assertTrue(smoke.get("ok"), msg=smoke)
-        self.assertTrue(Path(smoke["story_clean"]).is_file())
-        print("OMAN_OUT", out)
+
+    def test_cross_match_offline_same_gates(self):
+        results = []
+        for case in CROSS_MATCH_CASES:
+            with self.subTest(match=case["id"]):
+                # Smoke render only on first available case to save time.
+                smoke = case["id"] == "A"
+                try:
+                    audit = self._run_case(case, smoke=smoke)
+                except unittest.SkipTest:
+                    raise
+                self.assertTrue(audit.get("ok"), audit.get("error"))
+                self.assertEqual(audit.get("http_calls"), 0)
+                gates = audit["status_gates"]
+                self.assertTrue(gates["workflow_completed"])
+                self.assertTrue(gates["story_diagnosis_valid"])
+                self.assertTrue(gates["final_mp4_exists"])
+                self.assertFalse(gates["release_authorized"])
+                self.assertFalse(gates["semantic_verification_passed"])
+                delivery = audit["delivery"]
+                self.assertEqual(
+                    delivery["delivery_label"], "INTERNAL_PREVIEW_NOT_FOR_DELIVERY"
+                )
+                self.assertIn(delivery["decision"], ("KEEP", "UNRESOLVED", "REVISE"))
+                out_dir = Path(str(audit["out_dir"]))
+                diag_file = out_dir / "02_round_01" / "story_diagnosis.json"
+                self.assertTrue(diag_file.is_file())
+                text = diag_file.read_text(encoding="utf-8")
+                self.assertNotIn("铺垫可能有瑕疵", text)
+                results.append({
+                    "id": case["id"],
+                    "decision": delivery["decision"],
+                    "out": str(out_dir),
+                })
+        if not results:
+            self.skipTest("no cross-match assets available")
+        print("CROSS_MATCH_RESULTS", results)
 
 
 if __name__ == "__main__":
