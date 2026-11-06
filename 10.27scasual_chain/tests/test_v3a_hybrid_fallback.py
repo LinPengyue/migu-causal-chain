@@ -122,10 +122,13 @@ class HybridFallbackUnitTests(unittest.TestCase):
             }]},
             semantic_verification_status="NOT_EVALUATED",
         )
-        self.assertTrue(d["accept"])
-        self.assertEqual(d["path"], "loop_pending_verification")
-        self.assertTrue(d["pending_verification"])
+        # Verifier unevaluated: must NOT promote candidate into best / loop_retain.
+        self.assertFalse(d["accept"])
+        self.assertFalse(d["loop_retain"])
+        self.assertTrue(d.get("pending_proposal_only"))
+        self.assertFalse(d["pending_verification"])
         self.assertFalse(d["release_eligible"])
+        self.assertTrue(any("verifier_unevaluated" in r for r in d["reasons"]))
         rel = decide_release(
             baseline_audit=d and {"hard_gate_findings": []},
             candidate_audit={"hard_gate_findings": [],

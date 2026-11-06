@@ -382,7 +382,15 @@ class PostVlmRevisionOfflineTests(unittest.TestCase):
         far_obs["issue_id"] = "SYN_OFFSET"
         cand2, meta2 = apply_candidate_revision(self.baseline_edl, intents, [far_obs])
         self.assertEqual(edl_rows_sha256(cand2), pre)
-        self.assertTrue(meta2.get("rejected"))
+        self.assertEqual(meta2.get("evidence_bound_count"), 0)
+        self.assertTrue(
+            meta2.get("rejected")
+            or any(
+                a.get("status") == "pending_evidence_slot"
+                for a in (meta2.get("applied") or [])
+            ),
+            meta2,
+        )
 
     def test_D_revision_planner_exceptions_fail_closed(self):
         """D: timeout / bad JSON / missing fields / forged refs → no unverified EDL edit."""

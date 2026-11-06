@@ -92,32 +92,65 @@ def _parse_model_json(content: str) -> Dict[str, Any]:
     return raw
 
 
+# Labels alone never authorize PROPOSE_REPAIR (need concrete observation/frame/segment refs).
+EVIDENCE_LABEL_TOKENS = frozenset({
+    "vlm_observation",
+    "new_vlm_observation",
+    "historical_vlm_observation",
+    "composer_handoff",
+    "composer_evidence_refs",
+    "planner_diagnosis",
+    "trusted_window",
+    "time_provenance",
+    "blocking_reasons",
+})
+
+
 def collect_known_evidence_tokens(
     *,
     observations: Sequence[Mapping[str, Any]],
     historical_observations: Sequence[Mapping[str, Any]] = (),
     composer_handoff: Optional[Mapping[str, Any]] = None,
 ) -> Dict[str, Any]:
-    """Whitelist of evidence tokens Revision Planner may cite."""
-    tokens: set = set()
+    """Whitelist of evidence tokens Revision Planner may cite.
+
+    Concrete tokens: request_id, frame_id, observation:/frame:/edl: prefixes, event ids.
+    Label tokens are informational only and insufficient for PROPOSE_REPAIR.
+    """
+    concrete: set = set()
+    labels: set = set(EVIDENCE_LABEL_TOKENS)
     frame_pts: Dict[str, float] = {}
     request_ids: List[str] = []
+    frame_to_request: Dict[str, str] = {}
+    request_windows: Dict[str, Dict[str, Any]] = {}
+    request_segments: Dict[str, str] = {}
     for obs in list(historical_observations) + list(observations):
         if not isinstance(obs, dict):
             continue
         rid = str(obs.get("request_id") or "")
         if rid:
-            tokens.add(rid)
-            tokens.add(f"observation:{rid}")
+            concrete.add(rid)
+            concrete.add(f"observation:{rid}")
             request_ids.append(rid)
+            if isinstance(obs.get("window"), dict):
+                request_windows[rid] = dict(obs["window"])
+            aid = str(obs.get("anchor_id") or "")
+            if aid.startswith("edl:"):
+                request_segments[rid] = aid[4:]
+                concrete.add(aid)
+            elif obs.get("segment_id"):
+                request_segments[rid] = str(obs.get("segment_id"))
+                concrete.add(f"edl:{obs.get('segment_id')}")
         for fr in obs.get("frames") or []:
             if not isinstance(fr, dict):
                 continue
             fid = str(fr.get("frame_id") or "")
             pts = fr.get("actual_media_sec")
             if fid:
-                tokens.add(fid)
-                tokens.add(f"frame:{fid}")
+                concrete.add(fid)
+                concrete.add(f"frame:{fid}")
+                if rid:
+                    frame_to_request[fid] = rid
                 if pts is not None:
                     try:
                         frame_pts[fid] = float(pts)
@@ -125,35 +158,38 @@ def collect_known_evidence_tokens(
                         pass
         vlm = obs.get("vlm") if isinstance(obs.get("vlm"), dict) else {}
         for cid in vlm.get("cited_frame_ids") or []:
-            tokens.add(str(cid))
-        tokens.add("vlm_observation")
-        tokens.add("new_vlm_observation")
-        tokens.add("historical_vlm_observation")
+            concrete.add(str(cid))
+            concrete.add(f"frame:{cid}")
+            if rid:
+                frame_to_request[str(cid)] = rid
+        if rid:
+            labels.update({"vlm_observation", "new_vlm_observation", "historical_vlm_observation"})
     if composer_handoff and isinstance(composer_handoff, dict):
-        tokens.add("composer_handoff")
-        tokens.add("composer_evidence_refs")
+        labels.update({"composer_handoff", "composer_evidence_refs"})
         for sid, seg in (composer_handoff.get("segments") or {}).items():
-            tokens.add(str(sid))
-            tokens.add(f"edl:{sid}")
+            concrete.add(str(sid))
+            concrete.add(f"edl:{sid}")
             if isinstance(seg, dict):
                 for ref in seg.get("evidence_refs") or []:
                     if isinstance(ref, dict):
                         for k in ("event_id", "source", "kind", "ref"):
                             if ref.get(k):
-                                tokens.add(str(ref[k]))
+                                # event_id / explicit refs are concrete; bare kind labels stay labels
+                                val = str(ref[k])
+                                if k in ("event_id", "ref") or (k == "source" and val):
+                                    concrete.add(val)
                     elif ref:
-                        tokens.add(str(ref))
-    # Always allow structural labels that are not forged timestamps.
-    tokens.update({
-        "planner_diagnosis",
-        "trusted_window",
-        "time_provenance",
-        "blocking_reasons",
-    })
+                        concrete.add(str(ref))
+    tokens = sorted(concrete | labels)
     return {
-        "tokens": sorted(tokens),
+        "tokens": tokens,
+        "concrete_tokens": sorted(concrete),
+        "label_tokens": sorted(labels),
         "frame_pts": frame_pts,
         "request_ids": request_ids,
+        "frame_to_request": frame_to_request,
+        "request_windows": request_windows,
+        "request_segments": request_segments,
     }
 
 
@@ -173,26 +209,68 @@ def _normalize_evidence_ref(ref: Any) -> Optional[str]:
 def _evidence_refs_ok(
     refs: Sequence[Any],
     known: Mapping[str, Any],
+    *,
+    require_concrete: bool = False,
+    require_non_empty: bool = False,
+    target_segment_id: Optional[str] = None,
 ) -> Tuple[bool, List[str]]:
-    tokens = set(known.get("tokens") or [])
+    """Strict evidence ref validation — exact token match only (no fuzzy affix tricks).
+
+    PROPOSE_REPAIR must pass require_concrete=True with at least one concrete
+    observation/frame/segment ref tied to known evidence. KEEP/UNRESOLVED may
+    omit refs (require_non_empty=False).
+    """
+    concrete = set(known.get("concrete_tokens") or [])
+    labels = set(known.get("label_tokens") or EVIDENCE_LABEL_TOKENS)
+    tokens = set(known.get("tokens") or []) | concrete | labels
+    frame_to_request = known.get("frame_to_request") or {}
+    request_segments = known.get("request_segments") or {}
     bad: List[str] = []
-    if not refs:
-        return True, bad
-    for ref in refs:
+    normalized: List[str] = []
+    for ref in refs or []:
         norm = _normalize_evidence_ref(ref)
         if not norm:
             continue
-        # Allow bare observation / frame citations if substring matches a known token.
-        if norm in tokens:
-            continue
-        if any(norm.startswith(t) or t.startswith(norm) or t in norm or norm in t for t in tokens if len(t) >= 6):
-            continue
-        # Reject obvious free PTS inventions like "pts:9999.1" / raw floats as sole ref.
-        if norm.replace(".", "", 1).isdigit() or norm.lower().startswith("pts:"):
+        normalized.append(norm)
+        # Exact membership only — refuse startswith/endswith/substring bypasses.
+        if norm not in tokens:
             bad.append(norm)
             continue
-        bad.append(norm)
-    return (len(bad) == 0), bad
+        # Labels may accompany concrete refs; alone they cannot authorize REPAIR.
+    if require_non_empty and not normalized:
+        return False, ["empty_evidence_refs"]
+    if bad:
+        return False, bad
+    if require_concrete:
+        concrete_hits = [n for n in normalized if n in concrete]
+        if not concrete_hits:
+            return False, ["no_concrete_evidence_ref"]
+        # If a target segment is known, at least one concrete ref must associate to it
+        # via edl:segment, bare segment id, or observation whose anchor maps to it.
+        if target_segment_id:
+            sid = str(target_segment_id)
+            linked = False
+            for n in concrete_hits:
+                if n == sid or n == f"edl:{sid}":
+                    linked = True
+                    break
+                rid = n[len("observation:"):] if n.startswith("observation:") else n
+                if rid in request_segments and request_segments[rid] == sid:
+                    linked = True
+                    break
+                # frame → owning request → segment
+                fid = n[len("frame:"):] if n.startswith("frame:") else n
+                owner = frame_to_request.get(fid) or frame_to_request.get(n)
+                if owner and request_segments.get(owner) == sid:
+                    linked = True
+                    break
+                # request_id itself
+                if n in request_segments and request_segments[n] == sid:
+                    linked = True
+                    break
+            if not linked:
+                return False, [f"evidence_not_linked_to_segment:{sid}"]
+    return True, bad
 
 
 def summarize_observations(observations: Sequence[Mapping[str, Any]]) -> List[Dict[str, Any]]:
@@ -341,14 +419,28 @@ def validate_revision_planner_output(
     top_refs = raw.get("evidence_refs")
     if not isinstance(top_refs, list):
         top_refs = []
-    refs_ok, bad_top = _evidence_refs_ok(top_refs, known_evidence)
-    if not refs_ok:
-        raise ValueError(f"forged_or_unknown_evidence_refs:{bad_top[:5]}")
+    # KEEP / UNRESOLVED: empty refs OK (no EDL edit). Non-empty still exact-match.
+    # PROPOSE_REPAIR: non-empty concrete refs required and segment-linked when possible.
+    if decision == DECISION_PROPOSE_REPAIR:
+        refs_ok, bad_top = _evidence_refs_ok(
+            top_refs,
+            known_evidence,
+            require_concrete=True,
+            require_non_empty=True,
+            target_segment_id=str(target) if target else None,
+        )
+        if not refs_ok:
+            raise ValueError(f"forged_or_unknown_evidence_refs:{bad_top[:5]}")
+    elif top_refs:
+        refs_ok, bad_top = _evidence_refs_ok(
+            top_refs, known_evidence, require_concrete=False, require_non_empty=False,
+        )
+        if not refs_ok:
+            raise ValueError(f"forged_or_unknown_evidence_refs:{bad_top[:5]}")
 
     # Reject free PTS fields on the root object.
     for banned in ("media_in", "media_out", "invented_pts", "free_pts"):
         if banned in raw and raw.get(banned) is not None and decision == DECISION_PROPOSE_REPAIR:
-            # Allow only inside intents that go through validate_planner_output windows.
             if banned in ("invented_pts", "free_pts"):
                 raise ValueError(f"forbidden_free_pts_field:{banned}")
 
@@ -416,7 +508,14 @@ def validate_revision_planner_output(
                     "(trim|replace|search_add|drop|reorder)"
                 )
             refs = it.get("evidence_refs") if isinstance(it.get("evidence_refs"), list) else []
-            ok, bad = _evidence_refs_ok(refs or top_refs, known_evidence)
+            intent_target = it.get("target_segment_id") or target
+            ok, bad = _evidence_refs_ok(
+                refs if refs else top_refs,
+                known_evidence,
+                require_concrete=True,
+                require_non_empty=True,
+                target_segment_id=str(intent_target) if intent_target else None,
+            )
             if not ok:
                 raise ValueError(f"repair_intent_unknown_evidence:{bad[:5]}")
             # Reject invented absolute media times on the intent itself.

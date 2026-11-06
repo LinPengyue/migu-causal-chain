@@ -188,8 +188,11 @@ class ApiDegradeAndUnknownTests(unittest.TestCase):
             baseline_edl=edl, candidate_edl=cand,
             semantic_verification_status="NOT_EVALUATED",
         )
-        self.assertTrue(d["accept"], d["reasons"])
+        # Safety fix: API Verifier 502 must not promote soft/evidence edits into best.
+        self.assertFalse(d["accept"], d["reasons"])
+        self.assertTrue(d.get("pending_proposal_only"), d["reasons"])
         self.assertIn("api_verifier_degraded_rule_track_active", d["reasons"])
+        self.assertIn("verifier_unevaluated_refuse_best_update", d["reasons"])
         self.assertFalse(d["release_eligible"])
 
     def test_unknown_not_zero_or_round_fail(self):
@@ -297,9 +300,11 @@ class SevereAndReleaseTests(unittest.TestCase):
             revision_meta=meta, baseline_edl=edl, candidate_edl=cand,
             semantic_verification_status="NOT_EVALUATED",
         )
-        self.assertTrue(d["accept"], d["reasons"])
-        self.assertEqual(d["path"], "loop_pending_verification")
-        self.assertTrue(d["pending_verification"])
+        # Safety: unevaluated Verifier cannot update best via loop_pending_verification.
+        self.assertFalse(d["accept"], d["reasons"])
+        self.assertFalse(d["loop_retain"])
+        self.assertTrue(d.get("pending_proposal_only"))
+        self.assertFalse(d["pending_verification"])
         self.assertFalse(d["release_eligible"])
 
         rel = decide_release(

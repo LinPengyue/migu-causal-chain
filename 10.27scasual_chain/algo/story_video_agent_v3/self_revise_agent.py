@@ -2157,6 +2157,153 @@ def run_vlm_observations(
     }
 
 
+def _observation_matches_trim_target(
+    obs: Mapping[str, Any],
+    *,
+    intent: Mapping[str, Any],
+    segment_id: str,
+    media_in: float,
+    media_out: float,
+) -> bool:
+    """Observation must correspond to the target segment / issue / time window."""
+    sid = str(segment_id)
+    issue = intent.get("issue_id")
+    if issue is not None and obs.get("issue_id") not in (None, issue):
+        # Different explicit issue → not a match
+        if obs.get("issue_id") != issue:
+            return False
+    aid = str(obs.get("anchor_id") or "")
+    if sid and (aid == f"edl:{sid}" or aid.endswith(sid) or obs.get("segment_id") == sid):
+        return True
+    if issue is not None and obs.get("issue_id") == issue:
+        win = obs.get("window") if isinstance(obs.get("window"), dict) else {}
+        ws, we = _num(win.get("start")), _num(win.get("end"))
+        if ws is not None and we is not None:
+            # Window must overlap the segment
+            if we >= media_in - 1e-3 and ws <= media_out + 1e-3:
+                return True
+        else:
+            return True
+    # Frame PTS cluster inside segment also links observation to target window
+    pts = [_frame_pts(f) for f in (obs.get("frames") or [])]
+    pts = [p for p in pts if p is not None]
+    if pts and all(media_in - 1e-3 <= p <= media_out + 1e-3 for p in pts):
+        if issue is None or obs.get("issue_id") in (None, issue):
+            return True
+    return False
+
+
+def evaluate_trim_bounds(
+    *,
+    intent: Mapping[str, Any],
+    row: Mapping[str, Any],
+    observations: Sequence[Mapping[str, Any]],
+) -> Dict[str, Any]:
+    """Safe trim bounds from linked observations — never min/max of sparse frames alone.
+
+    Requires: observation↔segment/issue/window link; non-replay for goal_action;
+    explicit candidate_goal_action_span with shot+net support that is meaningfully
+    tighter than the segment. Otherwise pending/unresolved (no forced trim).
+    FIRST_LIVE remains NOT_VERIFIED; caller must not set render_ready.
+    """
+    sid = str(row.get("segment_id") or intent.get("target_segment_id") or "")
+    role = str(row.get("role") or "")
+    mi, mo = _num(row.get("media_in")), _num(row.get("media_out"))
+    if mi is None or mo is None or mo <= mi:
+        return {"ok": False, "status": "rejected", "reason": "segment_missing_media_bounds"}
+    matched = [
+        o for o in observations
+        if o.get("ok") and _observation_matches_trim_target(
+            o, intent=intent, segment_id=sid, media_in=float(mi), media_out=float(mo),
+        )
+    ]
+    if not matched:
+        return {
+            "ok": False,
+            "status": "pending_evidence_slot",
+            "reason": "no_observation_linked_to_target_segment_issue_or_window",
+        }
+    # Prefer the strongest non-replay observation with an explicit action span.
+    for o in matched:
+        vlm = o.get("vlm") if isinstance(o.get("vlm"), dict) else {}
+        live_rep = str(vlm.get("live_or_replay") or "").strip().lower()
+        if live_rep == "replay":
+            if "goal_action" in role or "goal_action" in sid:
+                return {
+                    "ok": False,
+                    "status": "rejected",
+                    "reason": "replay_observation_cannot_trim_first_live_goal",
+                    "observation_ref": o.get("request_id"),
+                }
+            continue
+        if vlm.get("scoreboard_only") is True:
+            continue
+        span = vlm.get("candidate_goal_action_span")
+        if not isinstance(span, dict):
+            continue
+        lo, hi = _num(span.get("start")), _num(span.get("end"))
+        if lo is None or hi is None or hi - lo < MIN_BOUND_SPAN:
+            continue
+        # Span must sit inside the existing segment (trim cannot invent outside times).
+        if lo < mi - 1e-3 or hi > mo + 1e-3:
+            continue
+        seg_span = float(mo) - float(mi)
+        new_span = float(hi) - float(lo)
+        # Sparse 4-frame min/max often yields a near-full window; refuse non-informative trim.
+        if seg_span > 1e-6 and new_span >= 0.85 * seg_span:
+            continue
+        shot_ok = vlm.get("observed_shot") is True
+        net_ok = vlm.get("observed_net") is True
+        if not (shot_ok and net_ok):
+            continue
+        # Require at least one PTS inside the proposed span (boundary grounded in frames).
+        pts = [_frame_pts(f) for f in (o.get("frames") or [])]
+        pts = [p for p in pts if p is not None]
+        pts_in_span = [p for p in pts if lo - 1e-3 <= p <= hi + 1e-3]
+        if len(pts_in_span) < 2:
+            continue
+        # Pad slightly but stay inside original segment.
+        new_in = max(float(mi), float(lo) - 0.5)
+        new_out = min(float(mo), float(hi) + 0.5)
+        if new_out - new_in < MIN_BOUND_SPAN:
+            continue
+        if abs(new_in - float(mi)) < 1e-3 and abs(new_out - float(mo)) < 1e-3:
+            continue
+        return {
+            "ok": True,
+            "status": "applied_evidence_bound",
+            "media_in": round(new_in, 3),
+            "media_out": round(new_out, 3),
+            "observation_ref": o.get("request_id"),
+            "first_live_status": "NOT_VERIFIED",
+            "trim_basis": "candidate_goal_action_span_with_shot_net",
+            "note": (
+                "Trim uses explicit VLM action span + shot/net; "
+                "not sparse frame min/max alone; FIRST_LIVE still NOT_VERIFIED."
+            ),
+        }
+    # No safe span-based trim — refuse min/max PTS auto-trim.
+    if any(
+        str((o.get("vlm") or {}).get("live_or_replay") or "").lower() == "replay"
+        for o in matched
+        if isinstance(o.get("vlm"), dict)
+    ) and ("goal_action" in role or "goal_action" in sid):
+        return {
+            "ok": False,
+            "status": "rejected",
+            "reason": "replay_observation_cannot_trim_first_live_goal",
+        }
+    return {
+        "ok": False,
+        "status": "pending_evidence_slot",
+        "reason": "insufficient_action_boundary_evidence_refuse_minmax_pts_trim",
+        "note": (
+            "Need linked observation with shot+net and a candidate_goal_action_span "
+            "meaningfully tighter than the segment; sparse frame min/max is not enough."
+        ),
+    }
+
+
 def apply_candidate_revision(
     baseline_edl: Sequence[Dict[str, Any]],
     intents: Sequence[Mapping[str, Any]],
@@ -2199,32 +2346,41 @@ def apply_candidate_revision(
                 rejected.append({"intent": it.get("intent_id"), "reason": "missing_segment"})
             continue
         if action == "trim" and sid and sid in by_id:
-            frames = []
-            for o in obs_ok:
-                if o.get("issue_id") == it.get("issue_id"):
-                    frames.extend(o.get("frames") or [])
-            pts = [_frame_pts(f) for f in frames]
-            pts = [p for p in pts if p is not None]
             row = edl[by_id[sid]]
-            mi, mo = _num(row.get("media_in")), _num(row.get("media_out"))
-            if mi is None or mo is None or not pts:
-                rejected.append({"intent": it.get("intent_id"), "reason": "no_pts_for_trim"})
+            trim_eval = evaluate_trim_bounds(
+                intent=it, row=row, observations=obs_ok,
+            )
+            if not trim_eval.get("ok"):
+                status = str(trim_eval.get("status") or "rejected")
+                if status == "pending_evidence_slot":
+                    applied.append({
+                        "intent": it.get("intent_id"),
+                        "action": "trim",
+                        "segment_id": sid,
+                        "status": "pending_evidence_slot",
+                        "bind_failure": trim_eval,
+                        "note": trim_eval.get("reason"),
+                        "first_live_status": "NOT_VERIFIED",
+                    })
+                else:
+                    rejected.append({
+                        "intent": it.get("intent_id"),
+                        "reason": trim_eval.get("reason") or "trim_rejected",
+                        "detail": trim_eval,
+                    })
                 continue
-            lo, hi = min(pts), max(pts)
-            if not (mi - 1e-3 <= lo <= mo + 1e-3 and mi - 1e-3 <= hi <= mo + 1e-3):
-                rejected.append({"intent": it.get("intent_id"), "reason": "pts_outside_segment"})
-                continue
-            new_in = max(mi, lo - 1.0)
-            new_out = min(mo, hi + 1.0)
-            if new_out - new_in < MIN_BOUND_SPAN:
-                rejected.append({"intent": it.get("intent_id"), "reason": "trim_too_short"})
-                continue
-            row["media_in"], row["media_out"] = round(new_in, 3), round(new_out, 3)
+            row["media_in"] = trim_eval["media_in"]
+            row["media_out"] = trim_eval["media_out"]
             row["agent_trim"] = True
+            row["first_live_status"] = "NOT_VERIFIED"
+            row["agent_auto_verified"] = False
             applied.append({
                 "intent": it.get("intent_id"), "action": "trim", "segment_id": sid,
                 "status": "applied_evidence_bound",
                 "media_in": row["media_in"], "media_out": row["media_out"],
+                "observation_ref": trim_eval.get("observation_ref"),
+                "trim_basis": trim_eval.get("trim_basis"),
+                "first_live_status": "NOT_VERIFIED",
             })
             continue
         if action in ("search_add", "replace"):
@@ -2455,7 +2611,13 @@ def decide_accept(
     path: Optional[str] = None
     accept = False
     pending_verification = False
+    pending_proposal_only = False
     release_eligible = False
+    # API failure or unevaluated semantics must never promote a candidate into best EDL.
+    verifier_unevaluated = (not api_ok) or str(sem) in (
+        "NOT_EVALUATED", "UNKNOWN", "DEGRADED",
+    )
+    quality_delta_l = str(validated.get("quality_delta_vs_baseline") or "").strip().lower()
 
     # Confirmed model hard vetoes always block
     if validated.get("hard_vetoes"):
@@ -2469,6 +2631,7 @@ def decide_accept(
             "candidate_p0": cand_p0,
             "pending_only": pending_only,
             "pending_verification": False,
+            "pending_proposal_only": False,
             "release_eligible": False,
             "hard_vetoes": validated.get("hard_vetoes"),
             "semantic_verification_status": sem,
@@ -2497,7 +2660,8 @@ def decide_accept(
 
     if not api_ok:
         reasons.append("api_verifier_degraded_rule_track_active")
-        # Do not fail the round solely because API Verifier 502'd.
+        # Degraded API must not promote evidence-bound candidates into best EDL
+        # (see verifier_unevaluated gate below). Research copy may be saved separately.
 
     if pending_only or (not evidence_bound and not soft_applied and not pending_slots):
         if not evidence_bound and not soft_applied:
@@ -2511,6 +2675,7 @@ def decide_accept(
                 "candidate_p0": cand_p0,
                 "pending_only": True,
                 "pending_verification": False,
+                "pending_proposal_only": False,
                 "release_eligible": False,
                 "semantic_verification_status": sem,
                 "gate": "loop",
@@ -2600,15 +2765,44 @@ def decide_accept(
             "coherence_baseline": coh_b,
             "coherence_candidate": coh_c,
             "pending_verification": False,
+            "pending_proposal_only": False,
             "release_eligible": False,
             "semantic_verification_status": sem,
             "gate": "loop",
             "verifier_self_score_alone_insufficient": True,
         }
 
-    # Unverified goal binds: keep as pending proposal for next rounds; not release-ready.
+    # Explicit Verifier quality regression (no extra P0 hard gate required).
+    if api_ok and quality_delta_l in ("regressed", "worse", "degraded", "declined"):
+        reasons.append("verifier_quality_delta_regressed")
+        return {
+            "accept": False,
+            "loop_retain": False,
+            "path": None,
+            "reasons": reasons,
+            "baseline_p0": base_p0,
+            "candidate_p0": cand_p0,
+            "pending_verification": False,
+            "pending_proposal_only": False,
+            "release_eligible": False,
+            "semantic_verification_status": sem,
+            "model_quality_delta": str(validated.get("quality_delta_vs_baseline") or ""),
+            "gate": "loop",
+            "verifier_self_score_alone_insufficient": True,
+        }
+
+    # Unverified goal binds with evaluated verifier may still be research-only.
+    # Verifier API failure / NOT_EVALUATED must NOT update best via loop_pending_verification.
     if goal_binds and sem not in ("PASSED",):
-        if structural_improve or p0_reduced or evidence_bound:
+        if verifier_unevaluated and (structural_improve or p0_reduced or evidence_bound):
+            accept = False
+            pending_verification = False
+            pending_proposal_only = True
+            path = None
+            reasons.append("verifier_unevaluated_refuse_best_update")
+            reasons.append("pending_proposal_only_not_accepted_edl")
+            reasons.append("not_release_ready_until_semantic_verification")
+        elif structural_improve or p0_reduced or evidence_bound:
             accept = True
             pending_verification = True
             path = "loop_pending_verification"
@@ -2675,12 +2869,23 @@ def decide_accept(
             path = None
             reasons.append("refuse_accept_duplicate_goal_cuts")
 
+    # Hard safety: Verifier API failure / NOT_EVALUATED never updates best EDL.
+    # Evidence-bound or soft edits may be archived as research pending proposals only.
+    if accept and verifier_unevaluated and (evidence_bound or soft_applied):
+        accept = False
+        pending_verification = False
+        pending_proposal_only = True
+        path = None
+        reasons.append("verifier_unevaluated_refuse_best_update")
+        reasons.append("pending_proposal_only_not_accepted_edl")
+
     scores = composite_quality_score(candidate_audit, verifier_validated=validated)
     meets_threshold = (
         scores.get("composite") is not None
         and float(scores["composite"]) >= float(quality_threshold)
         and not cand_severe
         and not pending_verification
+        and not pending_proposal_only
     )
 
     return {
@@ -2697,6 +2902,7 @@ def decide_accept(
         "model_quality_delta": str(validated.get("quality_delta_vs_baseline") or ""),
         "pending_only": pending_only,
         "pending_verification": bool(pending_verification),
+        "pending_proposal_only": bool(pending_proposal_only),
         "release_eligible": bool(release_eligible),
         "meets_quality_threshold": bool(meets_threshold),
         "quality_threshold": float(quality_threshold),
@@ -2711,6 +2917,7 @@ def decide_accept(
         "verifier_self_score_alone_insufficient": True,
         "note": (
             "Loop retain != final release. Unverified goals stay pending. "
+            "Verifier unevaluated → pending_proposal_only, never best EDL. "
             f"Threshold {quality_threshold} is experimental, not calibrated."
         ),
     }
@@ -3516,7 +3723,31 @@ def run_self_revise(
             }
             agent_success = True
         else:
+            # Rejected / unevaluated: never promote candidate into best.
             current_edl = copy.deepcopy(best["edl"])
+            if decision.get("pending_proposal_only") and (
+                rev_meta.get("evidence_bound_count") or rev_meta.get("applied")
+            ):
+                # Research archive only — not accepted EDL, not FIRST_LIVE, not render_ready.
+                pending_blob = {
+                    "schema": "v3a_pending_proposal_v1",
+                    "round": r,
+                    "not_accepted_edl": True,
+                    "not_first_live_verified": True,
+                    "render_ready": False,
+                    "reason": decision.get("reasons"),
+                    "pre_revision_edl_sha256": pre_revision_edl_sha,
+                    "candidate_edl_sha256": edl_rows_sha256(cand_edl),
+                    "revision_meta": rev_meta,
+                    "accept_decision": decision,
+                    "candidate_edl": cand_edl,
+                }
+                (round_dir / "pending_proposal.json").write_text(
+                    json.dumps(pending_blob, ensure_ascii=False, indent=2) + "\n",
+                    encoding="utf-8",
+                )
+                round_rec["pending_proposal_saved"] = True
+                round_rec["pending_proposal_not_best"] = True
 
         # Feed next round: diagnoses, verifier issues, unresolved, accept reasons
         prior_round_feedback = {
