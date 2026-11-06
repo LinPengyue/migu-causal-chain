@@ -24,7 +24,10 @@
 
 **目标段：** `seg_opponent_opening_goal_action`  
 **输入 Phase5：** fresh E2E `05_v3a/_baseline_phase5`（`prefer_p1_polish=false`）  
-**历史观察：** `A_vlm_smoke_20261105_210200/observation.json`（校验视频 SHA、PTS、frame_id 引用；标记 `historical_reuse`，**不计新 HTTP**，**不认证 FIRST_LIVE**）
+**历史观察：** `A_vlm_smoke_20261105_210200/observation.json`  
+`--seed-observations` 真实入口经 `load_seed_observations_for_run` **fail-closed** 校验：比赛视频 SHA、PTS、`cited_frame_ids`、目标 segment；仅有 `historical_reuse=true` **拒绝**。通过后标记 `provenance_validated`，**不计新 HTTP**，**不认证 FIRST_LIVE**。
+
+**INSPECT 抽帧（仅 one-round）：** 围绕 Composer `linked_live_goal_event`（约 1337.123s）偏置采样，并避开历史 Qwen PTS（≥1.5s）；事件时间**不是**视觉已验证进球时间。通用 `FrameStore.sample_times` 默认不变。
 
 ### 预算硬限制（代码强制）
 

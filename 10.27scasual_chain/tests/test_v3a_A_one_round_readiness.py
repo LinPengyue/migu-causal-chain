@@ -9,11 +9,14 @@ from pathlib import Path
 from story_video_agent_v3.one_round_opening_budget import (
     ONE_ROUND_MAX_HTTP,
     OPENING_SEGMENT_ID,
+    build_one_round_frame_plan_from_edl,
     build_one_round_preflight,
     enforce_provider_one_round_budget,
     evidence_gap_for_opening,
     filter_tools_to_focus,
     load_and_validate_historical_observation,
+    load_seed_observations_for_run,
+    plan_one_round_inspect_sample_times,
 )
 from story_video_agent_v3.self_revise_agent import decide_accept
 from story_video_agent.api_provider import ApiProvider
@@ -53,6 +56,11 @@ class OneRoundReadinessTests(unittest.TestCase):
             self.assertEqual(report["budget"]["max_http_attempts"], ONE_ROUND_MAX_HTTP)
             self.assertTrue((out / "one_round_preflight.json").is_file())
             self.assertTrue((out / "planner_context_preview.json").is_file())
+            self.assertTrue((out / "seed_observation_validation.json").is_file())
+            self.assertTrue((out / "one_round_frame_sample_plan.json").is_file())
+            self.assertTrue(report["checks"]["seed_video_sha_validated"])
+            self.assertTrue(report["checks"]["frame_plan_avoids_historical_pts"])
+            self.assertTrue(report["checks"]["frame_plan_uses_linked_goal_bias"])
             ctx = json.loads((out / "planner_context_preview.json").read_text(encoding="utf-8"))
             self.assertIn("composer_evidence_handoff", ctx)
             self.assertIn(
@@ -114,6 +122,74 @@ class OneRoundReadinessTests(unittest.TestCase):
         )
         self.assertFalse(d["accept"])
         self.assertIn("no_evidence_bound_or_safe_edit", d.get("reasons") or [])
+
+    def test_seed_validation_fail_closed_without_sha(self):
+        with self.assertRaises(ValueError) as ctx:
+            load_and_validate_historical_observation(
+                OBS, summary_path=SUMMARY, expected_video_sha256=None,
+            )
+        self.assertIn("fail_closed", str(ctx.exception))
+
+    def test_seed_validation_fail_closed_on_sha_mismatch(self):
+        with self.assertRaises(ValueError) as ctx:
+            load_and_validate_historical_observation(
+                OBS, summary_path=SUMMARY, expected_video_sha256="0" * 64,
+            )
+        self.assertIn("fail_closed", str(ctx.exception))
+
+    def test_seed_runtime_entry_validates_against_fresh_manifest(self):
+        phase5 = FRESH / "05_v3a/_baseline_phase5"
+        packed = load_seed_observations_for_run(
+            OBS, phase5_dir=phase5, summary_path=SUMMARY,
+        )
+        self.assertTrue(packed["observations"][0]["provenance_validated"])
+        self.assertEqual(packed["provenance"]["validation_status"], "PASSED")
+        self.assertTrue(packed["provenance"]["video_sha_match"])
+
+    def test_frame_plan_biases_linked_goal_and_avoids_hist_pts(self):
+        edl = json.loads(
+            (FRESH / "05_v3a/_baseline_phase5/candidate_edl.json").read_text(encoding="utf-8")
+        )
+        packed = load_and_validate_historical_observation(
+            OBS,
+            summary_path=SUMMARY,
+            expected_video_sha256=json.loads(
+                (FRESH / "00_input_manifest.json").read_text(encoding="utf-8")
+            )["sources"]["video"]["sha256"],
+        )
+        plan = build_one_round_frame_plan_from_edl(
+            edl, seed_provenance=packed["provenance"],
+        )
+        self.assertTrue(plan["event_time_is_not_visual_verification"])
+        self.assertAlmostEqual(plan["linked_goal_t_sec"], 1337.123, places=3)
+        self.assertEqual(len(plan["sample_times"]), 4)
+        for t in plan["sample_times"]:
+            for a in packed["provenance"]["historical_actual_pts"]:
+                self.assertGreaterEqual(abs(t - a), 1.5)
+            self.assertGreaterEqual(t, 1325.123)
+            self.assertLessEqual(t, 1347.123)
+
+    def test_historical_reuse_flag_alone_rejected(self):
+        with tempfile.TemporaryDirectory() as td:
+            fake = Path(td) / "obs.json"
+            fake.write_text(
+                json.dumps({"historical_reuse": True, "anchor_id": f"edl:{OPENING_SEGMENT_ID}"}),
+                encoding="utf-8",
+            )
+            with self.assertRaises(ValueError) as ctx:
+                load_and_validate_historical_observation(
+                    fake, summary_path=SUMMARY, expected_video_sha256="abc",
+                )
+            self.assertIn("fail_closed", str(ctx.exception))
+
+    def test_uniform_default_sampler_unchanged_without_override(self):
+        # Sanity: one-round planner is separate from generic equal-space sampler.
+        plan = plan_one_round_inspect_sample_times(
+            media_in=100.0, media_out=120.0, linked_goal_t_sec=110.0,
+            avoid_pts=[105.0, 115.0], count=4,
+        )
+        self.assertIn("linked_live_goal_event_biased", plan["strategy"])
+        self.assertTrue(plan["event_time_is_not_visual_verification"])
 
 
 if __name__ == "__main__":

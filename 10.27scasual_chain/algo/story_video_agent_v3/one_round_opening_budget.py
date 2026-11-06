@@ -78,6 +78,33 @@ def resolve_one_round_paths(
     }
 
 
+def find_expected_video_sha256(start_dir: Path) -> Optional[str]:
+    """Walk parents for 00_input_manifest.json video sha (fail-closed if absent)."""
+    cur = Path(start_dir).resolve()
+    for _ in range(8):
+        man = cur / "00_input_manifest.json"
+        if man.is_file():
+            video = ((_load_json(man).get("sources") or {}).get("video") or {})
+            sha = video.get("sha256")
+            if isinstance(sha, str) and len(sha) >= 32:
+                return sha
+        if cur.parent == cur:
+            break
+        cur = cur.parent
+    return None
+
+
+def resolve_seed_summary_path(
+    obs_path: Path,
+    *,
+    summary_path: Optional[Path] = None,
+) -> Optional[Path]:
+    if summary_path is not None:
+        return Path(summary_path)
+    sibling = Path(obs_path).resolve().parent / "vlm_smoke_summary.json"
+    return sibling if sibling.is_file() else None
+
+
 def load_and_validate_historical_observation(
     obs_path: Path,
     *,
@@ -85,15 +112,38 @@ def load_and_validate_historical_observation(
     expected_video_sha256: Optional[str] = None,
     focus_segment_id: str = OPENING_SEGMENT_ID,
 ) -> Dict[str, Any]:
-    """Load prior Qwen observation; mark as historical reuse, never as new HTTP / FIRST_LIVE."""
+    """Load prior Qwen observation with fail-closed provenance checks.
+
+    historical_reuse=true alone is NEVER sufficient: video SHA, PTS, frame_id
+    citations, and target segment must all verify.
+    """
     if not obs_path.is_file():
         raise FileNotFoundError(f"historical observation missing: {obs_path}")
+    if not expected_video_sha256 or not isinstance(expected_video_sha256, str):
+        raise ValueError(
+            "fail_closed: expected_video_sha256 required for --seed-observations "
+            "(cannot accept historical_reuse without match-video SHA)"
+        )
+    resolved_summary = resolve_seed_summary_path(obs_path, summary_path=summary_path)
+    if resolved_summary is None or not resolved_summary.is_file():
+        raise ValueError(
+            "fail_closed: seed observation summary (vlm_smoke_summary.json) required "
+            "to verify video SHA provenance"
+        )
     obs = _load_json(obs_path)
-    summary = _load_json(summary_path) if summary_path and summary_path.is_file() else {}
+    summary = _load_json(resolved_summary)
+    # Refuse accepting a pre-flagged reuse blob that skipped validation.
+    if obs.get("historical_reuse") and not obs.get("frames"):
+        raise ValueError("fail_closed: historical_reuse flag without frames is rejected")
     anchor = str(obs.get("anchor_id") or "")
     if focus_segment_id not in anchor and obs.get("segment_id") != focus_segment_id:
-        raise ValueError(f"observation anchor {anchor!r} is not {focus_segment_id}")
+        raise ValueError(
+            f"fail_closed: observation anchor {anchor!r} is not focus segment "
+            f"{focus_segment_id!r}"
+        )
     frames = obs.get("frames") if isinstance(obs.get("frames"), list) else []
+    if not frames:
+        raise ValueError("fail_closed: seed observation has no frames")
     pts_ok = all(
         isinstance(f, dict)
         and f.get("pts_status") == "pts"
@@ -108,12 +158,19 @@ def load_and_validate_historical_observation(
     video_sha = None
     if isinstance(summary.get("video"), dict):
         video_sha = summary["video"].get("sha256_from_prior_manifest")
-    sha_match = None
-    if expected_video_sha256 and video_sha:
-        sha_match = expected_video_sha256 == video_sha
+    if not video_sha:
+        raise ValueError(
+            "fail_closed: summary missing video.sha256_from_prior_manifest"
+        )
+    sha_match = expected_video_sha256 == video_sha
+    hist_pts = sorted({
+        float(f["actual_media_sec"])
+        for f in frames
+        if isinstance(f, dict) and f.get("actual_media_sec") is not None
+    })
     provenance = {
         "source_path": str(obs_path),
-        "summary_path": str(summary_path) if summary_path else None,
+        "summary_path": str(resolved_summary),
         "provider_mode_recorded": obs.get("provider_mode"),
         "model": obs.get("model"),
         "real_http_from_smoke": bool(summary.get("real_http_attempts")),
@@ -127,27 +184,189 @@ def load_and_validate_historical_observation(
         "citations_ok": citations_ok,
         "frame_count": len(frames),
         "cited_frame_ids": cited,
+        "historical_actual_pts": hist_pts,
+        "focus_segment_id": focus_segment_id,
         "observed_shot": vlm.get("observed_shot"),
         "observed_net": vlm.get("observed_net"),
         "live_or_replay": vlm.get("live_or_replay"),
         "fact_verified": bool(obs.get("fact_verified") or vlm.get("fact_verified")),
         "observation_only": True,
+        "validation_status": "PASSED" if (pts_ok and citations_ok and sha_match) else "FAILED",
     }
     if not pts_ok or not citations_ok:
-        raise ValueError(f"historical observation failed PTS/citation checks: {provenance}")
-    if expected_video_sha256 and video_sha and sha_match is False:
-        raise ValueError("historical observation video SHA does not match fresh-run manifest")
+        raise ValueError(f"fail_closed: PTS/citation checks failed: {provenance}")
+    if not sha_match:
+        raise ValueError(
+            "fail_closed: historical observation video SHA does not match expected "
+            f"match video ({video_sha} != {expected_video_sha256})"
+        )
     seeded = dict(obs)
     seeded["historical_reuse"] = True
     seeded["counts_as_new_http"] = False
     seeded["fact_verified"] = False
     seeded["observation_only"] = True
+    seeded["provenance_validated"] = True
     if isinstance(seeded.get("vlm"), dict):
         seeded["vlm"] = dict(seeded["vlm"])
         seeded["vlm"]["fact_verified"] = False
         seeded["vlm"]["observation_only"] = True
         seeded["vlm"]["cannot_certify_first_live"] = True
     return {"observation": seeded, "provenance": provenance}
+
+
+def plan_one_round_inspect_sample_times(
+    *,
+    media_in: float,
+    media_out: float,
+    linked_goal_t_sec: Optional[float],
+    time_provenance_source: Optional[str] = None,
+    avoid_pts: Optional[Sequence[float]] = None,
+    count: int = 4,
+    min_separation_sec: float = 1.5,
+) -> Dict[str, Any]:
+    """One-round-only frame plan: bias to composer linked_live_goal_event, avoid hist PTS.
+
+    linked_goal_t_sec is an event-association anchor from Rule Composer — NOT visual
+    first-LIVE verification of the goal action.
+    """
+    lo, hi = float(media_in), float(media_out)
+    if hi <= lo:
+        raise ValueError(f"invalid media window [{lo}, {hi}]")
+    avoid = [float(x) for x in (avoid_pts or [])]
+    note = (
+        "Composer linked_live_goal_event timestamp is event association only; "
+        "it is NOT a visually verified goal-action time / FIRST_LIVE proof."
+    )
+    # Candidate offsets around the linked event (seconds).
+    if linked_goal_t_sec is not None:
+        center = float(linked_goal_t_sec)
+        raw_candidates = [
+            center - 5.0, center - 2.5, center - 0.8, center + 0.6, center + 2.0,
+            (lo + hi) / 2.0, lo + 0.4 * (hi - lo), lo + 0.7 * (hi - lo),
+        ]
+        anchor_used = center
+        strategy = "linked_live_goal_event_biased_avoid_historical_pts"
+    else:
+        raw_candidates = [
+            lo + f * (hi - lo) for f in (0.15, 0.35, 0.55, 0.75, 0.9)
+        ]
+        anchor_used = None
+        strategy = "media_window_fallback_avoid_historical_pts"
+    clipped: List[float] = []
+    for t in raw_candidates:
+        tt = min(max(float(t), lo + 0.05), hi - 0.05)
+        clipped.append(round(tt, 3))
+    selected: List[float] = []
+    rejected: List[Dict[str, Any]] = []
+    for t in clipped:
+        if any(abs(t - a) < min_separation_sec for a in avoid):
+            rejected.append({"t": t, "reason": "too_close_to_historical_pts"})
+            continue
+        if any(abs(t - s) < 0.35 for s in selected):
+            rejected.append({"t": t, "reason": "duplicate_within_plan"})
+            continue
+        selected.append(t)
+        if len(selected) >= count:
+            break
+    # If still short, fill from dense grid while avoiding hist PTS.
+    if len(selected) < count:
+        steps = max(count * 4, 12)
+        for i in range(steps):
+            t = round(lo + (i + 0.5) * (hi - lo) / steps, 3)
+            if any(abs(t - a) < min_separation_sec for a in avoid):
+                continue
+            if any(abs(t - s) < 0.35 for s in selected):
+                continue
+            selected.append(t)
+            if len(selected) >= count:
+                break
+    if not selected:
+        raise ValueError(
+            "fail_closed: could not plan inspect sample times without colliding "
+            "historical PTS inside the composer media window"
+        )
+    return {
+        "schema": "v3a_one_round_frame_sample_plan_v1",
+        "strategy": strategy,
+        "media_in": lo,
+        "media_out": hi,
+        "linked_goal_t_sec": linked_goal_t_sec,
+        "time_provenance_source": time_provenance_source,
+        "anchor_used_for_bias": anchor_used,
+        "avoid_historical_pts": avoid,
+        "min_separation_sec": min_separation_sec,
+        "sample_times": selected[:count],
+        "rejected_candidates": rejected[:12],
+        "event_time_is_not_visual_verification": True,
+        "note": note,
+    }
+
+
+def build_one_round_frame_plan_from_edl(
+    edl: Sequence[Mapping[str, Any]],
+    *,
+    seed_provenance: Mapping[str, Any],
+    focus_segment_id: str = OPENING_SEGMENT_ID,
+    count: int = 4,
+) -> Dict[str, Any]:
+    row = next(
+        (
+            r for r in edl
+            if isinstance(r, dict)
+            and (
+                r.get("segment_id") == focus_segment_id
+                or r.get("role") == "opponent_opening_goal_action"
+            )
+        ),
+        None,
+    )
+    if row is None:
+        raise ValueError(f"focus segment {focus_segment_id} missing from EDL")
+    mi, mo = row.get("media_in"), row.get("media_out")
+    if mi is None or mo is None:
+        raise ValueError("focus segment missing media_in/out")
+    tp = row.get("time_provenance") if isinstance(row.get("time_provenance"), dict) else {}
+    src = str(tp.get("source") or "")
+    linked_t = tp.get("t_sec") if src == "linked_live_goal_event" else tp.get("t_sec")
+    # Prefer explicit linked_live_goal_event; still pass t_sec with warning if other source.
+    plan = plan_one_round_inspect_sample_times(
+        media_in=float(mi),
+        media_out=float(mo),
+        linked_goal_t_sec=float(linked_t) if linked_t is not None else None,
+        time_provenance_source=src or None,
+        avoid_pts=list(seed_provenance.get("historical_actual_pts") or []),
+        count=count,
+    )
+    plan["focus_segment_id"] = focus_segment_id
+    plan["goal_anchor_t_sec_on_row"] = row.get("goal_anchor_t_sec")
+    return plan
+
+
+def load_seed_observations_for_run(
+    seed_path: Path,
+    *,
+    phase5_dir: Path,
+    focus_segment_id: str = OPENING_SEGMENT_ID,
+    summary_path: Optional[Path] = None,
+) -> Dict[str, Any]:
+    """CLI/runtime entry: fail-closed seed load bound to the match video SHA."""
+    expected = find_expected_video_sha256(phase5_dir)
+    if not expected:
+        raise ValueError(
+            f"fail_closed: cannot locate 00_input_manifest.json video sha near {phase5_dir}"
+        )
+    packed = load_and_validate_historical_observation(
+        seed_path,
+        summary_path=summary_path,
+        expected_video_sha256=expected,
+        focus_segment_id=focus_segment_id,
+    )
+    return {
+        "observations": [packed["observation"]],
+        "provenance": packed["provenance"],
+        "expected_video_sha256": expected,
+        "focus_segment_id": focus_segment_id,
+    }
 
 
 def evidence_gap_for_opening(
@@ -261,12 +480,11 @@ def build_one_round_preflight(
         rows = list(edl)
     plan = _load_json(phase5 / "story_plan.json")
     story = _load_json(phase5 / "t01_story.json")
-    manifest = fresh_run / "00_input_manifest.json"
-    expected_sha = None
-    if manifest.is_file():
-        expected_sha = (
-            (_load_json(manifest).get("sources") or {}).get("video") or {}
-        ).get("sha256")
+    expected_sha = find_expected_video_sha256(phase5)
+    if not expected_sha:
+        expected_sha = find_expected_video_sha256(fresh_run)
+    if not expected_sha:
+        raise ValueError("fail_closed: cannot resolve match video SHA for seed validation")
 
     seeded = load_and_validate_historical_observation(
         historical_obs,
@@ -301,6 +519,12 @@ def build_one_round_preflight(
     )
     missing = [k for k in required if k not in opening]
     gap = evidence_gap_for_opening(opening, seeded["provenance"])
+    frame_plan = build_one_round_frame_plan_from_edl(
+        rows,
+        seed_provenance=seeded["provenance"],
+        focus_segment_id=OPENING_SEGMENT_ID,
+        count=4,
+    )
 
     anchors = build_trusted_anchors(plan, rows)
     # KEEP path: no tools → no VLM
@@ -405,6 +629,18 @@ def build_one_round_preflight(
         "out_dir_isolation_rule": "out_dir must be new/empty and outside frozen phase5",
         "no_auto_render": True,
         "prefer_p1_polish_disabled": paths["prefer_p1_polish"] is False,
+        "seed_video_sha_validated": seeded["provenance"].get("validation_status") == "PASSED",
+        "frame_plan_avoids_historical_pts": all(
+            all(abs(t - a) >= 1.5 for a in (seeded["provenance"].get("historical_actual_pts") or []))
+            for t in (frame_plan.get("sample_times") or [])
+        ),
+        "frame_plan_event_not_visual_claim": bool(
+            frame_plan.get("event_time_is_not_visual_verification")
+        ),
+        "frame_plan_uses_linked_goal_bias": (
+            frame_plan.get("linked_goal_t_sec") is not None
+            and "linked_live_goal_event" in str(frame_plan.get("strategy") or "")
+        ),
     }
     ready = all(
         bool(checks[k]) for k in checks
@@ -430,6 +666,7 @@ def build_one_round_preflight(
         "real_http_executed": False,
         "paths": paths,
         "historical_observation_provenance": seeded["provenance"],
+        "one_round_frame_sample_plan": frame_plan,
         "opening_handoff_summary": {
             "segment_id": opening.get("segment_id"),
             "media_in": opening.get("media_in"),
@@ -460,6 +697,7 @@ def build_one_round_preflight(
             "Verifier API success does not equal FIRST_LIVE_VERIFIED",
             "Do not pass prefer_p1_polish; frozen polish is comparison-only",
             "Rule fallback must not bind semantic LIVE without visual evidence",
+            "linked_live_goal_event time biases sampling only; never treat as visual first-LIVE",
         ],
     }
     if out_dir is not None:
@@ -470,5 +708,12 @@ def build_one_round_preflight(
         )
         (out_dir / "planner_context_preview.json").write_text(
             json.dumps(ctx, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+        )
+        (out_dir / "seed_observation_validation.json").write_text(
+            json.dumps(seeded["provenance"], ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        (out_dir / "one_round_frame_sample_plan.json").write_text(
+            json.dumps(frame_plan, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
         )
     return report

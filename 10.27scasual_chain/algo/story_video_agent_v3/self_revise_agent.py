@@ -1964,9 +1964,19 @@ def _observe_one_window(
     win: Mapping[str, Any],
     allowed_windows: Sequence[Mapping[str, Any]],
     request_id: str,
+    sample_times_override: Optional[Sequence[float]] = None,
+    sample_plan_meta: Optional[Mapping[str, Any]] = None,
 ) -> Dict[str, Any]:
     start, end = float(win["start"]), float(win["end"])
-    times = store.sample_times(start, end, count=min(MAX_FRAMES_PER_REQUEST, 4))
+    if sample_times_override:
+        times = [float(t) for t in sample_times_override]
+        for t in times:
+            if t < start - 1e-3 or t > end + 1e-3:
+                raise ValueError(
+                    f"one_round sample time {t} outside observe window [{start}, {end}]"
+                )
+    else:
+        times = store.sample_times(start, end, count=min(MAX_FRAMES_PER_REQUEST, 4))
     frames = []
     for t in times:
         rec = store.extract_at(
@@ -2039,7 +2049,7 @@ def _observe_one_window(
         # Hard force: never let a single VLM pass claim first-LIVE verification
         parsed["fact_verified"] = False
         parsed["observation_only"] = True
-    return {
+    out = {
         "request_id": request_id,
         "issue_id": tr.get("issue_id"),
         "anchor_id": tr.get("anchor_id"),
@@ -2056,7 +2066,11 @@ def _observe_one_window(
         "fact_verified": False,
         "observation_only": True,
         "allowed_windows": list(allowed_windows),
+        "sample_times": times,
     }
+    if sample_plan_meta:
+        out["one_round_sample_plan"] = dict(sample_plan_meta)
+    return out
 
 
 def run_vlm_observations(
@@ -2068,6 +2082,8 @@ def run_vlm_observations(
     frame_budget: int = 16,
     max_windows_per_request: int = MAX_WINDOWS_OBSERVE,
     max_followups: int = MAX_FOLLOWUP_WINDOWS,
+    sample_times_override: Optional[Sequence[float]] = None,
+    sample_plan_meta: Optional[Mapping[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Observe multiple trusted windows; schedule follow-ups from VLM feedback."""
     work_dir.mkdir(parents=True, exist_ok=True)
@@ -2090,9 +2106,14 @@ def run_vlm_observations(
         local_obs: List[Dict[str, Any]] = []
         for i, win in enumerate(initial):
             rid = f"{tr.get('request_id') or 'tool'}_w{i}"
+            # One-round override applies only to the first focused window.
+            use_override = sample_times_override if i == 0 else None
+            use_meta = sample_plan_meta if i == 0 else None
             obs = _observe_one_window(
                 api, store=store, tr=tr, win=win,
                 allowed_windows=windows, request_id=rid,
+                sample_times_override=use_override,
+                sample_plan_meta=use_meta,
             )
             local_obs.append(obs)
             observations.append(obs)
@@ -2821,6 +2842,7 @@ def run_self_revise(
     quality_threshold: float = DEFAULT_QUALITY_THRESHOLD,
     stop_on_quality_threshold: bool = True,
     seed_observations: Optional[Sequence[Mapping[str, Any]]] = None,
+    seed_observation_validation: Optional[Mapping[str, Any]] = None,
     focus_segment_ids: Optional[Sequence[str]] = None,
     max_retries: int = 2,
     max_vlm_tool_requests: Optional[int] = None,
@@ -2846,6 +2868,14 @@ def run_self_revise(
         max_followups = ONE_ROUND_MAX_FOLLOWUPS
         focus_segment_ids = list(focus_segment_ids or [OPENING_SEGMENT_ID])
         prefer_p1_polish = False
+    if one_round_opening_goal and seed_observations:
+        for o in seed_observations:
+            if not isinstance(o, dict) or not o.get("provenance_validated"):
+                raise ValueError(
+                    "fail_closed: one-round --seed-observations must pass "
+                    "load_seed_observations_for_run (video SHA/PTS/citations/segment); "
+                    "historical_reuse alone is insufficient"
+                )
     baseline_resolve = resolve_phase5_baseline(phase5_dir, prefer_p1_polish=prefer_p1_polish)
     phase5_dir = Path(baseline_resolve["path"]).resolve()
     baseline_resolve_public = {
@@ -2862,6 +2892,11 @@ def run_self_revise(
         json.dumps(baseline_resolve_public, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
     baseline_resolve = baseline_resolve_public
+    if seed_observation_validation is not None:
+        (out_dir / "seed_observation_validation.json").write_text(
+            json.dumps(seed_observation_validation, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
 
     story = _load_json(phase5_dir / "t01_story.json")
     plan = _load_json(phase5_dir / "story_plan.json")
@@ -3082,10 +3117,46 @@ def run_self_revise(
                 fallback_reasons.append("vlm:injected_or_api_failed_ffmpeg_fallback")
             elif real_mode and enrich_video:
                 try:
+                    sample_override = None
+                    sample_meta = None
+                    if one_round_opening_goal and tools:
+                        from .one_round_opening_budget import (
+                            OPENING_SEGMENT_ID as _OPENING,
+                            build_one_round_frame_plan_from_edl,
+                        )
+                        seed_prov = (
+                            (seed_observation_validation or {}).get("provenance")
+                            if isinstance(seed_observation_validation, dict)
+                            else {}
+                        ) or {}
+                        # Fall back to PTS listed on seeded observations.
+                        if not seed_prov.get("historical_actual_pts"):
+                            pts = []
+                            for so in observations_acc:
+                                for fr in (so.get("frames") or []):
+                                    if isinstance(fr, dict) and fr.get("actual_media_sec") is not None:
+                                        pts.append(float(fr["actual_media_sec"]))
+                            seed_prov = dict(seed_prov)
+                            seed_prov["historical_actual_pts"] = pts
+                        sample_meta = build_one_round_frame_plan_from_edl(
+                            current_edl,
+                            seed_provenance=seed_prov,
+                            focus_segment_id=str(
+                                (focus_segment_ids or [_OPENING])[0]
+                            ),
+                            count=min(MAX_FRAMES_PER_REQUEST, 4),
+                        )
+                        sample_override = list(sample_meta.get("sample_times") or [])
+                        (round_dir / "one_round_frame_sample_plan.json").write_text(
+                            json.dumps(sample_meta, ensure_ascii=False, indent=2) + "\n",
+                            encoding="utf-8",
+                        )
                     obs_pack = run_vlm_observations(
                         api, video=enrich_video, work_dir=round_dir / "vlm", tool_requests=tools,
                         max_windows_per_request=vlm_windows,
                         max_followups=vlm_followups,
+                        sample_times_override=sample_override,
+                        sample_plan_meta=sample_meta,
                     )
                     if not obs_pack.get("any_real_ok") and obs_pack.get("observations"):
                         # Partial failure: keep technical frames if any; else ffmpeg fallback
@@ -3513,7 +3584,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     )
     p.add_argument(
         "--seed-observations", type=Path, default=None,
-        help="JSON file with one observation object or {observation: ...}; historical reuse only",
+        help="JSON observation from prior smoke; fail-closed SHA/PTS/citation/segment checks",
+    )
+    p.add_argument(
+        "--seed-observation-summary", type=Path, default=None,
+        help="Companion vlm_smoke_summary.json (default: sibling of --seed-observations)",
     )
     p.add_argument("--max-retries", type=int, default=2,
                    help="Provider HTTP retries per call (0 for one-round hard stop)")
@@ -3547,16 +3622,36 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         p.error("out-dir must be outside frozen phase5 directory")
 
     seed_obs = None
+    seed_validation = None
     if args.seed_observations is not None:
-        raw_seed = _load_json(args.seed_observations)
-        if isinstance(raw_seed, dict) and isinstance(raw_seed.get("observation"), dict):
-            seed_obs = [raw_seed["observation"]]
-        elif isinstance(raw_seed, dict):
-            seed_obs = [raw_seed]
-        elif isinstance(raw_seed, list):
-            seed_obs = [x for x in raw_seed if isinstance(x, dict)]
-        else:
-            p.error("--seed-observations must be a JSON object or list")
+        from .one_round_opening_budget import (
+            OPENING_SEGMENT_ID,
+            load_seed_observations_for_run,
+        )
+        focus = OPENING_SEGMENT_ID if args.one_round_opening_goal else OPENING_SEGMENT_ID
+        try:
+            packed = load_seed_observations_for_run(
+                args.seed_observations,
+                phase5_dir=args.phase5_dir,
+                focus_segment_id=focus,
+                summary_path=args.seed_observation_summary,
+            )
+        except (OSError, ValueError) as exc:
+            print(json.dumps({
+                "status": "failed",
+                "error": f"seed_validation:{type(exc).__name__}:{exc}",
+                "agent_claimed_success": False,
+                "render_ready": False,
+                "real_http_executed": False,
+            }, ensure_ascii=False))
+            return 2
+        seed_obs = packed["observations"]
+        seed_validation = {
+            "provenance": packed["provenance"],
+            "expected_video_sha256": packed["expected_video_sha256"],
+            "focus_segment_id": packed["focus_segment_id"],
+            "validation_status": packed["provenance"].get("validation_status"),
+        }
 
     try:
         summary = run_self_revise(
@@ -3580,6 +3675,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             quality_threshold=args.quality_threshold,
             stop_on_quality_threshold=not args.no_stop_on_quality_threshold,
             seed_observations=seed_obs,
+            seed_observation_validation=seed_validation,
             max_retries=args.max_retries,
             one_round_opening_goal=args.one_round_opening_goal,
         )
