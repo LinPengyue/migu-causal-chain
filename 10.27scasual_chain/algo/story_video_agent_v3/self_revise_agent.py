@@ -2637,21 +2637,74 @@ def apply_candidate_revision(
                         "note": "use replace with evidence if the existing cut must change",
                     })
                     continue
-            trusted = list(tw_map.get(aid) or [])
-            # Fallback: union of windows mentioned on matching observations
-            if not trusted:
-                for o in obs_ok:
-                    trusted.extend(o.get("allowed_windows") or [])
-                    w = o.get("window")
-                    if isinstance(w, dict) and _num(w.get("start")) is not None:
-                        trusted.append(w)
-            score_anchor = sa_map.get(aid)
-            bound = build_bound_segment_from_observations(
-                intent=it,
-                observations=obs_ok,
-                trusted_windows=trusted,
-                score_anchor_sec=score_anchor,
-            )
+
+            # Prefer search-verified source PTS for non-goal roles (no invented times).
+            bsw = it.get("bound_source_window") if isinstance(it.get("bound_source_window"), Mapping) else None
+            search_bound_seg: Optional[Dict[str, Any]] = None
+            if (
+                bsw is not None
+                and role_req
+                and "goal_action" not in role_req
+                and action == "search_add"
+            ):
+                mi_b, mo_b = _num(bsw.get("start")), _num(bsw.get("end"))
+                if mi_b is not None and mo_b is not None and mo_b - mi_b >= MIN_BOUND_SPAN:
+                    if mo_b - mi_b > MAX_BOUND_SPAN:
+                        mid_b = 0.5 * (mi_b + mo_b)
+                        mi_b, mo_b = mid_b - MAX_BOUND_SPAN / 2.0, mid_b + MAX_BOUND_SPAN / 2.0
+                    new_sid_pref = str(it.get("new_segment_id") or f"seg_{role_req}_{int(mi_b)}")
+                    search_bound_seg = {
+                        "segment_id": new_sid_pref,
+                        "role": role_req,
+                        "media_in": round(float(mi_b), 3),
+                        "media_out": round(float(mo_b), 3),
+                        "include_in_cut": True,
+                        "is_replay": False,
+                        "shot_kind": "search_bridge",
+                        "goal_action_complete": False,
+                        "event_ids": list(it.get("event_ids") or []),
+                        "agent_bound": True,
+                        "agent_search_bound": True,
+                        "evidence_status": "SEARCH_EVENT_CHAIN_LIVE_VERIFIED",
+                        "first_live_status": "NOT_VERIFIED",
+                        "agent_auto_verified": False,
+                        "anchor_id": aid or None,
+                        "narrative_purpose": it.get("narrative_purpose"),
+                        "search_issue_id": it.get("issue_id"),
+                    }
+
+            bound: Dict[str, Any]
+            if search_bound_seg is not None:
+                bound = {
+                    "ok": True,
+                    "segment": search_bound_seg,
+                    "authorization": {
+                        "allow": True,
+                        "denies": [],
+                        "evidence_status": "SEARCH_EVENT_CHAIN_LIVE_VERIFIED",
+                        "method": "bound_source_window",
+                    },
+                    "observation_ref": aid or it.get("intent_id"),
+                }
+            else:
+                trusted = list(tw_map.get(aid) or [])
+                # Fallback: union of windows mentioned on matching observations
+                if not trusted:
+                    for o in obs_ok:
+                        trusted.extend(o.get("allowed_windows") or [])
+                        w = o.get("window")
+                        if isinstance(w, dict) and _num(w.get("start")) is not None:
+                            trusted.append(w)
+                # Intent-declared window also seeds trusted search union.
+                if bsw is not None:
+                    trusted.append({"start": bsw.get("start"), "end": bsw.get("end")})
+                score_anchor = sa_map.get(aid)
+                bound = build_bound_segment_from_observations(
+                    intent=it,
+                    observations=obs_ok,
+                    trusted_windows=trusted,
+                    score_anchor_sec=score_anchor,
+                )
             if not bound.get("ok"):
                 applied.append({
                     "intent": it.get("intent_id"),
@@ -2664,6 +2717,8 @@ def apply_candidate_revision(
                 })
                 continue
             seg = bound["segment"]
+            if it.get("new_segment_id") and not search_bound_seg:
+                seg["segment_id"] = str(it.get("new_segment_id"))
             new_sid = str(seg["segment_id"])
             new_in, new_out = _num(seg.get("media_in")), _num(seg.get("media_out"))
             overlap_reject = False
@@ -2735,11 +2790,19 @@ def apply_candidate_revision(
             if new_sid in by_id:
                 edl[by_id[new_sid]] = seg
             else:
-                insert_at = 1 if edl else 0
-                for i, row in enumerate(edl):
-                    if "scoreboard" in str(row.get("role") or "") or "deficit" in str(row.get("role") or ""):
-                        insert_at = i
-                        break
+                insert_at = None
+                after_sid = str(it.get("insert_after_segment_id") or "")
+                before_sid = str(it.get("before_segment_id") or "")
+                if after_sid and after_sid in by_id:
+                    insert_at = by_id[after_sid] + 1
+                elif before_sid and before_sid in by_id:
+                    insert_at = by_id[before_sid]
+                if insert_at is None:
+                    insert_at = 1 if edl else 0
+                    for i, row in enumerate(edl):
+                        if "scoreboard" in str(row.get("role") or "") or "deficit" in str(row.get("role") or ""):
+                            insert_at = i
+                            break
                 edl.insert(insert_at, seg)
                 by_id = {str(r.get("segment_id")): i for i, r in enumerate(edl)}
             if action == "replace" and sid and sid in by_id and sid != new_sid:
@@ -2755,10 +2818,60 @@ def apply_candidate_revision(
                 "first_live_status": "NOT_VERIFIED",
                 "authorization": bound.get("authorization"),
                 "observation_ref": bound.get("observation_ref"),
+                "insert_after_segment_id": it.get("insert_after_segment_id"),
             })
             continue
         if action == "reorder":
-            rejected.append({"intent": it.get("intent_id"), "reason": "reorder_requires_explicit_order_list"})
+            move_ids = [str(x) for x in (it.get("move_segment_ids") or []) if x]
+            if not move_ids:
+                rejected.append({
+                    "intent": it.get("intent_id"),
+                    "reason": "reorder_requires_explicit_order_list",
+                })
+                continue
+            # Never reorder protected goal_action rows.
+            blocked = [m for m in move_ids if m in by_id and "goal_action" in str(edl[by_id[m]].get("role") or "")]
+            if blocked and not it.get("allow_modify_protected_goal"):
+                rejected.append({
+                    "intent": it.get("intent_id"),
+                    "reason": "refuse_reorder_protected_goal",
+                    "blocked": blocked,
+                })
+                continue
+            # Move listed non-goal rows to just before the first climax/go_ahead/goal after them.
+            moving = []
+            remain = []
+            move_set = set(move_ids)
+            for row in edl:
+                sid_r = str(row.get("segment_id") or "")
+                if sid_r in move_set:
+                    moving.append(row)
+                else:
+                    remain.append(row)
+            if not moving:
+                rejected.append({"intent": it.get("intent_id"), "reason": "reorder_segments_missing"})
+                continue
+            insert_at = 0
+            for i, row in enumerate(remain):
+                role = str(row.get("role") or "")
+                if any(k in role for k in ("go_ahead", "climax", "winner")) or (
+                    "goal_action" in role and "opening" not in role and "equalizer" not in role
+                ):
+                    insert_at = i
+                    break
+            else:
+                # Fallback: before last media row
+                insert_at = max(0, len(remain) - 1)
+            new_edl = remain[:insert_at] + moving + remain[insert_at:]
+            edl = new_edl
+            by_id = {str(r.get("segment_id")): i for i, r in enumerate(edl)}
+            applied.append({
+                "intent": it.get("intent_id"),
+                "action": "reorder",
+                "status": "applied",
+                "moved_segment_ids": [str(r.get("segment_id")) for r in moving],
+                "insert_at": insert_at,
+            })
             continue
         rejected.append({"intent": it.get("intent_id"), "reason": f"unsupported_or_unsafe:{action}"})
     return edl, {

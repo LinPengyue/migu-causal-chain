@@ -52,7 +52,11 @@ CROSS_MATCH_CASES = [
             "V3A_MATCH_B_MP4",
             "/mnt/data4/migu/10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语.mp4",
         ),
-        "json": _env_path("V3A_MATCH_B_JSON", ""),
+        "json": _env_path(
+            "V3A_MATCH_B_JSON",
+            "/data2/lpy1/causal-chain2/causal_chain/examples/交付_out/"
+            "10月27日_25-26赛季西甲第10轮_奥萨苏纳VS塞尔塔_国语.json",
+        ),
     },
     {
         "id": "C",
@@ -64,6 +68,8 @@ CROSS_MATCH_CASES = [
             "V3A_MATCH_C_MP4",
             "/mnt/data4/migu/2022-11-28 克罗地亚vs加拿大.mp4",
         ),
+        # Held-out style: leave JSON unset by default so C can serve as final-validation reserve
+        # unless V3A_MATCH_C_JSON is provided.
         "json": _env_path("V3A_MATCH_C_JSON", ""),
     },
 ]
@@ -125,8 +131,9 @@ def _sample_edl():
 class TestStoryTimeline(unittest.TestCase):
     def test_timeline_and_mapping(self):
         tl = build_story_timeline(_sample_edl())
-        self.assertAlmostEqual(tl["story_duration_sec"], 75.0, places=2)
-        hit = story_time_to_media(tl, 40.0)  # 20+12=32 → equalizer
+        # 2.5s title placeholder + 20+12+20+20+3 media = 77.5
+        self.assertAlmostEqual(tl["story_duration_sec"], 77.5, places=2)
+        hit = story_time_to_media(tl, 40.0)  # after title+open+build → equalizer
         self.assertIsNotNone(hit)
         self.assertEqual(hit["segment_id"], "seg_eq")
         goals = protected_goal_segment_ids(_sample_edl())
@@ -294,18 +301,29 @@ class TestCrossMatchOfflineDryRun(unittest.TestCase):
                 self.assertFalse(gates["release_authorized"])
                 self.assertFalse(gates["semantic_verification_passed"])
                 delivery = audit["delivery"]
-                self.assertEqual(
-                    delivery["delivery_label"], "INTERNAL_PREVIEW_NOT_FOR_DELIVERY"
+                # Non-release labels: preview, or human-review candidate (no auto publish).
+                self.assertIn(
+                    delivery["delivery_label"],
+                    (
+                        "INTERNAL_PREVIEW_NOT_FOR_DELIVERY",
+                        "HUMAN_REVIEW_REQUIRED",
+                    ),
                 )
                 self.assertIn(delivery["decision"], ("KEEP", "UNRESOLVED", "REVISE"))
-                out_dir = Path(str(audit["out_dir"]))
+                out_dir = Path(audit["out_dir"])
                 diag_file = out_dir / "02_round_01" / "story_diagnosis.json"
                 self.assertTrue(diag_file.is_file())
                 text = diag_file.read_text(encoding="utf-8")
                 self.assertNotIn("铺垫可能有瑕疵", text)
+                # Match-agnostic: never bake opponent names into search/revise logic outputs.
+                for banned in ("硬编码进球数", "three_goals_required"):
+                    self.assertNotIn(banned, text)
                 results.append({
                     "id": case["id"],
                     "decision": delivery["decision"],
+                    "label": delivery["delivery_label"],
+                    "edl_changed": bool(audit.get("edl_changed_any")),
+                    "candidate_rendered": bool(gates.get("candidate_rendered")),
                     "out": str(out_dir),
                 })
         if not results:

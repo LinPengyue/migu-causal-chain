@@ -1,7 +1,7 @@
 """V3-A Story-level End-to-End Agent orchestration.
 
-Pipeline: V3-R baseline (reuse or render) → Global Critic → layered observe →
-Revision Planner → optional candidate render → Verifier → status gates → audit.
+Pipeline: V3-R baseline → Critic → Search → Evidence Verification →
+Revision Planner → EDL apply → Render → Verifier → status gates / human review.
 
 Default: zero HTTP. Real API requires explicit authorization flags (not used here
 unless caller passes enable_real_api).
@@ -15,13 +15,17 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Sequence
 
-from .fresh_e2e_cli import edl_rows, file_record, validate_render_rows, write_json
+from .fresh_e2e_cli import edl_diff, edl_rows, file_record, validate_render_rows, write_json
 from .global_story_critic import (
     merge_observation_into_diagnosis,
     structural_diagnosis,
     write_diagnosis,
 )
 from .self_revise_agent import apply_candidate_revision
+from .story_evidence_search import (
+    run_story_evidence_search,
+    search_candidates_to_observations,
+)
 from .story_observe import observe_layers
 from .story_revision_planner import plan_from_diagnosis
 from .story_timeline import build_story_timeline
@@ -376,6 +380,17 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
     best_edl = [dict(r) for r in edl]
     best_mp4 = initial_dir / "story_clean.mp4"
     final_decision = "KEEP"
+    last_candidate_bundle: Dict[str, Any] = {}
+    metrics = {
+        "revise_proposed": 0,
+        "edl_changed_rounds": 0,
+        "candidate_rendered": 0,
+        "candidate_accepted": 0,
+        "search_success_rounds": 0,
+        "invalid_candidate": 0,
+        "goal_damage_flags": 0,
+        "false_or_unverified_improve_claims": 0,
+    }
 
     for round_idx in range(1, max(1, min(inp.max_rounds, MAX_ROUNDS)) + 1):
         round_dir = out / f"02_round_{round_idx:02d}"
@@ -452,6 +467,44 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         round_rec["diagnosis_issue_count"] = len(diag.get("issues") or [])
         round_rec["semantic_observation_claimed"] = diag.get("semantic_observation_claimed")
 
+        # Active evidence search (Critic gaps → source PTS candidates)
+        events_path = inp.events_json if inp.events_json and inp.events_json.is_file() else None
+        if events_path is None and inp.phase5_dir is not None:
+            # Prefer enriched events beside a reused Phase5 tree (match-agnostic layout).
+            sibling = Path(inp.phase5_dir).resolve().parent / "01_enrich" / "events_enriched.json"
+            if sibling.is_file():
+                events_path = sibling
+        search_report = run_story_evidence_search(
+            diagnosis=diag,
+            edl=best_edl,
+            match_json=inp.match_json if inp.match_json.is_file() else None,
+            events_json=events_path,
+        )
+        write_json(round_dir / "evidence_search.json", search_report)
+        search_obs = search_candidates_to_observations(search_report)
+        round_rec["search_success"] = bool(search_report.get("search_success"))
+        round_rec["search_verified_count"] = len(search_report.get("verified_candidates") or [])
+
+        # Optional one budget-limited directed re-verify (paid only; never loops).
+        if (
+            paid_api is not None
+            and not search_report.get("search_success")
+            and any(
+                i.get("evidence_sufficiency") == "needs_video_verify"
+                for i in (diag.get("issues") or [])
+                if isinstance(i, dict)
+            )
+            and http_calls < int(inp.max_calls)
+            and est_cost < float(inp.max_cost_usd)
+        ):
+            # Re-run search once after merging any VLM-derived issues (already merged).
+            # No second paid call here — search is local; budget reserved for planner/verifier.
+            search_report["directed_research_attempted"] = True
+            search_report["directed_research_note"] = (
+                "budget_reserved_for_planner_verifier; local event-chain search already ran"
+            )
+            write_json(round_dir / "evidence_search.json", search_report)
+
         # Revision plan
         fixture_intents = None
         if inp.fixture_revision:
@@ -461,6 +514,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             observations=obs,
             offline=paid_api is None,
             fixture_intents=fixture_intents,
+            search_results=search_report,
         )
         if paid_api is not None and fixture_intents is None:
             from .story_paid_eval import provider_usage, run_llm_revision_planner
@@ -476,16 +530,47 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             except Exception as exc:  # noqa: BLE001
                 llm_rev = {"ok": False, "error": f"{type(exc).__name__}:{exc}"}
             write_json(round_dir / "llm_revision_planner.json", llm_rev or {})
+            search_backed = bool(rev.get("search_confirmation")) and str(rev.get("decision")).upper() == "REVISE"
             if llm_rev and llm_rev.get("ok"):
-                rev = {
-                    **rev,
-                    "decision": llm_rev.get("decision") or rev.get("decision"),
-                    "revision_intents": llm_rev.get("revision_intents") or rev.get("revision_intents"),
-                    "rationale": llm_rev.get("rationale") or rev.get("rationale"),
-                    "provider_mode": llm_rev.get("provider_mode"),
-                    "offline": False,
-                    "semantic_confirmation": bool(obs.get("semantic_provider_used")),
+                llm_intents = list(llm_rev.get("revision_intents") or [])
+                llm_acts = {
+                    str(i.get("action") or "")
+                    for i in llm_intents
+                    if isinstance(i, dict)
                 }
+                llm_has_mut = bool(llm_acts - {"keep", "mark_unresolved"})
+                if llm_has_mut:
+                    rev = {
+                        **rev,
+                        "decision": llm_rev.get("decision") or rev.get("decision"),
+                        "revision_intents": llm_intents,
+                        "rationale": llm_rev.get("rationale") or rev.get("rationale"),
+                        "provider_mode": llm_rev.get("provider_mode"),
+                        "offline": False,
+                        "semantic_confirmation": bool(obs.get("semantic_provider_used")),
+                    }
+                elif search_backed:
+                    # Keep executable search-bound REVISE; do not let empty LLM UNRESOLVED erase it.
+                    rev = {
+                        **rev,
+                        "provider_mode": llm_rev.get("provider_mode"),
+                        "offline": False,
+                        "semantic_confirmation": bool(obs.get("semantic_provider_used")),
+                        "llm_overlay_note": (
+                            "llm_returned_no_mutating_intents; retained_search_bound_revise"
+                        ),
+                        "llm_rationale": llm_rev.get("rationale"),
+                    }
+                else:
+                    rev = {
+                        **rev,
+                        "decision": llm_rev.get("decision") or rev.get("decision"),
+                        "revision_intents": llm_intents or rev.get("revision_intents"),
+                        "rationale": llm_rev.get("rationale") or rev.get("rationale"),
+                        "provider_mode": llm_rev.get("provider_mode"),
+                        "offline": False,
+                        "semantic_confirmation": bool(obs.get("semantic_provider_used")),
+                    }
                 # Honesty: mark_unresolved/keep-only must not be labeled REVISE.
                 acts = {
                     str(i.get("action") or "")
@@ -500,13 +585,21 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                         "revise_label_without_mutating_intents_normalized_to_unresolved"
                     )
             else:
-                # Paid planner failed → fail closed to UNRESOLVED, do not pretend KEEP.
-                rev = {
-                    **rev,
-                    "decision": "UNRESOLVED",
-                    "rationale": f"llm_revision_planner_failed:{(llm_rev or {}).get('error')}",
-                    "offline": False,
-                }
+                if search_backed:
+                    rev = {
+                        **rev,
+                        "offline": False,
+                        "llm_overlay_note": "llm_revision_planner_failed_retained_search_bound_revise",
+                        "llm_error": (llm_rev or {}).get("error"),
+                    }
+                else:
+                    # Paid planner failed → fail closed to UNRESOLVED, do not pretend KEEP.
+                    rev = {
+                        **rev,
+                        "decision": "UNRESOLVED",
+                        "rationale": f"llm_revision_planner_failed:{(llm_rev or {}).get('error')}",
+                        "offline": False,
+                    }
             usage = provider_usage(paid_api)
             http_calls = int(usage.get("http_attempts") or http_calls)
             est_cost = float(usage.get("est_cost_usd_real") or est_cost)
@@ -535,26 +628,45 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         candidate_edl = [dict(r) for r in best_edl]
         apply_report: Dict[str, Any] = {"skipped": True}
         if final_decision == "REVISE":
+            # Bind search-verified observations (real PTS) — never invent windows.
             candidate_edl, apply_report = apply_candidate_revision(
                 best_edl,
                 rev.get("revision_intents") or [],
-                observations=[],  # no invented windows offline
+                observations=search_obs,
             )
             applied_rows = list(apply_report.get("applied") or [])
             gates["revision_applied"] = any(
                 a.get("status") in ("applied", "applied_evidence_bound")
                 for a in applied_rows
             ) or (candidate_edl != best_edl)
+            # If REVISE produced no EDL mutation, fail closed to UNRESOLVED.
+            if candidate_edl == best_edl and not any(
+                a.get("status") in ("applied", "applied_evidence_bound")
+                for a in applied_rows
+            ):
+                final_decision = "UNRESOLVED"
+                rev = {
+                    **rev,
+                    "decision": "UNRESOLVED",
+                    "normalize_note": "revise_intents_failed_to_mutate_edl",
+                }
+                write_json(round_dir / "revision_plan.json", rev)
+                round_rec["decision"] = final_decision
         else:
             gates["revision_applied"] = False
 
         write_json(round_dir / "candidate_edl.json", candidate_edl)
         write_json(round_dir / "apply_report.json", apply_report)
+        write_json(
+            round_dir / "edl_diff.json",
+            edl_diff(best_edl, candidate_edl) if candidate_edl != best_edl else {"changed": False},
+        )
 
         candidate_mp4: Optional[Path] = None
         render_info: Dict[str, Any] = {"skipped": True}
         edl_changed = candidate_edl != best_edl
-        if final_decision == "REVISE" and (edl_changed or inp.force_render_candidate):
+        # Render when EDL actually changed (safety+authenticity gates still apply later).
+        if edl_changed and (final_decision == "REVISE" or inp.force_render_candidate):
             try:
                 render_info = _render_edl(
                     plan=plan,
@@ -593,7 +705,6 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             and candidate_mp4.is_file()
             and fixture_v is None
         ):
-            from .fresh_e2e_cli import edl_diff
             from .story_paid_eval import provider_usage, run_llm_verifier
             from .story_video_verifier import probe_video_pair
 
@@ -650,13 +761,65 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             and bool(vfix.get("vision_backed"))
         )
 
+        if final_decision == "REVISE":
+            metrics["revise_proposed"] += 1
+        if round_rec.get("search_success"):
+            metrics["search_success_rounds"] += 1
+        if edl_changed:
+            metrics["edl_changed_rounds"] += 1
+        if gates.get("candidate_rendered"):
+            metrics["candidate_rendered"] += 1
+        if vfix.get("hard_vetoes"):
+            metrics["invalid_candidate"] += 1
+        if not (vfix.get("goal_protection") or {}).get("intact", True):
+            metrics["goal_damage_flags"] += 1
+        dual = vfix.get("dual_verifier") or {}
+        if (
+            str(dual.get("quality_delta_vs_baseline") or "").lower() == "improved"
+            and not vfix.get("vision_backed")
+        ):
+            metrics["false_or_unverified_improve_claims"] += 1
+
         if vfix.get("candidate_accepted") and candidate_mp4 and candidate_mp4.is_file():
             best_edl = candidate_edl
             best_mp4 = candidate_mp4
             round_rec["accepted"] = True
+            metrics["candidate_accepted"] += 1
         else:
             round_rec["accepted"] = False
             round_rec["retain_baseline"] = True
+
+        if edl_changed and candidate_mp4 and candidate_mp4.is_file() and gates.get("candidate_rendered"):
+            last_candidate_bundle = {
+                "round": round_idx,
+                "round_dir": str(round_dir),
+                "baseline_mp4": str(initial_dir / "story_clean.mp4"),
+                "baseline_edl": str(initial_dir / "candidate_edl.json"),
+                "candidate_mp4": str(candidate_mp4),
+                "candidate_edl": str(round_dir / "candidate_edl.json"),
+                "edl_diff": str(round_dir / "edl_diff.json"),
+                "evidence_search": str(round_dir / "evidence_search.json"),
+                "revision_plan": str(round_dir / "revision_plan.json"),
+                "verifier_report": str(round_dir / "verifier_report.json"),
+                "story_diagnosis": str(round_dir / "story_diagnosis.json"),
+                "goal_anchors_intact": bool((vfix.get("goal_protection") or {}).get("intact", True)),
+                "hard_vetoes": list(vfix.get("hard_vetoes") or []),
+                "semantic_status": (vfix.get("dual_verifier") or {}).get(
+                    "semantic_verification_status"
+                ),
+                "candidate_accepted": bool(vfix.get("candidate_accepted")),
+                "modified_source_pts": [
+                    {
+                        "segment_id": a.get("segment_id"),
+                        "media_in": a.get("media_in"),
+                        "media_out": a.get("media_out"),
+                        "action": a.get("action"),
+                    }
+                    for a in (apply_report.get("applied") or [])
+                    if a.get("status") in ("applied", "applied_evidence_bound")
+                    and a.get("media_in") is not None
+                ],
+            }
 
         round_rec["gates_snapshot"] = dict(gates)
         round_rec["edl_changed"] = bool(edl_changed)
@@ -707,17 +870,82 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
     gates["release_authorized"] = bool(release.get("release_authorized"))
     write_json(final_dir / "release_gate.json", release)
 
+    # Candidate human-review package: safe playable preview when auto semantic is uncertain.
+    human_review: Dict[str, Any] = {"required": False}
+    if last_candidate_bundle:
+        hr_dir = final_dir / "human_review_candidate"
+        hr_dir.mkdir(parents=True, exist_ok=True)
+        cand_src = Path(last_candidate_bundle["candidate_mp4"])
+        base_src = Path(last_candidate_bundle["baseline_mp4"])
+        cand_dst = hr_dir / "v3a_candidate.mp4"
+        base_dst = hr_dir / "v3r_baseline.mp4"
+        if cand_src.is_file():
+            _copy_or_link(cand_src, cand_dst)
+        if base_src.is_file():
+            _copy_or_link(base_src, base_dst)
+        # Stage EDL/diff/evidence copies for review.
+        for key, name in (
+            ("candidate_edl", "v3a_candidate_edl.json"),
+            ("edl_diff", "edl_diff.json"),
+            ("evidence_search", "evidence_search.json"),
+            ("revision_plan", "revision_plan.json"),
+            ("verifier_report", "verifier_report.json"),
+            ("story_diagnosis", "story_diagnosis.json"),
+        ):
+            src = Path(last_candidate_bundle.get(key) or "")
+            if src.is_file():
+                shutil.copy2(src, hr_dir / name)
+        write_json(hr_dir / "modified_source_pts.json", last_candidate_bundle.get("modified_source_pts") or [])
+        write_json(hr_dir / "baseline_edl.json", edl_rows(_read_json(Path(last_candidate_bundle["baseline_edl"]))) if Path(last_candidate_bundle["baseline_edl"]).is_file() else [])
+
+        safe_preview = (
+            cand_dst.is_file()
+            and bool(last_candidate_bundle.get("goal_anchors_intact"))
+            and not last_candidate_bundle.get("hard_vetoes")
+        )
+        semantic = str(last_candidate_bundle.get("semantic_status") or "")
+        accepted = bool(last_candidate_bundle.get("candidate_accepted"))
+        needs_human = safe_preview and not gates["release_authorized"] and (
+            not accepted
+            or semantic in ("", "NOT_EVALUATED", "UNKNOWN", "INCONCLUSIVE")
+            or not gates.get("semantic_verification_passed")
+        )
+        human_review = {
+            "required": bool(needs_human),
+            "label": "HUMAN_REVIEW_REQUIRED" if needs_human else (
+                "CANDIDATE_AUTO_ACCEPTED" if accepted else "CANDIDATE_BLOCKED"
+            ),
+            "safe_playable_preview": bool(safe_preview),
+            "auto_release_forbidden": True,
+            "dir": str(hr_dir),
+            "v3r_baseline_mp4": str(base_dst) if base_dst.is_file() else None,
+            "v3a_candidate_mp4": str(cand_dst) if cand_dst.is_file() else None,
+            "bundle": last_candidate_bundle,
+            "note": (
+                "Candidate is for human story judgment only. "
+                "Uncertainty must not be auto-labeled success or failure for formal release."
+            ),
+        }
+        write_json(hr_dir / "human_review_status.json", human_review)
+
+    delivery_label = (
+        "FORMAL_RELEASE"
+        if gates["release_authorized"]
+        else (
+            "HUMAN_REVIEW_REQUIRED"
+            if human_review.get("required")
+            else "INTERNAL_PREVIEW_NOT_FOR_DELIVERY"
+        )
+    )
     delivery = {
         "release_authorized": gates["release_authorized"],
-        "delivery_label": (
-            "FORMAL_RELEASE"
-            if gates["release_authorized"]
-            else "INTERNAL_PREVIEW_NOT_FOR_DELIVERY"
-        ),
+        "delivery_label": delivery_label,
+        "human_review": human_review,
         "final_mp4": str(final_mp4) if final_mp4.is_file() else None,
         "final_edl": str(final_dir / "final_edl.json"),
         "decision": final_decision,
         "release_gate": release,
+        "metrics": metrics,
         "timeline_mp4_alignment": {
             k: align.get(k)
             for k in (
@@ -728,7 +956,8 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         },
         "note": (
             "Formal delivery requires release_authorized=true under full conjunction gates. "
-            "workflow_completed / final_mp4_exists / semantic_verification_passed alone never authorize."
+            "workflow_completed / final_mp4_exists / semantic_verification_passed alone never authorize. "
+            "HUMAN_REVIEW_REQUIRED means a safe candidate preview exists for human judgment."
             if not gates["release_authorized"]
             else "All formal release conjunction gates passed."
         ),
@@ -737,6 +966,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
 
     audit["status_gates"] = gates
     audit["delivery"] = delivery
+    audit["metrics"] = metrics
     audit["baseline"] = {
         "initial_mp4": str(initial_dir / "story_clean.mp4"),
         "records": {
