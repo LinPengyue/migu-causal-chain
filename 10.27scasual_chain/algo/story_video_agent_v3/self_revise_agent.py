@@ -112,6 +112,14 @@ ACTION_ALIASES = {
     "resequence": "reorder",
     "unresolved": "mark_unresolved",
     "skip": "mark_unresolved",
+    # Composer handoff dispositions → existing schema (no second protocol).
+    "keep_candidate": "keep",
+    "retain": "keep",
+    "keep_and_inspect": "keep",
+    "inspect": "keep",
+    "observe": "keep",
+    "need_observation": "keep",
+    "defer": "mark_unresolved",
 }
 ALLOWED_TOOLS = {"extract_frames", "vlm_observe", "widen_search"}
 TOOL_ALIASES = {
@@ -150,6 +158,16 @@ def _normalize_action(raw: Any) -> Optional[str]:
         return None
     if s in ALLOWED_ACTIONS:
         return s
+    # KEEP / INSPECT / UNRESOLVED (and REPAIR-without-verb → None)
+    try:
+        from .composer_evidence_handoff import map_disposition_to_action
+        disp = map_disposition_to_action(s)
+        if disp is not None:
+            return disp
+        if s.upper().replace("-", "_") in ("REPAIR", "FIX"):
+            return None
+    except Exception:
+        pass
     low = s.lower()
     if low in ACTION_ALIASES:
         return ACTION_ALIASES[low]
@@ -200,6 +218,19 @@ Diagnose the CURRENT story cut against THIS match's T01 selected-arc and narrati
 Do not assume a fixed goal count, score path, or that any specific beat is missing.
 If prior_round_feedback is present, address unresolved issues and verifier findings;
 do not blindly repeat the same plan without incorporating that feedback.
+
+composer_evidence_handoff (when present) projects Rule Composer / Phase5 candidates.
+For EACH goal-action handoff segment, FIRST choose one disposition then emit schema:
+  KEEP → revision_intents.action=keep (retain composer window; no EDL edit)
+  INSPECT → action=keep PLUS directed video_tool_requests on that edl trusted_anchor
+  REPAIR → concrete action in {search_add,replace,trim,drop,reorder} with evidence_refs
+  UNRESOLVED → action=mark_unresolved (do not force an edit)
+You may set revision_intents[].disposition to KEEP|INSPECT|REPAIR|UNRESOLVED;
+executor maps it onto the actions above (REPAIR alone is invalid without a concrete edit).
+
+Do NOT blanket re-search every goal. Prefer the handoff suggested_planner_disposition.
+is_replay=false, scoreboard confirmation, and historical VLM observations are NOT
+FIRST_LIVE_VERIFIED. Historical observations may be reused as observation-only evidence.
 Return ONLY JSON with keys:
   diagnoses, revision_intents, video_tool_requests, notes.
 video_tool_requests[].tool must be one of: vlm_observe, extract_frames, widen_search
@@ -1092,6 +1123,11 @@ def compact_context(
             "search_windows": (t.get("search_windows") or [])[:3],
             "anchor_kind": t.get("anchor_kind"),
         })
+    from .composer_evidence_handoff import build_composer_evidence_handoff
+
+    handoff = build_composer_evidence_handoff(
+        edl, prior_observations=prior_observations,
+    )
     return {
         "match_id": plan.get("match_id") or story.get("match_id"),
         "title": plan.get("title") or story.get("title"),
@@ -1104,6 +1140,7 @@ def compact_context(
         "trusted_anchors": anchors,
         "video_duration_sec": video_duration,
         "candidate_edl": edl_brief,
+        "composer_evidence_handoff": handoff,
         "stage1_hard_gates": audit.get("hard_gate_findings") or [],
         "stage1_diagnostics": audit.get("diagnostic_issues") or [],
         "stage1_revision_requests": audit.get("revision_requests") or [],
@@ -1123,6 +1160,9 @@ def compact_context(
             "max_diagnoses": MAX_DIAGNOSES,
             "max_video_tool_requests": MAX_TOOL_REQUESTS,
             "render_ready": False,
+            "composer_is_replay_false_is_not_first_live": True,
+            "historical_vlm_obs_cannot_certify_first_live": True,
+            "prefer_handoff_disposition_over_blanket_goal_research": True,
         },
     }
 
@@ -1351,13 +1391,34 @@ def validate_planner_output(
                 "suggested_fix": "each revision_intent must be an object",
             })
             continue
-        action = _normalize_action(it.get("action"))
+        from .composer_evidence_handoff import normalize_intent_disposition
+
+        disp_meta = normalize_intent_disposition(it)
+        action_raw = it.get("action")
+        # If action is a disposition keyword (KEEP/INSPECT/...), normalize it;
+        # if disposition=REPAIR without concrete edit verb, reject.
+        if disp_meta.get("disposition_needs_concrete_repair") and (
+            not action_raw
+            or str(action_raw).strip().upper().replace("-", "_") in ("REPAIR", "FIX")
+        ):
+            dropped_intents.append({
+                "raw": it, "reason": "repair_disposition_needs_concrete_action",
+                "suggested_fix": (
+                    "REPAIR requires action in search_add|replace|trim|drop|reorder"
+                ),
+                "map_note": disp_meta.get("composer_disposition"),
+            })
+            continue
+        action = _normalize_action(action_raw)
+        if action is None and disp_meta.get("disposition_mapped_action"):
+            action = disp_meta["disposition_mapped_action"]
         if action is None:
             dropped_intents.append({
                 "raw": it, "reason": "unmapped_action",
                 "suggested_fix": (
                     "use search_add|replace|trim|drop|reorder|keep|mark_unresolved "
-                    f"(got {it.get('action')!r})"
+                    "or disposition KEEP|INSPECT|UNRESOLVED "
+                    f"(got {it.get('action')!r} disposition={it.get('disposition')!r})"
                 ),
             })
             continue
@@ -1383,10 +1444,12 @@ def validate_planner_output(
                 "map_note": map_note,
             })
             continue
+        notes = [x for x in (map_note, disp_meta.get("composer_disposition")) if x]
         clean_intents.append({
             "intent_id": str(it.get("intent_id") or it.get("id") or f"intent_{i:03d}"),
             "action": action,
             "raw_action": it.get("action"),
+            "disposition": disp_meta.get("composer_disposition"),
             "issue_id": it.get("issue_id"),
             "target_segment_id": it.get("target_segment_id") or it.get("target"),
             "role": role,
@@ -1395,7 +1458,7 @@ def validate_planner_output(
             "expected_improvement": str(it.get("expected_improvement") or "")[:400],
             "risk": str(it.get("risk") or "")[:400],
             "evidence_refs": it.get("evidence_refs") if isinstance(it.get("evidence_refs"), list) else [],
-            "map_note": map_note,
+            "map_note": ";".join(str(n) for n in notes) if notes else map_note,
         })
 
     tools = raw.get("video_tool_requests")
@@ -2885,6 +2948,12 @@ def run_self_revise(
         (round_dir / "planner_context.json").write_text(
             json.dumps(ctx, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
         )
+        handoff_blob = ctx.get("composer_evidence_handoff")
+        if isinstance(handoff_blob, dict):
+            (round_dir / "composer_evidence_handoff.json").write_text(
+                json.dumps(handoff_blob, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
 
         if not degraded_mode:
             abort_reason = "real_api_not_enabled_or_not_approved"
