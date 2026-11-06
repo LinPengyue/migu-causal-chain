@@ -73,6 +73,104 @@ def not_evaluated_semantic_block() -> Dict[str, Any]:
     }
 
 
+SKIP_REASON_NO_CANDIDATE_CHANGE = "NO_CANDIDATE_CHANGE"
+KEEPISH_REVISION_DECISIONS = frozenset({
+    "KEEP",
+    "KEEP_WITH_NEW_EVIDENCE",
+    "UNRESOLVED",
+})
+
+
+def should_skip_api_verifier_no_candidate_change(
+    *,
+    revision_planner_decision: Any,
+    pre_revision_edl_sha256: Any,
+    post_revision_edl_sha256: Any,
+    evidence_bound_count: Any = 0,
+) -> Optional[str]:
+    """Skip paid API Verifier when RP KEEP/UNRESOLVED and candidate EDL is unchanged.
+
+    Returns skip_reason or None. Rule-track verifier still runs separately.
+    """
+    decision = str(revision_planner_decision or "").strip().upper()
+    if decision not in KEEPISH_REVISION_DECISIONS:
+        return None
+    pre = str(pre_revision_edl_sha256 or "").strip()
+    post = str(post_revision_edl_sha256 or "").strip()
+    if not pre or not post or pre != post:
+        return None
+    try:
+        bound = int(evidence_bound_count or 0)
+    except (TypeError, ValueError):
+        bound = 0
+    if bound > 0:
+        return None
+    return SKIP_REASON_NO_CANDIDATE_CHANGE
+
+
+def build_no_candidate_change_dual(
+    *,
+    story: Mapping[str, Any],
+    plan: Mapping[str, Any],
+    baseline_edl: Sequence[Dict[str, Any]],
+    candidate_edl: Sequence[Dict[str, Any]],
+    skip_reason: str = SKIP_REASON_NO_CANDIDATE_CHANGE,
+) -> Dict[str, Any]:
+    """Rule always; skip paid API Verifier with explicit NO_CANDIDATE_CHANGE record."""
+    rule_base = run_rule_verifier(story, plan, baseline_edl)
+    rule_cand = run_rule_verifier(story, plan, candidate_edl)
+    validated = {
+        "issues": [],
+        "dimensions": not_evaluated_semantic_block(),
+        "hard_vetoes": [],
+        "evidence_of_improvement": [],
+        "quality_delta_vs_baseline": "NOT_EVALUATED",
+        "validated": True,
+        "semantic_status": "SKIPPED_NO_CANDIDATE_CHANGE",
+    }
+    api_out = {
+        "ok": False,
+        "provider_mode": "skipped_no_candidate_change",
+        "skipped_api_verifier": True,
+        "skip_reason": skip_reason,
+        "error": None,
+        "usage": {"real_requests": 0, "prompt_tokens": 0, "completion_tokens": 0},
+        "est_cost_usd": 0.0,
+        "http_ok": False,
+        "generation_ok": False,
+        "structured_ok": False,
+        "validated": validated,
+        "attempts": [{
+            "ok": False,
+            "skipped_api_verifier": True,
+            "skip_reason": skip_reason,
+            "provider_mode": "skipped_no_candidate_change",
+        }],
+        "note": (
+            "Paid API Verifier skipped: Revision Planner KEEP/UNRESOLVED with "
+            "candidate EDL byte-identical to pre-revision (no evidence-bound edit)."
+        ),
+    }
+    return {
+        "rule_baseline": rule_base,
+        "rule_candidate": rule_cand,
+        "api": api_out,
+        "rule_verification_status": rule_cand.get("rule_verification_status"),
+        "semantic_verification_status": "SKIPPED_NO_CANDIDATE_CHANGE",
+        "ok_for_semantic_accept": False,
+        "ok": False,
+        "validated": validated,
+        "provider_mode": "skipped_no_candidate_change",
+        "error": None,
+        "attempts": api_out["attempts"],
+        "rule_fallback_success": False,
+        "semantic_pretend_pass": False,
+        "fallback_reason": skip_reason,
+        "skipped_api_verifier": True,
+        "skip_reason": skip_reason,
+    }
+
+
 def run_dual_verifier(
     *,
     story: Mapping[str, Any],

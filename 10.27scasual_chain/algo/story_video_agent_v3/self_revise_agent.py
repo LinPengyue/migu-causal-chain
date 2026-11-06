@@ -38,11 +38,13 @@ from story_video_agent.vision_provider import _extract_json_obj
 from .quality_audit import evaluate as quality_evaluate
 from .remote_vlm_verify import apply_trial_env_overrides
 from .hybrid_fallback import (
+    build_no_candidate_change_dual,
     build_orchestration_status,
     build_rule_planner_fallback,
     run_dual_verifier,
     run_ffmpeg_observe_without_vlm,
     run_rule_verifier,
+    should_skip_api_verifier_no_candidate_change,
 )
 
 SCHEMA = "v3a_self_revise_run_v1"
@@ -1795,6 +1797,36 @@ def call_llm_planner(
     }
 
 
+def _verifier_output_budget_truncated(
+    resp: Mapping[str, Any],
+    *,
+    usage: Optional[Mapping[str, Any]] = None,
+    finish_reason: str = "",
+) -> bool:
+    """True when provider hit the configured completion ceiling (truncation-capable)."""
+    usage = usage if isinstance(usage, Mapping) else (resp.get("usage") or {})
+    finish = str(finish_reason or resp.get("finish_reason") or "").strip().lower()
+    if finish == "length":
+        return True
+    audit = resp.get("response_audit") if isinstance(resp.get("response_audit"), Mapping) else {}
+    if audit.get("output_budget_exceeded"):
+        return True
+    try:
+        ct = int((usage or {}).get("completion_tokens") or 0)
+    except (TypeError, ValueError):
+        ct = 0
+    limit = audit.get("output_token_limit")
+    if limit is None:
+        # Fall back to request audit when response_audit omitted the ceiling.
+        req = resp.get("request_audit") if isinstance(resp.get("request_audit"), Mapping) else {}
+        limit = req.get("token_limit_sent")
+    try:
+        lim = int(limit) if limit is not None else None
+    except (TypeError, ValueError):
+        lim = None
+    return bool(lim is not None and ct >= lim > 0)
+
+
 def call_llm_verifier(
     api: ApiProvider,
     payload: Mapping[str, Any],
@@ -1851,6 +1883,8 @@ def call_llm_verifier(
         mode = str(resp.get("provider_mode") or "")
         content = str(resp.get("content") or "")
         usage = resp.get("usage") or {}
+        finish_reason = str(resp.get("finish_reason") or "")
+        response_audit = resp.get("response_audit") if isinstance(resp.get("response_audit"), dict) else {}
         reasoning_tokens = None
         details = usage.get("completion_tokens_details")
         if isinstance(details, dict) and details.get("reasoning_tokens") is not None:
@@ -1873,6 +1907,7 @@ def call_llm_verifier(
                 "structured_ok": False,
                 "failure_code": "HTTP_OR_PROVIDER",
                 "reasoning_tokens": reasoning_tokens,
+                "finish_reason": finish_reason,
             }
             attempts.append(dict(last))
             err_l = str(last["error"]).lower()
@@ -1880,11 +1915,14 @@ def call_llm_verifier(
                 continue
             break
         if not content.strip():
+            empty_code = "EMPTY_MODEL_CONTENT"
+            if _verifier_output_budget_truncated(resp, usage=usage, finish_reason=finish_reason):
+                empty_code = "OUTPUT_BUDGET_TRUNCATION"
             last = {
                 "ok": False,
                 "provider_mode": mode,
-                "error": "EMPTY_MODEL_CONTENT",
-                "failure_code": "EMPTY_MODEL_CONTENT",
+                "error": empty_code,
+                "failure_code": empty_code,
                 "raw_excerpt": "",
                 "usage": usage,
                 "est_cost_usd": resp.get("est_cost_usd"),
@@ -1893,6 +1931,8 @@ def call_llm_verifier(
                 "generation_ok": False,
                 "structured_ok": False,
                 "reasoning_tokens": reasoning_tokens,
+                "finish_reason": finish_reason,
+                "output_token_limit": response_audit.get("output_token_limit"),
                 "note": (
                     "HTTP succeeded but visible content empty "
                     "(often reasoning consumed output budget)."
@@ -1901,11 +1941,22 @@ def call_llm_verifier(
             attempts.append(dict(last))
             # Retry once more — model may return short JSON on next try
             continue
+        parse_stage = "_parse_model_json"
         try:
             raw = _parse_model_json(content, empty_code="EMPTY_MODEL_CONTENT")
+            parse_stage = "validate_verifier_output"
             validated = validate_verifier_output(raw)
         except Exception as exc:
-            code = "EMPTY_MODEL_CONTENT" if "EMPTY_MODEL_CONTENT" in str(exc) else "STRUCTURED_PARSE_FAIL"
+            if "EMPTY_MODEL_CONTENT" in str(exc):
+                code = "EMPTY_MODEL_CONTENT"
+            elif (
+                parse_stage == "_parse_model_json"
+                and _verifier_output_budget_truncated(resp, usage=usage, finish_reason=finish_reason)
+            ):
+                # Fail closed at parse: truncated JSON must not reach validate_verifier_output.
+                code = "OUTPUT_BUDGET_TRUNCATION"
+            else:
+                code = "STRUCTURED_PARSE_FAIL"
             last = {
                 "ok": False,
                 "provider_mode": mode,
@@ -1919,6 +1970,9 @@ def call_llm_verifier(
                 "generation_ok": bool(content.strip()),
                 "structured_ok": False,
                 "reasoning_tokens": reasoning_tokens,
+                "finish_reason": finish_reason,
+                "output_token_limit": response_audit.get("output_token_limit"),
+                "parse_stage": parse_stage,
             }
             attempts.append(dict(last))
             if code == "EMPTY_MODEL_CONTENT":
@@ -1937,11 +1991,13 @@ def call_llm_verifier(
             "attempts": attempts + [{
                 "attempt": attempt, "ok": True, "provider_mode": mode,
                 "http_ok": True, "generation_ok": True, "structured_ok": True,
+                "finish_reason": finish_reason,
             }],
             "http_ok": True,
             "generation_ok": True,
             "structured_ok": True,
             "reasoning_tokens": reasoning_tokens,
+            "finish_reason": finish_reason,
             "logical_role": "verifier",
         }
     # Never silently treat as rule-success
@@ -2615,7 +2671,7 @@ def decide_accept(
     release_eligible = False
     # API failure or unevaluated semantics must never promote a candidate into best EDL.
     verifier_unevaluated = (not api_ok) or str(sem) in (
-        "NOT_EVALUATED", "UNKNOWN", "DEGRADED",
+        "NOT_EVALUATED", "UNKNOWN", "DEGRADED", "SKIPPED_NO_CANDIDATE_CHANGE",
     )
     quality_delta_l = str(validated.get("quality_delta_vs_baseline") or "").strip().lower()
 
@@ -3638,15 +3694,38 @@ def run_self_revise(
                     "rule_fallback_success": False,
                 }
 
-        dual = run_dual_verifier(
-            story=story, plan=plan,
-            baseline_edl=baseline_edl, candidate_edl=cand_edl,
-            api_verifier_fn=_api_ver_fn,
-            api_payload=ver_payload,
-            fixture=v_fix if fixture_mode and not inject_verifier_failure else None,
+        skip_api_verifier = should_skip_api_verifier_no_candidate_change(
+            revision_planner_decision=intent_pack.get("revision_planner_decision"),
+            pre_revision_edl_sha256=rev_meta.get("pre_revision_edl_sha256"),
+            post_revision_edl_sha256=rev_meta.get("post_revision_edl_sha256"),
+            evidence_bound_count=rev_meta.get("evidence_bound_count"),
         )
-        if not dual.get("ok_for_semantic_accept"):
-            fallback_reasons.append(f"verifier:{dual.get('fallback_reason') or dual.get('error') or 'degraded'}")
+        if skip_api_verifier:
+            rev_meta["skipped_api_verifier"] = True
+            rev_meta["skip_reason"] = skip_api_verifier
+            (round_dir / "revision_meta.json").write_text(
+                json.dumps(rev_meta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+            )
+            dual = build_no_candidate_change_dual(
+                story=story,
+                plan=plan,
+                baseline_edl=baseline_edl,
+                candidate_edl=cand_edl,
+                skip_reason=skip_api_verifier,
+            )
+            fallback_reasons.append(f"verifier:{skip_api_verifier}")
+        else:
+            dual = run_dual_verifier(
+                story=story, plan=plan,
+                baseline_edl=baseline_edl, candidate_edl=cand_edl,
+                api_verifier_fn=_api_ver_fn,
+                api_payload=ver_payload,
+                fixture=v_fix if fixture_mode and not inject_verifier_failure else None,
+            )
+            if not dual.get("ok_for_semantic_accept"):
+                fallback_reasons.append(
+                    f"verifier:{dual.get('fallback_reason') or dual.get('error') or 'degraded'}"
+                )
         last_rule_status = dual.get("rule_verification_status") or last_rule_status
         last_semantic_status = dual.get("semantic_verification_status") or "NOT_EVALUATED"
         (round_dir / "dual_verifier.json").write_text(
@@ -3695,6 +3774,8 @@ def run_self_revise(
             "vlm_fallback": bool(obs_pack.get("vlm_fallback")),
             "verifier_ok": dual.get("ok"),
             "verifier_provider_mode": dual.get("provider_mode"),
+            "skipped_api_verifier": bool(dual.get("skipped_api_verifier")),
+            "verifier_skip_reason": dual.get("skip_reason"),
             "rule_verification_status": last_rule_status,
             "semantic_verification_status": last_semantic_status,
             "revision_meta": rev_meta,

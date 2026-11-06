@@ -1049,7 +1049,9 @@ class ApiProvider:
                 cost = _estimate_cost(pt, ct)
                 usage_audit = extract_usage_audit(payload, content=content)
                 limit = self.effective_output_token_limit(cfg)
-                exceeded = bool(limit is not None and ct > int(limit))
+                # Hitting the configured ceiling (ct == limit) is truncation-capable;
+                # providers commonly return finish_reason=length at exactly max_tokens.
+                exceeded = bool(limit is not None and ct >= int(limit))
                 # Reasoning models often report completion_tokens >> max_tokens while still
                 # returning usable visible content (finish_reason=stop). Hard-block only when
                 # truncated/empty, or when STORY_API_HARD_BLOCK_ON_OUTPUT_BUDGET=1.

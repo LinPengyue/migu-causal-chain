@@ -156,7 +156,16 @@ class UsageAuditAndBlockTests(unittest.TestCase):
             "vision": _cfg(max_completion_tokens=256),
             "planner": _cfg(role="planner"),
         }
-        with mock.patch.dict(os.environ, {"STORY_API_MAX_CALLS": "3"}, clear=False):
+        # Hard-block is opt-in: reasoning models may report ct >> max with finish_reason=stop
+        # while still returning usable content. This test explicitly enables the fuse.
+        with mock.patch.dict(
+            os.environ,
+            {
+                "STORY_API_MAX_CALLS": "3",
+                "STORY_API_HARD_BLOCK_ON_OUTPUT_BUDGET": "1",
+            },
+            clear=False,
+        ):
             api = ApiProvider(
                 force_mock=False,
                 require_real=True,
