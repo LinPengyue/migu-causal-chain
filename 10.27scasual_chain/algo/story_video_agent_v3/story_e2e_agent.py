@@ -25,7 +25,12 @@ from .self_revise_agent import apply_candidate_revision
 from .story_observe import observe_layers
 from .story_revision_planner import plan_from_diagnosis
 from .story_timeline import build_story_timeline
-from .story_video_verifier import empty_status_gates, verify_story_revision
+from .story_video_verifier import (
+    compute_release_authorization,
+    empty_status_gates,
+    timeline_mp4_aligned,
+    verify_story_revision,
+)
 
 SCHEMA = "v3a_story_e2e_run_v1"
 MAX_ROUNDS = 3
@@ -573,12 +578,19 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             gates["candidate_rendered"] = False
         write_json(round_dir / "candidate_render.json", render_info)
 
-        # Verifier (optional paid LLM when revising under remaining budget)
+        # Verifier: dual-video vision when revising with a real candidate render
         fixture_v = inp.fixture_verifier
+        sent_frame_ids: List[str] = list(
+            (inp.fixture_verifier or {}).get("sent_frame_ids") or []
+        )
+        vision_backed = bool(sent_frame_ids)
+        llm_v = None
         if (
             paid_api is not None
             and final_decision == "REVISE"
             and edl_changed
+            and candidate_mp4 is not None
+            and candidate_mp4.is_file()
             and fixture_v is None
         ):
             from .fresh_e2e_cli import edl_diff
@@ -588,28 +600,29 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             try:
                 llm_v = run_llm_verifier(
                     paid_api,
-                    baseline_summary={
-                        "mp4": str(best_mp4),
-                        "segment_count": len(best_edl),
-                        "protected_goals": diag.get("protected_goal_segment_ids"),
-                    },
-                    candidate_summary={
-                        "mp4": str(candidate_mp4) if candidate_mp4 else None,
-                        "segment_count": len(candidate_edl),
-                    },
+                    baseline_summary={"mp4": str(best_mp4)},
+                    candidate_summary={"mp4": str(candidate_mp4)},
                     edl_delta=edl_diff(best_edl, candidate_edl),
                     video_probe=probe_video_pair(
                         baseline_mp4=best_mp4, candidate_mp4=candidate_mp4
                     ),
                     audit_dir=round_dir / "paid_api",
+                    baseline_mp4=best_mp4,
+                    candidate_mp4=candidate_mp4,
+                    baseline_edl=best_edl,
+                    candidate_edl=candidate_edl,
+                    work_dir=round_dir / "paid_api" / "dual_frames",
                 )
                 write_json(round_dir / "llm_verifier.json", llm_v)
-                if llm_v.get("ok") and isinstance(llm_v.get("validated"), dict):
+                if isinstance(llm_v.get("validated"), dict):
                     fixture_v = llm_v["validated"]
+                sent_frame_ids = list(llm_v.get("sent_frame_ids") or [])
+                vision_backed = bool(llm_v.get("vision_backed")) and bool(sent_frame_ids)
                 usage = provider_usage(paid_api)
                 http_calls = int(usage.get("http_attempts") or http_calls)
                 est_cost = float(usage.get("est_cost_usd_real") or est_cost)
                 round_rec["api_usage_after_verifier"] = usage
+                round_rec["verifier_sent_frame_ids"] = sent_frame_ids
             except Exception as exc:  # noqa: BLE001
                 write_json(
                     round_dir / "llm_verifier.json",
@@ -625,6 +638,8 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             candidate_mp4=candidate_mp4,
             decision=final_decision,
             fixture=fixture_v,
+            sent_frame_ids=sent_frame_ids,
+            vision_backed=vision_backed if sent_frame_ids else False,
         )
         write_json(round_dir / "verifier_report.json", vfix)
         gates["semantic_verification_passed"] = (
@@ -632,6 +647,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 (vfix.get("dual_verifier") or {}).get("semantic_verification_status")
             )
             == "PASSED"
+            and bool(vfix.get("vision_backed"))
         )
 
         if vfix.get("candidate_accepted") and candidate_mp4 and candidate_mp4.is_file():
@@ -643,7 +659,17 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             round_rec["retain_baseline"] = True
 
         round_rec["gates_snapshot"] = dict(gates)
+        round_rec["edl_changed"] = bool(edl_changed)
         audit["rounds"].append(round_rec)
+        audit["last_verifier"] = {
+            "candidate_accepted": vfix.get("candidate_accepted"),
+            "sent_frame_ids": vfix.get("sent_frame_ids"),
+            "hard_vetoes": vfix.get("hard_vetoes"),
+            "goal_protection": vfix.get("goal_protection"),
+            "warnings": vfix.get("warnings"),
+        }
+        audit["last_diagnosis_issues"] = list(diag.get("issues") or [])
+        audit["edl_changed_any"] = bool(audit.get("edl_changed_any")) or bool(edl_changed)
 
         # Stop early when KEEP/UNRESOLVED (no further paid/offline loops needed)
         if final_decision in ("KEEP", "UNRESOLVED"):
@@ -658,16 +684,28 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
     _copy_or_link(best_mp4, final_mp4)
     write_json(final_dir / "final_edl.json", best_edl)
     write_json(final_dir / "story_timeline.json", build_story_timeline(best_edl))
+    align = timeline_mp4_aligned(edl=best_edl, mp4=final_mp4, tolerance_sec=2.0)
+    write_json(final_dir / "timeline_mp4_alignment.json", align)
 
     gates["final_mp4_exists"] = final_mp4.is_file()
     gates["workflow_completed"] = True
-    # Release only when semantic passed AND no unresolved critical path
-    gates["release_authorized"] = bool(
-        gates["semantic_verification_passed"]
-        and gates["final_mp4_exists"]
-        and final_decision != "UNRESOLVED"
-        and not audit.get("error")
+
+    last_v = audit.get("last_verifier") or {}
+    release = compute_release_authorization(
+        gates=gates,
+        decision=final_decision,
+        edl_changed=bool(audit.get("edl_changed_any")),
+        candidate_accepted=bool(last_v.get("candidate_accepted")),
+        goal_anchors_intact=bool((last_v.get("goal_protection") or {}).get("intact", True)),
+        hard_vetoes=list(last_v.get("hard_vetoes") or []),
+        final_mp4=final_mp4,
+        final_edl=best_edl,
+        diagnosis_issues=list(audit.get("last_diagnosis_issues") or []),
+        timeline_aligned=bool(align.get("aligned")),
+        unresolved_critical=final_decision == "UNRESOLVED",
     )
+    gates["release_authorized"] = bool(release.get("release_authorized"))
+    write_json(final_dir / "release_gate.json", release)
 
     delivery = {
         "release_authorized": gates["release_authorized"],
@@ -679,11 +717,20 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         "final_mp4": str(final_mp4) if final_mp4.is_file() else None,
         "final_edl": str(final_dir / "final_edl.json"),
         "decision": final_decision,
+        "release_gate": release,
+        "timeline_mp4_alignment": {
+            k: align.get(k)
+            for k in (
+                "aligned", "mp4_duration_sec", "story_duration_sec",
+                "media_duration_sec", "placeholder_duration_sec", "delta_sec",
+                "root_cause_hint",
+            )
+        },
         "note": (
-            "Formal delivery requires release_authorized=true. "
-            "Internal preview may exist while gates fail."
+            "Formal delivery requires release_authorized=true under full conjunction gates. "
+            "workflow_completed / final_mp4_exists / semantic_verification_passed alone never authorize."
             if not gates["release_authorized"]
-            else "All status gates passed for formal release."
+            else "All formal release conjunction gates passed."
         ),
     }
     write_json(final_dir / "delivery_status.json", delivery)

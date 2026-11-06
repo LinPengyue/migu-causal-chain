@@ -310,64 +310,61 @@ def run_llm_verifier(
     edl_delta: Mapping[str, Any],
     video_probe: Mapping[str, Any],
     audit_dir: Path,
+    baseline_mp4: Optional[Path] = None,
+    candidate_mp4: Optional[Path] = None,
+    baseline_edl: Optional[Sequence[Mapping[str, Any]]] = None,
+    candidate_edl: Optional[Sequence[Mapping[str, Any]]] = None,
+    work_dir: Optional[Path] = None,
 ) -> Dict[str, Any]:
-    user = (
-        "Verify whether the candidate story cut is a real improvement.\n"
-        f"baseline={json.dumps(baseline_summary, ensure_ascii=False)}\n"
-        f"candidate={json.dumps(candidate_summary, ensure_ascii=False)}\n"
-        f"edl_delta={json.dumps(edl_delta, ensure_ascii=False)}\n"
-        f"video_probe={json.dumps(video_probe, ensure_ascii=False)}\n"
-        "Return JSON: hard_vetoes (list), dimensions "
-        "(story_element_coverage/narrative_coherence/image_content_quality/live_authenticity "
-        "each with status improved|unchanged|regressed|NOT_EVALUATED, summary, evidence_refs), "
-        "evidence_of_improvement (list of {claim, evidence_refs}), "
-        "quality_delta_vs_baseline, accept_candidate (bool), reasons."
+    """Dual-video vision Verifier. Text/EDL/ffprobe-only path is forbidden for ACCEPT.
+
+    Prefer vision_json with aligned narrative frames. If videos/EDLs are missing,
+    return NOT_EVALUATED (never authorize on summaries alone).
+    """
+    del baseline_summary, candidate_summary, edl_delta, video_probe  # not used for ACCEPT
+    from .dual_video_vision_verifier import (
+        run_dual_video_vision_verifier,
+        text_only_verifier_forbidden_result,
     )
-    mock = {
-        "hard_vetoes": [],
-        "dimensions": {},
-        "evidence_of_improvement": [],
-        "quality_delta_vs_baseline": "NOT_EVALUATED",
-        "accept_candidate": False,
-    }
-    try:
-        raw = api.chat(
-            role="planner",
-            stats_role="verifier",
-            messages=[
-                {"role": "system", "content": SYSTEM_VERIFIER},
-                {"role": "user", "content": user},
-            ],
-            cache_key=None,
-            mock_content=json.dumps(mock, ensure_ascii=False),
-            allow_degraded_fallback=False,
+
+    if (
+        baseline_mp4 is None
+        or candidate_mp4 is None
+        or baseline_edl is None
+        or candidate_edl is None
+        or not Path(baseline_mp4).is_file()
+        or not Path(candidate_mp4).is_file()
+    ):
+        out = text_only_verifier_forbidden_result()
+        audit_dir.mkdir(parents=True, exist_ok=True)
+        (audit_dir / "llm_verifier.json").write_text(
+            json.dumps(out, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
         )
-    except (ApiConfigError, ApiCallError) as exc:
-        return {"ok": False, "error": f"{type(exc).__name__}:{exc}", "provider_mode": "degraded"}
-    content = str(raw.get("content") or "")
-    parsed = None
-    try:
-        parsed = _parse_model_json_lenient(content)
-    except Exception as exc:  # noqa: BLE001
-        return {
-            "ok": False,
-            "error": f"parse:{type(exc).__name__}:{exc}",
-            "provider_mode": raw.get("provider_mode"),
-            "raw_excerpt": content[:1500],
-        }
-    audit_dir.mkdir(parents=True, exist_ok=True)
+        return out
+
+    result = run_dual_video_vision_verifier(
+        api,
+        baseline_mp4=Path(baseline_mp4),
+        candidate_mp4=Path(candidate_mp4),
+        baseline_edl=baseline_edl,
+        candidate_edl=candidate_edl,
+        work_dir=Path(work_dir or (audit_dir / "dual_frames")),
+        audit_dir=audit_dir,
+    )
     (audit_dir / "llm_verifier.json").write_text(
-        json.dumps({"raw_excerpt": content[:4000], "parsed": parsed, "usage": raw.get("usage")},
-                   ensure_ascii=False, indent=2) + "\n",
+        json.dumps(
+            {
+                k: result.get(k)
+                for k in (
+                    "ok", "provider_mode", "error", "semantic_verification_status",
+                    "ok_for_semantic_accept", "sent_frame_ids", "cited_sent_frame_ids",
+                    "reasons", "est_cost_usd", "usage", "vision_backed", "validated",
+                )
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
         encoding="utf-8",
     )
-    mode = str(raw.get("provider_mode") or "")
-    if mode == "openai_compatible":
-        mode = "real"
-    return {
-        "ok": mode == "real" and parsed is not None,
-        "provider_mode": mode,
-        "validated": parsed or {},
-        "est_cost_usd": raw.get("est_cost_usd"),
-        "usage": raw.get("usage"),
-    }
+    return result

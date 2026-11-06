@@ -130,29 +130,51 @@ def observe_layers(
         }
 
     # --- Paragraph: focus spans tied to needs_video_verify / arc categories ---
-    focus_cats = {"buildup", "transition", "ending", "opening", "arc_coverage"}
+    # Prefer Critic needs_video_verify + narrative stages (buildup/turn/post-climax/ending).
+    # Do not blanket-increase frame counts; target uncertain spans only.
+    focus_cats = {
+        "buildup", "transition", "ending", "opening", "arc_coverage",
+        "narrative_order", "narrative_causality", "turn", "climax",
+    }
     focus_issues = [
         i
         for i in (diagnosis_issues or [])
         if str(i.get("evidence_sufficiency") or "") == "needs_video_verify"
         or str(i.get("category") or "") in focus_cats
     ]
+    # Ensure post-climax / ending coverage when climax exists on timeline.
+    has_ending_focus = any(
+        str(i.get("category") or "") in ("ending", "climax") for i in focus_issues
+    )
+    if story_dur > 0 and not has_ending_focus:
+        focus_issues.append(
+            {
+                "issue_id": "targeted_post_climax_tail",
+                "story_time_range": [max(0.0, story_dur * 0.78), story_dur],
+                "category": "ending",
+                "evidence_sufficiency": "needs_video_verify",
+            }
+        )
     if not focus_issues and story_dur > 0:
-        # Still observe canonical narrative thirds as paragraphs.
         focus_issues = [
             {
-                "issue_id": "paragraph_opening_third",
-                "story_time_range": [0.0, story_dur / 3],
+                "issue_id": "paragraph_opening_span",
+                "story_time_range": [0.0, min(story_dur, max(6.0, story_dur * 0.18))],
                 "category": "opening",
             },
             {
-                "issue_id": "paragraph_middle_third",
-                "story_time_range": [story_dur / 3, 2 * story_dur / 3],
+                "issue_id": "paragraph_development_span",
+                "story_time_range": [story_dur * 0.28, story_dur * 0.55],
                 "category": "buildup",
             },
             {
-                "issue_id": "paragraph_final_third",
-                "story_time_range": [2 * story_dur / 3, story_dur],
+                "issue_id": "paragraph_turn_climax_span",
+                "story_time_range": [story_dur * 0.55, story_dur * 0.82],
+                "category": "climax",
+            },
+            {
+                "issue_id": "paragraph_ending_span",
+                "story_time_range": [story_dur * 0.82, story_dur],
                 "category": "ending",
             },
         ]
