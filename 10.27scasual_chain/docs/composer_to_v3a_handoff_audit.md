@@ -95,13 +95,13 @@ test_v3a_hybrid_fallback.py        8 OK
 ## 4. 剩余问题
 
 1. **Rule fallback Planner**（API 失败时）仍可能产出空 diagnoses；handoff 未强制 rule fallback 读取 disposition（可后续接 `hybrid_fallback`）。  
-2. 历史观察复用目前靠 `prior_observations` 注入；全链 Agent 需在后续授权实验中把已有 smoke observation 显式装入 round context。  
+2. 历史观察复用：单轮实验可通过 `--seed-observations` 注入 smoke observation（见 `docs/v3a_one_round_readiness.md`）；仍不计新 HTTP、不升 FIRST_LIVE。  
 3. `INSPECT` 有观察后仍不自动 `FIRST_LIVE_VERIFIED`（有意保留）；完整 LIVE 门禁仍待 Verifier + 多帧证据闭环。  
-4. 未跑付费 Planner/VLM/三轮；本提交只具备进入真实闭环的前置条件。
+4. 付费单轮需单独授权；零付费就绪见 `v3a_one_round_readiness.md`。
 
 ---
 
 ## 5. 结论
 
 证据继承缺口已在 V3-A 层以结构化 handoff 补齐；Planner 决策改为问题驱动并映射到现有 schema。  
-**下一步（需单独授权）：** 真实 Agent 闭环实验，验证 INSPECT→VLM→可选 REPAIR 是否带来可证实增益。
+**下一步（需单独授权）：** 阿曼开场进球 **单轮** 真实 Agent 闭环（max_rounds=1，HTTP≤3，$0.05），验证 INSPECT→可选 VLM→Verifier 相对 fresh V3-R 是否有可证实增益。

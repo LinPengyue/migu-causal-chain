@@ -2820,7 +2820,32 @@ def run_self_revise(
     inject_verifier_failure: bool = False,
     quality_threshold: float = DEFAULT_QUALITY_THRESHOLD,
     stop_on_quality_threshold: bool = True,
+    seed_observations: Optional[Sequence[Mapping[str, Any]]] = None,
+    focus_segment_ids: Optional[Sequence[str]] = None,
+    max_retries: int = 2,
+    max_vlm_tool_requests: Optional[int] = None,
+    max_windows_per_request: Optional[int] = None,
+    max_followups: Optional[int] = None,
+    one_round_opening_goal: bool = False,
 ) -> Dict[str, Any]:
+    if one_round_opening_goal:
+        from .one_round_opening_budget import (
+            ONE_ROUND_MAX_FOLLOWUPS,
+            ONE_ROUND_MAX_HTTP,
+            ONE_ROUND_MAX_RETRIES,
+            ONE_ROUND_MAX_ROUNDS,
+            ONE_ROUND_MAX_VLM_TOOLS,
+            ONE_ROUND_MAX_WINDOWS,
+            OPENING_SEGMENT_ID,
+        )
+        max_rounds = min(int(max_rounds), ONE_ROUND_MAX_ROUNDS)
+        max_calls = min(int(max_calls), ONE_ROUND_MAX_HTTP)
+        max_retries = ONE_ROUND_MAX_RETRIES
+        max_vlm_tool_requests = ONE_ROUND_MAX_VLM_TOOLS
+        max_windows_per_request = ONE_ROUND_MAX_WINDOWS
+        max_followups = ONE_ROUND_MAX_FOLLOWUPS
+        focus_segment_ids = list(focus_segment_ids or [OPENING_SEGMENT_ID])
+        prefer_p1_polish = False
     baseline_resolve = resolve_phase5_baseline(phase5_dir, prefer_p1_polish=prefer_p1_polish)
     phase5_dir = Path(baseline_resolve["path"]).resolve()
     baseline_resolve_public = {
@@ -2906,6 +2931,10 @@ def run_self_revise(
     else:
         # Config-audit / dry structure without claiming success
         api = ApiProvider(force_mock=True, max_calls=0, max_cost_usd=0.0)
+    # Hard-disable provider retries for one-round / explicit zero-retry budgets.
+    if api is not None and (one_round_opening_goal or int(max_retries) == 0):
+        from .one_round_opening_budget import enforce_provider_one_round_budget
+        enforce_provider_one_round_budget(api, max_calls=max_calls)
 
     p_fix = _load_json(planner_fixture) if planner_fixture else None
     v_fix = _load_json(verifier_fixture) if verifier_fixture else None
@@ -2919,6 +2948,15 @@ def run_self_revise(
         "accepted": False,
     }
     observations_acc: List[Dict[str, Any]] = []
+    if seed_observations:
+        for o in seed_observations:
+            if isinstance(o, dict):
+                seeded = dict(o)
+                seeded.setdefault("historical_reuse", True)
+                seeded.setdefault("counts_as_new_http", False)
+                seeded.setdefault("observation_only", True)
+                seeded["fact_verified"] = False
+                observations_acc.append(seeded)
     prior_round_feedback: Optional[Dict[str, Any]] = None
     agent_success = False
     abort_reason = None
@@ -2926,6 +2964,9 @@ def run_self_revise(
     last_rule_status = "NOT_RUN"
     last_semantic_status = "NOT_EVALUATED"
     degraded_mode = bool(allow_degraded_offline or real_mode or fixture_mode)
+    vlm_windows = int(max_windows_per_request) if max_windows_per_request is not None else MAX_WINDOWS_OBSERVE
+    vlm_followups = int(max_followups) if max_followups is not None else MAX_FOLLOWUP_WINDOWS
+    vlm_tool_cap = int(max_vlm_tool_requests) if max_vlm_tool_requests is not None else MAX_TOOL_REQUESTS
 
     # Baseline rule report always available for degraded delivery
     baseline_rule = run_rule_verifier(story, plan, baseline_edl)
@@ -2945,6 +2986,17 @@ def run_self_revise(
             prior_round_feedback=prior_round_feedback,
             video_duration=video_duration,
         )
+        if focus_segment_ids:
+            ctx = dict(ctx)
+            constraints = dict(ctx.get("constraints") or {})
+            constraints["focus_segment_ids"] = list(focus_segment_ids)
+            constraints["max_video_tool_requests"] = min(
+                int(constraints.get("max_video_tool_requests") or vlm_tool_cap),
+                vlm_tool_cap,
+            )
+            constraints["historical_seed_observations_present"] = bool(seed_observations)
+            constraints["historical_seed_not_new_http"] = True
+            ctx["constraints"] = constraints
         (round_dir / "planner_context.json").write_text(
             json.dumps(ctx, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
         )
@@ -2991,7 +3043,22 @@ def run_self_revise(
 
         # --- VLM / ffmpeg observe ---
         obs_pack: Dict[str, Any] = {"observations": [], "any_real_ok": False}
-        tools = validated.get("video_tool_requests") or []
+        tools = list(validated.get("video_tool_requests") or [])
+        tool_filter_meta: Optional[Dict[str, Any]] = None
+        if focus_segment_ids:
+            from .one_round_opening_budget import filter_tools_to_focus
+            # Single focus id for Oman opening experiment; multi-id → first match any.
+            focus_id = str(focus_segment_ids[0])
+            tool_filter_meta = filter_tools_to_focus(
+                tools, focus_segment_id=focus_id, max_tools=vlm_tool_cap,
+            )
+            tools = list(tool_filter_meta.get("tools") or [])
+            (round_dir / "tool_focus_filter.json").write_text(
+                json.dumps(tool_filter_meta, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+        elif vlm_tool_cap < len(tools):
+            tools = tools[:vlm_tool_cap]
         if not skip_vlm and tools:
             if inject_vlm_failure:
                 if enrich_video:
@@ -3017,6 +3084,8 @@ def run_self_revise(
                 try:
                     obs_pack = run_vlm_observations(
                         api, video=enrich_video, work_dir=round_dir / "vlm", tool_requests=tools,
+                        max_windows_per_request=vlm_windows,
+                        max_followups=vlm_followups,
                     )
                     if not obs_pack.get("any_real_ok") and obs_pack.get("observations"):
                         # Partial failure: keep technical frames if any; else ffmpeg fallback
@@ -3437,6 +3506,17 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "--no-prefer-p1-polish", action="store_true",
         help="Do not auto-switch 04_phase5 → sibling 04_phase5_p1_polish when present",
     )
+    p.add_argument(
+        "--one-round-opening-goal", action="store_true",
+        help="Oman opening-goal isolated mode: max_rounds=1, max_calls≤3, retries=0, "
+             "focus seg_opponent_opening_goal_action, no p1 polish",
+    )
+    p.add_argument(
+        "--seed-observations", type=Path, default=None,
+        help="JSON file with one observation object or {observation: ...}; historical reuse only",
+    )
+    p.add_argument("--max-retries", type=int, default=2,
+                   help="Provider HTTP retries per call (0 for one-round hard stop)")
     args = p.parse_args(argv)
 
     if args.config_audit_only:
@@ -3466,6 +3546,18 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     if args.out_dir.resolve().is_relative_to(args.phase5_dir.resolve()):
         p.error("out-dir must be outside frozen phase5 directory")
 
+    seed_obs = None
+    if args.seed_observations is not None:
+        raw_seed = _load_json(args.seed_observations)
+        if isinstance(raw_seed, dict) and isinstance(raw_seed.get("observation"), dict):
+            seed_obs = [raw_seed["observation"]]
+        elif isinstance(raw_seed, dict):
+            seed_obs = [raw_seed]
+        elif isinstance(raw_seed, list):
+            seed_obs = [x for x in raw_seed if isinstance(x, dict)]
+        else:
+            p.error("--seed-observations must be a JSON object or list")
+
     try:
         summary = run_self_revise(
             phase5_dir=args.phase5_dir,
@@ -3487,6 +3579,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             allow_degraded_offline=args.allow_degraded_offline,
             quality_threshold=args.quality_threshold,
             stop_on_quality_threshold=not args.no_stop_on_quality_threshold,
+            seed_observations=seed_obs,
+            max_retries=args.max_retries,
+            one_round_opening_goal=args.one_round_opening_goal,
         )
     except Exception as exc:
         print(json.dumps({
