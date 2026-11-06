@@ -1,0 +1,361 @@
+"""Global Story Critic — diagnose narrative from initial cut + plan + EDL + source refs.
+
+Does NOT treat rule scores as semantic video proof. Distinguishes:
+  observed | needs_video_verify | structure_inferred
+"""
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
+
+from .story_timeline import (
+    build_story_timeline,
+    edl_rows,
+    narrative_beat_coverage,
+    protected_goal_segment_ids,
+)
+
+SEVERITY = ("critical", "major", "minor", "info")
+
+
+def _issue(
+    *,
+    issue_id: str,
+    story_time_range: Sequence[float],
+    segment_ids: Sequence[str],
+    observation: str,
+    narrative_problem: str,
+    severity: str,
+    suggested_fix: str,
+    evidence_sufficiency: str,
+    category: str,
+) -> Dict[str, Any]:
+    assert evidence_sufficiency in (
+        "observed",
+        "needs_video_verify",
+        "structure_inferred",
+    )
+    return {
+        "issue_id": issue_id,
+        "story_time_range": [float(story_time_range[0]), float(story_time_range[1])],
+        "segment_ids": list(segment_ids),
+        "observation": observation,
+        "narrative_problem": narrative_problem,
+        "severity": severity if severity in SEVERITY else "minor",
+        "suggested_fix": suggested_fix,
+        "evidence_sufficiency": evidence_sufficiency,
+        "category": category,
+    }
+
+
+def _probe_story_video_duration(path: Optional[Path]) -> Optional[float]:
+    if path is None or not path.is_file():
+        return None
+    try:
+        import subprocess
+
+        r = subprocess.run(
+            [
+                "ffprobe",
+                "-v",
+                "error",
+                "-show_entries",
+                "format=duration",
+                "-of",
+                "default=noprint_wrappers=1:nokey=1",
+                str(path),
+            ],
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        if r.returncode == 0 and r.stdout.strip():
+            return float(r.stdout.strip())
+    except Exception:
+        return None
+    return None
+
+
+def structural_diagnosis(
+    *,
+    edl: Sequence[Mapping[str, Any]],
+    story_plan: Optional[Mapping[str, Any]] = None,
+    initial_story_mp4: Optional[Path] = None,
+    source_video: Optional[Path] = None,
+) -> Dict[str, Any]:
+    """Match-agnostic structural critic over timeline + plan + file existence.
+
+    Intentionally avoids baking in match-specific narrative complaints.
+    Issues that require watching the cut are marked needs_video_verify.
+    """
+    timeline = build_story_timeline(edl)
+    segs = list(timeline.get("segments") or [])
+    coverage = narrative_beat_coverage(timeline)
+    issues: List[Dict[str, Any]] = []
+    notes: List[str] = []
+
+    mp4_dur = _probe_story_video_duration(initial_story_mp4)
+    if initial_story_mp4 is None or not Path(initial_story_mp4).is_file():
+        issues.append(
+            _issue(
+                issue_id="missing_initial_story_mp4",
+                story_time_range=[0.0, float(timeline.get("story_duration_sec") or 0.0)],
+                segment_ids=[],
+                observation="Initial story MP4 path missing or not a file.",
+                narrative_problem="Cannot perform global story understanding without the actual cut.",
+                severity="critical",
+                suggested_fix="render_or_locate_initial_story_mp4",
+                evidence_sufficiency="observed",
+                category="input_integrity",
+            )
+        )
+    elif mp4_dur is not None and timeline.get("story_duration_sec"):
+        delta = abs(mp4_dur - float(timeline["story_duration_sec"]))
+        notes.append(
+            f"story_mp4_duration={mp4_dur:.3f}s timeline_media={timeline['story_duration_sec']:.3f}s "
+            f"delta={delta:.3f}s"
+        )
+        if delta > 8.0:
+            issues.append(
+                _issue(
+                    issue_id="story_mp4_timeline_mismatch",
+                    story_time_range=[0.0, float(timeline["story_duration_sec"])],
+                    segment_ids=[s["segment_id"] for s in segs if s.get("has_media_window")],
+                    observation=(
+                        f"Rendered story duration ({mp4_dur:.2f}s) diverges from EDL media sum "
+                        f"({timeline['story_duration_sec']:.2f}s) by {delta:.2f}s."
+                    ),
+                    narrative_problem="Cut/EDL correspondence uncertain; story analysis may be misaligned.",
+                    severity="major",
+                    suggested_fix="re_render_or_reconcile_edl",
+                    evidence_sufficiency="observed",
+                    category="timeline_integrity",
+                )
+            )
+
+    if source_video is None or not Path(source_video).is_file():
+        issues.append(
+            _issue(
+                issue_id="missing_source_video_ref",
+                story_time_range=[0.0, 0.0],
+                segment_ids=[],
+                observation="Source match MP4 reference missing.",
+                narrative_problem="Cannot search for replacement footage with provenance.",
+                severity="critical",
+                suggested_fix="provide_source_mp4",
+                evidence_sufficiency="observed",
+                category="input_integrity",
+            )
+        )
+
+    media_segs = [s for s in segs if s.get("has_media_window")]
+    if len(media_segs) < 2:
+        issues.append(
+            _issue(
+                issue_id="insufficient_media_segments",
+                story_time_range=[0.0, float(timeline.get("story_duration_sec") or 0.0)],
+                segment_ids=[s["segment_id"] for s in segs],
+                observation=f"Only {len(media_segs)} media-bearing cut segment(s).",
+                narrative_problem="Story arc cannot be established from the cut.",
+                severity="critical",
+                suggested_fix="rebuild_edl_from_v3r",
+                evidence_sufficiency="structure_inferred",
+                category="arc_coverage",
+            )
+        )
+
+    # Abrupt media jumps between adjacent story beats (structure signal only).
+    for a, b in zip(media_segs, media_segs[1:]):
+        gap = float(b["media_in"]) - float(a["media_out"])
+        if gap > 1200.0:  # >20 min source jump between adjacent cuts
+            issues.append(
+                _issue(
+                    issue_id=f"large_source_jump_{a['segment_id']}_to_{b['segment_id']}",
+                    story_time_range=[float(a["story_out"]) - 0.5, float(b["story_in"]) + 0.5],
+                    segment_ids=[a["segment_id"], b["segment_id"]],
+                    observation=(
+                        f"Adjacent cuts jump {gap:.1f}s in source PTS "
+                        f"({a['media_out']} → {b['media_in']}) while contiguous on story timeline."
+                    ),
+                    narrative_problem=(
+                        "Possible abrupt narrative transition; continuity and emotional bridging "
+                        "need video verification."
+                    ),
+                    severity="minor",
+                    suggested_fix="verify_transition_or_insert_bridge",
+                    evidence_sufficiency="needs_video_verify",
+                    category="transition",
+                )
+            )
+
+    # Scoreboard-only aftermath after last goal action: structure flag for ending completeness.
+    goal_idxs = [i for i, s in enumerate(media_segs) if "goal_action" in str(s.get("role") or "")]
+    if goal_idxs:
+        last_goal = media_segs[goal_idxs[-1]]
+        after = [s for s in media_segs if float(s["story_in"]) >= float(last_goal["story_out"]) - 1e-6]
+        after_roles = [str(s.get("role") or "") for s in after]
+        only_scoreboard = after and all(
+            "scoreboard" in r or "title" in r or "wrap" in r for r in after_roles
+        )
+        if only_scoreboard and sum(float(s["duration_sec"]) for s in after) < 8.0:
+            issues.append(
+                _issue(
+                    issue_id="thin_post_climax_tail",
+                    story_time_range=[
+                        float(last_goal["story_out"]),
+                        float(timeline.get("story_duration_sec") or last_goal["story_out"]),
+                    ],
+                    segment_ids=[s["segment_id"] for s in after],
+                    observation=(
+                        "After the final goal_action, remaining media cuts are short scoreboard/"
+                        f"wrap material totaling {sum(float(s['duration_sec']) for s in after):.1f}s."
+                    ),
+                    narrative_problem=(
+                        "Ending may feel abrupt; whether emotional closure is adequate requires "
+                        "watching the cut (not assumed from structure alone)."
+                    ),
+                    severity="minor",
+                    suggested_fix="verify_ending_or_extend_aftermath",
+                    evidence_sufficiency="needs_video_verify",
+                    category="ending",
+                )
+            )
+
+    # Buildup density between opening deficit and equalizer (structure only).
+    opening = next((s for s in media_segs if "opponent_opening" in str(s.get("role") or "")), None)
+    equalizer = next((s for s in media_segs if "equalizer_goal" in str(s.get("role") or "")), None)
+    if opening and equalizer:
+        between = [
+            s
+            for s in media_segs
+            if float(opening["story_out"]) - 1e-6
+            <= float(s["story_in"])
+            < float(equalizer["story_in"]) + 1e-6
+        ]
+        between_media = sum(float(s["duration_sec"]) for s in between)
+        if between_media < 6.0:
+            issues.append(
+                _issue(
+                    issue_id="sparse_pre_equalizer_bridge",
+                    story_time_range=[float(opening["story_out"]), float(equalizer["story_in"])],
+                    segment_ids=[s["segment_id"] for s in between],
+                    observation=(
+                        f"Only {between_media:.1f}s of media between opening-goal related cut and "
+                        "equalizer goal_action."
+                    ),
+                    narrative_problem=(
+                        "Pressure/buildup before the equalizer may be thin; confirm by watching "
+                        "story midsection — do not treat this alone as a confirmed defect."
+                    ),
+                    severity="minor",
+                    suggested_fix="verify_buildup_or_search_bridge_footage",
+                    evidence_sufficiency="needs_video_verify",
+                    category="buildup",
+                )
+            )
+
+    # Duplicate identical media windows
+    seen: Dict[Tuple[float, float], str] = {}
+    for s in media_segs:
+        key = (round(float(s["media_in"]), 2), round(float(s["media_out"]), 2))
+        if key in seen:
+            issues.append(
+                _issue(
+                    issue_id=f"duplicate_media_window_{s['segment_id']}",
+                    story_time_range=[float(s["story_in"]), float(s["story_out"])],
+                    segment_ids=[seen[key], s["segment_id"]],
+                    observation=f"Identical media window {key} appears twice in the cut.",
+                    narrative_problem="Possible redundant/repeated shot.",
+                    severity="major",
+                    suggested_fix="drop_or_replace_duplicate",
+                    evidence_sufficiency="structure_inferred",
+                    category="redundancy",
+                )
+            )
+        else:
+            seen[key] = s["segment_id"]
+
+    # Replay flags on included cuts
+    for s in media_segs:
+        if s.get("is_replay") in (True, "true", "True", 1):
+            issues.append(
+                _issue(
+                    issue_id=f"replay_flagged_{s['segment_id']}",
+                    story_time_range=[float(s["story_in"]), float(s["story_out"])],
+                    segment_ids=[s["segment_id"]],
+                    observation="EDL marks is_replay=true on an included cut.",
+                    narrative_problem="Replay/slow-motion material is forbidden in delivery.",
+                    severity="critical",
+                    suggested_fix="drop_or_replace_with_live_action",
+                    evidence_sufficiency="structure_inferred",
+                    category="replay_risk",
+                )
+            )
+
+    # Plan vs EDL role presence (if plan provides segments/roles)
+    plan_roles: List[str] = []
+    if isinstance(story_plan, Mapping):
+        for key in ("segments", "beats"):
+            block = story_plan.get(key)
+            if isinstance(block, list):
+                for item in block:
+                    if isinstance(item, Mapping):
+                        r = item.get("role") or item.get("label") or item.get("beat")
+                        if r:
+                            plan_roles.append(str(r))
+                    elif isinstance(item, str):
+                        plan_roles.append(item)
+
+    protect = protected_goal_segment_ids(edl)
+    return {
+        "schema": "v3a_story_diagnosis_v1",
+        "critic_mode": "structural_plus_file_probes",
+        "inputs": {
+            "initial_story_mp4": str(initial_story_mp4) if initial_story_mp4 else None,
+            "source_video": str(source_video) if source_video else None,
+            "story_mp4_duration_sec": mp4_dur,
+            "plan_role_hints": plan_roles[:32],
+        },
+        "timeline": timeline,
+        "coverage": coverage,
+        "protected_goal_segment_ids": protect,
+        "issues": issues,
+        "notes": notes,
+        "disclaimer": (
+            "Structural/file probes are not multimodal story understanding. "
+            "Issues marked needs_video_verify require layered video observation before revision."
+        ),
+    }
+
+
+def merge_observation_into_diagnosis(
+    diagnosis: Mapping[str, Any],
+    observations: Mapping[str, Any],
+) -> Dict[str, Any]:
+    """Attach layered observe results; promote issues only when observation claims support."""
+    out = dict(diagnosis)
+    out["layered_observations"] = observations
+    obs_issues = list(observations.get("derived_issues") or [])
+    merged = list(out.get("issues") or [])
+    existing = {i.get("issue_id") for i in merged}
+    for oi in obs_issues:
+        if isinstance(oi, dict) and oi.get("issue_id") not in existing:
+            merged.append(oi)
+            existing.add(oi.get("issue_id"))
+    out["issues"] = merged
+    # Mark diagnosis validity
+    has_mp4 = bool((out.get("inputs") or {}).get("initial_story_mp4"))
+    out["story_diagnosis_valid"] = bool(has_mp4 and out.get("timeline"))
+    out["semantic_observation_claimed"] = bool(
+        observations.get("semantic_provider_used")
+        and not observations.get("fixture_or_offline")
+    )
+    return out
+
+
+def write_diagnosis(path: Path, diagnosis: Mapping[str, Any]) -> Path:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(diagnosis, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return path
+
