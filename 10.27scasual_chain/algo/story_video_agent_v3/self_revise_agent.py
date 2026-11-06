@@ -46,6 +46,12 @@ from .hybrid_fallback import (
     run_rule_verifier,
     should_skip_api_verifier_no_candidate_change,
 )
+from .vlm_evidence_semantics import (
+    EVIDENCE_AMBIGUOUS,
+    EVIDENCE_LACKS_SUPPORT,
+    classify_goal_action_evidence,
+    persist_visible_model_output,
+)
 
 SCHEMA = "v3a_self_revise_run_v1"
 MAX_ROUNDS = 3
@@ -282,8 +288,12 @@ VLM_SYSTEM_HINT = (
     "If this window lacks goal-action evidence, say so; do NOT infer the whole "
     "match lacks the goal. Suggest next_search_request only within program-"
     "provided allowed_windows (by index or start/end copied from that list). "
-    "Optional structured fields: observed_shot, observed_net, live_or_replay, "
-    "supports_bound_segment, candidate_goal_action_span{start,end}, "
+    "Field meanings (do not collapse): observed_shot=shot attempt visible; "
+    "observed_net=goalmouth/net structure visible ONLY (NOT goal confirmation); "
+    "prefer ball_crosses_goal_line / goal_result_confirmed when those are clear; "
+    "supports_bound_segment=explicit endorsement to bind this window as the "
+    "goal-action cut candidate. Scoreboard 0-0 alone neither proves nor disproves "
+    "a goal. Also: live_or_replay, candidate_goal_action_span{start,end}, "
     "scoreboard_only. Never set fact_verified true. observation_only must be true."
 )
 
@@ -656,10 +666,12 @@ def select_followup_windows(
     for o in observed:
         vlm = o.get("vlm") if isinstance(o.get("vlm"), dict) else {}
         prior = o.get("window") or {}
-        # Negative / incomplete window must not conclude match-level absence.
+        # Incomplete / ambiguous windows may schedule follow-up; 0-0 alone is not
+        # proof of match-level absence (or presence) of a goal.
+        ev = classify_goal_action_evidence(vlm)
         neg = bool(vlm.get("scoreboard_only")) or (
             vlm.get("observed_shot") is False and vlm.get("observed_net") is False
-        ) or ("0-0" in str(vlm.get("visible_content") or "") and not vlm.get("supports_bound_segment"))
+        ) or (ev.get("status") in (EVIDENCE_AMBIGUOUS, EVIDENCE_LACKS_SUPPORT))
         if not neg and not vlm.get("next_search_request"):
             continue
         nxt = parse_next_search_request(
@@ -733,22 +745,43 @@ def authorize_bound_segment(
         denies.append("replay_cannot_bind_primary_goal")
     if vlm.get("scoreboard_only") is True:
         denies.append("scoreboard_only_not_goal_action")
-    supports = bool(vlm.get("supports_bound_segment")) or (
-        vlm.get("observed_shot") is True and vlm.get("observed_net") is True
-    )
+    evidence = classify_goal_action_evidence(vlm)
+    checks["vlm_evidence"] = evidence
+    checks["vlm_supports_bound"] = bool(evidence.get("bindable"))
+    # candidate_goal_action_span never overrides explicit supports=false / ambiguity.
     cand_span = vlm.get("candidate_goal_action_span")
+    cand_span_ok = False
     if isinstance(cand_span, dict):
         cs, ce = _num(cand_span.get("start")), _num(cand_span.get("end"))
-        if cs is not None and ce is not None and ce > cs:
-            supports = True
-    checks["vlm_supports_bound"] = supports
-    if not supports:
-        denies.append("vlm_lacks_goal_action_support_fields")
-    if not role or "goal_action" not in role:
-        # Non-goal roles can bind with weaker supports if explicitly requested
-        if "goal_action" not in role and not denies:
+        cand_span_ok = cs is not None and ce is not None and ce > cs
+    checks["candidate_goal_action_span_present"] = cand_span_ok
+    is_goal_role = bool(role) and "goal_action" in role
+    if is_goal_role:
+        if evidence.get("status") == EVIDENCE_AMBIGUOUS:
+            denies.append(EVIDENCE_AMBIGUOUS)
+            for r in evidence.get("reasons") or []:
+                if r not in denies:
+                    denies.append(str(r))
+        elif not evidence.get("bindable"):
+            denies.append("vlm_lacks_goal_action_support_fields")
+            for r in evidence.get("reasons") or []:
+                if r not in denies:
+                    denies.append(str(r))
+        elif cand_span_ok is False and vlm.get("supports_bound_segment") is not True:
+            # Bindable via strong fields alone is OK; weak paths still need a span
+            # when supports is not explicit True (defensive).
             pass
+    else:
+        # Non-goal roles: do not use shot&&net override; require explicit support flag.
+        if vlm.get("supports_bound_segment") is not True and not evidence.get("bindable"):
+            denies.append("vlm_lacks_goal_action_support_fields")
     allow = len(denies) == 0
+    if allow:
+        evidence_status = "CANDIDATE_BOUND_UNVERIFIED_FIRST_LIVE"
+    elif EVIDENCE_AMBIGUOUS in denies:
+        evidence_status = EVIDENCE_AMBIGUOUS
+    else:
+        evidence_status = "REJECTED"
     return {
         "allow": allow,
         "denies": denies,
@@ -756,9 +789,11 @@ def authorize_bound_segment(
         "media_in": round(media_in, 3),
         "media_out": round(media_out, 3),
         "role": role,
-        "evidence_status": "CANDIDATE_BOUND_UNVERIFIED_FIRST_LIVE" if allow else "REJECTED",
+        "evidence_status": evidence_status,
+        "evidence_classification": evidence.get("status"),
         "first_live_status": "NOT_VERIFIED",
         "agent_auto_verified": False,
+        "observed_net_is_not_goal_confirmation": True,
     }
 
 
@@ -784,8 +819,22 @@ def build_bound_segment_from_observations(
     ]
     if not matched:
         matched = [o for o in observations if o.get("ok")]
+    last_auth: Optional[Dict[str, Any]] = None
+    last_evidence: Optional[Dict[str, Any]] = None
     for o in matched:
         vlm = o.get("vlm") if isinstance(o.get("vlm"), dict) else {}
+        evidence = classify_goal_action_evidence(vlm)
+        last_evidence = evidence
+        # Weak / conflicting evidence must not build a trusted goal cut via any path.
+        if "goal_action" in role and not evidence.get("bindable"):
+            last_auth = {
+                "allow": False,
+                "denies": [evidence.get("status") or EVIDENCE_LACKS_SUPPORT]
+                + list(evidence.get("reasons") or []),
+                "evidence_status": evidence.get("status"),
+                "evidence_classification": evidence,
+            }
+            continue
         frames = list(o.get("frames") or [])
         pts = [_frame_pts(f) for f in frames]
         pts = [p for p in pts if p is not None]
@@ -798,6 +847,15 @@ def build_bound_segment_from_observations(
         else:
             mi = mo = None
         if mi is None or mo is None or mo <= mi:
+            # Sparse PTS min/max alone is weak — refuse inventing a goal cut from it
+            # unless evidence is bindable AND supports_bound_segment is explicit True.
+            if vlm.get("supports_bound_segment") is not True:
+                last_auth = {
+                    "allow": False,
+                    "denies": ["refuse_minmax_pts_without_explicit_supports_and_span"],
+                    "evidence_classification": evidence,
+                }
+                continue
             mi, mo = min(pts) - 1.0, max(pts) + 1.0
         # Clamp to observed window
         win = o.get("window") or {}
@@ -817,6 +875,7 @@ def build_bound_segment_from_observations(
             trusted_windows=trusted_windows,
             score_anchor_sec=score_anchor_sec,
         )
+        last_auth = auth
         if not auth["allow"]:
             continue
         return {
@@ -843,10 +902,18 @@ def build_bound_segment_from_observations(
             },
             "observation_ref": o.get("request_id"),
         }
+    reason = "no_observation_passed_independent_binding_gate"
+    if last_auth and EVIDENCE_AMBIGUOUS in (last_auth.get("denies") or []):
+        reason = EVIDENCE_AMBIGUOUS
+    elif last_evidence and last_evidence.get("status") == EVIDENCE_AMBIGUOUS:
+        reason = EVIDENCE_AMBIGUOUS
     return {
         "ok": False,
-        "reason": "no_observation_passed_independent_binding_gate",
+        "reason": reason,
         "tried": len(matched),
+        "authorization": last_auth,
+        "evidence_classification": last_evidence,
+        "observed_net_is_not_goal_confirmation": True,
     }
 
 
@@ -1730,6 +1797,7 @@ def call_llm_planner(
     context: Mapping[str, Any],
     *,
     fixture: Optional[Mapping[str, Any]] = None,
+    audit_dir: Optional[Path] = None,
 ) -> Dict[str, Any]:
     if fixture is not None:
         validated = validate_planner_output(
@@ -1754,16 +1822,29 @@ def call_llm_planner(
     )
     mode = str(resp.get("provider_mode") or "")
     content = str(resp.get("content") or "")
+    audit = persist_visible_model_output(
+        audit_dir,
+        role="planner",
+        request_id="planner",
+        content=content,
+        meta={
+            "model": resp.get("model"),
+            "provider_mode": mode,
+            "finish_reason": resp.get("finish_reason"),
+            "usage": resp.get("usage"),
+        },
+    )
     if mode != "real" or resp.get("error"):
         return {
             "ok": False,
             "provider_mode": mode or "degraded",
             "error": str(resp.get("error") or f"planner_not_real:{mode}"),
             "raw_content": content,
-            "raw_excerpt": content[:8000],
+            "raw_excerpt": content[:2000],
             "usage": resp.get("usage"),
             "est_cost_usd": resp.get("est_cost_usd"),
             "model": resp.get("model"),
+            **audit,
         }
     try:
         raw = _parse_model_json(content)
@@ -1778,10 +1859,11 @@ def call_llm_planner(
             "provider_mode": mode,
             "error": f"planner_parse_or_validate:{type(exc).__name__}:{exc}",
             "raw_content": content,
-            "raw_excerpt": content[:8000],
+            "raw_excerpt": content[:2000],
             "usage": resp.get("usage"),
             "est_cost_usd": resp.get("est_cost_usd"),
             "model": resp.get("model"),
+            **audit,
         }
     return {
         "ok": True,
@@ -1790,10 +1872,11 @@ def call_llm_planner(
         "raw": raw,
         "validated": validated,
         "raw_content": content,
-        "raw_excerpt": content[:8000],
+        "raw_excerpt": content[:2000],
         "usage": resp.get("usage"),
         "est_cost_usd": resp.get("est_cost_usd"),
         "cost_disclaimer": COST_DISCLAIMER,
+        **audit,
     }
 
 
@@ -1833,6 +1916,7 @@ def call_llm_verifier(
     *,
     fixture: Optional[Mapping[str, Any]] = None,
     max_retries: int = VERIFIER_MAX_RETRIES,
+    audit_dir: Optional[Path] = None,
 ) -> Dict[str, Any]:
     if fixture is not None:
         return {
@@ -1885,6 +1969,19 @@ def call_llm_verifier(
         usage = resp.get("usage") or {}
         finish_reason = str(resp.get("finish_reason") or "")
         response_audit = resp.get("response_audit") if isinstance(resp.get("response_audit"), dict) else {}
+        visible_audit = persist_visible_model_output(
+            audit_dir,
+            role="verifier",
+            request_id=f"verifier_attempt_{attempt}",
+            content=content,
+            meta={
+                "model": resp.get("model"),
+                "provider_mode": mode,
+                "finish_reason": finish_reason,
+                "usage": usage,
+                "response_audit": response_audit,
+            },
+        )
         reasoning_tokens = None
         details = usage.get("completion_tokens_details")
         if isinstance(details, dict) and details.get("reasoning_tokens") is not None:
@@ -1892,7 +1989,6 @@ def call_llm_verifier(
                 reasoning_tokens = int(details["reasoning_tokens"])
             except (TypeError, ValueError):
                 reasoning_tokens = None
-        http_ok = mode == "real" and not resp.get("error")
         if mode != "real" or resp.get("error"):
             last = {
                 "ok": False,
@@ -1908,6 +2004,7 @@ def call_llm_verifier(
                 "failure_code": "HTTP_OR_PROVIDER",
                 "reasoning_tokens": reasoning_tokens,
                 "finish_reason": finish_reason,
+                **visible_audit,
             }
             attempts.append(dict(last))
             err_l = str(last["error"]).lower()
@@ -1937,6 +2034,7 @@ def call_llm_verifier(
                     "HTTP succeeded but visible content empty "
                     "(often reasoning consumed output budget)."
                 ),
+                **visible_audit,
             }
             attempts.append(dict(last))
             # Retry once more — model may return short JSON on next try
@@ -1973,6 +2071,7 @@ def call_llm_verifier(
                 "finish_reason": finish_reason,
                 "output_token_limit": response_audit.get("output_token_limit"),
                 "parse_stage": parse_stage,
+                **visible_audit,
             }
             attempts.append(dict(last))
             if code == "EMPTY_MODEL_CONTENT":
@@ -1984,7 +2083,7 @@ def call_llm_verifier(
             "model": resp.get("model"),
             "raw": raw,
             "validated": validated,
-            "raw_excerpt": content[:4000],
+            "raw_excerpt": content[:2000],
             "usage": usage,
             "est_cost_usd": resp.get("est_cost_usd"),
             "cost_disclaimer": COST_DISCLAIMER,
@@ -1999,6 +2098,7 @@ def call_llm_verifier(
             "reasoning_tokens": reasoning_tokens,
             "finish_reason": finish_reason,
             "logical_role": "verifier",
+            **visible_audit,
         }
     # Never silently treat as rule-success
     last = dict(last or {"ok": False, "error": "verifier_unknown_failure", "provider_mode": "degraded"})
@@ -2022,6 +2122,7 @@ def _observe_one_window(
     request_id: str,
     sample_times_override: Optional[Sequence[float]] = None,
     sample_plan_meta: Optional[Mapping[str, Any]] = None,
+    audit_dir: Optional[Path] = None,
 ) -> Dict[str, Any]:
     start, end = float(win["start"]), float(win["end"])
     if sample_times_override:
@@ -2051,9 +2152,11 @@ def _observe_one_window(
         "A negative finding in THIS window does not prove the goal is absent from the match.\n"
         "Return JSON keys: visible_content, story_relation, suspected_errors,"
         "shot_suggestions, next_search_request, cited_frame_ids, confidence,"
-        "observed_shot, observed_net, live_or_replay, supports_bound_segment,"
-        "candidate_goal_action_span, scoreboard_only,"
-        "fact_verified(false), observation_only(true)."
+        "observed_shot, observed_net (goalmouth/net visible only — NOT goal "
+        "confirmation), ball_crosses_goal_line, goal_result_confirmed, "
+        "live_or_replay, supports_bound_segment, candidate_goal_action_span, "
+        "scoreboard_only, fact_verified(false), observation_only(true). "
+        "Scoreboard 0-0 alone neither proves nor disproves a goal."
     )
     mock_obj = {
         "visible_content": "mock_forbidden",
@@ -2101,10 +2204,28 @@ def _observe_one_window(
     except Exception as exc:
         parse_error = f"{type(exc).__name__}:{exc}"
     ok = mode == "real" and not raw_resp.get("error") and parsed is not None
+    evidence = None
     if parsed is not None:
         # Hard force: never let a single VLM pass claim first-LIVE verification
         parsed["fact_verified"] = False
         parsed["observation_only"] = True
+        evidence = classify_goal_action_evidence(parsed)
+        parsed["evidence_classification"] = evidence
+    visible_audit = persist_visible_model_output(
+        audit_dir,
+        role="vision",
+        request_id=str(request_id),
+        content=content,
+        meta={
+            "model": raw_resp.get("model"),
+            "provider_mode": mode,
+            "finish_reason": raw_resp.get("finish_reason"),
+            "usage": raw_resp.get("usage"),
+            "frame_ids": fids,
+            # paths only — never embed image bytes / base64
+            "frame_paths": [str(p) for p in paths],
+        },
+    )
     out = {
         "request_id": request_id,
         "issue_id": tr.get("issue_id"),
@@ -2116,13 +2237,16 @@ def _observe_one_window(
         "frames": frames,
         "window": {"start": start, "end": end},
         "vlm": parsed,
-        "raw_excerpt": content[:3000],
+        "raw_excerpt": content[:2000],
         "usage": raw_resp.get("usage"),
         "est_cost_usd": raw_resp.get("est_cost_usd"),
         "fact_verified": False,
         "observation_only": True,
         "allowed_windows": list(allowed_windows),
         "sample_times": times,
+        "evidence_classification": evidence,
+        "observed_net_is_not_goal_confirmation": True,
+        **visible_audit,
     }
     if sample_plan_meta:
         out["one_round_sample_plan"] = dict(sample_plan_meta)
@@ -2170,6 +2294,7 @@ def run_vlm_observations(
                 allowed_windows=windows, request_id=rid,
                 sample_times_override=use_override,
                 sample_plan_meta=use_meta,
+                audit_dir=work_dir / "model_visible",
             )
             local_obs.append(obs)
             observations.append(obs)
@@ -2197,6 +2322,7 @@ def run_vlm_observations(
             obs = _observe_one_window(
                 api, store=store, tr=tr, win=win,
                 allowed_windows=windows, request_id=rid,
+                audit_dir=work_dir / "model_visible",
             )
             obs["followup"] = True
             local_obs.append(obs)
@@ -2294,6 +2420,24 @@ def evaluate_trim_bounds(
             continue
         if vlm.get("scoreboard_only") is True:
             continue
+        evidence = classify_goal_action_evidence(vlm)
+        if evidence.get("status") == EVIDENCE_AMBIGUOUS:
+            return {
+                "ok": False,
+                "status": "rejected",
+                "reason": EVIDENCE_AMBIGUOUS,
+                "evidence_classification": evidence,
+                "observation_ref": o.get("request_id"),
+                "note": (
+                    "Ambiguous VLM semantics (e.g. supports_bound_segment=false "
+                    "with shot/net true) cannot authorize trim; "
+                    "observed_net is not goal confirmation."
+                ),
+            }
+        if not evidence.get("bindable"):
+            continue
+        # Legacy shot&&net alone is not enough; require bindable classification
+        # (explicit supports or stronger goal fields).
         span = vlm.get("candidate_goal_action_span")
         if not isinstance(span, dict):
             continue
@@ -2308,9 +2452,10 @@ def evaluate_trim_bounds(
         # Sparse 4-frame min/max often yields a near-full window; refuse non-informative trim.
         if seg_span > 1e-6 and new_span >= 0.85 * seg_span:
             continue
-        shot_ok = vlm.get("observed_shot") is True
-        net_ok = vlm.get("observed_net") is True
-        if not (shot_ok and net_ok):
+        if evidence.get("fields", {}).get("observed_shot") is not True and not (
+            evidence.get("fields", {}).get("ball_crosses_goal_line") is True
+            or evidence.get("fields", {}).get("goal_result_confirmed") is True
+        ):
             continue
         # Require at least one PTS inside the proposed span (boundary grounded in frames).
         pts = [_frame_pts(f) for f in (o.get("frames") or [])]
@@ -2332,9 +2477,12 @@ def evaluate_trim_bounds(
             "media_out": round(new_out, 3),
             "observation_ref": o.get("request_id"),
             "first_live_status": "NOT_VERIFIED",
-            "trim_basis": "candidate_goal_action_span_with_shot_net",
+            "trim_basis": "candidate_goal_action_span_with_bindable_evidence",
+            "evidence_classification": evidence.get("status"),
             "note": (
-                "Trim uses explicit VLM action span + shot/net; "
+                "Trim uses explicit VLM action span + bindable evidence "
+                "(supports_bound_segment or stronger goal fields); "
+                "observed_net alone is not goal confirmation; "
                 "not sparse frame min/max alone; FIRST_LIVE still NOT_VERIFIED."
             ),
         }
@@ -2354,8 +2502,11 @@ def evaluate_trim_bounds(
         "status": "pending_evidence_slot",
         "reason": "insufficient_action_boundary_evidence_refuse_minmax_pts_trim",
         "note": (
-            "Need linked observation with shot+net and a candidate_goal_action_span "
-            "meaningfully tighter than the segment; sparse frame min/max is not enough."
+            "Need linked observation with bindable goal-action evidence "
+            "(explicit supports_bound_segment or ball_crosses_goal_line/"
+            "goal_result_confirmed — not observed_net alone) and a "
+            "candidate_goal_action_span meaningfully tighter than the segment; "
+            "sparse frame min/max is not enough; 0-0 scoreboard alone is not proof."
         ),
     }
 
@@ -3344,6 +3495,7 @@ def run_self_revise(
             try:
                 planner = call_llm_planner(
                     api, ctx, fixture=p_fix if (fixture_mode or r == 1 and p_fix) else None,
+                    audit_dir=round_dir / "model_visible",
                 )
             except (ApiConfigError, ApiCallError) as exc:
                 planner = {"ok": False, "error": f"{type(exc).__name__}:{exc}", "provider_mode": "degraded"}
@@ -3570,6 +3722,7 @@ def run_self_revise(
                         trusted_anchors=ctx.get("trusted_anchors") or [],
                         video_duration=video_duration,
                         best_edl=current_edl,
+                        audit_dir=round_dir / "model_visible",
                         known_evidence=known_ev,
                     )
                 except (ApiConfigError, ApiCallError) as exc:
@@ -3686,7 +3839,12 @@ def run_self_revise(
                     "rule_fallback_success": False,
                 }
             try:
-                return call_llm_verifier(api, payload, fixture=fixture if fixture_mode else fixture)
+                return call_llm_verifier(
+                    api,
+                    payload,
+                    fixture=fixture if fixture_mode else fixture,
+                    audit_dir=round_dir / "model_visible",
+                )
             except (ApiConfigError, ApiCallError) as exc:
                 return {
                     "ok": False, "provider_mode": "degraded",

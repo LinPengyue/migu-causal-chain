@@ -9,9 +9,12 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 
 from story_video_agent.api_provider import ApiCallError, ApiConfigError, ApiProvider
+
+from .vlm_evidence_semantics import persist_visible_model_output
 
 DECISION_KEEP_WITH_NEW_EVIDENCE = "KEEP_WITH_NEW_EVIDENCE"
 DECISION_PROPOSE_REPAIR = "PROPOSE_REPAIR"
@@ -643,6 +646,7 @@ def call_llm_revision_planner(
     video_duration: Optional[float],
     best_edl: Sequence[Mapping[str, Any]],
     known_evidence: Optional[Mapping[str, Any]] = None,
+    audit_dir: Optional[Path] = None,
 ) -> Dict[str, Any]:
     """Call DeepSeek via planner endpoint with stats_role=revision_planner, or use fixture."""
     known = known_evidence or collect_known_evidence_tokens(
@@ -722,17 +726,30 @@ def call_llm_revision_planner(
 
     mode = str(resp.get("provider_mode") or "")
     content = str(resp.get("content") or "")
+    visible_audit = persist_visible_model_output(
+        audit_dir,
+        role="revision_planner",
+        request_id="revision_planner",
+        content=content,
+        meta={
+            "model": resp.get("model"),
+            "provider_mode": mode,
+            "finish_reason": resp.get("finish_reason"),
+            "usage": resp.get("usage"),
+        },
+    )
     if mode != "real" or resp.get("error"):
         return {
             "ok": False,
             "provider_mode": mode or "degraded",
             "error": str(resp.get("error") or f"revision_planner_not_real:{mode}"),
             "raw_content": content,
-            "raw_excerpt": content[:8000],
+            "raw_excerpt": content[:2000],
             "usage": resp.get("usage"),
             "est_cost_usd": resp.get("est_cost_usd"),
             "model": resp.get("model"),
             "logical_role": "revision_planner",
+            **visible_audit,
         }
     if not content.strip():
         return {
@@ -744,6 +761,7 @@ def call_llm_revision_planner(
             "est_cost_usd": resp.get("est_cost_usd"),
             "model": resp.get("model"),
             "logical_role": "revision_planner",
+            **visible_audit,
         }
     try:
         raw = _parse_model_json(content)
@@ -752,7 +770,8 @@ def call_llm_revision_planner(
         out["est_cost_usd"] = resp.get("est_cost_usd")
         out["model"] = resp.get("model")
         out["raw_content"] = content
-        out["raw_excerpt"] = content[:8000]
+        out["raw_excerpt"] = content[:2000]
+        out.update(visible_audit)
         return out
     except Exception as exc:
         return {
@@ -760,11 +779,12 @@ def call_llm_revision_planner(
             "provider_mode": mode,
             "error": f"revision_planner_parse_or_validate:{type(exc).__name__}:{exc}",
             "raw_content": content,
-            "raw_excerpt": content[:8000],
+            "raw_excerpt": content[:2000],
             "usage": resp.get("usage"),
             "est_cost_usd": resp.get("est_cost_usd"),
             "model": resp.get("model"),
             "logical_role": "revision_planner",
+            **visible_audit,
         }
 
 
