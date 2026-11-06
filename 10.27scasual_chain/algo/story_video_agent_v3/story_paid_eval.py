@@ -11,9 +11,25 @@ from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Sequence
 
 from story_video_agent.api_provider import ApiCallError, ApiConfigError, ApiProvider
-from story_video_agent.vision_provider import _extract_json_obj
+from story_video_agent.vision_provider import EvidenceNormalizationError, _extract_json_obj
 
 from .remote_vlm_verify import apply_trial_env_overrides
+
+
+def _parse_model_json_lenient(content: str) -> Dict[str, Any]:
+    """Parse model JSON; tolerate markdown fences / truncated trailing noise."""
+    text = str(content or "").strip()
+    if not text:
+        raise EvidenceNormalizationError("empty VLM response", failure_status="empty_json")
+    try:
+        return _extract_json_obj(text)
+    except EvidenceNormalizationError:
+        # Fallback: largest {...} region (handles truncated tails better than hard fail).
+        start = text.find("{")
+        end = text.rfind("}")
+        if start < 0 or end <= start:
+            raise
+        return json.loads(text[start : end + 1])
 
 
 SYSTEM_CRITIC = (
@@ -44,7 +60,7 @@ def build_capped_provider(
     *,
     max_calls: int = 5,
     max_cost_usd: float = 0.10,
-    max_completion_tokens: int = 1024,
+    max_completion_tokens: int = 2048,
 ) -> ApiProvider:
     apply_trial_env_overrides(
         max_calls=max_calls,
@@ -62,6 +78,9 @@ def build_capped_provider(
     )
     for cfg in (api.configs or {}).values():
         cfg.max_retries = 0
+        # Vision critic JSON is larger; avoid silent truncation when possible.
+        if getattr(cfg, "max_completion_tokens", None) is not None:
+            cfg.max_completion_tokens = max(int(cfg.max_completion_tokens or 0), int(max_completion_tokens))
     return api
 
 
@@ -154,25 +173,42 @@ def run_vlm_story_critic(
         return {"ok": False, "error": f"{type(exc).__name__}:{exc}", "provider_mode": "degraded"}
     content = str(raw.get("content") or "")
     parsed = None
+    parse_error = None
     try:
-        parsed = _extract_json_obj(content)
+        parsed = _parse_model_json_lenient(content)
     except Exception as exc:  # noqa: BLE001
-        return {
-            "ok": False,
-            "error": f"parse:{type(exc).__name__}:{exc}",
-            "provider_mode": raw.get("provider_mode"),
-            "raw_excerpt": content[:1500],
-            "est_cost_usd": raw.get("est_cost_usd"),
-        }
+        parse_error = f"parse:{type(exc).__name__}:{exc}"
     audit_dir.mkdir(parents=True, exist_ok=True)
     (audit_dir / "vlm_story_critic.json").write_text(
-        json.dumps({"raw_excerpt": content[:4000], "parsed": parsed, "usage": raw.get("usage")},
-                   ensure_ascii=False, indent=2) + "\n",
+        json.dumps(
+            {
+                "raw_excerpt": content[:8000],
+                "parsed": parsed,
+                "parse_error": parse_error,
+                "usage": raw.get("usage"),
+                "finish_reason": raw.get("finish_reason"),
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
         encoding="utf-8",
     )
     mode = str(raw.get("provider_mode") or "")
     if mode == "openai_compatible":
         mode = "real"
+    if parse_error:
+        return {
+            "ok": False,
+            "error": parse_error,
+            "provider_mode": mode,
+            "raw_excerpt": content[:1500],
+            "est_cost_usd": raw.get("est_cost_usd"),
+            "usage": raw.get("usage"),
+            "finish_reason": raw.get("finish_reason"),
+            "frame_ids": fids,
+            "claims_full_video_watch": False,
+        }
     return {
         "ok": mode == "real" and parsed is not None,
         "provider_mode": mode,
@@ -234,7 +270,7 @@ def run_llm_revision_planner(
     content = str(raw.get("content") or "")
     parsed = None
     try:
-        parsed = _extract_json_obj(content)
+        parsed = _parse_model_json_lenient(content)
     except Exception as exc:  # noqa: BLE001
         return {
             "ok": False,
@@ -311,7 +347,7 @@ def run_llm_verifier(
     content = str(raw.get("content") or "")
     parsed = None
     try:
-        parsed = _extract_json_obj(content)
+        parsed = _parse_model_json_lenient(content)
     except Exception as exc:  # noqa: BLE001
         return {
             "ok": False,
