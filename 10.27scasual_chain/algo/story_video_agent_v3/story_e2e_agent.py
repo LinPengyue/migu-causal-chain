@@ -481,6 +481,19 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     "offline": False,
                     "semantic_confirmation": bool(obs.get("semantic_provider_used")),
                 }
+                # Honesty: mark_unresolved/keep-only must not be labeled REVISE.
+                acts = {
+                    str(i.get("action") or "")
+                    for i in (rev.get("revision_intents") or [])
+                    if isinstance(i, dict)
+                }
+                if str(rev.get("decision")).upper() == "REVISE" and (
+                    not acts or acts <= {"keep", "mark_unresolved"}
+                ):
+                    rev["decision"] = "UNRESOLVED"
+                    rev["normalize_note"] = (
+                        "revise_label_without_mutating_intents_normalized_to_unresolved"
+                    )
             else:
                 # Paid planner failed → fail closed to UNRESOLVED, do not pretend KEEP.
                 rev = {
