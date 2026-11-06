@@ -88,8 +88,9 @@ class OneRoundReadinessTests(unittest.TestCase):
         self.assertEqual(len(filtered["tools"]), 1)
         self.assertTrue(any(d["reason"] == "outside_focus_segment" for d in filtered["dropped"]))
         api = ApiProvider(force_mock=True, max_calls=8, max_cost_usd=1.0)
-        budget = enforce_provider_one_round_budget(api, max_calls=3)
-        self.assertEqual(budget["max_calls"], 3)
+        budget = enforce_provider_one_round_budget(api, max_calls=ONE_ROUND_MAX_HTTP)
+        self.assertEqual(budget["max_calls"], ONE_ROUND_MAX_HTTP)
+        self.assertGreaterEqual(ONE_ROUND_MAX_HTTP, 4)
         self.assertTrue(all(v == 0 for v in budget["max_retries_by_role"].values()))
 
     def test_evidence_gap_requires_inspect_when_no_shot(self):

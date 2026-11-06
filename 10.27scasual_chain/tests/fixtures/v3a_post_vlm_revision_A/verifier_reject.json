@@ -1,0 +1,49 @@
+{
+  "simulated_verifier_fixture": true,
+  "issues": [
+    {
+      "issue_id": "v_reject",
+      "severity": "P1",
+      "dimension": "image_content_quality",
+      "target_segment_id": "seg_opponent_opening_goal_action",
+      "problem": "Proposed trim removes necessary context; quality not improved",
+      "evidence_refs": ["syn_obs_offset_w0"],
+      "suggested_fix": "keep original window"
+    }
+  ],
+  "dimensions": {
+    "story_element_coverage": {
+      "status": "unchanged",
+      "summary": "Coverage unchanged",
+      "score": 70,
+      "evidence_refs": [],
+      "problems": []
+    },
+    "narrative_coherence": {
+      "status": "unchanged",
+      "summary": "ok",
+      "score": 70,
+      "evidence_refs": [],
+      "problems": []
+    },
+    "image_content_quality": {
+      "status": "regressed",
+      "summary": "Over-aggressive trim",
+      "score": 40,
+      "evidence_refs": ["syn_obs_offset_w0"],
+      "problems": ["context loss"]
+    },
+    "live_authenticity": {
+      "status": "insufficient_evidence",
+      "summary": "unknown",
+      "score": null,
+      "evidence_refs": [],
+      "problems": []
+    }
+  },
+  "revision_suggestions": ["retain baseline window"],
+  "quality_delta_vs_baseline": "regressed",
+  "hard_vetoes": [],
+  "evidence_of_improvement": [],
+  "live_segment_assessments": []
+}

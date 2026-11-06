@@ -1,0 +1,25 @@
+{
+  "simulated_revision_planner_fixture": true,
+  "decision": "UNRESOLVED",
+  "target_segment_id": "seg_opponent_opening_goal_action",
+  "issue_id": "U01",
+  "diagnosis": "Evidence contradictory or insufficient to choose KEEP vs REPAIR.",
+  "reasoning_summary": "Leave EDL unchanged; record missing dense action sampling.",
+  "evidence_refs": ["new_vlm_observation"],
+  "proposed_revision_intents": [
+    {
+      "intent_id": "rev_unresolved",
+      "action": "mark_unresolved",
+      "disposition": "UNRESOLVED",
+      "target_segment_id": "seg_opponent_opening_goal_action",
+      "anchor_id": "edl:seg_opponent_opening_goal_action",
+      "rationale": "Need denser frames before revising window.",
+      "evidence_refs": ["new_vlm_observation"]
+    }
+  ],
+  "remaining_uncertainties": [
+    "Action onset unclear",
+    "Possible replay contamination not ruled out"
+  ],
+  "expected_improvement": "None this round; feed next Planner"
+}

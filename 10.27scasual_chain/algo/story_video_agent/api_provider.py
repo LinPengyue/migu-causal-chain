@@ -1283,6 +1283,51 @@ class ApiProvider:
             allow_degraded_fallback=False,
         )
 
+    def revise_decision(
+        self,
+        *,
+        system_prompt: str,
+        user_prompt: str,
+        mock_decision: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        """Post-VLM Revision Planner: same planner endpoint, stats_role=revision_planner.
+
+        Separate accounting from diagnostic Planner and Verifier so max_calls can
+        reserve one HTTP slot for each of: planner, vision, revision_planner, verifier.
+        """
+        base = self.configs["planner"]
+        prefer_no_think = (_env("STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED") or "").strip().lower() in (
+            "1", "true", "yes", "on",
+        ) or (_env("STORY_PLANNER_THINKING_OBJECT_DISABLED") or "").strip().lower() in (
+            "1", "true", "yes", "on",
+        )
+        use_disabled = bool(
+            prefer_no_think
+            or base.thinking_object_disabled
+            or base.request_profile == "video_rsi"
+        )
+        override = None
+        if use_disabled and not (
+            base.send_thinking_params
+            and (base.enable_thinking is not None or base.thinking_budget is not None)
+        ):
+            override = replace(base, thinking_object_disabled=True)
+        cfg_fp = (override or base).cache_fingerprint()
+        key_src = f"revise|{cfg_fp}|{system_prompt}|{user_prompt}"
+        key = "revise:" + hashlib.sha1(key_src.encode("utf-8")).hexdigest()[:28]
+        return self.chat(
+            role="planner",
+            stats_role="revision_planner",
+            config_override=override,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+            cache_key=key,
+            mock_content=json.dumps(mock_decision, ensure_ascii=False),
+            allow_degraded_fallback=False,
+        )
+
     def vision_json(
         self,
         *,

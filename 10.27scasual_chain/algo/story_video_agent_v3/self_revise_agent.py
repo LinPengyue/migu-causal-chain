@@ -2834,11 +2834,14 @@ def run_self_revise(
     max_completion_tokens: int = 2048,
     planner_fixture: Optional[Path] = None,
     verifier_fixture: Optional[Path] = None,
+    revision_planner_fixture: Optional[Path] = None,
     skip_vlm: bool = False,
     allow_degraded_offline: bool = False,
     inject_planner_failure: bool = False,
     inject_vlm_failure: bool = False,
     inject_verifier_failure: bool = False,
+    inject_revision_planner_failure: bool = False,
+    enable_post_vlm_revision: Optional[bool] = None,
     quality_threshold: float = DEFAULT_QUALITY_THRESHOLD,
     stop_on_quality_threshold: bool = True,
     seed_observations: Optional[Sequence[Mapping[str, Any]]] = None,
@@ -2868,6 +2871,12 @@ def run_self_revise(
         max_followups = ONE_ROUND_MAX_FOLLOWUPS
         focus_segment_ids = list(focus_segment_ids or [OPENING_SEGMENT_ID])
         prefer_p1_polish = False
+        if enable_post_vlm_revision is None:
+            enable_post_vlm_revision = True
+    if enable_post_vlm_revision is None:
+        # Backward compatible default: off unless one-round / explicit fixture / flag.
+        enable_post_vlm_revision = bool(revision_planner_fixture is not None)
+    enable_post_vlm_revision = bool(enable_post_vlm_revision)
     if one_round_opening_goal and seed_observations:
         for o in seed_observations:
             if not isinstance(o, dict) or not o.get("provenance_validated"):
@@ -2937,8 +2946,11 @@ def run_self_revise(
 
     real_mode = bool(enable_real_api and i_approve_budget)
     fixture_mode = planner_fixture is not None
-    if real_mode and fixture_mode:
-        raise ValueError("refuse mixing real API with planner fixture")
+    offline_fixtures_present = any(
+        x is not None for x in (planner_fixture, verifier_fixture, revision_planner_fixture)
+    )
+    if real_mode and offline_fixtures_present:
+        raise ValueError("refuse mixing real API with offline fixtures")
     if enable_real_api and not i_approve_budget:
         raise ValueError("Real API refused: pass i_approve_budget after budget approval")
     if real_mode and not api_enabled():
@@ -2949,6 +2961,13 @@ def run_self_revise(
             max_cost_usd=max_cost_usd,
             max_completion_tokens=max_completion_tokens,
             disable_thinking=True,
+        )
+    # Post-VLM path needs 4 HTTP roles; refuse silent 3-call caps that crowd out Verifier.
+    if enable_post_vlm_revision and real_mode and int(max_calls) < 4:
+        raise ValueError(
+            "enable_post_vlm_revision requires max_calls>=4 "
+            "(planner+vision+revision_planner+verifier); got "
+            f"{max_calls}"
         )
 
     api = None
@@ -2961,7 +2980,7 @@ def run_self_revise(
             max_completion_tokens=max_completion_tokens,
             required_roles=["planner", "vision"],
         )
-    elif fixture_mode:
+    elif fixture_mode or offline_fixtures_present or enable_post_vlm_revision:
         api = ApiProvider(force_mock=True, max_calls=0, max_cost_usd=0.0)
     else:
         # Config-audit / dry structure without claiming success
@@ -2973,6 +2992,7 @@ def run_self_revise(
 
     p_fix = _load_json(planner_fixture) if planner_fixture else None
     v_fix = _load_json(verifier_fixture) if verifier_fixture else None
+    rp_fix = _load_json(revision_planner_fixture) if revision_planner_fixture else None
 
     rounds: List[Dict[str, Any]] = []
     current_edl = copy.deepcopy(baseline_edl)
@@ -3216,17 +3236,132 @@ def run_self_revise(
                 sa_by_anchor[str(a["anchor_id"])] = float(a["t_sec"])
 
         # Rule-fallback planner must not invent semantic EDL binds without VLM support
-        intents = list(validated.get("revision_intents") or [])
+        planner_intents = list(validated.get("revision_intents") or [])
         if planner.get("fallback"):
-            intents = [
-                it for it in intents
+            planner_intents = [
+                it for it in planner_intents
                 if it.get("action") in ("search_add", "mark_unresolved", "keep")
             ]
+
+        # --- Post-VLM Revision Planner (LLM) → then rule-gated EDL candidate ---
+        # Pre-VLM planner intents are audit-only when this stage is enabled; they
+        # must not silently drive EDL edits after new video evidence arrives.
+        from .revision_planner import (
+            build_revision_planner_context,
+            call_llm_revision_planner,
+            collect_known_evidence_tokens,
+            edl_rows_sha256,
+            select_intents_for_edl_revision,
+        )
+
+        pre_revision_edl_sha = edl_rows_sha256(current_edl)
+        revision_planner_result: Dict[str, Any] = {
+            "ok": False,
+            "skipped": True,
+            "reason": "enable_post_vlm_revision=false",
+            "logical_role": "revision_planner",
+        }
+        if enable_post_vlm_revision:
+            hist_obs = [
+                o for o in observations_acc
+                if isinstance(o, dict) and o.get("historical_reuse")
+            ]
+            # New observations from this round only (exclude seeds already in hist).
+            new_obs = [
+                o for o in (obs_pack.get("observations") or [])
+                if isinstance(o, dict)
+            ]
+            rp_ctx = build_revision_planner_context(
+                best_edl=current_edl,
+                composer_handoff=ctx.get("composer_evidence_handoff")
+                if isinstance(ctx.get("composer_evidence_handoff"), dict) else None,
+                planner_validated=validated,
+                historical_observations=hist_obs,
+                new_observations=new_obs,
+                trusted_anchors=ctx.get("trusted_anchors") or [],
+                focus_segment_ids=focus_segment_ids,
+            )
+            (round_dir / "revision_planner_context.json").write_text(
+                json.dumps(rp_ctx, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            known_ev = collect_known_evidence_tokens(
+                observations=new_obs,
+                historical_observations=hist_obs,
+                composer_handoff=ctx.get("composer_evidence_handoff")
+                if isinstance(ctx.get("composer_evidence_handoff"), dict) else None,
+            )
+            if inject_revision_planner_failure:
+                revision_planner_result = {
+                    "ok": False,
+                    "provider_mode": "degraded",
+                    "error": "injected:ApiCallError:502 Bad Gateway",
+                    "logical_role": "revision_planner",
+                }
+            else:
+                try:
+                    revision_planner_result = call_llm_revision_planner(
+                        api if real_mode else None,
+                        rp_ctx,
+                        fixture=rp_fix,
+                        trusted_anchors=ctx.get("trusted_anchors") or [],
+                        video_duration=video_duration,
+                        best_edl=current_edl,
+                        known_evidence=known_ev,
+                    )
+                except (ApiConfigError, ApiCallError) as exc:
+                    revision_planner_result = {
+                        "ok": False,
+                        "provider_mode": "degraded",
+                        "error": f"{type(exc).__name__}:{exc}",
+                        "logical_role": "revision_planner",
+                    }
+            if not revision_planner_result.get("ok"):
+                fallback_reasons.append(
+                    f"revision_planner:{revision_planner_result.get('error') or 'failed'}"
+                )
+            (round_dir / "revision_planner_result.json").write_text(
+                json.dumps(revision_planner_result, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+
+        intent_pack = select_intents_for_edl_revision(
+            enable_post_vlm_revision=enable_post_vlm_revision,
+            revision_planner_result=revision_planner_result,
+            planner_intents=planner_intents,
+            focus_segment_ids=focus_segment_ids,
+        )
+        intents = list(intent_pack.get("intents") or [])
+        (round_dir / "intent_source.json").write_text(
+            json.dumps({
+                "intent_source": intent_pack.get("intent_source"),
+                "revision_planner_decision": intent_pack.get("revision_planner_decision"),
+                "fail_closed": intent_pack.get("fail_closed"),
+                "planner_revision_intents_audit": intent_pack.get(
+                    "planner_revision_intents_audit"
+                ),
+                "edl_revision_intents": intents,
+                "pre_revision_edl_sha256": pre_revision_edl_sha,
+                "note": (
+                    "Pre-VLM planner intents are audited; EDL edits use "
+                    "post-VLM Revision Planner intents when enabled."
+                ),
+            }, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
 
         cand_edl, rev_meta = apply_candidate_revision(
             current_edl, intents, obs_pack.get("observations") or [],
             trusted_windows_by_anchor=tw_by_anchor,
             score_anchor_by_anchor_id=sa_by_anchor,
+        )
+        rev_meta = dict(rev_meta)
+        rev_meta["intent_source"] = intent_pack.get("intent_source")
+        rev_meta["revision_planner_decision"] = intent_pack.get("revision_planner_decision")
+        rev_meta["pre_revision_edl_sha256"] = pre_revision_edl_sha
+        rev_meta["post_revision_edl_sha256"] = edl_rows_sha256(cand_edl)
+        rev_meta["planner_revision_intents_audit"] = intent_pack.get(
+            "planner_revision_intents_audit"
         )
         cand_phase = round_dir / "candidate_phase5"
         write_phase5_workdir(cand_phase, story=story, plan=plan, edl=cand_edl, rendered=None)
@@ -3263,6 +3398,8 @@ def run_self_revise(
             "baseline_dimensions": baseline_audit.get("dimensions"),
             "candidate_dimensions": cand_audit.get("dimensions"),
             "planner_diagnoses": validated.get("diagnoses"),
+            "revision_planner_decision": intent_pack.get("revision_planner_decision"),
+            "intent_source": intent_pack.get("intent_source"),
             "revision_meta": rev_meta,
             "critical_segments_for_live_authenticity": critical_rows[:20],
             "prior_round_feedback": prior_round_feedback,
@@ -3274,6 +3411,7 @@ def run_self_revise(
             } for o in (obs_pack.get("observations") or [])],
             "window_schedule_log": obs_pack.get("window_schedule_log") or [],
             "constraints": ctx["constraints"],
+            "loop_retain_is_not_first_live_or_render_ready": True,
         }
 
         def _api_ver_fn(payload, fixture=None):
@@ -3334,7 +3472,17 @@ def run_self_revise(
             "planner_fallback": bool(planner.get("fallback")),
             "planner_model": planner.get("model"),
             "diagnoses": validated.get("diagnoses"),
+            "planner_revision_intents_pre_vlm": planner_intents,
             "revision_intents": intents,
+            "intent_source": intent_pack.get("intent_source"),
+            "revision_planner_ok": bool(revision_planner_result.get("ok"))
+            if enable_post_vlm_revision else None,
+            "revision_planner_provider_mode": revision_planner_result.get("provider_mode")
+            if enable_post_vlm_revision else None,
+            "revision_planner_decision": intent_pack.get("revision_planner_decision"),
+            "revision_planner_fail_closed": bool(intent_pack.get("fail_closed")),
+            "revision_planner_est_cost_usd": revision_planner_result.get("est_cost_usd")
+            if enable_post_vlm_revision else None,
             "video_tool_requests": tools,
             "vlm_any_real_ok": obs_pack.get("any_real_ok"),
             "vlm_fallback": bool(obs_pack.get("vlm_fallback")),
@@ -3344,11 +3492,14 @@ def run_self_revise(
             "semantic_verification_status": last_semantic_status,
             "revision_meta": rev_meta,
             "accept_decision": decision,
+            "pre_revision_edl_sha256": pre_revision_edl_sha,
+            "post_candidate_edl_sha256": edl_rows_sha256(cand_edl),
             "four_dimension_scores": four_dim_scores,
             "live_segment_assessments": validated_ver.get("live_segment_assessments") or [],
             "prior_feedback_consumed": bool(prior_round_feedback),
             "est_cost_usd_planner": planner.get("est_cost_usd"),
             "est_cost_usd_verifier": (dual.get("api") or {}).get("est_cost_usd"),
+            "enable_post_vlm_revision": enable_post_vlm_revision,
         }
         rounds.append(round_rec)
 
@@ -3378,6 +3529,13 @@ def run_self_revise(
             "hard_vetoes": validated_ver.get("hard_vetoes") or [],
             "live_segment_assessments": validated_ver.get("live_segment_assessments") or [],
             "dimension_scores": four_dim_scores,
+            "revision_planner_decision": intent_pack.get("revision_planner_decision"),
+            "intent_source": intent_pack.get("intent_source"),
+            "verifier_reject_reasons": (
+                decision.get("reasons") if not (
+                    decision.get("accept") or decision.get("loop_retain")
+                ) else []
+            ),
             "revision_meta_summary": {
                 "evidence_bound_count": rev_meta.get("evidence_bound_count"),
                 "pending_count": rev_meta.get("pending_count"),
@@ -3388,7 +3546,8 @@ def run_self_revise(
             },
             "unresolved_guidance": (
                 "Continue improving other story aspects even if some P0 remain; "
-                "prefer evidence-backed local edits; treat SUSPECTED_REPLAY as repair signal."
+                "prefer evidence-backed local edits; treat SUSPECTED_REPLAY as repair signal. "
+                "loop_retain is not FIRST_LIVE_VERIFIED or render_ready."
             ),
         }
 
@@ -3493,6 +3652,13 @@ def run_self_revise(
         "enable_real_api": enable_real_api,
         "i_approve_budget": i_approve_budget,
         "fixture_mode": fixture_mode,
+        "enable_post_vlm_revision": enable_post_vlm_revision,
+        "http_role_budget_note": (
+            "post-VLM path reserves planner+vision+revision_planner+verifier "
+            "(max_calls>=4 when real)"
+            if enable_post_vlm_revision else
+            "legacy planner+vision+verifier path"
+        ),
         "video": str(enrich_video) if enrich_video else None,
         "video_duration_sec": video_duration,
         "max_rounds": n_rounds,
@@ -3561,6 +3727,18 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     p.add_argument("--i-approve-budget", action="store_true")
     p.add_argument("--planner-fixture", type=Path, default=None)
     p.add_argument("--verifier-fixture", type=Path, default=None)
+    p.add_argument(
+        "--revision-planner-fixture", type=Path, default=None,
+        help="Offline simulated Revision Planner JSON (zero HTTP)",
+    )
+    p.add_argument(
+        "--enable-post-vlm-revision", action="store_true",
+        help="Planner→VLM→Revision Planner→EDL→Verifier (requires max_calls≥4 when real)",
+    )
+    p.add_argument(
+        "--disable-post-vlm-revision", action="store_true",
+        help="Force legacy pre-VLM intents → EDL path (compat)",
+    )
     p.add_argument("--skip-vlm", action="store_true")
     p.add_argument("--allow-degraded-offline", action="store_true",
                    help="Allow rule/ffmpeg degraded completion without real API")
@@ -3579,8 +3757,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     )
     p.add_argument(
         "--one-round-opening-goal", action="store_true",
-        help="Oman opening-goal isolated mode: max_rounds=1, max_calls≤3, retries=0, "
-             "focus seg_opponent_opening_goal_action, no p1 polish",
+        help="Oman opening-goal isolated mode: max_rounds=1, max_calls≤4, retries=0, "
+             "post-VLM Revision Planner on, focus seg_opponent_opening_goal_action, "
+             "no p1 polish",
     )
     p.add_argument(
         "--seed-observations", type=Path, default=None,
@@ -3653,6 +3832,16 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             "validation_status": packed["provenance"].get("validation_status"),
         }
 
+    if args.enable_post_vlm_revision and args.disable_post_vlm_revision:
+        p.error("pass only one of --enable-post-vlm-revision / --disable-post-vlm-revision")
+    post_vlm_flag: Optional[bool]
+    if args.disable_post_vlm_revision:
+        post_vlm_flag = False
+    elif args.enable_post_vlm_revision or args.revision_planner_fixture is not None:
+        post_vlm_flag = True
+    else:
+        post_vlm_flag = None  # one_round defaults on; else off
+
     try:
         summary = run_self_revise(
             phase5_dir=args.phase5_dir,
@@ -3670,6 +3859,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             max_completion_tokens=args.max_completion_tokens,
             planner_fixture=args.planner_fixture,
             verifier_fixture=args.verifier_fixture,
+            revision_planner_fixture=args.revision_planner_fixture,
+            enable_post_vlm_revision=post_vlm_flag,
             skip_vlm=args.skip_vlm,
             allow_degraded_offline=args.allow_degraded_offline,
             quality_threshold=args.quality_threshold,

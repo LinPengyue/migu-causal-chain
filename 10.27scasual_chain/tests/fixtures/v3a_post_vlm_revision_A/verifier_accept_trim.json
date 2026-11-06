@@ -1,0 +1,52 @@
+{
+  "simulated_verifier_fixture": true,
+  "issues": [],
+  "dimensions": {
+    "story_element_coverage": {
+      "status": "unchanged",
+      "summary": "Opening goal action retained",
+      "score": 70,
+      "evidence_refs": ["syn_obs_offset_w0"],
+      "problems": []
+    },
+    "narrative_coherence": {
+      "status": "unchanged",
+      "summary": "Arc order intact",
+      "score": 70,
+      "evidence_refs": [],
+      "problems": []
+    },
+    "image_content_quality": {
+      "status": "improved",
+      "summary": "Less post-action padding",
+      "score": 72,
+      "evidence_refs": ["syn_f1", "syn_f2"],
+      "problems": []
+    },
+    "live_authenticity": {
+      "status": "insufficient_evidence",
+      "summary": "Trim does not certify FIRST_LIVE",
+      "score": null,
+      "evidence_refs": ["syn_obs_offset_w0"],
+      "problems": ["FIRST_LIVE not verified"]
+    }
+  },
+  "revision_suggestions": [],
+  "quality_delta_vs_baseline": "improved",
+  "hard_vetoes": [],
+  "evidence_of_improvement": [
+    {
+      "claim": "Candidate window tightened to observed PTS cluster",
+      "evidence_refs": ["syn_obs_offset_w0", "syn_f1"]
+    }
+  ],
+  "live_segment_assessments": [
+    {
+      "segment_id": "seg_opponent_opening_goal_action",
+      "live_status": "LIKELY_LIVE",
+      "score": 55,
+      "evidence_refs": ["syn_obs_offset_w0"],
+      "reason": "Shot/net observed; not FIRST_LIVE_VERIFIED"
+    }
+  ]
+}

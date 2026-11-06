@@ -1,0 +1,41 @@
+{
+  "simulated_revision_planner_fixture": true,
+  "decision": "PROPOSE_REPAIR",
+  "target_segment_id": "seg_opponent_opening_goal_action",
+  "issue_id": "SYN_OFFSET",
+  "diagnosis": "Synthetic fixture: credible action PTS cluster near window start while media_out extends far past action; propose evidence-bound trim.",
+  "reasoning_summary": "Independent synthetic observation places shot/net tightly; trim to PTS-supported span inside the existing segment.",
+  "evidence_refs": [
+    "syn_obs_offset_w0",
+    "syn_f0",
+    "syn_f1",
+    "syn_f2",
+    "syn_f3",
+    "new_vlm_observation"
+  ],
+  "proposed_revision_intents": [
+    {
+      "intent_id": "rev_trim_opening",
+      "action": "trim",
+      "disposition": "REPAIR",
+      "issue_id": "SYN_OFFSET",
+      "target_segment_id": "seg_opponent_opening_goal_action",
+      "role": "opponent_opening_goal_action",
+      "anchor_id": "edl:seg_opponent_opening_goal_action",
+      "rationale": "Trim to observed action cluster with evidence-bound PTS.",
+      "evidence_refs": [
+        "syn_obs_offset_w0",
+        "syn_f0",
+        "syn_f1",
+        "syn_f2",
+        "syn_f3"
+      ],
+      "expected_improvement": "Remove long post-action padding while keeping shot/net"
+    }
+  ],
+  "remaining_uncertainties": [
+    "Synthetic fixture only — not a real DeepSeek decision",
+    "FIRST_LIVE still not certified after trim"
+  ],
+  "expected_improvement": "Tighter live action window without inventing free timestamps"
+}

@@ -1,0 +1,39 @@
+{
+  "simulated_revision_planner_fixture": true,
+  "decision": "KEEP_WITH_NEW_EVIDENCE",
+  "target_segment_id": "seg_opponent_opening_goal_action",
+  "issue_id": "D01",
+  "diagnosis": "New Qwen frames show shot and net inside the composer window, but four sparse frames do not prove the ~22s window must be shortened, and cannot certify FIRST_LIVE.",
+  "reasoning_summary": "Composer window 1325.123–1347.123 already covers observed action PTS (~1334–1339). KEEP window; record new evidence; no false EDL gain; no FIRST_LIVE upgrade.",
+  "evidence_refs": [
+    "tool_001_opponent_goal_action_inspect_w0",
+    "f_0000_1334623",
+    "f_0001_1336323",
+    "f_0002_1337723",
+    "f_0003_1339123",
+    "new_vlm_observation"
+  ],
+  "proposed_revision_intents": [
+    {
+      "intent_id": "rev_keep_opening",
+      "action": "keep",
+      "disposition": "KEEP",
+      "target_segment_id": "seg_opponent_opening_goal_action",
+      "role": "opponent_opening_goal_action",
+      "anchor_id": "edl:seg_opponent_opening_goal_action",
+      "rationale": "Window already covers shot/net observations; sparse frames insufficient to force trim.",
+      "evidence_refs": [
+        "tool_001_opponent_goal_action_inspect_w0",
+        "f_0001_1336323",
+        "new_vlm_observation"
+      ],
+      "expected_improvement": "Record VLM evidence without claiming EDL improvement"
+    }
+  ],
+  "remaining_uncertainties": [
+    "FIRST_LIVE not certified",
+    "Full action span not densely sampled",
+    "Equalizer/go_ahead still not visually observed this round"
+  ],
+  "expected_improvement": "Evidence recorded; no fabricated EDL gain"
+}

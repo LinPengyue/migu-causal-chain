@@ -29,13 +29,16 @@ DEFAULT_VLM_SUMMARY = Path(
 )
 
 # Authorized one-round budget (estimate, not invoice hard cap).
+# Post-VLM Revision Planner adds a 4th HTTP role; do NOT reuse the old 3-call
+# cap or Verifier may be crowded out of budget.
 ONE_ROUND_MAX_ROUNDS = 1
-ONE_ROUND_MAX_HTTP = 3  # Planner 1 + VLM ≤1 + Verifier 1
+ONE_ROUND_MAX_HTTP = 4  # Planner 1 + VLM ≤1 + Revision Planner 1 + Verifier 1
 ONE_ROUND_MAX_COST_USD = 0.05
 ONE_ROUND_MAX_RETRIES = 0
 ONE_ROUND_MAX_VLM_TOOLS = 1
 ONE_ROUND_MAX_WINDOWS = 1
 ONE_ROUND_MAX_FOLLOWUPS = 0
+ONE_ROUND_HTTP_ROLES = ("planner", "vision", "revision_planner", "verifier")
 
 
 def _sha256(path: Path) -> Optional[str]:
@@ -624,7 +627,8 @@ def build_one_round_preflight(
         "historical_obs_not_new_http": seeded["provenance"]["counts_as_new_http"] is False,
         "historical_obs_not_first_live": seeded["provenance"]["counts_as_first_live_certification"] is False,
         "http_budget_retries_zero": all(v == 0 for v in budget["max_retries_by_role"].values()),
-        "http_budget_max_calls_3": budget["max_calls"] == 3,
+        "http_budget_max_calls_4": budget["max_calls"] == ONE_ROUND_MAX_HTTP,
+        "http_budget_covers_revision_planner": ONE_ROUND_MAX_HTTP >= 4,
         "verifier_compares_baseline_fields_wired": True,  # dual verifier always gets baseline_edl
         "out_dir_isolation_rule": "out_dir must be new/empty and outside frozen phase5",
         "no_auto_render": True,
@@ -653,9 +657,10 @@ def build_one_round_preflight(
         "--out-dir $OUT "
         "--video \"$VIDEO\" "
         "--no-prefer-p1-polish "
-        "--max-rounds 1 --max-calls 3 --max-cost-usd 0.05 "
+        "--max-rounds 1 --max-calls 4 --max-cost-usd 0.05 "
         "--max-completion-tokens 2048 "
         "--one-round-opening-goal "
+        "--enable-post-vlm-revision "
         f"--seed-observations {paths['historical_observation']} "
         "--enable-real-api --i-approve-budget"
     )
@@ -684,8 +689,10 @@ def build_one_round_preflight(
             "max_http_attempts": ONE_ROUND_MAX_HTTP,
             "max_cost_usd_estimate": ONE_ROUND_MAX_COST_USD,
             "max_retries": ONE_ROUND_MAX_RETRIES,
+            "roles": list(ONE_ROUND_HTTP_ROLES),
             "planner": 1,
             "vlm_max": 1,
+            "revision_planner": 1,
             "verifier": 1,
             "provider_enforcement": budget,
         },
