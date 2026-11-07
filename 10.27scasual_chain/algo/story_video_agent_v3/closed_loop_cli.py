@@ -260,6 +260,19 @@ def run_match(
     previews = _export_goal_preview_clips(video=video, audit=audit, out_dir=audit_dir / "goal_previews")
     dump(audit_dir / "goal_preview_clips.json", {"clips": previews})
 
+    # Goal Recovery impact: prove candidates entered predicted_causal (not report-only).
+    from .first_live_chain_audit import audit_retained_goal_first_live, build_goal_recovery_impact
+
+    recovery_payload: Dict[str, Any] = {}
+    recovery_path = v1_dir / "goal_recovery.json"
+    if recovery_path.is_file():
+        recovery_payload = json.loads(recovery_path.read_text(encoding="utf-8"))
+    recovery_impact = build_goal_recovery_impact(
+        predicted_causal=predicted,
+        goal_recovery=recovery_payload,
+    )
+    dump(v1_dir / "goal_recovery_impact.json", recovery_impact)
+
     phase5_report: Dict[str, Any] = {"skipped": skip_render}
     if not skip_render:
         from story_video_agent.phase5_pipeline import run_phase5
@@ -271,6 +284,25 @@ def run_match(
             glitch_profile=None,
             skip_render=False,
         )
+
+    # First-live visual chain audit on retained Phase5 EDL goal anchors (zero paid API).
+    first_live_visual: Dict[str, Any] = {
+        "schema": "v3a_first_live_chain_audit_v1",
+        "skipped": True,
+        "reason": "phase5_edl_missing",
+    }
+    edl_path = phase5_dir / "candidate_edl.json"
+    if edl_path.is_file() and video.is_file():
+        edl_obj = json.loads(edl_path.read_text(encoding="utf-8"))
+        first_live_visual = audit_retained_goal_first_live(
+            video=video,
+            edl=edl_obj,
+            out_dir=audit_dir / "first_live_visual",
+            events_path=enriched_path,
+            goal_recovery=recovery_payload,
+            enable_paid_vlm=False,
+        )
+        dump(audit_dir / "first_live_visual_audit.json", first_live_visual)
 
     summary = {
         "schema": "v3_closed_loop_run_v1",
@@ -289,15 +321,28 @@ def run_match(
             "n_goal_terminals": (predicted.get("v3_adapter") or {}).get("n_goal_terminals_in_adapted_chains"),
             "goal_recovery_used": bool((predicted.get("v3_adapter") or {}).get("goal_recovery_used")),
             "goal_recovery": (predicted.get("v3_adapter") or {}).get("goal_recovery"),
+            "goal_recovery_impact": recovery_impact,
         },
         "goal_audit": {
             "n_goal_terminals": audit.get("n_goal_terminals"),
             "n_live_candidate": audit.get("n_live_candidate"),
             "n_replay_detected": audit.get("n_replay_detected"),
             "success_claimed": False,
-            "visual_first_live_verified": False,
+            "visual_first_live_verified": bool(first_live_visual.get("any_first_live_verified")),
+            "first_live_status_counts": first_live_visual.get("status_counts"),
             "preview_clips": [c.get("clip") for c in previews if c.get("clip")],
-            "note": "Metadata LIVE candidates + ffmpeg previews only; visual first-LIVE not auto-claimed",
+            "note": (
+                "Metadata LIVE audit + zero-cost first-live frame/clip audit. "
+                "ffmpeg preview success and score flips never certify FIRST_LIVE_VERIFIED."
+            ),
+        },
+        "first_live_visual": {
+            "path": str(audit_dir / "first_live_visual_audit.json"),
+            "status_counts": first_live_visual.get("status_counts"),
+            "n_goal_anchors": first_live_visual.get("n_goal_anchors"),
+            "any_replay_on_retained": first_live_visual.get("any_replay_on_retained"),
+            "all_resolved_verified": first_live_visual.get("all_resolved_verified"),
+            "paid_api_calls": 0,
         },
         "phase5": {
             "out_dir": str(phase5_dir),

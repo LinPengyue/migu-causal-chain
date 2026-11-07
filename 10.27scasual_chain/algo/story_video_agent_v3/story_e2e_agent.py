@@ -1035,6 +1035,34 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         }
         write_json(hr_dir / "human_review_status.json", human_review)
 
+    # First-live visual audit from fresh V3-R (zero-cost); never invent verified.
+    first_live_visual: Dict[str, Any] = {}
+    fl_path = out / "01_to_04_fresh_v3r" / "05_live_audit" / "first_live_visual_audit.json"
+    if fl_path.is_file():
+        try:
+            first_live_visual = _read_json(fl_path)
+        except Exception:  # noqa: BLE001
+            first_live_visual = {"error": "unreadable_first_live_visual_audit"}
+    audit["first_live_visual"] = {
+        "path": str(fl_path) if fl_path.is_file() else None,
+        "status_counts": (first_live_visual or {}).get("status_counts"),
+        "n_goal_anchors": (first_live_visual or {}).get("n_goal_anchors"),
+        "any_first_live_verified": (first_live_visual or {}).get("any_first_live_verified"),
+        "any_replay_on_retained": (first_live_visual or {}).get("any_replay_on_retained"),
+        "goals": [
+            {
+                "segment_id": g.get("segment_id"),
+                "role": g.get("role"),
+                "first_live_status": g.get("first_live_status"),
+                "media_in": g.get("media_in"),
+                "media_out": g.get("media_out"),
+                "score_confirm_collision": g.get("score_confirm_collision"),
+            }
+            for g in ((first_live_visual or {}).get("goals") or [])
+        ],
+    }
+    write_json(final_dir / "first_live_visual_audit.json", first_live_visual or {"missing": True})
+
     # Formal delivery status: RELEASE_READY | HUMAN_REVIEW_REQUIRED | BLOCKED
     blocked_reasons: List[str] = []
     if audit.get("delivery_status_forced") == "BLOCKED" or audit.get("error") == "dedupe_render_failed_fail_closed":
@@ -1052,8 +1080,24 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         # unresolved without a safe playable candidate preview
         if not (human_review.get("v3a_candidate_mp4") or last_candidate_bundle.get("candidate_mp4")):
             blocked_reasons.append("unresolved_without_safe_candidate_preview")
+    # Retained replay as first-live is a hard integrity failure.
+    if (first_live_visual or {}).get("any_replay_on_retained"):
+        blocked_reasons.append("retained_goal_replay_detected_as_first_live")
+    # RELEASE_READY requires every retained goal FIRST_LIVE_VERIFIED (fail closed).
+    fl_counts = (first_live_visual or {}).get("status_counts") or {}
+    n_fl_goals = int((first_live_visual or {}).get("n_goal_anchors") or 0)
+    all_fl_verified = (
+        n_fl_goals > 0
+        and int(fl_counts.get("FIRST_LIVE_VERIFIED") or 0) == n_fl_goals
+        and bool((first_live_visual or {}).get("all_resolved_verified"))
+    )
+    if gates.get("release_authorized") and not all_fl_verified:
+        # Fail closed on release; still allow HUMAN_REVIEW_REQUIRED if preview is safe.
+        gates["release_authorized"] = False
+        release["release_authorized"] = False
+        release.setdefault("reasons", []).append("first_live_not_fully_verified")
 
-    if gates["release_authorized"]:
+    if gates["release_authorized"] and all_fl_verified:
         delivery_label = "RELEASE_READY"
     elif human_review.get("required") and human_review.get("safe_playable_preview") and not blocked_reasons:
         delivery_label = "HUMAN_REVIEW_REQUIRED"
@@ -1095,12 +1139,14 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 "root_cause_hint",
             )
         },
+        "first_live_visual": audit.get("first_live_visual"),
         "note": (
             "Formal delivery requires release_authorized=true under full conjunction gates. "
             "workflow_completed / final_mp4_exists / semantic_verification_passed alone never authorize. "
-            "HUMAN_REVIEW_REQUIRED means a safe candidate preview exists for human judgment."
+            "HUMAN_REVIEW_REQUIRED means a safe candidate preview exists for human judgment. "
+            "FIRST_LIVE_VERIFIED is required for every retained goal before RELEASE_READY."
             if not gates["release_authorized"]
-            else "RELEASE_READY: all formal release conjunction gates passed."
+            else "RELEASE_READY: all formal release conjunction gates passed including first-live."
         ),
     }
     write_json(final_dir / "delivery_status.json", delivery)

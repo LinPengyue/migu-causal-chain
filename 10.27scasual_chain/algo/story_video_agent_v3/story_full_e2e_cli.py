@@ -195,20 +195,14 @@ def main(argv: list[str] | None = None) -> int:
     gates = audit.get("status_gates") or {}
     status = delivery.get("delivery_status") or delivery.get("delivery_label")
 
-    # Stage presence audit (fresh tree).
+    # Stage presence + validity (file existence alone is insufficient).
     fresh_root = out_dir / "01_to_04_fresh_v3r"
-    stages = {
-        "01_enrich": (fresh_root / "01_enrich" / "events_enriched.json").is_file(),
-        "02_strip831": (fresh_root / "02_strip831" / "strip_A_original.json").is_file(),
-        "03_v1_adapt": (fresh_root / "03_v1_adapt" / "predicted_causal_live_goals_only.json").is_file(),
-        "04_phase5_edl": (fresh_root / "04_phase5" / "candidate_edl.json").is_file(),
-        "04_phase5_mp4": (fresh_root / "04_phase5" / "story_clean.mp4").is_file(),
-        "05_live_audit": (fresh_root / "05_live_audit" / "goal_live_audit.json").is_file(),
-        "v3a_final_delivery": (out_dir / "99_final" / "delivery_status.json").is_file(),
-    }
+    stage_eval = evaluate_stages(out_dir=out_dir, fresh_root=fresh_root, delivery=delivery)
+    stages = {k: bool(v.get("present")) for k, v in stage_eval["stages"].items()}
+    stages_valid = {k: bool(v.get("valid")) for k, v in stage_eval["stages"].items()}
 
     summary: Dict[str, Any] = {
-        "ok": bool(audit.get("ok")) and status != "BLOCKED",
+        "ok": bool(audit.get("ok")) and status != "BLOCKED" and bool(stage_eval.get("all_required_valid")),
         "delivery_status": status,
         "delivery_label": delivery.get("delivery_label"),
         "blocked_reasons": delivery.get("blocked_reasons") or [],
@@ -218,12 +212,16 @@ def main(argv: list[str] | None = None) -> int:
         "final_mp4": delivery.get("final_mp4"),
         "status_gates": gates,
         "stages_present": stages,
+        "stages_valid": stages_valid,
+        "stage_validity": stage_eval,
         "fresh_v3r": True,
         "phase5_reuse": False,
         "http_calls": audit.get("http_calls"),
         "est_cost_usd": audit.get("est_cost_usd"),
-        "error": audit.get("error"),
+        "error": audit.get("error") or stage_eval.get("blocking_errors"),
         "baseline_duplicate_audit": audit.get("baseline_duplicate_audit"),
+        "goal_recovery_impact": stage_eval.get("goal_recovery_impact"),
+        "first_live_visual": stage_eval.get("first_live_visual"),
         "contract": str(out_dir / "00_full_e2e_contract.json"),
     }
     (out_dir / "full_e2e_summary.json").write_text(
@@ -233,9 +231,280 @@ def main(argv: list[str] | None = None) -> int:
 
     if status == "BLOCKED" or audit.get("error"):
         return 1
-    if not stages.get("04_phase5_mp4"):
+    if not stages_valid.get("04_phase5_mp4"):
+        return 1
+    if stage_eval.get("blocking_errors"):
         return 1
     return 0
+
+
+def _read_json(path: Path) -> Any:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _mp4_ok(path: Path, *, min_bytes: int = 50_000) -> bool:
+    return path.is_file() and path.stat().st_size >= min_bytes
+
+
+def evaluate_stages(
+    *,
+    out_dir: Path,
+    fresh_root: Path,
+    delivery: Dict[str, Any],
+) -> Dict[str, Any]:
+    """Validate stage outputs by content, not mere path presence."""
+    stages: Dict[str, Dict[str, Any]] = {}
+    blocking: list[str] = []
+
+    enrich = fresh_root / "01_enrich" / "events_enriched.json"
+    enrich_rep = fresh_root / "01_enrich" / "enrich_report.json"
+    enrich_ok = False
+    enrich_detail: Dict[str, Any] = {}
+    if enrich.is_file() and enrich_rep.is_file():
+        try:
+            er = _read_json(enrich_rep)
+            ev = _read_json(enrich)
+            n_ev = len(ev.get("events") or []) if isinstance(ev, dict) else 0
+            enrich_ok = n_ev > 0 and int(er.get("n_injected") or 0) >= 0
+            enrich_detail = {
+                "n_events": n_ev,
+                "n_injected": er.get("n_injected"),
+                "n_goal_injected": er.get("n_goal_injected"),
+            }
+        except Exception as exc:  # noqa: BLE001
+            blocking.append(f"01_enrich_invalid:{exc}")
+    stages["01_enrich"] = {"present": enrich.is_file(), "valid": enrich_ok, **enrich_detail}
+    if enrich.is_file() and not enrich_ok:
+        blocking.append("01_enrich_empty_or_invalid")
+
+    strip_p = fresh_root / "02_strip831" / "strip_A_original.json"
+    strip_ok = False
+    strip_detail: Dict[str, Any] = {}
+    if strip_p.is_file():
+        try:
+            st = _read_json(strip_p)
+            n_ch = int(st.get("n_chains") or len(st.get("chains") or []))
+            strip_ok = n_ch > 0
+            strip_detail = {"n_chains": n_ch}
+        except Exception as exc:  # noqa: BLE001
+            blocking.append(f"02_strip831_invalid:{exc}")
+    stages["02_strip831"] = {"present": strip_p.is_file(), "valid": strip_ok, **strip_detail}
+    if strip_p.is_file() and not strip_ok:
+        blocking.append("02_strip831_empty_chains")
+
+    recovery_p = fresh_root / "03_v1_adapt" / "goal_recovery.json"
+    impact_p = fresh_root / "03_v1_adapt" / "goal_recovery_impact.json"
+    predicted_p = fresh_root / "03_v1_adapt" / "predicted_causal.json"
+    live_p = fresh_root / "03_v1_adapt" / "predicted_causal_live_goals_only.json"
+    v1_ok = False
+    recovery_impact = None
+    v1_detail: Dict[str, Any] = {}
+    if live_p.is_file() and predicted_p.is_file() and recovery_p.is_file():
+        try:
+            rec = _read_json(recovery_p)
+            pred = _read_json(predicted_p)
+            impact = _read_json(impact_p) if impact_p.is_file() else {}
+            recovery_impact = impact
+            n_cand = int(rec.get("n_candidates") or len(rec.get("candidates") or []))
+            adapter = pred.get("v3_adapter") or {}
+            entered = bool(impact.get("entered_predicted_causal")) or int(
+                adapter.get("n_v3_outcome_chains") or 0
+            ) > 0 or int(adapter.get("n_goal_terminals_in_adapted_chains") or 0) > 0
+            # Valid when recovery file has real candidates AND adapter consumed recovery.
+            v1_ok = (
+                n_cand > 0
+                and bool(adapter.get("goal_recovery_used"))
+                and entered
+                and len(pred.get("causal_chains") or []) > 0
+            )
+            v1_detail = {
+                "n_recovery_candidates": n_cand,
+                "n_with_goal_action_sec": rec.get("n_with_goal_action_sec"),
+                "goal_recovery_used": adapter.get("goal_recovery_used"),
+                "entered_predicted_causal": entered,
+                "n_v3_outcome_chains": adapter.get("n_v3_outcome_chains"),
+                "n_goal_terminals": adapter.get("n_goal_terminals_in_adapted_chains"),
+            }
+            if n_cand <= 0:
+                blocking.append("03_goal_recovery_empty_candidates")
+            if not adapter.get("goal_recovery_used"):
+                blocking.append("03_goal_recovery_not_used_in_adapter")
+            if not entered:
+                blocking.append("03_goal_recovery_not_entered_predicted_causal")
+        except Exception as exc:  # noqa: BLE001
+            blocking.append(f"03_v1_adapt_invalid:{exc}")
+    stages["03_v1_adapt"] = {
+        "present": live_p.is_file() and recovery_p.is_file(),
+        "valid": v1_ok,
+        **v1_detail,
+    }
+
+    edl_p = fresh_root / "04_phase5" / "candidate_edl.json"
+    mp4_p = fresh_root / "04_phase5" / "story_clean.mp4"
+    edl_ok = False
+    mp4_ok = _mp4_ok(mp4_p)
+    edl_detail: Dict[str, Any] = {}
+    if edl_p.is_file():
+        try:
+            edl = _read_json(edl_p)
+            n_seg = len(edl) if isinstance(edl, list) else len(
+                (edl.get("segments") if isinstance(edl, dict) else None) or []
+            )
+            edl_ok = n_seg > 0
+            edl_detail = {"n_segments": n_seg}
+        except Exception as exc:  # noqa: BLE001
+            blocking.append(f"04_phase5_edl_invalid:{exc}")
+    stages["04_phase5_edl"] = {"present": edl_p.is_file(), "valid": edl_ok, **edl_detail}
+    stages["04_phase5_mp4"] = {
+        "present": mp4_p.is_file(),
+        "valid": mp4_ok,
+        "bytes": mp4_p.stat().st_size if mp4_p.is_file() else 0,
+    }
+    if edl_p.is_file() and not edl_ok:
+        blocking.append("04_phase5_edl_empty")
+    if mp4_p.is_file() and not mp4_ok:
+        blocking.append("04_phase5_mp4_too_small_or_missing")
+
+    live_meta = fresh_root / "05_live_audit" / "goal_live_audit.json"
+    live_vis = fresh_root / "05_live_audit" / "first_live_visual_audit.json"
+    first_live_visual = None
+    live_ok = False
+    live_detail: Dict[str, Any] = {}
+    if live_meta.is_file() and live_vis.is_file():
+        try:
+            meta = _read_json(live_meta)
+            vis = _read_json(live_vis)
+            first_live_visual = {
+                "status_counts": vis.get("status_counts"),
+                "n_goal_anchors": vis.get("n_goal_anchors"),
+                "any_first_live_verified": vis.get("any_first_live_verified"),
+                "any_replay_on_retained": vis.get("any_replay_on_retained"),
+                "goals": [
+                    {
+                        "segment_id": g.get("segment_id"),
+                        "role": g.get("role"),
+                        "first_live_status": g.get("first_live_status"),
+                        "media_in": g.get("media_in"),
+                        "media_out": g.get("media_out"),
+                        "score_confirmation_sec": g.get("score_confirmation_sec"),
+                        "goal_action_sec": g.get("goal_action_sec"),
+                        "score_confirm_collision": g.get("score_confirm_collision"),
+                        "candidate_extracted_ok": g.get("candidate_extracted_ok"),
+                        "clip_path": g.get("clip_path"),
+                        "frame_paths": (g.get("frame_paths") or [])[:3],
+                    }
+                    for g in (vis.get("goals") or [])
+                ],
+            }
+            # Valid evidence package: anchors audited, frames/clips attempted, no false verified claim.
+            n_anch = int(vis.get("n_goal_anchors") or 0)
+            false_claim = bool(vis.get("any_first_live_verified")) and int(
+                (vis.get("status_counts") or {}).get("FIRST_LIVE_VERIFIED") or 0
+            ) > 0 and not any(
+                g.get("agent_auto_verified") and g.get("goal_action_verified_ok")
+                for g in (vis.get("goals") or [])
+            )
+            extracted = sum(1 for g in (vis.get("goals") or []) if g.get("candidate_extracted_ok"))
+            live_ok = (
+                int(meta.get("n_goal_terminals") or 0) >= 0
+                and n_anch > 0
+                and extracted == n_anch
+                and not false_claim
+                and vis.get("success_claimed") is False
+            )
+            live_detail = {
+                "n_meta_goal_terminals": meta.get("n_goal_terminals"),
+                "n_visual_anchors": n_anch,
+                "n_extracted": extracted,
+                "status_counts": vis.get("status_counts"),
+                "false_verified_claim": false_claim,
+            }
+            if n_anch <= 0:
+                blocking.append("05_first_live_no_goal_anchors")
+            if extracted < n_anch:
+                blocking.append("05_first_live_incomplete_evidence_extraction")
+            if false_claim:
+                blocking.append("05_first_live_false_verified_claim")
+        except Exception as exc:  # noqa: BLE001
+            blocking.append(f"05_live_audit_invalid:{exc}")
+    stages["05_live_audit"] = {
+        "present": live_meta.is_file() and live_vis.is_file(),
+        "valid": live_ok,
+        **live_detail,
+    }
+    if not (live_meta.is_file() and live_vis.is_file()):
+        blocking.append("05_live_audit_missing_visual_or_meta")
+
+    delivery_p = out_dir / "99_final" / "delivery_status.json"
+    final_mp4 = out_dir / "99_final" / "story_final.mp4"
+    cand_mp4 = out_dir / "99_final" / "human_review_candidate" / "v3a_candidate.mp4"
+    align_p = out_dir / "99_final" / "timeline_mp4_alignment.json"
+    final_ok = False
+    final_detail: Dict[str, Any] = {}
+    if delivery_p.is_file():
+        try:
+            ds = _read_json(delivery_p)
+            align = _read_json(align_p) if align_p.is_file() else {}
+            label = ds.get("delivery_status") or ds.get("delivery_label")
+            # Candidate authenticity: when HUMAN_REVIEW_REQUIRED, candidate mp4 must exist
+            # and must not be identical path-only reuse without file.
+            cand_ok = True
+            if label == "HUMAN_REVIEW_REQUIRED":
+                cand_ok = _mp4_ok(cand_mp4)
+            release_flag = bool(ds.get("release_authorized"))
+            release_consistent = (
+                (label == "RELEASE_READY" and release_flag)
+                or (label != "RELEASE_READY" and not release_flag)
+            )
+            final_ok = (
+                label in ("RELEASE_READY", "HUMAN_REVIEW_REQUIRED", "BLOCKED")
+                and (label == "BLOCKED" or _mp4_ok(final_mp4))
+                and (label != "HUMAN_REVIEW_REQUIRED" or cand_ok)
+                and (label == "BLOCKED" or align.get("aligned") is True)
+                and release_consistent
+            )
+            # Explicit: never treat HUMAN_REVIEW as auto-release success.
+            if label == "HUMAN_REVIEW_REQUIRED" and ds.get("release_authorized"):
+                final_ok = False
+                blocking.append("99_human_review_cannot_set_release_authorized")
+            if label == "HUMAN_REVIEW_REQUIRED" and not cand_ok:
+                blocking.append("99_human_review_candidate_mp4_missing_or_tiny")
+            if label != "BLOCKED" and align_p.is_file() and align.get("aligned") is not True:
+                blocking.append("99_edl_mp4_not_aligned")
+            final_detail = {
+                "delivery_status": label,
+                "release_authorized": ds.get("release_authorized"),
+                "final_mp4_ok": _mp4_ok(final_mp4),
+                "candidate_mp4_ok": _mp4_ok(cand_mp4) if cand_mp4.exists() or label == "HUMAN_REVIEW_REQUIRED" else None,
+                "aligned": align.get("aligned"),
+            }
+        except Exception as exc:  # noqa: BLE001
+            blocking.append(f"99_final_invalid:{exc}")
+    stages["v3a_final_delivery"] = {
+        "present": delivery_p.is_file(),
+        "valid": final_ok,
+        **final_detail,
+    }
+
+    required = (
+        "01_enrich",
+        "02_strip831",
+        "03_v1_adapt",
+        "04_phase5_edl",
+        "04_phase5_mp4",
+        "05_live_audit",
+        "v3a_final_delivery",
+    )
+    all_required_valid = all(stages[k].get("valid") for k in required)
+    return {
+        "schema": "v3a_full_e2e_stage_validity_v1",
+        "stages": stages,
+        "all_required_valid": all_required_valid,
+        "blocking_errors": blocking,
+        "goal_recovery_impact": recovery_impact,
+        "first_live_visual": first_live_visual,
+        "delivery_label": delivery.get("delivery_label") or delivery.get("delivery_status"),
+    }
 
 
 if __name__ == "__main__":
