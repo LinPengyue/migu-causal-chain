@@ -154,23 +154,45 @@ def _structure_intents(issues: Sequence[Mapping[str, Any]], protect: Sequence[st
                     "evidence_refs": [{"kind": "diagnosis", "ref": iss.get("issue_id")}],
                 }
             )
-        elif cat == "redundancy" and len(sids) >= 2:
-            # Drop the later duplicate; never drop a protected goal.
-            drop_sid = sids[-1] if sids[-1] not in protect_set else (
-                sids[0] if sids[0] not in protect_set else None
-            )
+        elif cat == "redundancy" and (len(sids) >= 2 or iss.get("preferred_drop_segment_id")):
+            # Prefer audit-selected drop (non-goal contained in goal, etc.).
+            drop_sid = iss.get("preferred_drop_segment_id")
+            if drop_sid and str(drop_sid) in protect_set:
+                drop_sid = None
+            if not drop_sid and iss.get("duplicate_decision") == "human_review":
+                intents.append(
+                    {
+                        "intent_id": f"struct_dup_human_{i}",
+                        "action": "mark_unresolved",
+                        "issue_id": iss.get("issue_id"),
+                        "target_segment_id": sids[0] if sids else None,
+                        "narrative_purpose": "human_review_ambiguous_duplicate",
+                        "rationale": iss.get("observation") or iss.get("narrative_problem"),
+                        "expected_improvement": "await_human_choice_of_keep_drop",
+                        "risk": "do_not_auto_delete_ambiguous_pair",
+                        "goal_anchor_impact": "none",
+                        "evidence_refs": [{"kind": "diagnosis", "ref": iss.get("issue_id")}],
+                    }
+                )
+                continue
+            if not drop_sid and len(sids) >= 2:
+                # Fallback: drop later non-protected segment.
+                drop_sid = sids[-1] if sids[-1] not in protect_set else (
+                    sids[0] if sids[0] not in protect_set else None
+                )
             if drop_sid:
                 intents.append(
                     {
                         "intent_id": f"struct_drop_dup_{i}",
                         "action": "drop",
                         "issue_id": iss.get("issue_id"),
-                        "target_segment_id": drop_sid,
+                        "target_segment_id": str(drop_sid),
                         "narrative_purpose": "remove_duplicate_shot",
-                        "rationale": iss.get("narrative_problem"),
-                        "expected_improvement": "remove_redundant_repeat",
+                        "rationale": iss.get("observation") or iss.get("narrative_problem"),
+                        "expected_improvement": "remove_redundant_repeat_keep_verified_goal",
                         "risk": "low",
                         "goal_anchor_impact": "none",
+                        "preferred_keep_segment_id": iss.get("preferred_keep_segment_id"),
                         "evidence_refs": [{"kind": "diagnosis", "ref": iss.get("issue_id")}],
                     }
                 )

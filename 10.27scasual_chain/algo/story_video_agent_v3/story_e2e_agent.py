@@ -22,6 +22,11 @@ from .global_story_critic import (
     write_diagnosis,
 )
 from .self_revise_agent import apply_candidate_revision
+from .story_duplicate_audit import (
+    apply_auto_drops,
+    audit_edl_duplicates,
+    write_audit,
+)
 from .story_evidence_search import (
     run_story_evidence_search,
     search_candidates_to_observations,
@@ -370,12 +375,51 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         write_json(out / "00_render_smoke.json", smoke)
     audit["render_smoke"] = smoke
 
+    # Baseline duplicate audit on V3-R intake (prevent inheriting stock repeats).
+    baseline_dup = audit_edl_duplicates(
+        edl,
+        source_mp4=inp.source_mp4 if inp.source_mp4.is_file() else None,
+        enable_visual=False,  # structural PTS first; visual optional later
+    )
+    write_audit(out / "00_baseline" / "duplicate_audit.json", baseline_dup)
+    edl_after_dup, dup_apply = apply_auto_drops(edl, baseline_dup)
+    if dup_apply.get("changed"):
+        write_json(out / "00_baseline" / "edl_after_duplicate_auto_drop.json", edl_after_dup)
+        write_json(out / "00_baseline" / "duplicate_auto_drop_report.json", dup_apply)
+        edl = edl_after_dup
+    audit["baseline_duplicate_audit"] = {
+        "finding_count": baseline_dup.get("finding_count"),
+        "auto_drop_segment_ids": baseline_dup.get("auto_drop_segment_ids"),
+        "human_review_count": baseline_dup.get("human_review_count"),
+        "applied": dup_apply,
+    }
+
     # Copy initial into delivery staging
     initial_dir = out / "01_initial_story"
     initial_dir.mkdir(parents=True, exist_ok=True)
-    _copy_or_link(initial_mp4, initial_dir / "story_clean.mp4")
     write_json(initial_dir / "candidate_edl.json", edl)
     write_json(initial_dir / "story_plan.json", plan)
+    # If baseline auto-drop changed EDL, re-render so MP4 matches cleaned cut
+    # (never leave V3-R stock duplicates in the working story video).
+    if dup_apply.get("changed"):
+        try:
+            cleaned_render = _render_edl(
+                plan=plan,
+                video=inp.source_mp4,
+                edl=edl,
+                out_dir=initial_dir / "cleaned_baseline_render",
+            )
+            write_json(initial_dir / "cleaned_baseline_render.json", cleaned_render)
+            if cleaned_render.get("story_clean"):
+                _copy_or_link(Path(cleaned_render["story_clean"]), initial_dir / "story_clean.mp4")
+            else:
+                _copy_or_link(initial_mp4, initial_dir / "story_clean.mp4")
+                audit["baseline_duplicate_audit"]["render_note"] = "cleaned_render_missing_mp4_reused_v3r"
+        except Exception as exc:  # noqa: BLE001
+            _copy_or_link(initial_mp4, initial_dir / "story_clean.mp4")
+            audit["baseline_duplicate_audit"]["render_error"] = f"{type(exc).__name__}:{exc}"
+    else:
+        _copy_or_link(initial_mp4, initial_dir / "story_clean.mp4")
 
     best_edl = [dict(r) for r in edl]
     best_mp4 = initial_dir / "story_clean.mp4"

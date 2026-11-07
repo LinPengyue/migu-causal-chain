@@ -360,26 +360,32 @@ def structural_diagnosis(
                 )
             )
 
-    # Duplicate identical media windows
-    seen: Dict[Tuple[float, float], str] = {}
-    for s in media_segs:
-        key = (round(float(s["media_in"]), 2), round(float(s["media_out"]), 2))
-        if key in seen:
-            issues.append(
-                _issue(
-                    issue_id=f"duplicate_media_window_{s['segment_id']}",
-                    story_time_range=[float(s["story_in"]), float(s["story_out"])],
-                    segment_ids=[seen[key], s["segment_id"]],
-                    observation=f"Identical media window {key} appears twice in the cut.",
-                    narrative_problem="Possible redundant/repeated shot.",
-                    severity="major",
-                    suggested_fix="drop_or_replace_duplicate",
-                    evidence_sufficiency="structure_inferred",
-                    category="redundancy",
-                )
-            )
-        else:
-            seen[key] = s["segment_id"]
+    # Cross-role media duplicates: identical windows, overlap, containment.
+    from .story_duplicate_audit import audit_edl_duplicates, findings_to_critic_issues
+
+    dup_audit = audit_edl_duplicates(edl, source_mp4=None, enable_visual=False)
+    for iss in findings_to_critic_issues(dup_audit, timeline=timeline):
+        # Preserve preferred_drop/keep fields beyond the base _issue schema.
+        base = _issue(
+            issue_id=str(iss["issue_id"]),
+            story_time_range=iss["story_time_range"],
+            segment_ids=iss["segment_ids"],
+            observation=str(iss["observation"]),
+            narrative_problem=str(iss["narrative_problem"]),
+            severity=str(iss["severity"]),
+            suggested_fix=str(iss["suggested_fix"]),
+            evidence_sufficiency=str(iss["evidence_sufficiency"]),
+            category="redundancy",
+        )
+        for k in (
+            "preferred_drop_segment_id",
+            "preferred_keep_segment_id",
+            "duplicate_kind",
+            "duplicate_decision",
+        ):
+            if iss.get(k) is not None:
+                base[k] = iss.get(k)
+        issues.append(base)
 
     # Replay flags on included cuts
     for s in media_segs:
