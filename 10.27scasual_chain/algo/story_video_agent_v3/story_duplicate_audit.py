@@ -76,35 +76,41 @@ def _preference_score(row: Mapping[str, Any]) -> Tuple[int, int, float, int]:
     return (goal + verified + weak, 1 if _is_goal(role) else 0, span, 0)
 
 
+def _keep_trusted(row: Mapping[str, Any]) -> bool:
+    """Keep side is trusted enough for auto-drop of a redundant non-goal."""
+    role = str(row.get("role") or "")
+    if not _is_goal(role):
+        return False
+    if row.get("is_replay") in (True, "true", "True", 1):
+        return False
+    fl = str(row.get("first_live_status") or "").upper()
+    if fl in ("SUSPECTED_REPLAY", "CONFIRMED_REPLAY", "REPLAY"):
+        return False
+    # Goal anchors are protected even without FIRST_LIVE_VERIFIED stamp on V3-R rows.
+    return True
+
+
 def choose_keep_drop(
     a: Mapping[str, Any],
     b: Mapping[str, Any],
     *,
     contain: Optional[str] = None,
+    identical: bool = False,
 ) -> Dict[str, Any]:
-    """Decide keep/drop or human_review for a duplicate pair."""
-    sa, sb = _preference_score(a), _preference_score(b)
+    """Decide keep/drop or human_review for a duplicate pair.
+
+    Auto-drop is allowed ONLY when:
+      - full containment OR identical source window, AND
+      - the kept object is a trusted goal_action, AND
+      - the dropped object is non-goal.
+    Partial overlap / distinct narrative roles / independent actions → human_review.
+    Never auto-delete based on span length or role priority alone.
+    """
     aid = str(a.get("segment_id") or "")
     bid = str(b.get("segment_id") or "")
     a_goal, b_goal = _is_goal(str(a.get("role"))), _is_goal(str(b.get("role")))
 
-    # Containment: always drop the inner non-goal when outer is goal.
-    if contain == "a_in_b" and b_goal and not a_goal:
-        return {
-            "decision": "auto_drop",
-            "keep_segment_id": bid,
-            "drop_segment_id": aid,
-            "reason": "non_goal_contained_in_goal_action",
-        }
-    if contain == "b_in_a" and a_goal and not b_goal:
-        return {
-            "decision": "auto_drop",
-            "keep_segment_id": aid,
-            "drop_segment_id": bid,
-            "reason": "non_goal_contained_in_goal_action",
-        }
-
-    # Both goals overlapping → human review (do not auto-delete either).
+    # Both goals overlapping / identical → human review (never auto-delete either).
     if a_goal and b_goal:
         return {
             "decision": "human_review",
@@ -113,27 +119,55 @@ def choose_keep_drop(
             "reason": "overlapping_goal_actions_require_human_review",
         }
 
-    # Clear preference gap.
-    if sa > sb and (a_goal or sa[0] - sb[0] >= 2 or sa[2] >= sb[2] + 4.0):
+    # Identical windows: drop non-goal when the other is a trusted goal.
+    if identical:
+        if a_goal and _keep_trusted(a) and not b_goal:
+            return {
+                "decision": "auto_drop",
+                "keep_segment_id": aid,
+                "drop_segment_id": bid,
+                "reason": "identical_window_drop_non_goal_keep_trusted_goal",
+            }
+        if b_goal and _keep_trusted(b) and not a_goal:
+            return {
+                "decision": "auto_drop",
+                "keep_segment_id": bid,
+                "drop_segment_id": aid,
+                "reason": "identical_window_drop_non_goal_keep_trusted_goal",
+            }
         return {
-            "decision": "auto_drop",
-            "keep_segment_id": aid,
-            "drop_segment_id": bid,
-            "reason": "prefer_higher_priority_or_longer_cut",
+            "decision": "human_review",
+            "keep_segment_id": None,
+            "drop_segment_id": None,
+            "reason": "identical_window_without_trusted_goal_keeper",
         }
-    if sb > sa and (b_goal or sb[0] - sa[0] >= 2 or sb[2] >= sa[2] + 4.0):
+
+    # Full containment: drop inner non-goal when outer is trusted goal.
+    if contain == "a_in_b" and b_goal and _keep_trusted(b) and not a_goal:
         return {
             "decision": "auto_drop",
             "keep_segment_id": bid,
             "drop_segment_id": aid,
-            "reason": "prefer_higher_priority_or_longer_cut",
+            "reason": "non_goal_fully_contained_in_trusted_goal_action",
+        }
+    if contain == "b_in_a" and a_goal and _keep_trusted(a) and not b_goal:
+        return {
+            "decision": "auto_drop",
+            "keep_segment_id": aid,
+            "drop_segment_id": bid,
+            "reason": "non_goal_fully_contained_in_trusted_goal_action",
         }
 
+    # Partial overlap or containment without trusted goal keeper → human review.
     return {
         "decision": "human_review",
         "keep_segment_id": None,
         "drop_segment_id": None,
-        "reason": "ambiguous_duplicate_pair",
+        "reason": (
+            "partial_overlap_or_untrusted_pair_requires_human_review"
+            if contain is None
+            else "containment_without_trusted_goal_keeper"
+        ),
     }
 
 
@@ -156,7 +190,7 @@ def find_media_window_duplicates(
         sid = str(r.get("segment_id") or "")
         if key in seen_identical:
             other = next(x for x in rows if str(x.get("segment_id")) == seen_identical[key])
-            pref = choose_keep_drop(other, r, contain=None)
+            pref = choose_keep_drop(other, r, contain=None, identical=True)
             findings.append(
                 {
                     "kind": "identical_media_window",
@@ -420,29 +454,104 @@ def audit_edl_duplicates(
     }
 
 
+def build_drop_ledger(
+    edl: Sequence[Mapping[str, Any]],
+    audit: Mapping[str, Any],
+) -> List[Dict[str, Any]]:
+    """Structured record for every auto-dropped (or human-flagged) segment."""
+    by_id = {str(r.get("segment_id") or ""): r for r in edl if isinstance(r, Mapping)}
+    ledger: List[Dict[str, Any]] = []
+    for f in audit.get("findings") or []:
+        if not isinstance(f, dict):
+            continue
+        drop_id = f.get("drop_segment_id")
+        keep_id = f.get("keep_segment_id")
+        drop_row = by_id.get(str(drop_id or ""))
+        keep_row = by_id.get(str(keep_id or ""))
+        windows = {str(w.get("segment_id")): w for w in (f.get("media_windows") or []) if isinstance(w, dict)}
+        drop_win = windows.get(str(drop_id or ""), {})
+        keep_win = windows.get(str(keep_id or ""), {})
+        ledger.append(
+            {
+                "decision": f.get("decision"),
+                "kind": f.get("kind"),
+                "dropped_segment_id": drop_id,
+                "kept_segment_id": keep_id,
+                "drop_role": (drop_row or {}).get("role") or (f.get("roles") or [None, None])[0],
+                "keep_role": (keep_row or {}).get("role"),
+                "drop_source_pts": {
+                    "media_in": drop_win.get("media_in") or (drop_row or {}).get("media_in"),
+                    "media_out": drop_win.get("media_out") or (drop_row or {}).get("media_out"),
+                },
+                "keep_source_pts": {
+                    "media_in": keep_win.get("media_in") or (keep_row or {}).get("media_in"),
+                    "media_out": keep_win.get("media_out") or (keep_row or {}).get("media_out"),
+                },
+                "reason": f.get("reason"),
+                "evidence": {
+                    "iou": f.get("iou"),
+                    "containment": f.get("containment"),
+                    "overlap_sec": f.get("overlap_sec"),
+                    "visual_corr": f.get("visual_corr"),
+                    "segment_ids": f.get("segment_ids"),
+                    "roles": f.get("roles"),
+                },
+            }
+        )
+    return ledger
+
+
 def apply_auto_drops(
     edl: Sequence[Mapping[str, Any]],
     audit: Mapping[str, Any],
 ) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
-    """Apply clear auto-drops; never touch segments not listed."""
+    """Apply clear auto-drops; never touch goal anchors or unlisted segments."""
     drop_ids = set(audit.get("auto_drop_segment_ids") or [])
+    ledger = build_drop_ledger(edl, audit)
     if not drop_ids:
-        return [dict(r) for r in edl], {"changed": False, "dropped": []}
+        return [dict(r) for r in edl], {
+            "changed": False,
+            "dropped": [],
+            "drop_ledger": ledger,
+            "refused_goal_drops": [],
+        }
     out: List[Dict[str, Any]] = []
     dropped: List[str] = []
+    refused_goal: List[str] = []
+    keep_by_drop = {
+        str(f.get("drop_segment_id")): f
+        for f in (audit.get("findings") or [])
+        if f.get("decision") == "auto_drop" and f.get("drop_segment_id")
+    }
     for r in edl:
         row = dict(r)
         sid = str(row.get("segment_id") or "")
         if sid in drop_ids and row.get("include_in_cut", True) is not False:
-            # Refuse dropping protected-looking goal_action even if listed.
+            # Refuse dropping protected goal_action even if listed.
             if _is_goal(str(row.get("role") or "")):
+                refused_goal.append(sid)
                 out.append(row)
                 continue
+            finding = keep_by_drop.get(sid) or {}
             row["include_in_cut"] = False
             row["agent_drop_reason"] = "duplicate_audit_auto_drop"
+            row["duplicate_drop_meta"] = {
+                "reason": finding.get("reason"),
+                "kept_segment_id": finding.get("keep_segment_id"),
+                "kind": finding.get("kind"),
+                "evidence": {
+                    "iou": finding.get("iou"),
+                    "containment": finding.get("containment"),
+                },
+            }
             dropped.append(sid)
         out.append(row)
-    return out, {"changed": bool(dropped), "dropped": dropped}
+    return out, {
+        "changed": bool(dropped),
+        "dropped": dropped,
+        "drop_ledger": ledger,
+        "refused_goal_drops": refused_goal,
+    }
 
 
 def findings_to_critic_issues(

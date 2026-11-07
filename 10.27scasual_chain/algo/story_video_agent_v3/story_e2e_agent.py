@@ -399,9 +399,11 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
     initial_dir.mkdir(parents=True, exist_ok=True)
     write_json(initial_dir / "candidate_edl.json", edl)
     write_json(initial_dir / "story_plan.json", plan)
-    # If baseline auto-drop changed EDL, re-render so MP4 matches cleaned cut
-    # (never leave V3-R stock duplicates in the working story video).
+    # If baseline auto-drop changed EDL, MUST re-render. Never pair modified EDL
+    # with the original MP4 (fail closed → BLOCKED).
+    dedupe_render_blocked = False
     if dup_apply.get("changed"):
+        write_json(out / "00_baseline" / "duplicate_drop_ledger.json", dup_apply.get("drop_ledger") or [])
         try:
             cleaned_render = _render_edl(
                 plan=plan,
@@ -410,19 +412,59 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 out_dir=initial_dir / "cleaned_baseline_render",
             )
             write_json(initial_dir / "cleaned_baseline_render.json", cleaned_render)
-            if cleaned_render.get("story_clean"):
+            if cleaned_render.get("story_clean") and Path(cleaned_render["story_clean"]).is_file():
                 _copy_or_link(Path(cleaned_render["story_clean"]), initial_dir / "story_clean.mp4")
+                audit["baseline_duplicate_audit"]["render_ok"] = True
             else:
-                _copy_or_link(initial_mp4, initial_dir / "story_clean.mp4")
-                audit["baseline_duplicate_audit"]["render_note"] = "cleaned_render_missing_mp4_reused_v3r"
+                dedupe_render_blocked = True
+                audit["baseline_duplicate_audit"]["render_ok"] = False
+                audit["baseline_duplicate_audit"]["render_note"] = (
+                    "dedupe_changed_edl_but_render_missing_mp4_fail_closed"
+                )
         except Exception as exc:  # noqa: BLE001
-            _copy_or_link(initial_mp4, initial_dir / "story_clean.mp4")
+            dedupe_render_blocked = True
+            audit["baseline_duplicate_audit"]["render_ok"] = False
             audit["baseline_duplicate_audit"]["render_error"] = f"{type(exc).__name__}:{exc}"
+        if dedupe_render_blocked:
+            # Do not copy original MP4 beside modified EDL — leave marker and block delivery.
+            write_json(
+                initial_dir / "DEDUP_RENDER_BLOCKED.json",
+                {
+                    "blocked": True,
+                    "reason": "edl_deduped_but_render_failed_refuse_pair_with_original_mp4",
+                    "dropped": dup_apply.get("dropped"),
+                },
+            )
+            audit["error"] = "dedupe_render_failed_fail_closed"
+            audit["delivery_status_forced"] = "BLOCKED"
     else:
         _copy_or_link(initial_mp4, initial_dir / "story_clean.mp4")
 
     best_edl = [dict(r) for r in edl]
     best_mp4 = initial_dir / "story_clean.mp4"
+    if audit.get("delivery_status_forced") == "BLOCKED":
+        gates["workflow_completed"] = True
+        gates["final_mp4_exists"] = False
+        final_dir = out / "99_final"
+        final_dir.mkdir(parents=True, exist_ok=True)
+        write_json(final_dir / "final_edl.json", best_edl)
+        delivery = {
+            "release_authorized": False,
+            "delivery_label": "BLOCKED",
+            "delivery_status": "BLOCKED",
+            "blocked_reasons": ["dedupe_render_failed_edl_mp4_mismatch_refused"],
+            "final_mp4": None,
+            "final_edl": str(final_dir / "final_edl.json"),
+            "decision": "UNRESOLVED",
+            "note": "EDL was deduped but re-render failed; refusing to pair modified EDL with original MP4.",
+        }
+        write_json(final_dir / "delivery_status.json", delivery)
+        audit["status_gates"] = gates
+        audit["delivery"] = delivery
+        audit["ok"] = False
+        write_json(out / "story_e2e_audit.json", audit)
+        write_json(out / "status_gates.json", gates)
+        return audit
     final_decision = "KEEP"
     last_candidate_bundle: Dict[str, Any] = {}
     metrics = {
@@ -699,6 +741,19 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         else:
             gates["revision_applied"] = False
 
+        # Candidate-stage duplicate audit (same safety rules as baseline intake).
+        cand_dup = audit_edl_duplicates(
+            candidate_edl,
+            source_mp4=inp.source_mp4 if inp.source_mp4.is_file() else None,
+            enable_visual=False,
+        )
+        write_audit(round_dir / "candidate_duplicate_audit.json", cand_dup)
+        candidate_edl, cand_dup_apply = apply_auto_drops(candidate_edl, cand_dup)
+        write_json(round_dir / "candidate_duplicate_drop_report.json", cand_dup_apply)
+        if cand_dup_apply.get("changed"):
+            write_json(round_dir / "candidate_duplicate_drop_ledger.json", cand_dup_apply.get("drop_ledger") or [])
+            round_rec["candidate_duplicate_auto_drops"] = cand_dup_apply.get("dropped")
+
         write_json(round_dir / "candidate_edl.json", candidate_edl)
         write_json(round_dir / "apply_report.json", apply_report)
         write_json(
@@ -709,6 +764,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         candidate_mp4: Optional[Path] = None
         render_info: Dict[str, Any] = {"skipped": True}
         edl_changed = candidate_edl != best_edl
+        cand_dedupe_render_blocked = False
         # Render when EDL actually changed (safety+authenticity gates still apply later).
         if edl_changed and (final_decision == "REVISE" or inp.force_render_candidate):
             try:
@@ -724,6 +780,13 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             except Exception as exc:  # noqa: BLE001
                 render_info = {"ok": False, "error": str(exc)}
                 gates["candidate_rendered"] = False
+                if cand_dup_apply.get("changed"):
+                    cand_dedupe_render_blocked = True
+                    render_info["fail_closed"] = (
+                        "candidate_deduped_edl_render_failed_refuse_original_mp4"
+                    )
+            if edl_changed and cand_dup_apply.get("changed") and not gates.get("candidate_rendered"):
+                cand_dedupe_render_blocked = True
         elif not edl_changed:
             render_info = {
                 "skipped": True,
@@ -972,20 +1035,54 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         }
         write_json(hr_dir / "human_review_status.json", human_review)
 
-    delivery_label = (
-        "FORMAL_RELEASE"
-        if gates["release_authorized"]
-        else (
-            "HUMAN_REVIEW_REQUIRED"
-            if human_review.get("required")
-            else "INTERNAL_PREVIEW_NOT_FOR_DELIVERY"
+    # Formal delivery status: RELEASE_READY | HUMAN_REVIEW_REQUIRED | BLOCKED
+    blocked_reasons: List[str] = []
+    if audit.get("delivery_status_forced") == "BLOCKED" or audit.get("error") == "dedupe_render_failed_fail_closed":
+        blocked_reasons.append("dedupe_render_failed_edl_mp4_mismatch_refused")
+    if not gates.get("final_mp4_exists"):
+        blocked_reasons.append("final_mp4_missing")
+    if align.get("aligned") is False:
+        blocked_reasons.append("final_mp4_edl_timeline_misaligned")
+    hard = list(last_v.get("hard_vetoes") or [])
+    if hard:
+        blocked_reasons.append("hard_vetoes_present")
+    if not (last_v.get("goal_protection") or {}).get("intact", True):
+        blocked_reasons.append("goal_anchors_damaged")
+    if final_decision == "UNRESOLVED" and not human_review.get("required") and not gates.get("release_authorized"):
+        # unresolved without a safe playable candidate preview
+        if not (human_review.get("v3a_candidate_mp4") or last_candidate_bundle.get("candidate_mp4")):
+            blocked_reasons.append("unresolved_without_safe_candidate_preview")
+
+    if gates["release_authorized"]:
+        delivery_label = "RELEASE_READY"
+    elif human_review.get("required") and human_review.get("safe_playable_preview") and not blocked_reasons:
+        delivery_label = "HUMAN_REVIEW_REQUIRED"
+    elif blocked_reasons:
+        delivery_label = "BLOCKED"
+    elif human_review.get("required"):
+        delivery_label = "HUMAN_REVIEW_REQUIRED"
+    else:
+        delivery_label = "BLOCKED"
+        blocked_reasons.append("no_release_and_no_safe_human_review_preview")
+
+    # Do not advertise a "final" MP4 when BLOCKED for EDL/MP4 mismatch.
+    publishable_mp4 = str(final_mp4) if final_mp4.is_file() and delivery_label != "BLOCKED" else (
+        str(final_mp4) if final_mp4.is_file() and delivery_label == "HUMAN_REVIEW_REQUIRED" else (
+            str(final_mp4) if final_mp4.is_file() and delivery_label == "RELEASE_READY" else None
         )
     )
+    if delivery_label == "BLOCKED" and "dedupe_render_failed" in ",".join(blocked_reasons):
+        publishable_mp4 = None
+
     delivery = {
         "release_authorized": gates["release_authorized"],
         "delivery_label": delivery_label,
+        "delivery_status": delivery_label,
+        "blocked_reasons": blocked_reasons,
         "human_review": human_review,
-        "final_mp4": str(final_mp4) if final_mp4.is_file() else None,
+        "final_mp4": publishable_mp4 if delivery_label == "RELEASE_READY" else (
+            str(final_mp4) if final_mp4.is_file() and delivery_label == "HUMAN_REVIEW_REQUIRED" else publishable_mp4
+        ),
         "final_edl": str(final_dir / "final_edl.json"),
         "decision": final_decision,
         "release_gate": release,
@@ -1003,7 +1100,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             "workflow_completed / final_mp4_exists / semantic_verification_passed alone never authorize. "
             "HUMAN_REVIEW_REQUIRED means a safe candidate preview exists for human judgment."
             if not gates["release_authorized"]
-            else "All formal release conjunction gates passed."
+            else "RELEASE_READY: all formal release conjunction gates passed."
         ),
     }
     write_json(final_dir / "delivery_status.json", delivery)

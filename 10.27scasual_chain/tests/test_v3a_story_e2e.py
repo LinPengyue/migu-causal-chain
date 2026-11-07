@@ -305,9 +305,16 @@ class TestCrossMatchOfflineDryRun(unittest.TestCase):
                 self.assertIn(
                     delivery["delivery_label"],
                     (
-                        "INTERNAL_PREVIEW_NOT_FOR_DELIVERY",
+                        "RELEASE_READY",
                         "HUMAN_REVIEW_REQUIRED",
+                        "BLOCKED",
+                        # legacy alias still accepted during transition
+                        "INTERNAL_PREVIEW_NOT_FOR_DELIVERY",
                     ),
+                )
+                self.assertFalse(
+                    delivery.get("delivery_label") == "RELEASE_READY"
+                    and not gates.get("release_authorized")
                 )
                 self.assertIn(delivery["decision"], ("KEEP", "UNRESOLVED", "REVISE"))
                 out_dir = Path(audit["out_dir"])

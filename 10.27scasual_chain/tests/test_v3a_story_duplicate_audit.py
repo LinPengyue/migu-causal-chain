@@ -90,8 +90,8 @@ class ContainmentAndPreferenceTests(unittest.TestCase):
         pref = choose_keep_drop(a, b, contain=None)
         self.assertEqual(pref["decision"], "human_review")
 
-    def test_partial_overlap_different_attacks_not_auto_if_ambiguous(self):
-        # Two non-goal similar lengths with modest overlap → human or weak prefer.
+    def test_partial_overlap_never_auto_drops_on_length_or_priority(self):
+        # Partial overlap between non-goals (or non-contained) → human_review only.
         edl = [
             {
                 "segment_id": "a",
@@ -102,7 +102,7 @@ class ContainmentAndPreferenceTests(unittest.TestCase):
             },
             {
                 "segment_id": "b",
-                "role": "buildup_action",
+                "role": "buildup_bridge_action",
                 "include_in_cut": True,
                 "media_in": 108.0,
                 "media_out": 120.0,
@@ -110,10 +110,8 @@ class ContainmentAndPreferenceTests(unittest.TestCase):
         ]
         findings = find_media_window_duplicates(edl)
         self.assertTrue(findings)
-        # Ambiguous same-role partial → human_review (no clear goal preference)
-        self.assertTrue(any(f["decision"] == "human_review" for f in findings) or all(
-            f.get("drop_segment_id") for f in findings if f["decision"] == "auto_drop"
-        ))
+        self.assertTrue(all(f["decision"] == "human_review" for f in findings))
+        self.assertTrue(all(not f.get("drop_segment_id") for f in findings))
 
     def test_different_length_containment_still_drops_inner(self):
         edl = [

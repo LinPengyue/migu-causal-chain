@@ -40,7 +40,11 @@ def _adapt_v1(
     match_id: str,
     video_name: str,
     out_path: Path,
+    strip_path: Optional[Path] = None,
+    recovery_out_path: Optional[Path] = None,
 ) -> Dict[str, Any]:
+    from .goal_recovery import recover_match_goals
+
     raw = load_raw_events(enriched_events)
     teams = {}
     try:
@@ -50,6 +54,16 @@ def _adapt_v1(
         teams = {}
     t1 = ((teams.get("team_1") or {}) if isinstance(teams.get("team_1"), dict) else {}).get("name") or ""
     t2 = ((teams.get("team_2") or {}) if isinstance(teams.get("team_2"), dict) else {}).get("name") or ""
+
+    # Goal Recovery: score-transition candidates from enriched events (+ optional strip link).
+    # Does not invent timestamps from human causal structure; recovery forbids *_causal.json.
+    recovery = recover_match_goals(
+        events_path=enriched_events,
+        strip_path=strip_path,
+        out_path=recovery_out_path,
+    )
+    recovered = list(recovery.get("candidates") or [])
+
     doc = strip_chains_to_v1_causal(
         strip=strip,
         raw_events=raw,
@@ -57,17 +71,21 @@ def _adapt_v1(
         video_name=video_name,
         team_1_name=str(t1),
         team_2_name=str(t2),
-        recovered_goals=None,  # no Goal Recovery path
+        recovered_goals=recovered,
     )
-    # Clarify adapter note for this closed loop
     adapter = dict(doc.get("v3_adapter") or {})
-    adapter["prediction_source"] = "causal_chain6_predicted_on_atom_enriched_events"
-    adapter["goal_recovery_used"] = False
+    adapter["prediction_source"] = "causal_chain6_predicted_on_atom_enriched_events+v3_goal_recovery"
+    adapter["goal_recovery_used"] = True
+    adapter["goal_recovery"] = {
+        "n_candidates": recovery.get("n_candidates"),
+        "n_single_goal": recovery.get("n_single_goal"),
+        "n_with_goal_action_sec": recovery.get("n_with_goal_action_sec"),
+        "path": str(recovery_out_path) if recovery_out_path else None,
+    }
     adapter["human_causal_structure_used"] = False
     doc["v3_adapter"] = adapter
     dump(out_path, doc)
     return doc
-
 
 def _audit_goal_segments(predicted_causal: Dict[str, Any], enriched_events: Path) -> Dict[str, Any]:
     """Flag goal terminals LIVE vs REPLAY using enriched event video_context only."""
@@ -190,6 +208,8 @@ def run_match(
         match_id=match_id,
         video_name=video.name,
         out_path=predicted_causal_path,
+        strip_path=strip_dir / "strip_A_original.json",
+        recovery_out_path=v1_dir / "goal_recovery.json",
     )
 
     # Delivery path: drop replay chains AND replay Goal atom events (keep full strip artifact).
@@ -267,13 +287,17 @@ def run_match(
             "path": str(predicted_causal_path),
             "n_chains": len(predicted.get("causal_chains") or []),
             "n_goal_terminals": (predicted.get("v3_adapter") or {}).get("n_goal_terminals_in_adapted_chains"),
+            "goal_recovery_used": bool((predicted.get("v3_adapter") or {}).get("goal_recovery_used")),
+            "goal_recovery": (predicted.get("v3_adapter") or {}).get("goal_recovery"),
         },
         "goal_audit": {
             "n_goal_terminals": audit.get("n_goal_terminals"),
             "n_live_candidate": audit.get("n_live_candidate"),
             "n_replay_detected": audit.get("n_replay_detected"),
             "success_claimed": False,
+            "visual_first_live_verified": False,
             "preview_clips": [c.get("clip") for c in previews if c.get("clip")],
+            "note": "Metadata LIVE candidates + ffmpeg previews only; visual first-LIVE not auto-claimed",
         },
         "phase5": {
             "out_dir": str(phase5_dir),
