@@ -28,7 +28,7 @@ Evidence in earlier committed fourth-audit proof references source MP4:
 /mnt/data4/migu/10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语.mp4
 ```
 
-Check this path actually exists on Cursor's server. Find the original match JSON and only event records produced from that JSON+source by the allowed pipeline. Never consume strip_gold.json, manual story labels, or hidden ground truth. Record source SHA-256 and exact input paths. If generated event records are unavailable, run with no --events-json; UNKNOWN is the correct default, not LIVE-certified.
+Check this path actually exists on Cursor's server. **Approved input set: original `赛事.json` atomic events + supplementary `causal.json` atomic events + original source MP4.** User explicitly permits `causal.json` to fill missing atomic events and links in `赛事.json`; do not exclude it simply for being supplemental or manually curated. Preserve source-file/event IDs, input SHA, PTS and merge/deduplication decisions. This permission does NOT extend to `strip_gold.json`, benchmark answer keys, or human-labeled long-form story/EDL ground truth. If optional causal event schema differs, map its atomic events into the search input with documented lineage rather than discarding them. Event metadata never independently certifies FIRST_LIVE_VERIFIED; UNKNOWN remains valid without source-video broadcast proof.
 
 ## 2. Reproducible zero-HTTP source-context inspection
 
@@ -43,7 +43,7 @@ PYTHONPATH=algo python scripts/phase8_real_video_preflight.py \
   --window replay_candidate_824:824.81:835.15
 ```
 
-To supply non-gold generated event metadata, optionally append `--events-json /actual/path/to/generated_events.json` **only after** proving that file was computed from the permitted match JSON+MP4. This script computes source SHA, cuts continuous original-source context clips with ffmpeg, records clip hashes and event overlaps, and writes `preflight_summary.json` and per-window `broadcast_timeline_review.json`. No provider calls, no status first-live positive, no edit/render loop.
+For event-aware replay screening, optionally append `--events-json /actual/path/to/event_union.json`, where `event_union.json` may combine the user-approved `赛事.json` and `causal.json` atomic events. Record the exact two source paths, SHA values and merge adapter used. This optional argument expects the script's supported event-list schema; do not pass an incompatible raw `causal.json` without checking its structure. The script computes source SHA, cuts continuous original-source context clips with ffmpeg, records clip hashes and event overlaps, and writes `preflight_summary.json` and per-window `broadcast_timeline_review.json`. No provider calls, no automatic first-live positive, no edit/render loop.
 
 Do not commit large context MP4s to Git. Provide their exact accessible server paths and content hashes, or upload short audit previews in the conversation for visual review. The source file must remain unchanged. If generated event JSON's structure cannot be loaded, report the real schema rather than changing production algorithms blindly.
 
@@ -57,7 +57,7 @@ Important: neither source-window binding nor a 30-second context clip alone prov
 
 Cursor should supply a budget estimate and exact existing V3-A invocation for one **controlled** 2–3-round Critic → Planner → Verifier test (first-live approved materials only). Ask for explicit user authorization of a total USD cap and call count before enabling `enable_real_api`/`i_approve_budget` or any `phase8_paid_multi_round` switch. Current approval does NOT cover a paid run; zero paid is mandatory in this handoff.
 
-Freeze source MP4, initial V3-R EDL/MP4, match JSON, story template, version SHA, provider model, visual sampling and API budget. Run the same initial video as a single-round baseline with equal total observations/cost where feasible. For each round log diagnosis, selected issue, source PTS, prior feedback, evidence frames, candidate EDL, render file, safety outcome, soft story quality, best-vs-working comparison, budget and stop reason. Never infer story quality from the number of rounds or rejected clips.
+Freeze source MP4, initial V3-R EDL/MP4, `赛事.json`, permitted `causal.json` (if supplied), event merge rules, story template, version SHA, provider model, visual sampling and API budget. Run the same initial video as a single-round baseline with equal total observations/cost where feasible. For each round log diagnosis, selected issue, source PTS, prior feedback, evidence frames, candidate EDL, render file, safety outcome, soft story quality, best-vs-working comparison, budget and stop reason. Never infer story quality from the number of rounds or rejected clips.
 
 ## 5. Story-quality scoring after a real video is available
 
