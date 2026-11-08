@@ -121,6 +121,53 @@ def _read_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _is_events_enriched_path(path: Optional[Path]) -> bool:
+    """True when path is the V3-R enrich_files output (not raw 赛事.json)."""
+    if path is None:
+        return False
+    p = Path(path)
+    if p.name == "events_enriched.json":
+        return True
+    # Parent folder convention: .../01_enrich/events_enriched.json
+    return p.parent.name == "01_enrich" and p.suffix == ".json" and "enrich" in p.name
+
+
+def resolve_events_json_for_agent(
+    *,
+    events_json: Optional[Path] = None,
+    phase5_dir: Optional[Path] = None,
+    out_dir: Optional[Path] = None,
+) -> Optional[Path]:
+    """Prefer V3-R ``01_enrich/events_enriched.json`` over raw delivery events.
+
+    Search/Critic/Planner evidence must not silently fall back to raw ``赛事.json``
+    when the upstream enrich artifact exists beside Phase5 or under a fresh V3-R
+    tree. Explicit ``events_enriched.json`` paths still win. Does **not** re-run
+    ``enrich_files`` or invent a parallel event_union.
+    """
+    enriched_candidates: List[Path] = []
+    if phase5_dir is not None:
+        enriched_candidates.append(
+            Path(phase5_dir).resolve().parent / "01_enrich" / "events_enriched.json"
+        )
+    if out_dir is not None:
+        enriched_candidates.append(
+            Path(out_dir).resolve() / "01_to_04_fresh_v3r" / "01_enrich" / "events_enriched.json"
+        )
+    for cand in enriched_candidates:
+        if cand.is_file():
+            # Raw events_json must not bypass enriched sibling.
+            if events_json is None or not _is_events_enriched_path(events_json):
+                return cand
+            break
+    if events_json is not None and Path(events_json).is_file():
+        return Path(events_json)
+    for cand in enriched_candidates:
+        if cand.is_file():
+            return cand
+    return None
+
+
 def _copy_or_link(src: Path, dst: Path) -> None:
     dst.parent.mkdir(parents=True, exist_ok=True)
     if dst.exists() or dst.is_symlink():
@@ -793,13 +840,13 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         round_rec["diagnosis_issue_count"] = len(diag.get("issues") or [])
         round_rec["semantic_observation_claimed"] = diag.get("semantic_observation_claimed")
 
-        # Active evidence search (Critic gaps → source PTS candidates)
-        events_path = inp.events_json if inp.events_json and inp.events_json.is_file() else None
-        if events_path is None and inp.phase5_dir is not None:
-            # Prefer enriched events beside a reused Phase5 tree (match-agnostic layout).
-            sibling = Path(inp.phase5_dir).resolve().parent / "01_enrich" / "events_enriched.json"
-            if sibling.is_file():
-                events_path = sibling
+        # Active evidence search (Critic gaps → source PTS candidates).
+        # Prefer V3-R events_enriched.json; raw events_json must not bypass it.
+        events_path = resolve_events_json_for_agent(
+            events_json=inp.events_json,
+            phase5_dir=inp.phase5_dir,
+            out_dir=out,
+        )
         fb_ctx = feedback_store.to_dict()
         search_report = run_story_evidence_search(
             diagnosis=diag,
@@ -807,6 +854,11 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             match_json=inp.match_json if inp.match_json.is_file() else None,
             events_json=events_path,
             feedback_context=fb_ctx,
+        )
+        search_report["events_json_resolved_via"] = (
+            "events_enriched"
+            if events_path is not None and _is_events_enriched_path(events_path)
+            else ("explicit_events_json" if events_path is not None else "match_json_only")
         )
         write_json(round_dir / "evidence_search.json", search_report)
         search_obs = search_candidates_to_observations(search_report)
@@ -2124,10 +2176,11 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         except Exception:  # noqa: BLE001
             story_graph = {}
 
-    events_for_fl = inp.events_json
-    enrich_events = out / "01_to_04_fresh_v3r" / "01_enrich" / "events_enriched.json"
-    if enrich_events.is_file():
-        events_for_fl = enrich_events
+    events_for_fl = resolve_events_json_for_agent(
+        events_json=inp.events_json,
+        phase5_dir=inp.phase5_dir,
+        out_dir=out,
+    )
 
     candidate_edl_for_evidence = None
     if last_candidate_bundle.get("candidate_edl"):
