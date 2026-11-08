@@ -33,6 +33,7 @@ from .story_evidence_search import (
 )
 from .story_observe import observe_layers
 from .story_revision_planner import plan_from_diagnosis
+from .final_goal_evidence import build_delivery_and_candidate_evidence
 from .story_timeline import build_story_timeline
 from .story_video_verifier import (
     compute_release_authorization,
@@ -1035,33 +1036,123 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         }
         write_json(hr_dir / "human_review_status.json", human_review)
 
-    # First-live visual audit from fresh V3-R (zero-cost); never invent verified.
-    first_live_visual: Dict[str, Any] = {}
+    # Final EDL first-live evidence (not V3-R historical stats). Inherit only on
+    # identical video SHA + media/evidence windows; otherwise re-verify.
+    prior_v3r_fl: Dict[str, Any] = {}
     fl_path = out / "01_to_04_fresh_v3r" / "05_live_audit" / "first_live_visual_audit.json"
     if fl_path.is_file():
         try:
-            first_live_visual = _read_json(fl_path)
+            prior_v3r_fl = _read_json(fl_path)
         except Exception:  # noqa: BLE001
-            first_live_visual = {"error": "unreadable_first_live_visual_audit"}
+            prior_v3r_fl = {}
+
+    recovery_payload: Dict[str, Any] = {}
+    recovery_path = out / "01_to_04_fresh_v3r" / "03_v1_adapt" / "goal_recovery.json"
+    if recovery_path.is_file():
+        try:
+            recovery_payload = _read_json(recovery_path)
+        except Exception:  # noqa: BLE001
+            recovery_payload = {}
+    predicted_causal: Dict[str, Any] = {}
+    pred_path = out / "01_to_04_fresh_v3r" / "03_v1_adapt" / "predicted_causal.json"
+    if pred_path.is_file():
+        try:
+            predicted_causal = _read_json(pred_path)
+        except Exception:  # noqa: BLE001
+            predicted_causal = {}
+    story_graph: Dict[str, Any] = {}
+    graph_path = (
+        Path(baseline["paths"].get("story_graph.json") or "")
+        if baseline.get("paths")
+        else Path()
+    )
+    if not graph_path.is_file():
+        graph_path = out / "01_to_04_fresh_v3r" / "04_phase5" / "story_graph.json"
+    if graph_path.is_file():
+        try:
+            story_graph = _read_json(graph_path)
+        except Exception:  # noqa: BLE001
+            story_graph = {}
+
+    events_for_fl = inp.events_json
+    enrich_events = out / "01_to_04_fresh_v3r" / "01_enrich" / "events_enriched.json"
+    if enrich_events.is_file():
+        events_for_fl = enrich_events
+
+    candidate_edl_for_evidence = None
+    if last_candidate_bundle.get("candidate_edl"):
+        cpath = Path(last_candidate_bundle["candidate_edl"])
+        if cpath.is_file():
+            try:
+                candidate_edl_for_evidence = edl_rows(_read_json(cpath))
+            except Exception:  # noqa: BLE001
+                candidate_edl_for_evidence = None
+
+    evidence_pack = build_delivery_and_candidate_evidence(
+        delivery_edl=best_edl,
+        candidate_edl=candidate_edl_for_evidence,
+        video=inp.source_mp4,
+        out_dir=final_dir / "goal_evidence",
+        events_path=events_for_fl,
+        goal_recovery=recovery_payload,
+        prior_v3r_audit=prior_v3r_fl or None,
+        predicted_causal=predicted_causal,
+        story_graph=story_graph,
+        final_mp4=final_mp4,
+    )
+    delivery_fl = evidence_pack["delivery"]
+    candidate_fl = evidence_pack.get("candidate")
+    lineage = evidence_pack["lineage"]
+    write_json(final_dir / "final_goal_evidence_manifest.json", delivery_fl)
+    write_json(final_dir / "goal_lineage_report.json", lineage)
+    if candidate_fl is not None:
+        write_json(final_dir / "candidate_goal_evidence_manifest.json", candidate_fl)
+    # Keep prior V3-R audit as historical reference only (not release authority).
+    write_json(
+        final_dir / "first_live_visual_audit.json",
+        {
+            "schema": "v3a_first_live_historical_v3r_ref_v1",
+            "authority_for_release": False,
+            "path": str(fl_path) if fl_path.is_file() else None,
+            "note": "V3-R audit is inheritance candidate only; RELEASE_READY uses final_goal_evidence_manifest",
+            "v3r_status_counts": (prior_v3r_fl or {}).get("status_counts"),
+        },
+    )
+
     audit["first_live_visual"] = {
-        "path": str(fl_path) if fl_path.is_file() else None,
-        "status_counts": (first_live_visual or {}).get("status_counts"),
-        "n_goal_anchors": (first_live_visual or {}).get("n_goal_anchors"),
-        "any_first_live_verified": (first_live_visual or {}).get("any_first_live_verified"),
-        "any_replay_on_retained": (first_live_visual or {}).get("any_replay_on_retained"),
+        "authority": "final_delivery_edl",
+        "path": str(final_dir / "final_goal_evidence_manifest.json"),
+        "status_counts": delivery_fl.get("status_counts"),
+        "n_goal_anchors": delivery_fl.get("n_goal_anchors"),
+        "any_first_live_verified": delivery_fl.get("any_first_live_verified"),
+        "any_replay_on_retained": delivery_fl.get("any_replay_on_retained"),
+        "n_inherited": delivery_fl.get("n_inherited"),
+        "n_reverified": delivery_fl.get("n_reverified"),
         "goals": [
             {
                 "segment_id": g.get("segment_id"),
                 "role": g.get("role"),
                 "first_live_status": g.get("first_live_status"),
-                "media_in": g.get("media_in"),
-                "media_out": g.get("media_out"),
-                "score_confirm_collision": g.get("score_confirm_collision"),
+                "source_media_in": g.get("source_media_in"),
+                "source_media_out": g.get("source_media_out"),
+                "evidence_binding": g.get("evidence_binding"),
+                "inherited": g.get("inherited"),
             }
-            for g in ((first_live_visual or {}).get("goals") or [])
+            for g in (delivery_fl.get("goals") or [])
         ],
+        "candidate_separate": {
+            "path": str(final_dir / "candidate_goal_evidence_manifest.json") if candidate_fl else None,
+            "status_counts": (candidate_fl or {}).get("status_counts"),
+            "n_goal_anchors": (candidate_fl or {}).get("n_goal_anchors"),
+        },
+        "v3r_historical_ref": str(fl_path) if fl_path.is_file() else None,
     }
-    write_json(final_dir / "first_live_visual_audit.json", first_live_visual or {"missing": True})
+    audit["goal_lineage"] = {
+        "path": str(final_dir / "goal_lineage_report.json"),
+        "n_final_goal_segments": lineage.get("n_final_goal_segments"),
+        "n_structurally_traced_to_mp4": lineage.get("n_structurally_traced_to_mp4"),
+        "duplicate_segment_ids": lineage.get("duplicate_segment_ids"),
+    }
 
     # Formal delivery status: RELEASE_READY | HUMAN_REVIEW_REQUIRED | BLOCKED
     blocked_reasons: List[str] = []
@@ -1080,22 +1171,27 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         # unresolved without a safe playable candidate preview
         if not (human_review.get("v3a_candidate_mp4") or last_candidate_bundle.get("candidate_mp4")):
             blocked_reasons.append("unresolved_without_safe_candidate_preview")
-    # Retained replay as first-live is a hard integrity failure.
-    if (first_live_visual or {}).get("any_replay_on_retained"):
+    # Retained replay as first-live is a hard integrity failure (final EDL authority).
+    if delivery_fl.get("any_replay_on_retained"):
         blocked_reasons.append("retained_goal_replay_detected_as_first_live")
-    # RELEASE_READY requires every retained goal FIRST_LIVE_VERIFIED (fail closed).
-    fl_counts = (first_live_visual or {}).get("status_counts") or {}
-    n_fl_goals = int((first_live_visual or {}).get("n_goal_anchors") or 0)
+    # Missing lineage to final MP4 blocks auto-release claims.
+    if int(lineage.get("n_final_goal_segments") or 0) <= 0:
+        blocked_reasons.append("final_edl_missing_goal_anchors")
+    if lineage.get("duplicate_segment_ids"):
+        blocked_reasons.append("duplicate_goal_segment_ids_in_final_edl")
+    # RELEASE_READY requires every *final delivery* goal FIRST_LIVE_VERIFIED.
+    fl_counts = delivery_fl.get("status_counts") or {}
+    n_fl_goals = int(delivery_fl.get("n_goal_anchors") or 0)
     all_fl_verified = (
         n_fl_goals > 0
         and int(fl_counts.get("FIRST_LIVE_VERIFIED") or 0) == n_fl_goals
-        and bool((first_live_visual or {}).get("all_resolved_verified"))
+        and bool(delivery_fl.get("all_resolved_verified"))
     )
     if gates.get("release_authorized") and not all_fl_verified:
         # Fail closed on release; still allow HUMAN_REVIEW_REQUIRED if preview is safe.
         gates["release_authorized"] = False
         release["release_authorized"] = False
-        release.setdefault("reasons", []).append("first_live_not_fully_verified")
+        release.setdefault("reasons", []).append("final_edl_first_live_not_fully_verified")
 
     if gates["release_authorized"] and all_fl_verified:
         delivery_label = "RELEASE_READY"
@@ -1140,13 +1236,17 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             )
         },
         "first_live_visual": audit.get("first_live_visual"),
+        "final_goal_evidence_manifest": str(final_dir / "final_goal_evidence_manifest.json"),
+        "goal_lineage_report": str(final_dir / "goal_lineage_report.json"),
+        "goal_lineage": audit.get("goal_lineage"),
         "note": (
             "Formal delivery requires release_authorized=true under full conjunction gates. "
             "workflow_completed / final_mp4_exists / semantic_verification_passed alone never authorize. "
             "HUMAN_REVIEW_REQUIRED means a safe candidate preview exists for human judgment. "
-            "FIRST_LIVE_VERIFIED is required for every retained goal before RELEASE_READY."
+            "RELEASE_READY requires FIRST_LIVE_VERIFIED on every final-delivery EDL goal "
+            "(final_goal_evidence_manifest), not V3-R historical first-live stats."
             if not gates["release_authorized"]
-            else "RELEASE_READY: all formal release conjunction gates passed including first-live."
+            else "RELEASE_READY: all formal release conjunction gates passed including final-EDL first-live."
         ),
     }
     write_json(final_dir / "delivery_status.json", delivery)

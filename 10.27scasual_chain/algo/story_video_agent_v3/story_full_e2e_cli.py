@@ -439,12 +439,16 @@ def evaluate_stages(
     final_mp4 = out_dir / "99_final" / "story_final.mp4"
     cand_mp4 = out_dir / "99_final" / "human_review_candidate" / "v3a_candidate.mp4"
     align_p = out_dir / "99_final" / "timeline_mp4_alignment.json"
+    evid_p = out_dir / "99_final" / "final_goal_evidence_manifest.json"
+    lineage_p = out_dir / "99_final" / "goal_lineage_report.json"
     final_ok = False
     final_detail: Dict[str, Any] = {}
     if delivery_p.is_file():
         try:
             ds = _read_json(delivery_p)
             align = _read_json(align_p) if align_p.is_file() else {}
+            evid = _read_json(evid_p) if evid_p.is_file() else {}
+            lineage = _read_json(lineage_p) if lineage_p.is_file() else {}
             label = ds.get("delivery_status") or ds.get("delivery_label")
             # Candidate authenticity: when HUMAN_REVIEW_REQUIRED, candidate mp4 must exist
             # and must not be identical path-only reuse without file.
@@ -456,12 +460,36 @@ def evaluate_stages(
                 (label == "RELEASE_READY" and release_flag)
                 or (label != "RELEASE_READY" and not release_flag)
             )
+            evid_ok = (
+                evid_p.is_file()
+                and str(evid.get("label") or "") == "final_delivery"
+                and int(evid.get("n_goal_anchors") or 0) > 0
+                and evid.get("success_claimed") is False
+            )
+            lineage_ok = (
+                lineage_p.is_file()
+                and int(lineage.get("n_final_goal_segments") or 0) > 0
+                and int(lineage.get("n_structurally_traced_to_mp4") or 0)
+                == int(lineage.get("n_final_goal_segments") or -1)
+            )
+            # RELEASE_READY must be justified by final EDL evidence, not V3-R history.
+            release_evid_ok = True
+            if label == "RELEASE_READY":
+                counts = evid.get("status_counts") or {}
+                release_evid_ok = (
+                    int(counts.get("FIRST_LIVE_VERIFIED") or 0)
+                    == int(evid.get("n_goal_anchors") or 0)
+                    and bool(evid.get("all_resolved_verified"))
+                )
             final_ok = (
                 label in ("RELEASE_READY", "HUMAN_REVIEW_REQUIRED", "BLOCKED")
                 and (label == "BLOCKED" or _mp4_ok(final_mp4))
                 and (label != "HUMAN_REVIEW_REQUIRED" or cand_ok)
                 and (label == "BLOCKED" or align.get("aligned") is True)
                 and release_consistent
+                and evid_ok
+                and lineage_ok
+                and release_evid_ok
             )
             # Explicit: never treat HUMAN_REVIEW as auto-release success.
             if label == "HUMAN_REVIEW_REQUIRED" and ds.get("release_authorized"):
@@ -471,12 +499,29 @@ def evaluate_stages(
                 blocking.append("99_human_review_candidate_mp4_missing_or_tiny")
             if label != "BLOCKED" and align_p.is_file() and align.get("aligned") is not True:
                 blocking.append("99_edl_mp4_not_aligned")
+            if not evid_ok:
+                blocking.append("99_final_goal_evidence_manifest_missing_or_invalid")
+            if not lineage_ok:
+                blocking.append("99_goal_lineage_incomplete_or_missing")
+            if label == "RELEASE_READY" and not release_evid_ok:
+                blocking.append("99_release_ready_without_final_edl_first_live_verified")
+            # UNRESOLVED must not be auto-upgraded in manifest.
+            if any(
+                g.get("first_live_status") == "FIRST_LIVE_VERIFIED"
+                and not (g.get("agent_auto_verified") and g.get("goal_action_verified_ok"))
+                for g in (evid.get("goals") or [])
+            ):
+                final_ok = False
+                blocking.append("99_false_first_live_verified_upgrade")
             final_detail = {
                 "delivery_status": label,
                 "release_authorized": ds.get("release_authorized"),
                 "final_mp4_ok": _mp4_ok(final_mp4),
                 "candidate_mp4_ok": _mp4_ok(cand_mp4) if cand_mp4.exists() or label == "HUMAN_REVIEW_REQUIRED" else None,
                 "aligned": align.get("aligned"),
+                "n_final_goal_evidence": evid.get("n_goal_anchors"),
+                "final_first_live_counts": evid.get("status_counts"),
+                "n_lineage_traced": lineage.get("n_structurally_traced_to_mp4"),
             }
         except Exception as exc:  # noqa: BLE001
             blocking.append(f"99_final_invalid:{exc}")
