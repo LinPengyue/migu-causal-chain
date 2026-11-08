@@ -381,7 +381,30 @@ def run_llm_revision_planner(
     vlm_critic: Mapping[str, Any],
     protected_goal_ids: Sequence[str],
     audit_dir: Path,
+    feedback_context: Optional[Mapping[str, Any]] = None,
 ) -> Dict[str, Any]:
+    fb = None
+    if feedback_context:
+        fb = feedback_context.get("summary") or feedback_context.get("planner_context") or {
+            "tried_revisions": (feedback_context.get("summary") or {}).get("tried_revisions")
+            if isinstance(feedback_context.get("summary"), dict)
+            else feedback_context.get("tried_revisions")
+            or (feedback_context.get("records") or [])[:8],
+            "forbid_identical_retry_without_new_evidence": True,
+        }
+        # Bound size — never dump raw chat logs.
+        if isinstance(fb, dict):
+            fb = {
+                "n_records": fb.get("n_records") or fb.get("n") or len(fb.get("tried_revisions") or []),
+                "tried_revisions": list(fb.get("tried_revisions") or [])[:8],
+                "next_requirements": [
+                    r.get("next_search_requirement")
+                    for r in (fb.get("tried_revisions") or [])[:8]
+                    if isinstance(r, dict) and r.get("next_search_requirement")
+                ][:6],
+                "opaque_reject_is_not_confirmed_negative": True,
+                "never_permanently_ban_pts": True,
+            }
     payload = {
         "issues": (diagnosis.get("issues") or [])[:12],
         "vlm_critic_summary": {
@@ -393,11 +416,14 @@ def run_llm_revision_planner(
             )
         },
         "protected_goal_segment_ids": list(protected_goal_ids),
+        "phase8_feedback_context": fb,
         "constraints": {
             "no_replay": True,
             "no_invented_timestamps": True,
             "protect_goals_without_overturn": True,
             "prefer_unresolved_over_guess": True,
+            "do_not_repeat_same_pts_action_without_new_evidence": True,
+            "do_not_force_insert_when_no_narrative_live": True,
         },
     }
     user = (
@@ -408,7 +434,10 @@ def run_llm_revision_planner(
         "narrative_purpose, rationale, expected_improvement, risk, evidence_refs, "
         "anchor_id?, search_windows?). "
         "If VLM did not confirm a structural needs_video_verify issue, use UNRESOLVED "
-        "or keep — do not invent edits."
+        "or keep — do not invent edits. "
+        "If phase8_feedback_context lists prior tried source_pts/actions, choose a "
+        "DIFFERENT evidence-backed edit or UNRESOLVED; never treat unverified REJECT "
+        "as a permanent negative sample."
     )
     mock = {"decision": "UNRESOLVED", "revision_intents": [], "rationale": "mock"}
     try:

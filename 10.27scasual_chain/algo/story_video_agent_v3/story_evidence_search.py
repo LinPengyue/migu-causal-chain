@@ -373,6 +373,75 @@ def verify_search_candidate(
     }
 
 
+def _apply_feedback_to_candidates(
+    verified: Sequence[Mapping[str, Any]],
+    feedback_context: Optional[Mapping[str, Any]],
+) -> Dict[str, Any]:
+    """Penalize same-context overlapping PTS; never permanently ban a window."""
+    if not feedback_context:
+        return {
+            "verified_candidates": list(verified),
+            "feedback_filtered_candidates": [],
+            "feedback_filter_applied": False,
+        }
+    from .story_revision_feedback import should_penalize_candidate
+
+    records = list(feedback_context.get("records") or [])
+    if not records and feedback_context.get("summary"):
+        # summary-only context: rebuild minimal memory from tried_revisions
+        for t in (feedback_context.get("summary") or {}).get("tried_revisions") or []:
+            if isinstance(t, dict):
+                records.append(
+                    {
+                        "action": t.get("action"),
+                        "source_pts": t.get("source_pts"),
+                        "failure_class": t.get("failure_class") or "UNCERTAIN_OR_UNVERIFIED",
+                        "issue_signature": t.get("issue_signature") or {"category": "transition"},
+                        "evidence_token": t.get("evidence_token"),
+                    }
+                )
+    kept: List[Dict[str, Any]] = []
+    filtered: List[Dict[str, Any]] = []
+    for c in verified:
+        if not isinstance(c, dict):
+            continue
+        sig = {
+            "category": c.get("category") or c.get("narrative_function") or "transition",
+            "anchor_segment_ids": [
+                x
+                for x in (c.get("insert_after_segment_id"), c.get("before_segment_id"))
+                if x
+            ],
+        }
+        decision = should_penalize_candidate(
+            records,
+            issue_signature=sig,
+            action="search_add",
+            source_pts=[c.get("source_pts_start"), c.get("source_pts_end")],
+            new_evidence_token=c.get("evidence_token") or c.get("candidate_id"),
+        )
+        if decision.get("suppress"):
+            filtered.append({**c, "feedback_skip": decision})
+            continue
+        # Novelty / alternate-function boost as ranking prior only
+        row = dict(c)
+        row["feedback_novelty_bonus"] = 0.15 if not filtered else 0.05
+        kept.append(row)
+    kept.sort(
+        key=lambda r: (
+            float(r.get("feedback_novelty_bonus") or 0.0)
+            + float(r.get("score") or r.get("relevance") or 0.0)
+        ),
+        reverse=True,
+    )
+    return {
+        "verified_candidates": kept,
+        "feedback_filtered_candidates": filtered,
+        "feedback_filter_applied": True,
+        "feedback_store_n": len(records),
+    }
+
+
 def run_story_evidence_search(
     *,
     diagnosis: Mapping[str, Any],
@@ -381,8 +450,12 @@ def run_story_evidence_search(
     events_json: Optional[Path] = None,
     max_issues: int = 4,
     already_searched_issue_ids: Optional[Sequence[str]] = None,
+    feedback_context: Optional[Mapping[str, Any]] = None,
 ) -> Dict[str, Any]:
-    """Critic issues → search targets → ranked LIVE candidates with PTS."""
+    """Critic issues → search targets → ranked LIVE candidates with PTS.
+
+    feedback_context is optional (default None) for Phase 8; legacy callers unchanged.
+    """
     events = load_match_events(match_json=match_json, events_json=events_json)
     goals = _goal_windows(edl)
     occupied = [(g[0], g[1]) for g in goals]
@@ -494,6 +567,8 @@ def run_story_evidence_search(
             }
         )
 
+    fb = _apply_feedback_to_candidates(verified, feedback_context)
+    verified_out = list(fb.get("verified_candidates") or [])
     return {
         "schema": SCHEMA,
         "events_loaded": len(events),
@@ -502,11 +577,15 @@ def run_story_evidence_search(
         "protected_goal_segment_ids": protected_goal_segment_ids(edl),
         "targets": targets,
         "candidates": all_candidates,
-        "verified_candidates": verified,
-        "search_success": bool(verified),
+        "verified_candidates": verified_out,
+        "verified_candidates_before_feedback": list(verified),
+        "feedback_filtered_candidates": list(fb.get("feedback_filtered_candidates") or []),
+        "feedback_filter_applied": bool(fb.get("feedback_filter_applied")),
+        "search_success": bool(verified_out),
         "note": (
             "Search uses event-chain LIVE credibility and real media_time PTS. "
-            "No match-specific timestamps or fixed goal counts."
+            "No match-specific timestamps or fixed goal counts. "
+            "Feedback context may suppress same-context overlaps without permanent PTS bans."
         ),
     }
 

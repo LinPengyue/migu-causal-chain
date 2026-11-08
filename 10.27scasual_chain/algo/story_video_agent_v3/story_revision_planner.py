@@ -327,16 +327,20 @@ def plan_from_diagnosis(
     offline: bool = True,
     fixture_intents: Optional[Sequence[Mapping[str, Any]]] = None,
     search_results: Optional[Mapping[str, Any]] = None,
+    feedback_context: Optional[Mapping[str, Any]] = None,
+    budget: Optional[Mapping[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Produce story-level revision plan with explicit decision.
 
-    Decision rules (Phase 6 honest):
+    Decision rules (Phase 6 honest + Phase 8 feedback):
     - critical/major CONFIRMED structure defects → REVISE (drop/reorder/trim/replace)
     - HYPOTHESIS_NEEDS_VIDEO alone → UNRESOLVED (do not auto search_add on large PTS gaps)
     - search_add only when issue is a confirmed defect AND verified LIVE candidates exist
     - search failed / no credible material → UNRESOLVED (not fake KEEP)
     - no actionable confirmed issues → KEEP
     - fixture_intents when provided (tests) override auto intents but still pass protect filter
+    - feedback_context (optional) blocks identical PTS/action retries without new evidence
+    - if feedback wiped remaining LIVE options → stop (UNRESOLVED), do not force-insert
     """
     issues = list(diagnosis.get("issues") or [])
     issues_by_id = {
@@ -354,11 +358,35 @@ def plan_from_diagnosis(
         and observations.get("semantic_provider_used")
         and not observations.get("fixture_or_offline")
     )
+    # Prefer search results already filtered by evidence_search feedback_context.
+    search_results = dict(search_results or {}) if search_results is not None else None
+    if search_results is not None and feedback_context and not search_results.get(
+        "feedback_filter_applied"
+    ):
+        from .story_evidence_search import _apply_feedback_to_candidates
+
+        fb = _apply_feedback_to_candidates(
+            list(search_results.get("verified_candidates") or []), feedback_context
+        )
+        search_results = {
+            **search_results,
+            **fb,
+            "search_success": bool(fb.get("verified_candidates")),
+        }
     search_ok = bool(
         search_results
         and search_results.get("search_success")
         and (search_results.get("verified_candidates") or [])
     )
+    feedback_summary = None
+    if feedback_context is not None:
+        feedback_summary = feedback_context.get("summary") or feedback_context.get(
+            "planner_context"
+        )
+        if feedback_summary is None and feedback_context.get("records") is not None:
+            from .story_revision_feedback import summarize_feedback
+
+            feedback_summary = summarize_feedback(list(feedback_context.get("records") or []))
 
     critical_struct = [
         i
@@ -585,6 +613,17 @@ def plan_from_diagnosis(
         decision = "UNRESOLVED"
         rationale_parts.append("revise_without_mutating_intents_normalized")
 
+    # Phase 8: if feedback wiped all LIVE options, stop rather than force-insert.
+    if (
+        feedback_summary
+        and not search_ok
+        and decision == "UNRESOLVED"
+        and (search_results or {}).get("feedback_filtered_candidates")
+    ):
+        rationale_parts.append(
+            "no_remaining_live_candidates_after_feedback_filter_stop_forced_insert"
+        )
+
     return {
         "schema": "v3a_story_revision_plan_v1",
         "decision": decision,
@@ -594,11 +633,20 @@ def plan_from_diagnosis(
         "search_confirmation": search_ok,
         "protected_goal_segment_ids": protect,
         "revision_intents": intents,
+        "feedback_context": feedback_summary,
+        "budget": dict(budget or {}),
         "phase6_rules": {
             "no_auto_add_on_large_source_gap_alone": True,
             "duration_pad_not_quality_proxy": True,
             "require_confirmed_defect_for_search_add": True,
             "hypothesis_status": "HYPOTHESIS_NEEDS_VIDEO",
+        },
+        "phase8_rules": {
+            "use_prior_round_feedback": bool(feedback_summary),
+            "block_identical_pts_action_without_new_evidence": True,
+            "never_permanently_ban_pts": True,
+            "unverified_reject_is_not_confirmed_negative": True,
+            "stop_if_no_narrative_live_after_filter": True,
         },
         "narrative_purposes_supported": [
             "supplement_buildup",
@@ -614,5 +662,9 @@ def plan_from_diagnosis(
             "no_scoreboard_time_as_goal_action": True,
             "new_footage_must_trace_to_source_pts": True,
             "max_rounds": 3,
+        },
+        "search_feedback_filter": {
+            "filtered_count": len((search_results or {}).get("feedback_filtered_candidates") or []),
+            "kept_count": len((search_results or {}).get("verified_candidates") or []),
         },
     }
