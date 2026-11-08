@@ -530,7 +530,13 @@ def build_broadcast_timeline_review(
             # Never accept FIRST_LIVE_VERIFIED from a claim that only cites the
             # local frame-pack (self-certify).
             cites_only_pack = bool(explicit_review.get("cites_frame_pack_only"))
-            if label == FIRST_LIVE_VERIFIED and cites_only_pack:
+            if replay_hits and label != REPLAY_CONFIRMED:
+                # A contradictory explicit review cannot erase detected replay overlap.
+                # Correcting false replay metadata requires a separate auditable path.
+                outcome = REPLAY_CONFIRMED
+                method = "continuous_context_event_replay_overlap"
+                rationale.append("explicit_review_cannot_override_replay_hits")
+            elif label == FIRST_LIVE_VERIFIED and cites_only_pack:
                 outcome = FIRST_LIVE_UNKNOWN
                 method = "explicit_review_rejected_frame_pack_self_certify"
                 rationale.append("first_live_claim_based_only_on_frame_pack_rejected")
@@ -663,7 +669,8 @@ def validate_first_live_evidence_record(
         ):
             outcome = str(review.get("outcome") or FIRST_LIVE_UNKNOWN).upper()
             review_method = review.get("method")
-            if outcome == REPLAY_CONFIRMED:
+            if outcome == REPLAY_CONFIRMED or (outcome == FIRST_LIVE_VERIFIED and review.get("replay_hits")):
+                # Defensive gate for externally supplied timeline review payloads.
                 first_live_status = REPLAY_CONFIRMED
                 replay_confirmed = True
             elif outcome == FIRST_LIVE_VERIFIED:
