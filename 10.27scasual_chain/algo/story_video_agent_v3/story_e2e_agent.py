@@ -369,13 +369,22 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 }
                 write_json(out / "story_e2e_audit.json", audit)
                 return audit
+            from .story_paid_eval import provider_usage as _provider_usage_preflight
+
             audit["api_preflight"] = {
                 "configured": True,
                 "max_calls": paid_api.max_calls,
                 "max_cost_usd_estimate": paid_api.max_cost_usd,
                 "max_retries": 0,
                 "cost_is_estimate_not_invoice_cap": True,
+                "max_completion_tokens": paid_api.max_completion_tokens,
+                "request_body_preflight": getattr(
+                    paid_api, "_phase7_request_preflight", None
+                ),
+                "env_thinking_overrides": getattr(paid_api, "_phase7_env_audit", None),
+                "usage_snapshot": _provider_usage_preflight(paid_api),
             }
+            write_json(out / "api_request_preflight.json", audit["api_preflight"])
         except Exception as exc:  # noqa: BLE001
             audit["error"] = f"paid_api_init_failed:{type(exc).__name__}:{exc}"
             write_json(out / "story_e2e_audit.json", audit)
@@ -544,32 +553,108 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 run_vlm_story_critic,
             )
 
+            # Prefer dense ordered stills around the first HYPOTHESIS that needs video
+            # (bridge/jump/ending). Still NOT a native continuous-video bitstream watch.
+            extra_frames: List[Dict[str, Any]] = []
+            dense_meta: Dict[str, Any] = {}
+            try:
+                from .vlm_semantic_evidence import extract_dense_frames_for_issue
+
+                hyp = None
+                for iss in diag.get("issues") or []:
+                    if not isinstance(iss, dict):
+                        continue
+                    if str(iss.get("evidence_sufficiency") or "") != "needs_video_verify":
+                        continue
+                    iid = str(iss.get("issue_id") or "")
+                    if any(
+                        k in iid
+                        for k in ("jump", "bridge", "transition", "ending", "sparse", "buildup")
+                    ) or str(iss.get("category") or "") in (
+                        "transition",
+                        "ending",
+                        "buildup",
+                    ):
+                        hyp = iss
+                        break
+                if hyp is None:
+                    for iss in diag.get("issues") or []:
+                        if (
+                            isinstance(iss, dict)
+                            and str(iss.get("evidence_sufficiency") or "")
+                            == "needs_video_verify"
+                        ):
+                            hyp = iss
+                            break
+                if hyp is not None and best_mp4 and Path(best_mp4).is_file():
+                    dense_meta = extract_dense_frames_for_issue(
+                        story_mp4=Path(best_mp4),
+                        edl=best_edl,
+                        issue=hyp,
+                        out_dir=round_dir / "paid_api" / "dense_observe",
+                        fps=1.0,
+                        max_frames=6,
+                        pad_sec=1.0,
+                    )
+                    extra_frames = list(dense_meta.get("frames") or [])
+                    write_json(round_dir / "paid_api" / "dense_observe_meta.json", dense_meta)
+            except Exception as exc:  # noqa: BLE001
+                dense_meta = {"ok": False, "error": f"{type(exc).__name__}:{exc}"}
+                write_json(round_dir / "paid_api" / "dense_observe_meta.json", dense_meta)
+
             try:
                 vlm_critic = run_vlm_story_critic(
                     paid_api,
                     observations=obs,
                     diagnosis=diag,
                     audit_dir=round_dir / "paid_api",
+                    extra_frames=extra_frames or None,
                 )
             except Exception as exc:  # noqa: BLE001
                 vlm_critic = {"ok": False, "error": f"{type(exc).__name__}:{exc}"}
+            if isinstance(vlm_critic, dict) and dense_meta:
+                vlm_critic = dict(vlm_critic)
+                vlm_critic["dense_observe"] = {
+                    "ok": dense_meta.get("ok"),
+                    "issue_id": dense_meta.get("issue_id"),
+                    "story_time_range": dense_meta.get("story_time_range"),
+                    "n_frames": len(extra_frames),
+                    "claims_full_video_watch": False,
+                    "observation_method": dense_meta.get("observation_method"),
+                    "note": dense_meta.get("note"),
+                }
             write_json(round_dir / "vlm_story_critic.json", vlm_critic or {})
-            if vlm_critic and vlm_critic.get("ok"):
+            if vlm_critic and (
+                vlm_critic.get("ok")
+                or vlm_critic.get("derived_issues")
+                or vlm_critic.get("semantic_evidence")
+            ):
                 obs = dict(obs)
-                obs["semantic_provider_used"] = True
+                obs["semantic_provider_used"] = bool(vlm_critic.get("ok"))
                 obs["fixture_or_offline"] = False
                 obs["vlm_results"] = [vlm_critic]
+                # Preserve claim_status / evidence_refs from the evidence bridge.
+                # Do NOT force evidence_sufficiency=observed (that skipped frame checks).
                 derived = []
                 for di in vlm_critic.get("derived_issues") or []:
                     if not isinstance(di, dict):
                         continue
                     di = dict(di)
-                    di.setdefault("evidence_sufficiency", "observed")
-                    di.setdefault("suggested_fix", "revise_with_evidence")
+                    di.setdefault("suggested_fix", "needs_more_video_evidence")
                     di.setdefault("story_time_range", [0.0, 0.0])
                     di.setdefault("segment_ids", [])
                     derived.append(di)
                 obs["derived_issues"] = derived
+                obs["semantic_evidence"] = list(vlm_critic.get("semantic_evidence") or [])
+                obs["confirmed_issue_ids"] = list(
+                    vlm_critic.get("confirmed_issue_ids") or []
+                )
+                obs["observation_scope"] = (vlm_critic.get("observation_updates") or {}).get(
+                    "observation_scope"
+                ) or {
+                    "method": vlm_critic.get("observation_method"),
+                    "claims_full_video_watch": False,
+                }
             usage = provider_usage(paid_api)
             http_calls = int(usage.get("http_attempts") or http_calls)
             est_cost = float(usage.get("est_cost_usd_real") or est_cost)

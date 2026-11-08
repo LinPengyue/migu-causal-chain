@@ -60,9 +60,15 @@ def build_capped_provider(
     *,
     max_calls: int = 5,
     max_cost_usd: float = 0.10,
-    max_completion_tokens: int = 2048,
+    max_completion_tokens: int = 1200,
 ) -> ApiProvider:
-    apply_trial_env_overrides(
+    """Build real API provider with Thinking explicitly disabled in request bodies.
+
+    Token ceiling targets short structured JSON (not Phase-5 512/1024 salvage caps).
+    1200 is enough for semantic_evidence / revision intents without inviting long
+    reasoning spills; budget remains hard-capped by max_cost_usd.
+    """
+    env_audit = apply_trial_env_overrides(
         max_calls=max_calls,
         max_cost_usd=max_cost_usd,
         max_completion_tokens=max_completion_tokens,
@@ -78,9 +84,40 @@ def build_capped_provider(
     )
     for cfg in (api.configs or {}).values():
         cfg.max_retries = 0
-        # Vision critic JSON is larger; avoid silent truncation when possible.
+        # Force thinking-off on the actual EndpointConfig, not only via env.
+        cfg.thinking_object_disabled = True
+        cfg.send_thinking_params = False
+        cfg.enable_thinking = None
+        cfg.thinking_budget = None
         if getattr(cfg, "max_completion_tokens", None) is not None:
-            cfg.max_completion_tokens = max(int(cfg.max_completion_tokens or 0), int(max_completion_tokens))
+            cfg.max_completion_tokens = max(
+                int(cfg.max_completion_tokens or 0), int(max_completion_tokens)
+            )
+    # Preflight: confirm request body actually carries thinking disabled.
+    api._phase7_env_audit = env_audit  # type: ignore[attr-defined]
+    api._phase7_request_preflight = {}  # type: ignore[attr-defined]
+    for role, cfg in (api.configs or {}).items():
+        _body, req_audit = api.build_chat_request_body(
+            cfg,
+            messages=[{"role": "user", "content": "preflight"}],
+            temperature=0.0,
+        )
+        api._phase7_request_preflight[role] = {  # type: ignore[attr-defined]
+            "model": cfg.model,
+            "thinking_in_body": _body.get("thinking"),
+            "max_tokens_in_body": _body.get("max_tokens"),
+            "max_completion_tokens_in_body": _body.get("max_completion_tokens"),
+            "enable_thinking_in_body": _body.get("enable_thinking"),
+            "thinking_budget_in_body": _body.get("thinking_budget"),
+            "request_audit": req_audit,
+            "thinking_object_disabled_cfg": bool(cfg.thinking_object_disabled),
+            "note": (
+                "Paratera docs do not document thinking object; we still send "
+                "thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / "
+                "video_rsi because prior Qwen runs returned text_tokens without "
+                "reasoning_tokens when this was set."
+            ),
+        }
     return api
 
 
@@ -94,6 +131,43 @@ def provider_usage(api: ApiProvider) -> Dict[str, Any]:
         "by_role": summary.get("by_role"),
         "cost_is_estimate_not_invoice_cap": True,
         "max_retries": 0,
+        "request_preflight": getattr(api, "_phase7_request_preflight", None),
+        "env_thinking_overrides": getattr(api, "_phase7_env_audit", None),
+    }
+
+
+def _call_audit_from_raw(raw: Mapping[str, Any]) -> Dict[str, Any]:
+    """Compact per-call audit: model, thinking, tokens, finish_reason, cost."""
+    usage = raw.get("usage") if isinstance(raw.get("usage"), dict) else {}
+    details = usage.get("completion_tokens_details")
+    if not isinstance(details, dict):
+        details = {}
+    req = raw.get("request_audit") if isinstance(raw.get("request_audit"), dict) else {}
+    resp = raw.get("response_audit") if isinstance(raw.get("response_audit"), dict) else {}
+    content = str(raw.get("content") or "")
+    return {
+        "model": raw.get("model"),
+        "provider_mode": raw.get("provider_mode"),
+        "logical_role": raw.get("logical_role") or req.get("role"),
+        "thinking_object_disabled_sent": req.get("thinking_object_disabled_sent"),
+        "thinking_params_sent": req.get("thinking_params_sent"),
+        "enable_thinking_sent": req.get("enable_thinking_sent"),
+        "thinking_budget_sent": req.get("thinking_budget_sent"),
+        "token_param_sent": req.get("token_param_sent"),
+        "token_limit_sent": req.get("token_limit_sent"),
+        "prompt_tokens": usage.get("prompt_tokens"),
+        "completion_tokens": usage.get("completion_tokens")
+        or resp.get("completion_tokens_reported"),
+        "reasoning_tokens": details.get("reasoning_tokens")
+        or resp.get("reasoning_tokens"),
+        "text_tokens": details.get("text_tokens"),
+        "finish_reason": raw.get("finish_reason") or resp.get("finish_reason"),
+        "visible_output_chars": resp.get("visible_output_chars")
+        if resp.get("visible_output_chars") is not None
+        else len(content),
+        "est_cost_usd": raw.get("est_cost_usd"),
+        "http_ok": raw.get("http_ok"),
+        "empty_content": raw.get("empty_content"),
     }
 
 
@@ -123,8 +197,23 @@ def run_vlm_story_critic(
     observations: Mapping[str, Any],
     diagnosis: Mapping[str, Any],
     audit_dir: Path,
+    extra_frames: Optional[Sequence[Mapping[str, Any]]] = None,
 ) -> Dict[str, Any]:
-    frames = _frame_paths_from_observe(observations, limit=8)
+    """Vision critic over ordered frames. Prefer short JSON with semantic_evidence.
+
+    When ``extra_frames`` is provided (dense issue-window stills), those are preferred
+    over sparse global samples so bridge/ending hypotheses get contiguous coverage.
+    Still NOT a native continuous-video watch unless the provider ingested video bytes.
+    """
+    frames: List[Dict[str, Any]] = []
+    if extra_frames:
+        for fr in extra_frames:
+            if isinstance(fr, dict) and fr.get("path"):
+                frames.append(dict(fr))
+            if len(frames) >= 10:
+                break
+    if len(frames) < 2:
+        frames = _frame_paths_from_observe(observations, limit=8)
     if len(frames) < 2:
         return {
             "ok": False,
@@ -132,35 +221,61 @@ def run_vlm_story_critic(
             "provider_mode": "skipped",
         }
     paths = [Path(f["path"]) for f in frames]
-    fids = [str(f.get("frame_id") or f"f{i}") for i, f in enumerate(frames)]
-    bindings = [{
-        "frame_id": fids[i],
-        "requested_media_sec": frames[i].get("requested_media_sec"),
-        "actual_media_sec": frames[i].get("actual_media_sec"),
-        "pts_status": frames[i].get("pts_status"),
-    } for i in range(len(frames))]
+    fids = []
+    bindings = []
+    for i, fr in enumerate(frames):
+        fid = str(fr.get("frame_id") or f"f{i}")
+        fids.append(fid)
+        bindings.append(
+            {
+                "frame_id": fid,
+                "requested_media_sec": fr.get("story_sec")
+                or fr.get("requested_media_sec")
+                or fr.get("actual_media_sec"),
+                "actual_media_sec": fr.get("actual_media_sec") or fr.get("story_sec"),
+                "pts_status": fr.get("pts_status") or "story_playback",
+            }
+        )
     issues_brief = [
         {
             "issue_id": i.get("issue_id"),
             "category": i.get("category"),
             "severity": i.get("severity"),
             "evidence_sufficiency": i.get("evidence_sufficiency"),
+            "diagnosis_status": i.get("diagnosis_status"),
             "narrative_problem": i.get("narrative_problem"),
             "story_time_range": i.get("story_time_range"),
             "segment_ids": i.get("segment_ids"),
         }
-        for i in (diagnosis.get("issues") or [])[:12]
+        for i in (diagnosis.get("issues") or [])[:8]
+        if str(i.get("evidence_sufficiency") or "") == "needs_video_verify"
+        or str(i.get("diagnosis_status") or "") == "HYPOTHESIS_NEEDS_VIDEO"
+    ] or [
+        {
+            "issue_id": i.get("issue_id"),
+            "category": i.get("category"),
+            "story_time_range": i.get("story_time_range"),
+        }
+        for i in (diagnosis.get("issues") or [])[:6]
     ]
     prompt = (
         f"{SYSTEM_CRITIC}\n"
-        f"Structural issues (not proof): {json.dumps(issues_brief, ensure_ascii=False)}\n"
-        "Return JSON keys: opening, development, turn, climax, ending, transitions, "
-        "confirmed_issues, uncertain_issues, derived_issues "
-        "(list of {issue_id,severity,category,observation,narrative_problem,"
-        "evidence_sufficiency='observed'| 'needs_video_verify', segment_ids, story_time_range}), "
-        "overall_narrative_quality, confidence."
+        "You see ORDERED still frames from the finished story cut (NOT full native video).\n"
+        "For each structural HYPOTHESIS, say whether VIDEO EVIDENCE supports a real story defect.\n"
+        "Do NOT confirm from confidence alone. Cite ONLY provided frame_ids.\n"
+        "Prefer SHORT JSON. Schema:\n"
+        '{"semantic_evidence":[{'
+        '"issue_id":str,"story_time":[lo,hi],"observed_fact":str,'
+        '"defect_hypothesis":str,"confidence":0-1,'
+        '"claims_story_defect":bool,'
+        '"evidence_refs":[{"frame_id":str,"note":str}]'
+        "}],"
+        '"keep_story_if_no_defect":bool,"overall_narrative_quality":str}\n'
+        "If transition already understandable, set claims_story_defect=false.\n"
+        f"HYPOTHESES:{json.dumps(issues_brief, ensure_ascii=False)}\n"
+        f"FRAME_IDS:{json.dumps(fids, ensure_ascii=False)}\n"
     )
-    mock = {"opening": "unknown", "derived_issues": [], "confidence": 0}
+    mock = {"semantic_evidence": [], "keep_story_if_no_defect": True, "confidence": 0}
     try:
         raw = api.vision_json(
             prompt=prompt,
@@ -178,6 +293,17 @@ def run_vlm_story_critic(
         parsed = _parse_model_json_lenient(content)
     except Exception as exc:  # noqa: BLE001
         parse_error = f"parse:{type(exc).__name__}:{exc}"
+        # Attempt salvage of complete semantic_evidence objects
+        from .truncated_response_recovery import extract_complete_array_objects
+
+        salv = extract_complete_array_objects(content, array_key="semantic_evidence")
+        if salv.get("objects"):
+            parsed = {
+                "semantic_evidence": [w["object"] for w in salv["objects"]],
+                "recovery": "RECOVERED_PARTIAL_RESPONSE",
+            }
+            parse_error = f"{parse_error};partial_semantic_evidence_recovered"
+    call_audit = _call_audit_from_raw(raw)
     audit_dir.mkdir(parents=True, exist_ok=True)
     (audit_dir / "vlm_story_critic.json").write_text(
         json.dumps(
@@ -187,6 +313,10 @@ def run_vlm_story_critic(
                 "parse_error": parse_error,
                 "usage": raw.get("usage"),
                 "finish_reason": raw.get("finish_reason"),
+                "sent_frame_ids": fids,
+                "call_audit": call_audit,
+                "request_audit": raw.get("request_audit"),
+                "response_audit": raw.get("response_audit"),
             },
             ensure_ascii=False,
             indent=2,
@@ -197,10 +327,24 @@ def run_vlm_story_critic(
     mode = str(raw.get("provider_mode") or "")
     if mode == "openai_compatible":
         mode = "real"
-    if parse_error:
+    from .vlm_semantic_evidence import vlm_critic_to_observation_updates
+
+    updates = vlm_critic_to_observation_updates(
+        {
+            "parsed": parsed or {},
+            "observation_method": "dense_or_ordered_multi_frame_vlm",
+            "claims_full_video_watch": False,
+        },
+        sent_frame_ids=fids,
+        hypothesis_issues=issues_brief,
+    )
+    (audit_dir / "vlm_semantic_evidence.json").write_text(
+        json.dumps(updates, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    if parsed is None and not updates.get("semantic_evidence"):
         return {
             "ok": False,
-            "error": parse_error,
+            "error": parse_error or "empty_parsed",
             "provider_mode": mode,
             "raw_excerpt": content[:1500],
             "est_cost_usd": raw.get("est_cost_usd"),
@@ -213,12 +357,20 @@ def run_vlm_story_critic(
         "ok": mode == "real" and parsed is not None,
         "provider_mode": mode,
         "parsed": parsed,
-        "derived_issues": list((parsed or {}).get("derived_issues") or []),
+        "derived_issues": updates.get("derived_issues") or [],
+        "confirmed_issue_ids": updates.get("confirmed_issue_ids") or [],
+        "semantic_evidence": updates.get("semantic_evidence") or [],
+        "observation_updates": updates,
         "est_cost_usd": raw.get("est_cost_usd"),
         "usage": raw.get("usage"),
         "frame_ids": fids,
+        "finish_reason": raw.get("finish_reason"),
+        "parse_error": parse_error,
         "claims_full_video_watch": False,
-        "observation_method": "ordered_multi_frame_vlm",
+        "observation_method": "dense_or_ordered_multi_frame_vlm",
+        "call_audit": call_audit,
+        "request_audit": raw.get("request_audit"),
+        "response_audit": raw.get("response_audit"),
     }
 
 
@@ -278,10 +430,23 @@ def run_llm_revision_planner(
             "provider_mode": raw.get("provider_mode"),
             "raw_excerpt": content[:1500],
         }
+    call_audit = _call_audit_from_raw(raw)
     audit_dir.mkdir(parents=True, exist_ok=True)
     (audit_dir / "llm_revision_planner.json").write_text(
-        json.dumps({"raw_excerpt": content[:4000], "parsed": parsed, "usage": raw.get("usage")},
-                   ensure_ascii=False, indent=2) + "\n",
+        json.dumps(
+            {
+                "raw_excerpt": content[:4000],
+                "parsed": parsed,
+                "usage": raw.get("usage"),
+                "call_audit": call_audit,
+                "request_audit": raw.get("request_audit"),
+                "response_audit": raw.get("response_audit"),
+                "finish_reason": raw.get("finish_reason"),
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
         encoding="utf-8",
     )
     mode = str(raw.get("provider_mode") or "")
@@ -299,6 +464,10 @@ def run_llm_revision_planner(
         "est_cost_usd": raw.get("est_cost_usd"),
         "usage": raw.get("usage"),
         "parsed": parsed,
+        "call_audit": call_audit,
+        "request_audit": raw.get("request_audit"),
+        "response_audit": raw.get("response_audit"),
+        "finish_reason": raw.get("finish_reason"),
     }
 
 

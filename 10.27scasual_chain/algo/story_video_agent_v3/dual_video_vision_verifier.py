@@ -396,15 +396,16 @@ def run_dual_video_vision_verifier(
     prompt = (
         f"{SYSTEM_VERIFIER}\n"
         "Compare BASELINE vs CANDIDATE using ONLY provided frames (NOT full-video watch).\n"
-        "Prefer SHORT structured output to avoid truncation. "
+        "Reply with SHORT JSON only. Keep per_revision_judgments ≤4 items; "
+        "observed_visuals ≤1 short sentence; notes ≤12 words.\n"
         f"Primary schema: {SHORT_PER_REVISION_JSON_SCHEMA}\n"
-        "For each revision, judge whether the ORIGINAL diagnosed issue was solved; "
-        "BETTER aesthetics alone is insufficient. If a fix introduces a new defect, "
-        "set introduced_new_defect=true (must not ACCEPT).\n"
-        "Also include compact top-level: hard_vetoes, quality_delta_vs_baseline, "
-        "accept_candidate=false unless original issues resolved AND no new defects AND "
-        "evidence_refs cite sent baseline_* and candidate_* frames.\n"
-        "BETTER does not auto-ACCEPT. Cite only FRAME_MANIFEST ids.\n"
+        "Focus issue: critical buildup bridge between deficit setup and buildup "
+        "(large source-time jump). Did candidate insert LIVE bridge footage that "
+        "makes the transition clearer WITHOUT new defects?\n"
+        "Judge original issue solved vs new defects. BETTER aesthetics alone is insufficient.\n"
+        "Top-level: hard_vetoes, quality_delta_vs_baseline, accept_candidate "
+        "(true only if original issue resolved AND no new defects AND citations).\n"
+        "Cite only FRAME_MANIFEST ids.\n"
         f"FRAME_MANIFEST:\n" + "\n".join(meta_lines) + "\n"
     )
     mock = {
@@ -459,6 +460,9 @@ def run_dual_video_vision_verifier(
         finish_reason=raw.get("finish_reason"),
         parse_error=parse_error,
     )
+    from .story_paid_eval import _call_audit_from_raw
+
+    call_audit = _call_audit_from_raw(raw)
     (audit_dir / "dual_vision_verifier_raw.json").write_text(
         json.dumps(
             {
@@ -468,6 +472,9 @@ def run_dual_video_vision_verifier(
                 "usage": raw.get("usage"),
                 "sent_frame_ids": fids,
                 "finish_reason": raw.get("finish_reason"),
+                "call_audit": call_audit,
+                "request_audit": raw.get("request_audit"),
+                "response_audit": raw.get("response_audit"),
                 "truncated_recovery": {
                     k: recovery.get(k)
                     for k in (

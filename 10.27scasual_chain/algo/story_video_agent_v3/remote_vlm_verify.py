@@ -83,12 +83,41 @@ def apply_trial_env_overrides(
     os.environ.setdefault("STORY_API_TOKEN_PARAM", "max_tokens")
     os.environ.setdefault("STORY_VLM_TOKEN_PARAM", "max_tokens")
     if disable_thinking:
+        # Prefer documented opt-in disable flags. video_rsi also implies
+        # thinking={"type":"disabled"} for vision; Paratera does not document
+        # the thinking object — callers must audit the actual request body.
+        os.environ["STORY_VLM_THINKING_OBJECT_DISABLED"] = "1"
+        os.environ["STORY_VERIFIER_THINKING_OBJECT_DISABLED"] = "1"
+        os.environ["STORY_PLANNER_THINKING_OBJECT_DISABLED"] = "1"
+        os.environ["STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED"] = "1"
         os.environ["STORY_VLM_REQUEST_PROFILE"] = "video_rsi"
-        # Ensure flat thinking flags are not opted-in
-        os.environ.pop("STORY_VLM_SEND_THINKING", None)
-        os.environ.pop("STORY_VLM_ENABLE_THINKING", None)
-        os.environ.pop("STORY_VLM_THINKING_BUDGET", None)
+        # Ensure flat thinking flags are not opted-in (mutually exclusive).
+        for key in (
+            "STORY_VLM_SEND_THINKING",
+            "STORY_VLM_ENABLE_THINKING",
+            "STORY_VLM_THINKING_BUDGET",
+            "STORY_PLANNER_SEND_THINKING",
+            "STORY_PLANNER_ENABLE_THINKING",
+            "STORY_PLANNER_THINKING_BUDGET",
+        ):
+            os.environ.pop(key, None)
     after = {k: os.environ.get(k) for k in before}
+    after.update(
+        {
+            "STORY_VLM_THINKING_OBJECT_DISABLED": os.environ.get(
+                "STORY_VLM_THINKING_OBJECT_DISABLED"
+            ),
+            "STORY_VERIFIER_THINKING_OBJECT_DISABLED": os.environ.get(
+                "STORY_VERIFIER_THINKING_OBJECT_DISABLED"
+            ),
+            "STORY_PLANNER_THINKING_OBJECT_DISABLED": os.environ.get(
+                "STORY_PLANNER_THINKING_OBJECT_DISABLED"
+            ),
+            "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": os.environ.get(
+                "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED"
+            ),
+        }
+    )
     return {"before": before, "after": after, "disable_thinking": disable_thinking}
 
 

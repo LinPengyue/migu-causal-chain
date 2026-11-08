@@ -139,7 +139,8 @@ class TestSemanticCriticLayer(unittest.TestCase):
                 }
             ]
         }
-        obs = {
+        # Confidence alone + observed without frame refs must NOT confirm (Phase 7).
+        obs_claim_only = {
             "semantic_provider_used": True,
             "fixture_or_offline": False,
             "derived_issues": [
@@ -149,6 +150,40 @@ class TestSemanticCriticLayer(unittest.TestCase):
                     "observation": "crowd then unrelated midfield",
                     "narrative_problem": "causal break",
                     "confidence": 0.9,
+                }
+            ],
+        }
+        out_claim = apply_semantic_diagnosis_layer(base, observations=obs_claim_only)
+        self.assertFalse(out_claim["issues"][0]["story_defect_confirmed"])
+        self.assertEqual(
+            out_claim["issues"][0]["diagnosis_status"], "HYPOTHESIS_NEEDS_VIDEO"
+        )
+
+        obs = {
+            "semantic_provider_used": True,
+            "fixture_or_offline": False,
+            "derived_issues": [
+                {
+                    "issue_id": "large_source_jump_a_b",
+                    "evidence_sufficiency": "observed",
+                    "claim_status": "EVIDENCE_SUPPORTED",
+                    "observation": "crowd then unrelated midfield",
+                    "narrative_problem": "causal break",
+                    "confidence": 0.9,
+                    "evidence_refs": [
+                        {"frame_id": "story_jump_t1p00"},
+                        {"frame_id": "story_jump_t2p00"},
+                    ],
+                }
+            ],
+            "semantic_evidence": [
+                {
+                    "issue_id": "large_source_jump_a_b",
+                    "claim_status": "EVIDENCE_SUPPORTED",
+                    "supports_original_issue": True,
+                    "observed_fact": "crowd then unrelated midfield",
+                    "defect_hypothesis": "causal break",
+                    "frame_refs": ["story_jump_t1p00", "story_jump_t2p00"],
                 }
             ],
         }
