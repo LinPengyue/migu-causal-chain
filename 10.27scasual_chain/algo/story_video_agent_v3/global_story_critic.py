@@ -445,6 +445,8 @@ def merge_observation_into_diagnosis(
     observations: Mapping[str, Any],
 ) -> Dict[str, Any]:
     """Attach layered observe results; promote issues only when observation claims support."""
+    from .semantic_story_diagnosis import apply_semantic_diagnosis_layer
+
     out = dict(diagnosis)
     out["layered_observations"] = observations
     obs_issues = list(observations.get("derived_issues") or [])
@@ -462,6 +464,8 @@ def merge_observation_into_diagnosis(
         observations.get("semantic_provider_used")
         and not observations.get("fixture_or_offline")
     )
+    # Phase 6: structure gaps → HYPOTHESIS_NEEDS_VIDEO unless video confirms.
+    out = apply_semantic_diagnosis_layer(out, observations=observations)
     return out
 
 

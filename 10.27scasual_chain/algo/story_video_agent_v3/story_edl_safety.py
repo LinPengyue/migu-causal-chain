@@ -88,7 +88,15 @@ def classify_revision_status(
         and safety_ok
     )
     q = str(quality_delta or "").lower()
-    improved = bool(verified and q in ("improved", "better"))
+    # A single model BETTER label never upgrades to IMPROVED by itself.
+    improved = bool(
+        verified
+        and candidate_accepted
+        and vision_backed
+        and semantic_passed
+        and safety_ok
+        and q in ("improved", "better")
+    )
     return {
         "schema": "v3a_revision_status_v1",
         "APPLIED": applied,
@@ -101,9 +109,11 @@ def classify_revision_status(
         "vision_backed": bool(vision_backed),
         "semantic_passed": bool(semantic_passed),
         "quality_delta": quality_delta,
+        "BETTER_not_auto_IMPROVED": True,
         "note": (
             "APPLIED=EDL mutated under safety; VERIFIED=accepted with vision; "
-            "IMPROVED=verified plus quality_delta improved. Fixture gate wiring "
-            "must not be reported as real story-quality IMPROVED."
+            "IMPROVED=verified+accepted+vision+semantic+safety+quality_delta. "
+            "One model BETTER never auto-upgrades to IMPROVED. "
+            "PTS/first-live/goal gates cannot be overridden by BETTER."
         ),
     }

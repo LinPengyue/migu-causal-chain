@@ -391,21 +391,21 @@ def run_dual_video_vision_verifier(
             f"story_sec={f.get('story_sec')} source_pts={f.get('source_media_sec')} "
             f"segment_id={f.get('segment_id')} role={f.get('role')}"
         )
+    from .truncated_response_recovery import SHORT_PER_REVISION_JSON_SCHEMA
+
     prompt = (
         f"{SYSTEM_VERIFIER}\n"
-        "You are comparing BASELINE vs CANDIDATE finished story cuts using ONLY the "
-        "provided paired frames. Frames are aligned by narrative slot, not absolute seconds.\n"
-        "Each frame_id is authoritative. Cite only these frame_ids in evidence_refs.\n"
-        "If evidence is insufficient for a dimension, set status=NOT_EVALUATED (never invent).\n"
-        "quality_delta_vs_baseline may be improved ONLY with evidence_of_improvement that "
-        "cites both baseline_* and candidate_* frame_ids from this list.\n"
-        "Hard-veto replay/slow-mo cues, duplicate goal actions, or goal-anchor damage.\n"
+        "Compare BASELINE vs CANDIDATE using ONLY provided frames (NOT full-video watch).\n"
+        "Prefer SHORT structured output to avoid truncation. "
+        f"Primary schema: {SHORT_PER_REVISION_JSON_SCHEMA}\n"
+        "For each revision, judge whether the ORIGINAL diagnosed issue was solved; "
+        "BETTER aesthetics alone is insufficient. If a fix introduces a new defect, "
+        "set introduced_new_defect=true (must not ACCEPT).\n"
+        "Also include compact top-level: hard_vetoes, quality_delta_vs_baseline, "
+        "accept_candidate=false unless original issues resolved AND no new defects AND "
+        "evidence_refs cite sent baseline_* and candidate_* frames.\n"
+        "BETTER does not auto-ACCEPT. Cite only FRAME_MANIFEST ids.\n"
         f"FRAME_MANIFEST:\n" + "\n".join(meta_lines) + "\n"
-        "Return JSON keys: hard_vetoes, dimensions "
-        "(story_element_coverage, narrative_coherence, image_content_quality, live_authenticity "
-        "each with status, summary, evidence_refs[{frame_id,note}]), "
-        "evidence_of_improvement[{claim,evidence_refs}], quality_delta_vs_baseline, "
-        "accept_candidate, reasons, replay_risk_observed, goal_anchors_intact."
     )
     mock = {
         "hard_vetoes": [],
@@ -451,6 +451,14 @@ def run_dual_video_vision_verifier(
     except Exception as exc:  # noqa: BLE001
         parse_error = f"parse:{type(exc).__name__}:{exc}"
 
+    from .truncated_response_recovery import recover_per_revision_judgments
+
+    recovery = recover_per_revision_judgments(
+        content,
+        sent_frame_ids=fids,
+        finish_reason=raw.get("finish_reason"),
+        parse_error=parse_error,
+    )
     (audit_dir / "dual_vision_verifier_raw.json").write_text(
         json.dumps(
             {
@@ -460,6 +468,16 @@ def run_dual_video_vision_verifier(
                 "usage": raw.get("usage"),
                 "sent_frame_ids": fids,
                 "finish_reason": raw.get("finish_reason"),
+                "truncated_recovery": {
+                    k: recovery.get(k)
+                    for k in (
+                        "status_tags",
+                        "n_valid_recovered",
+                        "n_rejected",
+                        "extraction",
+                        "raw_response_sha256",
+                    )
+                },
             },
             ensure_ascii=False,
             indent=2,
@@ -467,32 +485,55 @@ def run_dual_video_vision_verifier(
         + "\n",
         encoding="utf-8",
     )
+    (audit_dir / "truncated_recovery.json").write_text(
+        json.dumps(recovery, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
     mode = str(raw.get("provider_mode") or "")
     if mode == "openai_compatible":
         mode = "real"
+
+    # If full parse failed, rebuild a fail-closed payload that still preserves
+    # recovered per-revision judgments (never invent ACCEPT/IMPROVED).
     if parse_error or not parsed:
+        recovered = list(recovery.get("recovered") or [])
+        parsed = {
+            "hard_vetoes": [],
+            "dimensions": {},
+            "evidence_of_improvement": [],
+            "quality_delta_vs_baseline": "NOT_EVALUATED",
+            "accept_candidate": False,
+            "semantic_status": "NOT_EVALUATED",
+            "per_revision_judgments": [r.get("judgment") for r in recovered if r.get("judgment")],
+            "recovery_status_tags": recovery.get("status_tags") or [],
+            "reasons": ["parse_failed_or_truncated", "BETTER_not_auto_ACCEPT"],
+        }
+        # Still fail-closed for ACCEPT even if some items recovered as BETTER.
+        gate = validate_visual_verifier_payload(parsed, sent_frame_ids=fids)
         return {
-            "ok": False,
-            "error": parse_error or "empty_parsed",
+            "ok": mode == "real" and bool(recovered),
             "provider_mode": mode,
-            "validated": {
-                "hard_vetoes": [],
-                "dimensions": {},
-                "evidence_of_improvement": [],
-                "quality_delta_vs_baseline": "NOT_EVALUATED",
-                "accept_candidate": False,
-                "semantic_status": "NOT_EVALUATED",
-            },
+            "error": parse_error or "empty_parsed",
+            "validated": gate["validated"],
             "ok_for_semantic_accept": False,
             "semantic_verification_status": "NOT_EVALUATED",
             "sent_frame_ids": fids,
+            "cited_sent_frame_ids": gate.get("cited_sent_frame_ids"),
             "frame_pack": pack,
             "est_cost_usd": raw.get("est_cost_usd"),
             "usage": raw.get("usage"),
-            "reasons": ["parse_failed"],
+            "reasons": list(gate.get("reasons") or []) + ["truncated_recovery_fail_closed_accept"],
+            "vision_backed": bool(fids),
+            "truncated_recovery": recovery,
+            "per_revision_judgments_recovered": recovered,
         }
 
     gate = validate_visual_verifier_payload(parsed, sent_frame_ids=fids)
+    # Attach any extra recovered per-revision rows for case binding.
+    if recovery.get("recovered") and not parsed.get("per_revision_judgments"):
+        parsed = dict(gate["validated"])
+        parsed["per_revision_judgments"] = [
+            r.get("judgment") for r in recovery["recovered"] if r.get("judgment")
+        ]
     return {
         "ok": mode == "real",
         "provider_mode": mode,
@@ -506,6 +547,8 @@ def run_dual_video_vision_verifier(
         "usage": raw.get("usage"),
         "reasons": gate.get("reasons") or [],
         "vision_backed": True,
+        "truncated_recovery": recovery,
+        "per_revision_judgments_recovered": recovery.get("recovered") or [],
     }
 
 

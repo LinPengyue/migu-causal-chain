@@ -40,6 +40,7 @@ from .story_evidence_search import (
 )
 from .story_observe import observe_layers
 from .story_revision_planner import plan_from_diagnosis
+from .revision_case import build_revision_cases_for_round
 from .final_goal_evidence import build_delivery_and_candidate_evidence
 from .story_timeline import build_story_timeline
 from .story_video_verifier import (
@@ -296,13 +297,22 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             "reuses": [
                 "structural_diagnosis",
                 "observe_layers",
+                "apply_semantic_diagnosis_layer",
                 "run_story_evidence_search",
                 "plan_from_diagnosis",
                 "apply_candidate_revision",
                 "check_source_pts_monotonic",
                 "verify_story_revision",
+                "build_revision_cases_for_round",
+                "recover_per_revision_judgments",
             ],
             "specialized_lab_entry": "run_self_revise",
+            "phase6": {
+                "semantic_hypothesis_layer": True,
+                "no_auto_add_on_large_source_gap_alone": True,
+                "BETTER_not_auto_IMPROVED": True,
+                "revision_case_closed_loop": True,
+            },
         },
         "started_unix": t0,
         "out_dir": str(out),
@@ -1000,6 +1010,34 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 audit["revision_status_totals"][k] = int(
                     audit["revision_status_totals"].get(k) or 0
                 ) + 1
+
+        # Phase 6: problem→revision→verify case bundle (always written).
+        per_intent_v: Dict[str, Any] = {}
+        for item in (
+            (vfix.get("per_revision_judgments_recovered") or [])
+            + list(((vfix.get("validated") or {}).get("per_revision_judgments") or []))
+        ):
+            if isinstance(item, dict):
+                # recovered wrapper vs raw judgment
+                j = item.get("judgment") if isinstance(item.get("judgment"), dict) else item
+                key = str(j.get("intent_id") or j.get("revision_intent_id") or "")
+                if key:
+                    per_intent_v[key] = j
+                if j.get("issue_id"):
+                    per_intent_v[str(j["issue_id"])] = j
+        case_bundle = build_revision_cases_for_round(
+            diagnosis=diag,
+            revision_plan=rev,
+            apply_report=apply_report,
+            search_report=search_report,
+            verifier_per_intent=per_intent_v,
+            pts_safety=pts_gate,
+            candidate_accepted=bool(vfix.get("candidate_accepted")),
+            match_tag=inp.match_id,
+        )
+        write_json(round_dir / "revision_cases.json", case_bundle)
+        round_rec["revision_case_count"] = int(case_bundle.get("n_cases") or 0)
+        audit["last_revision_cases"] = case_bundle
 
         if edl_changed and candidate_mp4 and candidate_mp4.is_file() and gates.get("candidate_rendered"):
             last_candidate_bundle = {

@@ -1,8 +1,12 @@
-"""Story-level Revision Planner — narrative purpose per edit; protect goal anchors.
+"""Story-level Revision Planner — problem-driven edits; protect goal anchors.
 
 Reuses EDL action protocol: search_add / replace / trim / drop / reorder / keep / mark_unresolved.
 Does not invent media timestamps. Offline mode must not pretend KEEP when issues
 remain needs_video_verify without semantic confirmation.
+
+Phase 6: structural time-gaps alone are HYPOTHESIS_NEEDS_VIDEO — do not auto
+search_add merely because source PTS gaps are large. Duration pad is never a
+quality proxy. Each mutating intent must bind issue→evidence→edit→expected_effect.
 """
 from __future__ import annotations
 
@@ -18,6 +22,7 @@ ALLOWED_ACTIONS = {
     "reorder",
     "keep",
     "mark_unresolved",
+    "unresolved",  # alias → mark_unresolved
 }
 
 
@@ -115,9 +120,27 @@ def _intents_from_verified_search(
                     f"{start}-{end}s for issue {issue_id}"
                 ),
                 "expected_improvement": (
-                    "Bridge sparse/abrupt story beats or extend ending closure "
-                    "using real source footage"
+                    "If and only if the bound footage supplies the missing narrative "
+                    "information for the diagnosed issue — not merely longer runtime"
                 ),
+                "expected_observable_improvement": (
+                    "Adjacent story beats should show a clearer causal/emotional transition "
+                    "attributable to the inserted LIVE window; falsify if insert is redundant, "
+                    "replay-like, or breaks chronology"
+                ),
+                "why_candidate_solves_problem": (
+                    f"Candidate {cand_id} is LIVE-verified source footage in the gap "
+                    f"cited by issue {issue_id}; usable only if diagnosis is a confirmed "
+                    "story defect (not a structure gap alone)"
+                ),
+                "defect_cause_hypothesis": (
+                    "Missing intermediate narrative information between adjacent cuts"
+                ),
+                "falsification_evidence": (
+                    "Insert adds duration without new story info; breaks PTS order; "
+                    "introduces replay/scoreboard-as-action; or original issue remains"
+                ),
+                "duration_pad_not_quality_proxy": True,
                 "risk": ",".join(c.get("risks") or []) or "search_bound_unverified_first_live",
                 "goal_anchor_impact": "none_insert_non_goal_only",
                 "causality_impact": order_claim,
@@ -237,6 +260,66 @@ def _structure_intents(issues: Sequence[Mapping[str, Any]], protect: Sequence[st
     return intents
 
 
+def _issue_confirmed_for_mutate(iss: Mapping[str, Any]) -> bool:
+    """Only confirmed story/structure defects may drive mutating search_add/trim/replace."""
+    if iss.get("story_defect_confirmed") is True:
+        return True
+    if str(iss.get("diagnosis_status") or "") in (
+        "CONFIRMED_STORY_DEFECT",
+        "CONFIRMED_STRUCTURE_DEFECT",
+    ):
+        return True
+    # Backward-compatible: explicit structure categories without semantic layer yet.
+    if (
+        iss.get("evidence_sufficiency") in ("structure_inferred", "observed")
+        and iss.get("category")
+        in (
+            "replay_risk",
+            "redundancy",
+            "narrative_order",
+            "narrative_causality",
+            "timeline_integrity",
+        )
+    ):
+        return True
+    return False
+
+
+def _annotate_problem_driven(intent: Dict[str, Any], iss: Optional[Mapping[str, Any]]) -> Dict[str, Any]:
+    """Ensure issue→evidence→edit→expected_effect binding fields exist (no invention of facts)."""
+    out = dict(intent)
+    if iss:
+        out.setdefault("issue_id", iss.get("issue_id"))
+        out.setdefault(
+            "original_problem",
+            iss.get("observed_evidence") or iss.get("observation"),
+        )
+        out.setdefault(
+            "why_hurts_story",
+            iss.get("causal_explanation") or iss.get("narrative_problem"),
+        )
+        out.setdefault(
+            "missing_information",
+            iss.get("missing_information"),
+        )
+        out.setdefault("diagnosis_status", iss.get("diagnosis_status"))
+        out.setdefault("story_defect_confirmed", iss.get("story_defect_confirmed"))
+    out.setdefault("duration_pad_not_quality_proxy", True)
+    out.setdefault(
+        "answers",
+        {
+            "what_is_wrong": out.get("original_problem"),
+            "why_it_hurts_understanding": out.get("why_hurts_story"),
+            "what_to_add_drop_or_adjust": out.get("action"),
+            "why_candidate_helps": out.get("why_candidate_solves_problem") or out.get("rationale"),
+            "expected_observable_improvement": out.get("expected_observable_improvement")
+            or out.get("expected_improvement"),
+            "falsification_evidence": out.get("falsification_evidence"),
+        },
+    )
+    return out
+
+
 def plan_from_diagnosis(
     diagnosis: Mapping[str, Any],
     *,
@@ -247,14 +330,18 @@ def plan_from_diagnosis(
 ) -> Dict[str, Any]:
     """Produce story-level revision plan with explicit decision.
 
-    Decision rules (honest):
-    - critical structure_inferred (replay etc.) → REVISE intents
-    - needs_video_verify → run/consume search; REVISE only with verified PTS candidates
+    Decision rules (Phase 6 honest):
+    - critical/major CONFIRMED structure defects → REVISE (drop/reorder/trim/replace)
+    - HYPOTHESIS_NEEDS_VIDEO alone → UNRESOLVED (do not auto search_add on large PTS gaps)
+    - search_add only when issue is a confirmed defect AND verified LIVE candidates exist
     - search failed / no credible material → UNRESOLVED (not fake KEEP)
-    - no actionable issues → KEEP
+    - no actionable confirmed issues → KEEP
     - fixture_intents when provided (tests) override auto intents but still pass protect filter
     """
     issues = list(diagnosis.get("issues") or [])
+    issues_by_id = {
+        str(i.get("issue_id")): i for i in issues if isinstance(i, dict) and i.get("issue_id")
+    }
     protect = list(diagnosis.get("protected_goal_segment_ids") or [])
     if not protect:
         # Fallback from timeline segments if critic omitted
@@ -277,14 +364,14 @@ def plan_from_diagnosis(
         i
         for i in issues
         if i.get("severity") == "critical"
-        and i.get("evidence_sufficiency") in ("structure_inferred", "observed")
+        and _issue_confirmed_for_mutate(i)
         and i.get("category") not in ("input_integrity",)
     ]
     major_struct = [
         i
         for i in issues
         if i.get("severity") in ("critical", "major")
-        and i.get("evidence_sufficiency") in ("structure_inferred", "observed")
+        and _issue_confirmed_for_mutate(i)
         and i.get("category") in (
             "replay_risk", "redundancy", "narrative_order", "narrative_causality",
             "timeline_integrity",
@@ -293,9 +380,19 @@ def plan_from_diagnosis(
     input_blockers = [
         i for i in issues if i.get("category") == "input_integrity" and i.get("severity") == "critical"
     ]
-    needs_verify = [
-        i for i in issues if i.get("evidence_sufficiency") == "needs_video_verify"
+    hypotheses = [
+        i
+        for i in issues
+        if str(i.get("diagnosis_status") or "") == "HYPOTHESIS_NEEDS_VIDEO"
+        or (
+            i.get("evidence_sufficiency") == "needs_video_verify"
+            and not _issue_confirmed_for_mutate(i)
+        )
     ]
+    confirmed_for_search = [i for i in issues if _issue_confirmed_for_mutate(i)]
+    confirmed_issue_ids = {
+        str(i.get("issue_id")) for i in confirmed_for_search if i.get("issue_id")
+    }
 
     intents: List[Dict[str, Any]] = []
     decision = "KEEP"
@@ -306,34 +403,64 @@ def plan_from_diagnosis(
         rationale_parts.append("critical_input_integrity_blockers")
         for i, iss in enumerate(input_blockers):
             intents.append(
-                {
-                    "intent_id": f"unresolved_input_{i}",
-                    "action": "mark_unresolved",
-                    "issue_id": iss.get("issue_id"),
-                    "narrative_purpose": "cannot_revise_without_required_inputs",
-                    "rationale": iss.get("observation"),
-                    "expected_improvement": "none_until_inputs_fixed",
-                    "risk": "fail_closed",
-                    "evidence_refs": [{"kind": "diagnosis", "ref": iss.get("issue_id")}],
-                }
+                _annotate_problem_driven(
+                    {
+                        "intent_id": f"unresolved_input_{i}",
+                        "action": "mark_unresolved",
+                        "issue_id": iss.get("issue_id"),
+                        "narrative_purpose": "cannot_revise_without_required_inputs",
+                        "rationale": iss.get("observation"),
+                        "expected_improvement": "none_until_inputs_fixed",
+                        "risk": "fail_closed",
+                        "evidence_refs": [{"kind": "diagnosis", "ref": iss.get("issue_id")}],
+                    },
+                    iss,
+                )
             )
     elif fixture_intents is not None:
-        intents = [dict(x) for x in fixture_intents]
+        intents = [_annotate_problem_driven(dict(x), issues_by_id.get(str(x.get("issue_id") or ""))) for x in fixture_intents]
         actions = {str(x.get("action")) for x in intents}
         if actions <= {"keep"} or not intents:
             decision = "KEEP"
-        elif "mark_unresolved" in actions and actions <= {"keep", "mark_unresolved"}:
+        elif actions <= {"keep", "mark_unresolved", "unresolved"}:
             decision = "UNRESOLVED"
         else:
             decision = "REVISE"
         rationale_parts.append("fixture_intents")
     else:
-        # Prefer executable search-bound inserts when available.
-        search_intents = _intents_from_verified_search(search_results or {}, protect) if search_ok else []
+        # Search-bound inserts ONLY for confirmed defects (not mere PTS-gap hypotheses).
+        search_intents_all = (
+            _intents_from_verified_search(search_results or {}, protect) if search_ok else []
+        )
+        search_intents = []
+        deferred_hypothesis_search = []
+        for it in search_intents_all:
+            iid = str(it.get("issue_id") or "")
+            if iid and iid in confirmed_issue_ids:
+                search_intents.append(
+                    _annotate_problem_driven(it, issues_by_id.get(iid))
+                )
+            else:
+                deferred_hypothesis_search.append(
+                    _annotate_problem_driven(
+                        {
+                            **it,
+                            "action": "mark_unresolved",
+                            "blocked_original_action": "search_add",
+                            "block_reason": (
+                                "hypothesis_needs_video_not_confirmed_story_defect;"
+                                "refusing_auto_add_on_large_source_gap_alone"
+                            ),
+                            "narrative_purpose": "defer_until_semantic_confirmation",
+                        },
+                        issues_by_id.get(iid),
+                    )
+                )
+
         struct_intents = _structure_intents(major_struct or critical_struct, protect)
-        # Filter structure intents that would only mark_unresolved
         struct_exec = [
-            it for it in struct_intents
+            _annotate_problem_driven(it, issues_by_id.get(str(it.get("issue_id") or "")))
+            for it in struct_intents
             if str(it.get("action")) in ("drop", "reorder", "replace", "trim", "search_add")
         ]
 
@@ -342,61 +469,81 @@ def plan_from_diagnosis(
             intents.extend(search_intents)
             intents.extend(struct_exec)
             if search_intents:
-                rationale_parts.append("verified_search_candidates_bound_to_source_pts")
+                rationale_parts.append(
+                    "confirmed_defect_plus_verified_search_candidates_bound_to_source_pts"
+                )
             if struct_exec:
-                rationale_parts.append("structure_inferred_executable_repairs")
+                rationale_parts.append("confirmed_structure_executable_repairs")
         elif critical_struct and not search_ok:
-            # Legacy critical path without search material.
             decision = "REVISE"
-            rationale_parts.append("critical_structure_or_observed_defects")
-            intents.extend(_structure_intents(critical_struct, protect) or [
-                {
-                    "intent_id": f"rev_crit_{i}",
-                    "action": "mark_unresolved",
-                    "issue_id": iss.get("issue_id"),
-                    "target_segment_id": (iss.get("segment_ids") or [None])[0],
-                    "narrative_purpose": "address_critical_defect",
-                    "rationale": iss.get("narrative_problem"),
-                    "expected_improvement": iss.get("suggested_fix"),
-                    "risk": "must_not_invent_timestamps",
-                    "evidence_refs": [
-                        {
-                            "kind": "diagnosis",
-                            "ref": iss.get("issue_id"),
-                            "sufficiency": iss.get("evidence_sufficiency"),
-                        }
-                    ],
-                }
-                for i, iss in enumerate(critical_struct)
-            ])
-            # If all became mark_unresolved, normalize later.
-        elif needs_verify:
+            rationale_parts.append("critical_confirmed_structure_defects")
+            intents.extend(
+                [
+                    _annotate_problem_driven(it, issues_by_id.get(str(it.get("issue_id") or "")))
+                    for it in (
+                        _structure_intents(critical_struct, protect)
+                        or [
+                            {
+                                "intent_id": f"rev_crit_{i}",
+                                "action": "mark_unresolved",
+                                "issue_id": iss.get("issue_id"),
+                                "target_segment_id": (iss.get("segment_ids") or [None])[0],
+                                "narrative_purpose": "address_critical_defect",
+                                "rationale": iss.get("narrative_problem"),
+                                "expected_improvement": iss.get("suggested_fix"),
+                                "risk": "must_not_invent_timestamps",
+                                "evidence_refs": [
+                                    {
+                                        "kind": "diagnosis",
+                                        "ref": iss.get("issue_id"),
+                                        "sufficiency": iss.get("evidence_sufficiency"),
+                                    }
+                                ],
+                            }
+                            for i, iss in enumerate(critical_struct)
+                        ]
+                    )
+                ]
+            )
+        elif hypotheses or deferred_hypothesis_search:
             decision = "UNRESOLVED"
             rationale_parts.append(
-                "needs_video_verify_and_search_found_no_credible_live_material"
-                if search_results is not None
-                else "needs_video_verify_without_search_or_semantic_confirmation"
+                "hypothesis_needs_video_no_auto_search_add_on_gap_alone"
             )
-            for i, iss in enumerate(needs_verify):
-                intents.append(
-                    {
-                        "intent_id": f"unresolved_nv_{i}",
-                        "action": "mark_unresolved",
-                        "issue_id": iss.get("issue_id"),
-                        "target_segment_id": (iss.get("segment_ids") or [None])[0],
-                        "narrative_purpose": "pending_search_or_semantic_confirmation",
-                        "rationale": iss.get("narrative_problem"),
-                        "expected_improvement": "resolve_after_search_or_authorized_multimodal_pass",
-                        "risk": "do_not_guess_edits",
-                        "evidence_refs": [
+            if deferred_hypothesis_search:
+                intents.extend(deferred_hypothesis_search)
+                rationale_parts.append("search_candidates_deferred_pending_semantic_confirmation")
+            else:
+                for i, iss in enumerate(hypotheses):
+                    intents.append(
+                        _annotate_problem_driven(
                             {
-                                "kind": "diagnosis",
-                                "ref": iss.get("issue_id"),
-                                "sufficiency": "needs_video_verify",
-                            }
-                        ],
-                    }
-                )
+                                "intent_id": f"unresolved_hypothesis_{i}",
+                                "action": "mark_unresolved",
+                                "issue_id": iss.get("issue_id"),
+                                "target_segment_id": (iss.get("segment_ids") or [None])[0],
+                                "narrative_purpose": "await_video_semantic_confirmation",
+                                "rationale": (
+                                    "Structural gap is HYPOTHESIS_NEEDS_VIDEO; refusing to "
+                                    "treat large source interval as confirmed story defect."
+                                ),
+                                "expected_improvement": "none_until_semantic_evidence",
+                                "falsification_evidence": (
+                                    "If video shows transition already clear, keep baseline"
+                                ),
+                                "risk": "do_not_guess_edits",
+                                "evidence_refs": [
+                                    {
+                                        "kind": "diagnosis",
+                                        "ref": iss.get("issue_id"),
+                                        "sufficiency": "needs_video_verify",
+                                        "diagnosis_status": iss.get("diagnosis_status"),
+                                    }
+                                ],
+                            },
+                            iss,
+                        )
+                    )
         else:
             decision = "KEEP"
             rationale_parts.append("no_actionable_confirmed_defects")
@@ -405,17 +552,30 @@ def plan_from_diagnosis(
                     "intent_id": "keep_baseline",
                     "action": "keep",
                     "narrative_purpose": "retain_v3r_baseline",
-                    "rationale": "No confirmed revision targets after diagnosis.",
+                    "rationale": "No confirmed revision targets after semantic diagnosis layer.",
                     "expected_improvement": "none",
                     "risk": "none",
                     "evidence_refs": [],
+                    "duration_pad_not_quality_proxy": True,
+                    "answers": {
+                        "what_is_wrong": None,
+                        "why_it_hurts_understanding": None,
+                        "what_to_add_drop_or_adjust": "keep",
+                        "why_candidate_helps": None,
+                        "expected_observable_improvement": "none",
+                        "falsification_evidence": None,
+                    },
                 }
             )
 
     intents = _protect_filter(intents, protect)
     # Normalize actions
     for it in intents:
-        if str(it.get("action")) not in ALLOWED_ACTIONS:
+        act = str(it.get("action") or "")
+        if act == "unresolved":
+            it["action"] = "mark_unresolved"
+            act = "mark_unresolved"
+        if act not in ALLOWED_ACTIONS and act != "mark_unresolved":
             it["action"] = "mark_unresolved"
             it["normalize_note"] = "unknown_action_mapped_to_mark_unresolved"
 
@@ -434,6 +594,12 @@ def plan_from_diagnosis(
         "search_confirmation": search_ok,
         "protected_goal_segment_ids": protect,
         "revision_intents": intents,
+        "phase6_rules": {
+            "no_auto_add_on_large_source_gap_alone": True,
+            "duration_pad_not_quality_proxy": True,
+            "require_confirmed_defect_for_search_add": True,
+            "hypothesis_status": "HYPOTHESIS_NEEDS_VIDEO",
+        },
         "narrative_purposes_supported": [
             "supplement_buildup",
             "adjust_non_goal_segments",

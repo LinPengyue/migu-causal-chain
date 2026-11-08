@@ -176,7 +176,8 @@ class EvidenceSearchTests(unittest.TestCase):
 
 
 class PlannerSearchReviseTests(unittest.TestCase):
-    def test_search_success_yields_revise_not_unresolved(self):
+    def test_hypothesis_plus_search_stays_unresolved_no_auto_add(self):
+        """Phase 6: large-gap hypothesis alone must not auto search_add."""
         diag = {
             "issues": [
                 {
@@ -184,8 +185,50 @@ class PlannerSearchReviseTests(unittest.TestCase):
                     "category": "buildup",
                     "severity": "minor",
                     "evidence_sufficiency": "needs_video_verify",
+                    "diagnosis_status": "HYPOTHESIS_NEEDS_VIDEO",
+                    "story_defect_confirmed": False,
                     "segment_ids": ["seg_setup"],
                     "narrative_problem": "thin buildup",
+                    "suggested_fix": "search",
+                }
+            ],
+            "protected_goal_segment_ids": ["seg_turn"],
+        }
+        search = {
+            "search_success": True,
+            "verified_candidates": [
+                {
+                    "candidate_id": "cand_x",
+                    "issue_id": "sparse_pre_turn_bridge",
+                    "role": "buildup_bridge_action",
+                    "source_pts_start": 500.0,
+                    "source_pts_end": 508.0,
+                    "insert_after_segment_id": "seg_setup",
+                    "event_id": "ev1",
+                    "live": {"broadcast_phase": "LIVE"},
+                    "confidence": 0.6,
+                    "risks": [],
+                    "narrative_function": "supplement_buildup_or_transition_bridge",
+                }
+            ],
+        }
+        plan = plan_from_diagnosis(diag, offline=True, search_results=search)
+        self.assertEqual(plan["decision"], "UNRESOLVED")
+        acts = {i["action"] for i in plan["revision_intents"]}
+        self.assertNotIn("search_add", acts)
+
+    def test_confirmed_defect_plus_search_yields_revise(self):
+        diag = {
+            "issues": [
+                {
+                    "issue_id": "sparse_pre_turn_bridge",
+                    "category": "buildup",
+                    "severity": "minor",
+                    "evidence_sufficiency": "observed",
+                    "diagnosis_status": "CONFIRMED_STORY_DEFECT",
+                    "story_defect_confirmed": True,
+                    "segment_ids": ["seg_setup"],
+                    "narrative_problem": "thin buildup confirmed by video",
                     "suggested_fix": "search",
                 }
             ],
