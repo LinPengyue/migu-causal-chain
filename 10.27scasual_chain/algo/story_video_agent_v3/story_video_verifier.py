@@ -88,10 +88,14 @@ def verify_story_revision(
     fixture: Optional[Mapping[str, Any]] = None,
     sent_frame_ids: Optional[Sequence[str]] = None,
     vision_backed: Optional[bool] = None,
+    verdict_provenance: Optional[str] = None,
+    hard_safety_extra: Optional[Mapping[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Gate revision accept/reject with hard protections + optional dual verifier.
 
     Text-only / EDL-only / unknown-frame citations never yield candidate_accepted.
+    verdict_provenance is set by the caller execution path (FIXTURE|REAL_VLM|OFFLINE_RULE),
+    never from model/fixture content fields.
     """
     from .dual_video_vision_verifier import validate_visual_verifier_payload
 
@@ -266,18 +270,33 @@ def verify_story_revision(
         if not sent_frame_ids:
             warnings.append("refuse_accept_without_dual_video_frames")
 
+    goal_intact = not any(
+        str(v.get("kind") or "").startswith("goal_anchor") for v in hard_vetoes
+    )
+    hard_safety = compute_independent_hard_safety(
+        hard_vetoes=hard_vetoes,
+        goal_intact=goal_intact,
+        render_rows_ok=render_rows_ok,
+        candidate_mp4=candidate_mp4,
+        extra=hard_safety_extra,
+    )
+    # Provenance from caller execution path only — ignore content-claimed source_kind.
+    prov = str(verdict_provenance or "").upper()
+    if prov not in ("FIXTURE", "REAL_VLM", "OFFLINE_RULE"):
+        # Legacy: fixture argument used as test overlay ⇒ FIXTURE; else offline rules.
+        prov = "FIXTURE" if fixture is not None else "OFFLINE_RULE"
     phase8_verdict = build_phase8_verdict(
         hard_vetoes=hard_vetoes,
-        goal_intact=not any(
-            str(v.get("kind") or "").startswith("goal_anchor") for v in hard_vetoes
-        ),
+        hard_safety=hard_safety,
+        goal_intact=goal_intact,
         render_rows_ok=render_rows_ok,
         semantic_status=semantic_status,
         vision_backed=bool(sent_frame_ids) and (vision_backed is not False),
         sent_frame_ids=list(sent_frame_ids or []),
         validated=val if isinstance(val, dict) else {},
-        fixture=fixture if isinstance(fixture, dict) else None,
+        quality_overlay=fixture if isinstance(fixture, dict) else None,
         accept_candidate=bool(accept),
+        verdict_provenance=prov,
         compared_parent_version_id=(
             (fixture or {}).get("compared_parent_version_id")
             if isinstance(fixture, dict)
@@ -331,6 +350,94 @@ def verify_story_revision(
     }
 
 
+def compute_independent_hard_safety(
+    *,
+    hard_vetoes: Sequence[Mapping[str, Any]],
+    goal_intact: bool,
+    render_rows_ok: bool,
+    candidate_mp4: Optional[Path] = None,
+    extra: Optional[Mapping[str, Any]] = None,
+) -> Dict[str, Any]:
+    """Machine-verifiable hard safety — independent of narrative accept_candidate.
+
+    PASS only when EDL/render rules, goal protection, PTS (if supplied), and
+    first-LIVE proof for newly used footage are all explicitly satisfied.
+    Absent first-LIVE proof ⇒ UNKNOWN (not PASS). Confirmed replay/violation ⇒ FAIL.
+    """
+    extra = dict(extra or {})
+    reasons: List[str] = []
+    if hard_vetoes:
+        kinds = [str(v.get("kind") or "") for v in hard_vetoes]
+        if any("replay" in k or "slowmo" in k or "goal_anchor" in k for k in kinds):
+            return {
+                "safety": "FAIL",
+                "reasons": kinds,
+                "accept_candidate_ignored": True,
+                "first_live_status": extra.get("first_live_status") or "UNKNOWN",
+            }
+        reasons.extend(kinds)
+    if not goal_intact:
+        return {
+            "safety": "FAIL",
+            "reasons": ["goal_protection_broken"],
+            "accept_candidate_ignored": True,
+            "first_live_status": extra.get("first_live_status") or "UNKNOWN",
+        }
+    if not render_rows_ok:
+        return {
+            "safety": "FAIL",
+            "reasons": ["render_row_validation_failed"],
+            "accept_candidate_ignored": True,
+            "first_live_status": extra.get("first_live_status") or "UNKNOWN",
+        }
+    if extra.get("pts_ok") is False:
+        return {
+            "safety": "FAIL",
+            "reasons": ["source_pts_not_monotonic"],
+            "accept_candidate_ignored": True,
+            "first_live_status": extra.get("first_live_status") or "UNKNOWN",
+        }
+    if extra.get("intentional_replay"):
+        return {
+            "safety": "FAIL",
+            "reasons": ["intentional_replay_or_slowmo"],
+            "accept_candidate_ignored": True,
+            "first_live_status": "FAIL",
+        }
+    first_live = str(extra.get("first_live_status") or "UNKNOWN").upper()
+    # Explicit PASS path requires authoritative first-LIVE for new footage (or no new media).
+    new_footage = bool(extra.get("has_new_footage", True))
+    if new_footage and first_live not in ("PASS", "FIRST_LIVE_VERIFIED", "VERIFIED"):
+        return {
+            "safety": "UNKNOWN",
+            "reasons": reasons + ["first_live_proof_missing_or_unverified"],
+            "accept_candidate_ignored": True,
+            "first_live_status": first_live,
+            "note": "Absent replay flags are NOT first-LIVE proof.",
+        }
+    if candidate_mp4 is not None and not Path(candidate_mp4).is_file():
+        return {
+            "safety": "UNKNOWN",
+            "reasons": reasons + ["candidate_mp4_missing"],
+            "accept_candidate_ignored": True,
+            "first_live_status": first_live,
+        }
+    # Test/fixture may assert hard safety PASS via execution-path overlay only.
+    if extra.get("force_hard_safety") in ("PASS", "FAIL", "UNKNOWN"):
+        return {
+            "safety": str(extra["force_hard_safety"]),
+            "reasons": reasons + ["force_hard_safety_overlay"],
+            "accept_candidate_ignored": True,
+            "first_live_status": first_live,
+        }
+    return {
+        "safety": "PASS",
+        "reasons": reasons,
+        "accept_candidate_ignored": True,
+        "first_live_status": first_live if new_footage else "N_A_NO_NEW_FOOTAGE",
+    }
+
+
 def build_phase8_verdict(
     *,
     hard_vetoes: Sequence[Mapping[str, Any]],
@@ -340,33 +447,48 @@ def build_phase8_verdict(
     vision_backed: bool,
     sent_frame_ids: Sequence[str],
     validated: Mapping[str, Any],
-    fixture: Optional[Mapping[str, Any]] = None,
+    quality_overlay: Optional[Mapping[str, Any]] = None,
+    fixture: Optional[Mapping[str, Any]] = None,  # legacy alias
     accept_candidate: bool = False,
+    verdict_provenance: str = "OFFLINE_RULE",
+    hard_safety: Optional[Mapping[str, Any]] = None,
     compared_parent_version_id: Optional[str] = None,
     focus_issue_id: Optional[str] = None,
 ) -> Dict[str, Any]:
-    """Independent advisory quality/safety/evidence verdict (Phase 8).
+    """Independent soft quality + hard safety verdict (Phase 8).
 
-    Never weakens validate_visual_verifier_payload provenance rules.
-    PROMISING must not become accept_candidate.
+    Hard safety never depends on accept_candidate. Provenance is caller-set.
+    PROMISING must not become accept_candidate / formal IMPROVED.
     """
     from .story_revision_feedback import normalize_quality
 
-    fx = dict(fixture or {})
-    source_kind = str(fx.get("source_kind") or ("FIXTURE" if fixture else "REAL"))
+    fx = dict(quality_overlay or fixture or {})
+    prov = str(verdict_provenance or "OFFLINE_RULE").upper()
+    if prov not in ("FIXTURE", "REAL_VLM", "OFFLINE_RULE"):
+        prov = "OFFLINE_RULE"
+    # Fixtures always stay FIXTURE even if payload claims REAL.
+    if fixture is not None and prov != "REAL_VLM":
+        # quality_overlay from fixture path keeps FIXTURE
+        if prov != "FIXTURE" and quality_overlay is not None and fixture is quality_overlay:
+            prov = "FIXTURE"
 
-    if hard_vetoes or not goal_intact or not render_rows_ok:
-        safety = "FAIL"
-    elif fx.get("phase8_safety"):
-        safety = str(fx.get("phase8_safety")).upper()
-        if safety not in ("PASS", "FAIL", "UNKNOWN"):
-            safety = "UNKNOWN"
-    elif vision_backed and semantic_status == "PASSED" and accept_candidate:
-        safety = "PASS"
-    elif hard_vetoes:
-        safety = "FAIL"
-    else:
-        # No hard veto ≠ PASS; missing authoritative first-LIVE proof → UNKNOWN.
+    hs = dict(
+        hard_safety
+        or compute_independent_hard_safety(
+            hard_vetoes=hard_vetoes,
+            goal_intact=goal_intact,
+            render_rows_ok=render_rows_ok,
+            extra={
+                "force_hard_safety": fx.get("phase8_safety") if prov == "FIXTURE" else None,
+                "first_live_status": fx.get("first_live_status"),
+                "has_new_footage": fx.get("has_new_footage", True),
+                "pts_ok": fx.get("pts_ok"),
+                "intentional_replay": fx.get("intentional_replay"),
+            },
+        )
+    )
+    safety = str(hs.get("safety") or "UNKNOWN").upper()
+    if safety not in ("PASS", "FAIL", "UNKNOWN"):
         safety = "UNKNOWN"
 
     q_raw = (
@@ -375,7 +497,7 @@ def build_phase8_verdict(
         or validated.get("quality_delta_vs_baseline")
     )
     quality = normalize_quality(q_raw)
-    if quality == "BETTER" and not (vision_backed and sent_frame_ids):
+    if quality == "BETTER" and not (vision_backed and sent_frame_ids) and prov != "FIXTURE":
         quality = "UNCERTAIN"
 
     if semantic_status == "PASSED" and vision_backed and sent_frame_ids:
@@ -423,14 +545,19 @@ def build_phase8_verdict(
     elif evidence == "INSUFFICIENT" or semantic_status == "NOT_EVALUATED":
         failure_class = "TECHNICAL_FAILURE" if not vision_backed else "UNCERTAIN_OR_UNVERIFIED"
 
-    # Explicit: never synthesize accept from PROMISING.
-    if quality == "PROMISING" and accept_candidate:
-        # Caller still has legacy accept; verdict records the conflict.
-        pass
+    # Specific next-evidence target only — no generic nonempty fallback (P1-6).
+    suggested = fx.get("suggested_next_evidence")
+    if isinstance(suggested, str) and suggested.strip():
+        suggested_out: Any = suggested.strip()
+    elif isinstance(suggested, dict) and suggested.get("question"):
+        suggested_out = suggested
+    else:
+        suggested_out = None
 
     return {
         "schema": "v3a_phase8_verdict_v1",
         "safety": safety,
+        "hard_safety": hs,
         "quality": quality,
         "evidence": evidence,
         "issue_effect": issue_effect,
@@ -441,17 +568,19 @@ def build_phase8_verdict(
         "observed_changes": fx.get("observed_changes")
         or validated.get("observed_visuals"),
         "unresolved_questions": list(fx.get("unresolved_questions") or []),
-        "suggested_next_evidence": fx.get("suggested_next_evidence")
-        or "reobserve_edit_locus_continuous_context",
+        "suggested_next_evidence": suggested_out,
         "failure_class": failure_class,
         "compared_parent_version_id": compared_parent_version_id
         or fx.get("compared_parent_version_id"),
-        "source_kind": source_kind,
+        "verdict_provenance": prov,
+        "source_kind": prov,  # back-compat alias; always equals provenance
         "accept_candidate_raw": bool(accept_candidate),
         "accept_not_synthesized_from_promising": True,
+        "safety_independent_of_accept_candidate": True,
         "note": (
-            "Advisory for loop policy only. Formal release remains stricter. "
-            "FIXTURE source_kind never establishes real IMPROVED."
+            "Hard safety is independent of narrative accept_candidate. "
+            "FIXTURE/OFFLINE_RULE never establish real IMPROVED; REAL_VLM requires "
+            "recorded successful provider call + frame bindings."
         ),
     }
 

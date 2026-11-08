@@ -1,0 +1,55 @@
+{
+  "entry": "run_story_e2e()",
+  "zero_http": true,
+  "round_dirs": [
+    "02_round_01",
+    "02_round_02"
+  ],
+  "has_round_03": false,
+  "r1": {
+    "transition": "CONTINUE_WORKING",
+    "pts": {
+      "start": 900.0,
+      "end": 908.0
+    },
+    "edl_ids": [
+      "seg_open_goal",
+      "seg_setup",
+      "seg_bridge_r1",
+      "seg_turn",
+      "seg_climax"
+    ],
+    "provenance": null,
+    "working_after_round": "v1",
+    "verdict_provenance": "FIXTURE"
+  },
+  "r2": {
+    "transition": "STOP_NO_ACTION",
+    "pts": {
+      "start": 1500.0,
+      "end": 1510.0
+    },
+    "edl_ids": [
+      "seg_open_goal",
+      "seg_setup",
+      "seg_bridge_r1",
+      "seg_bridge_r2",
+      "seg_turn",
+      "seg_climax"
+    ],
+    "planner_feedback_n_records": 1,
+    "search_feedback_filter_applied": true,
+    "working_after_round": "v0",
+    "verdict_provenance": "FIXTURE",
+    "parent_was": "v1"
+  },
+  "feedback_n": 2,
+  "best_verified_version_id": "v0",
+  "working_version_id": "v0",
+  "stop_reason": "STOP_NO_ACTION",
+  "release_authorized": false,
+  "structural_loop_pass": true,
+  "video_semantic_quality_verified": false,
+  "claim": "Round-1 CONTINUE_WORKING inserts seg_bridge_r1@900; feedback reaches r2 planner/search; r2 revises with different PTS 1500 (seg_bridge_r2 intent); STOP_NO_ACTION — no round 3.",
+  "note_working": "After CONTINUE_WORKING r1 working=v1; STOP_NO_ACTION r2 resets working to best=v0 by design."
+}

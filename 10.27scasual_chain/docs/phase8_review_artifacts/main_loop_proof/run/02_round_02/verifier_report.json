@@ -1,0 +1,367 @@
+{
+  "schema": "v3a_story_video_verifier_v1",
+  "decision_input": "REVISE",
+  "hard_vetoes": [],
+  "warnings": [
+    "refuse_accept_without_semantic_verification"
+  ],
+  "render_rows_ok": true,
+  "goal_protection": {
+    "baseline_goals": {
+      "seg_open_goal": [
+        100.0,
+        120.0
+      ],
+      "seg_turn": [
+        2000.0,
+        2020.0
+      ],
+      "seg_climax": [
+        3000.0,
+        3020.0
+      ]
+    },
+    "candidate_goals": {
+      "seg_open_goal": [
+        100.0,
+        120.0
+      ],
+      "seg_turn": [
+        2000.0,
+        2020.0
+      ],
+      "seg_climax": [
+        3000.0,
+        3020.0
+      ]
+    },
+    "intact": true
+  },
+  "video_probe": {
+    "baseline_exists": true,
+    "candidate_exists": true,
+    "baseline_duration_sec": 1.024,
+    "candidate_duration_sec": 1.024,
+    "duration_delta_sec": 0.0,
+    "method": "ffprobe_duration_and_existence",
+    "note": "Technical probe only; not semantic story quality."
+  },
+  "edl_delta": {
+    "baseline_count": 5,
+    "candidate_count": 6,
+    "added_segment_ids": [
+      "seg_bridge_r2"
+    ],
+    "removed_segment_ids": [],
+    "changed_segments": [],
+    "exactly_equal": false
+  },
+  "sent_frame_ids": [
+    "baseline_b",
+    "candidate_b"
+  ],
+  "vision_backed": true,
+  "dual_verifier": {
+    "rule_verification_status": "PASSED",
+    "semantic_verification_status": "NOT_EVALUATED",
+    "ok_for_semantic_accept": false,
+    "provider_mode": "degraded",
+    "rule_baseline_score": null,
+    "rule_candidate_score": null
+  },
+  "dual_verifier_full": {
+    "rule_baseline": {
+      "track": "rule",
+      "ok": true,
+      "rule_verification_status": "PASSED",
+      "audit": {
+        "schema": "v3a_story_quality_audit_v1",
+        "mode": "READ_ONLY_RULE_BASELINE",
+        "match_id": null,
+        "story_tier": "none",
+        "dimensions": {
+          "story_element_coverage": {
+            "score": null,
+            "score_kind": "candidate_edl_role_proxy",
+            "required_roles": [
+              {
+                "name": "opponent_opening",
+                "required": false,
+                "edl_present": null,
+                "status": "UNKNOWN_SCOPE"
+              },
+              {
+                "name": "equalizer",
+                "required": false,
+                "edl_present": null,
+                "status": "UNKNOWN_SCOPE"
+              },
+              {
+                "name": "go_ahead",
+                "required": false,
+                "edl_present": null,
+                "status": "UNKNOWN_SCOPE"
+              }
+            ],
+            "not_measured": [
+              "visual_truth",
+              "missing_unannotated_events",
+              "tactical_causality"
+            ]
+          },
+          "story_coherence": {
+            "score": 100.0,
+            "score_kind": "edl_structural_proxy",
+            "checks": {
+              "valid_media_windows": true,
+              "narrative_beat_order": true,
+              "unique_goal_event_roles": true
+            },
+            "not_measured": [
+              "semantic_narrative_coherence",
+              "shot_relevance"
+            ]
+          },
+          "image_quality": {
+            "status": "NOT_MEASURED",
+            "score": null,
+            "reason": "no_rendered_video_supplied"
+          }
+        },
+        "hard_gate_findings": [],
+        "diagnostic_issues": [],
+        "unverified": [
+          "live_vs_replay_visual_truth",
+          "VLM_semantics",
+          "shot_event_grounding"
+        ],
+        "input_missing_evidence": [],
+        "revision_requests": [],
+        "structural_proxy_pass": false,
+        "render_ready": false,
+        "release_decision": "NOT_AUTHORIZED",
+        "note": "Scores are deterministic structural proxies, not calibrated quality or semantic release certification."
+      },
+      "p0_count": 0,
+      "semantic_scores": {
+        "story_element_coverage": "NOT_EVALUATED",
+        "narrative_coherence": "NOT_EVALUATED",
+        "image_content_quality": "NOT_EVALUATED",
+        "live_authenticity": "NOT_EVALUATED"
+      },
+      "note": "Rule track does not certify multimodal semantic quality."
+    },
+    "rule_candidate": {
+      "track": "rule",
+      "ok": true,
+      "rule_verification_status": "PASSED",
+      "audit": {
+        "schema": "v3a_story_quality_audit_v1",
+        "mode": "READ_ONLY_RULE_BASELINE",
+        "match_id": null,
+        "story_tier": "none",
+        "dimensions": {
+          "story_element_coverage": {
+            "score": null,
+            "score_kind": "candidate_edl_role_proxy",
+            "required_roles": [
+              {
+                "name": "opponent_opening",
+                "required": false,
+                "edl_present": null,
+                "status": "UNKNOWN_SCOPE"
+              },
+              {
+                "name": "equalizer",
+                "required": false,
+                "edl_present": null,
+                "status": "UNKNOWN_SCOPE"
+              },
+              {
+                "name": "go_ahead",
+                "required": false,
+                "edl_present": null,
+                "status": "UNKNOWN_SCOPE"
+              }
+            ],
+            "not_measured": [
+              "visual_truth",
+              "missing_unannotated_events",
+              "tactical_causality"
+            ]
+          },
+          "story_coherence": {
+            "score": 100.0,
+            "score_kind": "edl_structural_proxy",
+            "checks": {
+              "valid_media_windows": true,
+              "narrative_beat_order": true,
+              "unique_goal_event_roles": true
+            },
+            "not_measured": [
+              "semantic_narrative_coherence",
+              "shot_relevance"
+            ]
+          },
+          "image_quality": {
+            "status": "NOT_MEASURED",
+            "score": null,
+            "reason": "no_rendered_video_supplied"
+          }
+        },
+        "hard_gate_findings": [],
+        "diagnostic_issues": [],
+        "unverified": [
+          "live_vs_replay_visual_truth",
+          "VLM_semantics",
+          "shot_event_grounding"
+        ],
+        "input_missing_evidence": [],
+        "revision_requests": [],
+        "structural_proxy_pass": false,
+        "render_ready": false,
+        "release_decision": "NOT_AUTHORIZED",
+        "note": "Scores are deterministic structural proxies, not calibrated quality or semantic release certification."
+      },
+      "p0_count": 0,
+      "semantic_scores": {
+        "story_element_coverage": "NOT_EVALUATED",
+        "narrative_coherence": "NOT_EVALUATED",
+        "image_content_quality": "NOT_EVALUATED",
+        "live_authenticity": "NOT_EVALUATED"
+      },
+      "note": "Rule track does not certify multimodal semantic quality."
+    },
+    "api": {
+      "ok": false,
+      "error": "vision_citations_insufficient_or_text_only",
+      "provider_mode": "degraded",
+      "validated": {
+        "issues": [],
+        "dimensions": {
+          "story_element_coverage": {
+            "status": "NOT_EVALUATED",
+            "summary": "API Verifier unavailable or failed; score not assigned",
+            "evidence_refs": [],
+            "problems": [],
+            "score": null
+          },
+          "narrative_coherence": {
+            "status": "NOT_EVALUATED",
+            "summary": "API Verifier unavailable or failed; score not assigned",
+            "evidence_refs": [],
+            "problems": [],
+            "score": null
+          },
+          "image_content_quality": {
+            "status": "NOT_EVALUATED",
+            "summary": "API Verifier unavailable or failed; score not assigned",
+            "evidence_refs": [],
+            "problems": [],
+            "score": null
+          },
+          "live_authenticity": {
+            "status": "NOT_EVALUATED",
+            "summary": "API Verifier unavailable or failed; score not assigned",
+            "evidence_refs": [],
+            "problems": [],
+            "score": null
+          }
+        },
+        "hard_vetoes": [],
+        "evidence_of_improvement": [],
+        "quality_delta_vs_baseline": "NOT_EVALUATED",
+        "validated": true,
+        "semantic_status": "NOT_EVALUATED"
+      },
+      "ok_for_semantic_accept": false,
+      "semantic_verification_status": "NOT_EVALUATED",
+      "rule_fallback_success": false,
+      "semantic_pretend_pass": false,
+      "fallback_reason": "vision_citations_insufficient_or_text_only"
+    },
+    "rule_verification_status": "PASSED",
+    "semantic_verification_status": "NOT_EVALUATED",
+    "ok_for_semantic_accept": false,
+    "ok": false,
+    "validated": {
+      "issues": [],
+      "dimensions": {
+        "story_element_coverage": {
+          "status": "NOT_EVALUATED",
+          "summary": "API Verifier unavailable or failed; score not assigned",
+          "evidence_refs": [],
+          "problems": [],
+          "score": null
+        },
+        "narrative_coherence": {
+          "status": "NOT_EVALUATED",
+          "summary": "API Verifier unavailable or failed; score not assigned",
+          "evidence_refs": [],
+          "problems": [],
+          "score": null
+        },
+        "image_content_quality": {
+          "status": "NOT_EVALUATED",
+          "summary": "API Verifier unavailable or failed; score not assigned",
+          "evidence_refs": [],
+          "problems": [],
+          "score": null
+        },
+        "live_authenticity": {
+          "status": "NOT_EVALUATED",
+          "summary": "API Verifier unavailable or failed; score not assigned",
+          "evidence_refs": [],
+          "problems": [],
+          "score": null
+        }
+      },
+      "hard_vetoes": [],
+      "evidence_of_improvement": [],
+      "quality_delta_vs_baseline": "NOT_EVALUATED",
+      "validated": true
+    },
+    "provider_mode": "degraded",
+    "error": "vision_citations_insufficient_or_text_only",
+    "attempts": [],
+    "rule_fallback_success": false,
+    "semantic_pretend_pass": false,
+    "fallback_reason": "vision_citations_insufficient_or_text_only"
+  },
+  "candidate_accepted": false,
+  "retain_baseline": true,
+  "phase8_verdict": {
+    "schema": "v3a_phase8_verdict_v1",
+    "safety": "PASS",
+    "hard_safety": {
+      "safety": "PASS",
+      "reasons": [
+        "force_hard_safety_overlay"
+      ],
+      "accept_candidate_ignored": true,
+      "first_live_status": "FIRST_LIVE_VERIFIED"
+    },
+    "quality": "UNCERTAIN",
+    "evidence": "INSUFFICIENT",
+    "issue_effect": "UNOBSERVED",
+    "global_regression": "UNKNOWN",
+    "focus_issue_id": null,
+    "evidence_refs": [
+      "baseline_b",
+      "candidate_b"
+    ],
+    "observed_changes": null,
+    "unresolved_questions": [],
+    "suggested_next_evidence": null,
+    "failure_class": "UNCERTAIN_OR_UNVERIFIED",
+    "compared_parent_version_id": "v1",
+    "verdict_provenance": "FIXTURE",
+    "source_kind": "FIXTURE",
+    "accept_candidate_raw": false,
+    "accept_not_synthesized_from_promising": true,
+    "safety_independent_of_accept_candidate": true,
+    "note": "Hard safety is independent of narrative accept_candidate. FIXTURE/OFFLINE_RULE never establish real IMPROVED; REAL_VLM requires recorded successful provider call + frame bindings."
+  },
+  "evidence_basis": "insufficient_visual_evidence",
+  "note": "Semantic accept requires aligned dual-video frames with citable frame_ids. EDL/text/ffprobe alone never authorizes release. phase8_verdict is advisory for exploration; accept_candidate does not synthesize from PROMISING."
+}

@@ -1,0 +1,183 @@
+{
+  "schema": "v3a_story_diagnosis_v1",
+  "critic_mode": "structural_plus_file_probes+semantic_hypothesis_layer",
+  "inputs": {
+    "initial_story_mp4": "docs/phase8_review_artifacts/main_loop_proof/run/02_round_01/candidate_render/story_clean.mp4",
+    "source_video": "/tmp/p8_e2e_proof_odn3gqe9/source.mp4",
+    "story_mp4_duration_sec": 1.024,
+    "plan_role_hints": [
+      "opponent_opening_goal_action",
+      "deficit_scoreboard_anchor",
+      "equalizer_goal_action",
+      "go_ahead_goal_action"
+    ]
+  },
+  "timeline": {
+    "schema": "v3a_story_timeline_v1",
+    "story_duration_sec": 73.0,
+    "media_duration_sec": 73.0,
+    "placeholder_duration_sec": 0.0,
+    "segment_count": 5,
+    "media_segment_count": 5,
+    "placeholder_segment_count": 0,
+    "segments": [
+      {
+        "index": 0,
+        "segment_id": "seg_open_goal",
+        "role": "opponent_opening_goal_action",
+        "beat": null,
+        "story_in": 0.0,
+        "story_out": 20.0,
+        "duration_sec": 20.0,
+        "media_in": 100.0,
+        "media_out": 120.0,
+        "has_media_window": true,
+        "is_placeholder": false,
+        "placeholder_sec": null,
+        "is_replay": false,
+        "first_live_status": null,
+        "shot_kind": null
+      },
+      {
+        "index": 1,
+        "segment_id": "seg_setup",
+        "role": "deficit_scoreboard_anchor",
+        "beat": null,
+        "story_in": 20.0,
+        "story_out": 25.0,
+        "duration_sec": 5.0,
+        "media_in": 200.0,
+        "media_out": 205.0,
+        "has_media_window": true,
+        "is_placeholder": false,
+        "placeholder_sec": null,
+        "is_replay": false,
+        "first_live_status": null,
+        "shot_kind": null
+      },
+      {
+        "index": 2,
+        "segment_id": "seg_bridge_r1",
+        "role": "buildup_bridge_action",
+        "beat": null,
+        "story_in": 25.0,
+        "story_out": 33.0,
+        "duration_sec": 8.0,
+        "media_in": 900.0,
+        "media_out": 908.0,
+        "has_media_window": true,
+        "is_placeholder": false,
+        "placeholder_sec": null,
+        "is_replay": false,
+        "first_live_status": "NOT_VERIFIED",
+        "shot_kind": "search_bridge"
+      },
+      {
+        "index": 3,
+        "segment_id": "seg_turn",
+        "role": "equalizer_goal_action",
+        "beat": null,
+        "story_in": 33.0,
+        "story_out": 53.0,
+        "duration_sec": 20.0,
+        "media_in": 2000.0,
+        "media_out": 2020.0,
+        "has_media_window": true,
+        "is_placeholder": false,
+        "placeholder_sec": null,
+        "is_replay": false,
+        "first_live_status": null,
+        "shot_kind": null
+      },
+      {
+        "index": 4,
+        "segment_id": "seg_climax",
+        "role": "go_ahead_goal_action",
+        "beat": null,
+        "story_in": 53.0,
+        "story_out": 73.0,
+        "duration_sec": 20.0,
+        "media_in": 3000.0,
+        "media_out": 3020.0,
+        "has_media_window": true,
+        "is_placeholder": false,
+        "placeholder_sec": null,
+        "is_replay": false,
+        "first_live_status": null,
+        "shot_kind": null
+      }
+    ],
+    "note": "story_duration_sec includes placeholder title cards using placeholder_sec (or renderer default 2.5s). Compare MP4 duration to story_duration_sec, not media_duration_sec alone."
+  },
+  "coverage": {
+    "has_title_open": false,
+    "has_opponent_opening": true,
+    "has_deficit_or_setup": true,
+    "has_equalizer": true,
+    "has_go_ahead": true,
+    "has_wrap_or_close": false,
+    "roles": [
+      "opponent_opening_goal_action",
+      "deficit_scoreboard_anchor",
+      "buildup_bridge_action",
+      "equalizer_goal_action",
+      "go_ahead_goal_action"
+    ]
+  },
+  "protected_goal_segment_ids": [
+    "seg_open_goal",
+    "seg_turn",
+    "seg_climax"
+  ],
+  "issues": [
+    {
+      "issue_id": "story_mp4_timeline_mismatch",
+      "story_time_range": [
+        0.0,
+        73.0
+      ],
+      "segment_ids": [
+        "seg_open_goal",
+        "seg_setup",
+        "seg_bridge_r1",
+        "seg_turn",
+        "seg_climax"
+      ],
+      "observation": "Rendered story duration (1.02s) diverges from EDL media sum (73.00s) by 71.98s.",
+      "narrative_problem": "Cut/EDL correspondence uncertain; story analysis may be misaligned.",
+      "severity": "major",
+      "suggested_fix": "re_render_or_reconcile_edl",
+      "evidence_sufficiency": "observed",
+      "category": "timeline_integrity",
+      "story_role": "structural_integrity",
+      "observed_evidence": "Rendered story duration (1.02s) diverges from EDL media sum (73.00s) by 71.98s.",
+      "missing_information": "Cut/EDL correspondence uncertain; story analysis may be misaligned.",
+      "causal_explanation": "Cut/EDL correspondence uncertain; story analysis may be misaligned.",
+      "confidence": 0.7,
+      "confirmation_basis": [],
+      "model_confidence_alone_insufficient": true,
+      "frame_cited_alone_insufficient": true,
+      "diagnosis_status": "CONFIRMED_STORY_DEFECT",
+      "story_defect_confirmed": true
+    }
+  ],
+  "notes": [
+    "story_mp4_duration=1.024s timeline_media=73.000s delta=71.976s"
+  ],
+  "disclaimer": "Structural/file probes are not multimodal story understanding. Issues marked needs_video_verify require layered video observation before revision.",
+  "layered_observations": {
+    "schema": "test_observe",
+    "layers": [],
+    "semantic_provider_used": false,
+    "fixture_or_offline": true
+  },
+  "story_diagnosis_valid": true,
+  "semantic_observation_claimed": false,
+  "semantic_diagnosis_layer": {
+    "schema": "v3a_semantic_diagnosis_layer_v1",
+    "hypothesis_count": 0,
+    "confirmed_story_defect_count": 1,
+    "confirmed_structure_defect_count": 0,
+    "rule": "Without video semantic evidence, structural anomalies remain HYPOTHESIS_NEEDS_VIDEO and must not drive story-quality ACCEPT/IMPROVED."
+  }
+}

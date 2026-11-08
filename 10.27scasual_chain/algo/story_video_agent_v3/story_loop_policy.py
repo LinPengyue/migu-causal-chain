@@ -147,6 +147,18 @@ def evaluate_round_transition(
     est_cost = float(budget.get("est_cost_usd") or 0.0)
     max_cost = budget.get("max_cost_usd")
 
+    budget_exhausted = False
+    budget_reason = None
+    if rounds_done >= max_rounds:
+        budget_exhausted = True
+        budget_reason = "max_rounds_exhausted"
+    elif max_calls is not None and http_calls >= int(max_calls):
+        budget_exhausted = True
+        budget_reason = "max_http_calls_exhausted"
+    elif max_cost is not None and est_cost >= float(max_cost):
+        budget_exhausted = True
+        budget_reason = "max_cost_exhausted"
+
     def _out(
         next_action: str,
         *,
@@ -157,15 +169,41 @@ def evaluate_round_transition(
         stop_reason: Optional[str] = None,
         record_negative: bool = False,
     ) -> Dict[str, Any]:
-        assert next_action in NEXT_ACTIONS
+        # Evaluate CURRENT finished candidate first; budget only blocks FUTURE rounds (P0-3).
+        codes = list(reason_codes)
+        action = next_action
+        stop = stop_reason
+        cont = action not in (
+            "STOP_NO_ACTION",
+            "STOP_BUDGET",
+            "STOP_SAFETY",
+        )
+        if budget_exhausted and action in (
+            "CONTINUE_WORKING",
+            "REOBSERVE",
+            "REPLAN_FROM_BEST",
+            "PROMOTE_BEST",
+        ):
+            # Keep promote/working outcome; forbid another iteration.
+            codes.append(str(budget_reason or "budget_exhausted"))
+            codes.append("current_round_outcome_retained_before_budget_stop")
+            cont = False
+            if action in ("CONTINUE_WORKING", "REOBSERVE", "REPLAN_FROM_BEST"):
+                # Outcome applied by apply_transition; then stop.
+                stop = "STOP_BUDGET"
+            elif action == "PROMOTE_BEST":
+                stop = "STOP_BUDGET"
+        assert action in NEXT_ACTIONS
         return {
             "schema": "v3a_phase8_transition_v1",
-            "next_action": next_action,
+            "next_action": action,
             "working_ref": working_ref,
             "best_ref": best_ref,
-            "reason_codes": list(reason_codes),
+            "reason_codes": codes,
             "promote": promote,
-            "stop_reason": stop_reason,
+            "stop_reason": stop,
+            "continue_allowed": cont and not (stop == "STOP_BUDGET" and action != "PROMOTE_BEST"),
+            "current_round_outcome": action,
             "record_confirmed_negative": record_negative,
             "candidate_version_id": cand_id,
             "parent_version_id": parent_id,
@@ -173,38 +211,15 @@ def evaluate_round_transition(
             "quality": quality,
             "evidence": evidence,
             "accept_candidate_ignored": True,
+            "compared_against_best": bool(v.get("compared_against_best")),
             "note": (
                 "candidate_accepted boolean does not drive this policy; "
-                "formal release remains stricter than exploration."
+                "formal release remains stricter than exploration. "
+                "Budget does not discard the just-finished round outcome."
             ),
         }
 
-    # Budget first (graceful stop preserves best).
-    if rounds_done >= max_rounds:
-        return _out(
-            "STOP_BUDGET",
-            working_ref=best_id,
-            best_ref=best_id,
-            reason_codes=["max_rounds_exhausted"],
-            stop_reason="STOP_BUDGET",
-        )
-    if max_calls is not None and http_calls >= int(max_calls):
-        return _out(
-            "STOP_BUDGET",
-            working_ref=best_id,
-            best_ref=best_id,
-            reason_codes=["max_http_calls_exhausted"],
-            stop_reason="STOP_BUDGET",
-        )
-    if max_cost is not None and est_cost >= float(max_cost):
-        return _out(
-            "STOP_BUDGET",
-            working_ref=best_id,
-            best_ref=best_id,
-            reason_codes=["max_cost_exhausted"],
-            stop_reason="STOP_BUDGET",
-        )
-
+    # Hard veto evaluated on current candidate (never masked by budget).
     if hard_vetoes or safety == "FAIL":
         return _out(
             "STOP_SAFETY",
@@ -217,7 +232,10 @@ def evaluate_round_transition(
     if safety == "UNKNOWN":
         reobs = int(state.get("uncertain_reobserve_count") or 0)
         max_reobs = int(state.get("max_uncertain_reobserve") or 1)
-        if reobs < max_reobs and budget.get("has_new_visual_target"):
+        specific_target = bool(budget.get("has_new_visual_target")) and bool(
+            budget.get("specific_reobserve_target")
+        )
+        if reobs < max_reobs and specific_target:
             return _out(
                 "REOBSERVE",
                 working_ref=working_id,
@@ -270,7 +288,10 @@ def evaluate_round_transition(
     if quality == "UNCERTAIN":
         reobs = int(state.get("uncertain_reobserve_count") or 0)
         max_reobs = int(state.get("max_uncertain_reobserve") or 1)
-        if evidence != "SUFFICIENT" and reobs < max_reobs and budget.get("has_new_visual_target"):
+        specific_target = bool(budget.get("has_new_visual_target")) and bool(
+            budget.get("specific_reobserve_target")
+        )
+        if evidence != "SUFFICIENT" and reobs < max_reobs and specific_target:
             return _out(
                 "REOBSERVE",
                 working_ref=working_id,
@@ -295,12 +316,26 @@ def evaluate_round_transition(
     if quality == "PROMISING":
         depth = int(state.get("promising_depth") or 0)
         max_depth = int(state.get("max_promising_depth") or 2)
-        if edl_changed and safety == "PASS" and depth < max_depth:
+        # P1-7: require rendered + EDL change + independent safety PASS.
+        if (
+            edl_changed
+            and rendered
+            and safety == "PASS"
+            and depth < max_depth
+            and candidate.get("mp4_exists", True)
+        ):
             return _out(
                 "CONTINUE_WORKING",
                 working_ref=cand_id,
                 best_ref=best_id,
                 reason_codes=["promising_continue_working_not_release"],
+            )
+        if edl_changed and not rendered:
+            return _out(
+                "REPLAN_FROM_BEST",
+                working_ref=best_id,
+                best_ref=best_id,
+                reason_codes=["promising_missing_render_technical_failure"],
             )
         if budget.get("has_distinct_alternative"):
             return _out(
@@ -318,45 +353,56 @@ def evaluate_round_transition(
         )
 
     if quality == "BETTER":
+        sk = source_kind.upper()
         # Fixture / offline never establishes real promote for formal IMPROVED.
-        if source_kind.upper() in ("FIXTURE", "OFFLINE_FIXTURE", "PHASE7_HISTORICAL_ARTIFACT"):
+        if sk in ("FIXTURE", "OFFLINE_FIXTURE", "PHASE7_HISTORICAL_ARTIFACT", "OFFLINE_RULE"):
+            if edl_changed and rendered and safety == "PASS":
+                return _out(
+                    "CONTINUE_WORKING",
+                    working_ref=cand_id,
+                    best_ref=best_id,
+                    reason_codes=[
+                        "fixture_better_continues_working_only",
+                        "formal_improved_false_for_fixture",
+                    ],
+                )
             return _out(
-                "CONTINUE_WORKING",
-                working_ref=cand_id,
+                "STOP_NO_ACTION",
+                working_ref=best_id,
                 best_ref=best_id,
-                reason_codes=[
-                    "fixture_better_continues_working_only",
-                    "formal_improved_false_for_fixture",
-                ],
+                reason_codes=["fixture_better_without_render"],
+                stop_reason="STOP_NO_ACTION",
             )
+        # REAL_VLM promote requires comparison against current BEST, not only working parent.
+        compared_best = bool(v.get("compared_against_best"))
         can_promote = (
             safety == "PASS"
             and evidence == "SUFFICIENT"
             and edl_changed
             and rendered
-            and str(v.get("issue_effect") or "").upper() in ("RESOLVED", "PARTIAL")
-            and str(v.get("global_regression") or "NO").upper() in ("NO", "UNKNOWN")
-            # UNKNOWN regression blocks formal promote per conservative delivery
+            and compared_best
+            and str(v.get("issue_effect") or "").upper() == "RESOLVED"
+            and str(v.get("global_regression") or "").upper() == "NO"
+            and sk == "REAL_VLM"
         )
-        if str(v.get("global_regression") or "").upper() == "YES":
-            can_promote = False
-        if str(v.get("global_regression") or "").upper() == "UNKNOWN":
-            can_promote = False
-        if can_promote and str(v.get("issue_effect") or "").upper() == "RESOLVED":
+        if can_promote:
             return _out(
                 "PROMOTE_BEST",
                 working_ref=cand_id,
                 best_ref=cand_id,
-                reason_codes=["better_promote_best_with_verified_gain"],
+                reason_codes=["better_promote_best_with_verified_gain_vs_best"],
                 promote=True,
             )
-        # Soft BETTER without full promote criteria → continue working if partial
-        if edl_changed and evidence in ("SUFFICIENT", "PARTIAL"):
+        if edl_changed and rendered and safety == "PASS" and evidence in ("SUFFICIENT", "PARTIAL"):
             return _out(
                 "CONTINUE_WORKING",
                 working_ref=cand_id,
                 best_ref=best_id,
-                reason_codes=["better_insufficient_for_promote_continue_working"],
+                reason_codes=[
+                    "better_insufficient_for_promote_continue_working"
+                    if compared_best
+                    else "better_not_compared_against_best_pending"
+                ],
             )
         return _out(
             "REPLAN_FROM_BEST",

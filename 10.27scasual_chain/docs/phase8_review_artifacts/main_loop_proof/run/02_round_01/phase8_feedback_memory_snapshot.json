@@ -1,0 +1,140 @@
+{
+  "schema": "v3a_phase8_feedback_memory_v1",
+  "n_records": 1,
+  "records": [
+    {
+      "schema": "v3a_phase8_feedback_v1",
+      "round": 1,
+      "issue_signature": {
+        "template_id": "unknown_template",
+        "category": "transition_break",
+        "anchor_segment_ids": [
+          "seg_setup"
+        ],
+        "missing_narrative_info": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+        "issue_id_raw": "large_source_jump_seg_setup_to_seg_turn"
+      },
+      "intent_id": "search_add_r1",
+      "action": "search_add",
+      "source_pts": [
+        900.0,
+        908.0
+      ],
+      "parent_version_id": "v0",
+      "candidate_version_id": "v1",
+      "quality": "PROMISING",
+      "evidence_status": "INSUFFICIENT",
+      "failure_class": "POSITIVE",
+      "observation": "No independently confirmed narrative benefit",
+      "next_search_requirement": "Reobserve edit-locus continuous context; do not treat as semantic negative",
+      "source_kind": "FIXTURE",
+      "evidence_refs": [
+        "baseline_a",
+        "candidate_a"
+      ],
+      "new_evidence_required_for_retry": true,
+      "candidate_identity": "|unknown_template|transition_break|seg_setup|Whether the structural gap actually harms audience story understanding is unknow|v0|search_add|900.000:908.000|seg_setup",
+      "legacy_final_decision": "REJECT",
+      "legacy_failure_reasons": [
+        "verifier_or_pipeline_rejected"
+      ],
+      "legacy_accept_candidate": false,
+      "pts_permanently_banned": false,
+      "sent_frame_ids": [
+        "baseline_a",
+        "candidate_a"
+      ],
+      "evidence_token": "v1:1",
+      "apply_status": "applied_evidence_bound",
+      "observation_limitations": [
+        "claims_full_video_watch=false",
+        "sparse_or_truncated_verifier_must_not_become_confirmed_negative"
+      ]
+    }
+  ],
+  "summary": {
+    "schema": "v3a_phase8_feedback_summary_v1",
+    "n_records": 1,
+    "tried_revisions": [
+      {
+        "round": 1,
+        "action": "search_add",
+        "source_pts": [
+          900.0,
+          908.0
+        ],
+        "quality": "PROMISING",
+        "failure_class": "POSITIVE",
+        "issue_signature": {
+          "template_id": "unknown_template",
+          "category": "transition_break",
+          "anchor_segment_ids": [
+            "seg_setup"
+          ],
+          "missing_narrative_info": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+          "issue_id_raw": "large_source_jump_seg_setup_to_seg_turn"
+        },
+        "next_search_requirement": "Reobserve edit-locus continuous context; do not treat as semantic negative",
+        "new_evidence_required_for_retry": true
+      }
+    ],
+    "confirmed_negatives": [],
+    "uncertain_or_unverified": [],
+    "technical_failures": [],
+    "positives": [
+      {
+        "schema": "v3a_phase8_feedback_v1",
+        "round": 1,
+        "issue_signature": {
+          "template_id": "unknown_template",
+          "category": "transition_break",
+          "anchor_segment_ids": [
+            "seg_setup"
+          ],
+          "missing_narrative_info": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+          "issue_id_raw": "large_source_jump_seg_setup_to_seg_turn"
+        },
+        "intent_id": "search_add_r1",
+        "action": "search_add",
+        "source_pts": [
+          900.0,
+          908.0
+        ],
+        "parent_version_id": "v0",
+        "candidate_version_id": "v1",
+        "quality": "PROMISING",
+        "evidence_status": "INSUFFICIENT",
+        "failure_class": "POSITIVE",
+        "observation": "No independently confirmed narrative benefit",
+        "next_search_requirement": "Reobserve edit-locus continuous context; do not treat as semantic negative",
+        "source_kind": "FIXTURE",
+        "evidence_refs": [
+          "baseline_a",
+          "candidate_a"
+        ],
+        "new_evidence_required_for_retry": true,
+        "candidate_identity": "|unknown_template|transition_break|seg_setup|Whether the structural gap actually harms audience story understanding is unknow|v0|search_add|900.000:908.000|seg_setup",
+        "legacy_final_decision": "REJECT",
+        "legacy_failure_reasons": [
+          "verifier_or_pipeline_rejected"
+        ],
+        "legacy_accept_candidate": false,
+        "pts_permanently_banned": false,
+        "sent_frame_ids": [
+          "baseline_a",
+          "candidate_a"
+        ],
+        "evidence_token": "v1:1",
+        "apply_status": "applied_evidence_bound",
+        "observation_limitations": [
+          "claims_full_video_watch=false",
+          "sparse_or_truncated_verifier_must_not_become_confirmed_negative"
+        ]
+      }
+    ],
+    "current_issue_signatures": [],
+    "forbid_identical_retry_without_new_evidence": true,
+    "never_permanently_ban_pts": true,
+    "opaque_reject_is_not_confirmed_negative": true
+  }
+}

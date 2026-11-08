@@ -1,0 +1,97 @@
+{
+  "schema": "v3a_story_revision_plan_v1",
+  "decision": "REVISE",
+  "rationale": "fixture_intents",
+  "offline": true,
+  "semantic_confirmation": false,
+  "search_confirmation": true,
+  "protected_goal_segment_ids": [
+    "seg_open_goal",
+    "seg_turn",
+    "seg_climax"
+  ],
+  "revision_intents": [
+    {
+      "intent_id": "search_add_r1",
+      "action": "search_add",
+      "issue_id": "large_source_jump_seg_setup_to_seg_turn",
+      "role": "buildup_bridge_action",
+      "insert_after_segment_id": "seg_setup",
+      "before_segment_id": "seg_turn",
+      "bound_source_window": {
+        "start": 900.0,
+        "end": 908.0
+      },
+      "new_segment_id": "seg_bridge_r1",
+      "anchor_id": "search:cand_first_900",
+      "narrative_purpose": "supplement_buildup_or_transition_bridge",
+      "original_problem": "Adjacent cuts jump 1795.0s in source PTS (205.0 → 2000.0) while contiguous on story timeline.",
+      "why_hurts_story": "Possible abrupt narrative transition; continuity and emotional bridging need video verification.",
+      "missing_information": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+      "diagnosis_status": "HYPOTHESIS_NEEDS_VIDEO",
+      "story_defect_confirmed": false,
+      "duration_pad_not_quality_proxy": true,
+      "answers": {
+        "what_is_wrong": "Adjacent cuts jump 1795.0s in source PTS (205.0 → 2000.0) while contiguous on story timeline.",
+        "why_it_hurts_understanding": "Possible abrupt narrative transition; continuity and emotional bridging need video verification.",
+        "what_to_add_drop_or_adjust": "search_add",
+        "why_candidate_helps": null,
+        "expected_observable_improvement": null,
+        "falsification_evidence": null
+      }
+    }
+  ],
+  "feedback_context": {
+    "schema": "v3a_phase8_feedback_summary_v1",
+    "n_records": 0,
+    "tried_revisions": [],
+    "confirmed_negatives": [],
+    "uncertain_or_unverified": [],
+    "technical_failures": [],
+    "positives": [],
+    "current_issue_signatures": [],
+    "forbid_identical_retry_without_new_evidence": true,
+    "never_permanently_ban_pts": true,
+    "opaque_reject_is_not_confirmed_negative": true
+  },
+  "budget": {
+    "max_rounds": 3,
+    "round_idx": 1,
+    "max_calls": 5,
+    "max_cost_usd": 0.1,
+    "http_calls_so_far": 0,
+    "est_cost_usd_so_far": 0.0
+  },
+  "phase6_rules": {
+    "no_auto_add_on_large_source_gap_alone": true,
+    "duration_pad_not_quality_proxy": true,
+    "require_confirmed_defect_for_search_add": true,
+    "hypothesis_status": "HYPOTHESIS_NEEDS_VIDEO"
+  },
+  "phase8_rules": {
+    "use_prior_round_feedback": true,
+    "block_identical_pts_action_without_new_evidence": true,
+    "never_permanently_ban_pts": true,
+    "unverified_reject_is_not_confirmed_negative": true,
+    "stop_if_no_narrative_live_after_filter": true
+  },
+  "narrative_purposes_supported": [
+    "supplement_buildup",
+    "adjust_non_goal_segments",
+    "repair_transitions",
+    "drop_redundant_or_meaningless",
+    "improve_ending_closure",
+    "preserve_true_match_time_and_causality",
+    "protect_confirmed_goal_anchors"
+  ],
+  "constraints": {
+    "no_replay_or_slowmo": true,
+    "no_scoreboard_time_as_goal_action": true,
+    "new_footage_must_trace_to_source_pts": true,
+    "max_rounds": 3
+  },
+  "search_feedback_filter": {
+    "filtered_count": 0,
+    "kept_count": 1
+  }
+}

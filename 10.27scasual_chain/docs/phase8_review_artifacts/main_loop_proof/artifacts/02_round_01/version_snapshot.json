@@ -1,0 +1,114 @@
+{
+  "version_id": "v1",
+  "parent_version_id": "v0",
+  "round_idx": 1,
+  "edl_path": "docs/phase8_review_artifacts/main_loop_proof/run/02_round_01/candidate_edl.json",
+  "mp4_path": "docs/phase8_review_artifacts/main_loop_proof/run/02_round_01/candidate_render/story_clean.mp4",
+  "safety": "PASS",
+  "quality": "PROMISING",
+  "evidence": "PARTIAL",
+  "verdict_provenance": "FIXTURE",
+  "goal_protection_intact": true,
+  "semantic_verification_passed": false,
+  "candidate_rendered": true,
+  "hard_vetoes": [],
+  "diagnosis_issues": [
+    {
+      "issue_id": "story_mp4_timeline_mismatch",
+      "story_time_range": [
+        0.0,
+        65.0
+      ],
+      "segment_ids": [
+        "seg_open_goal",
+        "seg_setup",
+        "seg_turn",
+        "seg_climax"
+      ],
+      "observation": "Rendered story duration (1.02s) diverges from EDL media sum (65.00s) by 63.98s.",
+      "narrative_problem": "Cut/EDL correspondence uncertain; story analysis may be misaligned.",
+      "severity": "major",
+      "suggested_fix": "re_render_or_reconcile_edl",
+      "evidence_sufficiency": "observed",
+      "category": "timeline_integrity",
+      "story_role": "structural_integrity",
+      "observed_evidence": "Rendered story duration (1.02s) diverges from EDL media sum (65.00s) by 63.98s.",
+      "missing_information": "Cut/EDL correspondence uncertain; story analysis may be misaligned.",
+      "causal_explanation": "Cut/EDL correspondence uncertain; story analysis may be misaligned.",
+      "confidence": 0.7,
+      "confirmation_basis": [],
+      "model_confidence_alone_insufficient": true,
+      "frame_cited_alone_insufficient": true,
+      "diagnosis_status": "CONFIRMED_STORY_DEFECT",
+      "story_defect_confirmed": true
+    },
+    {
+      "issue_id": "large_source_jump_seg_setup_to_seg_turn",
+      "story_time_range": [
+        24.5,
+        25.5
+      ],
+      "segment_ids": [
+        "seg_setup",
+        "seg_turn"
+      ],
+      "observation": "Adjacent cuts jump 1795.0s in source PTS (205.0 → 2000.0) while contiguous on story timeline.",
+      "narrative_problem": "Possible abrupt narrative transition; continuity and emotional bridging need video verification.",
+      "severity": "minor",
+      "suggested_fix": "verify_transition_or_insert_bridge",
+      "evidence_sufficiency": "needs_video_verify",
+      "category": "transition",
+      "story_role": "transition_break",
+      "observed_evidence": "Adjacent cuts jump 1795.0s in source PTS (205.0 → 2000.0) while contiguous on story timeline.",
+      "missing_information": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+      "causal_explanation": "Possible abrupt narrative transition; continuity and emotional bridging need video verification.",
+      "confidence": 0.35,
+      "confirmation_basis": [],
+      "model_confidence_alone_insufficient": true,
+      "frame_cited_alone_insufficient": true,
+      "diagnosis_status": "HYPOTHESIS_NEEDS_VIDEO",
+      "story_defect_confirmed": false,
+      "note": "Structural anomaly is a hypothesis only; not a confirmed story-quality defect."
+    }
+  ],
+  "gates": {
+    "candidate_rendered": true,
+    "semantic_verification_passed": false,
+    "revision_applied": true
+  },
+  "phase8_verdict": {
+    "schema": "v3a_phase8_verdict_v1",
+    "safety": "PASS",
+    "hard_safety": {
+      "safety": "PASS",
+      "reasons": [
+        "force_hard_safety_overlay"
+      ],
+      "accept_candidate_ignored": true,
+      "first_live_status": "FIRST_LIVE_VERIFIED"
+    },
+    "quality": "PROMISING",
+    "evidence": "PARTIAL",
+    "issue_effect": "PARTIAL",
+    "global_regression": "NO",
+    "focus_issue_id": null,
+    "evidence_refs": [
+      "baseline_a",
+      "candidate_a"
+    ],
+    "observed_changes": null,
+    "unresolved_questions": [],
+    "suggested_next_evidence": null,
+    "failure_class": "POSITIVE",
+    "compared_parent_version_id": "v0",
+    "verdict_provenance": "FIXTURE",
+    "source_kind": "FIXTURE",
+    "accept_candidate_raw": false,
+    "accept_not_synthesized_from_promising": true,
+    "safety_independent_of_accept_candidate": true,
+    "note": "Hard safety is independent of narrative accept_candidate. FIXTURE/OFFLINE_RULE never establish real IMPROVED; REAL_VLM requires recorded successful provider call + frame bindings.",
+    "compared_against_best": true
+  },
+  "compared_against_best": true,
+  "pts_ok": true
+}

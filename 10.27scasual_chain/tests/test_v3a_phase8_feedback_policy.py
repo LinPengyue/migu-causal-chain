@@ -101,7 +101,13 @@ class TestLoopPolicy(unittest.TestCase):
         state = init_loop_state(edl_path="e0.json", mp4_path="m0.mp4")
         tr = evaluate_round_transition(
             state,
-            {"version_id": "v1", "parent_version_id": "v0", "edl_changed": True, "rendered": True},
+            {
+                "version_id": "v1",
+                "parent_version_id": "v0",
+                "edl_changed": True,
+                "rendered": True,
+                "mp4_exists": True,
+            },
             {
                 "safety": "PASS",
                 "quality": "PROMISING",
@@ -139,11 +145,81 @@ class TestLoopPolicy(unittest.TestCase):
                 "rounds_done": 1,
                 "max_rounds": 3,
                 "has_new_visual_target": True,
+                "specific_reobserve_target": {
+                    "issue_id": "jump_1",
+                    "question": "Does insert supply narrative pressure?",
+                    "source_pts": [10.0, 20.0],
+                },
                 "has_executable_revision": True,
             },
         )
         self.assertEqual(tr["next_action"], "REOBSERVE")
         self.assertFalse(tr["record_confirmed_negative"])
+
+    def test_budget_after_current_better_retained(self):
+        state = init_loop_state()
+        tr = evaluate_round_transition(
+            state,
+            {
+                "version_id": "v1",
+                "edl_changed": True,
+                "rendered": True,
+                "mp4_exists": True,
+            },
+            {
+                "safety": "PASS",
+                "quality": "BETTER",
+                "evidence": "SUFFICIENT",
+                "issue_effect": "RESOLVED",
+                "global_regression": "NO",
+                "source_kind": "REAL_VLM",
+                "compared_against_best": True,
+            },
+            {"rounds_done": 1, "max_rounds": 1},
+        )
+        self.assertEqual(tr["next_action"], "PROMOTE_BEST")
+        self.assertTrue(tr["promote"])
+        self.assertEqual(tr.get("stop_reason"), "STOP_BUDGET")
+        state2 = apply_transition(state, tr)
+        self.assertEqual(state2["best_verified_version_id"], "v1")
+
+    def test_promising_real_continues_without_accept(self):
+        state = init_loop_state()
+        tr = evaluate_round_transition(
+            state,
+            {
+                "version_id": "v1",
+                "edl_changed": True,
+                "rendered": True,
+                "mp4_exists": True,
+            },
+            {
+                "safety": "PASS",
+                "quality": "PROMISING",
+                "evidence": "PARTIAL",
+                "source_kind": "REAL_VLM",
+                "accept_candidate": False,
+            },
+            {"rounds_done": 1, "max_rounds": 3, "has_executable_revision": True},
+        )
+        self.assertEqual(tr["next_action"], "CONTINUE_WORKING")
+        self.assertTrue(tr["accept_candidate_ignored"])
+
+    def test_missing_render_never_working(self):
+        state = init_loop_state()
+        tr = evaluate_round_transition(
+            state,
+            {"version_id": "v1", "edl_changed": True, "rendered": False, "mp4_exists": False},
+            {
+                "safety": "PASS",
+                "quality": "PROMISING",
+                "evidence": "PARTIAL",
+                "source_kind": "FIXTURE",
+            },
+            {"rounds_done": 1, "max_rounds": 3},
+        )
+        self.assertNotEqual(tr["working_ref"], "v1")
+        self.assertIn("promising_missing_render", ",".join(tr["reason_codes"]))
 
     def test_worse_sufficient_replans_with_negative(self):
         state = init_loop_state()
@@ -171,7 +247,12 @@ class TestLoopPolicy(unittest.TestCase):
         state = init_loop_state()
         tr = evaluate_round_transition(
             state,
-            {"version_id": "v1", "edl_changed": True, "rendered": True},
+            {
+                "version_id": "v1",
+                "edl_changed": True,
+                "rendered": True,
+                "mp4_exists": True,
+            },
             {
                 "safety": "PASS",
                 "quality": "BETTER",
@@ -189,14 +270,20 @@ class TestLoopPolicy(unittest.TestCase):
         state = init_loop_state()
         tr = evaluate_round_transition(
             state,
-            {"version_id": "v1", "edl_changed": True, "rendered": True},
+            {
+                "version_id": "v1",
+                "edl_changed": True,
+                "rendered": True,
+                "mp4_exists": True,
+            },
             {
                 "safety": "PASS",
                 "quality": "BETTER",
                 "evidence": "SUFFICIENT",
                 "issue_effect": "RESOLVED",
                 "global_regression": "NO",
-                "source_kind": "REAL",
+                "source_kind": "REAL_VLM",
+                "compared_against_best": True,
             },
             {"rounds_done": 1, "max_rounds": 3},
         )
@@ -207,7 +294,12 @@ class TestLoopPolicy(unittest.TestCase):
         state = init_loop_state()
         tr = evaluate_round_transition(
             state,
-            {"version_id": "v1", "edl_changed": True, "rendered": True},
+            {
+                "version_id": "v1",
+                "edl_changed": True,
+                "rendered": True,
+                "mp4_exists": True,
+            },
             {
                 "safety": "PASS",
                 "quality": "PROMISING",

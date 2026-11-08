@@ -44,7 +44,13 @@ class TestPhase8ThreeRoundOfflineLoop(unittest.TestCase):
         # Round 1: safety PASS + PROMISING
         tr1 = evaluate_round_transition(
             state,
-            {"version_id": "v1", "parent_version_id": "v0", "edl_changed": True, "rendered": True},
+            {
+                "version_id": "v1",
+                "parent_version_id": "v0",
+                "edl_changed": True,
+                "rendered": True,
+                "mp4_exists": True,
+            },
             {
                 "safety": "PASS",
                 "quality": "PROMISING",
@@ -130,7 +136,13 @@ class TestPhase8ThreeRoundOfflineLoop(unittest.TestCase):
 
         tr2 = evaluate_round_transition(
             state,
-            {"version_id": "v2", "parent_version_id": "v1", "edl_changed": True, "rendered": True},
+            {
+                "version_id": "v2",
+                "parent_version_id": "v1",
+                "edl_changed": True,
+                "rendered": True,
+                "mp4_exists": True,
+            },
             {
                 "safety": "PASS",
                 "quality": "UNCERTAIN",
@@ -161,35 +173,17 @@ class TestPhase8ThreeRoundOfflineLoop(unittest.TestCase):
                 "kept": "cand_new",
             }
         )
-
-        # Round 3: budget stop preserves best=v0
-        tr3 = evaluate_round_transition(
-            state,
-            {"version_id": "v3", "edl_changed": False, "rendered": False},
-            {"safety": "PASS", "quality": "SAME", "evidence": "PARTIAL", "source_kind": "FIXTURE"},
-            {"rounds_done": 3, "max_rounds": 3},
-        )
-        self.assertEqual(tr3["next_action"], "STOP_BUDGET")
-        state = apply_transition(state, tr3)
-        decisions.append(
-            {
-                "round": 3,
-                "transition": tr3["next_action"],
-                "working": state["working_version_id"],
-                "best": state["best_verified_version_id"],
-                "stop_reason": state.get("stop_reason"),
-            }
-        )
+        # After STOP_NO_ACTION the main loop would break — do NOT invent an r3.
         self.assertEqual(state["best_verified_version_id"], "v0")
-        self.assertEqual(state.get("delivery_version_id") or state["best_verified_version_id"], "v0")
 
-        out = OUT_ROOT / "story_quality_phase8_20261108_offline_loop"
-        out.mkdir(parents=True, exist_ok=True)
+        out = Path(tempfile.mkdtemp(prefix="phase8_policy_scenario_"))
         write_loop_state(state, out / "phase8_loop_state.json")
         store.write_json(out / "phase8_feedback_memory.json")
         audit = {
-            "schema": "v3a_phase8_offline_loop_audit_v1",
-            "structural_loop_pass": True,
+            "schema": "v3a_phase8_offline_policy_scenario_v1",
+            "artifact_kind": "offline_policy_transition_scenario",
+            "not_a_run_story_e2e_loop": True,
+            "structural_policy_pass": True,
             "video_semantic_quality_verified": False,
             "unseen_match_generalization_verified": False,
             "release_authorized": False,
@@ -198,17 +192,18 @@ class TestPhase8ThreeRoundOfflineLoop(unittest.TestCase):
             "proof": {
                 "r1_promising_sets_working_not_best": True,
                 "r2_feedback_changes_candidate_pts": True,
-                "r3_budget_stop_preserves_best": True,
+                "stop_no_action_ends_scenario": True,
                 "two_distinct_source_candidates": ["cand_old@3504-3515", "cand_new@4200-4210"],
             },
             "note": (
-                "Fixture control-flow proof only. Not a claim of better real story video."
+                "Policy-unit scenario only — NOT a three-round run_story_e2e E2E. "
+                "See test_v3a_phase8_run_story_e2e_loop.py for real main-loop evidence."
             ),
         }
-        (out / "phase8_offline_loop_audit.json").write_text(
+        (out / "phase8_offline_policy_scenario.json").write_text(
             json.dumps(audit, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
         )
-        self.assertTrue((out / "phase8_offline_loop_audit.json").is_file())
+        self.assertTrue((out / "phase8_offline_policy_scenario.json").is_file())
 
 
 class TestPhase7RejectFeedsMemoryNotNegative(unittest.TestCase):

@@ -1,0 +1,259 @@
+{
+  "release_authorized": false,
+  "delivery_label": "BLOCKED",
+  "delivery_status": "BLOCKED",
+  "blocked_reasons": [
+    "final_mp4_edl_timeline_misaligned"
+  ],
+  "human_review": {
+    "required": true,
+    "label": "HUMAN_REVIEW_REQUIRED",
+    "safe_playable_preview": true,
+    "auto_release_forbidden": true,
+    "dir": "docs/phase8_review_artifacts/main_loop_proof/run/99_final/human_review_candidate",
+    "v3r_baseline_mp4": "docs/phase8_review_artifacts/main_loop_proof/run/99_final/human_review_candidate/v3r_baseline.mp4",
+    "v3a_candidate_mp4": "docs/phase8_review_artifacts/main_loop_proof/run/99_final/human_review_candidate/v3a_candidate.mp4",
+    "bundle": {
+      "round": 2,
+      "round_dir": "docs/phase8_review_artifacts/main_loop_proof/run/02_round_02",
+      "baseline_mp4": "docs/phase8_review_artifacts/main_loop_proof/run/02_round_01/candidate_render/story_clean.mp4",
+      "baseline_edl": "docs/phase8_review_artifacts/main_loop_proof/run/02_round_02/parent_working_edl.json",
+      "parent_version_id": "v1",
+      "candidate_version_id": "v2",
+      "initial_baseline_mp4": "docs/phase8_review_artifacts/main_loop_proof/run/01_initial_story/story_clean.mp4",
+      "initial_baseline_edl": "docs/phase8_review_artifacts/main_loop_proof/run/01_initial_story/candidate_edl.json",
+      "candidate_mp4": "docs/phase8_review_artifacts/main_loop_proof/run/02_round_02/candidate_render/story_clean.mp4",
+      "candidate_edl": "docs/phase8_review_artifacts/main_loop_proof/run/02_round_02/candidate_edl.json",
+      "edl_diff": "docs/phase8_review_artifacts/main_loop_proof/run/02_round_02/edl_diff.json",
+      "evidence_search": "docs/phase8_review_artifacts/main_loop_proof/run/02_round_02/evidence_search.json",
+      "revision_plan": "docs/phase8_review_artifacts/main_loop_proof/run/02_round_02/revision_plan.json",
+      "verifier_report": "docs/phase8_review_artifacts/main_loop_proof/run/02_round_02/verifier_report.json",
+      "story_diagnosis": "docs/phase8_review_artifacts/main_loop_proof/run/02_round_02/story_diagnosis.json",
+      "goal_anchors_intact": true,
+      "hard_vetoes": [],
+      "semantic_status": "NOT_EVALUATED",
+      "candidate_accepted": false,
+      "phase8_verdict": {
+        "schema": "v3a_phase8_verdict_v1",
+        "safety": "PASS",
+        "hard_safety": {
+          "safety": "PASS",
+          "reasons": [
+            "force_hard_safety_overlay"
+          ],
+          "accept_candidate_ignored": true,
+          "first_live_status": "FIRST_LIVE_VERIFIED"
+        },
+        "quality": "UNCERTAIN",
+        "evidence": "INSUFFICIENT",
+        "issue_effect": "UNOBSERVED",
+        "global_regression": "UNKNOWN",
+        "focus_issue_id": null,
+        "evidence_refs": [
+          "baseline_b",
+          "candidate_b"
+        ],
+        "observed_changes": null,
+        "unresolved_questions": [],
+        "suggested_next_evidence": null,
+        "failure_class": "UNCERTAIN_OR_UNVERIFIED",
+        "compared_parent_version_id": "v1",
+        "verdict_provenance": "FIXTURE",
+        "source_kind": "FIXTURE",
+        "accept_candidate_raw": false,
+        "accept_not_synthesized_from_promising": true,
+        "safety_independent_of_accept_candidate": true,
+        "note": "Hard safety is independent of narrative accept_candidate. FIXTURE/OFFLINE_RULE never establish real IMPROVED; REAL_VLM requires recorded successful provider call + frame bindings.",
+        "compared_against_best": false
+      },
+      "phase8_transition": {
+        "schema": "v3a_phase8_transition_v1",
+        "next_action": "STOP_NO_ACTION",
+        "working_ref": "v0",
+        "best_ref": "v0",
+        "reason_codes": [
+          "uncertain_no_new_evidence"
+        ],
+        "promote": false,
+        "stop_reason": "STOP_NO_ACTION",
+        "continue_allowed": false,
+        "current_round_outcome": "STOP_NO_ACTION",
+        "record_confirmed_negative": false,
+        "candidate_version_id": "v2",
+        "parent_version_id": "v1",
+        "safety": "PASS",
+        "quality": "UNCERTAIN",
+        "evidence": "INSUFFICIENT",
+        "accept_candidate_ignored": true,
+        "compared_against_best": false,
+        "note": "candidate_accepted boolean does not drive this policy; formal release remains stricter than exploration. Budget does not discard the just-finished round outcome."
+      },
+      "revision_status": {
+        "schema": "v3a_revision_status_v1",
+        "APPLIED": true,
+        "VERIFIED": false,
+        "IMPROVED": false,
+        "safety_ok": true,
+        "edl_changed": true,
+        "candidate_rendered": true,
+        "candidate_accepted": false,
+        "vision_backed": true,
+        "semantic_passed": false,
+        "quality_delta": "NOT_EVALUATED",
+        "BETTER_not_auto_IMPROVED": true,
+        "note": "APPLIED=EDL mutated under safety; VERIFIED=accepted with vision; IMPROVED=verified+accepted+vision+semantic+safety+quality_delta. One model BETTER never auto-upgrades to IMPROVED. PTS/first-live/goal gates cannot be overridden by BETTER."
+      },
+      "modified_source_pts": [
+        {
+          "segment_id": "seg_bridge_r2",
+          "media_in": 1500.0,
+          "media_out": 1510.0,
+          "action": "search_add"
+        }
+      ]
+    },
+    "note": "Candidate is for human story judgment only. Uncertainty must not be auto-labeled success or failure for formal release."
+  },
+  "final_mp4": null,
+  "final_edl": "docs/phase8_review_artifacts/main_loop_proof/run/99_final/final_edl.json",
+  "decision": "REVISE",
+  "release_gate": {
+    "release_authorized": false,
+    "reasons": [
+      "edl_unchanged",
+      "candidate_not_rendered",
+      "candidate_not_accepted",
+      "semantic_verification_not_passed",
+      "decision_not_revise",
+      "final_mp4_edl_timeline_misaligned",
+      "fixture_or_offline_source_not_releasable"
+    ],
+    "final_mp4_duration_sec": 1.024,
+    "edl_hard_ok": true,
+    "blocking_issue_ids": [],
+    "note": "workflow_completed/final_mp4_exists/semantic_verification_passed alone never authorize formal release.",
+    "delivery_version_id": "v0",
+    "delivery_snapshot": {
+      "version_id": "v0",
+      "parent_version_id": null,
+      "safety": "UNKNOWN",
+      "quality": "BASELINE_UNVERIFIED",
+      "verdict_provenance": "OFFLINE_RULE",
+      "semantic_verification_passed": false,
+      "candidate_rendered": true,
+      "compared_against_best": null,
+      "mp4_path": "docs/phase8_review_artifacts/main_loop_proof/run/01_initial_story/story_clean.mp4",
+      "edl_path": "docs/phase8_review_artifacts/main_loop_proof/run/01_initial_story/candidate_edl.json"
+    },
+    "delivery_source": "OFFLINE_RULE",
+    "last_round_ignored_for_release": true,
+    "last_verifier_version_id": "v2",
+    "note_phase8": "Release authorization is version-specific from delivery snapshot; a later rejected/uncertain round does not revoke or grant release of selected best."
+  },
+  "metrics": {
+    "revise_proposed": 2,
+    "edl_changed_rounds": 2,
+    "candidate_rendered": 2,
+    "candidate_accepted": 0,
+    "search_success_rounds": 2,
+    "invalid_candidate": 0,
+    "goal_damage_flags": 0,
+    "false_or_unverified_improve_claims": 0
+  },
+  "timeline_mp4_alignment": {
+    "aligned": false,
+    "mp4_duration_sec": 1.024,
+    "story_duration_sec": 65.0,
+    "media_duration_sec": 65.0,
+    "placeholder_duration_sec": 0.0,
+    "delta_sec": 63.976,
+    "root_cause_hint": "media_only"
+  },
+  "first_live_visual": {
+    "authority": "final_delivery_edl",
+    "path": "docs/phase8_review_artifacts/main_loop_proof/run/99_final/final_goal_evidence_manifest.json",
+    "status_counts": {
+      "FIRST_LIVE_VERIFIED": 0,
+      "POSSIBLE_FIRST_LIVE": 0,
+      "REPLAY_DETECTED": 0,
+      "UNRESOLVED": 3
+    },
+    "n_goal_anchors": 3,
+    "any_first_live_verified": false,
+    "any_replay_on_retained": false,
+    "n_inherited": 0,
+    "n_reverified": 3,
+    "goals": [
+      {
+        "segment_id": "seg_open_goal",
+        "role": "opponent_opening_goal_action",
+        "first_live_status": "UNRESOLVED",
+        "source_media_in": 100.0,
+        "source_media_out": 120.0,
+        "evidence_binding": "reverified_after_window_or_subject_change",
+        "inherited": false
+      },
+      {
+        "segment_id": "seg_turn",
+        "role": "equalizer_goal_action",
+        "first_live_status": "UNRESOLVED",
+        "source_media_in": 2000.0,
+        "source_media_out": 2020.0,
+        "evidence_binding": "reverified_after_window_or_subject_change",
+        "inherited": false
+      },
+      {
+        "segment_id": "seg_climax",
+        "role": "go_ahead_goal_action",
+        "first_live_status": "UNRESOLVED",
+        "source_media_in": 3000.0,
+        "source_media_out": 3020.0,
+        "evidence_binding": "reverified_after_window_or_subject_change",
+        "inherited": false
+      }
+    ],
+    "candidate_separate": {
+      "path": "docs/phase8_review_artifacts/main_loop_proof/run/99_final/candidate_goal_evidence_manifest.json",
+      "status_counts": {
+        "FIRST_LIVE_VERIFIED": 0,
+        "POSSIBLE_FIRST_LIVE": 0,
+        "REPLAY_DETECTED": 0,
+        "UNRESOLVED": 3
+      },
+      "n_goal_anchors": 3
+    },
+    "v3r_historical_ref": null
+  },
+  "final_goal_evidence_manifest": "docs/phase8_review_artifacts/main_loop_proof/run/99_final/final_goal_evidence_manifest.json",
+  "goal_lineage_report": "docs/phase8_review_artifacts/main_loop_proof/run/99_final/goal_lineage_report.json",
+  "goal_lineage": {
+    "path": "docs/phase8_review_artifacts/main_loop_proof/run/99_final/goal_lineage_report.json",
+    "n_final_goal_segments": 3,
+    "n_strict_complete": 0,
+    "n_inferred": 0,
+    "n_unresolved": 3,
+    "n_structurally_traced_to_mp4": 0,
+    "duplicate_segment_ids": [],
+    "prior_source_trust": {
+      "prior_provided": false,
+      "prior_has_trusted_sha": false,
+      "stamped_current_sha_onto_prior": false
+    },
+    "candidate_delivery_binding": {
+      "schema": "v3a_candidate_delivery_video_binding_v1",
+      "same_source_video_sha256": true,
+      "delivery_sha256": "551beb27cf74a713b4a051dc782018577954af35cfb8d8dbe9afdda8d377ab3c",
+      "candidate_sha256": "551beb27cf74a713b4a051dc782018577954af35cfb8d8dbe9afdda8d377ab3c",
+      "shared_goal_segments": [
+        "seg_climax",
+        "seg_open_goal",
+        "seg_turn"
+      ],
+      "window_changed_segments": [],
+      "candidate_only_goal_segments": [],
+      "delivery_only_goal_segments": [],
+      "note": "Candidate and delivery manifests must not share verification conclusions across changed windows; both must bind to the same source video SHA."
+    }
+  },
+  "note": "Formal delivery requires release_authorized=true under full conjunction gates. workflow_completed / final_mp4_exists / semantic_verification_passed alone never authorize. HUMAN_REVIEW_REQUIRED means a safe candidate preview exists for human judgment. RELEASE_READY requires FIRST_LIVE_VERIFIED on every final-delivery EDL goal (final_goal_evidence_manifest), not V3-R historical first-live stats."
+}

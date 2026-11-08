@@ -324,6 +324,15 @@ def normalize_feedback(
                 "legacy_accept_candidate": verifier_report.get("candidate_accepted"),
                 "pts_permanently_banned": False,
                 "sent_frame_ids": list(verifier_report.get("sent_frame_ids") or []),
+                "evidence_token": (
+                    meta.get("evidence_token")
+                    or apply_row.get("observation_ref")
+                    or (
+                        f"{case.get('revision_intent_id')}:{pts[0]}:{pts[1]}"
+                        if pts
+                        else None
+                    )
+                ),
                 "apply_status": apply_row.get("status"),
                 "observation_limitations": [
                     "claims_full_video_watch=false",
@@ -404,13 +413,26 @@ def should_penalize_candidate(
             continue
         if _pts_iou(window, prev) < iou_threshold:
             continue
-        # Signature soft-match on category + anchors overlap
+        # Contextual signature: category + anchors + missing-info (P1-8).
         prev_sig = r.get("issue_signature") or {}
         same_cat = prev_sig.get("category") == issue_signature.get("category")
         if not same_cat:
             continue
-        if new_evidence_token and r.get("evidence_token") and new_evidence_token != r.get(
-            "evidence_token"
+        prev_anchors = {str(x) for x in (prev_sig.get("anchor_segment_ids") or []) if x}
+        cur_anchors = {str(x) for x in (issue_signature.get("anchor_segment_ids") or []) if x}
+        # Different story placement (no shared anchors) ⇒ allow same PTS reuse.
+        if prev_anchors and cur_anchors and prev_anchors.isdisjoint(cur_anchors):
+            continue
+        prev_miss = str(prev_sig.get("missing_narrative_info") or "")
+        cur_miss = str(issue_signature.get("missing_narrative_info") or "")
+        if prev_miss and cur_miss and prev_miss != cur_miss and not prev_anchors.intersection(cur_anchors):
+            continue
+        # New validated evidence unlocks reconsideration only when BOTH sides
+        # carry tokens and they differ (P1-8). Missing prior token ⇒ still suppress.
+        if (
+            new_evidence_token
+            and r.get("evidence_token")
+            and new_evidence_token != r.get("evidence_token")
         ):
             continue
         fc = r.get("failure_class")
@@ -424,9 +446,10 @@ def should_penalize_candidate(
         if fc in ("UNCERTAIN_OR_UNVERIFIED", "TECHNICAL_FAILURE", "POSITIVE"):
             return {
                 "penalize": True,
-                "suppress": True,
+                "suppress": True if fc != "POSITIVE" else True,
                 "reason": f"repeat_blocked_need_new_evidence:{fc}",
                 "pts_permanently_banned": False,
+                "weak_uncertain": fc != "CONFIRMED_NEGATIVE",
             }
     return {"penalize": False, "suppress": False, "reason": None}
 

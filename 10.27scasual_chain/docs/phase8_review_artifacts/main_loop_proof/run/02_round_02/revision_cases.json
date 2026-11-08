@@ -1,0 +1,84 @@
+{
+  "schema": "v3a_revision_case_bundle_v1",
+  "match_tag": null,
+  "n_cases": 1,
+  "cases": [
+    {
+      "schema": "v3a_revision_case_v1",
+      "match_tag": null,
+      "issue_id": "large_source_jump_seg_setup_to_seg_turn",
+      "revision_intent_id": "search_add_r2",
+      "original_story_problem": {
+        "observation": null,
+        "missing_information": null,
+        "causal_explanation": null,
+        "story_role": null,
+        "diagnosis_status": null,
+        "story_defect_confirmed": null,
+        "confidence": null,
+        "evidence_sufficiency": null
+      },
+      "video_observation_evidence": null,
+      "defect_cause_hypothesis": null,
+      "target_action": "search_add",
+      "candidate_footage": {
+        "source_pts": {
+          "start": 1500.0,
+          "end": 1510.0
+        },
+        "event_ids": null,
+        "why_solves_problem": null,
+        "apply": {
+          "intent": "search_add_r2",
+          "action": "search_add",
+          "status": "applied_evidence_bound",
+          "segment_id": "seg_bridge_r2",
+          "media_in": 1500.0,
+          "media_out": 1510.0,
+          "evidence_status": "SEARCH_EVENT_CHAIN_LIVE_VERIFIED",
+          "first_live_status": "NOT_VERIFIED",
+          "authorization": {
+            "allow": true,
+            "denies": [],
+            "evidence_status": "SEARCH_EVENT_CHAIN_LIVE_VERIFIED",
+            "method": "bound_source_window"
+          },
+          "observation_ref": "search:cand_alt_1500",
+          "insert_after_segment_id": "seg_bridge_r1"
+        }
+      },
+      "before_after_video_windows": null,
+      "expected_improvement": null,
+      "falsification_evidence": null,
+      "actual_observation": null,
+      "verifier_judgment": {
+        "quality_judgment": null,
+        "original_issue_resolved": null,
+        "introduced_new_defect": null,
+        "evidence_refs": null,
+        "confidence": null,
+        "note": "Verifier must check whether the original diagnosed problem was solved, not only which cut looks nicer. BETTER ≠ ACCEPT ≠ IMPROVED."
+      },
+      "pts_safety": {
+        "schema": "v3a_edl_source_pts_monotonic_v1",
+        "ok": true,
+        "n_media_rows": 6,
+        "breaks": [],
+        "gate": "safety",
+        "note": "Monotonic source PTS is a safety constraint, not a quality score."
+      },
+      "final_decision": "REJECT",
+      "failure_reasons": [
+        "verifier_or_pipeline_rejected"
+      ],
+      "formal_final_is_baseline": true,
+      "bindings": {
+        "issue_id": "large_source_jump_seg_setup_to_seg_turn",
+        "evidence": null,
+        "edit": "search_add",
+        "expected_effect": null
+      },
+      "duration_pad_forbidden_as_quality_proxy": true
+    }
+  ]
+}

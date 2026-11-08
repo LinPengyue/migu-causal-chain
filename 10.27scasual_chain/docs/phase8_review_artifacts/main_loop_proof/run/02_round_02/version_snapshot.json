@@ -1,0 +1,87 @@
+{
+  "version_id": "v2",
+  "parent_version_id": "v1",
+  "round_idx": 2,
+  "edl_path": "docs/phase8_review_artifacts/main_loop_proof/run/02_round_02/candidate_edl.json",
+  "mp4_path": "docs/phase8_review_artifacts/main_loop_proof/run/02_round_02/candidate_render/story_clean.mp4",
+  "safety": "PASS",
+  "quality": "UNCERTAIN",
+  "evidence": "INSUFFICIENT",
+  "verdict_provenance": "FIXTURE",
+  "goal_protection_intact": true,
+  "semantic_verification_passed": false,
+  "candidate_rendered": true,
+  "hard_vetoes": [],
+  "diagnosis_issues": [
+    {
+      "issue_id": "story_mp4_timeline_mismatch",
+      "story_time_range": [
+        0.0,
+        73.0
+      ],
+      "segment_ids": [
+        "seg_open_goal",
+        "seg_setup",
+        "seg_bridge_r1",
+        "seg_turn",
+        "seg_climax"
+      ],
+      "observation": "Rendered story duration (1.02s) diverges from EDL media sum (73.00s) by 71.98s.",
+      "narrative_problem": "Cut/EDL correspondence uncertain; story analysis may be misaligned.",
+      "severity": "major",
+      "suggested_fix": "re_render_or_reconcile_edl",
+      "evidence_sufficiency": "observed",
+      "category": "timeline_integrity",
+      "story_role": "structural_integrity",
+      "observed_evidence": "Rendered story duration (1.02s) diverges from EDL media sum (73.00s) by 71.98s.",
+      "missing_information": "Cut/EDL correspondence uncertain; story analysis may be misaligned.",
+      "causal_explanation": "Cut/EDL correspondence uncertain; story analysis may be misaligned.",
+      "confidence": 0.7,
+      "confirmation_basis": [],
+      "model_confidence_alone_insufficient": true,
+      "frame_cited_alone_insufficient": true,
+      "diagnosis_status": "CONFIRMED_STORY_DEFECT",
+      "story_defect_confirmed": true
+    }
+  ],
+  "gates": {
+    "candidate_rendered": true,
+    "semantic_verification_passed": false,
+    "revision_applied": true
+  },
+  "phase8_verdict": {
+    "schema": "v3a_phase8_verdict_v1",
+    "safety": "PASS",
+    "hard_safety": {
+      "safety": "PASS",
+      "reasons": [
+        "force_hard_safety_overlay"
+      ],
+      "accept_candidate_ignored": true,
+      "first_live_status": "FIRST_LIVE_VERIFIED"
+    },
+    "quality": "UNCERTAIN",
+    "evidence": "INSUFFICIENT",
+    "issue_effect": "UNOBSERVED",
+    "global_regression": "UNKNOWN",
+    "focus_issue_id": null,
+    "evidence_refs": [
+      "baseline_b",
+      "candidate_b"
+    ],
+    "observed_changes": null,
+    "unresolved_questions": [],
+    "suggested_next_evidence": null,
+    "failure_class": "UNCERTAIN_OR_UNVERIFIED",
+    "compared_parent_version_id": "v1",
+    "verdict_provenance": "FIXTURE",
+    "source_kind": "FIXTURE",
+    "accept_candidate_raw": false,
+    "accept_not_synthesized_from_promising": true,
+    "safety_independent_of_accept_candidate": true,
+    "note": "Hard safety is independent of narrative accept_candidate. FIXTURE/OFFLINE_RULE never establish real IMPROVED; REAL_VLM requires recorded successful provider call + frame bindings.",
+    "compared_against_best": false
+  },
+  "compared_against_best": false,
+  "pts_ok": true
+}
