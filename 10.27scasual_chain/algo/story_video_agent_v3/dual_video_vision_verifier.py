@@ -312,6 +312,71 @@ def validate_visual_verifier_payload(
     }
 
 
+def build_verifier_focus_from_revision_cases(
+    revision_cases: Optional[Sequence[Mapping[str, Any]]] = None,
+) -> Dict[str, Any]:
+    """Match-agnostic verifier focus text from actual revision_case records.
+
+    Never hardcodes a specific match or story template (e.g. A critical bridge).
+    """
+    cases = [c for c in (revision_cases or []) if isinstance(c, dict)]
+    if not cases:
+        return {
+            "ok": False,
+            "focus_lines": [
+                "No revision_case supplied. Judge only whether any cited frame "
+                "pair shows a concrete before/after story improvement; do not "
+                "invent match-specific defects."
+            ],
+            "targets": [],
+            "note": "generic_no_revision_case",
+        }
+    targets: List[Dict[str, Any]] = []
+    focus_lines: List[str] = []
+    for i, case in enumerate(cases[:4]):
+        problem = case.get("original_story_problem") or {}
+        footage = case.get("candidate_footage") or {}
+        pts = footage.get("source_pts") or {}
+        apply_row = footage.get("apply") or {}
+        target = {
+            "issue_id": case.get("issue_id"),
+            "revision_intent_id": case.get("revision_intent_id"),
+            "original_defect": problem.get("observation")
+            or case.get("video_observation_evidence"),
+            "missing_information": problem.get("missing_information"),
+            "causal_explanation": problem.get("causal_explanation")
+            or case.get("defect_cause_hypothesis"),
+            "expected_improvement": case.get("expected_improvement"),
+            "falsification_evidence": case.get("falsification_evidence"),
+            "target_action": case.get("target_action"),
+            "edit_location": {
+                "insert_after_segment_id": apply_row.get("insert_after_segment_id"),
+                "segment_id": apply_row.get("segment_id"),
+                "bound_source_pts": pts,
+            },
+            "evidence_requirement": (
+                "Cite baseline_* and candidate_* frame_ids that show whether the "
+                "ORIGINAL defect was resolved; BETTER aesthetics alone is insufficient."
+            ),
+        }
+        targets.append(target)
+        focus_lines.append(
+            f"CASE[{i}] issue_id={target['issue_id']} intent={target['revision_intent_id']} "
+            f"action={target['target_action']}\n"
+            f"  original_defect={target['original_defect']}\n"
+            f"  expected_improvement={target['expected_improvement']}\n"
+            f"  edit_location={json.dumps(target['edit_location'], ensure_ascii=False)}\n"
+            f"  falsify_if={target['falsification_evidence']}\n"
+            f"  evidence_requirement={target['evidence_requirement']}"
+        )
+    return {
+        "ok": True,
+        "focus_lines": focus_lines,
+        "targets": targets,
+        "note": "built_from_revision_cases_match_agnostic",
+    }
+
+
 def run_dual_video_vision_verifier(
     api: ApiProvider,
     *,
@@ -322,6 +387,7 @@ def run_dual_video_vision_verifier(
     work_dir: Path,
     audit_dir: Path,
     max_pairs: int = MAX_PAIRS,
+    revision_cases: Optional[Sequence[Mapping[str, Any]]] = None,
 ) -> Dict[str, Any]:
     """Vision-backed dual cut comparison. No frames → NOT_EVALUATED (never text ACCEPT)."""
     audit_dir.mkdir(parents=True, exist_ok=True)
@@ -393,18 +459,24 @@ def run_dual_video_vision_verifier(
         )
     from .truncated_response_recovery import SHORT_PER_REVISION_JSON_SCHEMA
 
+    focus = build_verifier_focus_from_revision_cases(revision_cases)
+    (audit_dir / "verifier_focus_from_revision_cases.json").write_text(
+        json.dumps(focus, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    focus_block = "\n".join(focus.get("focus_lines") or [])
     prompt = (
         f"{SYSTEM_VERIFIER}\n"
         "Compare BASELINE vs CANDIDATE using ONLY provided frames (NOT full-video watch).\n"
         "Reply with SHORT JSON only. Keep per_revision_judgments ≤4 items; "
         "observed_visuals ≤1 short sentence; notes ≤12 words.\n"
         f"Primary schema: {SHORT_PER_REVISION_JSON_SCHEMA}\n"
-        "Focus issue: critical buildup bridge between deficit setup and buildup "
-        "(large source-time jump). Did candidate insert LIVE bridge footage that "
-        "makes the transition clearer WITHOUT new defects?\n"
-        "Judge original issue solved vs new defects. BETTER aesthetics alone is insufficient.\n"
+        "Verification targets come ONLY from revision_case records below "
+        "(match-agnostic; do not assume any specific match or story template).\n"
+        f"REVISION_CASES:\n{focus_block}\n"
+        "For each case, judge whether the ORIGINAL defect was resolved and whether "
+        "new defects appeared. BETTER aesthetics alone is insufficient.\n"
         "Top-level: hard_vetoes, quality_delta_vs_baseline, accept_candidate "
-        "(true only if original issue resolved AND no new defects AND citations).\n"
+        "(true only if original issues resolved AND no new defects AND citations).\n"
         "Cite only FRAME_MANIFEST ids.\n"
         f"FRAME_MANIFEST:\n" + "\n".join(meta_lines) + "\n"
     )

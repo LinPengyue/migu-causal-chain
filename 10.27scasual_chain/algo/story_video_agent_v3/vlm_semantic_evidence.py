@@ -1,11 +1,13 @@
 """Convert VLM cut observations into structured semantic evidence for Critic.
 
-Distinguishes:
-  MODEL_CLAIMED  — model asserts a defect without checkable frame/clip refs
-  EVIDENCE_SUPPORTED — asserts defect AND cites sent frame_ids that check out
+Evidence tiers (strict; do not collapse):
+  FRAME_CITED         — ≥2 checkable sent frame_ids cited; citation validity only
+  SEMANTIC_HYPOTHESIS — model asserts a story defect (with or without cites)
+  DEFECT_CONFIRMED    — hypothesis + FRAME_CITED + per-cite notes/mentions that
+                        go beyond bare id lists (never confidence alone)
 
-CONFIRMED_STORY_DEFECT requires EVIDENCE_SUPPORTED for the original issue_id.
-Model self-reported confidence alone never confirms.
+CONFIRMED_STORY_DEFECT / supports_original_issue requires DEFECT_CONFIRMED.
+Two valid frame IDs alone never confirm a narrative defect.
 """
 from __future__ import annotations
 
@@ -40,10 +42,8 @@ def _collect_frame_ids(obj: Any) -> List[str]:
         for v in obj:
             found.extend(_collect_frame_ids(v))
     elif isinstance(obj, str):
-        # tolerate bare ids in prose
-        for m in re.finditer(r"\b(?:baseline_|candidate_|f|frame_|para_|global_|local_)[\w.\-]+\b", obj):
+        for m in re.finditer(r"\b(?:baseline_|candidate_|f|frame_|para_|global_|local_|story_)[\w.\-]+\b", obj):
             found.append(m.group(0))
-    # unique preserve order
     out: List[str] = []
     for f in found:
         if f not in out:
@@ -55,6 +55,72 @@ def _checkable_citations(cited: Sequence[str], sent: Set[str]) -> Tuple[List[str
     ok = [c for c in cited if c in sent]
     missing = [c for c in cited if c not in sent]
     return ok, missing
+
+
+def _citation_status(ok_cites: Sequence[str], missing: Sequence[str]) -> str:
+    if len(ok_cites) >= 2 and not missing:
+        return "FRAME_CITED"
+    if ok_cites:
+        return "PARTIAL_FRAME_CITED"
+    return "NO_FRAME_CITATION"
+
+
+def _explicit_defect_confirm_flag(raw: Mapping[str, Any]) -> bool:
+    if raw.get("defect_confirmed") is True:
+        return True
+    level = str(raw.get("confirmation_level") or raw.get("claim_status") or "").upper()
+    return level in ("DEFECT_CONFIRMED", "EVIDENCE_SUPPORTED", "CONFIRMED")
+
+
+def _per_cite_substantive(
+    raw: Mapping[str, Any],
+    *,
+    ok_cites: Sequence[str],
+    observed_fact: Any,
+) -> bool:
+    """Require more than bare frame-id lists: notes and/or ids grounded in observed_fact."""
+    fact = str(observed_fact or "")
+    grounded_in_fact = sum(1 for c in ok_cites if c in fact)
+    noted = 0
+    for r in _as_list(raw.get("evidence_refs")) + _as_list(raw.get("frame_refs")):
+        if not isinstance(r, dict):
+            continue
+        fid = str(r.get("frame_id") or r.get("frame") or r.get("id") or "").strip()
+        if fid not in ok_cites:
+            continue
+        note = str(r.get("note") or r.get("observation") or "").strip()
+        if note and note not in (fid, "vlm_semantic_evidence"):
+            noted += 1
+    # Need ≥2 grounded cites via fact mention OR substantive per-frame notes.
+    return (grounded_in_fact >= 2) or (noted >= 2) or (grounded_in_fact >= 1 and noted >= 1)
+
+
+def _enough_for_defect_confirmed(
+    raw: Mapping[str, Any],
+    *,
+    issue_id: Any,
+    observed_fact: Any,
+    hypothesis: Any,
+    ok_cites: Sequence[str],
+    citation_status: str,
+    model_claims_defect: bool,
+) -> bool:
+    if citation_status != "FRAME_CITED" or not model_claims_defect:
+        return False
+    if not issue_id or not observed_fact or not hypothesis:
+        return False
+    # Observation must not be a pure restatement of the hypothesis label alone.
+    if str(observed_fact).strip() == str(hypothesis).strip():
+        return False
+    if len(str(observed_fact).strip()) < 24:
+        return False
+    if not _per_cite_substantive(raw, ok_cites=ok_cites, observed_fact=observed_fact):
+        return False
+    # Explicit confirm flag preferred; without it, still allow only when
+    # claims_story_defect + substantive cites + distinct observation (above).
+    # Confidence alone never qualifies (checked by ignoring confidence here).
+    _ = raw.get("confidence")
+    return True
 
 
 def normalize_semantic_evidence_item(
@@ -80,41 +146,56 @@ def normalize_semantic_evidence_item(
     )
     story_time = raw.get("story_time") or raw.get("story_time_range")
     cited = _collect_frame_ids(raw)
-    # also scan observed_fact text
     if isinstance(observed_fact, str):
         for tok in sent:
             if tok in observed_fact and tok not in cited:
                 cited.append(tok)
     ok_cites, missing = _checkable_citations(cited, sent)
+    citation_status = _citation_status(ok_cites, missing)
+
     model_claims_defect = bool(
-        raw.get("claims_story_defect")
+        raw.get("claims_story_defect") is True
+        or _explicit_defect_confirm_flag(raw)
         or str(raw.get("evidence_sufficiency") or "").lower() == "observed"
         or str(raw.get("status") or "").lower() in ("confirmed", "defect", "broken")
-        or (hypothesis and observed_fact)
     )
-    # Supports original issue only if model explicitly ties to issue_id and cites frames.
-    supports_original = bool(
-        issue_id
-        and model_claims_defect
-        and len(ok_cites) >= 2
-        and not missing
-        and bool(observed_fact)
-        and bool(hypothesis)
+    # Text fields without an explicit claim → treat as SEMANTIC_HYPOTHESIS candidate
+    # only when both observation and hypothesis exist (still not DEFECT_CONFIRMED).
+    semantic_hypothesis_signal = bool(model_claims_defect or (hypothesis and observed_fact))
+
+    defect_confirmed = _enough_for_defect_confirmed(
+        raw,
+        issue_id=issue_id,
+        observed_fact=observed_fact,
+        hypothesis=hypothesis,
+        ok_cites=ok_cites,
+        citation_status=citation_status,
+        model_claims_defect=model_claims_defect,
     )
-    if supports_original:
-        claim_status = "EVIDENCE_SUPPORTED"
+
+    if defect_confirmed:
+        claim_status = "DEFECT_CONFIRMED"
         evidence_sufficiency = "observed"
-    elif model_claims_defect:
-        claim_status = "MODEL_CLAIMED"
+        evidence_tier = "DEFECT_CONFIRMED"
+    elif semantic_hypothesis_signal:
+        claim_status = "SEMANTIC_HYPOTHESIS"
         evidence_sufficiency = "needs_video_verify"
+        evidence_tier = "SEMANTIC_HYPOTHESIS"
+    elif citation_status == "FRAME_CITED":
+        claim_status = "FRAME_CITED"
+        evidence_sufficiency = "needs_video_verify"
+        evidence_tier = "FRAME_CITED"
     else:
         claim_status = "INCONCLUSIVE"
         evidence_sufficiency = str(raw.get("evidence_sufficiency") or "needs_video_verify")
+        evidence_tier = citation_status
 
     try:
         conf = float(raw.get("confidence")) if raw.get("confidence") is not None else None
     except (TypeError, ValueError):
         conf = None
+
+    supports_original = claim_status == "DEFECT_CONFIRMED" and bool(issue_id)
 
     return {
         "schema": "v3a_semantic_evidence_item_v1",
@@ -131,12 +212,20 @@ def normalize_semantic_evidence_item(
             "method": "ordered_multi_frame",
             "claims_full_video_watch": False,
         },
+        "citation_status": citation_status,
+        "evidence_tier": evidence_tier,
         "claim_status": claim_status,
+        # Legacy alias used by Phase-6/7 diagnosis merge (DEFECT_CONFIRMED only).
+        "legacy_claim_alias": (
+            "EVIDENCE_SUPPORTED" if claim_status == "DEFECT_CONFIRMED" else claim_status
+        ),
         "supports_original_issue": supports_original,
         "evidence_sufficiency": evidence_sufficiency,
         "note": (
-            "Model confidence alone never confirms. EVIDENCE_SUPPORTED requires "
-            "≥2 checkable sent frame_ids + observed_fact + defect_hypothesis + issue_id."
+            "FRAME_CITED ≠ DEFECT_CONFIRMED. Two checkable frame_ids alone never confirm "
+            "a narrative defect. DEFECT_CONFIRMED needs issue_id + distinct observed_fact "
+            "+ defect_hypothesis + FRAME_CITED + substantive per-cite notes/mentions. "
+            "Model confidence alone never confirms."
         ),
     }
 
@@ -165,7 +254,6 @@ def vlm_critic_to_observation_updates(
         ):
             if isinstance(it, dict):
                 raw_items.append(it)
-    # Also map confirmed_issues list of ids/objects into claimed rows without auto-support.
     for it in _as_list(parsed.get("confirmed_issues")):
         if isinstance(it, str):
             raw_items.append(
@@ -193,7 +281,6 @@ def vlm_critic_to_observation_updates(
         )
         for it in raw_items
     ]
-    # Drop empty shells
     evidence_items = [
         e
         for e in evidence_items
@@ -206,11 +293,12 @@ def vlm_critic_to_observation_updates(
         iid = e.get("issue_id")
         if not iid:
             continue
-        # Prefer upgrading known hypotheses; still allow new issue_ids with evidence.
         row = {
             "issue_id": iid,
-            "category": "transition" if "jump" in str(iid) or "bridge" in str(iid) else "buildup",
-            "severity": "major" if e["claim_status"] == "EVIDENCE_SUPPORTED" else "minor",
+            "category": "transition"
+            if "jump" in str(iid) or "bridge" in str(iid)
+            else "buildup",
+            "severity": "major" if e["claim_status"] == "DEFECT_CONFIRMED" else "minor",
             "observation": e.get("observed_fact"),
             "observed_evidence": e.get("observed_fact"),
             "narrative_problem": e.get("defect_hypothesis"),
@@ -221,21 +309,27 @@ def vlm_critic_to_observation_updates(
             else [0.0, 0.0],
             "segment_ids": [],
             "evidence_sufficiency": e["evidence_sufficiency"],
-            "evidence_refs": [{"frame_id": f, "note": "vlm_semantic_evidence"} for f in e["frame_refs"]],
+            "evidence_refs": [
+                {"frame_id": f, "note": "vlm_semantic_evidence"} for f in e["frame_refs"]
+            ],
             "claim_status": e["claim_status"],
+            "evidence_tier": e.get("evidence_tier"),
+            "citation_status": e.get("citation_status"),
+            # Diagnosis layer still recognizes EVIDENCE_SUPPORTED alias.
+            "legacy_claim_alias": e.get("legacy_claim_alias"),
             "suggested_fix": "revise_with_evidence"
-            if e["claim_status"] == "EVIDENCE_SUPPORTED"
+            if e["claim_status"] == "DEFECT_CONFIRMED"
             else "needs_more_video_evidence",
             "confidence": e.get("confidence_model_reported"),
             "observation_scope": e.get("observation_scope"),
         }
         derived_issues.append(row)
-        if e["supports_original_issue"] and e["claim_status"] == "EVIDENCE_SUPPORTED":
-            # Only confirm if it addresses a known hypothesis OR is explicitly evidenced.
-            if (not hyp_ids) or (str(iid) in hyp_ids) or True:
-                # Always allow evidence-supported confirmation; hyp filter is informational.
-                if str(iid) not in confirmed_ids:
-                    confirmed_ids.append(str(iid))
+        if e.get("supports_original_issue") and e.get("claim_status") == "DEFECT_CONFIRMED":
+            # Only confirm known hypotheses when the caller supplied them.
+            if hyp_ids and str(iid) not in hyp_ids:
+                continue
+            if str(iid) not in confirmed_ids:
+                confirmed_ids.append(str(iid))
 
     return {
         "schema": "v3a_vlm_observation_updates_v1",
@@ -245,16 +339,30 @@ def vlm_critic_to_observation_updates(
         "model_claimed_only_ids": [
             str(e["issue_id"])
             for e in evidence_items
-            if e.get("issue_id") and e.get("claim_status") == "MODEL_CLAIMED"
+            if e.get("issue_id") and e.get("claim_status") == "SEMANTIC_HYPOTHESIS"
+        ],
+        "frame_cited_only_ids": [
+            str(e["issue_id"])
+            for e in evidence_items
+            if e.get("issue_id") and e.get("claim_status") == "FRAME_CITED"
         ],
         "observation_scope": scope,
         "stats": {
             "n_evidence": len(evidence_items),
+            "n_defect_confirmed": sum(
+                1 for e in evidence_items if e["claim_status"] == "DEFECT_CONFIRMED"
+            ),
             "n_evidence_supported": sum(
-                1 for e in evidence_items if e["claim_status"] == "EVIDENCE_SUPPORTED"
+                1 for e in evidence_items if e["claim_status"] == "DEFECT_CONFIRMED"
+            ),
+            "n_semantic_hypothesis": sum(
+                1 for e in evidence_items if e["claim_status"] == "SEMANTIC_HYPOTHESIS"
+            ),
+            "n_frame_cited": sum(
+                1 for e in evidence_items if e["claim_status"] == "FRAME_CITED"
             ),
             "n_model_claimed": sum(
-                1 for e in evidence_items if e["claim_status"] == "MODEL_CLAIMED"
+                1 for e in evidence_items if e["claim_status"] == "SEMANTIC_HYPOTHESIS"
             ),
             "n_confirmed_issue_ids": len(confirmed_ids),
         },

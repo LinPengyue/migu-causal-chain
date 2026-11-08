@@ -484,6 +484,7 @@ def run_llm_verifier(
     baseline_edl: Optional[Sequence[Mapping[str, Any]]] = None,
     candidate_edl: Optional[Sequence[Mapping[str, Any]]] = None,
     work_dir: Optional[Path] = None,
+    revision_cases: Optional[Sequence[Mapping[str, Any]]] = None,
 ) -> Dict[str, Any]:
     """Dual-video vision Verifier. Text/EDL/ffprobe-only path is forbidden for ACCEPT.
 
@@ -519,6 +520,7 @@ def run_llm_verifier(
         candidate_edl=candidate_edl,
         work_dir=Path(work_dir or (audit_dir / "dual_frames")),
         audit_dir=audit_dir,
+        revision_cases=revision_cases,
     )
     (audit_dir / "llm_verifier.json").write_text(
         json.dumps(

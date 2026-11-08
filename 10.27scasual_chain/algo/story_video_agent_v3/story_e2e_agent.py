@@ -974,6 +974,21 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             from .story_video_verifier import probe_video_pair
 
             try:
+                # Provisional cases (pre-verifier) drive match-agnostic focus text.
+                provisional_cases = build_revision_cases_for_round(
+                    diagnosis=diag,
+                    revision_plan=rev,
+                    apply_report=apply_report,
+                    search_report=search_report,
+                    verifier_per_intent={},
+                    pts_safety=pts_gate,
+                    candidate_accepted=False,
+                    match_tag=inp.match_id,
+                )
+                write_json(
+                    round_dir / "paid_api" / "provisional_revision_cases.json",
+                    provisional_cases,
+                )
                 llm_v = run_llm_verifier(
                     paid_api,
                     baseline_summary={"mp4": str(best_mp4)},
@@ -988,6 +1003,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     baseline_edl=best_edl,
                     candidate_edl=candidate_edl,
                     work_dir=round_dir / "paid_api" / "dual_frames",
+                    revision_cases=list(provisional_cases.get("cases") or []),
                 )
                 write_json(round_dir / "llm_verifier.json", llm_v)
                 if isinstance(llm_v.get("validated"), dict):

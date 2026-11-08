@@ -69,17 +69,20 @@ def enrich_issue_semantic_fields(
     confirmed = False
     confirmation_basis: List[str] = []
     ev = video_semantic_evidence or {}
-    # Prefer structured semantic_evidence with EVIDENCE_SUPPORTED (frame-checkable).
+    def _is_defect_confirmed_status(status: Any) -> bool:
+        s = str(status or "")
+        return s in ("DEFECT_CONFIRMED", "EVIDENCE_SUPPORTED")
+
+    # Prefer structured semantic_evidence with DEFECT_CONFIRMED (not bare FRAME_CITED).
     for se in ev.get("semantic_evidence") or []:
         if not isinstance(se, dict):
             continue
         if str(se.get("issue_id")) != str(out.get("issue_id")):
             continue
-        if se.get("claim_status") == "EVIDENCE_SUPPORTED" and se.get(
-            "supports_original_issue"
-        ):
+        tier = se.get("evidence_tier") or se.get("claim_status")
+        if _is_defect_confirmed_status(tier) and se.get("supports_original_issue"):
             confirmed = True
-            confirmation_basis.append("semantic_evidence_EVIDENCE_SUPPORTED")
+            confirmation_basis.append("semantic_evidence_DEFECT_CONFIRMED")
             out["observed_evidence"] = se.get("observed_fact") or out.get("observed_evidence")
             out["missing_information"] = se.get("defect_hypothesis") or out.get(
                 "missing_information"
@@ -89,18 +92,23 @@ def enrich_issue_semantic_fields(
             )
             out["evidence_frame_refs"] = list(se.get("frame_refs") or [])
             out["observation_scope"] = se.get("observation_scope")
+            out["evidence_tier"] = "DEFECT_CONFIRMED"
             break
-        if se.get("claim_status") == "MODEL_CLAIMED":
-            confirmation_basis.append("MODEL_CLAIMED_insufficient_alone")
+        if tier in ("SEMANTIC_HYPOTHESIS", "MODEL_CLAIMED"):
+            confirmation_basis.append("SEMANTIC_HYPOTHESIS_insufficient_alone")
+        elif tier == "FRAME_CITED" or se.get("citation_status") == "FRAME_CITED":
+            confirmation_basis.append("FRAME_CITED_not_defect_confirmed")
 
-    # Explicit confirmed_issue_ids only count when backed by EVIDENCE_SUPPORTED above
-    # or when derived_issues carry claim_status=EVIDENCE_SUPPORTED / checkable refs.
+    # derived_issues: DEFECT_CONFIRMED only — never auto-confirm from ≥2 frame refs alone.
     for di in ev.get("derived_issues") or []:
         if not isinstance(di, dict) or str(di.get("issue_id")) != str(out.get("issue_id")):
             continue
-        if di.get("claim_status") == "EVIDENCE_SUPPORTED":
+        tier = di.get("evidence_tier") or di.get("claim_status") or di.get(
+            "legacy_claim_alias"
+        )
+        if _is_defect_confirmed_status(tier):
             confirmed = True
-            confirmation_basis.append("derived_issue_EVIDENCE_SUPPORTED")
+            confirmation_basis.append("derived_issue_DEFECT_CONFIRMED")
             out["observed_evidence"] = di.get("observed_evidence") or di.get(
                 "observation"
             ) or out.get("observed_evidence")
@@ -110,26 +118,21 @@ def enrich_issue_semantic_fields(
             out["causal_explanation"] = di.get("causal_explanation") or di.get(
                 "narrative_problem"
             ) or out.get("causal_explanation")
+            out["evidence_tier"] = "DEFECT_CONFIRMED"
             if di.get("evidence_refs"):
                 out["evidence_frame_refs"] = [
                     str(r.get("frame_id") or r)
                     for r in di["evidence_refs"]
                     if isinstance(r, dict) or r
                 ]
+        elif tier in ("SEMANTIC_HYPOTHESIS", "MODEL_CLAIMED"):
+            confirmation_basis.append("SEMANTIC_HYPOTHESIS_insufficient_alone")
         elif str(di.get("evidence_sufficiency") or "") == "observed" and di.get(
             "evidence_refs"
         ):
-            # Legacy path: observed + concrete evidence_refs required (not confidence alone).
-            refs = di.get("evidence_refs") or []
-            if isinstance(refs, list) and len(refs) >= 2:
-                confirmed = True
-                confirmation_basis.append("derived_issue_observed_with_ge2_refs")
-                out["observed_evidence"] = di.get("observation") or out.get(
-                    "observed_evidence"
-                )
-                out["causal_explanation"] = di.get("narrative_problem") or out.get(
-                    "causal_explanation"
-                )
+            confirmation_basis.append(
+                "FRAME_CITED_or_observed_refs_without_DEFECT_CONFIRMED"
+            )
         elif str(di.get("evidence_sufficiency") or "") == "observed" and not di.get(
             "evidence_refs"
         ):
@@ -137,16 +140,17 @@ def enrich_issue_semantic_fields(
                 "MODEL_CLAIMED_observed_without_frame_refs_not_confirmed"
             )
 
-    # confirmed_issue_ids list is advisory only unless evidence already supported.
+    # confirmed_issue_ids list is advisory only unless DEFECT_CONFIRMED already set.
     if not confirmed:
         for item in ev.get("confirmed_issue_ids") or []:
             if str(item) == str(out.get("issue_id")):
                 confirmation_basis.append(
-                    "confirmed_issue_ids_listed_but_awaiting_EVIDENCE_SUPPORTED"
+                    "confirmed_issue_ids_listed_but_awaiting_DEFECT_CONFIRMED"
                 )
                 break
     out["confirmation_basis"] = confirmation_basis
     out["model_confidence_alone_insufficient"] = True
+    out["frame_cited_alone_insufficient"] = True
 
     if sufficiency == "needs_video_verify" and not confirmed:
         out["diagnosis_status"] = "HYPOTHESIS_NEEDS_VIDEO"

@@ -166,20 +166,22 @@ class TestSemanticCriticLayer(unittest.TestCase):
                 {
                     "issue_id": "large_source_jump_a_b",
                     "evidence_sufficiency": "observed",
-                    "claim_status": "EVIDENCE_SUPPORTED",
+                    "claim_status": "DEFECT_CONFIRMED",
+                    "evidence_tier": "DEFECT_CONFIRMED",
                     "observation": "crowd then unrelated midfield",
                     "narrative_problem": "causal break",
                     "confidence": 0.9,
                     "evidence_refs": [
-                        {"frame_id": "story_jump_t1p00"},
-                        {"frame_id": "story_jump_t2p00"},
+                        {"frame_id": "story_jump_t1p00", "note": "crowd"},
+                        {"frame_id": "story_jump_t2p00", "note": "midfield"},
                     ],
                 }
             ],
             "semantic_evidence": [
                 {
                     "issue_id": "large_source_jump_a_b",
-                    "claim_status": "EVIDENCE_SUPPORTED",
+                    "claim_status": "DEFECT_CONFIRMED",
+                    "evidence_tier": "DEFECT_CONFIRMED",
                     "supports_original_issue": True,
                     "observed_fact": "crowd then unrelated midfield",
                     "defect_hypothesis": "causal break",
