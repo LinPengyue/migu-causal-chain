@@ -10,10 +10,13 @@ STOP Phase 8 architecture revisions. The offline loop and feedback selection alr
 
 Candidate events path is `/data2/lpy1/causal-chain2/causal_chain/examples/交付_out/10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语.json`.
 Do NOT assume 交付_out is a non-gold source. Inspect the real file schema, provenance and creation logs/related scripts; determine whether the video_context.REPLAY/LIVE fields and causal events were human-edited, model-generated from raw match JSON+MP4, or merged.
-Separate `raw_match_json` (inference allowed), `generated_event_records` (allowed only if generated without labels), and `human_delivery_annotations` (NOT allowed as inference/automatic first-LIVE certification). Report precise paths, file SHA and an evidence chain. Do not secretly reuse a delivered manually annotated chain as a runtime input.
+**User-approved input rule (2026-11-08): `causal.json` IS permitted as a supplementary source of atomic events for the original `赛事.json`.** It can add missing atomic event types, event links and associated source-time metadata. Do not reject `causal.json` merely because it is a supplemental file or may contain manually curated event content. Treat `赛事.json` + `causal.json` + the original source MP4 as allowed inputs for this workflow; retain the provenance and any disagreements for audit.
+Distinguish permitted `causal.json` atomic-event supplementation from disallowed `strip_gold.json`, benchmark answer keys and human-labeled long-form story/EDL gold. The existence of an event or LIVE/REPLAY field inside `causal.json` is useful for candidate discovery or conservative replay screening, but is NOT independent evidence that the *picture* comes from the first broadcast. Only source-video timeline review can authorize FIRST_LIVE_VERIFIED. Report precise files, SHA and event origins; do not silently turn causal labels into video safety certifications.
 If the replay flag comes from manually annotated delivery_out, it is a conservative screening signal, not an independent visual confirmation. Keep the associated clip excluded pending independent visual review (the safe choice).
 
 ## 2. Original video review for 2 meaningful candidates (no paid)
+
+Use `赛事.json` as the primary atomic-event inventory and merge relevant `causal.json` supplementary events before candidate search, keeping source_file/source_event_id/source_pts provenance, deduplication decisions and any timestamp conflicts. The causal supplement is not a substitute for source-video first-broadcast verification.
 
 Use source SHA `a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c` only after checking server bytes match.
 First verify whether the preflight windows are actually relevant to an active narrative defect. Previous Phase7 bridge @3504.14–3515.83 was semantically not helpful; treat it as a negative control, NOT a default production edit. The 824.81–835.15 window is already metadata-replay positive; DO NOT use it in the story. The 6430–6445 window is currently UNKNOWN and may be prioritized only if it serves a concrete diagnosed story role.
@@ -35,6 +38,6 @@ Do not spend HTTP on the known weak 3504 bridge merely because it was previously
 
 ## 5. What Cursor should report now
 
-(a) Actual match JSON vs delivery_out JSON and event provenance (is manual labeling involved?); (b) two candidate source clips with exact source timestamp and evidence of earlier-occurrence search; (c) PASS/UNKNOWN/REPLAY per window with uncertainty; (d) the exact total-call and cost estimate for a future evaluation, but DO NOT run it; (e) no changes to V1/V2, no gold, no paid HTTP, release=false.
+(a) Exact `赛事.json` + approved `causal.json` event merge, provenance, deduplication and distinctions from story/benchmark gold; (b) two candidate source clips with exact source timestamp and evidence of earlier-occurrence search; (c) PASS/UNKNOWN/REPLAY per window with uncertainty; (d) the exact total-call and cost estimate for a future evaluation, but DO NOT run it; (e) no changes to V1/V2, no gold, no paid HTTP, release=false.
 
 Stop here. The next ChatGPT review should make a go/no-go decision about **real visual evidence**, not another iteration of abstract policy code.
