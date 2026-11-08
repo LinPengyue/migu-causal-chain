@@ -41,6 +41,39 @@ def normalize_quality(raw: Any) -> str:
     return _LEGACY_QUALITY.get(s, "UNCERTAIN")
 
 
+def make_observation_evidence_token(
+    *,
+    source_sha: Optional[str] = None,
+    pts_start: Any = None,
+    pts_end: Any = None,
+    observation_id: Optional[str] = None,
+    frame_hashes: Optional[Sequence[Any]] = None,
+) -> Optional[str]:
+    """Bind evidence identity to source digest + PTS + observation — never round/candidate id."""
+    try:
+        a = float(pts_start)
+        b = float(pts_end)
+    except (TypeError, ValueError):
+        return None
+    if b <= a:
+        return None
+    sha = str(source_sha or "").strip() or "NOSHA"
+    obs = str(observation_id or "").strip()
+    hashes = [str(h) for h in (frame_hashes or []) if h][:4]
+    hash_part = ",".join(hashes) if hashes else "noframes"
+    # Prefix marks observation-grade tokens; candidate_id alone must not unlock retries.
+    if obs or hashes:
+        return f"obs:{sha}|{a:.3f}:{b:.3f}|{obs or 'win'}|{hash_part}"
+    return f"sha:{sha}|{a:.3f}:{b:.3f}"
+
+
+def is_observation_grade_evidence_token(token: Optional[str]) -> bool:
+    if not token:
+        return False
+    s = str(token)
+    return s.startswith("obs:") or s.startswith("sha:") or s.startswith("verified:")
+
+
 def issue_signature_from_case(case: Mapping[str, Any]) -> Dict[str, Any]:
     """Canonical signature — not raw issue_id alone (IDs may change each round)."""
     problem = case.get("original_story_problem") or {}
@@ -326,12 +359,17 @@ def normalize_feedback(
                 "sent_frame_ids": list(verifier_report.get("sent_frame_ids") or []),
                 "evidence_token": (
                     meta.get("evidence_token")
-                    or apply_row.get("observation_ref")
-                    or (
-                        f"{case.get('revision_intent_id')}:{pts[0]}:{pts[1]}"
-                        if pts
-                        else None
-                    )
+                    if is_observation_grade_evidence_token(meta.get("evidence_token"))
+                    else None
+                )
+                or make_observation_evidence_token(
+                    source_sha=meta.get("source_sha"),
+                    pts_start=pts[0] if pts else None,
+                    pts_end=pts[1] if pts else None,
+                    observation_id=apply_row.get("observation_ref")
+                    or case.get("revision_intent_id"),
+                    frame_hashes=meta.get("frame_hashes")
+                    or verifier_report.get("sent_frame_ids"),
                 ),
                 "apply_status": apply_row.get("status"),
                 "observation_limitations": [
@@ -427,12 +465,13 @@ def should_penalize_candidate(
         cur_miss = str(issue_signature.get("missing_narrative_info") or "")
         if prev_miss and cur_miss and prev_miss != cur_miss and not prev_anchors.intersection(cur_anchors):
             continue
-        # New validated evidence unlocks reconsideration only when BOTH sides
-        # carry tokens and they differ (P1-8). Missing prior token ⇒ still suppress.
+        # Unlock ONLY with a new observation-grade evidence token (source SHA+PTS+
+        # frames/obs id). Round counters / candidate_id must NOT bypass suppression.
+        prior_tok = r.get("evidence_token")
         if (
-            new_evidence_token
-            and r.get("evidence_token")
-            and new_evidence_token != r.get("evidence_token")
+            is_observation_grade_evidence_token(new_evidence_token)
+            and is_observation_grade_evidence_token(prior_tok)
+            and new_evidence_token != prior_tok
         ):
             continue
         fc = r.get("failure_class")

@@ -277,6 +277,15 @@ def validate_visual_verifier_payload(
         fixed_dims[name] = dd
     out["dimensions"] = fixed_dims
 
+    # Preserve Phase8 soft_quality even when formal accept is refused.
+    soft = (
+        out.get("soft_quality")
+        or out.get("phase8_quality")
+        or out.get("story_quality_soft")
+    )
+    if soft:
+        out["soft_quality"] = str(soft).strip().upper()
+
     hard = list(out.get("hard_vetoes") or [])
     accept = bool(out.get("accept_candidate")) and not hard
     if str(out.get("quality_delta_vs_baseline") or "").lower() not in ("improved", "better"):
@@ -284,6 +293,7 @@ def validate_visual_verifier_payload(
         if out.get("accept_candidate"):
             reasons.append("refuse_accept_without_validated_improved_delta")
         out["accept_candidate"] = False
+        # Soft PROMISING/UNCERTAIN may remain; formal delta stays NOT_EVALUATED.
 
     if accept and not cited_sent:
         accept = False
@@ -477,6 +487,15 @@ def run_dual_video_vision_verifier(
         "new defects appeared. BETTER aesthetics alone is insufficient.\n"
         "Top-level: hard_vetoes, quality_delta_vs_baseline, accept_candidate "
         "(true only if original issues resolved AND no new defects AND citations).\n"
+        "Also include Phase8 SOFT fields (independent of accept_candidate):\n"
+        "  soft_quality: BETTER|PROMISING|SAME|WORSE|UNCERTAIN\n"
+        "  issue_effect: RESOLVED|PARTIAL|UNRESOLVED|UNOBSERVED\n"
+        "  global_regression: YES|NO|UNKNOWN\n"
+        "  observed_changes: short list of visible differences\n"
+        "  suggested_next_evidence: null OR {question, source_pts|story_window, issue_id}\n"
+        "  evidence_of_improvement / cited frame_ids from FRAME_MANIFEST only.\n"
+        "PROMISING = partial narrative gain without full resolution; do NOT set "
+        "accept_candidate true for PROMISING alone. Formal accept gate unchanged.\n"
         "Cite only FRAME_MANIFEST ids.\n"
         f"FRAME_MANIFEST:\n" + "\n".join(meta_lines) + "\n"
     )

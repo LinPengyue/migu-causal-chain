@@ -1,0 +1,69 @@
+{
+  "schema": "v3a_phase8_loop_v1",
+  "initial_baseline_version_id": "v0",
+  "best_verified_version_id": "v0",
+  "best_verification_tier": "BASELINE_UNVERIFIED",
+  "working_version_id": "v0",
+  "versions": {
+    "v0": {
+      "parent_version_id": null,
+      "edl_path": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/01_initial_story/candidate_edl.json",
+      "mp4_path": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/01_initial_story/story_clean.mp4",
+      "safety": "UNKNOWN",
+      "quality": "BASELINE_UNVERIFIED",
+      "source": "V3R_BASELINE",
+      "semantic_evidence_refs": []
+    },
+    "v1": {
+      "parent_version_id": "v0",
+      "edl_path": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/02_round_01/candidate_edl.json",
+      "mp4_path": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/02_round_01/candidate_render/story_clean.mp4",
+      "safety": "PASS",
+      "quality": "PROMISING",
+      "source": "FIXTURE",
+      "semantic_evidence_refs": [],
+      "round_idx": 1
+    },
+    "v2": {
+      "parent_version_id": "v1",
+      "edl_path": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/02_round_02/candidate_edl.json",
+      "mp4_path": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/02_round_02/candidate_render/story_clean.mp4",
+      "safety": "PASS",
+      "quality": "UNCERTAIN",
+      "source": "FIXTURE",
+      "semantic_evidence_refs": [],
+      "round_idx": 2
+    }
+  },
+  "feedback_memory_path": "phase8_feedback_memory.json",
+  "round_history": [
+    {
+      "next_action": "CONTINUE_WORKING",
+      "reason_codes": [
+        "promising_continue_working_not_release"
+      ],
+      "candidate_version_id": "v1",
+      "working_ref": "v1",
+      "best_ref": "v0",
+      "quality": "PROMISING",
+      "safety": "PASS"
+    },
+    {
+      "next_action": "STOP_NO_ACTION",
+      "reason_codes": [
+        "uncertain_no_new_evidence"
+      ],
+      "candidate_version_id": "v2",
+      "working_ref": "v0",
+      "best_ref": "v0",
+      "quality": "UNCERTAIN",
+      "safety": "PASS"
+    }
+  ],
+  "stop_reason": "STOP_NO_ACTION",
+  "delivery_version_id": "v0",
+  "uncertain_reobserve_count": 0,
+  "promising_depth": 0,
+  "max_uncertain_reobserve": 1,
+  "max_promising_depth": 2
+}

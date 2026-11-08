@@ -1,0 +1,105 @@
+{
+  "schema": "v3a_revision_case_bundle_v1",
+  "match_tag": null,
+  "n_cases": 1,
+  "cases": [
+    {
+      "schema": "v3a_revision_case_v1",
+      "match_tag": null,
+      "issue_id": "large_source_jump_seg_setup_to_seg_turn",
+      "revision_intent_id": "search_add_0_cand_ev_cand_A_896",
+      "original_story_problem": {
+        "observation": "Adjacent cuts jump 2595.0s in source PTS (205.0 → 2800.0) while contiguous on story timeline.",
+        "missing_information": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+        "causal_explanation": "Possible abrupt narrative transition; continuity and emotional bridging need video verification.",
+        "story_role": "transition_break",
+        "diagnosis_status": "CONFIRMED_STORY_DEFECT",
+        "story_defect_confirmed": true,
+        "confidence": 0.35,
+        "evidence_sufficiency": "observed"
+      },
+      "video_observation_evidence": "Adjacent cuts jump 2595.0s in source PTS (205.0 → 2800.0) while contiguous on story timeline.",
+      "defect_cause_hypothesis": "Missing intermediate narrative information between adjacent cuts",
+      "target_action": "search_add",
+      "candidate_footage": {
+        "source_pts": {
+          "start": 896.0,
+          "end": 908.0
+        },
+        "event_ids": [
+          "ev_cand_A"
+        ],
+        "why_solves_problem": "Candidate cand_ev_cand_A_896 is LIVE-verified source footage in the gap cited by issue large_source_jump_seg_setup_to_seg_turn; usable only if diagnosis is a confirmed story defect (not a structure gap alone)",
+        "apply": {
+          "intent": "search_add_0_cand_ev_cand_A_896",
+          "action": "search_add",
+          "status": "applied_evidence_bound",
+          "segment_id": "seg_buildup_bridge_action_cand_ev_cand_A_896",
+          "media_in": 896.0,
+          "media_out": 908.0,
+          "evidence_status": "SEARCH_EVENT_CHAIN_LIVE_VERIFIED",
+          "first_live_status": "NOT_VERIFIED",
+          "authorization": {
+            "allow": true,
+            "denies": [],
+            "evidence_status": "SEARCH_EVENT_CHAIN_LIVE_VERIFIED",
+            "method": "bound_source_window"
+          },
+          "observation_ref": "search:cand_ev_cand_A_896",
+          "insert_after_segment_id": "seg_setup"
+        }
+      },
+      "before_after_video_windows": null,
+      "expected_improvement": "Adjacent story beats should show a clearer causal/emotional transition attributable to the inserted LIVE window; falsify if insert is redundant, replay-like, or breaks chronology",
+      "falsification_evidence": "Insert adds duration without new story info; breaks PTS order; introduces replay/scoreboard-as-action; or original issue remains",
+      "actual_observation": null,
+      "verifier_judgment": {
+        "quality_judgment": null,
+        "original_issue_resolved": null,
+        "introduced_new_defect": null,
+        "evidence_refs": null,
+        "confidence": null,
+        "note": "Verifier must check whether the original diagnosed problem was solved, not only which cut looks nicer. BETTER ≠ ACCEPT ≠ IMPROVED."
+      },
+      "pts_safety": {
+        "schema": "v3a_edl_source_pts_monotonic_v1",
+        "ok": true,
+        "n_media_rows": 5,
+        "breaks": [],
+        "gate": "safety",
+        "note": "Monotonic source PTS is a safety constraint, not a quality score."
+      },
+      "final_decision": "REJECT",
+      "failure_reasons": [
+        "verifier_or_pipeline_rejected"
+      ],
+      "formal_final_is_baseline": true,
+      "bindings": {
+        "issue_id": "large_source_jump_seg_setup_to_seg_turn",
+        "evidence": [
+          {
+            "kind": "diagnosis",
+            "ref": "large_source_jump_seg_setup_to_seg_turn"
+          },
+          {
+            "kind": "search_candidate",
+            "ref": "cand_ev_cand_A_896"
+          },
+          {
+            "kind": "source_pts",
+            "ref": "896.0:908.0",
+            "event_id": "ev_cand_A"
+          },
+          {
+            "kind": "live_credibility",
+            "ref": "LIVE",
+            "confidence": 0.99
+          }
+        ],
+        "edit": "search_add",
+        "expected_effect": "Adjacent story beats should show a clearer causal/emotional transition attributable to the inserted LIVE window; falsify if insert is redundant, replay-like, or breaks chronology"
+      },
+      "duration_pad_forbidden_as_quality_proxy": true
+    }
+  ]
+}

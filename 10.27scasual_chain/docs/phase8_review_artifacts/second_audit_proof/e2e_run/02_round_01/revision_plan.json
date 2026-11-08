@@ -1,0 +1,134 @@
+{
+  "schema": "v3a_story_revision_plan_v1",
+  "decision": "REVISE",
+  "rationale": "confirmed_defect_plus_verified_search_candidates_bound_to_source_pts",
+  "offline": true,
+  "semantic_confirmation": false,
+  "search_confirmation": true,
+  "protected_goal_segment_ids": [
+    "seg_open_goal",
+    "seg_turn",
+    "seg_climax"
+  ],
+  "revision_intents": [
+    {
+      "intent_id": "search_add_0_cand_ev_cand_A_896",
+      "action": "search_add",
+      "issue_id": "large_source_jump_seg_setup_to_seg_turn",
+      "role": "buildup_bridge_action",
+      "anchor_id": "search:cand_ev_cand_A_896",
+      "target_segment_id": null,
+      "insert_after_segment_id": "seg_setup",
+      "before_segment_id": "seg_turn",
+      "bound_source_window": {
+        "start": 896.0,
+        "end": 908.0
+      },
+      "new_segment_id": "seg_buildup_bridge_action_cand_ev_cand_A_896",
+      "event_ids": [
+        "ev_cand_A"
+      ],
+      "narrative_purpose": "supplement_buildup_or_transition_bridge",
+      "rationale": "Verified LIVE event ev_cand_A @ 896.0-908.0s for issue large_source_jump_seg_setup_to_seg_turn",
+      "expected_improvement": "If and only if the bound footage supplies the missing narrative information for the diagnosed issue — not merely longer runtime",
+      "expected_observable_improvement": "Adjacent story beats should show a clearer causal/emotional transition attributable to the inserted LIVE window; falsify if insert is redundant, replay-like, or breaks chronology",
+      "why_candidate_solves_problem": "Candidate cand_ev_cand_A_896 is LIVE-verified source footage in the gap cited by issue large_source_jump_seg_setup_to_seg_turn; usable only if diagnosis is a confirmed story defect (not a structure gap alone)",
+      "defect_cause_hypothesis": "Missing intermediate narrative information between adjacent cuts",
+      "falsification_evidence": "Insert adds duration without new story info; breaks PTS order; introduces replay/scoreboard-as-action; or original issue remains",
+      "duration_pad_not_quality_proxy": true,
+      "risk": "search_bound_unverified_first_live",
+      "goal_anchor_impact": "none_insert_non_goal_only",
+      "causality_impact": "search_window_bounded_between_neighbors",
+      "affected_segments": [
+        "seg_setup",
+        "seg_turn"
+      ],
+      "evidence_refs": [
+        {
+          "kind": "diagnosis",
+          "ref": "large_source_jump_seg_setup_to_seg_turn"
+        },
+        {
+          "kind": "search_candidate",
+          "ref": "cand_ev_cand_A_896"
+        },
+        {
+          "kind": "source_pts",
+          "ref": "896.0:908.0",
+          "event_id": "ev_cand_A"
+        },
+        {
+          "kind": "live_credibility",
+          "ref": "LIVE",
+          "confidence": 0.99
+        }
+      ],
+      "original_problem": "Adjacent cuts jump 2595.0s in source PTS (205.0 → 2800.0) while contiguous on story timeline.",
+      "why_hurts_story": "Possible abrupt narrative transition; continuity and emotional bridging need video verification.",
+      "missing_information": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+      "diagnosis_status": "CONFIRMED_STORY_DEFECT",
+      "story_defect_confirmed": true,
+      "answers": {
+        "what_is_wrong": "Adjacent cuts jump 2595.0s in source PTS (205.0 → 2800.0) while contiguous on story timeline.",
+        "why_it_hurts_understanding": "Possible abrupt narrative transition; continuity and emotional bridging need video verification.",
+        "what_to_add_drop_or_adjust": "search_add",
+        "why_candidate_helps": "Candidate cand_ev_cand_A_896 is LIVE-verified source footage in the gap cited by issue large_source_jump_seg_setup_to_seg_turn; usable only if diagnosis is a confirmed story defect (not a structure gap alone)",
+        "expected_observable_improvement": "Adjacent story beats should show a clearer causal/emotional transition attributable to the inserted LIVE window; falsify if insert is redundant, replay-like, or breaks chronology",
+        "falsification_evidence": "Insert adds duration without new story info; breaks PTS order; introduces replay/scoreboard-as-action; or original issue remains"
+      }
+    }
+  ],
+  "feedback_context": {
+    "schema": "v3a_phase8_feedback_summary_v1",
+    "n_records": 0,
+    "tried_revisions": [],
+    "confirmed_negatives": [],
+    "uncertain_or_unverified": [],
+    "technical_failures": [],
+    "positives": [],
+    "current_issue_signatures": [],
+    "forbid_identical_retry_without_new_evidence": true,
+    "never_permanently_ban_pts": true,
+    "opaque_reject_is_not_confirmed_negative": true
+  },
+  "budget": {
+    "max_rounds": 2,
+    "round_idx": 1,
+    "max_calls": 5,
+    "max_cost_usd": 0.1,
+    "http_calls_so_far": 0,
+    "est_cost_usd_so_far": 0.0
+  },
+  "phase6_rules": {
+    "no_auto_add_on_large_source_gap_alone": true,
+    "duration_pad_not_quality_proxy": true,
+    "require_confirmed_defect_for_search_add": true,
+    "hypothesis_status": "HYPOTHESIS_NEEDS_VIDEO"
+  },
+  "phase8_rules": {
+    "use_prior_round_feedback": true,
+    "block_identical_pts_action_without_new_evidence": true,
+    "never_permanently_ban_pts": true,
+    "unverified_reject_is_not_confirmed_negative": true,
+    "stop_if_no_narrative_live_after_filter": true
+  },
+  "narrative_purposes_supported": [
+    "supplement_buildup",
+    "adjust_non_goal_segments",
+    "repair_transitions",
+    "drop_redundant_or_meaningless",
+    "improve_ending_closure",
+    "preserve_true_match_time_and_causality",
+    "protect_confirmed_goal_anchors"
+  ],
+  "constraints": {
+    "no_replay_or_slowmo": true,
+    "no_scoreboard_time_as_goal_action": true,
+    "new_footage_must_trace_to_source_pts": true,
+    "max_rounds": 3
+  },
+  "search_feedback_filter": {
+    "filtered_count": 0,
+    "kept_count": 2
+  }
+}

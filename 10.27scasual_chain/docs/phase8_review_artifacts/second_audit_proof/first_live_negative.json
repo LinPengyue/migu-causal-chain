@@ -1,0 +1,53 @@
+{
+  "ledger": {
+    "schema": "v3a_first_live_window_ledger_v1",
+    "source_sha": "demo_sha",
+    "windows": [
+      {
+        "key": "demo_sha|900.000:908.000",
+        "source_sha": "demo_sha",
+        "source_pts_start": 900.0,
+        "source_pts_end": 908.0,
+        "status": "NOT_VERIFIED",
+        "method": "event_chain_not_first_live_proof",
+        "segment_id": null,
+        "claimed_status": "NOT_VERIFIED"
+      }
+    ],
+    "n_windows": 1,
+    "all_windows_verified": false,
+    "any_window_unverified": true,
+    "aggregate_status": "NOT_VERIFIED",
+    "note": "Event-chain LIVE \u2260 first-broadcast LIVE. Each new PTS window needs independent prior ledger match or targeted visual verification."
+  },
+  "hard_safety": {
+    "safety": "UNKNOWN",
+    "reasons": [
+      "first_live_per_window_proof_incomplete"
+    ],
+    "accept_candidate_ignored": true,
+    "first_live_status": "NOT_VERIFIED",
+    "first_live_ledger": {
+      "schema": "v3a_first_live_window_ledger_v1",
+      "source_sha": "demo_sha",
+      "windows": [
+        {
+          "key": "demo_sha|900.000:908.000",
+          "source_sha": "demo_sha",
+          "source_pts_start": 900.0,
+          "source_pts_end": 908.0,
+          "status": "NOT_VERIFIED",
+          "method": "event_chain_not_first_live_proof",
+          "segment_id": null,
+          "claimed_status": "NOT_VERIFIED"
+        }
+      ],
+      "n_windows": 1,
+      "all_windows_verified": false,
+      "any_window_unverified": true,
+      "aggregate_status": "NOT_VERIFIED",
+      "note": "Event-chain LIVE \u2260 first-broadcast LIVE. Each new PTS window needs independent prior ledger match or targeted visual verification."
+    },
+    "note": "Event-chain probable LIVE is not first-broadcast LIVE. VLM soft claims cannot self-authorize hard safety."
+  }
+}

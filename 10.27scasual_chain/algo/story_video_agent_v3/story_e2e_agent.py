@@ -51,14 +51,17 @@ from .story_loop_policy import (
     init_loop_state,
     write_loop_state,
 )
-from .final_goal_evidence import build_delivery_and_candidate_evidence
+from .final_goal_evidence import build_delivery_and_candidate_evidence, sha256_file
 from .story_timeline import build_story_timeline
+from .story_revision_feedback import make_observation_evidence_token
 from .story_video_verifier import (
+    build_first_live_window_ledger,
     compute_release_authorization,
     empty_status_gates,
     timeline_mp4_aligned,
     verify_story_revision,
 )
+import hashlib
 
 SCHEMA = "v3a_story_e2e_run_v1"
 UNIFIED_CHAIN_ID = "v3a_unified_story_self_revise_main_v1"
@@ -92,7 +95,9 @@ class StoryE2EInputs:
     fixture_verifier: Optional[Mapping[str, Any]] = None
     # Optional per-round fixture overlays for offline Phase8 multi-round control-flow tests.
     # Each item may include revision_intents/decision and/or verifier fields (phase8_*).
+    # confirm_issue_ids: mark structural issues CONFIRMED without scripting intents/candidates.
     phase8_round_fixtures: Optional[Sequence[Mapping[str, Any]]] = None
+    confirm_issue_ids: Optional[Sequence[str]] = None
     max_rounds: int = MAX_ROUNDS
     max_calls: int = 5
     max_cost_usd: float = 0.10
@@ -542,8 +547,22 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         }
     }
     pending_reobserve: Optional[Dict[str, Any]] = None
+    source_sha = sha256_file(inp.source_mp4) if inp.source_mp4.is_file() else None
+    first_live_prior_ledger: Dict[str, Any] = {
+        "schema": "v3a_first_live_window_ledger_v1",
+        "source_sha": source_sha or "MISSING_SOURCE_SHA",
+        "windows": [],
+    }
+    version_snapshots["v0"]["source_sha256"] = source_sha
+    version_snapshots["v0"]["edl_sha256"] = hashlib.sha256(
+        json.dumps(best_edl, sort_keys=True, ensure_ascii=False).encode("utf-8")
+    ).hexdigest()
+    version_snapshots["v0"]["mp4_sha256"] = (
+        sha256_file(best_mp4) if best_mp4.is_file() else None
+    )
     audit["phase8_loop_state"] = loop_state
     audit["phase8_feedback_memory"] = feedback_store.to_dict()
+    audit["source_sha256"] = source_sha
     if audit.get("delivery_status_forced") == "BLOCKED":
         gates["workflow_completed"] = True
         gates["final_mp4_exists"] = False
@@ -727,6 +746,35 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 paid_api = None
 
         diag = merge_observation_into_diagnosis(diag, obs)
+        # Offline confirm AFTER semantic merge so HYPOTHESIS layer cannot wipe it.
+        # Does NOT inject revision intents or candidate PTS — search/planner choose.
+        confirm_ids = set(str(x) for x in (inp.confirm_issue_ids or []) if x)
+        if inp.phase8_round_fixtures and round_idx - 1 < len(inp.phase8_round_fixtures):
+            _fx0 = inp.phase8_round_fixtures[round_idx - 1] or {}
+            for x in _fx0.get("confirm_issue_ids") or []:
+                if x:
+                    confirm_ids.add(str(x))
+        if confirm_ids:
+            for iss in diag.get("issues") or []:
+                if not isinstance(iss, dict):
+                    continue
+                iid = str(iss.get("issue_id") or "")
+                matched = iid in confirm_ids or any(
+                    iid.startswith(str(p).rstrip("*"))
+                    for p in confirm_ids
+                    if str(p).endswith("*") or str(p).endswith("_")
+                )
+                if matched:
+                    iss["story_defect_confirmed"] = True
+                    iss["diagnosis_status"] = "CONFIRMED_STORY_DEFECT"
+                    iss["evidence_sufficiency"] = (
+                        "observed"
+                        if iss.get("evidence_sufficiency") == "needs_video_verify"
+                        else (iss.get("evidence_sufficiency") or "observed")
+                    )
+                    iss["confirmation_basis"] = list(iss.get("confirmation_basis") or []) + [
+                        "phase8_offline_confirm_issue_ids"
+                    ]
         write_diagnosis(round_dir / "story_diagnosis.json", diag)
         gates["story_diagnosis_valid"] = bool(diag.get("story_diagnosis_valid"))
         round_rec["diagnosis_issue_count"] = len(diag.get("issues") or [])
@@ -1167,25 +1215,47 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 **quality_overlay,
                 "compared_parent_version_id": parent_version_id,
             }
-            # Strip any content-claimed provenance; path wins.
+            # Strip any content-claimed provenance / first-LIVE; path + ledger win.
             quality_overlay.pop("source_kind", None)
-        # First-LIVE / PTS extras for independent hard safety.
+            quality_overlay.pop("first_live_status", None)
+        # Per-window first-LIVE ledger (P0-A). Event-chain LIVE ≠ first-LIVE proof.
+        # VLM/quality_overlay first_live_status must NOT authorize hard safety.
+        new_windows: List[Dict[str, Any]] = []
+        for a in apply_report.get("applied") or []:
+            if not isinstance(a, dict):
+                continue
+            seg = a.get("segment") if isinstance(a.get("segment"), dict) else a
+            mi, mo = seg.get("media_in"), seg.get("media_out")
+            if mi is None or mo is None:
+                bsw = a.get("bound_source_window") if isinstance(a.get("bound_source_window"), dict) else {}
+                mi, mo = bsw.get("start"), bsw.get("end")
+            if mi is None or mo is None:
+                continue
+            new_windows.append(
+                {
+                    "source_pts_start": mi,
+                    "source_pts_end": mo,
+                    "segment_id": seg.get("segment_id") or a.get("new_segment_id"),
+                    "evidence_status": seg.get("evidence_status") or a.get("evidence_status"),
+                    "first_live_status": seg.get("first_live_status") or "NOT_VERIFIED",
+                    "targeted_visual_verified": bool(a.get("targeted_visual_verified")),
+                }
+            )
+        first_live_ledger = build_first_live_window_ledger(
+            source_sha=source_sha,
+            new_windows=new_windows,
+            prior_ledger=first_live_prior_ledger,
+        )
+        write_json(round_dir / "first_live_window_ledger.json", first_live_ledger)
         hard_safety_extra = {
             "pts_ok": bool(pts_gate.get("ok")),
-            "first_live_status": (quality_overlay or {}).get("first_live_status")
-            or (
-                "FIRST_LIVE_VERIFIED"
-                if any(
-                    a.get("evidence_status") == "SEARCH_EVENT_CHAIN_LIVE_VERIFIED"
-                    for a in (apply_report.get("applied") or [])
-                    if isinstance(a, dict)
-                )
-                else "UNKNOWN"
-            ),
-            "has_new_footage": bool(edl_changed),
+            "has_new_footage": bool(edl_changed) and bool(new_windows),
             "intentional_replay": any(
                 a.get("is_replay") for a in (apply_report.get("applied") or []) if isinstance(a, dict)
             ),
+            "first_live_ledger": first_live_ledger,
+            # Do NOT copy VLM first_live_status here.
+            "source_provenance_ok": bool(source_sha),
             "force_hard_safety": (quality_overlay or {}).get("phase8_safety")
             if verdict_provenance == "FIXTURE"
             else None,
@@ -1339,14 +1409,42 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         else:
             phase8_verdict["verdict_provenance"] = verdict_provenance
             phase8_verdict["source_kind"] = verdict_provenance
-        # Compared against best: only when parent is current best (or explicit flag).
-        compared_against_best = parent_version_id == str(
-            loop_state.get("best_verified_version_id") or "v0"
-        )
+        # Compared against best requires parent==best OR an explicit vs-best observation.
+        # Parent==working≠best alone is NOT a full-story best comparison (P1-F).
+        best_id_now = str(loop_state.get("best_verified_version_id") or "v0")
+        compared_against_best = parent_version_id == best_id_now
+        vs_best_done = False
         if round_fx and round_fx.get("compared_against_best") is not None:
-            compared_against_best = bool(round_fx.get("compared_against_best"))
+            # Fixture may only force this under FIXTURE provenance.
+            if verdict_provenance == "FIXTURE":
+                compared_against_best = bool(round_fx.get("compared_against_best"))
+                vs_best_done = compared_against_best
+        if parent_version_id != best_id_now and not vs_best_done:
+            compared_against_best = False
+            phase8_verdict["best_comparison_status"] = "PENDING_OR_SKIPPED"
+            phase8_verdict["review_pending_vs_best"] = True
+        else:
+            phase8_verdict["best_comparison_status"] = (
+                "COMPARED_PARENT_IS_BEST" if compared_against_best else "NOT_COMPARED"
+            )
         phase8_verdict["compared_against_best"] = compared_against_best
 
+        # Observation-grade evidence token (source SHA + PTS + frames) — never round/cand id.
+        primary_pts = None
+        for a in apply_report.get("applied") or []:
+            if not isinstance(a, dict):
+                continue
+            seg = a.get("segment") if isinstance(a.get("segment"), dict) else a
+            if seg.get("media_in") is not None and seg.get("media_out") is not None:
+                primary_pts = [seg.get("media_in"), seg.get("media_out")]
+                break
+        obs_token = make_observation_evidence_token(
+            source_sha=source_sha,
+            pts_start=(primary_pts or [None, None])[0],
+            pts_end=(primary_pts or [None, None])[1],
+            observation_id=f"{cand_version_id}:r{round_idx}",
+            frame_hashes=list(sent_frame_ids or [])[:4] or None,
+        )
         fb_entries = normalize_feedback(
             case_bundle,
             vfix,
@@ -1355,7 +1453,9 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 "parent_version_id": parent_version_id,
                 "candidate_version_id": cand_version_id,
                 "match_id": inp.match_id,
-                "evidence_token": f"{cand_version_id}:{round_idx}",
+                "source_sha": source_sha,
+                "evidence_token": obs_token,
+                "frame_hashes": list(sent_frame_ids or [])[:4],
             },
             round_idx=round_idx,
             source_kind=str(phase8_verdict.get("verdict_provenance") or "OFFLINE_RULE"),
@@ -1365,7 +1465,8 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 e["quality"] = phase8_verdict["quality"]
             if phase8_verdict.get("failure_class"):
                 e["failure_class"] = phase8_verdict["failure_class"]
-            e.setdefault("evidence_token", f"{cand_version_id}:{round_idx}")
+            if obs_token:
+                e["evidence_token"] = obs_token
         feedback_store.extend(fb_entries)
         feedback_store.write_json(out / "phase8_feedback_memory.json")
         feedback_store.write_json(round_dir / "phase8_feedback_memory_snapshot.json")
@@ -1432,12 +1533,25 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         version_edl[cand_version_id] = [dict(r) for r in candidate_edl]
         if candidate_mp4:
             version_mp4[cand_version_id] = Path(candidate_mp4)
+        edl_digest = hashlib.sha256(
+            json.dumps(candidate_edl, sort_keys=True, ensure_ascii=False).encode("utf-8")
+        ).hexdigest()
+        mp4_digest = (
+            sha256_file(Path(candidate_mp4))
+            if candidate_mp4 and Path(candidate_mp4).is_file()
+            else None
+        )
         version_snapshots[cand_version_id] = {
             "version_id": cand_version_id,
             "parent_version_id": parent_version_id,
             "round_idx": round_idx,
             "edl_path": str(round_dir / "candidate_edl.json"),
             "mp4_path": str(candidate_mp4) if candidate_mp4 else None,
+            "source_sha256": source_sha,
+            "edl_sha256": edl_digest,
+            "mp4_sha256": mp4_digest,
+            "first_live_ledger": first_live_ledger,
+            "evidence_token": obs_token,
             "safety": phase8_verdict.get("safety"),
             "quality": phase8_verdict.get("quality"),
             "evidence": phase8_verdict.get("evidence"),
@@ -1456,8 +1570,10 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             },
             "phase8_verdict": phase8_verdict,
             "compared_against_best": compared_against_best,
+            "best_comparison_status": phase8_verdict.get("best_comparison_status"),
             "pts_ok": bool(pts_gate.get("ok")),
         }
+
         write_json(round_dir / "version_snapshot.json", version_snapshots[cand_version_id])
 
         # Update working / best pointers from transition (never from accept alone).
@@ -1484,18 +1600,81 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 **dict(specific_reobserve),
                 "pending_candidate_version_id": cand_version_id,
                 "round_idx": round_idx,
+                "parent_version_id": parent_version_id,
+                "candidate_mp4": str(candidate_mp4) if candidate_mp4 else None,
+                "source_sha256": source_sha,
+                "bound_once": True,
             }
             write_json(round_dir / "reobserve_target.json", pending_reobserve)
-            # Directed observation artifact for the SAME pending candidate (P1-6).
+            # P1-E: extract target-specific frame manifest (not JSON-only "reobserve").
             reobs_dir = round_dir / "directed_reobserve"
             reobs_dir.mkdir(parents=True, exist_ok=True)
+            pts = specific_reobserve.get("source_pts") or specific_reobserve.get("story_window")
+            frame_manifest = {
+                "schema": "v3a_directed_reobserve_manifest_v1",
+                "source_sha256": source_sha,
+                "candidate_version_id": cand_version_id,
+                "question": specific_reobserve.get("question"),
+                "source_pts": pts,
+                "frames": [],
+                "new_evidence_extracted": False,
+                "status": "NEEDS_VLM_BUDGET",
+            }
+            # Offline / zero-HTTP: record ordered PTS samples + hashes of existing
+            # candidate bytes when available; do not claim visual verification.
+            if candidate_mp4 and Path(candidate_mp4).is_file() and pts and len(pts) >= 2:
+                try:
+                    t0, t1 = float(pts[0]), float(pts[1])
+                    samples = [
+                        round(t0 + (t1 - t0) * x, 3) for x in (0.15, 0.5, 0.85)
+                    ]
+                    frame_manifest["frames"] = [
+                        {
+                            "frame_id": f"reobs_{cand_version_id}_{i}",
+                            "source_pts_sec": s,
+                            "role": "directed_reobserve_sample",
+                        }
+                        for i, s in enumerate(samples)
+                    ]
+                    frame_manifest["candidate_mp4_sha256"] = sha256_file(Path(candidate_mp4))
+                    frame_manifest["new_evidence_extracted"] = bool(frame_manifest["frames"])
+                    frame_manifest["status"] = (
+                        "FRAME_MANIFEST_READY_AWAITING_VLM"
+                        if paid_api is not None
+                        else "NEEDS_VLM_BUDGET"
+                    )
+                except (TypeError, ValueError):
+                    frame_manifest["status"] = "STOP_UNVERIFIED"
+            else:
+                frame_manifest["status"] = "STOP_UNVERIFIED"
+                frame_manifest["reason"] = "missing_candidate_mp4_or_pts_target"
+            write_json(reobs_dir / "target.json", pending_reobserve)
+            write_json(reobs_dir / "frame_manifest.json", frame_manifest)
             write_json(
-                reobs_dir / "target.json",
+                reobs_dir / "status.json",
                 {
-                    **pending_reobserve,
-                    "note": "Directed reobserve of pending candidate; not a generic re-run.",
+                    "reobserve_is_not_json_only": True,
+                    "new_evidence_extracted": frame_manifest["new_evidence_extracted"],
+                    "status": frame_manifest["status"],
+                    "note": (
+                        "Directed reobserve bound to one pending candidate. "
+                        "Without new verified observation, do not unlock identical PTS retry."
+                    ),
                 },
             )
+            round_rec["directed_reobserve"] = frame_manifest
+            if frame_manifest["status"] == "STOP_UNVERIFIED":
+                transition = {
+                    **transition,
+                    "next_action": "STOP_NO_ACTION",
+                    "stop_reason": "STOP_UNVERIFIED",
+                    "continue_allowed": False,
+                    "reason_codes": list(transition.get("reason_codes") or [])
+                    + ["reobserve_without_new_evidence"],
+                }
+                write_json(round_dir / "phase8_transition.json", transition)
+                loop_state["stop_reason"] = "STOP_UNVERIFIED"
+                pending_reobserve = None
         elif next_action in ("REPLAN_FROM_BEST", "STOP_SAFETY", "STOP_NO_ACTION", "STOP_BUDGET"):
             bid = str(loop_state.get("best_verified_version_id") or "v0")
             working_edl = [dict(r) for r in (version_edl.get(bid) or best_edl)]
@@ -1716,6 +1895,38 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
     if prov in ("FIXTURE", "OFFLINE_FIXTURE", "PHASE7_HISTORICAL_ARTIFACT", "OFFLINE_RULE"):
         release["release_authorized"] = False
         release.setdefault("reasons", []).append("fixture_or_offline_source_not_releasable")
+    # P1-F: verify immutable digests still match delivery bytes at release time.
+    digest_check = {
+        "source_sha256_expected": delivery_snap.get("source_sha256"),
+        "edl_sha256_expected": delivery_snap.get("edl_sha256"),
+        "mp4_sha256_expected": delivery_snap.get("mp4_sha256"),
+        "edl_sha256_now": None,
+        "mp4_sha256_now": None,
+        "ok": True,
+        "reasons": [],
+    }
+    try:
+        digest_check["edl_sha256_now"] = hashlib.sha256(
+            json.dumps(best_edl, sort_keys=True, ensure_ascii=False).encode("utf-8")
+        ).hexdigest()
+        if delivery_snap.get("edl_sha256") and digest_check["edl_sha256_now"] != delivery_snap.get("edl_sha256"):
+            digest_check["ok"] = False
+            digest_check["reasons"].append("edl_digest_mismatch_at_release")
+    except Exception as exc:  # noqa: BLE001
+        digest_check["ok"] = False
+        digest_check["reasons"].append(f"edl_digest_error:{type(exc).__name__}")
+    if best_mp4.is_file():
+        digest_check["mp4_sha256_now"] = sha256_file(best_mp4)
+        if delivery_snap.get("mp4_sha256") and digest_check["mp4_sha256_now"] != delivery_snap.get("mp4_sha256"):
+            digest_check["ok"] = False
+            digest_check["reasons"].append("mp4_digest_mismatch_at_release")
+    release["delivery_digest_check"] = digest_check
+    if not digest_check["ok"]:
+        release["release_authorized"] = False
+        release.setdefault("reasons", []).extend(digest_check["reasons"])
+    if delivery_snap.get("best_comparison_status") == "PENDING_OR_SKIPPED":
+        release.setdefault("reasons", []).append("working_variant_not_compared_against_best")
+        release["review_pending_vs_best"] = True
     gates["release_authorized"] = bool(release.get("release_authorized"))
     write_json(final_dir / "release_gate.json", release)
     write_json(out / "phase8_version_snapshots.json", version_snapshots)

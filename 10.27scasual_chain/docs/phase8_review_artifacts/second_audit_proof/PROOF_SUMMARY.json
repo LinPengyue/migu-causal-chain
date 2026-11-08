@@ -1,0 +1,48 @@
+{
+  "autonomous_ab": {
+    "control_top_event": "ev_cand_A",
+    "control_window": {
+      "start": 896.0,
+      "end": 908.0
+    },
+    "feedback_filtered": [
+      "ev_cand_A"
+    ],
+    "feedback_kept_top": "ev_cand_B",
+    "feedback_window": {
+      "start": 1496.0,
+      "end": 1510.0
+    },
+    "mocked": [],
+    "real_modules": [
+      "run_story_evidence_search",
+      "plan_from_diagnosis"
+    ]
+  },
+  "e2e": {
+    "rounds": [
+      "02_round_01",
+      "02_round_02"
+    ],
+    "r1_search_top": "ev_cand_A",
+    "r1_decision": "REVISE",
+    "r1_plan_window": {
+      "start": 896.0,
+      "end": 908.0
+    },
+    "r1_rationale": "confirmed_defect_plus_verified_search_candidates_bound_to_source_pts",
+    "first_live_r1": "NOT_VERIFIED",
+    "r2_filtered": [],
+    "r2_kept": [
+      "ev_cand_B"
+    ],
+    "r2_feedback_filter_applied": true,
+    "r2_decision": "REVISE",
+    "r2_plan_window": {
+      "start": 1496.0,
+      "end": 1510.0
+    },
+    "release_authorized": false
+  },
+  "first_live_negative_safety": "UNKNOWN"
+}

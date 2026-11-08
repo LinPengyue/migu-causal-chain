@@ -413,12 +413,16 @@ def _apply_feedback_to_candidates(
                 if x
             ],
         }
+        # Never pass candidate_id as evidence_token — it would falsely unlock retries.
+        tok = c.get("evidence_token")
+        from .story_revision_feedback import is_observation_grade_evidence_token
+
         decision = should_penalize_candidate(
             records,
             issue_signature=sig,
             action="search_add",
             source_pts=[c.get("source_pts_start"), c.get("source_pts_end")],
-            new_evidence_token=c.get("evidence_token") or c.get("candidate_id"),
+            new_evidence_token=tok if is_observation_grade_evidence_token(tok) else None,
         )
         if decision.get("suppress"):
             filtered.append({**c, "feedback_skip": decision})

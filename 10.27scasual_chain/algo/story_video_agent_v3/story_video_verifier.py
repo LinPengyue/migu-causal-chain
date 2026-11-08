@@ -350,6 +350,108 @@ def verify_story_revision(
     }
 
 
+def _window_key(source_sha: str, start: float, end: float) -> str:
+    return f"{source_sha}|{float(start):.3f}:{float(end):.3f}"
+
+
+def build_first_live_window_ledger(
+    *,
+    source_sha: Optional[str],
+    new_windows: Sequence[Mapping[str, Any]],
+    prior_ledger: Optional[Mapping[str, Any]] = None,
+) -> Dict[str, Any]:
+    """Per-source-window first-LIVE ledger (digest + precise PTS).
+
+    Event-chain LIVE / SEARCH_EVENT_CHAIN_LIVE_VERIFIED / VLM narrative claims do
+    NOT write FIRST_LIVE_VERIFIED. Only prior matching verified records or an
+    explicit targeted visual verification record may certify a window.
+    """
+    sha = str(source_sha or "").strip() or "MISSING_SOURCE_SHA"
+    prior_windows = {}
+    if isinstance(prior_ledger, Mapping):
+        for w in prior_ledger.get("windows") or []:
+            if not isinstance(w, Mapping):
+                continue
+            key = str(w.get("key") or "")
+            if key:
+                prior_windows[key] = dict(w)
+    rows: List[Dict[str, Any]] = []
+    for raw in new_windows or []:
+        if not isinstance(raw, Mapping):
+            continue
+        try:
+            start = float(raw.get("source_pts_start", raw.get("media_in")))
+            end = float(raw.get("source_pts_end", raw.get("media_out")))
+        except (TypeError, ValueError):
+            continue
+        if end <= start:
+            continue
+        key = _window_key(sha, start, end)
+        claimed = str(
+            raw.get("first_live_status")
+            or raw.get("evidence_status")
+            or "NOT_VERIFIED"
+        ).upper()
+        # Never promote event-chain / NOT_VERIFIED / VLM soft claims to verified.
+        event_chain_only = claimed in (
+            "SEARCH_EVENT_CHAIN_LIVE_VERIFIED",
+            "NOT_VERIFIED",
+            "UNKNOWN",
+            "LIKELY_LIVE",
+            "POSSIBLE_FIRST_LIVE",
+            "",
+        )
+        prior = prior_windows.get(key) or {}
+        prior_status = str(prior.get("status") or "").upper()
+        targeted = bool(raw.get("targeted_visual_verified")) or bool(
+            prior.get("targeted_visual_verified")
+        )
+        if prior_status == "FIRST_LIVE_VERIFIED" and prior.get("source_sha") == sha:
+            status = "FIRST_LIVE_VERIFIED"
+            method = "prior_ledger_match"
+        elif targeted and claimed == "FIRST_LIVE_VERIFIED":
+            status = "FIRST_LIVE_VERIFIED"
+            method = "targeted_visual_verification"
+        elif claimed == "FIRST_LIVE_VERIFIED" and not event_chain_only and targeted:
+            status = "FIRST_LIVE_VERIFIED"
+            method = "targeted_visual_verification"
+        else:
+            status = "NOT_VERIFIED"
+            method = "unverified_new_window"
+            if event_chain_only or claimed == "SEARCH_EVENT_CHAIN_LIVE_VERIFIED":
+                method = "event_chain_not_first_live_proof"
+        rows.append(
+            {
+                "key": key,
+                "source_sha": sha,
+                "source_pts_start": start,
+                "source_pts_end": end,
+                "status": status,
+                "method": method,
+                "segment_id": raw.get("segment_id") or raw.get("new_segment_id"),
+                "claimed_status": claimed,
+            }
+        )
+    all_verified = bool(rows) and all(r["status"] == "FIRST_LIVE_VERIFIED" for r in rows)
+    any_unverified = any(r["status"] != "FIRST_LIVE_VERIFIED" for r in rows)
+    aggregate = "FIRST_LIVE_VERIFIED" if all_verified else (
+        "NOT_VERIFIED" if rows else "N_A_NO_NEW_WINDOWS"
+    )
+    return {
+        "schema": "v3a_first_live_window_ledger_v1",
+        "source_sha": sha,
+        "windows": rows,
+        "n_windows": len(rows),
+        "all_windows_verified": all_verified,
+        "any_window_unverified": any_unverified,
+        "aggregate_status": aggregate,
+        "note": (
+            "Event-chain LIVE ≠ first-broadcast LIVE. Each new PTS window needs "
+            "independent prior ledger match or targeted visual verification."
+        ),
+    }
+
+
 def compute_independent_hard_safety(
     *,
     hard_vetoes: Sequence[Mapping[str, Any]],
@@ -361,41 +463,56 @@ def compute_independent_hard_safety(
     """Machine-verifiable hard safety — independent of narrative accept_candidate.
 
     PASS only when EDL/render rules, goal protection, PTS (if supplied), and
-    first-LIVE proof for newly used footage are all explicitly satisfied.
-    Absent first-LIVE proof ⇒ UNKNOWN (not PASS). Confirmed replay/violation ⇒ FAIL.
+    first-LIVE proof for EACH newly used source window are all explicitly satisfied.
+    Absent first-LIVE proof ⇒ UNKNOWN (not PASS). Any nonempty hard_vetoes ⇒ FAIL.
+    VLM / quality_overlay first_live_status must not self-authorize PASS.
     """
     extra = dict(extra or {})
     reasons: List[str] = []
+    ledger = extra.get("first_live_ledger")
+    if not isinstance(ledger, Mapping):
+        ledger = None
+
+    # P0-A: ANY nonempty hard veto fails hard safety (not only replay/goal subsets).
     if hard_vetoes:
-        kinds = [str(v.get("kind") or "") for v in hard_vetoes]
-        if any("replay" in k or "slowmo" in k or "goal_anchor" in k for k in kinds):
-            return {
-                "safety": "FAIL",
-                "reasons": kinds,
-                "accept_candidate_ignored": True,
-                "first_live_status": extra.get("first_live_status") or "UNKNOWN",
-            }
-        reasons.extend(kinds)
+        kinds = []
+        for v in hard_vetoes:
+            if isinstance(v, Mapping):
+                kinds.append(str(v.get("kind") or v.get("code") or v.get("reason") or "veto"))
+            else:
+                kinds.append(str(v))
+        return {
+            "safety": "FAIL",
+            "reasons": kinds or ["hard_veto"],
+            "accept_candidate_ignored": True,
+            "first_live_status": (ledger or {}).get("aggregate_status")
+            or extra.get("first_live_status")
+            or "UNKNOWN",
+            "first_live_ledger": ledger,
+        }
     if not goal_intact:
         return {
             "safety": "FAIL",
             "reasons": ["goal_protection_broken"],
             "accept_candidate_ignored": True,
-            "first_live_status": extra.get("first_live_status") or "UNKNOWN",
+            "first_live_status": "UNKNOWN",
+            "first_live_ledger": ledger,
         }
     if not render_rows_ok:
         return {
             "safety": "FAIL",
             "reasons": ["render_row_validation_failed"],
             "accept_candidate_ignored": True,
-            "first_live_status": extra.get("first_live_status") or "UNKNOWN",
+            "first_live_status": "UNKNOWN",
+            "first_live_ledger": ledger,
         }
     if extra.get("pts_ok") is False:
         return {
             "safety": "FAIL",
             "reasons": ["source_pts_not_monotonic"],
             "accept_candidate_ignored": True,
-            "first_live_status": extra.get("first_live_status") or "UNKNOWN",
+            "first_live_status": "UNKNOWN",
+            "first_live_ledger": ledger,
         }
     if extra.get("intentional_replay"):
         return {
@@ -403,38 +520,84 @@ def compute_independent_hard_safety(
             "reasons": ["intentional_replay_or_slowmo"],
             "accept_candidate_ignored": True,
             "first_live_status": "FAIL",
+            "first_live_ledger": ledger,
         }
-    first_live = str(extra.get("first_live_status") or "UNKNOWN").upper()
-    # Explicit PASS path requires authoritative first-LIVE for new footage (or no new media).
-    new_footage = bool(extra.get("has_new_footage", True))
-    if new_footage and first_live not in ("PASS", "FIRST_LIVE_VERIFIED", "VERIFIED"):
+    if extra.get("source_provenance_ok") is False:
         return {
             "safety": "UNKNOWN",
-            "reasons": reasons + ["first_live_proof_missing_or_unverified"],
+            "reasons": ["source_provenance_missing"],
             "accept_candidate_ignored": True,
-            "first_live_status": first_live,
-            "note": "Absent replay flags are NOT first-LIVE proof.",
+            "first_live_status": "UNKNOWN",
+            "first_live_ledger": ledger,
         }
+
+    new_footage = bool(extra.get("has_new_footage", True))
+    aggregate = "N_A_NO_NEW_FOOTAGE"
+    if new_footage:
+        if ledger is not None:
+            aggregate = str(ledger.get("aggregate_status") or "NOT_VERIFIED").upper()
+            if ledger.get("any_window_unverified") or not ledger.get("all_windows_verified"):
+                # Two windows with one unverified ⇒ UNKNOWN (not PASS).
+                return {
+                    "safety": "UNKNOWN",
+                    "reasons": reasons + ["first_live_per_window_proof_incomplete"],
+                    "accept_candidate_ignored": True,
+                    "first_live_status": aggregate,
+                    "first_live_ledger": ledger,
+                    "note": (
+                        "Event-chain probable LIVE is not first-broadcast LIVE. "
+                        "VLM soft claims cannot self-authorize hard safety."
+                    ),
+                }
+        else:
+            # Legacy single token — never trust VLM overlay alone; treat missing ledger
+            # with new footage as UNKNOWN unless fixture force overlay applies later.
+            aggregate = str(extra.get("first_live_status") or "UNKNOWN").upper()
+            if aggregate in ("SEARCH_EVENT_CHAIN_LIVE_VERIFIED", "LIKELY_LIVE", "POSSIBLE_FIRST_LIVE"):
+                aggregate = "NOT_VERIFIED"
+            if aggregate not in ("PASS", "FIRST_LIVE_VERIFIED", "VERIFIED"):
+                return {
+                    "safety": "UNKNOWN",
+                    "reasons": reasons + ["first_live_proof_missing_or_unverified"],
+                    "accept_candidate_ignored": True,
+                    "first_live_status": aggregate,
+                    "first_live_ledger": ledger,
+                    "note": "Absent replay flags are NOT first-LIVE proof.",
+                }
+
     if candidate_mp4 is not None and not Path(candidate_mp4).is_file():
         return {
             "safety": "UNKNOWN",
             "reasons": reasons + ["candidate_mp4_missing"],
             "accept_candidate_ignored": True,
-            "first_live_status": first_live,
+            "first_live_status": aggregate,
+            "first_live_ledger": ledger,
         }
-    # Test/fixture may assert hard safety PASS via execution-path overlay only.
+    if extra.get("render_bytes_mismatch"):
+        return {
+            "safety": "UNKNOWN",
+            "reasons": reasons + ["render_bytes_or_digest_mismatch"],
+            "accept_candidate_ignored": True,
+            "first_live_status": aggregate,
+            "first_live_ledger": ledger,
+        }
+
+    # Fixture execution-path overlay ONLY (never from VLM content claims).
     if extra.get("force_hard_safety") in ("PASS", "FAIL", "UNKNOWN"):
         return {
             "safety": str(extra["force_hard_safety"]),
             "reasons": reasons + ["force_hard_safety_overlay"],
             "accept_candidate_ignored": True,
-            "first_live_status": first_live,
+            "first_live_status": aggregate,
+            "first_live_ledger": ledger,
+            "fixture_only": True,
         }
     return {
         "safety": "PASS",
         "reasons": reasons,
         "accept_candidate_ignored": True,
-        "first_live_status": first_live if new_footage else "N_A_NO_NEW_FOOTAGE",
+        "first_live_status": aggregate if new_footage else "N_A_NO_NEW_FOOTAGE",
+        "first_live_ledger": ledger,
     }
 
 
@@ -493,7 +656,12 @@ def build_phase8_verdict(
 
     q_raw = (
         fx.get("phase8_quality")
+        or fx.get("soft_quality")
+        or fx.get("story_quality_soft")
         or fx.get("quality_judgment")
+        or validated.get("soft_quality")
+        or validated.get("phase8_quality")
+        or validated.get("story_quality_soft")
         or validated.get("quality_delta_vs_baseline")
     )
     quality = normalize_quality(q_raw)
@@ -546,7 +714,12 @@ def build_phase8_verdict(
         failure_class = "TECHNICAL_FAILURE" if not vision_backed else "UNCERTAIN_OR_UNVERIFIED"
 
     # Specific next-evidence target only — no generic nonempty fallback (P1-6).
-    suggested = fx.get("suggested_next_evidence")
+    suggested = (
+        fx.get("suggested_next_evidence")
+        or validated.get("suggested_next_evidence")
+        or fx.get("reobserve_target")
+        or validated.get("reobserve_target")
+    )
     if isinstance(suggested, str) and suggested.strip():
         suggested_out: Any = suggested.strip()
     elif isinstance(suggested, dict) and suggested.get("question"):

@@ -1,0 +1,1265 @@
+{
+  "schema": "v3a_story_e2e_run_v1",
+  "unified_main_chain": {
+    "id": "v3a_unified_story_self_revise_main_v1",
+    "entry": "run_story_e2e",
+    "does_not_call_run_self_revise": true,
+    "reuses": [
+      "structural_diagnosis",
+      "observe_layers",
+      "apply_semantic_diagnosis_layer",
+      "run_story_evidence_search",
+      "plan_from_diagnosis",
+      "apply_candidate_revision",
+      "check_source_pts_monotonic",
+      "verify_story_revision",
+      "build_revision_cases_for_round",
+      "recover_per_revision_judgments"
+    ],
+    "specialized_lab_entry": "run_self_revise",
+    "phase6": {
+      "semantic_hypothesis_layer": true,
+      "no_auto_add_on_large_source_gap_alone": true,
+      "BETTER_not_auto_IMPROVED": true,
+      "revision_case_closed_loop": true
+    },
+    "phase8": {
+      "failure_aware_iterative_revision": true,
+      "modules": [
+        "story_revision_feedback",
+        "story_loop_policy"
+      ],
+      "accept_candidate_does_not_drive_loop": true,
+      "phase8_paid_multi_round_default": false
+    }
+  },
+  "started_unix": 1794138957.3054938,
+  "out_dir": "docs/phase8_review_artifacts/second_audit_proof/e2e_run",
+  "inputs": {
+    "match_json": "/tmp/p8_proof_e2e_vjcnrwoy/match.json",
+    "source_mp4": "/tmp/p8_proof_e2e_vjcnrwoy/source.mp4",
+    "phase5_dir": "/tmp/p8_proof_e2e_vjcnrwoy/phase5",
+    "skip_vlm": true,
+    "enable_real_api": false,
+    "i_approve_budget": false,
+    "run_fresh_v3r": false,
+    "max_calls": 5,
+    "max_cost_usd": 0.1
+  },
+  "http_calls": 0,
+  "est_cost_usd": 0.0,
+  "rounds": [
+    {
+      "round": 1,
+      "diagnosis_issue_count": 1,
+      "semantic_observation_claimed": false,
+      "search_success": true,
+      "search_verified_count": 2,
+      "decision": "REVISE",
+      "edl_pts_safety_ok": true,
+      "verdict_provenance": "FIXTURE",
+      "accepted": false,
+      "retain_baseline": true,
+      "revision_status": {
+        "schema": "v3a_revision_status_v1",
+        "APPLIED": true,
+        "VERIFIED": false,
+        "IMPROVED": false,
+        "safety_ok": true,
+        "edl_changed": true,
+        "candidate_rendered": true,
+        "candidate_accepted": false,
+        "vision_backed": false,
+        "semantic_passed": false,
+        "quality_delta": "NOT_EVALUATED",
+        "BETTER_not_auto_IMPROVED": true,
+        "note": "APPLIED=EDL mutated under safety; VERIFIED=accepted with vision; IMPROVED=verified+accepted+vision+semantic+safety+quality_delta. One model BETTER never auto-upgrades to IMPROVED. PTS/first-live/goal gates cannot be overridden by BETTER."
+      },
+      "revision_case_count": 1,
+      "phase8_transition": {
+        "schema": "v3a_phase8_transition_v1",
+        "next_action": "CONTINUE_WORKING",
+        "working_ref": "v1",
+        "best_ref": "v0",
+        "reason_codes": [
+          "promising_continue_working_not_release"
+        ],
+        "promote": false,
+        "stop_reason": null,
+        "continue_allowed": true,
+        "current_round_outcome": "CONTINUE_WORKING",
+        "record_confirmed_negative": false,
+        "candidate_version_id": "v1",
+        "parent_version_id": "v0",
+        "safety": "PASS",
+        "quality": "PROMISING",
+        "evidence": "PARTIAL",
+        "accept_candidate_ignored": true,
+        "compared_against_best": true,
+        "note": "candidate_accepted boolean does not drive this policy; formal release remains stricter than exploration. Budget does not discard the just-finished round outcome."
+      },
+      "phase8_verdict": {
+        "schema": "v3a_phase8_verdict_v1",
+        "safety": "PASS",
+        "hard_safety": {
+          "safety": "UNKNOWN",
+          "reasons": [
+            "first_live_per_window_proof_incomplete"
+          ],
+          "accept_candidate_ignored": true,
+          "first_live_status": "NOT_VERIFIED",
+          "first_live_ledger": {
+            "schema": "v3a_first_live_window_ledger_v1",
+            "source_sha": "f8787815fbc1d78042807ef43a64e7a18f7e2262f91ee0fce204ac5246445d4e",
+            "windows": [
+              {
+                "key": "f8787815fbc1d78042807ef43a64e7a18f7e2262f91ee0fce204ac5246445d4e|896.000:908.000",
+                "source_sha": "f8787815fbc1d78042807ef43a64e7a18f7e2262f91ee0fce204ac5246445d4e",
+                "source_pts_start": 896.0,
+                "source_pts_end": 908.0,
+                "status": "NOT_VERIFIED",
+                "method": "event_chain_not_first_live_proof",
+                "segment_id": "seg_buildup_bridge_action_cand_ev_cand_A_896",
+                "claimed_status": "NOT_VERIFIED"
+              }
+            ],
+            "n_windows": 1,
+            "all_windows_verified": false,
+            "any_window_unverified": true,
+            "aggregate_status": "NOT_VERIFIED",
+            "note": "Event-chain LIVE ≠ first-broadcast LIVE. Each new PTS window needs independent prior ledger match or targeted visual verification."
+          },
+          "note": "Event-chain probable LIVE is not first-broadcast LIVE. VLM soft claims cannot self-authorize hard safety."
+        },
+        "quality": "PROMISING",
+        "evidence": "PARTIAL",
+        "issue_effect": "UNOBSERVED",
+        "global_regression": "UNKNOWN",
+        "focus_issue_id": null,
+        "evidence_refs": [],
+        "observed_changes": null,
+        "unresolved_questions": [],
+        "suggested_next_evidence": null,
+        "failure_class": "POSITIVE",
+        "compared_parent_version_id": "v0",
+        "verdict_provenance": "FIXTURE",
+        "source_kind": "FIXTURE",
+        "accept_candidate_raw": false,
+        "accept_not_synthesized_from_promising": true,
+        "safety_independent_of_accept_candidate": true,
+        "note": "Hard safety is independent of narrative accept_candidate. FIXTURE/OFFLINE_RULE never establish real IMPROVED; REAL_VLM requires recorded successful provider call + frame bindings.",
+        "best_comparison_status": "COMPARED_PARENT_IS_BEST",
+        "compared_against_best": true
+      },
+      "parent_version_id": "v0",
+      "candidate_version_id": "v1",
+      "working_version_id": "v1",
+      "best_verified_version_id": "v0",
+      "gates_snapshot": {
+        "workflow_completed": false,
+        "story_diagnosis_valid": true,
+        "revision_applied": true,
+        "candidate_rendered": true,
+        "semantic_verification_passed": false,
+        "release_authorized": false,
+        "final_mp4_exists": false
+      },
+      "edl_changed": true
+    },
+    {
+      "round": 2,
+      "diagnosis_issue_count": 1,
+      "semantic_observation_claimed": false,
+      "search_success": true,
+      "search_verified_count": 1,
+      "decision": "REVISE",
+      "edl_pts_safety_ok": true,
+      "verdict_provenance": "FIXTURE",
+      "accepted": false,
+      "retain_baseline": true,
+      "revision_status": {
+        "schema": "v3a_revision_status_v1",
+        "APPLIED": true,
+        "VERIFIED": false,
+        "IMPROVED": false,
+        "safety_ok": true,
+        "edl_changed": true,
+        "candidate_rendered": true,
+        "candidate_accepted": false,
+        "vision_backed": false,
+        "semantic_passed": false,
+        "quality_delta": "NOT_EVALUATED",
+        "BETTER_not_auto_IMPROVED": true,
+        "note": "APPLIED=EDL mutated under safety; VERIFIED=accepted with vision; IMPROVED=verified+accepted+vision+semantic+safety+quality_delta. One model BETTER never auto-upgrades to IMPROVED. PTS/first-live/goal gates cannot be overridden by BETTER."
+      },
+      "revision_case_count": 1,
+      "phase8_transition": {
+        "schema": "v3a_phase8_transition_v1",
+        "next_action": "STOP_NO_ACTION",
+        "working_ref": "v0",
+        "best_ref": "v0",
+        "reason_codes": [
+          "uncertain_no_new_evidence"
+        ],
+        "promote": false,
+        "stop_reason": "STOP_NO_ACTION",
+        "continue_allowed": false,
+        "current_round_outcome": "STOP_NO_ACTION",
+        "record_confirmed_negative": false,
+        "candidate_version_id": "v2",
+        "parent_version_id": "v1",
+        "safety": "PASS",
+        "quality": "UNCERTAIN",
+        "evidence": "INSUFFICIENT",
+        "accept_candidate_ignored": true,
+        "compared_against_best": false,
+        "note": "candidate_accepted boolean does not drive this policy; formal release remains stricter than exploration. Budget does not discard the just-finished round outcome."
+      },
+      "phase8_verdict": {
+        "schema": "v3a_phase8_verdict_v1",
+        "safety": "PASS",
+        "hard_safety": {
+          "safety": "UNKNOWN",
+          "reasons": [
+            "first_live_per_window_proof_incomplete"
+          ],
+          "accept_candidate_ignored": true,
+          "first_live_status": "NOT_VERIFIED",
+          "first_live_ledger": {
+            "schema": "v3a_first_live_window_ledger_v1",
+            "source_sha": "f8787815fbc1d78042807ef43a64e7a18f7e2262f91ee0fce204ac5246445d4e",
+            "windows": [
+              {
+                "key": "f8787815fbc1d78042807ef43a64e7a18f7e2262f91ee0fce204ac5246445d4e|1496.000:1510.000",
+                "source_sha": "f8787815fbc1d78042807ef43a64e7a18f7e2262f91ee0fce204ac5246445d4e",
+                "source_pts_start": 1496.0,
+                "source_pts_end": 1510.0,
+                "status": "NOT_VERIFIED",
+                "method": "event_chain_not_first_live_proof",
+                "segment_id": "seg_buildup_bridge_action_cand_ev_cand_B_1496",
+                "claimed_status": "NOT_VERIFIED"
+              }
+            ],
+            "n_windows": 1,
+            "all_windows_verified": false,
+            "any_window_unverified": true,
+            "aggregate_status": "NOT_VERIFIED",
+            "note": "Event-chain LIVE ≠ first-broadcast LIVE. Each new PTS window needs independent prior ledger match or targeted visual verification."
+          },
+          "note": "Event-chain probable LIVE is not first-broadcast LIVE. VLM soft claims cannot self-authorize hard safety."
+        },
+        "quality": "UNCERTAIN",
+        "evidence": "INSUFFICIENT",
+        "issue_effect": "UNOBSERVED",
+        "global_regression": "UNKNOWN",
+        "focus_issue_id": null,
+        "evidence_refs": [],
+        "observed_changes": null,
+        "unresolved_questions": [],
+        "suggested_next_evidence": null,
+        "failure_class": "TECHNICAL_FAILURE",
+        "compared_parent_version_id": "v1",
+        "verdict_provenance": "FIXTURE",
+        "source_kind": "FIXTURE",
+        "accept_candidate_raw": false,
+        "accept_not_synthesized_from_promising": true,
+        "safety_independent_of_accept_candidate": true,
+        "note": "Hard safety is independent of narrative accept_candidate. FIXTURE/OFFLINE_RULE never establish real IMPROVED; REAL_VLM requires recorded successful provider call + frame bindings.",
+        "best_comparison_status": "PENDING_OR_SKIPPED",
+        "review_pending_vs_best": true,
+        "compared_against_best": false
+      },
+      "parent_version_id": "v1",
+      "candidate_version_id": "v2",
+      "working_version_id": "v0",
+      "best_verified_version_id": "v0",
+      "gates_snapshot": {
+        "workflow_completed": false,
+        "story_diagnosis_valid": true,
+        "revision_applied": true,
+        "candidate_rendered": true,
+        "semantic_verification_passed": false,
+        "release_authorized": false,
+        "final_mp4_exists": false
+      },
+      "edl_changed": true
+    }
+  ],
+  "status_gates": {
+    "workflow_completed": true,
+    "story_diagnosis_valid": true,
+    "revision_applied": true,
+    "candidate_rendered": true,
+    "semantic_verification_passed": false,
+    "release_authorized": false,
+    "final_mp4_exists": true
+  },
+  "revision_status_totals": {
+    "APPLIED": 2,
+    "VERIFIED": 0,
+    "IMPROVED": 0
+  },
+  "disclaimer": "Offline/dry-run does not claim real multimodal story understanding. release_authorized stays false unless hard gates + semantic pass. APPLIED ≠ VERIFIED ≠ IMPROVED.",
+  "render_smoke": null,
+  "baseline_duplicate_audit": {
+    "finding_count": 0,
+    "auto_drop_segment_ids": [],
+    "human_review_count": 0,
+    "applied": {
+      "changed": false,
+      "dropped": [],
+      "drop_ledger": [],
+      "refused_goal_drops": []
+    }
+  },
+  "phase8_loop_state": {
+    "schema": "v3a_phase8_loop_v1",
+    "initial_baseline_version_id": "v0",
+    "best_verified_version_id": "v0",
+    "best_verification_tier": "BASELINE_UNVERIFIED",
+    "working_version_id": "v0",
+    "versions": {
+      "v0": {
+        "parent_version_id": null,
+        "edl_path": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/01_initial_story/candidate_edl.json",
+        "mp4_path": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/01_initial_story/story_clean.mp4",
+        "safety": "UNKNOWN",
+        "quality": "BASELINE_UNVERIFIED",
+        "source": "V3R_BASELINE",
+        "semantic_evidence_refs": []
+      },
+      "v1": {
+        "parent_version_id": "v0",
+        "edl_path": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/02_round_01/candidate_edl.json",
+        "mp4_path": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/02_round_01/candidate_render/story_clean.mp4",
+        "safety": "PASS",
+        "quality": "PROMISING",
+        "source": "FIXTURE",
+        "semantic_evidence_refs": [],
+        "round_idx": 1
+      },
+      "v2": {
+        "parent_version_id": "v1",
+        "edl_path": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/02_round_02/candidate_edl.json",
+        "mp4_path": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/02_round_02/candidate_render/story_clean.mp4",
+        "safety": "PASS",
+        "quality": "UNCERTAIN",
+        "source": "FIXTURE",
+        "semantic_evidence_refs": [],
+        "round_idx": 2
+      }
+    },
+    "feedback_memory_path": "phase8_feedback_memory.json",
+    "round_history": [
+      {
+        "next_action": "CONTINUE_WORKING",
+        "reason_codes": [
+          "promising_continue_working_not_release"
+        ],
+        "candidate_version_id": "v1",
+        "working_ref": "v1",
+        "best_ref": "v0",
+        "quality": "PROMISING",
+        "safety": "PASS"
+      },
+      {
+        "next_action": "STOP_NO_ACTION",
+        "reason_codes": [
+          "uncertain_no_new_evidence"
+        ],
+        "candidate_version_id": "v2",
+        "working_ref": "v0",
+        "best_ref": "v0",
+        "quality": "UNCERTAIN",
+        "safety": "PASS"
+      }
+    ],
+    "stop_reason": "STOP_NO_ACTION",
+    "delivery_version_id": "v0",
+    "uncertain_reobserve_count": 0,
+    "promising_depth": 0,
+    "max_uncertain_reobserve": 1,
+    "max_promising_depth": 2
+  },
+  "phase8_feedback_memory": {
+    "schema": "v3a_phase8_feedback_memory_v1",
+    "n_records": 2,
+    "records": [
+      {
+        "schema": "v3a_phase8_feedback_v1",
+        "round": 1,
+        "issue_signature": {
+          "template_id": "unknown_template",
+          "category": "transition_break",
+          "anchor_segment_ids": [
+            "seg_setup"
+          ],
+          "missing_narrative_info": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+          "issue_id_raw": "large_source_jump_seg_setup_to_seg_turn"
+        },
+        "intent_id": "search_add_0_cand_ev_cand_A_896",
+        "action": "search_add",
+        "source_pts": [
+          896.0,
+          908.0
+        ],
+        "parent_version_id": "v0",
+        "candidate_version_id": "v1",
+        "quality": "PROMISING",
+        "evidence_status": "INSUFFICIENT",
+        "failure_class": "POSITIVE",
+        "observation": "No independently confirmed narrative benefit",
+        "next_search_requirement": "Reobserve edit-locus continuous context; do not treat as semantic negative",
+        "source_kind": "FIXTURE",
+        "evidence_refs": [],
+        "new_evidence_required_for_retry": true,
+        "candidate_identity": "|unknown_template|transition_break|seg_setup|Whether the structural gap actually harms audience story understanding is unknow|v0|search_add|896.000:908.000|seg_setup",
+        "legacy_final_decision": "REJECT",
+        "legacy_failure_reasons": [
+          "verifier_or_pipeline_rejected"
+        ],
+        "legacy_accept_candidate": false,
+        "pts_permanently_banned": false,
+        "sent_frame_ids": [],
+        "evidence_token": "obs:f8787815fbc1d78042807ef43a64e7a18f7e2262f91ee0fce204ac5246445d4e|896.000:908.000|v1:r1|noframes",
+        "apply_status": "applied_evidence_bound",
+        "observation_limitations": [
+          "claims_full_video_watch=false",
+          "sparse_or_truncated_verifier_must_not_become_confirmed_negative"
+        ]
+      },
+      {
+        "schema": "v3a_phase8_feedback_v1",
+        "round": 2,
+        "issue_signature": {
+          "template_id": "unknown_template",
+          "category": "transition_break",
+          "anchor_segment_ids": [
+            "seg_buildup_bridge_action_cand_ev_cand_A_896"
+          ],
+          "missing_narrative_info": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+          "issue_id_raw": "large_source_jump_seg_buildup_bridge_action_cand_ev_cand_A_896_to_seg_turn"
+        },
+        "intent_id": "search_add_0_cand_ev_cand_B_1496",
+        "action": "search_add",
+        "source_pts": [
+          1496.0,
+          1510.0
+        ],
+        "parent_version_id": "v1",
+        "candidate_version_id": "v2",
+        "quality": "UNCERTAIN",
+        "evidence_status": "INSUFFICIENT",
+        "failure_class": "TECHNICAL_FAILURE",
+        "observation": "No independently confirmed narrative benefit",
+        "next_search_requirement": "Reobserve edit-locus continuous context; do not treat as semantic negative",
+        "source_kind": "FIXTURE",
+        "evidence_refs": [],
+        "new_evidence_required_for_retry": true,
+        "candidate_identity": "|unknown_template|transition_break|seg_buildup_bridge_action_cand_ev_cand_A_896|Whether the structural gap actually harms audience story understanding is unknow|v1|search_add|1496.000:1510.000|seg_buildup_bridge_action_cand_ev_cand_A_896",
+        "legacy_final_decision": "REJECT",
+        "legacy_failure_reasons": [
+          "verifier_or_pipeline_rejected"
+        ],
+        "legacy_accept_candidate": false,
+        "pts_permanently_banned": false,
+        "sent_frame_ids": [],
+        "evidence_token": "obs:f8787815fbc1d78042807ef43a64e7a18f7e2262f91ee0fce204ac5246445d4e|1496.000:1510.000|v2:r2|noframes",
+        "apply_status": "applied_evidence_bound",
+        "observation_limitations": [
+          "claims_full_video_watch=false",
+          "sparse_or_truncated_verifier_must_not_become_confirmed_negative"
+        ]
+      }
+    ],
+    "summary": {
+      "schema": "v3a_phase8_feedback_summary_v1",
+      "n_records": 2,
+      "tried_revisions": [
+        {
+          "round": 1,
+          "action": "search_add",
+          "source_pts": [
+            896.0,
+            908.0
+          ],
+          "quality": "PROMISING",
+          "failure_class": "POSITIVE",
+          "issue_signature": {
+            "template_id": "unknown_template",
+            "category": "transition_break",
+            "anchor_segment_ids": [
+              "seg_setup"
+            ],
+            "missing_narrative_info": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+            "issue_id_raw": "large_source_jump_seg_setup_to_seg_turn"
+          },
+          "next_search_requirement": "Reobserve edit-locus continuous context; do not treat as semantic negative",
+          "new_evidence_required_for_retry": true
+        },
+        {
+          "round": 2,
+          "action": "search_add",
+          "source_pts": [
+            1496.0,
+            1510.0
+          ],
+          "quality": "UNCERTAIN",
+          "failure_class": "TECHNICAL_FAILURE",
+          "issue_signature": {
+            "template_id": "unknown_template",
+            "category": "transition_break",
+            "anchor_segment_ids": [
+              "seg_buildup_bridge_action_cand_ev_cand_A_896"
+            ],
+            "missing_narrative_info": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+            "issue_id_raw": "large_source_jump_seg_buildup_bridge_action_cand_ev_cand_A_896_to_seg_turn"
+          },
+          "next_search_requirement": "Reobserve edit-locus continuous context; do not treat as semantic negative",
+          "new_evidence_required_for_retry": true
+        }
+      ],
+      "confirmed_negatives": [],
+      "uncertain_or_unverified": [],
+      "technical_failures": [
+        {
+          "schema": "v3a_phase8_feedback_v1",
+          "round": 2,
+          "issue_signature": {
+            "template_id": "unknown_template",
+            "category": "transition_break",
+            "anchor_segment_ids": [
+              "seg_buildup_bridge_action_cand_ev_cand_A_896"
+            ],
+            "missing_narrative_info": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+            "issue_id_raw": "large_source_jump_seg_buildup_bridge_action_cand_ev_cand_A_896_to_seg_turn"
+          },
+          "intent_id": "search_add_0_cand_ev_cand_B_1496",
+          "action": "search_add",
+          "source_pts": [
+            1496.0,
+            1510.0
+          ],
+          "parent_version_id": "v1",
+          "candidate_version_id": "v2",
+          "quality": "UNCERTAIN",
+          "evidence_status": "INSUFFICIENT",
+          "failure_class": "TECHNICAL_FAILURE",
+          "observation": "No independently confirmed narrative benefit",
+          "next_search_requirement": "Reobserve edit-locus continuous context; do not treat as semantic negative",
+          "source_kind": "FIXTURE",
+          "evidence_refs": [],
+          "new_evidence_required_for_retry": true,
+          "candidate_identity": "|unknown_template|transition_break|seg_buildup_bridge_action_cand_ev_cand_A_896|Whether the structural gap actually harms audience story understanding is unknow|v1|search_add|1496.000:1510.000|seg_buildup_bridge_action_cand_ev_cand_A_896",
+          "legacy_final_decision": "REJECT",
+          "legacy_failure_reasons": [
+            "verifier_or_pipeline_rejected"
+          ],
+          "legacy_accept_candidate": false,
+          "pts_permanently_banned": false,
+          "sent_frame_ids": [],
+          "evidence_token": "obs:f8787815fbc1d78042807ef43a64e7a18f7e2262f91ee0fce204ac5246445d4e|1496.000:1510.000|v2:r2|noframes",
+          "apply_status": "applied_evidence_bound",
+          "observation_limitations": [
+            "claims_full_video_watch=false",
+            "sparse_or_truncated_verifier_must_not_become_confirmed_negative"
+          ]
+        }
+      ],
+      "positives": [
+        {
+          "schema": "v3a_phase8_feedback_v1",
+          "round": 1,
+          "issue_signature": {
+            "template_id": "unknown_template",
+            "category": "transition_break",
+            "anchor_segment_ids": [
+              "seg_setup"
+            ],
+            "missing_narrative_info": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+            "issue_id_raw": "large_source_jump_seg_setup_to_seg_turn"
+          },
+          "intent_id": "search_add_0_cand_ev_cand_A_896",
+          "action": "search_add",
+          "source_pts": [
+            896.0,
+            908.0
+          ],
+          "parent_version_id": "v0",
+          "candidate_version_id": "v1",
+          "quality": "PROMISING",
+          "evidence_status": "INSUFFICIENT",
+          "failure_class": "POSITIVE",
+          "observation": "No independently confirmed narrative benefit",
+          "next_search_requirement": "Reobserve edit-locus continuous context; do not treat as semantic negative",
+          "source_kind": "FIXTURE",
+          "evidence_refs": [],
+          "new_evidence_required_for_retry": true,
+          "candidate_identity": "|unknown_template|transition_break|seg_setup|Whether the structural gap actually harms audience story understanding is unknow|v0|search_add|896.000:908.000|seg_setup",
+          "legacy_final_decision": "REJECT",
+          "legacy_failure_reasons": [
+            "verifier_or_pipeline_rejected"
+          ],
+          "legacy_accept_candidate": false,
+          "pts_permanently_banned": false,
+          "sent_frame_ids": [],
+          "evidence_token": "obs:f8787815fbc1d78042807ef43a64e7a18f7e2262f91ee0fce204ac5246445d4e|896.000:908.000|v1:r1|noframes",
+          "apply_status": "applied_evidence_bound",
+          "observation_limitations": [
+            "claims_full_video_watch=false",
+            "sparse_or_truncated_verifier_must_not_become_confirmed_negative"
+          ]
+        }
+      ],
+      "current_issue_signatures": [],
+      "forbid_identical_retry_without_new_evidence": true,
+      "never_permanently_ban_pts": true,
+      "opaque_reject_is_not_confirmed_negative": true
+    }
+  },
+  "source_sha256": "f8787815fbc1d78042807ef43a64e7a18f7e2262f91ee0fce204ac5246445d4e",
+  "last_revision_cases": {
+    "schema": "v3a_revision_case_bundle_v1",
+    "match_tag": null,
+    "n_cases": 1,
+    "cases": [
+      {
+        "schema": "v3a_revision_case_v1",
+        "match_tag": null,
+        "issue_id": "large_source_jump_seg_buildup_bridge_action_cand_ev_cand_A_896_to_seg_turn",
+        "revision_intent_id": "search_add_0_cand_ev_cand_B_1496",
+        "original_story_problem": {
+          "observation": "Adjacent cuts jump 1892.0s in source PTS (908.0 → 2800.0) while contiguous on story timeline.",
+          "missing_information": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+          "causal_explanation": "Possible abrupt narrative transition; continuity and emotional bridging need video verification.",
+          "story_role": "transition_break",
+          "diagnosis_status": "CONFIRMED_STORY_DEFECT",
+          "story_defect_confirmed": true,
+          "confidence": 0.35,
+          "evidence_sufficiency": "observed"
+        },
+        "video_observation_evidence": "Adjacent cuts jump 1892.0s in source PTS (908.0 → 2800.0) while contiguous on story timeline.",
+        "defect_cause_hypothesis": "Missing intermediate narrative information between adjacent cuts",
+        "target_action": "search_add",
+        "candidate_footage": {
+          "source_pts": {
+            "start": 1496.0,
+            "end": 1510.0
+          },
+          "event_ids": [
+            "ev_cand_B"
+          ],
+          "why_solves_problem": "Candidate cand_ev_cand_B_1496 is LIVE-verified source footage in the gap cited by issue large_source_jump_seg_buildup_bridge_action_cand_ev_cand_A_896_to_seg_turn; usable only if diagnosis is a confirmed story defect (not a structure gap alone)",
+          "apply": {
+            "intent": "search_add_0_cand_ev_cand_B_1496",
+            "action": "search_add",
+            "status": "applied_evidence_bound",
+            "segment_id": "seg_buildup_bridge_action_cand_ev_cand_B_1496",
+            "media_in": 1496.0,
+            "media_out": 1510.0,
+            "evidence_status": "SEARCH_EVENT_CHAIN_LIVE_VERIFIED",
+            "first_live_status": "NOT_VERIFIED",
+            "authorization": {
+              "allow": true,
+              "denies": [],
+              "evidence_status": "SEARCH_EVENT_CHAIN_LIVE_VERIFIED",
+              "method": "bound_source_window"
+            },
+            "observation_ref": "search:cand_ev_cand_B_1496",
+            "insert_after_segment_id": "seg_buildup_bridge_action_cand_ev_cand_A_896"
+          }
+        },
+        "before_after_video_windows": null,
+        "expected_improvement": "Adjacent story beats should show a clearer causal/emotional transition attributable to the inserted LIVE window; falsify if insert is redundant, replay-like, or breaks chronology",
+        "falsification_evidence": "Insert adds duration without new story info; breaks PTS order; introduces replay/scoreboard-as-action; or original issue remains",
+        "actual_observation": null,
+        "verifier_judgment": {
+          "quality_judgment": null,
+          "original_issue_resolved": null,
+          "introduced_new_defect": null,
+          "evidence_refs": null,
+          "confidence": null,
+          "note": "Verifier must check whether the original diagnosed problem was solved, not only which cut looks nicer. BETTER ≠ ACCEPT ≠ IMPROVED."
+        },
+        "pts_safety": {
+          "schema": "v3a_edl_source_pts_monotonic_v1",
+          "ok": true,
+          "n_media_rows": 6,
+          "breaks": [],
+          "gate": "safety",
+          "note": "Monotonic source PTS is a safety constraint, not a quality score."
+        },
+        "final_decision": "REJECT",
+        "failure_reasons": [
+          "verifier_or_pipeline_rejected"
+        ],
+        "formal_final_is_baseline": true,
+        "bindings": {
+          "issue_id": "large_source_jump_seg_buildup_bridge_action_cand_ev_cand_A_896_to_seg_turn",
+          "evidence": [
+            {
+              "kind": "diagnosis",
+              "ref": "large_source_jump_seg_buildup_bridge_action_cand_ev_cand_A_896_to_seg_turn"
+            },
+            {
+              "kind": "search_candidate",
+              "ref": "cand_ev_cand_B_1496"
+            },
+            {
+              "kind": "source_pts",
+              "ref": "1496.0:1510.0",
+              "event_id": "ev_cand_B"
+            },
+            {
+              "kind": "live_credibility",
+              "ref": "LIVE",
+              "confidence": 0.626
+            }
+          ],
+          "edit": "search_add",
+          "expected_effect": "Adjacent story beats should show a clearer causal/emotional transition attributable to the inserted LIVE window; falsify if insert is redundant, replay-like, or breaks chronology"
+        },
+        "duration_pad_forbidden_as_quality_proxy": true
+      }
+    ]
+  },
+  "last_verifier": {
+    "candidate_accepted": false,
+    "sent_frame_ids": [],
+    "hard_vetoes": [],
+    "goal_protection": {
+      "baseline_goals": {
+        "seg_open_goal": [
+          100.0,
+          120.0
+        ],
+        "seg_turn": [
+          2800.0,
+          2820.0
+        ],
+        "seg_climax": [
+          3000.0,
+          3020.0
+        ]
+      },
+      "candidate_goals": {
+        "seg_open_goal": [
+          100.0,
+          120.0
+        ],
+        "seg_turn": [
+          2800.0,
+          2820.0
+        ],
+        "seg_climax": [
+          3000.0,
+          3020.0
+        ]
+      },
+      "intact": true
+    },
+    "warnings": [
+      "vision_backed_explicitly_false",
+      "refuse_accept_without_semantic_verification",
+      "refuse_accept_without_dual_video_frames"
+    ],
+    "phase8_verdict": {
+      "schema": "v3a_phase8_verdict_v1",
+      "safety": "PASS",
+      "hard_safety": {
+        "safety": "UNKNOWN",
+        "reasons": [
+          "first_live_per_window_proof_incomplete"
+        ],
+        "accept_candidate_ignored": true,
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_ledger": {
+          "schema": "v3a_first_live_window_ledger_v1",
+          "source_sha": "f8787815fbc1d78042807ef43a64e7a18f7e2262f91ee0fce204ac5246445d4e",
+          "windows": [
+            {
+              "key": "f8787815fbc1d78042807ef43a64e7a18f7e2262f91ee0fce204ac5246445d4e|1496.000:1510.000",
+              "source_sha": "f8787815fbc1d78042807ef43a64e7a18f7e2262f91ee0fce204ac5246445d4e",
+              "source_pts_start": 1496.0,
+              "source_pts_end": 1510.0,
+              "status": "NOT_VERIFIED",
+              "method": "event_chain_not_first_live_proof",
+              "segment_id": "seg_buildup_bridge_action_cand_ev_cand_B_1496",
+              "claimed_status": "NOT_VERIFIED"
+            }
+          ],
+          "n_windows": 1,
+          "all_windows_verified": false,
+          "any_window_unverified": true,
+          "aggregate_status": "NOT_VERIFIED",
+          "note": "Event-chain LIVE ≠ first-broadcast LIVE. Each new PTS window needs independent prior ledger match or targeted visual verification."
+        },
+        "note": "Event-chain probable LIVE is not first-broadcast LIVE. VLM soft claims cannot self-authorize hard safety."
+      },
+      "quality": "UNCERTAIN",
+      "evidence": "INSUFFICIENT",
+      "issue_effect": "UNOBSERVED",
+      "global_regression": "UNKNOWN",
+      "focus_issue_id": null,
+      "evidence_refs": [],
+      "observed_changes": null,
+      "unresolved_questions": [],
+      "suggested_next_evidence": null,
+      "failure_class": "TECHNICAL_FAILURE",
+      "compared_parent_version_id": "v1",
+      "verdict_provenance": "FIXTURE",
+      "source_kind": "FIXTURE",
+      "accept_candidate_raw": false,
+      "accept_not_synthesized_from_promising": true,
+      "safety_independent_of_accept_candidate": true,
+      "note": "Hard safety is independent of narrative accept_candidate. FIXTURE/OFFLINE_RULE never establish real IMPROVED; REAL_VLM requires recorded successful provider call + frame bindings.",
+      "best_comparison_status": "PENDING_OR_SKIPPED",
+      "review_pending_vs_best": true,
+      "compared_against_best": false
+    },
+    "compared_parent_version_id": "v1",
+    "version_id": "v2"
+  },
+  "last_diagnosis_issues": [
+    {
+      "issue_id": "large_source_jump_seg_buildup_bridge_action_cand_ev_cand_A_896_to_seg_turn",
+      "story_time_range": [
+        36.5,
+        37.5
+      ],
+      "segment_ids": [
+        "seg_buildup_bridge_action_cand_ev_cand_A_896",
+        "seg_turn"
+      ],
+      "observation": "Adjacent cuts jump 1892.0s in source PTS (908.0 → 2800.0) while contiguous on story timeline.",
+      "narrative_problem": "Possible abrupt narrative transition; continuity and emotional bridging need video verification.",
+      "severity": "minor",
+      "suggested_fix": "verify_transition_or_insert_bridge",
+      "evidence_sufficiency": "observed",
+      "category": "transition",
+      "story_role": "transition_break",
+      "observed_evidence": "Adjacent cuts jump 1892.0s in source PTS (908.0 → 2800.0) while contiguous on story timeline.",
+      "missing_information": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+      "causal_explanation": "Possible abrupt narrative transition; continuity and emotional bridging need video verification.",
+      "confidence": 0.35,
+      "confirmation_basis": [
+        "phase8_offline_confirm_issue_ids"
+      ],
+      "model_confidence_alone_insufficient": true,
+      "frame_cited_alone_insufficient": true,
+      "diagnosis_status": "CONFIRMED_STORY_DEFECT",
+      "story_defect_confirmed": true,
+      "note": "Structural anomaly is a hypothesis only; not a confirmed story-quality defect."
+    }
+  ],
+  "edl_changed_any": true,
+  "phase8_delivery_version_id": "v0",
+  "first_live_visual": {
+    "authority": "final_delivery_edl",
+    "path": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/99_final/final_goal_evidence_manifest.json",
+    "status_counts": {
+      "FIRST_LIVE_VERIFIED": 0,
+      "POSSIBLE_FIRST_LIVE": 0,
+      "REPLAY_DETECTED": 0,
+      "UNRESOLVED": 3
+    },
+    "n_goal_anchors": 3,
+    "any_first_live_verified": false,
+    "any_replay_on_retained": false,
+    "n_inherited": 0,
+    "n_reverified": 3,
+    "goals": [
+      {
+        "segment_id": "seg_open_goal",
+        "role": "opponent_opening_goal_action",
+        "first_live_status": "UNRESOLVED",
+        "source_media_in": 100.0,
+        "source_media_out": 120.0,
+        "evidence_binding": "reverified_after_window_or_subject_change",
+        "inherited": false
+      },
+      {
+        "segment_id": "seg_turn",
+        "role": "equalizer_goal_action",
+        "first_live_status": "UNRESOLVED",
+        "source_media_in": 2800.0,
+        "source_media_out": 2820.0,
+        "evidence_binding": "reverified_after_window_or_subject_change",
+        "inherited": false
+      },
+      {
+        "segment_id": "seg_climax",
+        "role": "go_ahead_goal_action",
+        "first_live_status": "UNRESOLVED",
+        "source_media_in": 3000.0,
+        "source_media_out": 3020.0,
+        "evidence_binding": "reverified_after_window_or_subject_change",
+        "inherited": false
+      }
+    ],
+    "candidate_separate": {
+      "path": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/99_final/candidate_goal_evidence_manifest.json",
+      "status_counts": {
+        "FIRST_LIVE_VERIFIED": 0,
+        "POSSIBLE_FIRST_LIVE": 0,
+        "REPLAY_DETECTED": 0,
+        "UNRESOLVED": 3
+      },
+      "n_goal_anchors": 3
+    },
+    "v3r_historical_ref": null
+  },
+  "goal_lineage": {
+    "path": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/99_final/goal_lineage_report.json",
+    "n_final_goal_segments": 3,
+    "n_strict_complete": 0,
+    "n_inferred": 0,
+    "n_unresolved": 3,
+    "n_structurally_traced_to_mp4": 0,
+    "duplicate_segment_ids": [],
+    "prior_source_trust": {
+      "prior_provided": false,
+      "prior_has_trusted_sha": false,
+      "stamped_current_sha_onto_prior": false
+    },
+    "candidate_delivery_binding": {
+      "schema": "v3a_candidate_delivery_video_binding_v1",
+      "same_source_video_sha256": true,
+      "delivery_sha256": "f8787815fbc1d78042807ef43a64e7a18f7e2262f91ee0fce204ac5246445d4e",
+      "candidate_sha256": "f8787815fbc1d78042807ef43a64e7a18f7e2262f91ee0fce204ac5246445d4e",
+      "shared_goal_segments": [
+        "seg_climax",
+        "seg_open_goal",
+        "seg_turn"
+      ],
+      "window_changed_segments": [],
+      "candidate_only_goal_segments": [],
+      "delivery_only_goal_segments": [],
+      "note": "Candidate and delivery manifests must not share verification conclusions across changed windows; both must bind to the same source video SHA."
+    }
+  },
+  "delivery": {
+    "release_authorized": false,
+    "delivery_label": "BLOCKED",
+    "delivery_status": "BLOCKED",
+    "blocked_reasons": [
+      "final_mp4_edl_timeline_misaligned"
+    ],
+    "human_review": {
+      "required": true,
+      "label": "HUMAN_REVIEW_REQUIRED",
+      "safe_playable_preview": true,
+      "auto_release_forbidden": true,
+      "dir": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/99_final/human_review_candidate",
+      "v3r_baseline_mp4": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/99_final/human_review_candidate/v3r_baseline.mp4",
+      "v3a_candidate_mp4": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/99_final/human_review_candidate/v3a_candidate.mp4",
+      "bundle": {
+        "round": 2,
+        "round_dir": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/02_round_02",
+        "baseline_mp4": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/02_round_01/candidate_render/story_clean.mp4",
+        "baseline_edl": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/02_round_02/parent_working_edl.json",
+        "parent_version_id": "v1",
+        "candidate_version_id": "v2",
+        "initial_baseline_mp4": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/01_initial_story/story_clean.mp4",
+        "initial_baseline_edl": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/01_initial_story/candidate_edl.json",
+        "candidate_mp4": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/02_round_02/candidate_render/story_clean.mp4",
+        "candidate_edl": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/02_round_02/candidate_edl.json",
+        "edl_diff": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/02_round_02/edl_diff.json",
+        "evidence_search": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/02_round_02/evidence_search.json",
+        "revision_plan": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/02_round_02/revision_plan.json",
+        "verifier_report": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/02_round_02/verifier_report.json",
+        "story_diagnosis": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/02_round_02/story_diagnosis.json",
+        "goal_anchors_intact": true,
+        "hard_vetoes": [],
+        "semantic_status": "NOT_EVALUATED",
+        "candidate_accepted": false,
+        "phase8_verdict": {
+          "schema": "v3a_phase8_verdict_v1",
+          "safety": "PASS",
+          "hard_safety": {
+            "safety": "UNKNOWN",
+            "reasons": [
+              "first_live_per_window_proof_incomplete"
+            ],
+            "accept_candidate_ignored": true,
+            "first_live_status": "NOT_VERIFIED",
+            "first_live_ledger": {
+              "schema": "v3a_first_live_window_ledger_v1",
+              "source_sha": "f8787815fbc1d78042807ef43a64e7a18f7e2262f91ee0fce204ac5246445d4e",
+              "windows": [
+                {
+                  "key": "f8787815fbc1d78042807ef43a64e7a18f7e2262f91ee0fce204ac5246445d4e|1496.000:1510.000",
+                  "source_sha": "f8787815fbc1d78042807ef43a64e7a18f7e2262f91ee0fce204ac5246445d4e",
+                  "source_pts_start": 1496.0,
+                  "source_pts_end": 1510.0,
+                  "status": "NOT_VERIFIED",
+                  "method": "event_chain_not_first_live_proof",
+                  "segment_id": "seg_buildup_bridge_action_cand_ev_cand_B_1496",
+                  "claimed_status": "NOT_VERIFIED"
+                }
+              ],
+              "n_windows": 1,
+              "all_windows_verified": false,
+              "any_window_unverified": true,
+              "aggregate_status": "NOT_VERIFIED",
+              "note": "Event-chain LIVE ≠ first-broadcast LIVE. Each new PTS window needs independent prior ledger match or targeted visual verification."
+            },
+            "note": "Event-chain probable LIVE is not first-broadcast LIVE. VLM soft claims cannot self-authorize hard safety."
+          },
+          "quality": "UNCERTAIN",
+          "evidence": "INSUFFICIENT",
+          "issue_effect": "UNOBSERVED",
+          "global_regression": "UNKNOWN",
+          "focus_issue_id": null,
+          "evidence_refs": [],
+          "observed_changes": null,
+          "unresolved_questions": [],
+          "suggested_next_evidence": null,
+          "failure_class": "TECHNICAL_FAILURE",
+          "compared_parent_version_id": "v1",
+          "verdict_provenance": "FIXTURE",
+          "source_kind": "FIXTURE",
+          "accept_candidate_raw": false,
+          "accept_not_synthesized_from_promising": true,
+          "safety_independent_of_accept_candidate": true,
+          "note": "Hard safety is independent of narrative accept_candidate. FIXTURE/OFFLINE_RULE never establish real IMPROVED; REAL_VLM requires recorded successful provider call + frame bindings.",
+          "best_comparison_status": "PENDING_OR_SKIPPED",
+          "review_pending_vs_best": true,
+          "compared_against_best": false
+        },
+        "phase8_transition": {
+          "schema": "v3a_phase8_transition_v1",
+          "next_action": "STOP_NO_ACTION",
+          "working_ref": "v0",
+          "best_ref": "v0",
+          "reason_codes": [
+            "uncertain_no_new_evidence"
+          ],
+          "promote": false,
+          "stop_reason": "STOP_NO_ACTION",
+          "continue_allowed": false,
+          "current_round_outcome": "STOP_NO_ACTION",
+          "record_confirmed_negative": false,
+          "candidate_version_id": "v2",
+          "parent_version_id": "v1",
+          "safety": "PASS",
+          "quality": "UNCERTAIN",
+          "evidence": "INSUFFICIENT",
+          "accept_candidate_ignored": true,
+          "compared_against_best": false,
+          "note": "candidate_accepted boolean does not drive this policy; formal release remains stricter than exploration. Budget does not discard the just-finished round outcome."
+        },
+        "revision_status": {
+          "schema": "v3a_revision_status_v1",
+          "APPLIED": true,
+          "VERIFIED": false,
+          "IMPROVED": false,
+          "safety_ok": true,
+          "edl_changed": true,
+          "candidate_rendered": true,
+          "candidate_accepted": false,
+          "vision_backed": false,
+          "semantic_passed": false,
+          "quality_delta": "NOT_EVALUATED",
+          "BETTER_not_auto_IMPROVED": true,
+          "note": "APPLIED=EDL mutated under safety; VERIFIED=accepted with vision; IMPROVED=verified+accepted+vision+semantic+safety+quality_delta. One model BETTER never auto-upgrades to IMPROVED. PTS/first-live/goal gates cannot be overridden by BETTER."
+        },
+        "modified_source_pts": [
+          {
+            "segment_id": "seg_buildup_bridge_action_cand_ev_cand_B_1496",
+            "media_in": 1496.0,
+            "media_out": 1510.0,
+            "action": "search_add"
+          }
+        ]
+      },
+      "note": "Candidate is for human story judgment only. Uncertainty must not be auto-labeled success or failure for formal release."
+    },
+    "final_mp4": null,
+    "final_edl": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/99_final/final_edl.json",
+    "decision": "REVISE",
+    "release_gate": {
+      "release_authorized": false,
+      "reasons": [
+        "final_mp4_undecodable_or_too_short",
+        "edl_unchanged",
+        "candidate_not_rendered",
+        "candidate_not_accepted",
+        "semantic_verification_not_passed",
+        "decision_not_revise",
+        "final_mp4_edl_timeline_misaligned",
+        "fixture_or_offline_source_not_releasable"
+      ],
+      "final_mp4_duration_sec": null,
+      "edl_hard_ok": true,
+      "blocking_issue_ids": [],
+      "note": "workflow_completed/final_mp4_exists/semantic_verification_passed alone never authorize formal release.",
+      "delivery_version_id": "v0",
+      "delivery_snapshot": {
+        "version_id": "v0",
+        "parent_version_id": null,
+        "safety": "UNKNOWN",
+        "quality": "BASELINE_UNVERIFIED",
+        "verdict_provenance": "OFFLINE_RULE",
+        "semantic_verification_passed": false,
+        "candidate_rendered": true,
+        "compared_against_best": null,
+        "mp4_path": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/01_initial_story/story_clean.mp4",
+        "edl_path": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/01_initial_story/candidate_edl.json"
+      },
+      "delivery_source": "OFFLINE_RULE",
+      "last_round_ignored_for_release": true,
+      "last_verifier_version_id": "v2",
+      "note_phase8": "Release authorization is version-specific from delivery snapshot; a later rejected/uncertain round does not revoke or grant release of selected best.",
+      "delivery_digest_check": {
+        "source_sha256_expected": "f8787815fbc1d78042807ef43a64e7a18f7e2262f91ee0fce204ac5246445d4e",
+        "edl_sha256_expected": "c8ac507c104283d234db8cc1b135421d9a69771d5e83baca72e9e943ee7e88a7",
+        "mp4_sha256_expected": "f8787815fbc1d78042807ef43a64e7a18f7e2262f91ee0fce204ac5246445d4e",
+        "edl_sha256_now": "c8ac507c104283d234db8cc1b135421d9a69771d5e83baca72e9e943ee7e88a7",
+        "mp4_sha256_now": "f8787815fbc1d78042807ef43a64e7a18f7e2262f91ee0fce204ac5246445d4e",
+        "ok": true,
+        "reasons": []
+      }
+    },
+    "metrics": {
+      "revise_proposed": 2,
+      "edl_changed_rounds": 2,
+      "candidate_rendered": 2,
+      "candidate_accepted": 0,
+      "search_success_rounds": 2,
+      "invalid_candidate": 0,
+      "goal_damage_flags": 0,
+      "false_or_unverified_improve_claims": 0
+    },
+    "timeline_mp4_alignment": {
+      "aligned": false,
+      "mp4_duration_sec": null,
+      "story_duration_sec": null,
+      "media_duration_sec": null,
+      "placeholder_duration_sec": null,
+      "delta_sec": null,
+      "root_cause_hint": null
+    },
+    "first_live_visual": {
+      "authority": "final_delivery_edl",
+      "path": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/99_final/final_goal_evidence_manifest.json",
+      "status_counts": {
+        "FIRST_LIVE_VERIFIED": 0,
+        "POSSIBLE_FIRST_LIVE": 0,
+        "REPLAY_DETECTED": 0,
+        "UNRESOLVED": 3
+      },
+      "n_goal_anchors": 3,
+      "any_first_live_verified": false,
+      "any_replay_on_retained": false,
+      "n_inherited": 0,
+      "n_reverified": 3,
+      "goals": [
+        {
+          "segment_id": "seg_open_goal",
+          "role": "opponent_opening_goal_action",
+          "first_live_status": "UNRESOLVED",
+          "source_media_in": 100.0,
+          "source_media_out": 120.0,
+          "evidence_binding": "reverified_after_window_or_subject_change",
+          "inherited": false
+        },
+        {
+          "segment_id": "seg_turn",
+          "role": "equalizer_goal_action",
+          "first_live_status": "UNRESOLVED",
+          "source_media_in": 2800.0,
+          "source_media_out": 2820.0,
+          "evidence_binding": "reverified_after_window_or_subject_change",
+          "inherited": false
+        },
+        {
+          "segment_id": "seg_climax",
+          "role": "go_ahead_goal_action",
+          "first_live_status": "UNRESOLVED",
+          "source_media_in": 3000.0,
+          "source_media_out": 3020.0,
+          "evidence_binding": "reverified_after_window_or_subject_change",
+          "inherited": false
+        }
+      ],
+      "candidate_separate": {
+        "path": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/99_final/candidate_goal_evidence_manifest.json",
+        "status_counts": {
+          "FIRST_LIVE_VERIFIED": 0,
+          "POSSIBLE_FIRST_LIVE": 0,
+          "REPLAY_DETECTED": 0,
+          "UNRESOLVED": 3
+        },
+        "n_goal_anchors": 3
+      },
+      "v3r_historical_ref": null
+    },
+    "final_goal_evidence_manifest": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/99_final/final_goal_evidence_manifest.json",
+    "goal_lineage_report": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/99_final/goal_lineage_report.json",
+    "goal_lineage": {
+      "path": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/99_final/goal_lineage_report.json",
+      "n_final_goal_segments": 3,
+      "n_strict_complete": 0,
+      "n_inferred": 0,
+      "n_unresolved": 3,
+      "n_structurally_traced_to_mp4": 0,
+      "duplicate_segment_ids": [],
+      "prior_source_trust": {
+        "prior_provided": false,
+        "prior_has_trusted_sha": false,
+        "stamped_current_sha_onto_prior": false
+      },
+      "candidate_delivery_binding": {
+        "schema": "v3a_candidate_delivery_video_binding_v1",
+        "same_source_video_sha256": true,
+        "delivery_sha256": "f8787815fbc1d78042807ef43a64e7a18f7e2262f91ee0fce204ac5246445d4e",
+        "candidate_sha256": "f8787815fbc1d78042807ef43a64e7a18f7e2262f91ee0fce204ac5246445d4e",
+        "shared_goal_segments": [
+          "seg_climax",
+          "seg_open_goal",
+          "seg_turn"
+        ],
+        "window_changed_segments": [],
+        "candidate_only_goal_segments": [],
+        "delivery_only_goal_segments": [],
+        "note": "Candidate and delivery manifests must not share verification conclusions across changed windows; both must bind to the same source video SHA."
+      }
+    },
+    "note": "Formal delivery requires release_authorized=true under full conjunction gates. workflow_completed / final_mp4_exists / semantic_verification_passed alone never authorize. HUMAN_REVIEW_REQUIRED means a safe candidate preview exists for human judgment. RELEASE_READY requires FIRST_LIVE_VERIFIED on every final-delivery EDL goal (final_goal_evidence_manifest), not V3-R historical first-live stats."
+  },
+  "metrics": {
+    "revise_proposed": 2,
+    "edl_changed_rounds": 2,
+    "candidate_rendered": 2,
+    "candidate_accepted": 0,
+    "search_success_rounds": 2,
+    "invalid_candidate": 0,
+    "goal_damage_flags": 0,
+    "false_or_unverified_improve_claims": 0
+  },
+  "baseline": {
+    "initial_mp4": "docs/phase8_review_artifacts/second_audit_proof/e2e_run/01_initial_story/story_clean.mp4",
+    "records": {
+      "initial": {
+        "path": "/tmp/p8_proof_e2e_vjcnrwoy/phase5/story_clean.mp4",
+        "exists": true,
+        "size_bytes": 16,
+        "sha256": "f8787815fbc1d78042807ef43a64e7a18f7e2262f91ee0fce204ac5246445d4e"
+      },
+      "final": {
+        "path": "/tmp/p8_proof_e2e_vjcnrwoy/phase5/story_clean.mp4",
+        "exists": true,
+        "size_bytes": 16,
+        "sha256": "f8787815fbc1d78042807ef43a64e7a18f7e2262f91ee0fce204ac5246445d4e"
+      },
+      "smoke": {
+        "path": "/__none__",
+        "exists": false,
+        "sha256": null
+      }
+    }
+  },
+  "elapsed_sec": 0.813,
+  "ok": true
+}
