@@ -1,10 +1,16 @@
-"""V3-A Story-level End-to-End Agent orchestration.
+"""V3-A Story-level End-to-End Agent — **unified main chain**.
 
-Pipeline: V3-R baseline → Critic → Search → Evidence Verification →
-Revision Planner → EDL apply → Render → Verifier → status gates / human review.
+Official pipeline (do not fork a second revise loop via run_self_revise):
 
-Default: zero HTTP. Real API requires explicit authorization flags (not used here
-unless caller passes enable_real_api).
+  match input → events/causal → V3-R initial story → global observe →
+  Critic diagnosis → Planner intents → source evidence search →
+  EDL safety (incl. source PTS order) → candidate MP4 → dual-video verify →
+  accept/reject → final delivery + evidence.
+
+`run_self_revise` remains a specialized VLM/opening/fixture laboratory entry.
+Production / CLI story runs must go through `run_story_e2e`.
+
+Default: zero HTTP. Real API requires explicit authorization flags.
 """
 from __future__ import annotations
 
@@ -27,6 +33,7 @@ from .story_duplicate_audit import (
     audit_edl_duplicates,
     write_audit,
 )
+from .story_edl_safety import check_source_pts_monotonic, classify_revision_status
 from .story_evidence_search import (
     run_story_evidence_search,
     search_candidates_to_observations,
@@ -43,6 +50,7 @@ from .story_video_verifier import (
 )
 
 SCHEMA = "v3a_story_e2e_run_v1"
+UNIFIED_CHAIN_ID = "v3a_unified_story_self_revise_main_v1"
 MAX_ROUNDS = 3
 
 
@@ -281,6 +289,21 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
     est_cost = 0.0
     audit: Dict[str, Any] = {
         "schema": SCHEMA,
+        "unified_main_chain": {
+            "id": UNIFIED_CHAIN_ID,
+            "entry": "run_story_e2e",
+            "does_not_call_run_self_revise": True,
+            "reuses": [
+                "structural_diagnosis",
+                "observe_layers",
+                "run_story_evidence_search",
+                "plan_from_diagnosis",
+                "apply_candidate_revision",
+                "check_source_pts_monotonic",
+                "verify_story_revision",
+            ],
+            "specialized_lab_entry": "run_self_revise",
+        },
         "started_unix": t0,
         "out_dir": str(out),
         "inputs": {
@@ -298,9 +321,11 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         "est_cost_usd": 0.0,
         "rounds": [],
         "status_gates": gates,
+        "revision_status_totals": {"APPLIED": 0, "VERIFIED": 0, "IMPROVED": 0},
         "disclaimer": (
             "Offline/dry-run does not claim real multimodal story understanding. "
-            "release_authorized stays false unless hard gates + semantic pass."
+            "release_authorized stays false unless hard gates + semantic pass. "
+            "APPLIED ≠ VERIFIED ≠ IMPROVED."
         ),
     }
 
@@ -762,12 +787,39 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             edl_diff(best_edl, candidate_edl) if candidate_edl != best_edl else {"changed": False},
         )
 
+        # Safety: source PTS order must pass *before* any candidate render.
+        pts_gate = check_source_pts_monotonic(candidate_edl)
+        write_json(round_dir / "edl_pts_safety.json", pts_gate)
+        round_rec["edl_pts_safety_ok"] = bool(pts_gate.get("ok"))
+        if not pts_gate.get("ok"):
+            # Fail closed: discard unsafe candidate EDL; do not render.
+            apply_report = {
+                **apply_report,
+                "pts_safety_blocked_render": True,
+                "pts_breaks": pts_gate.get("breaks") or [],
+            }
+            write_json(round_dir / "apply_report.json", apply_report)
+            candidate_edl = [dict(r) for r in best_edl]
+            final_decision = "UNRESOLVED"
+            rev = {
+                **rev,
+                "decision": "UNRESOLVED",
+                "normalize_note": "candidate_edl_failed_source_pts_monotonic_pre_render",
+            }
+            write_json(round_dir / "revision_plan.json", rev)
+            round_rec["decision"] = final_decision
+            gates["revision_applied"] = False
+
         candidate_mp4: Optional[Path] = None
         render_info: Dict[str, Any] = {"skipped": True}
         edl_changed = candidate_edl != best_edl
         cand_dedupe_render_blocked = False
         # Render when EDL actually changed (safety+authenticity gates still apply later).
-        if edl_changed and (final_decision == "REVISE" or inp.force_render_candidate):
+        if (
+            edl_changed
+            and pts_gate.get("ok")
+            and (final_decision == "REVISE" or inp.force_render_candidate)
+        ):
             try:
                 render_info = _render_edl(
                     plan=plan,
@@ -788,6 +840,16 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     )
             if edl_changed and cand_dup_apply.get("changed") and not gates.get("candidate_rendered"):
                 cand_dedupe_render_blocked = True
+        elif not pts_gate.get("ok"):
+            render_info = {
+                "skipped": True,
+                "reason": "blocked_by_source_pts_monotonic_safety",
+                "breaks": pts_gate.get("breaks") or [],
+                "baseline_mp4": str(best_mp4),
+            }
+            candidate_mp4 = best_mp4
+            gates["candidate_rendered"] = False
+            edl_changed = False
         elif not edl_changed:
             render_info = {
                 "skipped": True,
@@ -897,6 +959,48 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             round_rec["accepted"] = False
             round_rec["retain_baseline"] = True
 
+            # Verifier non-accept: formal delivery stays at last accepted / baseline.
+
+        applied_bound = any(
+            a.get("status") in ("applied", "applied_evidence_bound")
+            for a in (apply_report.get("applied") or [])
+        ) and not apply_report.get("pts_safety_blocked_render")
+        q_delta = None
+        val = (vfix.get("dual_verifier_full") or {}).get("validated") or {}
+        if isinstance(val, dict):
+            q_delta = val.get("quality_delta_vs_baseline")
+        if q_delta is None:
+            q_delta = (vfix.get("dual_verifier") or {}).get("quality_delta_vs_baseline")
+        fixture_quality_disclaimer = None
+        if inp.fixture_verifier and bool(vfix.get("candidate_accepted")):
+            fixture_quality_disclaimer = (
+                "synthetic_gate_wiring_not_real_quality - fixture verifier must not "
+                "be reported as authentic story IMPROVED"
+            )
+            q_delta_for_status = None
+        else:
+            q_delta_for_status = q_delta
+        rev_status = classify_revision_status(
+            edl_changed=bool(edl_changed),
+            applied_bound=bool(applied_bound),
+            candidate_rendered=bool(gates.get("candidate_rendered")),
+            candidate_accepted=bool(vfix.get("candidate_accepted")),
+            vision_backed=bool(vfix.get("vision_backed")),
+            semantic_passed=bool(gates.get("semantic_verification_passed")),
+            quality_delta=q_delta_for_status,
+            safety_ok=bool(pts_gate.get("ok")),
+        )
+        if fixture_quality_disclaimer:
+            rev_status["fixture_quality_disclaimer"] = fixture_quality_disclaimer
+            rev_status["IMPROVED"] = False
+        write_json(round_dir / "revision_status.json", rev_status)
+        round_rec["revision_status"] = rev_status
+        for k in ("APPLIED", "VERIFIED", "IMPROVED"):
+            if rev_status.get(k):
+                audit["revision_status_totals"][k] = int(
+                    audit["revision_status_totals"].get(k) or 0
+                ) + 1
+
         if edl_changed and candidate_mp4 and candidate_mp4.is_file() and gates.get("candidate_rendered"):
             last_candidate_bundle = {
                 "round": round_idx,
@@ -916,6 +1020,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     "semantic_verification_status"
                 ),
                 "candidate_accepted": bool(vfix.get("candidate_accepted")),
+                "revision_status": rev_status,
                 "modified_source_pts": [
                     {
                         "segment_id": a.get("segment_id"),

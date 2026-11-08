@@ -2744,6 +2744,38 @@ def apply_candidate_revision(
                         break
             if overlap_reject:
                 continue
+            # Refuse search_add that would reverse source PTS vs insert neighbors.
+            if (
+                action == "search_add"
+                and new_in is not None
+                and new_out is not None
+            ):
+                after_sid = str(it.get("insert_after_segment_id") or "")
+                before_sid = str(it.get("before_segment_id") or "")
+                prev_out = None
+                next_in = None
+                if after_sid and after_sid in by_id:
+                    prev_out = _num(edl[by_id[after_sid]].get("media_out"))
+                if before_sid and before_sid in by_id:
+                    next_in = _num(edl[by_id[before_sid]].get("media_in"))
+                if prev_out is not None and float(new_in) + 1e-3 < float(prev_out):
+                    rejected.append({
+                        "intent": it.get("intent_id"),
+                        "reason": "search_add_breaks_source_pts_order_vs_prev",
+                        "prev_segment_id": after_sid,
+                        "prev_media_out": prev_out,
+                        "new_media_in": new_in,
+                    })
+                    continue
+                if next_in is not None and float(new_out) - 1e-3 > float(next_in):
+                    rejected.append({
+                        "intent": it.get("intent_id"),
+                        "reason": "search_add_breaks_source_pts_order_vs_next",
+                        "next_segment_id": before_sid,
+                        "next_media_in": next_in,
+                        "new_media_out": new_out,
+                    })
+                    continue
             if action == "replace":
                 target_row = edl[by_id[sid]] if sid and sid in by_id else None
                 ti = to = None
@@ -3452,6 +3484,11 @@ def run_self_revise(
     max_followups: Optional[int] = None,
     one_round_opening_goal: bool = False,
 ) -> Dict[str, Any]:
+    """Specialized VLM/opening/fixture laboratory entry.
+
+    Production story E2E + self-revision runs through ``run_story_e2e``
+    (unified main chain). Do not call this as a second revise loop from CLI.
+    """
     if one_round_opening_goal:
         from .one_round_opening_budget import (
             ONE_ROUND_MAX_FOLLOWUPS,

@@ -116,6 +116,8 @@ def main(argv: list[str] | None = None) -> int:
         json.dumps(
             {
                 "ok": audit.get("ok"),
+                "unified_main_chain": audit.get("unified_main_chain"),
+                "revision_status_totals": audit.get("revision_status_totals"),
                 "out_dir": str(out_dir),
                 "elapsed_sec": round(elapsed, 3),
                 "decision": delivery.get("decision"),

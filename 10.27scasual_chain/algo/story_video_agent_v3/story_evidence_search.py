@@ -199,7 +199,9 @@ def search_window_for_issue(
         g_out = _num(last_goal.get("media_out"))
         if g_out is None:
             return None
-        hi = g_out + 90.0
+        # Stay inside (goal_out, next_scoreboard_in) so inserts before the scoreboard
+        # cannot reverse source PTS order relative to that neighbor.
+        hi = float(g_out) + 90.0
         insert_before = None
         for r in active_cut_rows(edl):
             mi = _num(r.get("media_in"))
@@ -207,9 +209,15 @@ def search_window_for_issue(
             if mi is not None and mi >= g_out - 1e-6 and (
                 "scoreboard" in role or "wrap" in role or "aftermath" in role
             ):
-                hi = max(float(mi) + 45.0, g_out + 25.0)
+                # Clamp hi strictly before the following scoreboard/wrap cut.
+                hi = min(hi, float(mi) - 0.5)
                 insert_before = str(r.get("segment_id"))
                 break
+        if hi - (float(g_out) + 1.0) < 6.0:
+            # No usable aftermath gap before scoreboard; widen by inserting after
+            # the scoreboard instead (caller still uses insert_after last_goal only
+            # when a gap exists — otherwise skip this ending search window).
+            return None
         return {
             "kind": "post_climax_aftermath",
             "lo": float(g_out) + 1.0,

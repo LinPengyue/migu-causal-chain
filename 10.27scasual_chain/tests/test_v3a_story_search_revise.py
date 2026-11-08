@@ -11,6 +11,7 @@ from story_video_agent_v3.self_revise_agent import apply_candidate_revision
 from story_video_agent_v3.story_evidence_search import (
     run_story_evidence_search,
     search_candidates_to_observations,
+    search_window_for_issue,
     verify_search_candidate,
 )
 from story_video_agent_v3.story_revision_planner import plan_from_diagnosis
@@ -292,6 +293,50 @@ class ApplySearchBoundTests(unittest.TestCase):
         self.assertEqual(len(obs), 1)
         self.assertTrue(obs[0]["ok"])
         self.assertEqual(obs[0]["window"]["start"], 10.0)
+
+    def test_ending_search_window_clamped_before_scoreboard(self):
+        """Aftermath search must not extend past following scoreboard media_in."""
+        edl = _edl_bridge_gap()
+        win = search_window_for_issue(
+            {
+                "issue_id": "thin_post_climax_tail",
+                "category": "ending",
+                "segment_ids": ["seg_sb"],
+            },
+            edl,
+        )
+        self.assertIsNotNone(win)
+        assert win is not None
+        # climax media_out=3020, scoreboard media_in=3100 → hi < 3100
+        self.assertLess(float(win["hi"]), 3100.0)
+        self.assertGreater(float(win["hi"]), float(win["lo"]))
+        self.assertEqual(win["insert_after_segment_id"], "seg_climax")
+        self.assertEqual(win["before_segment_id"], "seg_sb")
+
+    def test_search_add_rejects_pts_order_break_vs_next(self):
+        """Insert before scoreboard cannot use footage that ends after scoreboard PTS."""
+        edl = _edl_bridge_gap()
+        intents = [
+            {
+                "intent_id": "bad_ending",
+                "action": "search_add",
+                "role": "ending_closure_action",
+                "insert_after_segment_id": "seg_climax",
+                "before_segment_id": "seg_sb",
+                "bound_source_window": {"start": 3110.0, "end": 3120.0},
+                "new_segment_id": "seg_ending_bad",
+                "event_ids": ["ev_ending_late"],
+                "narrative_purpose": "extend_ending_closure",
+            }
+        ]
+        out, report = apply_candidate_revision(edl, intents, observations=[])
+        rejected = report.get("rejected") or []
+        self.assertTrue(
+            any(r.get("reason") == "search_add_breaks_source_pts_order_vs_next" for r in rejected),
+            msg=rejected,
+        )
+        ids = [r["segment_id"] for r in out if r.get("include_in_cut", True) is not False]
+        self.assertNotIn("seg_ending_bad", ids)
 
 
 class MatchAgnosticGuard(unittest.TestCase):

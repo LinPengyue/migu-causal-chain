@@ -79,6 +79,19 @@ def _intents_from_verified_search(
         if insert_after and str(insert_after) in set(protect):
             # Inserting *after* a protected goal is fine; do not mutate the goal row.
             pass
+        # Do not claim neighbor PTS order is preserved unless the search window
+        # itself was constrained between neighbors (apply layer still enforces).
+        sw = c.get("search_window") or {}
+        order_claim = "requires_apply_neighbor_pts_check"
+        if (
+            isinstance(sw, dict)
+            and sw.get("lo") is not None
+            and sw.get("hi") is not None
+            and float(start) >= float(sw["lo"]) - 1e-3
+            and float(end) <= float(sw["hi"]) + 1e-3
+            and sw.get("kind") in ("bridge_between_cuts", "post_climax_aftermath")
+        ):
+            order_claim = "search_window_bounded_between_neighbors"
         cand_id = str(c.get("candidate_id") or f"auto_{i}")
         intents.append(
             {
@@ -107,7 +120,7 @@ def _intents_from_verified_search(
                 ),
                 "risk": ",".join(c.get("risks") or []) or "search_bound_unverified_first_live",
                 "goal_anchor_impact": "none_insert_non_goal_only",
-                "causality_impact": "preserves_source_pts_order_relative_to_neighbors",
+                "causality_impact": order_claim,
                 "affected_segments": [insert_after, c.get("before_segment_id")],
                 "evidence_refs": [
                     {"kind": "diagnosis", "ref": issue_id},
