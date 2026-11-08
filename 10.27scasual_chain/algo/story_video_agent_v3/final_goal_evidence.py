@@ -1,8 +1,10 @@
 """Final-delivery goal evidence binding + Goal Recovery lineage (match-agnostic).
 
 RELEASE_READY must use the *final delivery EDL* first-live statuses, never V3-R
-historical aggregates alone. Prior visual rows may be inherited only when source
-video SHA256, segment media window, and evidence window all match.
+historical aggregates alone. Prior visual rows may be inherited only when a
+*trusted* historical source-video SHA256 is present and matches, and both the
+EDL media window and the actual observation window agree. Never stamp the
+current video SHA onto historical evidence.
 """
 from __future__ import annotations
 
@@ -23,6 +25,10 @@ from .story_timeline import build_story_timeline
 
 _PTS_TOL = 0.05
 
+LINEAGE_STRICT = "STRICT_COMPLETE"
+LINEAGE_INFERRED = "INFERRED"
+LINEAGE_UNRESOLVED = "UNRESOLVED"
+
 
 def sha256_file(
     path: Path,
@@ -41,7 +47,9 @@ def sha256_file(
             if (
                 cached.get("path") == str(p.resolve())
                 and int(cached.get("size") or -1) == int(st.st_size)
-                and int(cached.get("mtime_ns") or -1) == int(getattr(st, "st_mtime_ns", int(st.st_mtime * 1e9)))
+                and int(cached.get("mtime_ns") or -1) == int(
+                    getattr(st, "st_mtime_ns", int(st.st_mtime * 1e9))
+                )
                 and cached.get("sha256")
             ):
                 return str(cached["sha256"])
@@ -96,6 +104,58 @@ def _window_key(mi: Any, mo: Any) -> Optional[Tuple[float, float]]:
         return None
 
 
+def _included_in_cut(seg: Mapping[str, Any]) -> bool:
+    return seg.get("include_in_cut", True) is not False
+
+
+def goal_identity_key(seg: Mapping[str, Any]) -> str:
+    """Stable goal identity — role + event_ids, not PTS alone."""
+    sid = str(seg.get("segment_id") or seg.get("id") or "")
+    role = str(seg.get("role") or seg.get("narrative_role") or "")
+    eids = seg.get("event_ids") or []
+    if isinstance(eids, list):
+        eid_part = "|".join(str(x) for x in eids)
+    else:
+        eid_part = str(eids)
+    return f"{role}::{eid_part}::{sid}"
+
+
+def observation_window_from_row(row: Mapping[str, Any]) -> Optional[Tuple[float, float]]:
+    """Actual observed/evidence window — not merely the EDL media span."""
+    for key in ("observation_window", "evidence_window", "observed_pts"):
+        ow = row.get(key)
+        if isinstance(ow, Mapping):
+            w = _window_key(ow.get("media_in"), ow.get("media_out"))
+            if w:
+                return w
+    clip = row.get("clip_export")
+    if isinstance(clip, Mapping):
+        w = _window_key(clip.get("media_in"), clip.get("media_out"))
+        if w:
+            return w
+    # Explicit source_pts that was audited (may differ from a later EDL edit).
+    sp = row.get("source_pts")
+    if isinstance(sp, Mapping):
+        w = _window_key(sp.get("media_in"), sp.get("media_out"))
+        if w:
+            return w
+    return None
+
+
+def trusted_prior_video_sha(
+    prior_audit: Optional[Mapping[str, Any]],
+    prior_row: Optional[Mapping[str, Any]] = None,
+) -> Optional[str]:
+    """Return historical source SHA only if explicitly recorded — never invent."""
+    for src in (prior_row, prior_audit):
+        if not isinstance(src, Mapping):
+            continue
+        sha = src.get("source_video_sha256") or src.get("video_sha256")
+        if sha:
+            return str(sha)
+    return None
+
+
 def can_inherit_prior_evidence(
     *,
     segment: Mapping[str, Any],
@@ -103,43 +163,65 @@ def can_inherit_prior_evidence(
     source_video_sha256: Optional[str],
     prior_video_sha256: Optional[str],
 ) -> Tuple[bool, str]:
-    """Inherit only when video identity + media window + evidence window agree."""
-    if not source_video_sha256 or not prior_video_sha256:
-        return False, "missing_video_sha256"
+    """Inherit only with trusted historical SHA + matching EDL & observation windows.
+
+    Same source PTS with a different goal identity must not inherit.
+    FIRST_LIVE_VERIFIED cannot be inherited when historical source SHA is missing.
+    """
+    status = str(prior_row.get("first_live_status") or "UNRESOLVED")
+    if status not in FIRST_LIVE_STATUSES:
+        return False, "prior_status_unknown"
+
+    if not prior_video_sha256:
+        if status == "FIRST_LIVE_VERIFIED":
+            return False, "missing_prior_video_sha256_cannot_inherit_verified"
+        return False, "missing_prior_video_sha256"
+    if not source_video_sha256:
+        return False, "missing_current_video_sha256"
     if source_video_sha256 != prior_video_sha256:
         return False, "source_video_sha256_mismatch"
+
+    # Goal identity: role / event_ids must agree — PTS alone is insufficient.
+    seg_role = str(segment.get("role") or segment.get("narrative_role") or "")
+    prior_role = str(prior_row.get("role") or "")
+    if seg_role and prior_role and seg_role != prior_role:
+        return False, "goal_identity_role_mismatch"
+
+    seg_eids = [str(x) for x in (segment.get("event_ids") or [])]
+    prior_eids = [str(x) for x in (prior_row.get("event_ids") or prior_row.get("causal_event_ids") or [])]
+    if seg_eids and prior_eids and set(seg_eids) != set(prior_eids):
+        return False, "goal_identity_event_ids_mismatch"
 
     sid = str(segment.get("segment_id") or segment.get("id") or "")
     prior_sid = str(prior_row.get("segment_id") or "")
     if sid and prior_sid and sid != prior_sid:
-        # Allow same role+window under renamed id only if windows match exactly below.
-        role = str(segment.get("role") or "")
-        prior_role = str(prior_row.get("role") or "")
-        if role and prior_role and role != prior_role:
-            return False, "segment_id_and_role_mismatch"
+        # Renamed id only OK if role+events already matched (or events empty on both).
+        if not (seg_role and prior_role and seg_role == prior_role):
+            return False, "segment_id_mismatch_without_shared_identity"
 
     mi, mo = segment.get("media_in"), segment.get("media_out")
     if not _pts_eq(mi, prior_row.get("media_in")) or not _pts_eq(mo, prior_row.get("media_out")):
         return False, "source_media_window_changed"
 
-    # Evidence window: prefer explicit source_pts / evidence fields on prior row.
-    evid = prior_row.get("source_pts") or {}
-    e_mi = evid.get("media_in", prior_row.get("media_in"))
-    e_mo = evid.get("media_out", prior_row.get("media_out"))
-    if not _pts_eq(mi, e_mi) or not _pts_eq(mo, e_mo):
-        return False, "evidence_window_mismatch"
+    # Observation / evidence window must match the prior *observed* span.
+    prior_obs = observation_window_from_row(prior_row)
+    if prior_obs is None:
+        return False, "prior_observation_window_missing"
+    # Current subject window for comparison: segment media is what we will observe.
+    cur_obs = _window_key(mi, mo)
+    if cur_obs is None:
+        return False, "current_observation_window_missing"
+    if not _pts_eq(cur_obs[0], prior_obs[0]) or not _pts_eq(cur_obs[1], prior_obs[1]):
+        return False, "observation_window_changed"
 
-    # Subject of verification must be the same goal action span.
     if prior_row.get("score_confirm_collision"):
         return False, "prior_score_confirm_collision_not_reusable"
 
-    status = str(prior_row.get("first_live_status") or "UNRESOLVED")
-    if status not in FIRST_LIVE_STATUSES:
-        return False, "prior_status_unknown"
     return True, "ok"
 
 
 def _index_prior_goals(prior_audit: Optional[Mapping[str, Any]]) -> Dict[str, Dict[str, Any]]:
+    """Index by segment_id and identity — not by PTS alone (avoids cross-goal inherit)."""
     out: Dict[str, Dict[str, Any]] = {}
     if not prior_audit:
         return out
@@ -148,10 +230,8 @@ def _index_prior_goals(prior_audit: Optional[Mapping[str, Any]]) -> Dict[str, Di
             continue
         sid = str(g.get("segment_id") or "")
         if sid:
-            out[sid] = dict(g)
-        key = _window_key(g.get("media_in"), g.get("media_out"))
-        if key is not None:
-            out[f"pts:{key[0]}:{key[1]}"] = dict(g)
+            out[f"sid:{sid}"] = dict(g)
+        out[f"id:{goal_identity_key(g)}"] = dict(g)
     return out
 
 
@@ -167,7 +247,11 @@ def bind_edl_goal_evidence(
     source_video_sha256: Optional[str] = None,
     enable_paid_vlm: bool = False,
 ) -> Dict[str, Any]:
-    """Build per-goal evidence for one EDL (delivery or candidate). Re-audit when needed."""
+    """Build per-goal evidence for one EDL (delivery or candidate).
+
+    Only ``include_in_cut=true`` goal-action segments count toward final anchors.
+    Deleted / excluded goals are recorded separately and do not inherit into totals.
+    """
     if enable_paid_vlm:
         raise RuntimeError("Paid VLM disabled; prepare pack and wait for approval")
 
@@ -175,30 +259,40 @@ def bind_edl_goal_evidence(
     dest.mkdir(parents=True, exist_ok=True)
     video = Path(video)
     video_sha = source_video_sha256 or sha256_file(video)
-    segs = [s for s in _edl_segments(edl) if is_goal_action_segment(s)]
+
+    all_goal_segs = [s for s in _edl_segments(edl) if is_goal_action_segment(s)]
+    active_segs = [s for s in all_goal_segs if _included_in_cut(s)]
+    deleted_segs = [s for s in all_goal_segs if not _included_in_cut(s)]
 
     prior_maps = []
     for pa in prior_audits or []:
+        if not pa:
+            continue
+        # Do NOT invent / stamp current SHA onto historical audits.
         prior_maps.append({
-            "video_sha256": (pa or {}).get("source_video_sha256"),
+            "video_sha256": trusted_prior_video_sha(pa),
             "by": _index_prior_goals(pa),
             "schema": (pa or {}).get("schema"),
+            "raw": pa,
         })
 
     inherited: List[Dict[str, Any]] = []
     need_audit: List[Dict[str, Any]] = []
     inherit_decisions: List[Dict[str, Any]] = []
+    missing_source_records: List[Dict[str, Any]] = []
 
-    for seg in segs:
+    for seg in active_segs:
         sid = str(seg.get("segment_id") or seg.get("id") or "")
-        key = _window_key(seg.get("media_in"), seg.get("media_out"))
+        ident = goal_identity_key(seg)
         chosen = None
         reason = "no_prior_row"
+        matched_prior = None
         for pm in prior_maps:
-            cand = pm["by"].get(sid) or (pm["by"].get(f"pts:{key[0]}:{key[1]}") if key else None)
+            cand = pm["by"].get(f"sid:{sid}") or pm["by"].get(f"id:{ident}")
             if not cand:
                 continue
-            prior_sha = pm.get("video_sha256") or cand.get("source_video_sha256")
+            matched_prior = cand
+            prior_sha = trusted_prior_video_sha(pm.get("raw"), cand)
             ok, why = can_inherit_prior_evidence(
                 segment=seg,
                 prior_row=cand,
@@ -210,21 +304,46 @@ def bind_edl_goal_evidence(
                 reason = f"inherited_from_{pm.get('schema') or 'prior'}"
                 break
             reason = why
+            if why in (
+                "missing_prior_video_sha256",
+                "missing_prior_video_sha256_cannot_inherit_verified",
+            ):
+                missing_source_records.append({
+                    "segment_id": sid,
+                    "prior_status": cand.get("first_live_status"),
+                    "reason": why,
+                    "action": "reaudit_required",
+                })
         inherit_decisions.append({
             "segment_id": sid,
+            "goal_identity": ident,
             "inherited": chosen is not None,
             "reason": reason,
             "media_in": seg.get("media_in"),
             "media_out": seg.get("media_out"),
+            "prior_observation_window": (
+                list(observation_window_from_row(matched_prior))
+                if matched_prior and observation_window_from_row(matched_prior)
+                else None
+            ),
         })
         if chosen is not None:
             row = dict(chosen)
             row["segment_id"] = sid
             row["role"] = seg.get("role") or row.get("role")
+            row["event_ids"] = list(seg.get("event_ids") or row.get("event_ids") or [])
             row["source_media_in"] = seg.get("media_in")
             row["source_media_out"] = seg.get("media_out")
+            # Keep historical SHA on the row; also record current for binding audit.
+            row["prior_source_video_sha256"] = chosen.get("source_video_sha256") or trusted_prior_video_sha(
+                None, chosen
+            )
             row["source_video_sha256"] = video_sha
-            row["evidence_binding"] = "inherited_identical_window"
+            row["observation_window"] = {
+                "media_in": seg.get("media_in"),
+                "media_out": seg.get("media_out"),
+            }
+            row["evidence_binding"] = "inherited_trusted_sha_and_observation_window"
             row["inherited"] = True
             inherited.append(row)
         else:
@@ -249,25 +368,42 @@ def bind_edl_goal_evidence(
             g["source_media_in"] = g.get("media_in")
             g["source_media_out"] = g.get("media_out")
             g["source_video_sha256"] = video_sha
-            g["evidence_binding"] = "reverified_after_window_or_subject_change"
+            g["observation_window"] = {
+                "media_in": g.get("media_in"),
+                "media_out": g.get("media_out"),
+            }
+            # Preserve why we could not inherit.
+            miss = next(
+                (m for m in missing_source_records if m.get("segment_id") == g.get("segment_id")),
+                None,
+            )
+            if miss:
+                g["prior_source_missing"] = miss
+                g["evidence_binding"] = "reverified_prior_source_sha_missing_or_untrusted"
+            else:
+                g["evidence_binding"] = "reverified_after_window_or_subject_change"
             g["inherited"] = False
 
     goals = list(inherited) + list(fresh_audit.get("goals") or [])
-    # Keep EDL order.
     by_sid = {str(g.get("segment_id")): g for g in goals}
-    ordered = []
-    for seg in segs:
+    ordered: List[Dict[str, Any]] = []
+    for seg in active_segs:
         sid = str(seg.get("segment_id") or seg.get("id") or "")
         g = by_sid.get(sid)
         if g is None:
             g = {
                 "segment_id": sid,
                 "role": seg.get("role"),
+                "event_ids": list(seg.get("event_ids") or []),
                 "source_media_in": seg.get("media_in"),
                 "source_media_out": seg.get("media_out"),
                 "media_in": seg.get("media_in"),
                 "media_out": seg.get("media_out"),
                 "source_video_sha256": video_sha,
+                "observation_window": {
+                    "media_in": seg.get("media_in"),
+                    "media_out": seg.get("media_out"),
+                },
                 "first_live_status": "UNRESOLVED",
                 "evidence_binding": "missing_audit_row",
                 "inherited": False,
@@ -275,15 +411,7 @@ def bind_edl_goal_evidence(
             }
         ordered.append(g)
 
-    counts = {s: 0 for s in FIRST_LIVE_STATUSES}
-    for g in ordered:
-        st = str(g.get("first_live_status") or "UNRESOLVED")
-        if st not in counts:
-            st = "UNRESOLVED"
-            g["first_live_status"] = st
-        counts[st] += 1
-
-    # Never upgrade UNRESOLVED→VERIFIED here.
+    # Never upgrade UNRESOLVED→VERIFIED; demote false verified claims.
     for g in ordered:
         if g.get("first_live_status") == "FIRST_LIVE_VERIFIED" and not (
             g.get("agent_auto_verified") and g.get("goal_action_verified_ok")
@@ -293,7 +421,25 @@ def bind_edl_goal_evidence(
 
     counts = {s: 0 for s in FIRST_LIVE_STATUSES}
     for g in ordered:
-        counts[str(g.get("first_live_status") or "UNRESOLVED")] += 1
+        st = str(g.get("first_live_status") or "UNRESOLVED")
+        if st not in counts:
+            st = "UNRESOLVED"
+            g["first_live_status"] = st
+        counts[st] += 1
+
+    deleted_ledger = [
+        {
+            "segment_id": str(s.get("segment_id") or s.get("id") or ""),
+            "role": s.get("role"),
+            "media_in": s.get("media_in"),
+            "media_out": s.get("media_out"),
+            "event_ids": list(s.get("event_ids") or []),
+            "include_in_cut": False,
+            "note": "excluded_from_final_goal_anchor_count",
+        }
+        for s in deleted_segs
+    ]
+    dump(dest / "deleted_goal_segments_ledger.json", {"segments": deleted_ledger})
 
     manifest = {
         "schema": "v3a_final_goal_evidence_manifest_v1",
@@ -301,9 +447,12 @@ def bind_edl_goal_evidence(
         "source_video": str(video),
         "source_video_sha256": video_sha,
         "n_goal_anchors": len(ordered),
+        "n_deleted_goal_segments": len(deleted_ledger),
+        "deleted_goal_segments": deleted_ledger,
         "status_counts": counts,
         "n_inherited": sum(1 for g in ordered if g.get("inherited")),
         "n_reverified": sum(1 for g in ordered if not g.get("inherited")),
+        "prior_source_missing_records": missing_source_records,
         "any_first_live_verified": counts.get("FIRST_LIVE_VERIFIED", 0) > 0,
         "any_replay_on_retained": counts.get("REPLAY_DETECTED", 0) > 0,
         "all_resolved_verified": (
@@ -314,8 +463,10 @@ def bind_edl_goal_evidence(
         "paid_api_calls": 0,
         "success_claimed": False,
         "note": (
-            "Evidence bound to this EDL only. Candidate and delivery manifests are separate. "
-            "Inheritance requires identical video SHA + media window + evidence window."
+            "Only include_in_cut goal-action segments counted. "
+            "Historical SHA is never auto-stamped from the current video. "
+            "Inheritance requires trusted prior SHA + matching EDL and observation windows "
+            "+ matching goal identity (role/event_ids)."
         ),
     }
     dump(dest / "final_goal_evidence_manifest.json", manifest)
@@ -324,11 +475,9 @@ def bind_edl_goal_evidence(
 
 def _parse_recovery_id_from_event(eid: str) -> Optional[str]:
     s = str(eid or "")
-    # v3_goal_goalcand_01_01_to_11 → goalcand_01_01_to_11
     m = re.match(r"^v3_goal_(goalcand_.+)$", s)
     if m:
         return m.group(1)
-    # causal:pred_0007:atom_fill_... — not a recovery id
     if s.startswith("goalcand_"):
         return s
     return None
@@ -342,13 +491,120 @@ def _chain_for_event(
         for e in ch.get("events") or []:
             if str(e.get("event_id")) == str(event_id):
                 return dict(ch)
-        # also match annotation-qualified ids
         ann = str(ch.get("annotation_id") or "")
         for e in ch.get("events") or []:
             qual = f"causal:{ann}:{e.get('event_id')}"
             if qual == str(event_id):
                 return dict(ch)
     return None
+
+
+def _explicit_recovery_link(
+    *,
+    event_ids: Sequence[str],
+    recovery_by_id: Mapping[str, Mapping[str, Any]],
+) -> Tuple[Optional[str], Optional[Dict[str, Any]], str]:
+    """Strict: Recovery ID must appear in event_ids and exist in candidates."""
+    for eid in event_ids:
+        rid = _parse_recovery_id_from_event(str(eid))
+        if rid and rid in recovery_by_id:
+            return rid, dict(recovery_by_id[rid]), "explicit_event_id"
+        # causal:ann:v3_goal_* nested
+        if "v3_goal_goalcand_" in str(eid):
+            m = re.search(r"(goalcand_[A-Za-z0-9_]+)", str(eid))
+            if m and m.group(1) in recovery_by_id:
+                rid = m.group(1)
+                return rid, dict(recovery_by_id[rid]), "explicit_qualified_event_id"
+    return None, None, "no_explicit_recovery_id"
+
+
+def _inferred_recovery_by_pts(
+    *,
+    media_in: Optional[float],
+    recovery_by_id: Mapping[str, Mapping[str, Any]],
+    tol_sec: float = 45.0,
+) -> Tuple[Optional[str], Optional[Dict[str, Any]]]:
+    if media_in is None:
+        return None, None
+    best = None
+    best_d = None
+    best_id = None
+    for rid, c in recovery_by_id.items():
+        action = c.get("goal_action_sec")
+        if action is None:
+            continue
+        d = abs(float(action) - float(media_in))
+        if d <= tol_sec and (best_d is None or d < best_d):
+            best, best_d, best_id = dict(c), d, rid
+    return best_id, best
+
+
+def _explicit_chain_link(
+    *,
+    predicted_causal: Mapping[str, Any],
+    event_ids: Sequence[str],
+    recovery_id: Optional[str],
+) -> Tuple[Optional[Dict[str, Any]], str]:
+    for eid in event_ids:
+        ch = _chain_for_event(predicted_causal, str(eid))
+        if ch is not None:
+            # Chain must contain a goal-like event or verifiable source relation.
+            has_goal = False
+            for e in ch.get("events") or []:
+                typ = e.get("type")
+                en = str(e.get("type_en") or "").lower()
+                if typ in {"进球", "乌龙球", "头球破门"} or en in {"goal", "own_goal", "header_goal"}:
+                    has_goal = True
+                    break
+                if str(e.get("event_id")) == str(eid) or str(eid).endswith(str(e.get("event_id"))):
+                    has_goal = True
+                    break
+            if has_goal or recovery_id:
+                return ch, "explicit_event_in_chain"
+    if recovery_id:
+        for ch in predicted_causal.get("causal_chains") or []:
+            if str(ch.get("goal_candidate_id") or "") == str(recovery_id):
+                return dict(ch), "explicit_goal_candidate_id"
+            for e in ch.get("events") or []:
+                if str(e.get("event_id")) == f"v3_goal_{recovery_id}":
+                    return dict(ch), "explicit_v3_goal_event"
+    return None, "no_explicit_causal_chain"
+
+
+def _explicit_graph_links(
+    *,
+    graph_nodes: Mapping[str, Mapping[str, Any]],
+    segment_id: str,
+    event_ids: Sequence[str],
+    recovery_id: Optional[str],
+    chain: Optional[Mapping[str, Any]],
+) -> Tuple[Optional[Dict[str, Any]], Optional[Dict[str, Any]], List[str]]:
+    """Graph segment must exist; event node must link to causal/goal event when present."""
+    reasons: List[str] = []
+    graph_seg = graph_nodes.get(segment_id)
+    if graph_seg is None:
+        reasons.append("missing_story_graph_segment")
+    graph_event = None
+    for eid in event_ids:
+        graph_event = graph_nodes.get(f"event:{eid}")
+        if graph_event:
+            break
+    if graph_event is None and recovery_id:
+        graph_event = graph_nodes.get(f"event:v3_goal_{recovery_id}")
+    if graph_event is None and event_ids:
+        reasons.append("missing_story_graph_event_node")
+    # Segment↔event consistency when both exist.
+    if graph_seg and graph_event:
+        linked = str(graph_event.get("linked_from_segment") or "")
+        if linked and linked != segment_id:
+            reasons.append("graph_event_linked_from_other_segment")
+    if chain and graph_event is None and not event_ids:
+        reasons.append("chain_without_graph_event")
+    return (
+        dict(graph_seg) if graph_seg else None,
+        dict(graph_event) if graph_event else None,
+        reasons,
+    )
 
 
 def build_goal_lineage_report(
@@ -360,7 +616,7 @@ def build_goal_lineage_report(
     evidence_manifest: Optional[Mapping[str, Any]] = None,
     final_mp4: Optional[Path] = None,
 ) -> Dict[str, Any]:
-    """Recovery Candidate → Predicted Causal → Story Graph → EDL → Final MP4."""
+    """Recovery → Causal → Graph → EDL → MP4 with STRICT vs INFERRED association."""
     timeline = build_story_timeline(edl)
     tl_by_sid = {
         str(s.get("segment_id")): s for s in (timeline.get("segments") or [])
@@ -372,7 +628,7 @@ def build_goal_lineage_report(
     recovery_by_id = {
         str(c.get("candidate_id")): c
         for c in (goal_recovery.get("candidates") or [])
-        if isinstance(c, dict)
+        if isinstance(c, dict) and c.get("candidate_id")
     }
     graph_nodes = {
         str(n.get("id")): n
@@ -384,58 +640,116 @@ def build_goal_lineage_report(
     for seg in _edl_segments(edl):
         if not is_goal_action_segment(seg):
             continue
+        if not _included_in_cut(seg):
+            continue  # deleted goals excluded from final lineage totals
+
         sid = str(seg.get("segment_id") or "")
-        event_ids = list(seg.get("event_ids") or [])
-        primary_eid = str(event_ids[0]) if event_ids else None
-        recovery_id = None
-        for eid in event_ids:
-            recovery_id = _parse_recovery_id_from_event(str(eid))
-            if recovery_id:
-                break
-        # Also try matching by PTS to recovery when event_id is strip/causal atom.
-        rec = recovery_by_id.get(recovery_id) if recovery_id else None
-        if rec is None and seg.get("media_in") is not None:
-            mi = float(seg["media_in"])
-            best = None
-            best_d = None
-            for c in recovery_by_id.values():
-                action = c.get("goal_action_sec")
-                if action is None:
-                    continue
-                d = abs(float(action) - mi)
-                if d <= 45.0 and (best_d is None or d < best_d):
-                    best, best_d = c, d
-            if best is not None:
-                rec = best
-                recovery_id = str(best.get("candidate_id"))
-
-        chain = _chain_for_event(predicted_causal, primary_eid) if primary_eid else None
-        if chain is None and recovery_id:
-            # Find recovery-sourced chain by goal_candidate_id
-            for ch in predicted_causal.get("causal_chains") or []:
-                if str(ch.get("goal_candidate_id") or "") == str(recovery_id):
-                    chain = dict(ch)
-                    break
-                for e in ch.get("events") or []:
-                    if str(e.get("event_id")) == f"v3_goal_{recovery_id}":
-                        chain = dict(ch)
-                        break
-
-        graph_seg = graph_nodes.get(sid)
-        graph_event = None
-        if primary_eid:
-            graph_event = graph_nodes.get(f"event:{primary_eid}")
-        if graph_event is None and recovery_id:
-            graph_event = graph_nodes.get(f"event:v3_goal_{recovery_id}")
-
+        event_ids = [str(x) for x in (seg.get("event_ids") or [])]
         tl = tl_by_sid.get(sid) or {}
         evid = evid_by_sid.get(sid) or {}
+        in_final_video = bool(tl.get("has_media_window")) and sid in tl_by_sid
 
-        in_final_video = bool(seg.get("include_in_cut", True)) and tl.get("has_media_window")
+        recovery_id, rec, rec_how = _explicit_recovery_link(
+            event_ids=event_ids, recovery_by_id=recovery_by_id
+        )
+        recovery_link_class = "STRICT" if recovery_id else None
+        if recovery_id is None:
+            inf_id, inf_rec = _inferred_recovery_by_pts(
+                media_in=seg.get("media_in"), recovery_by_id=recovery_by_id
+            )
+            if inf_id:
+                recovery_id, rec = inf_id, inf_rec
+                rec_how = "inferred_nearest_pts"
+                recovery_link_class = "INFERRED"
+
+        chain, chain_how = _explicit_chain_link(
+            predicted_causal=predicted_causal,
+            event_ids=event_ids,
+            recovery_id=recovery_id if recovery_link_class == "STRICT" else None,
+        )
+        chain_link_class = "STRICT" if chain is not None else None
+        # If only inferred recovery, do not promote chain via that recovery id to STRICT.
+        if chain is None and recovery_link_class == "INFERRED" and recovery_id:
+            ch2, how2 = _explicit_chain_link(
+                predicted_causal=predicted_causal,
+                event_ids=event_ids,
+                recovery_id=recovery_id,
+            )
+            if ch2 is not None:
+                chain, chain_how = ch2, f"inferred_via_{how2}"
+                chain_link_class = "INFERRED"
+
+        graph_seg, graph_event, graph_reasons = _explicit_graph_links(
+            graph_nodes=graph_nodes,
+            segment_id=sid,
+            event_ids=event_ids,
+            recovery_id=recovery_id if recovery_link_class == "STRICT" else None,
+            chain=chain if chain_link_class == "STRICT" else None,
+        )
+        graph_ok = graph_seg is not None and sid in graph_nodes
+        # Event node required when event_ids present for STRICT graph completeness.
+        graph_strict = graph_ok and (
+            not event_ids or graph_event is not None
+        ) and not any(
+            r in graph_reasons for r in (
+                "graph_event_linked_from_other_segment",
+                "missing_story_graph_segment",
+            )
+        )
+
+        # STRICT_COMPLETE: every hop explicit + in timeline.
+        strict_ok = bool(
+            in_final_video
+            and graph_strict
+            and chain_link_class == "STRICT"
+            and (
+                recovery_link_class == "STRICT"
+                or (
+                    # Strip/causal atom goals without recovery ID are OK if event→chain→graph explicit.
+                    recovery_link_class is None
+                    and event_ids
+                    and chain is not None
+                )
+            )
+            and seg.get("media_in") is not None
+        )
+        inferred_ok = (not strict_ok) and bool(
+            in_final_video
+            and graph_ok
+            and (
+                recovery_link_class == "INFERRED"
+                or chain_link_class == "INFERRED"
+                or (chain is not None and graph_seg is not None)
+            )
+        )
+        if strict_ok:
+            lineage_class = LINEAGE_STRICT
+        elif inferred_ok:
+            lineage_class = LINEAGE_INFERRED
+        else:
+            lineage_class = LINEAGE_UNRESOLVED
+
+        gaps = []
+        if recovery_link_class != "STRICT" and not (
+            event_ids and chain_link_class == "STRICT"
+        ):
+            gaps.append("no_explicit_recovery_link")
+        if chain_link_class != "STRICT":
+            gaps.append("no_explicit_causal_chain")
+        if not graph_strict:
+            gaps.extend(graph_reasons or ["graph_incomplete"])
+        if not in_final_video:
+            gaps.append("not_in_final_mp4_timeline")
+        if str(evid.get("first_live_status") or "UNRESOLVED") != "FIRST_LIVE_VERIFIED":
+            gaps.append("first_live_unresolved")
+
         rows.append({
             "segment_id": sid,
             "role": seg.get("role"),
+            "lineage_class": lineage_class,
             "recovery_candidate_id": recovery_id,
+            "recovery_link": rec_how,
+            "recovery_link_class": recovery_link_class,
             "score_before": (rec or {}).get("score_before"),
             "score_after": (rec or {}).get("score_after"),
             "goal_action_sec": (rec or {}).get("goal_action_sec") or seg.get("goal_anchor_t_sec"),
@@ -444,6 +758,8 @@ def build_goal_lineage_report(
             "source_media_out": seg.get("media_out"),
             "predicted_causal_chain_id": (chain or {}).get("annotation_id"),
             "prediction_source": (chain or {}).get("prediction_source"),
+            "causal_link": chain_how,
+            "causal_link_class": chain_link_class,
             "causal_event_ids": event_ids,
             "story_graph_segment_node": (graph_seg or {}).get("id"),
             "story_graph_event_node": (graph_event or {}).get("id"),
@@ -453,41 +769,25 @@ def build_goal_lineage_report(
             "final_mp4": str(final_mp4) if final_mp4 else None,
             "first_live_status": evid.get("first_live_status") or "UNRESOLVED",
             "evidence_binding": evid.get("evidence_binding"),
-            "lineage_complete": bool(
-                sid
-                and seg.get("media_in") is not None
-                and in_final_video
-                and (chain is not None or recovery_id is not None or primary_eid)
-            ),
-            "gaps": [
-                g for g, ok in (
-                    ("missing_recovery_candidate", rec is None and primary_eid and str(primary_eid).startswith("v3_goal_")),
-                    ("missing_predicted_causal_chain", chain is None),
-                    ("missing_story_graph_segment", graph_seg is None),
-                    ("not_in_final_mp4_timeline", not in_final_video),
-                    ("first_live_unresolved", str(evid.get("first_live_status") or "UNRESOLVED") != "FIRST_LIVE_VERIFIED"),
-                )
-                if ok
-            ],
+            "strict_complete": lineage_class == LINEAGE_STRICT,
+            "gaps": gaps,
         })
 
-    n_complete = sum(1 for r in rows if r.get("lineage_complete") and not r.get("gaps"))
-    # gaps always includes first_live_unresolved in zero-cost — lineage structural completeness separate
-    n_struct = sum(
-        1 for r in rows
-        if r.get("segment_id")
-        and r.get("source_media_in") is not None
-        and r.get("in_final_mp4")
-        and (r.get("predicted_causal_chain_id") or r.get("recovery_candidate_id") or r.get("causal_event_ids"))
-        and r.get("story_graph_segment_node")
-    )
+    n_strict = sum(1 for r in rows if r["lineage_class"] == LINEAGE_STRICT)
+    n_inferred = sum(1 for r in rows if r["lineage_class"] == LINEAGE_INFERRED)
+    n_unresolved = sum(1 for r in rows if r["lineage_class"] == LINEAGE_UNRESOLVED)
 
     report = {
         "schema": "v3a_goal_lineage_report_v1",
         "n_final_goal_segments": len(rows),
-        "n_structurally_traced_to_mp4": n_struct,
+        "n_strict_complete": n_strict,
+        "n_inferred": n_inferred,
+        "n_unresolved": n_unresolved,
+        # Backward-compatible alias: only STRICT counts as structurally proven.
+        "n_structurally_traced_to_mp4": n_strict,
         "n_lineage_rows": len(rows),
         "entered_predicted_causal_alone_insufficient": True,
+        "nearest_pts_alone_insufficient_for_strict": True,
         "goals": rows,
         "duplicate_segment_ids": [
             sid for sid, n in (
@@ -496,11 +796,59 @@ def build_goal_lineage_report(
             ) if n > 1
         ],
         "note": (
-            "Each retained EDL goal must trace Recovery/Causal → Graph → EDL → story timeline. "
-            "entered_predicted_causal=true alone never proves presence in final MP4."
+            "STRICT_COMPLETE requires explicit Recovery/Causal/Graph/EDL/timeline links. "
+            "Nearest-PTS recovery matches are INFERRED only and never count as STRICT."
         ),
     }
     return report
+
+
+def compare_candidate_delivery_video_binding(
+    *,
+    delivery_manifest: Mapping[str, Any],
+    candidate_manifest: Optional[Mapping[str, Any]],
+    delivery_edl: Any,
+    candidate_edl: Optional[Any],
+) -> Dict[str, Any]:
+    """Ensure candidate/delivery evidence refer to the same source video identity."""
+    d_sha = delivery_manifest.get("source_video_sha256")
+    c_sha = (candidate_manifest or {}).get("source_video_sha256") if candidate_manifest else None
+    same_video = (candidate_manifest is None) or (d_sha and c_sha and d_sha == c_sha)
+
+    def _goal_windows(edl: Any) -> Dict[str, Tuple[Optional[float], Optional[float]]]:
+        out = {}
+        for s in _edl_segments(edl):
+            if not is_goal_action_segment(s) or not _included_in_cut(s):
+                continue
+            sid = str(s.get("segment_id") or "")
+            out[sid] = (s.get("media_in"), s.get("media_out"))
+        return out
+
+    d_win = _goal_windows(delivery_edl)
+    c_win = _goal_windows(candidate_edl) if candidate_edl is not None else {}
+    shared = sorted(set(d_win) & set(c_win))
+    changed = [
+        sid for sid in shared
+        if not (
+            _pts_eq(d_win[sid][0], c_win[sid][0]) and _pts_eq(d_win[sid][1], c_win[sid][1])
+        )
+    ]
+    only_cand = sorted(set(c_win) - set(d_win))
+    only_del = sorted(set(d_win) - set(c_win))
+    return {
+        "schema": "v3a_candidate_delivery_video_binding_v1",
+        "same_source_video_sha256": bool(same_video),
+        "delivery_sha256": d_sha,
+        "candidate_sha256": c_sha,
+        "shared_goal_segments": shared,
+        "window_changed_segments": changed,
+        "candidate_only_goal_segments": only_cand,
+        "delivery_only_goal_segments": only_del,
+        "note": (
+            "Candidate and delivery manifests must not share verification conclusions "
+            "across changed windows; both must bind to the same source video SHA."
+        ),
+    }
 
 
 def build_delivery_and_candidate_evidence(
@@ -521,14 +869,19 @@ def build_delivery_and_candidate_evidence(
     dest.mkdir(parents=True, exist_ok=True)
     video_sha = sha256_file(Path(video), cache_path=dest / "source_video.sha256.json")
 
-    # Stamp prior audit with video sha if missing (same source match video).
-    priors = []
+    # Historical prior: pass through AS-IS. Never stamp current video SHA onto it.
+    priors: List[Mapping[str, Any]] = []
+    prior_source_trust: Dict[str, Any] = {
+        "prior_provided": bool(prior_v3r_audit),
+        "prior_has_trusted_sha": False,
+        "stamped_current_sha_onto_prior": False,
+    }
     if prior_v3r_audit:
-        pa = dict(prior_v3r_audit)
-        pa.setdefault("source_video_sha256", video_sha)
-        for g in pa.get("goals") or []:
-            if isinstance(g, dict):
-                g.setdefault("source_video_sha256", video_sha)
+        prior_sha = trusted_prior_video_sha(prior_v3r_audit)
+        prior_source_trust["prior_has_trusted_sha"] = bool(prior_sha)
+        prior_source_trust["prior_source_video_sha256"] = prior_sha
+        # Shallow copy without mutating historical SHA fields.
+        pa = json.loads(json.dumps(prior_v3r_audit))
         priors.append(pa)
 
     delivery_manifest = bind_edl_goal_evidence(
@@ -541,14 +894,11 @@ def build_delivery_and_candidate_evidence(
         prior_audits=priors,
         source_video_sha256=video_sha,
     )
-    # Canonical path expected by auditors.
     dump(dest / "final_goal_evidence_manifest.json", delivery_manifest)
+    dump(dest / "prior_source_trust.json", prior_source_trust)
 
     candidate_manifest = None
     if candidate_edl is not None:
-        # Candidate must not silently reuse delivery conclusions when windows differ.
-        cand_priors = list(priors)
-        # Do NOT pass delivery_manifest as inheritable prior for candidate — separate track.
         candidate_manifest = bind_edl_goal_evidence(
             label="v3a_candidate",
             edl=candidate_edl,
@@ -556,10 +906,18 @@ def build_delivery_and_candidate_evidence(
             out_dir=dest / "candidate",
             events_path=events_path,
             goal_recovery=goal_recovery,
-            prior_audits=cand_priors,
+            prior_audits=priors,
             source_video_sha256=video_sha,
         )
         dump(dest / "candidate_goal_evidence_manifest.json", candidate_manifest)
+
+    binding = compare_candidate_delivery_video_binding(
+        delivery_manifest=delivery_manifest,
+        candidate_manifest=candidate_manifest,
+        delivery_edl=delivery_edl,
+        candidate_edl=candidate_edl,
+    )
+    dump(dest / "candidate_delivery_video_binding.json", binding)
 
     lineage = build_goal_lineage_report(
         edl=delivery_edl,
@@ -576,4 +934,6 @@ def build_delivery_and_candidate_evidence(
         "candidate": candidate_manifest,
         "lineage": lineage,
         "source_video_sha256": video_sha,
+        "prior_source_trust": prior_source_trust,
+        "candidate_delivery_binding": binding,
     }

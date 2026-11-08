@@ -136,10 +136,13 @@ def audit_retained_goal_first_live(
     events_path: Optional[Path] = None,
     goal_recovery: Optional[Mapping[str, Any]] = None,
     enable_paid_vlm: bool = False,
+    source_video_sha256: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Audit every retained goal-action EDL segment with existing localize primitives.
 
     enable_paid_vlm must stay False unless the operator approved budget separately.
+    When source_video_sha256 is provided it is recorded as the historical source
+    identity of this audit (computed at creation time — never backfilled later).
     """
     if enable_paid_vlm:
         raise RuntimeError(
@@ -150,7 +153,10 @@ def audit_retained_goal_first_live(
     dest.mkdir(parents=True, exist_ok=True)
     events = _load_events(events_path)
     recovered = list((goal_recovery or {}).get("candidates") or [])
-    segs = [s for s in _edl_segments(edl) if is_goal_action_segment(s)]
+    segs = [
+        s for s in _edl_segments(edl)
+        if is_goal_action_segment(s) and s.get("include_in_cut", True) is not False
+    ]
 
     rows: List[Dict[str, Any]] = []
     for seg in segs:
@@ -244,12 +250,18 @@ def audit_retained_goal_first_live(
             score_confirm_collision=score_confirm_collision,
         )
 
+        obs_mi = float(audited.get("media_in") or mi_f)
+        obs_mo = float(audited.get("media_out") or mo_f)
         rows.append({
             "segment_id": sid,
             "role": role,
+            "event_ids": list(seg.get("event_ids") or []),
             "media_in": mi_f,
             "media_out": mo_f,
             "source_pts": {"media_in": mi_f, "media_out": mo_f},
+            "observation_window": {"media_in": obs_mi, "media_out": obs_mo},
+            "evidence_window": {"media_in": obs_mi, "media_out": obs_mo},
+            "clip_export": audited.get("clip_export"),
             "score_before": score_before,
             "score_after": score_after,
             "score_confirmation_sec": confirm,
@@ -267,6 +279,7 @@ def audit_retained_goal_first_live(
             "agent_auto_verified": bool(audited.get("agent_auto_verified")),
             "goal_action_verified_ok": bool(audited.get("goal_action_verified_ok")),
             "visual_verified": status == "FIRST_LIVE_VERIFIED",
+            "source_video_sha256": source_video_sha256,
             "paid_vlm_used": False,
             "note": (
                 "Zero-cost structural+frame extraction audit; "
@@ -280,6 +293,8 @@ def audit_retained_goal_first_live(
 
     report = {
         "schema": "v3a_first_live_chain_audit_v1",
+        "source_video": str(video),
+        "source_video_sha256": source_video_sha256,
         "n_goal_anchors": len(rows),
         "status_counts": counts,
         "any_first_live_verified": counts.get("FIRST_LIVE_VERIFIED", 0) > 0,

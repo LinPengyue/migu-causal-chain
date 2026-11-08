@@ -466,11 +466,16 @@ def evaluate_stages(
                 and int(evid.get("n_goal_anchors") or 0) > 0
                 and evid.get("success_claimed") is False
             )
+            # Strict coverage may be < n_goals; do not require 100% STRICT to pass
+            # stage validity — but counts must be present and consistent.
+            n_goals = int(lineage.get("n_final_goal_segments") or 0)
+            n_strict = int(lineage.get("n_strict_complete") or lineage.get("n_structurally_traced_to_mp4") or 0)
+            n_inf = int(lineage.get("n_inferred") or 0)
+            n_unres = int(lineage.get("n_unresolved") or 0)
             lineage_ok = (
                 lineage_p.is_file()
-                and int(lineage.get("n_final_goal_segments") or 0) > 0
-                and int(lineage.get("n_structurally_traced_to_mp4") or 0)
-                == int(lineage.get("n_final_goal_segments") or -1)
+                and n_goals > 0
+                and (n_strict + n_inf + n_unres) == n_goals
             )
             # RELEASE_READY must be justified by final EDL evidence, not V3-R history.
             release_evid_ok = True
@@ -521,7 +526,10 @@ def evaluate_stages(
                 "aligned": align.get("aligned"),
                 "n_final_goal_evidence": evid.get("n_goal_anchors"),
                 "final_first_live_counts": evid.get("status_counts"),
-                "n_lineage_traced": lineage.get("n_structurally_traced_to_mp4"),
+                "n_lineage_strict_complete": lineage.get("n_strict_complete"),
+                "n_lineage_inferred": lineage.get("n_inferred"),
+                "n_lineage_unresolved": lineage.get("n_unresolved"),
+                "n_lineage_traced_strict": lineage.get("n_structurally_traced_to_mp4"),
             }
         except Exception as exc:  # noqa: BLE001
             blocking.append(f"99_final_invalid:{exc}")

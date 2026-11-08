@@ -293,6 +293,12 @@ def run_match(
     }
     edl_path = phase5_dir / "candidate_edl.json"
     if edl_path.is_file() and video.is_file():
+        from .final_goal_evidence import sha256_file
+
+        # Record SHA at audit creation time (historical identity). Never backfill later.
+        video_sha = sha256_file(
+            video, cache_path=audit_dir / "source_video.sha256.json"
+        )
         edl_obj = json.loads(edl_path.read_text(encoding="utf-8"))
         first_live_visual = audit_retained_goal_first_live(
             video=video,
@@ -301,6 +307,7 @@ def run_match(
             events_path=enriched_path,
             goal_recovery=recovery_payload,
             enable_paid_vlm=False,
+            source_video_sha256=video_sha,
         )
         dump(audit_dir / "first_live_visual_audit.json", first_live_visual)
 

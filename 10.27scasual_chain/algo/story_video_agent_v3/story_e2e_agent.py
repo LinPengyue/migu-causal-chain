@@ -1150,8 +1150,13 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
     audit["goal_lineage"] = {
         "path": str(final_dir / "goal_lineage_report.json"),
         "n_final_goal_segments": lineage.get("n_final_goal_segments"),
+        "n_strict_complete": lineage.get("n_strict_complete"),
+        "n_inferred": lineage.get("n_inferred"),
+        "n_unresolved": lineage.get("n_unresolved"),
         "n_structurally_traced_to_mp4": lineage.get("n_structurally_traced_to_mp4"),
         "duplicate_segment_ids": lineage.get("duplicate_segment_ids"),
+        "prior_source_trust": evidence_pack.get("prior_source_trust"),
+        "candidate_delivery_binding": evidence_pack.get("candidate_delivery_binding"),
     }
 
     # Formal delivery status: RELEASE_READY | HUMAN_REVIEW_REQUIRED | BLOCKED
