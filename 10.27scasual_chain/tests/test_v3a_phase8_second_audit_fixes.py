@@ -159,14 +159,34 @@ class TestFirstLiveLedgerP0A(unittest.TestCase):
         self.assertEqual(hs["safety"], "UNKNOWN")
 
     def test_two_windows_one_unverified_unknown(self):
+        # Synthetic validated pack for window A only (no files required in this unit).
+        pack_a = {
+            "schema": "v3a_first_live_window_evidence_v1",
+            "status": "FIRST_LIVE_VERIFIED",
+            "source_sha256": "shaA",
+            "source_pts_start": 900.0,
+            "source_pts_end": 908.0,
+            "manifest_digest": "a" * 64,
+            "manifest": {"k": 1},
+            "frames": [
+                {"sha256": "b" * 64, "path": "/no/file", "source_pts_sec": 901.0},
+                {"sha256": "c" * 64, "path": "/no/file", "source_pts_sec": 907.0},
+            ],
+        }
+        # Recompute digest to match manifest
+        import hashlib, json as _json
+
+        pack_a["manifest_digest"] = hashlib.sha256(
+            _json.dumps(pack_a["manifest"], sort_keys=True).encode()
+        ).hexdigest()
         led = build_first_live_window_ledger(
             source_sha="shaA",
             new_windows=[
                 {
                     "source_pts_start": 900.0,
                     "source_pts_end": 908.0,
-                    "targeted_visual_verified": True,
-                    "first_live_status": "FIRST_LIVE_VERIFIED",
+                    "validated_evidence": pack_a,
+                    "require_evidence_files": False,
                 },
                 {
                     "source_pts_start": 1500.0,
@@ -185,6 +205,7 @@ class TestFirstLiveLedgerP0A(unittest.TestCase):
                 "first_live_ledger": led,
                 "pts_ok": True,
                 "source_provenance_ok": True,
+                "require_candidate_mp4": False,
             },
         )
         self.assertEqual(hs["safety"], "UNKNOWN")
@@ -194,19 +215,37 @@ class TestFirstLiveLedgerP0A(unittest.TestCase):
             hard_vetoes=[{"kind": "ocr_corruption"}],
             goal_intact=True,
             render_rows_ok=True,
-            extra={"has_new_footage": False},
+            extra={"has_new_footage": False, "require_candidate_mp4": False},
         )
         self.assertEqual(hs["safety"], "FAIL")
 
     def test_all_windows_verified_pass(self):
+        import hashlib, json as _json
+
+        manifest = {"k": 1}
+        pack = {
+            "schema": "v3a_first_live_window_evidence_v1",
+            "status": "FIRST_LIVE_VERIFIED",
+            "source_sha256": "shaA",
+            "source_pts_start": 900.0,
+            "source_pts_end": 908.0,
+            "manifest": manifest,
+            "manifest_digest": hashlib.sha256(
+                _json.dumps(manifest, sort_keys=True).encode()
+            ).hexdigest(),
+            "frames": [
+                {"sha256": "b" * 64, "path": "/no/file", "source_pts_sec": 901.0},
+                {"sha256": "c" * 64, "path": "/no/file", "source_pts_sec": 907.0},
+            ],
+        }
         led = build_first_live_window_ledger(
             source_sha="shaA",
             new_windows=[
                 {
                     "source_pts_start": 900.0,
                     "source_pts_end": 908.0,
-                    "targeted_visual_verified": True,
-                    "first_live_status": "FIRST_LIVE_VERIFIED",
+                    "validated_evidence": pack,
+                    "require_evidence_files": False,
                 }
             ],
         )
@@ -220,6 +259,7 @@ class TestFirstLiveLedgerP0A(unittest.TestCase):
                 "first_live_ledger": led,
                 "pts_ok": True,
                 "source_provenance_ok": True,
+                "require_candidate_mp4": False,
             },
         )
         self.assertEqual(hs["safety"], "PASS")
@@ -245,7 +285,11 @@ class TestFirstLiveLedgerP0A(unittest.TestCase):
 class TestEvidenceTokenP0D(unittest.TestCase):
     def test_candidate_id_does_not_unlock_same_pts(self):
         tok = make_observation_evidence_token(
-            source_sha="src", pts_start=900.0, pts_end=908.0, observation_id="r1"
+            source_sha="src",
+            pts_start=900.0,
+            pts_end=908.0,
+            frame_hashes=["a" * 64],
+            manifest_digest="b" * 64,
         )
         memory = [
             {
@@ -273,14 +317,18 @@ class TestEvidenceTokenP0D(unittest.TestCase):
 
     def test_new_observation_token_unlocks(self):
         prior = make_observation_evidence_token(
-            source_sha="src", pts_start=900.0, pts_end=908.0, observation_id="r1"
+            source_sha="src",
+            pts_start=900.0,
+            pts_end=908.0,
+            frame_hashes=["a" * 64],
+            manifest_digest="b" * 64,
         )
         nxt = make_observation_evidence_token(
             source_sha="src",
             pts_start=900.0,
             pts_end=908.0,
-            observation_id="r2_new_frames",
-            frame_hashes=["aaa", "bbb"],
+            frame_hashes=["c" * 64, "d" * 64],
+            manifest_digest="e" * 64,
         )
         memory = [
             {
@@ -339,7 +387,8 @@ class TestAutonomousFeedbackSearchP0C(unittest.TestCase):
                             source_sha="src",
                             pts_start=896.0,
                             pts_end=908.0,
-                            observation_id="round1",
+                            frame_hashes=["1" * 64],
+                            manifest_digest="2" * 64,
                         ),
                     }
                 ],

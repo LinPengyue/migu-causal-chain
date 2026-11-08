@@ -359,13 +359,20 @@ def build_first_live_window_ledger(
     source_sha: Optional[str],
     new_windows: Sequence[Mapping[str, Any]],
     prior_ledger: Optional[Mapping[str, Any]] = None,
+    evidence_store: Optional[Mapping[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Per-source-window first-LIVE ledger (digest + precise PTS).
 
-    Event-chain LIVE / SEARCH_EVENT_CHAIN_LIVE_VERIFIED / VLM narrative claims do
-    NOT write FIRST_LIVE_VERIFIED. Only prior matching verified records or an
-    explicit targeted visual verification record may certify a window.
+    Event-chain LIVE / SEARCH_EVENT_CHAIN_LIVE_VERIFIED / VLM narrative claims /
+    raw targeted_visual_verified booleans do NOT write FIRST_LIVE_VERIFIED.
+
+    Certification requires a validated evidence record bound to
+    (source_sha256, PTS_start, PTS_end) with frame-byte hashes + manifest digest,
+    or a prior ledger row that itself carries validated evidence refs for the
+    same source digest (unchanged ancestor carry-forward only).
     """
+    from .first_live_window_evidence import validate_first_live_evidence_record
+
     sha = str(source_sha or "").strip() or "MISSING_SOURCE_SHA"
     prior_windows = {}
     if isinstance(prior_ledger, Mapping):
@@ -375,6 +382,9 @@ def build_first_live_window_ledger(
             key = str(w.get("key") or "")
             if key:
                 prior_windows[key] = dict(w)
+    store_by_key: Dict[str, Any] = {}
+    if isinstance(evidence_store, Mapping):
+        store_by_key = dict(evidence_store.get("by_key") or {})
     rows: List[Dict[str, Any]] = []
     for raw in new_windows or []:
         if not isinstance(raw, Mapping):
@@ -392,34 +402,61 @@ def build_first_live_window_ledger(
             or raw.get("evidence_status")
             or "NOT_VERIFIED"
         ).upper()
-        # Never promote event-chain / NOT_VERIFIED / VLM soft claims to verified.
-        event_chain_only = claimed in (
-            "SEARCH_EVENT_CHAIN_LIVE_VERIFIED",
-            "NOT_VERIFIED",
-            "UNKNOWN",
-            "LIKELY_LIVE",
-            "POSSIBLE_FIRST_LIVE",
-            "",
-        )
         prior = prior_windows.get(key) or {}
-        prior_status = str(prior.get("status") or "").upper()
-        targeted = bool(raw.get("targeted_visual_verified")) or bool(
-            prior.get("targeted_visual_verified")
+        evidence = (
+            raw.get("validated_evidence")
+            or raw.get("evidence_record")
+            or store_by_key.get(key)
+            or prior.get("validated_evidence")
         )
-        if prior_status == "FIRST_LIVE_VERIFIED" and prior.get("source_sha") == sha:
-            status = "FIRST_LIVE_VERIFIED"
-            method = "prior_ledger_match"
-        elif targeted and claimed == "FIRST_LIVE_VERIFIED":
-            status = "FIRST_LIVE_VERIFIED"
-            method = "targeted_visual_verification"
-        elif claimed == "FIRST_LIVE_VERIFIED" and not event_chain_only and targeted:
-            status = "FIRST_LIVE_VERIFIED"
-            method = "targeted_visual_verification"
-        else:
+        # Never trust raw boolean self-certify.
+        if bool(raw.get("targeted_visual_verified")) and not evidence:
             status = "NOT_VERIFIED"
-            method = "unverified_new_window"
-            if event_chain_only or claimed == "SEARCH_EVENT_CHAIN_LIVE_VERIFIED":
-                method = "event_chain_not_first_live_proof"
+            method = "boolean_targeted_visual_rejected"
+            validation = {"ok": False, "reason": "boolean_without_evidence_record"}
+        else:
+            validation = validate_first_live_evidence_record(
+                evidence if isinstance(evidence, Mapping) else None,
+                source_sha=sha,
+                pts_start=start,
+                pts_end=end,
+                require_files_exist=bool(raw.get("require_evidence_files", True)),
+            )
+            if validation.get("ok"):
+                status = "FIRST_LIVE_VERIFIED"
+                method = str(validation.get("method") or "validated_evidence_record")
+            elif (
+                str(prior.get("status") or "").upper() == "FIRST_LIVE_VERIFIED"
+                and prior.get("source_sha") == sha
+                and prior.get("validated_evidence")
+            ):
+                # Carry forward only when prior row itself has validated evidence
+                # for the same source digest (unchanged ancestor window).
+                reval = validate_first_live_evidence_record(
+                    prior.get("validated_evidence"),
+                    source_sha=sha,
+                    pts_start=start,
+                    pts_end=end,
+                    require_files_exist=False,
+                )
+                if reval.get("ok"):
+                    status = "FIRST_LIVE_VERIFIED"
+                    method = "prior_ledger_validated_carry_forward"
+                    validation = reval
+                else:
+                    status = "NOT_VERIFIED"
+                    method = "prior_ledger_evidence_revalidation_failed"
+            else:
+                status = "NOT_VERIFIED"
+                method = "unverified_new_window"
+                if claimed in (
+                    "SEARCH_EVENT_CHAIN_LIVE_VERIFIED",
+                    "LIKELY_LIVE",
+                    "POSSIBLE_FIRST_LIVE",
+                ):
+                    method = "event_chain_not_first_live_proof"
+                elif claimed == "FIRST_LIVE_VERIFIED" and not validation.get("ok"):
+                    method = "claimed_first_live_without_validated_evidence"
         rows.append(
             {
                 "key": key,
@@ -430,6 +467,19 @@ def build_first_live_window_ledger(
                 "method": method,
                 "segment_id": raw.get("segment_id") or raw.get("new_segment_id"),
                 "claimed_status": claimed,
+                "validation": {
+                    k: validation.get(k)
+                    for k in (
+                        "ok",
+                        "reason",
+                        "manifest_digest",
+                        "frame_sha256",
+                        "method",
+                    )
+                    if k in validation
+                },
+                "validated_evidence": evidence if status == "FIRST_LIVE_VERIFIED" else None,
+                "origin": raw.get("origin") or "apply_or_diff",
             }
         )
     all_verified = bool(rows) and all(r["status"] == "FIRST_LIVE_VERIFIED" for r in rows)
@@ -447,7 +497,8 @@ def build_first_live_window_ledger(
         "aggregate_status": aggregate,
         "note": (
             "Event-chain LIVE ≠ first-broadcast LIVE. Each new PTS window needs "
-            "independent prior ledger match or targeted visual verification."
+            "validated source-SHA+PTS evidence with frame-byte hashes; raw booleans "
+            "and SEARCH_EVENT_CHAIN labels never certify."
         ),
     }
 
@@ -565,6 +616,16 @@ def compute_independent_hard_safety(
                     "note": "Absent replay flags are NOT first-LIVE proof.",
                 }
 
+    # Real revisions require an existing candidate MP4 (None must not silently PASS).
+    require_mp4 = bool(extra.get("require_candidate_mp4", new_footage))
+    if require_mp4 and (candidate_mp4 is None or not Path(candidate_mp4).is_file()):
+        return {
+            "safety": "UNKNOWN",
+            "reasons": reasons + ["candidate_mp4_missing_for_real_revision"],
+            "accept_candidate_ignored": True,
+            "first_live_status": aggregate,
+            "first_live_ledger": ledger,
+        }
     if candidate_mp4 is not None and not Path(candidate_mp4).is_file():
         return {
             "safety": "UNKNOWN",
@@ -579,6 +640,14 @@ def compute_independent_hard_safety(
             "reasons": reasons + ["render_bytes_or_digest_mismatch"],
             "accept_candidate_ignored": True,
             "first_live_status": aggregate,
+            "first_live_ledger": ledger,
+        }
+    if extra.get("edl_diff_window_omission"):
+        return {
+            "safety": "UNKNOWN",
+            "reasons": reasons + ["edl_new_window_omitted_from_ledger"],
+            "accept_candidate_ignored": True,
+            "first_live_status": "UNKNOWN",
             "first_live_ledger": ledger,
         }
 

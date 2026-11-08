@@ -54,6 +54,13 @@ from .story_loop_policy import (
 from .final_goal_evidence import build_delivery_and_candidate_evidence, sha256_file
 from .story_timeline import build_story_timeline
 from .story_revision_feedback import make_observation_evidence_token
+from .first_live_window_evidence import (
+    build_local_first_live_evidence_pack,
+    diff_new_source_windows,
+    load_evidence_store,
+    looks_like_content_hash,
+    window_key as first_live_window_key,
+)
 from .story_video_verifier import (
     build_first_live_window_ledger,
     compute_release_authorization,
@@ -98,6 +105,10 @@ class StoryE2EInputs:
     # confirm_issue_ids: mark structural issues CONFIRMED without scripting intents/candidates.
     phase8_round_fixtures: Optional[Sequence[Mapping[str, Any]]] = None
     confirm_issue_ids: Optional[Sequence[str]] = None
+    # Optional directory/JSON of validated first-LIVE evidence packs (source SHA + PTS).
+    first_live_evidence_dir: Optional[Path] = None
+    # When True, build local frame-pack evidence for new windows from source MP4 (zero HTTP).
+    build_local_first_live_evidence: bool = False
     max_rounds: int = MAX_ROUNDS
     max_calls: int = 5
     max_cost_usd: float = 0.10
@@ -548,11 +559,13 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
     }
     pending_reobserve: Optional[Dict[str, Any]] = None
     source_sha = sha256_file(inp.source_mp4) if inp.source_mp4.is_file() else None
+    first_live_evidence_store = load_evidence_store(inp.first_live_evidence_dir)
     first_live_prior_ledger: Dict[str, Any] = {
         "schema": "v3a_first_live_window_ledger_v1",
         "source_sha": source_sha or "MISSING_SOURCE_SHA",
         "windows": [],
     }
+    audit["first_live_evidence_store_n"] = len(first_live_evidence_store.get("by_key") or {})
     version_snapshots["v0"]["source_sha256"] = source_sha
     version_snapshots["v0"]["edl_sha256"] = hashlib.sha256(
         json.dumps(best_edl, sort_keys=True, ensure_ascii=False).encode("utf-8")
@@ -1218,9 +1231,14 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             # Strip any content-claimed provenance / first-LIVE; path + ledger win.
             quality_overlay.pop("source_kind", None)
             quality_overlay.pop("first_live_status", None)
-        # Per-window first-LIVE ledger (P0-A). Event-chain LIVE ≠ first-LIVE proof.
-        # VLM/quality_overlay first_live_status must NOT authorize hard safety.
-        new_windows: List[Dict[str, Any]] = []
+        # Per-window first-LIVE ledger: bind NEW source windows via EDL diff (not
+        # apply_report alone). Missing EDL-new windows from the ledger ⇒ UNKNOWN.
+        edl_diff_windows = diff_new_source_windows(
+            working_edl,
+            candidate_edl,
+            source_sha=source_sha,
+        )
+        apply_windows: List[Dict[str, Any]] = []
         for a in apply_report.get("applied") or []:
             if not isinstance(a, dict):
                 continue
@@ -1231,31 +1249,90 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 mi, mo = bsw.get("start"), bsw.get("end")
             if mi is None or mo is None:
                 continue
-            new_windows.append(
+            apply_windows.append(
                 {
-                    "source_pts_start": mi,
-                    "source_pts_end": mo,
+                    "source_pts_start": float(mi),
+                    "source_pts_end": float(mo),
                     "segment_id": seg.get("segment_id") or a.get("new_segment_id"),
                     "evidence_status": seg.get("evidence_status") or a.get("evidence_status"),
                     "first_live_status": seg.get("first_live_status") or "NOT_VERIFIED",
-                    "targeted_visual_verified": bool(a.get("targeted_visual_verified")),
+                    "origin": "apply_report",
                 }
             )
+        # Merge by key; prefer EDL-diff as authoritative list of new footage.
+        by_key: Dict[str, Dict[str, Any]] = {}
+        for w in edl_diff_windows:
+            by_key[str(w["key"])] = dict(w)
+        for w in apply_windows:
+            k = first_live_window_key(
+                source_sha or "MISSING_SOURCE_SHA",
+                float(w["source_pts_start"]),
+                float(w["source_pts_end"]),
+            )
+            if k not in by_key:
+                # Present in apply_report but not EDL-diff — still track.
+                by_key[k] = {**w, "key": k, "source_sha": source_sha, "origin": "apply_only"}
+            else:
+                by_key[k] = {**by_key[k], **w, "key": k}
+        new_windows = list(by_key.values())
+        # Optional: build/attach local source inspection packs (zero HTTP).
+        if inp.build_local_first_live_evidence and inp.source_mp4.is_file() and source_sha:
+            for w in new_windows:
+                k = str(w.get("key") or "")
+                if k in (first_live_evidence_store.get("by_key") or {}):
+                    w["validated_evidence"] = first_live_evidence_store["by_key"][k]
+                    continue
+                pack_dir = round_dir / "first_live_evidence" / k.replace("|", "_").replace(":", "-")
+                pack = build_local_first_live_evidence_pack(
+                    source_mp4=inp.source_mp4,
+                    source_sha=str(source_sha),
+                    pts_start=float(w["source_pts_start"]),
+                    pts_end=float(w["source_pts_end"]),
+                    out_dir=pack_dir,
+                    segment_id=str(w.get("segment_id") or "") or None,
+                )
+                if pack.get("ok"):
+                    first_live_evidence_store.setdefault("by_key", {})[k] = pack
+                    w["validated_evidence"] = pack
+        else:
+            for w in new_windows:
+                k = str(w.get("key") or "")
+                if k in (first_live_evidence_store.get("by_key") or {}):
+                    w["validated_evidence"] = first_live_evidence_store["by_key"][k]
         first_live_ledger = build_first_live_window_ledger(
             source_sha=source_sha,
             new_windows=new_windows,
             prior_ledger=first_live_prior_ledger,
+            evidence_store=first_live_evidence_store,
         )
         write_json(round_dir / "first_live_window_ledger.json", first_live_ledger)
+        write_json(round_dir / "edl_new_source_windows.json", {"windows": edl_diff_windows})
+        # Carry verified windows forward for unchanged ancestor reuse.
+        if first_live_ledger.get("windows"):
+            prior_by = {
+                str(w.get("key")): w
+                for w in (first_live_prior_ledger.get("windows") or [])
+                if isinstance(w, dict) and w.get("key")
+            }
+            for w in first_live_ledger["windows"]:
+                if w.get("status") == "FIRST_LIVE_VERIFIED" and w.get("key"):
+                    prior_by[str(w["key"])] = w
+            first_live_prior_ledger = {
+                "schema": "v3a_first_live_window_ledger_v1",
+                "source_sha": source_sha or "MISSING_SOURCE_SHA",
+                "windows": list(prior_by.values()),
+            }
+        omission = bool(edl_changed) and bool(edl_diff_windows) and not new_windows
         hard_safety_extra = {
             "pts_ok": bool(pts_gate.get("ok")),
-            "has_new_footage": bool(edl_changed) and bool(new_windows),
+            "has_new_footage": bool(edl_diff_windows) or bool(new_windows),
             "intentional_replay": any(
                 a.get("is_replay") for a in (apply_report.get("applied") or []) if isinstance(a, dict)
             ),
             "first_live_ledger": first_live_ledger,
-            # Do NOT copy VLM first_live_status here.
             "source_provenance_ok": bool(source_sha),
+            "require_candidate_mp4": bool(edl_changed) and verdict_provenance != "FIXTURE",
+            "edl_diff_window_omission": omission,
             "force_hard_safety": (quality_overlay or {}).get("phase8_safety")
             if verdict_provenance == "FIXTURE"
             else None,
@@ -1429,21 +1506,40 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             )
         phase8_verdict["compared_against_best"] = compared_against_best
 
-        # Observation-grade evidence token (source SHA + PTS + frames) — never round/cand id.
+        # Observation-grade evidence token: source SHA + PTS + frame-*byte* hashes /
+        # manifest digest. Never round/version counters or plain frame_ids.
         primary_pts = None
-        for a in apply_report.get("applied") or []:
-            if not isinstance(a, dict):
-                continue
-            seg = a.get("segment") if isinstance(a.get("segment"), dict) else a
-            if seg.get("media_in") is not None and seg.get("media_out") is not None:
-                primary_pts = [seg.get("media_in"), seg.get("media_out")]
+        content_frame_hashes: List[str] = []
+        manifest_digest = None
+        for w in new_windows:
+            ve = w.get("validated_evidence") if isinstance(w.get("validated_evidence"), dict) else None
+            if ve and ve.get("manifest_digest"):
+                primary_pts = [w.get("source_pts_start"), w.get("source_pts_end")]
+                manifest_digest = str(ve.get("manifest_digest"))
+                content_frame_hashes = [
+                    str(f.get("sha256"))
+                    for f in (ve.get("frames") or [])
+                    if isinstance(f, dict) and looks_like_content_hash(f.get("sha256"))
+                ][:4]
                 break
+        if primary_pts is None:
+            for a in apply_report.get("applied") or []:
+                if not isinstance(a, dict):
+                    continue
+                seg = a.get("segment") if isinstance(a.get("segment"), dict) else a
+                if seg.get("media_in") is not None and seg.get("media_out") is not None:
+                    primary_pts = [seg.get("media_in"), seg.get("media_out")]
+                    break
+        # sent_frame_ids are labels, not hashes — only keep if already content digests.
+        for tok in list(sent_frame_ids or [])[:8]:
+            if looks_like_content_hash(tok):
+                content_frame_hashes.append(str(tok).replace("sha256:", "").lower())
         obs_token = make_observation_evidence_token(
             source_sha=source_sha,
             pts_start=(primary_pts or [None, None])[0],
             pts_end=(primary_pts or [None, None])[1],
-            observation_id=f"{cand_version_id}:r{round_idx}",
-            frame_hashes=list(sent_frame_ids or [])[:4] or None,
+            frame_hashes=content_frame_hashes or None,
+            manifest_digest=manifest_digest,
         )
         fb_entries = normalize_feedback(
             case_bundle,
@@ -1455,7 +1551,8 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 "match_id": inp.match_id,
                 "source_sha": source_sha,
                 "evidence_token": obs_token,
-                "frame_hashes": list(sent_frame_ids or [])[:4],
+                "frame_hashes": content_frame_hashes[:4],
+                "manifest_digest": manifest_digest,
             },
             round_idx=round_idx,
             source_kind=str(phase8_verdict.get("verdict_provenance") or "OFFLINE_RULE"),

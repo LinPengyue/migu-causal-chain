@@ -1,0 +1,65 @@
+{
+  "ledger": {
+    "schema": "v3a_first_live_window_ledger_v1",
+    "source_sha": "demo",
+    "windows": [
+      {
+        "key": "demo|900.000:908.000",
+        "source_sha": "demo",
+        "source_pts_start": 900.0,
+        "source_pts_end": 908.0,
+        "status": "NOT_VERIFIED",
+        "method": "boolean_targeted_visual_rejected",
+        "segment_id": null,
+        "claimed_status": "NOT_VERIFIED",
+        "validation": {
+          "ok": false,
+          "reason": "boolean_without_evidence_record"
+        },
+        "validated_evidence": null,
+        "origin": "apply_or_diff"
+      }
+    ],
+    "n_windows": 1,
+    "all_windows_verified": false,
+    "any_window_unverified": true,
+    "aggregate_status": "NOT_VERIFIED",
+    "note": "Event-chain LIVE \u2260 first-broadcast LIVE. Each new PTS window needs validated source-SHA+PTS evidence with frame-byte hashes; raw booleans and SEARCH_EVENT_CHAIN labels never certify."
+  },
+  "hard_safety": {
+    "safety": "UNKNOWN",
+    "reasons": [
+      "first_live_per_window_proof_incomplete"
+    ],
+    "accept_candidate_ignored": true,
+    "first_live_status": "NOT_VERIFIED",
+    "first_live_ledger": {
+      "schema": "v3a_first_live_window_ledger_v1",
+      "source_sha": "demo",
+      "windows": [
+        {
+          "key": "demo|900.000:908.000",
+          "source_sha": "demo",
+          "source_pts_start": 900.0,
+          "source_pts_end": 908.0,
+          "status": "NOT_VERIFIED",
+          "method": "boolean_targeted_visual_rejected",
+          "segment_id": null,
+          "claimed_status": "NOT_VERIFIED",
+          "validation": {
+            "ok": false,
+            "reason": "boolean_without_evidence_record"
+          },
+          "validated_evidence": null,
+          "origin": "apply_or_diff"
+        }
+      ],
+      "n_windows": 1,
+      "all_windows_verified": false,
+      "any_window_unverified": true,
+      "aggregate_status": "NOT_VERIFIED",
+      "note": "Event-chain LIVE \u2260 first-broadcast LIVE. Each new PTS window needs validated source-SHA+PTS evidence with frame-byte hashes; raw booleans and SEARCH_EVENT_CHAIN labels never certify."
+    },
+    "note": "Event-chain probable LIVE is not first-broadcast LIVE. VLM soft claims cannot self-authorize hard safety."
+  }
+}

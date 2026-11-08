@@ -41,6 +41,17 @@ def normalize_quality(raw: Any) -> str:
     return _LEGACY_QUALITY.get(s, "UNCERTAIN")
 
 
+def _looks_like_content_hash(token: Any) -> bool:
+    if token is None:
+        return False
+    s = str(token).strip().lower()
+    if s.startswith("sha256:"):
+        s = s[7:]
+    if len(s) not in (64, 40):
+        return False
+    return all(c in "0123456789abcdef" for c in s)
+
+
 def make_observation_evidence_token(
     *,
     source_sha: Optional[str] = None,
@@ -48,8 +59,13 @@ def make_observation_evidence_token(
     pts_end: Any = None,
     observation_id: Optional[str] = None,
     frame_hashes: Optional[Sequence[Any]] = None,
+    manifest_digest: Optional[str] = None,
 ) -> Optional[str]:
-    """Bind evidence identity to source digest + PTS + observation — never round/candidate id."""
+    """Bind evidence identity to source digest + PTS + frame-*byte* hashes / manifest.
+
+    Round counters, version ids, and plain frame_ids (baseline_a) are rejected —
+    they must not create a fresh observation-grade identity.
+    """
     try:
         a = float(pts_start)
         b = float(pts_end)
@@ -58,20 +74,51 @@ def make_observation_evidence_token(
     if b <= a:
         return None
     sha = str(source_sha or "").strip() or "NOSHA"
+    content_hashes = [
+        str(h).replace("sha256:", "").lower()
+        for h in (frame_hashes or [])
+        if _looks_like_content_hash(h)
+    ][:4]
+    man = str(manifest_digest or "").replace("sha256:", "").lower()
+    if man and not _looks_like_content_hash(man):
+        man = ""
+    # observation_id is advisory only when content hashes exist; alone it is NOT enough.
     obs = str(observation_id or "").strip()
-    hashes = [str(h) for h in (frame_hashes or []) if h][:4]
-    hash_part = ",".join(hashes) if hashes else "noframes"
-    # Prefix marks observation-grade tokens; candidate_id alone must not unlock retries.
-    if obs or hashes:
-        return f"obs:{sha}|{a:.3f}:{b:.3f}|{obs or 'win'}|{hash_part}"
+    if obs and (
+        ":" in obs
+        and any(obs.startswith(p) for p in ("v", "r", "round", "cand"))
+        or obs.startswith("v")
+        and ":r" in obs
+    ):
+        # Drop round/version-shaped ids from the token material.
+        obs = ""
+    if content_hashes or man:
+        hash_part = ",".join(content_hashes) if content_hashes else "noframes"
+        man_part = man or "nomanifest"
+        return f"obs:{sha}|{a:.3f}:{b:.3f}|{man_part}|{hash_part}"
+    # Without content hashes / manifest digest → window identity only (NOT observation-grade unlock).
     return f"sha:{sha}|{a:.3f}:{b:.3f}"
 
 
 def is_observation_grade_evidence_token(token: Optional[str]) -> bool:
+    """Observation-grade tokens must embed content hashes / manifest, not bare sha: window ids."""
     if not token:
         return False
     s = str(token)
-    return s.startswith("obs:") or s.startswith("sha:") or s.startswith("verified:")
+    if s.startswith("verified:"):
+        return True
+    if not s.startswith("obs:"):
+        return False
+    # obs:sha|pts|manifest_or_nomanifest|hashes — reject nomanifest+noframes
+    parts = s.split("|")
+    if len(parts) < 4:
+        return False
+    man_part = parts[2]
+    hash_part = parts[3]
+    if man_part not in ("nomanifest", "") and _looks_like_content_hash(man_part):
+        return True
+    hashes = [h for h in hash_part.split(",") if h and h != "noframes"]
+    return bool(hashes) and all(_looks_like_content_hash(h) for h in hashes)
 
 
 def issue_signature_from_case(case: Mapping[str, Any]) -> Dict[str, Any]:
