@@ -361,15 +361,12 @@ def build_first_live_window_ledger(
     prior_ledger: Optional[Mapping[str, Any]] = None,
     evidence_store: Optional[Mapping[str, Any]] = None,
 ) -> Dict[str, Any]:
-    """Per-source-window first-LIVE ledger (digest + precise PTS).
+    """Per-source-window first-LIVE ledger with binding vs broadcast tiers.
 
-    Event-chain LIVE / SEARCH_EVENT_CHAIN_LIVE_VERIFIED / VLM narrative claims /
-    raw targeted_visual_verified booleans do NOT write FIRST_LIVE_VERIFIED.
-
-    Certification requires a validated evidence record bound to
-    (source_sha256, PTS_start, PTS_end) with frame-byte hashes + manifest digest,
-    or a prior ledger row that itself carries validated evidence refs for the
-    same source digest (unchanged ancestor carry-forward only).
+    FRAME_BOUND_VALID (hashes/SHA/PTS) ≠ FIRST_LIVE_VERIFIED.
+    FIRST_LIVE_VERIFIED requires a distinct authenticated broadcast_timeline_review
+    bound to the same source SHA + PTS. REPLAY_CONFIRMED fails hard safety.
+    Event-chain / VLM / boolean claims never certify first-live.
     """
     from .first_live_window_evidence import validate_first_live_evidence_record
 
@@ -409,11 +406,21 @@ def build_first_live_window_ledger(
             or store_by_key.get(key)
             or prior.get("validated_evidence")
         )
-        # Never trust raw boolean self-certify.
+        timeline_review = (
+            raw.get("broadcast_timeline_review")
+            or (evidence.get("broadcast_timeline_review") if isinstance(evidence, Mapping) else None)
+            or prior.get("broadcast_timeline_review")
+        )
         if bool(raw.get("targeted_visual_verified")) and not evidence:
             status = "NOT_VERIFIED"
+            binding_status = "BINDING_INVALID"
             method = "boolean_targeted_visual_rejected"
-            validation = {"ok": False, "reason": "boolean_without_evidence_record"}
+            validation = {
+                "ok": False,
+                "binding_valid": False,
+                "first_live_verified": False,
+                "reason": "boolean_without_evidence_record",
+            }
         else:
             validation = validate_first_live_evidence_record(
                 evidence if isinstance(evidence, Mapping) else None,
@@ -421,31 +428,44 @@ def build_first_live_window_ledger(
                 pts_start=start,
                 pts_end=end,
                 require_files_exist=bool(raw.get("require_evidence_files", True)),
+                timeline_review=timeline_review if isinstance(timeline_review, Mapping) else None,
             )
-            if validation.get("ok"):
+            binding_status = str(validation.get("binding_status") or "BINDING_INVALID")
+            if validation.get("replay_confirmed"):
+                status = "REPLAY_CONFIRMED"
+                method = str(validation.get("method") or "replay_confirmed")
+            elif validation.get("ok") or (
+                validation.get("first_live_verified") and validation.get("binding_valid")
+            ):
+                # PASS-grade first-live needs BOTH binding and timeline review.
                 status = "FIRST_LIVE_VERIFIED"
-                method = str(validation.get("method") or "validated_evidence_record")
+                method = str(validation.get("method") or "broadcast_timeline_review")
             elif (
                 str(prior.get("status") or "").upper() == "FIRST_LIVE_VERIFIED"
                 and prior.get("source_sha") == sha
-                and prior.get("validated_evidence")
+                and prior.get("broadcast_timeline_review")
             ):
-                # Carry forward only when prior row itself has validated evidence
-                # for the same source digest (unchanged ancestor window).
                 reval = validate_first_live_evidence_record(
                     prior.get("validated_evidence"),
                     source_sha=sha,
                     pts_start=start,
                     pts_end=end,
                     require_files_exist=False,
+                    timeline_review=prior.get("broadcast_timeline_review"),
                 )
-                if reval.get("ok"):
+                if reval.get("ok") or (
+                    reval.get("first_live_verified") and reval.get("binding_valid")
+                ):
                     status = "FIRST_LIVE_VERIFIED"
-                    method = "prior_ledger_validated_carry_forward"
+                    method = "prior_ledger_timeline_carry_forward"
                     validation = reval
+                    binding_status = str(reval.get("binding_status") or binding_status)
                 else:
                     status = "NOT_VERIFIED"
-                    method = "prior_ledger_evidence_revalidation_failed"
+                    method = "prior_first_live_revalidation_failed"
+            elif validation.get("binding_valid"):
+                status = "NOT_VERIFIED"
+                method = "frame_bound_pending_timeline_review"
             else:
                 status = "NOT_VERIFIED"
                 method = "unverified_new_window"
@@ -455,8 +475,8 @@ def build_first_live_window_ledger(
                     "POSSIBLE_FIRST_LIVE",
                 ):
                     method = "event_chain_not_first_live_proof"
-                elif claimed == "FIRST_LIVE_VERIFIED" and not validation.get("ok"):
-                    method = "claimed_first_live_without_validated_evidence"
+                elif claimed == "FIRST_LIVE_VERIFIED" and not validation.get("first_live_verified"):
+                    method = "claimed_first_live_without_timeline_review"
         rows.append(
             {
                 "key": key,
@@ -464,13 +484,33 @@ def build_first_live_window_ledger(
                 "source_pts_start": start,
                 "source_pts_end": end,
                 "status": status,
+                "binding_status": binding_status,
+                "first_live_status": status
+                if status in ("FIRST_LIVE_VERIFIED", "REPLAY_CONFIRMED")
+                else "NOT_VERIFIED",
                 "method": method,
                 "segment_id": raw.get("segment_id") or raw.get("new_segment_id"),
                 "claimed_status": claimed,
+                "candidate_class": (
+                    "approved_first_live"
+                    if status == "FIRST_LIVE_VERIFIED"
+                    else (
+                        "unsafe_replay"
+                        if status == "REPLAY_CONFIRMED"
+                        else (
+                            "pending_timeline_review"
+                            if binding_status == "FRAME_BOUND_VALID"
+                            else "unbound_or_invalid"
+                        )
+                    )
+                ),
                 "validation": {
                     k: validation.get(k)
                     for k in (
                         "ok",
+                        "binding_valid",
+                        "first_live_verified",
+                        "replay_confirmed",
                         "reason",
                         "manifest_digest",
                         "frame_sha256",
@@ -478,15 +518,30 @@ def build_first_live_window_ledger(
                     )
                     if k in validation
                 },
-                "validated_evidence": evidence if status == "FIRST_LIVE_VERIFIED" else None,
+                "validated_evidence": evidence
+                if validation.get("binding_valid") or status == "FIRST_LIVE_VERIFIED"
+                else None,
+                "broadcast_timeline_review": timeline_review
+                if isinstance(timeline_review, Mapping)
+                else None,
                 "origin": raw.get("origin") or "apply_or_diff",
             }
         )
     all_verified = bool(rows) and all(r["status"] == "FIRST_LIVE_VERIFIED" for r in rows)
     any_unverified = any(r["status"] != "FIRST_LIVE_VERIFIED" for r in rows)
-    aggregate = "FIRST_LIVE_VERIFIED" if all_verified else (
-        "NOT_VERIFIED" if rows else "N_A_NO_NEW_WINDOWS"
+    any_replay = any(r["status"] == "REPLAY_CONFIRMED" for r in rows)
+    any_bound_pending = any(
+        r.get("binding_status") == "FRAME_BOUND_VALID" and r["status"] != "FIRST_LIVE_VERIFIED"
+        for r in rows
     )
+    if any_replay:
+        aggregate = "REPLAY_CONFIRMED"
+    elif all_verified:
+        aggregate = "FIRST_LIVE_VERIFIED"
+    elif rows:
+        aggregate = "NOT_VERIFIED"
+    else:
+        aggregate = "N_A_NO_NEW_WINDOWS"
     return {
         "schema": "v3a_first_live_window_ledger_v1",
         "source_sha": sha,
@@ -494,11 +549,13 @@ def build_first_live_window_ledger(
         "n_windows": len(rows),
         "all_windows_verified": all_verified,
         "any_window_unverified": any_unverified,
+        "any_replay_confirmed": any_replay,
+        "any_frame_bound_pending_timeline": any_bound_pending,
         "aggregate_status": aggregate,
         "note": (
-            "Event-chain LIVE ≠ first-broadcast LIVE. Each new PTS window needs "
-            "validated source-SHA+PTS evidence with frame-byte hashes; raw booleans "
-            "and SEARCH_EVENT_CHAIN labels never certify."
+            "FRAME_BOUND_VALID ≠ FIRST_LIVE_VERIFIED. Hard-safety PASS needs "
+            "independent broadcast-timeline review on every new window; "
+            "binding-only stays UNKNOWN; REPLAY_CONFIRMED ⇒ FAIL."
         ),
     }
 
@@ -587,17 +644,39 @@ def compute_independent_hard_safety(
     if new_footage:
         if ledger is not None:
             aggregate = str(ledger.get("aggregate_status") or "NOT_VERIFIED").upper()
+            if ledger.get("any_replay_confirmed") or aggregate == "REPLAY_CONFIRMED":
+                return {
+                    "safety": "FAIL",
+                    "reasons": reasons + ["first_live_replay_confirmed"],
+                    "accept_candidate_ignored": True,
+                    "first_live_status": "REPLAY_CONFIRMED",
+                    "first_live_ledger": ledger,
+                    "note": (
+                        "Authenticated timeline review confirmed replay/slowmo. "
+                        "Binding alone never overrides REPLAY_CONFIRMED."
+                    ),
+                }
             if ledger.get("any_window_unverified") or not ledger.get("all_windows_verified"):
-                # Two windows with one unverified ⇒ UNKNOWN (not PASS).
+                # Binding-only / missing timeline review ⇒ UNKNOWN (not PASS).
+                pending = bool(ledger.get("any_frame_bound_pending_timeline"))
                 return {
                     "safety": "UNKNOWN",
-                    "reasons": reasons + ["first_live_per_window_proof_incomplete"],
+                    "reasons": reasons
+                    + (
+                        ["frame_bound_pending_timeline_review"]
+                        if pending
+                        else ["first_live_per_window_proof_incomplete"]
+                    ),
                     "accept_candidate_ignored": True,
                     "first_live_status": aggregate,
                     "first_live_ledger": ledger,
+                    "candidate_class": (
+                        "pending_timeline_review" if pending else "unbound_or_invalid"
+                    ),
                     "note": (
-                        "Event-chain probable LIVE is not first-broadcast LIVE. "
-                        "VLM soft claims cannot self-authorize hard safety."
+                        "FRAME_BOUND_VALID ≠ FIRST_LIVE_VERIFIED. "
+                        "Hard-safety PASS needs independent broadcast-timeline "
+                        "review on every new window; otherwise UNKNOWN."
                     ),
                 }
         else:

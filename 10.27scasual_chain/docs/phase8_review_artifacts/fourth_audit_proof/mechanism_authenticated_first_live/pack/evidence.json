@@ -1,0 +1,67 @@
+{
+  "schema": "v3a_first_live_window_evidence_v1",
+  "ok": true,
+  "binding_status": "FRAME_BOUND_VALID",
+  "status": "FRAME_BOUND_VALID",
+  "first_live_status": "NOT_VERIFIED",
+  "first_live_verified": false,
+  "key": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c|6430.000:6445.000",
+  "source_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+  "source_pts_start": 6430.0,
+  "source_pts_end": 6445.0,
+  "segment_id": "seg_mechanism",
+  "frames": [
+    {
+      "frame_id": "src_a66147f7_0",
+      "source_pts_sec": 6432.25,
+      "path": "docs/phase8_review_artifacts/fourth_audit_proof/mechanism_authenticated_first_live/pack/frames/t6432.250_0.jpg",
+      "sha256": "bc0e364afc64d1d658e30364bc66ba9e747248f413f395be2102db4a97398e29",
+      "accurate_decode": true
+    },
+    {
+      "frame_id": "src_a66147f7_1",
+      "source_pts_sec": 6437.5,
+      "path": "docs/phase8_review_artifacts/fourth_audit_proof/mechanism_authenticated_first_live/pack/frames/t6437.500_1.jpg",
+      "sha256": "7f95711162dd6de06936989535efc9c8c3956059a1be02194d1ad3725c267e40",
+      "accurate_decode": true
+    },
+    {
+      "frame_id": "src_a66147f7_2",
+      "source_pts_sec": 6442.75,
+      "path": "docs/phase8_review_artifacts/fourth_audit_proof/mechanism_authenticated_first_live/pack/frames/t6442.750_2.jpg",
+      "sha256": "ccfa4dddaa0719142fc13f6bbbe1637d296615801cb1581f0847a81720221cfd",
+      "accurate_decode": true
+    }
+  ],
+  "manifest": {
+    "source_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+    "source_pts_start": 6430.0,
+    "source_pts_end": 6445.0,
+    "segment_id": "seg_mechanism",
+    "frame_sha256": [
+      "bc0e364afc64d1d658e30364bc66ba9e747248f413f395be2102db4a97398e29",
+      "7f95711162dd6de06936989535efc9c8c3956059a1be02194d1ad3725c267e40",
+      "ccfa4dddaa0719142fc13f6bbbe1637d296615801cb1581f0847a81720221cfd"
+    ],
+    "frame_pts": [
+      6432.25,
+      6437.5,
+      6442.75
+    ],
+    "n_frames": 3,
+    "n_unique_frame_hashes": 3,
+    "identical_frame_hashes": false,
+    "temporal_span_ok": true,
+    "require_not_replay_flags": true,
+    "producer": "local_source_mp4_frame_pack_v1",
+    "claims_full_broadcast_timeline": false,
+    "evidence_tier": "frame_binding_only",
+    "note": "FRAME_BOUND_VALID = source SHA + PTS + image-byte hashes only. Identical still hashes or sparse frames are NOT first-broadcast proof. FIRST_LIVE_VERIFIED requires a distinct broadcast_timeline_review."
+  },
+  "manifest_digest": "61f733d2d39f1c1e67e5f60ccc8867d85a683d973562ff28b6149eebd2d2e99c",
+  "evidence_path": "docs/phase8_review_artifacts/fourth_audit_proof/mechanism_authenticated_first_live/pack/evidence.json",
+  "provenance": "LOCAL_SOURCE_FRAME_BINDING",
+  "boolean_self_certify_forbidden": true,
+  "event_chain_insufficient": true,
+  "frame_pack_cannot_certify_first_live": true
+}

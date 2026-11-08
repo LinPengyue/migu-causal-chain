@@ -1,0 +1,92 @@
+{
+  "schema": "v3a_broadcast_timeline_review_v1",
+  "source_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+  "source_pts_start": 824.81,
+  "source_pts_end": 835.15,
+  "context_window": {
+    "start": 816.81,
+    "end": 843.15
+  },
+  "outcome": "REPLAY_CONFIRMED",
+  "first_live_status": "REPLAY_CONFIRMED",
+  "method": "continuous_context_event_replay_overlap",
+  "rationale": [
+    "window_overlaps_replay_or_slowmo_in_source_timeline"
+  ],
+  "evidence_refs": [
+    {
+      "event_id": "event_000045",
+      "start": 824.81,
+      "end": 835.15,
+      "broadcast_phase": "REPLAY",
+      "is_replay": true
+    },
+    {
+      "event_id": "event_000046",
+      "start": 824.81,
+      "end": 835.15,
+      "broadcast_phase": "REPLAY",
+      "is_replay": true
+    },
+    {
+      "event_id": "event_000047",
+      "start": 824.81,
+      "end": 835.15,
+      "broadcast_phase": "REPLAY",
+      "is_replay": true
+    },
+    {
+      "kind": "continuous_context_clip",
+      "path": "docs/phase8_review_artifacts/fourth_audit_proof/replay_confirmed_window/timeline/context_clip.mp4",
+      "sha256": "bef154f4c6866673edfb472a7ab0eb6b252aedb773f51da70d46b0c8cadf0c70",
+      "media_in": 816.81,
+      "media_out": 843.15,
+      "bytes_committed": false,
+      "note": " clip bytes hashed locally; mp4 not committed to git (size)"
+    }
+  ],
+  "replay_hits": [
+    {
+      "event_id": "event_000045",
+      "start": 824.81,
+      "end": 835.15,
+      "broadcast_phase": "REPLAY",
+      "is_replay": true
+    },
+    {
+      "event_id": "event_000046",
+      "start": 824.81,
+      "end": 835.15,
+      "broadcast_phase": "REPLAY",
+      "is_replay": true
+    },
+    {
+      "event_id": "event_000047",
+      "start": 824.81,
+      "end": 835.15,
+      "broadcast_phase": "REPLAY",
+      "is_replay": true
+    }
+  ],
+  "live_hits_in_window": [],
+  "clip": {
+    "ok": true,
+    "path": "docs/phase8_review_artifacts/fourth_audit_proof/replay_confirmed_window/timeline/context_clip.mp4",
+    "media_in": 816.81,
+    "media_out": 843.15,
+    "duration_sec": 26.34,
+    "sha256": "bef154f4c6866673edfb472a7ab0eb6b252aedb773f51da70d46b0c8cadf0c70",
+    "bytes": 27797806,
+    "continuous_source": true,
+    "stitched": false,
+    "accurate_decode": true,
+    "stream_copy": false,
+    "elapsed_sec": 11.05,
+    "stderr_tail": "",
+    "reason": null,
+    "bytes_committed": false
+  },
+  "provenance": "ZERO_HTTP_BROADCAST_TIMELINE_REVIEW",
+  "frame_pack_insufficient_alone": true,
+  "note": "FIRST_LIVE_VERIFIED only via authenticated timeline review bound to source SHA+PTS with continuous context evidence. Otherwise UNKNOWN; replay overlap ⇒ REPLAY_CONFIRMED."
+}

@@ -1,0 +1,37 @@
+{
+  "schema": "v3a_phase8_fourth_audit_proof_v1",
+  "zero_http": true,
+  "no_auto_paid": true,
+  "source_mp4": "/mnt/data4/migu/10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语.mp4",
+  "source_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+  "cases": {
+    "binding_only_real_live_window": {
+      "binding": "FRAME_BOUND_VALID",
+      "timeline_outcome": "UNKNOWN",
+      "hard_safety": "UNKNOWN",
+      "candidate_class": "pending_timeline_review",
+      "path": "docs/phase8_review_artifacts/fourth_audit_proof/binding_only_live_window/BINDING_AND_TIMELINE.json"
+    },
+    "replay_confirmed_real_window": {
+      "binding": "FRAME_BOUND_VALID",
+      "timeline_outcome": "REPLAY_CONFIRMED",
+      "hard_safety": "FAIL",
+      "candidate_class": "unsafe_replay",
+      "path": "docs/phase8_review_artifacts/fourth_audit_proof/replay_confirmed_window/REPLAY_PROOF.json"
+    },
+    "mechanism_authenticated_first_live": {
+      "timeline_outcome": "FIRST_LIVE_VERIFIED",
+      "hard_safety": "PASS",
+      "warning": "MECHANISM_TEST_NOT_MATCH_TRUTH",
+      "path": "docs/phase8_review_artifacts/fourth_audit_proof/mechanism_authenticated_first_live/MECHANISM_FIRST_LIVE.json"
+    }
+  },
+  "release_authorized": false,
+  "PHASE8_OFFLINE_FEEDBACK_LOOP_PASS": true,
+  "PHASE8_REAL_FIRST_LIVE_POSITIVE_PASS": false,
+  "PHASE8_REAL_VIDEO_QUALITY_GAIN": false,
+  "honest_real_source_first_live": "UNKNOWN",
+  "note": "Successful frame extract/hash ⇒ FRAME_BOUND_VALID only. Real UAE-Oman continuous timeline without authenticated first-broadcast review remains UNKNOWN. Replay overlap ⇒ FAIL.",
+  "context_clips_committed": false,
+  "context_clip_note": "sha256 retained in broadcast_timeline_review.json; mp4 omitted from git for size"
+}

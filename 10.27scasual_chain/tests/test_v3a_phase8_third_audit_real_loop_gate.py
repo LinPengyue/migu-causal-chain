@@ -210,6 +210,7 @@ class TestFirstLiveEvidenceGate(unittest.TestCase):
         self.assertEqual(hs["safety"], "UNKNOWN")
 
     def test_positive_local_source_pack(self):
+        """Fourth audit: local pack is binding-only; hard-safety stays UNKNOWN."""
         root = Path(tempfile.mkdtemp(prefix="p8_fl_pos_"))
         mp4 = _tiny_mp4(root / "source.mp4")
         sha = _sha256_file(mp4)
@@ -223,12 +224,16 @@ class TestFirstLiveEvidenceGate(unittest.TestCase):
             segment_id="seg_bridge",
         )
         self.assertTrue(pack.get("ok"), pack)
-        self.assertEqual(pack.get("status"), "FIRST_LIVE_VERIFIED")
+        self.assertEqual(pack.get("status"), "FRAME_BOUND_VALID")
+        self.assertEqual(pack.get("binding_status"), "FRAME_BOUND_VALID")
+        self.assertEqual(pack.get("first_live_status"), "NOT_VERIFIED")
         self.assertTrue(looks_like_content_hash(pack["frames"][0]["sha256"]))
         val = validate_first_live_evidence_record(
             pack, source_sha=sha, pts_start=0.4, pts_end=2.2
         )
-        self.assertTrue(val.get("ok"), val)
+        self.assertTrue(val.get("binding_valid"), val)
+        self.assertFalse(val.get("first_live_verified"), val)
+        self.assertFalse(val.get("ok"), val)
         led = build_first_live_window_ledger(
             source_sha=sha,
             new_windows=[
@@ -241,8 +246,10 @@ class TestFirstLiveEvidenceGate(unittest.TestCase):
                 }
             ],
         )
-        self.assertEqual(led["aggregate_status"], "FIRST_LIVE_VERIFIED")
-        # Real revision requires existing candidate mp4
+        self.assertEqual(led["aggregate_status"], "NOT_VERIFIED")
+        self.assertEqual(led["windows"][0]["binding_status"], "FRAME_BOUND_VALID")
+        self.assertEqual(led["windows"][0]["candidate_class"], "pending_timeline_review")
+        # Real revision requires existing candidate mp4 — still UNKNOWN without timeline.
         cand = _tiny_mp4(root / "cand.mp4")
         hs = compute_independent_hard_safety(
             hard_vetoes=[],
@@ -257,17 +264,20 @@ class TestFirstLiveEvidenceGate(unittest.TestCase):
                 "require_candidate_mp4": True,
             },
         )
-        self.assertEqual(hs["safety"], "PASS", hs)
-        # Persist for ChatGPT audit
-        (root / "POSITIVE_PROOF.json").write_text(
+        self.assertEqual(hs["safety"], "UNKNOWN", hs)
+        # Persist for ChatGPT audit (binding-positive / first-live-unknown)
+        (root / "BINDING_ONLY_PROOF.json").write_text(
             json.dumps(
                 {
                     "source_sha": sha,
                     "window": [0.4, 2.2],
                     "ledger": led,
                     "hard_safety": hs["safety"],
+                    "binding_status": pack.get("binding_status"),
+                    "first_live_status": pack.get("first_live_status"),
                     "manifest_digest": pack.get("manifest_digest"),
                     "frame_sha256": [f["sha256"] for f in pack["frames"]],
+                    "note": "FRAME_BOUND_VALID ≠ FIRST_LIVE_VERIFIED",
                 },
                 indent=2,
             )

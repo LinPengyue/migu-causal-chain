@@ -225,7 +225,8 @@ class TestFirstLiveLedgerP0A(unittest.TestCase):
         manifest = {"k": 1}
         pack = {
             "schema": "v3a_first_live_window_evidence_v1",
-            "status": "FIRST_LIVE_VERIFIED",
+            "status": "FRAME_BOUND_VALID",
+            "binding_status": "FRAME_BOUND_VALID",
             "source_sha256": "shaA",
             "source_pts_start": 900.0,
             "source_pts_end": 908.0,
@@ -238,6 +239,18 @@ class TestFirstLiveLedgerP0A(unittest.TestCase):
                 {"sha256": "c" * 64, "path": "/no/file", "source_pts_sec": 907.0},
             ],
         }
+        timeline = {
+            "schema": "v3a_broadcast_timeline_review_v1",
+            "source_sha256": "shaA",
+            "source_pts_start": 900.0,
+            "source_pts_end": 908.0,
+            "outcome": "FIRST_LIVE_VERIFIED",
+            "method": "explicit_authenticated_timeline_review",
+            "rationale": ["unit_test_authenticated_first_broadcast"],
+            "evidence_refs": [{"kind": "continuous_context", "note": "fixture"}],
+            "reviewer": "unit_test",
+            "provenance": "UNIT_TEST_TIMELINE_REVIEW",
+        }
         led = build_first_live_window_ledger(
             source_sha="shaA",
             new_windows=[
@@ -245,10 +258,12 @@ class TestFirstLiveLedgerP0A(unittest.TestCase):
                     "source_pts_start": 900.0,
                     "source_pts_end": 908.0,
                     "validated_evidence": pack,
+                    "broadcast_timeline_review": timeline,
                     "require_evidence_files": False,
                 }
             ],
         )
+        self.assertEqual(led["aggregate_status"], "FIRST_LIVE_VERIFIED")
         hs = compute_independent_hard_safety(
             hard_vetoes=[],
             goal_intact=True,
