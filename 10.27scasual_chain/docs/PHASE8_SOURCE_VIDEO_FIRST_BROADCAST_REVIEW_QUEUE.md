@@ -6,6 +6,17 @@ State at handoff: branch story-va-v3a-phase8-loop-impl @ bf71d91338496c0c0418a2c
 
 STOP Phase 8 architecture revisions. The offline loop and feedback selection already passed the scoped checks. No paid experiment now: no new, story-relevant clip has independently verified FIRST-BROADCAST LIVE status.
 
+## 0. REUSE THE EXISTING ATOMIC-EVENT ENRICHMENT OUTPUT (user clarification)
+
+Do NOT reimplement or manually merge `赛事.json + causal.json`. Existing V3 code already does this:
+- `algo/story_video_agent_v3/atomic_event_enrich.py::enrich_files` extracts only `type/t_ms/is_replay` atom fields (not chain labels/edges/story).
+- `closed_loop_cli.run_match` writes `01_enrich/events_enriched.json` and `01_enrich/enrich_report.json`.
+- `fresh_e2e_cli.run_fresh_e2e` feeds that output to 8.31 strip and Phase5, with provenance checked.
+
+**Use the enriched file already produced by the actual upstream run**, not a newly invented `event_union.json`. For a reused Phase5, look for the sibling `../01_enrich/events_enriched.json`; check Phase5's input manifest to confirm the provenance. For a fresh V3-R run under V3-A, expect `01_to_04_fresh_v3r/01_enrich/events_enriched.json`. If the referenced enrichment result is missing, first diagnose upstream output reuse and its manifest; do not silently rebuild incompatible event data.
+
+**Potential V3-A wiring gap to verify:** `story_e2e_agent.py` Search currently prefers `inp.events_json` over the enriched file and only checks the reused Phase5 sibling if no raw path was supplied; a fresh-run enrichment path may not be preferred. Confirm the actual `evidence_search.json` input path. If needed, make the smallest input-routing fix so V3-A Search consumes the **same actual enriched artifact** as upstream Phase5. Preserve no-gold restrictions and a source-video first-LIVE verification gate. The `is_replay` flag derived from a causal chain is a metadata prior, not independent frame verification.
+
 ## 1. Mandatory source-data lineage audit
 
 Candidate events path is `/data2/lpy1/causal-chain2/causal_chain/examples/交付_out/10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语.json`.
@@ -16,7 +27,7 @@ If the replay flag comes from manually annotated delivery_out, it is a conservat
 
 ## 2. Original video review for 2 meaningful candidates (no paid)
 
-Use `赛事.json` as the primary atomic-event inventory and merge relevant `causal.json` supplementary events before candidate search, keeping source_file/source_event_id/source_pts provenance, deduplication decisions and any timestamp conflicts. The causal supplement is not a substitute for source-video first-broadcast verification.
+Use the existing upstream `01_enrich/events_enriched.json` directly for candidate search, and report its companion `enrich_report.json` rather than merging the two JSON files again. Verify Phase5 and V3-A Search read consistent enriched input. `causal.json` replay metadata remains insufficient for first-broadcast video proof.
 
 Use source SHA `a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c` only after checking server bytes match.
 First verify whether the preflight windows are actually relevant to an active narrative defect. Previous Phase7 bridge @3504.14–3515.83 was semantically not helpful; treat it as a negative control, NOT a default production edit. The 824.81–835.15 window is already metadata-replay positive; DO NOT use it in the story. The 6430–6445 window is currently UNKNOWN and may be prioritized only if it serves a concrete diagnosed story role.
