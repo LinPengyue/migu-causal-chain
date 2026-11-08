@@ -118,6 +118,52 @@ class InheritEvidenceTests(unittest.TestCase):
             "goal_identity_event_ids_mismatch",
         ))
 
+    def test_reject_verified_inherit_when_current_event_ids_empty(self):
+        """Reverse: FIRST_LIVE_VERIFIED must not inherit without current event identity."""
+        ok, why = can_inherit_prior_evidence(
+            segment=self._seg(event_ids=[]),
+            prior_row=self._prior(first_live_status="FIRST_LIVE_VERIFIED"),
+            source_video_sha256="abc",
+            prior_video_sha256="abc",
+        )
+        self.assertFalse(ok)
+        self.assertEqual(why, "verified_inherit_requires_current_event_ids")
+
+    def test_reject_verified_inherit_when_prior_event_ids_empty(self):
+        """Reverse: FIRST_LIVE_VERIFIED must not inherit without prior event identity."""
+        ok, why = can_inherit_prior_evidence(
+            segment=self._seg(),
+            prior_row=self._prior(
+                first_live_status="FIRST_LIVE_VERIFIED",
+                event_ids=[],
+                causal_event_ids=[],
+            ),
+            source_video_sha256="abc",
+            prior_video_sha256="abc",
+        )
+        self.assertFalse(ok)
+        self.assertEqual(why, "verified_inherit_requires_prior_event_ids")
+
+    def test_reject_verified_inherit_when_event_ids_mismatch(self):
+        """Reverse: FIRST_LIVE_VERIFIED must not inherit across different goal events."""
+        ok, why = can_inherit_prior_evidence(
+            segment=self._seg(event_ids=["v3_goal_other"]),
+            prior_row=self._prior(first_live_status="FIRST_LIVE_VERIFIED"),
+            source_video_sha256="abc",
+            prior_video_sha256="abc",
+        )
+        self.assertFalse(ok)
+        self.assertEqual(why, "goal_identity_event_ids_mismatch")
+
+    def test_allow_verified_inherit_when_event_ids_match(self):
+        ok, why = can_inherit_prior_evidence(
+            segment=self._seg(),
+            prior_row=self._prior(first_live_status="FIRST_LIVE_VERIFIED"),
+            source_video_sha256="abc",
+            prior_video_sha256="abc",
+        )
+        self.assertTrue(ok, why)
+
 
 class LineageStrictVsInferredTests(unittest.TestCase):
     def test_explicit_recovery_chain_graph_is_strict(self):

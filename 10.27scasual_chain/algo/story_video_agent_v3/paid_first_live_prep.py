@@ -13,7 +13,12 @@ from .first_live_localize import extract_frame_accurate
 from .pipeline import dump
 
 
-DEFAULT_MODEL = "gpt-4o-mini"
+# Prefer configured Paratera VLM; do not default to OpenAI gpt-*.
+import os as _os
+
+DEFAULT_MODEL = (
+    (_os.environ.get("STORY_VLM_MODEL") or "").strip() or "Qwen3.6-Plus"
+)
 # Conservative per-call estimate for dense vision with ~8 frames.
 DEFAULT_USD_PER_CALL = 0.04
 DEFAULT_MAX_CALLS = 2

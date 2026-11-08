@@ -166,7 +166,8 @@ def can_inherit_prior_evidence(
     """Inherit only with trusted historical SHA + matching EDL & observation windows.
 
     Same source PTS with a different goal identity must not inherit.
-    FIRST_LIVE_VERIFIED cannot be inherited when historical source SHA is missing.
+    FIRST_LIVE_VERIFIED cannot be inherited when historical source SHA is missing,
+    or when either side lacks a non-empty matching verifiable goal event identity.
     """
     status = str(prior_row.get("first_live_status") or "UNRESOLVED")
     if status not in FIRST_LIVE_STATUSES:
@@ -187,9 +188,22 @@ def can_inherit_prior_evidence(
     if seg_role and prior_role and seg_role != prior_role:
         return False, "goal_identity_role_mismatch"
 
-    seg_eids = [str(x) for x in (segment.get("event_ids") or [])]
-    prior_eids = [str(x) for x in (prior_row.get("event_ids") or prior_row.get("causal_event_ids") or [])]
-    if seg_eids and prior_eids and set(seg_eids) != set(prior_eids):
+    seg_eids = [str(x).strip() for x in (segment.get("event_ids") or []) if str(x).strip()]
+    prior_eids = [
+        str(x).strip()
+        for x in (prior_row.get("event_ids") or prior_row.get("causal_event_ids") or [])
+        if str(x).strip()
+    ]
+    if status == "FIRST_LIVE_VERIFIED":
+        # VERIFIED inherit is fail-closed on event identity: both sides must carry
+        # non-empty, comparable, identical event_ids. Missing either side → re-verify.
+        if not seg_eids:
+            return False, "verified_inherit_requires_current_event_ids"
+        if not prior_eids:
+            return False, "verified_inherit_requires_prior_event_ids"
+        if set(seg_eids) != set(prior_eids):
+            return False, "goal_identity_event_ids_mismatch"
+    elif seg_eids and prior_eids and set(seg_eids) != set(prior_eids):
         return False, "goal_identity_event_ids_mismatch"
 
     sid = str(segment.get("segment_id") or segment.get("id") or "")
@@ -466,7 +480,8 @@ def bind_edl_goal_evidence(
             "Only include_in_cut goal-action segments counted. "
             "Historical SHA is never auto-stamped from the current video. "
             "Inheritance requires trusted prior SHA + matching EDL and observation windows "
-            "+ matching goal identity (role/event_ids)."
+            "+ matching goal identity (role/event_ids). "
+            "FIRST_LIVE_VERIFIED additionally requires non-empty matching event_ids on both sides."
         ),
     }
     dump(dest / "final_goal_evidence_manifest.json", manifest)
