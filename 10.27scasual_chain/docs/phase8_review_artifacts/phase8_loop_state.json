@@ -1,0 +1,68 @@
+{
+  "schema": "v3a_phase8_loop_v1",
+  "initial_baseline_version_id": "v0",
+  "best_verified_version_id": "v0",
+  "best_verification_tier": "BASELINE_UNVERIFIED",
+  "working_version_id": "v0",
+  "versions": {
+    "v0": {
+      "parent_version_id": null,
+      "edl_path": "e0.json",
+      "mp4_path": "m0.mp4",
+      "safety": "UNKNOWN",
+      "quality": "BASELINE_UNVERIFIED",
+      "source": "V3R_BASELINE",
+      "semantic_evidence_refs": []
+    },
+    "v1": {
+      "parent_version_id": "v0",
+      "edl_path": "e1.json",
+      "mp4_path": "m1.mp4",
+      "safety": "PASS",
+      "quality": "PROMISING",
+      "source": "FIXTURE"
+    }
+  },
+  "feedback_memory_path": "phase8_feedback_memory.json",
+  "round_history": [
+    {
+      "next_action": "CONTINUE_WORKING",
+      "reason_codes": [
+        "promising_continue_working_not_release"
+      ],
+      "candidate_version_id": "v1",
+      "working_ref": "v1",
+      "best_ref": "v0",
+      "quality": "PROMISING",
+      "safety": "PASS"
+    },
+    {
+      "next_action": "STOP_NO_ACTION",
+      "reason_codes": [
+        "uncertain_no_new_evidence"
+      ],
+      "candidate_version_id": "v2",
+      "working_ref": "v0",
+      "best_ref": "v0",
+      "quality": "UNCERTAIN",
+      "safety": "PASS"
+    },
+    {
+      "next_action": "STOP_BUDGET",
+      "reason_codes": [
+        "max_rounds_exhausted"
+      ],
+      "candidate_version_id": "v3",
+      "working_ref": "v0",
+      "best_ref": "v0",
+      "quality": "SAME",
+      "safety": "PASS"
+    }
+  ],
+  "stop_reason": "STOP_BUDGET",
+  "delivery_version_id": "v0",
+  "uncertain_reobserve_count": 0,
+  "promising_depth": 0,
+  "max_uncertain_reobserve": 1,
+  "max_promising_depth": 2
+}

@@ -41,6 +41,16 @@ from .story_evidence_search import (
 from .story_observe import observe_layers
 from .story_revision_planner import plan_from_diagnosis
 from .revision_case import build_revision_cases_for_round
+from .story_revision_feedback import (
+    RevisionFeedbackStore,
+    normalize_feedback,
+)
+from .story_loop_policy import (
+    apply_transition,
+    evaluate_round_transition,
+    init_loop_state,
+    write_loop_state,
+)
 from .final_goal_evidence import build_delivery_and_candidate_evidence
 from .story_timeline import build_story_timeline
 from .story_video_verifier import (
@@ -80,10 +90,15 @@ class StoryE2EInputs:
     smoke_render: bool = True
     fixture_revision: Optional[Mapping[str, Any]] = None
     fixture_verifier: Optional[Mapping[str, Any]] = None
+    # Optional per-round fixture overlays for offline Phase8 multi-round control-flow tests.
+    # Each item may include revision_intents/decision and/or verifier fields (phase8_*).
+    phase8_round_fixtures: Optional[Sequence[Mapping[str, Any]]] = None
     max_rounds: int = MAX_ROUNDS
     max_calls: int = 5
     max_cost_usd: float = 0.10
     max_retries: int = 0
+    # Separate named mode for future paid multi-round; default False keeps frozen guard.
+    phase8_paid_multi_round: bool = False
 
 
 def _read_json(path: Path) -> Any:
@@ -313,6 +328,15 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 "BETTER_not_auto_IMPROVED": True,
                 "revision_case_closed_loop": True,
             },
+            "phase8": {
+                "failure_aware_iterative_revision": True,
+                "modules": [
+                    "story_revision_feedback",
+                    "story_loop_policy",
+                ],
+                "accept_candidate_does_not_drive_loop": True,
+                "phase8_paid_multi_round_default": False,
+            },
         },
         "started_unix": t0,
         "out_dir": str(out),
@@ -348,10 +372,12 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
     if inp.enable_real_api and inp.i_approve_budget:
         from .story_paid_eval import build_capped_provider, provider_usage
 
-        if int(inp.max_calls) > 5 or float(inp.max_cost_usd) > 0.10 or int(inp.max_rounds) > 1:
+        rounds_ok = int(inp.max_rounds) <= 1 or bool(inp.phase8_paid_multi_round)
+        if int(inp.max_calls) > 5 or float(inp.max_cost_usd) > 0.10 or not rounds_ok:
             audit["error"] = (
                 "paid_eval_refused_budget_exceeds_frozen_protocol "
-                "(max_rounds<=1, max_calls<=5, max_cost_usd<=0.10, retries=0)"
+                "(max_rounds<=1 unless phase8_paid_multi_round=True; "
+                "max_calls<=5, max_cost_usd<=0.10, retries=0)"
             )
             write_json(out / "story_e2e_audit.json", audit)
             return audit
@@ -487,6 +513,19 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
 
     best_edl = [dict(r) for r in edl]
     best_mp4 = initial_dir / "story_clean.mp4"
+    working_edl = [dict(r) for r in best_edl]
+    working_mp4 = best_mp4
+    feedback_store = RevisionFeedbackStore()
+    loop_state = init_loop_state(
+        version_id="v0",
+        edl_path=str(initial_dir / "candidate_edl.json"),
+        mp4_path=str(best_mp4),
+        source="V3R_BASELINE",
+    )
+    version_edl: Dict[str, List[Dict[str, Any]]] = {"v0": [dict(r) for r in best_edl]}
+    version_mp4: Dict[str, Path] = {"v0": best_mp4}
+    audit["phase8_loop_state"] = loop_state
+    audit["phase8_feedback_memory"] = feedback_store.to_dict()
     if audit.get("delivery_status_forced") == "BLOCKED":
         gates["workflow_completed"] = True
         gates["final_mp4_exists"] = False
@@ -528,18 +567,19 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         round_dir.mkdir(parents=True, exist_ok=True)
         round_rec: Dict[str, Any] = {"round": round_idx}
 
-        # Critic
+        # Critic on current WORKING parent (not only last accepted best).
+        parent_version_id = str(loop_state.get("working_version_id") or "v0")
         diag = structural_diagnosis(
-            edl=best_edl,
+            edl=working_edl,
             story_plan=plan,
-            initial_story_mp4=best_mp4,
+            initial_story_mp4=working_mp4,
             source_video=inp.source_mp4,
         )
         # Observe (ffmpeg layers always; optional paid VLM critic)
         obs = observe_layers(
-            story_mp4=best_mp4,
+            story_mp4=working_mp4,
             source_mp4=inp.source_mp4,
-            edl=best_edl,
+            edl=working_edl,
             work_dir=round_dir / "observe",
             diagnosis_issues=diag.get("issues") or [],
             skip_vlm=True,  # VLM is invoked explicitly below when authorized
@@ -586,10 +626,10 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                         ):
                             hyp = iss
                             break
-                if hyp is not None and best_mp4 and Path(best_mp4).is_file():
+                if hyp is not None and working_mp4 and Path(working_mp4).is_file():
                     dense_meta = extract_dense_frames_for_issue(
-                        story_mp4=Path(best_mp4),
-                        edl=best_edl,
+                        story_mp4=Path(working_mp4),
+                        edl=working_edl,
                         issue=hyp,
                         out_dir=round_dir / "paid_api" / "dense_observe",
                         fps=1.0,
@@ -681,11 +721,13 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             sibling = Path(inp.phase5_dir).resolve().parent / "01_enrich" / "events_enriched.json"
             if sibling.is_file():
                 events_path = sibling
+        fb_ctx = feedback_store.to_dict()
         search_report = run_story_evidence_search(
             diagnosis=diag,
-            edl=best_edl,
+            edl=working_edl,
             match_json=inp.match_json if inp.match_json.is_file() else None,
             events_json=events_path,
+            feedback_context=fb_ctx,
         )
         write_json(round_dir / "evidence_search.json", search_report)
         search_obs = search_candidates_to_observations(search_report)
@@ -714,15 +756,30 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
 
         # Revision plan
         fixture_intents = None
+        round_fx = None
+        if inp.phase8_round_fixtures and round_idx - 1 < len(inp.phase8_round_fixtures):
+            round_fx = inp.phase8_round_fixtures[round_idx - 1]
         if inp.fixture_revision:
             fixture_intents = inp.fixture_revision.get("revision_intents")
+        if round_fx and round_fx.get("revision_intents") is not None:
+            fixture_intents = round_fx.get("revision_intents")
         rev = plan_from_diagnosis(
             diag,
             observations=obs,
             offline=paid_api is None,
             fixture_intents=fixture_intents,
             search_results=search_report,
+            feedback_context=fb_ctx,
+            budget={
+                "max_rounds": inp.max_rounds,
+                "round_idx": round_idx,
+                "max_calls": inp.max_calls,
+                "max_cost_usd": inp.max_cost_usd,
+                "http_calls_so_far": http_calls,
+                "est_cost_usd_so_far": est_cost,
+            },
         )
+        write_json(round_dir / "planner_feedback_context.json", rev.get("feedback_context") or {})
         if paid_api is not None and fixture_intents is None:
             from .story_paid_eval import provider_usage, run_llm_revision_planner
 
@@ -733,6 +790,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     vlm_critic=vlm_critic or {},
                     protected_goal_ids=list(diag.get("protected_goal_segment_ids") or []),
                     audit_dir=round_dir / "paid_api",
+                    feedback_context=fb_ctx,
                 )
             except Exception as exc:  # noqa: BLE001
                 llm_rev = {"ok": False, "error": f"{type(exc).__name__}:{exc}"}
@@ -818,7 +876,11 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     "est_cost_usd": est_cost,
                 }
                 paid_api = None
-        if inp.fixture_revision and inp.fixture_revision.get("decision"):
+        if round_fx and round_fx.get("decision"):
+            rev["decision"] = round_fx["decision"]
+        if inp.fixture_revision and inp.fixture_revision.get("decision") and not (
+            round_fx and round_fx.get("decision")
+        ):
             rev["decision"] = inp.fixture_revision["decision"]
             if fixture_intents is None and rev["decision"] == "KEEP":
                 rev["revision_intents"] = [
@@ -832,12 +894,12 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         final_decision = str(rev.get("decision") or "UNRESOLVED")
         round_rec["decision"] = final_decision
 
-        candidate_edl = [dict(r) for r in best_edl]
+        candidate_edl = [dict(r) for r in working_edl]
         apply_report: Dict[str, Any] = {"skipped": True}
         if final_decision == "REVISE":
             # Bind search-verified observations (real PTS) — never invent windows.
             candidate_edl, apply_report = apply_candidate_revision(
-                best_edl,
+                working_edl,
                 rev.get("revision_intents") or [],
                 observations=search_obs,
             )
@@ -845,9 +907,9 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             gates["revision_applied"] = any(
                 a.get("status") in ("applied", "applied_evidence_bound")
                 for a in applied_rows
-            ) or (candidate_edl != best_edl)
+            ) or (candidate_edl != working_edl)
             # If REVISE produced no EDL mutation, fail closed to UNRESOLVED.
-            if candidate_edl == best_edl and not any(
+            if candidate_edl == working_edl and not any(
                 a.get("status") in ("applied", "applied_evidence_bound")
                 for a in applied_rows
             ):
@@ -879,7 +941,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         write_json(round_dir / "apply_report.json", apply_report)
         write_json(
             round_dir / "edl_diff.json",
-            edl_diff(best_edl, candidate_edl) if candidate_edl != best_edl else {"changed": False},
+            edl_diff(working_edl, candidate_edl) if candidate_edl != working_edl else {"changed": False},
         )
 
         # Safety: source PTS order must pass *before* any candidate render.
@@ -894,7 +956,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 "pts_breaks": pts_gate.get("breaks") or [],
             }
             write_json(round_dir / "apply_report.json", apply_report)
-            candidate_edl = [dict(r) for r in best_edl]
+            candidate_edl = [dict(r) for r in working_edl]
             final_decision = "UNRESOLVED"
             rev = {
                 **rev,
@@ -907,7 +969,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
 
         candidate_mp4: Optional[Path] = None
         render_info: Dict[str, Any] = {"skipped": True}
-        edl_changed = candidate_edl != best_edl
+        edl_changed = candidate_edl != working_edl
         cand_dedupe_render_blocked = False
         # Render when EDL actually changed (safety+authenticity gates still apply later).
         if (
@@ -940,25 +1002,59 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 "skipped": True,
                 "reason": "blocked_by_source_pts_monotonic_safety",
                 "breaks": pts_gate.get("breaks") or [],
-                "baseline_mp4": str(best_mp4),
+                "baseline_mp4": str(working_mp4),
+                "parent_version_id": parent_version_id,
             }
-            candidate_mp4 = best_mp4
+            candidate_mp4 = working_mp4
             gates["candidate_rendered"] = False
             edl_changed = False
         elif not edl_changed:
             render_info = {
                 "skipped": True,
-                "reason": "edl_unchanged_reuse_baseline",
-                "baseline_mp4": str(best_mp4),
+                "reason": "edl_unchanged_reuse_working_parent",
+                "baseline_mp4": str(working_mp4),
+                "parent_version_id": parent_version_id,
             }
-            candidate_mp4 = best_mp4
+            candidate_mp4 = working_mp4
             gates["candidate_rendered"] = False
         write_json(round_dir / "candidate_render.json", render_info)
 
         # Verifier: dual-video vision when revising with a real candidate render
         fixture_v = inp.fixture_verifier
+        if round_fx and round_fx.get("fixture_verifier") is not None:
+            fixture_v = round_fx.get("fixture_verifier")
+        elif round_fx and any(
+            k.startswith("phase8_") or k in ("quality_judgment", "issue_effect", "global_regression", "source_kind")
+            for k in (round_fx.keys() if isinstance(round_fx, dict) else [])
+        ):
+            # Allow compact phase8 verifier overlays on the round fixture itself.
+            fixture_v = {
+                **(dict(inp.fixture_verifier) if inp.fixture_verifier else {}),
+                **{
+                    k: round_fx[k]
+                    for k in round_fx
+                    if k.startswith("phase8_")
+                    or k
+                    in (
+                        "quality_judgment",
+                        "quality_delta_vs_baseline",
+                        "issue_effect",
+                        "global_regression",
+                        "source_kind",
+                        "sent_frame_ids",
+                        "hard_vetoes",
+                        "observed_changes",
+                        "suggested_next_evidence",
+                        "focus_issue_id",
+                    )
+                },
+                "compared_parent_version_id": parent_version_id,
+                "source_kind": round_fx.get("source_kind") or "FIXTURE",
+            }
         sent_frame_ids: List[str] = list(
-            (inp.fixture_verifier or {}).get("sent_frame_ids") or []
+            (fixture_v or {}).get("sent_frame_ids")
+            or (inp.fixture_verifier or {}).get("sent_frame_ids")
+            or []
         )
         vision_backed = bool(sent_frame_ids)
         llm_v = None
@@ -991,16 +1087,16 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 )
                 llm_v = run_llm_verifier(
                     paid_api,
-                    baseline_summary={"mp4": str(best_mp4)},
+                    baseline_summary={"mp4": str(working_mp4), "version_id": parent_version_id},
                     candidate_summary={"mp4": str(candidate_mp4)},
-                    edl_delta=edl_diff(best_edl, candidate_edl),
+                    edl_delta=edl_diff(working_edl, candidate_edl),
                     video_probe=probe_video_pair(
-                        baseline_mp4=best_mp4, candidate_mp4=candidate_mp4
+                        baseline_mp4=working_mp4, candidate_mp4=candidate_mp4
                     ),
                     audit_dir=round_dir / "paid_api",
-                    baseline_mp4=best_mp4,
+                    baseline_mp4=working_mp4,
                     candidate_mp4=candidate_mp4,
-                    baseline_edl=best_edl,
+                    baseline_edl=working_edl,
                     candidate_edl=candidate_edl,
                     work_dir=round_dir / "paid_api" / "dual_frames",
                     revision_cases=list(provisional_cases.get("cases") or []),
@@ -1021,12 +1117,19 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     {"ok": False, "error": f"{type(exc).__name__}:{exc}"},
                 )
 
+        if isinstance(fixture_v, dict):
+            fixture_v = {
+                **fixture_v,
+                "compared_parent_version_id": parent_version_id,
+                "source_kind": fixture_v.get("source_kind")
+                or ("FIXTURE" if fixture_v else "REAL"),
+            }
         vfix = verify_story_revision(
             story=story or plan,
             plan=plan,
-            baseline_edl=best_edl,
+            baseline_edl=working_edl,
             candidate_edl=candidate_edl,
-            baseline_mp4=best_mp4,
+            baseline_mp4=working_mp4,
             candidate_mp4=candidate_mp4,
             decision=final_decision,
             fixture=fixture_v,
@@ -1061,16 +1164,13 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         ):
             metrics["false_or_unverified_improve_claims"] += 1
 
+        # Legacy accept field retained for Phase6/7 audit readers; loop uses phase8 policy.
         if vfix.get("candidate_accepted") and candidate_mp4 and candidate_mp4.is_file():
-            best_edl = candidate_edl
-            best_mp4 = candidate_mp4
             round_rec["accepted"] = True
             metrics["candidate_accepted"] += 1
         else:
             round_rec["accepted"] = False
             round_rec["retain_baseline"] = True
-
-            # Verifier non-accept: formal delivery stays at last accepted / baseline.
 
         applied_bound = any(
             a.get("status") in ("applied", "applied_evidence_bound")
@@ -1140,12 +1240,135 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         round_rec["revision_case_count"] = int(case_bundle.get("n_cases") or 0)
         audit["last_revision_cases"] = case_bundle
 
+        cand_version_id = f"v{round_idx}"
+        parent_edl_snapshot = [dict(r) for r in working_edl]
+        parent_mp4_snapshot = working_mp4
+        phase8_verdict = dict(vfix.get("phase8_verdict") or {})
+        # Offline fixture overlays may force advisory quality for control-flow tests.
+        if round_fx and round_fx.get("phase8_quality"):
+            phase8_verdict["quality"] = str(round_fx["phase8_quality"]).upper()
+            phase8_verdict["source_kind"] = round_fx.get("source_kind") or "FIXTURE"
+        if round_fx and round_fx.get("phase8_safety"):
+            phase8_verdict["safety"] = str(round_fx["phase8_safety"]).upper()
+        if round_fx and round_fx.get("phase8_evidence"):
+            phase8_verdict["evidence"] = str(round_fx["phase8_evidence"]).upper()
+        if round_fx and round_fx.get("issue_effect"):
+            phase8_verdict["issue_effect"] = str(round_fx["issue_effect"]).upper()
+        if round_fx and round_fx.get("global_regression"):
+            phase8_verdict["global_regression"] = str(round_fx["global_regression"]).upper()
+        fb_entries = normalize_feedback(
+            case_bundle,
+            vfix,
+            apply_report,
+            candidate_metadata={
+                "parent_version_id": parent_version_id,
+                "candidate_version_id": cand_version_id,
+                "match_id": inp.match_id,
+            },
+            round_idx=round_idx,
+            source_kind=str(phase8_verdict.get("source_kind") or "REAL"),
+        )
+        # Align stored quality with advisory verdict when cases lacked judgments.
+        for e in fb_entries:
+            if e.get("quality") in (None, "UNCERTAIN") and phase8_verdict.get("quality"):
+                e["quality"] = phase8_verdict["quality"]
+            if phase8_verdict.get("failure_class"):
+                e["failure_class"] = phase8_verdict["failure_class"]
+        feedback_store.extend(fb_entries)
+        feedback_store.write_json(out / "phase8_feedback_memory.json")
+        feedback_store.write_json(round_dir / "phase8_feedback_memory_snapshot.json")
+
+        has_alt = bool(search_report.get("feedback_filtered_candidates")) or bool(
+            (search_report.get("verified_candidates_before_feedback") or [])
+            and not (search_report.get("verified_candidates") or [])
+        )
+        # Distinct alternative if any verified candidate remains after filter.
+        has_distinct = bool(search_report.get("verified_candidates")) and bool(
+            search_report.get("feedback_filtered_candidates")
+        )
+        transition = evaluate_round_transition(
+            loop_state,
+            {
+                "version_id": cand_version_id,
+                "parent_version_id": parent_version_id,
+                "edl_changed": bool(edl_changed),
+                "rendered": bool(gates.get("candidate_rendered")),
+            },
+            {
+                **phase8_verdict,
+                "hard_vetoes": list(vfix.get("hard_vetoes") or []),
+                "phase8_verdict": phase8_verdict,
+            },
+            {
+                "rounds_done": round_idx,
+                "max_rounds": min(int(inp.max_rounds), MAX_ROUNDS),
+                "http_calls": http_calls,
+                "max_calls": inp.max_calls if paid_api is not None else None,
+                "est_cost_usd": est_cost,
+                "max_cost_usd": inp.max_cost_usd if paid_api is not None else None,
+                "has_executable_revision": final_decision == "REVISE" and bool(edl_changed),
+                "has_distinct_alternative": has_distinct or has_alt,
+                "has_new_visual_target": bool(phase8_verdict.get("suggested_next_evidence")),
+            },
+        )
+        write_json(round_dir / "phase8_transition.json", transition)
+        loop_state = apply_transition(
+            loop_state,
+            transition,
+            candidate_version={
+                "parent_version_id": parent_version_id,
+                "edl_path": str(round_dir / "candidate_edl.json"),
+                "mp4_path": str(candidate_mp4) if candidate_mp4 else None,
+                "safety": phase8_verdict.get("safety"),
+                "quality": phase8_verdict.get("quality"),
+                "source": phase8_verdict.get("source_kind") or "REAL",
+                "semantic_evidence_refs": list(phase8_verdict.get("evidence_refs") or []),
+                "round_idx": round_idx,
+            },
+        )
+        version_edl[cand_version_id] = [dict(r) for r in candidate_edl]
+        if candidate_mp4:
+            version_mp4[cand_version_id] = Path(candidate_mp4)
+
+        # Update working / best pointers from transition (never from accept alone).
+        next_action = str(transition.get("next_action") or "")
+        if transition.get("promote") and next_action == "PROMOTE_BEST":
+            best_edl = [dict(r) for r in candidate_edl]
+            if candidate_mp4 and Path(candidate_mp4).is_file():
+                best_mp4 = Path(candidate_mp4)
+            working_edl = [dict(r) for r in best_edl]
+            working_mp4 = best_mp4
+        elif next_action == "CONTINUE_WORKING" and edl_changed and candidate_mp4:
+            working_edl = [dict(r) for r in candidate_edl]
+            working_mp4 = Path(candidate_mp4)
+        elif next_action in ("REPLAN_FROM_BEST", "STOP_SAFETY", "STOP_NO_ACTION", "STOP_BUDGET"):
+            bid = str(loop_state.get("best_verified_version_id") or "v0")
+            working_edl = [dict(r) for r in (version_edl.get(bid) or best_edl)]
+            working_mp4 = version_mp4.get(bid) or best_mp4
+        # REOBSERVE keeps working pointers unchanged.
+
+        write_loop_state(loop_state, out / "phase8_loop_state.json")
+        write_loop_state(loop_state, round_dir / "phase8_loop_state.json")
+        audit["phase8_loop_state"] = loop_state
+        audit["phase8_feedback_memory"] = feedback_store.to_dict()
+        round_rec["phase8_transition"] = transition
+        round_rec["phase8_verdict"] = phase8_verdict
+        round_rec["parent_version_id"] = parent_version_id
+        round_rec["candidate_version_id"] = cand_version_id
+        round_rec["working_version_id"] = loop_state.get("working_version_id")
+        round_rec["best_verified_version_id"] = loop_state.get("best_verified_version_id")
+
+        write_json(round_dir / "parent_working_edl.json", parent_edl_snapshot)
         if edl_changed and candidate_mp4 and candidate_mp4.is_file() and gates.get("candidate_rendered"):
             last_candidate_bundle = {
                 "round": round_idx,
                 "round_dir": str(round_dir),
-                "baseline_mp4": str(initial_dir / "story_clean.mp4"),
-                "baseline_edl": str(initial_dir / "candidate_edl.json"),
+                "baseline_mp4": str(parent_mp4_snapshot),
+                "baseline_edl": str(round_dir / "parent_working_edl.json"),
+                "parent_version_id": parent_version_id,
+                "candidate_version_id": cand_version_id,
+                "initial_baseline_mp4": str(initial_dir / "story_clean.mp4"),
+                "initial_baseline_edl": str(initial_dir / "candidate_edl.json"),
                 "candidate_mp4": str(candidate_mp4),
                 "candidate_edl": str(round_dir / "candidate_edl.json"),
                 "edl_diff": str(round_dir / "edl_diff.json"),
@@ -1159,6 +1382,8 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     "semantic_verification_status"
                 ),
                 "candidate_accepted": bool(vfix.get("candidate_accepted")),
+                "phase8_verdict": phase8_verdict,
+                "phase8_transition": transition,
                 "revision_status": rev_status,
                 "modified_source_pts": [
                     {
@@ -1182,22 +1407,69 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             "hard_vetoes": vfix.get("hard_vetoes"),
             "goal_protection": vfix.get("goal_protection"),
             "warnings": vfix.get("warnings"),
+            "phase8_verdict": phase8_verdict,
+            "compared_parent_version_id": parent_version_id,
+            "version_id": cand_version_id,
         }
         audit["last_diagnosis_issues"] = list(diag.get("issues") or [])
         audit["edl_changed_any"] = bool(audit.get("edl_changed_any")) or bool(edl_changed)
 
-        # Stop early when KEEP/UNRESOLVED (no further paid/offline loops needed)
-        if final_decision in ("KEEP", "UNRESOLVED"):
+        # Stop only for reasoned policy / budget — never solely because accept=False.
+        if next_action.startswith("STOP"):
+            loop_state["stop_reason"] = transition.get("stop_reason") or next_action
+            loop_state["delivery_version_id"] = loop_state.get("best_verified_version_id")
+            write_loop_state(loop_state, out / "phase8_loop_state.json")
             break
-        if not vfix.get("candidate_accepted"):
-            break
+        if final_decision in ("KEEP", "UNRESOLVED") and not edl_changed:
+            # No mutation this round: stop unless policy explicitly continues explore.
+            if next_action in ("CONTINUE_WORKING", "REOBSERVE", "PROMOTE_BEST"):
+                pass
+            else:
+                loop_state["stop_reason"] = (
+                    transition.get("stop_reason")
+                    or ("STOP_NO_ACTION_KEEP" if final_decision == "KEEP" else "STOP_NO_ACTION")
+                )
+                loop_state["delivery_version_id"] = loop_state.get("best_verified_version_id")
+                write_loop_state(loop_state, out / "phase8_loop_state.json")
+                break
 
-    # Final delivery staging
+    # Final delivery staging — selected best_verified version only.
+    delivery_vid = str(
+        loop_state.get("delivery_version_id")
+        or loop_state.get("best_verified_version_id")
+        or "v0"
+    )
+    if delivery_vid in version_edl:
+        best_edl = [dict(r) for r in version_edl[delivery_vid]]
+    if delivery_vid in version_mp4 and Path(version_mp4[delivery_vid]).is_file():
+        best_mp4 = Path(version_mp4[delivery_vid])
+    loop_state["delivery_version_id"] = delivery_vid
+    if not loop_state.get("stop_reason"):
+        loop_state["stop_reason"] = "LOOP_COMPLETED"
+    write_loop_state(loop_state, out / "phase8_loop_state.json")
+    feedback_store.write_json(out / "phase8_feedback_memory.json")
+    audit["phase8_loop_state"] = loop_state
+    audit["phase8_feedback_memory"] = feedback_store.to_dict()
+    audit["phase8_delivery_version_id"] = delivery_vid
+
     final_dir = out / "99_final"
     final_dir.mkdir(parents=True, exist_ok=True)
     final_mp4 = final_dir / "story_final.mp4"
     _copy_or_link(best_mp4, final_mp4)
     write_json(final_dir / "final_edl.json", best_edl)
+    write_json(
+        final_dir / "delivery_version_ref.json",
+        {
+            "delivery_version_id": delivery_vid,
+            "best_verified_version_id": loop_state.get("best_verified_version_id"),
+            "best_verification_tier": loop_state.get("best_verification_tier"),
+            "stop_reason": loop_state.get("stop_reason"),
+            "mp4": str(best_mp4),
+            "formal_improved": loop_state.get("best_verification_tier") == "VERIFIED_BETTER"
+            and (loop_state.get("versions") or {}).get(delivery_vid, {}).get("source")
+            not in ("FIXTURE", "OFFLINE_FIXTURE", "PHASE7_HISTORICAL_ARTIFACT"),
+        },
+    )
     write_json(final_dir / "story_timeline.json", build_story_timeline(best_edl))
     align = timeline_mp4_aligned(edl=best_edl, mp4=final_mp4, tolerance_sec=2.0)
     write_json(final_dir / "timeline_mp4_alignment.json", align)
@@ -1206,19 +1478,62 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
     gates["workflow_completed"] = True
 
     last_v = audit.get("last_verifier") or {}
+    # Release checks must refer to the SELECTED delivery version, not a later rejected round.
+    delivery_meta = (loop_state.get("versions") or {}).get(delivery_vid) or {}
+    delivery_round = None
+    for rr in audit.get("rounds") or []:
+        if str(rr.get("candidate_version_id") or "") == delivery_vid and rr.get("phase8_transition", {}).get(
+            "promote"
+        ):
+            delivery_round = rr
+            break
+    if delivery_vid == "v0" or loop_state.get("best_verification_tier") == "BASELINE_UNVERIFIED":
+        release_accepted = False
+        release_decision = "KEEP"
+        release_edl_changed = False
+        release_vetoes: List[Any] = []
+        release_goals_intact = True
+    else:
+        release_accepted = bool(
+            (delivery_round or {}).get("accepted")
+            if delivery_round is not None
+            else last_v.get("candidate_accepted")
+        )
+        release_decision = "REVISE" if release_accepted else str(final_decision)
+        release_edl_changed = delivery_vid != "v0"
+        release_vetoes = list(
+            ((delivery_round or {}).get("phase8_verdict") or {}).get("hard_vetoes")
+            or (delivery_round or {}).get("gates_snapshot", {}).get("hard_vetoes")
+            or []
+        )
+        release_goals_intact = True
     release = compute_release_authorization(
         gates=gates,
-        decision=final_decision,
-        edl_changed=bool(audit.get("edl_changed_any")),
-        candidate_accepted=bool(last_v.get("candidate_accepted")),
-        goal_anchors_intact=bool((last_v.get("goal_protection") or {}).get("intact", True)),
-        hard_vetoes=list(last_v.get("hard_vetoes") or []),
+        decision=release_decision,
+        edl_changed=bool(release_edl_changed),
+        candidate_accepted=bool(release_accepted),
+        goal_anchors_intact=bool(release_goals_intact),
+        hard_vetoes=release_vetoes,
         final_mp4=final_mp4,
         final_edl=best_edl,
         diagnosis_issues=list(audit.get("last_diagnosis_issues") or []),
         timeline_aligned=bool(align.get("aligned")),
-        unresolved_critical=final_decision == "UNRESOLVED",
+        unresolved_critical=final_decision == "UNRESOLVED" and delivery_vid == "v0",
     )
+    release["delivery_version_id"] = delivery_vid
+    release["delivery_source"] = delivery_meta.get("source")
+    release["note_phase8"] = (
+        "Release authorization is version-specific; a later rejected/uncertain round "
+        "does not revoke an earlier selected best_verified delivery pair."
+    )
+    # Fixture / offline never authorizes formal release.
+    if str(delivery_meta.get("source") or "").upper() in (
+        "FIXTURE",
+        "OFFLINE_FIXTURE",
+        "PHASE7_HISTORICAL_ARTIFACT",
+    ):
+        release["release_authorized"] = False
+        release.setdefault("reasons", []).append("fixture_or_offline_source_not_releasable")
     gates["release_authorized"] = bool(release.get("release_authorized"))
     write_json(final_dir / "release_gate.json", release)
 

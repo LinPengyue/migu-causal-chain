@@ -266,6 +266,28 @@ def verify_story_revision(
         if not sent_frame_ids:
             warnings.append("refuse_accept_without_dual_video_frames")
 
+    phase8_verdict = build_phase8_verdict(
+        hard_vetoes=hard_vetoes,
+        goal_intact=not any(
+            str(v.get("kind") or "").startswith("goal_anchor") for v in hard_vetoes
+        ),
+        render_rows_ok=render_rows_ok,
+        semantic_status=semantic_status,
+        vision_backed=bool(sent_frame_ids) and (vision_backed is not False),
+        sent_frame_ids=list(sent_frame_ids or []),
+        validated=val if isinstance(val, dict) else {},
+        fixture=fixture if isinstance(fixture, dict) else None,
+        accept_candidate=bool(accept),
+        compared_parent_version_id=(
+            (fixture or {}).get("compared_parent_version_id")
+            if isinstance(fixture, dict)
+            else None
+        ),
+        focus_issue_id=(
+            (fixture or {}).get("focus_issue_id") if isinstance(fixture, dict) else None
+        ),
+    )
+
     return {
         "schema": "v3a_story_video_verifier_v1",
         "decision_input": decision,
@@ -294,6 +316,7 @@ def verify_story_revision(
         "dual_verifier_full": dual,
         "candidate_accepted": bool(accept),
         "retain_baseline": not bool(accept),
+        "phase8_verdict": phase8_verdict,
         "evidence_basis": (
             "dual_video_vision_frames"
             if sent_frame_ids and semantic_status != "NOT_EVALUATED"
@@ -301,7 +324,134 @@ def verify_story_revision(
         ),
         "note": (
             "Semantic accept requires aligned dual-video frames with citable frame_ids. "
-            "EDL/text/ffprobe alone never authorizes release."
+            "EDL/text/ffprobe alone never authorizes release. "
+            "phase8_verdict is advisory for exploration; accept_candidate does not "
+            "synthesize from PROMISING."
+        ),
+    }
+
+
+def build_phase8_verdict(
+    *,
+    hard_vetoes: Sequence[Mapping[str, Any]],
+    goal_intact: bool,
+    render_rows_ok: bool,
+    semantic_status: str,
+    vision_backed: bool,
+    sent_frame_ids: Sequence[str],
+    validated: Mapping[str, Any],
+    fixture: Optional[Mapping[str, Any]] = None,
+    accept_candidate: bool = False,
+    compared_parent_version_id: Optional[str] = None,
+    focus_issue_id: Optional[str] = None,
+) -> Dict[str, Any]:
+    """Independent advisory quality/safety/evidence verdict (Phase 8).
+
+    Never weakens validate_visual_verifier_payload provenance rules.
+    PROMISING must not become accept_candidate.
+    """
+    from .story_revision_feedback import normalize_quality
+
+    fx = dict(fixture or {})
+    source_kind = str(fx.get("source_kind") or ("FIXTURE" if fixture else "REAL"))
+
+    if hard_vetoes or not goal_intact or not render_rows_ok:
+        safety = "FAIL"
+    elif fx.get("phase8_safety"):
+        safety = str(fx.get("phase8_safety")).upper()
+        if safety not in ("PASS", "FAIL", "UNKNOWN"):
+            safety = "UNKNOWN"
+    elif vision_backed and semantic_status == "PASSED" and accept_candidate:
+        safety = "PASS"
+    elif hard_vetoes:
+        safety = "FAIL"
+    else:
+        # No hard veto ≠ PASS; missing authoritative first-LIVE proof → UNKNOWN.
+        safety = "UNKNOWN"
+
+    q_raw = (
+        fx.get("phase8_quality")
+        or fx.get("quality_judgment")
+        or validated.get("quality_delta_vs_baseline")
+    )
+    quality = normalize_quality(q_raw)
+    if quality == "BETTER" and not (vision_backed and sent_frame_ids):
+        quality = "UNCERTAIN"
+
+    if semantic_status == "PASSED" and vision_backed and sent_frame_ids:
+        evidence = "SUFFICIENT"
+    elif sent_frame_ids and semantic_status in ("FAILED", "PASSED", "NOT_EVALUATED"):
+        evidence = "PARTIAL" if vision_backed else "INSUFFICIENT"
+    else:
+        evidence = "INSUFFICIENT"
+
+    if fx.get("phase8_evidence"):
+        evidence = str(fx["phase8_evidence"]).upper()
+        if evidence not in ("SUFFICIENT", "PARTIAL", "INSUFFICIENT"):
+            evidence = "INSUFFICIENT"
+
+    issue_effect = str(
+        fx.get("issue_effect")
+        or validated.get("original_issue_resolved")
+        or "UNOBSERVED"
+    ).upper()
+    if issue_effect in ("TRUE", "YES"):
+        issue_effect = "RESOLVED"
+    elif issue_effect in ("FALSE", "NO"):
+        issue_effect = "UNRESOLVED"
+    elif issue_effect not in ("RESOLVED", "PARTIAL", "UNRESOLVED", "UNOBSERVED"):
+        if validated.get("original_issue_resolved") is True:
+            issue_effect = "RESOLVED"
+        elif validated.get("original_issue_resolved") is False:
+            issue_effect = "UNRESOLVED"
+        else:
+            issue_effect = "UNOBSERVED"
+
+    global_regression = str(fx.get("global_regression") or "UNKNOWN").upper()
+    if validated.get("introduced_new_defect") is True:
+        global_regression = "YES"
+    elif validated.get("introduced_new_defect") is False and global_regression == "UNKNOWN":
+        global_regression = "NO"
+
+    failure_class = "UNCERTAIN_OR_UNVERIFIED"
+    if safety == "FAIL":
+        failure_class = "HARD_SAFETY_VETO"
+    elif quality in ("BETTER", "PROMISING") and evidence in ("SUFFICIENT", "PARTIAL"):
+        failure_class = "POSITIVE"
+    elif quality == "WORSE" and evidence == "SUFFICIENT":
+        failure_class = "CONFIRMED_NEGATIVE"
+    elif evidence == "INSUFFICIENT" or semantic_status == "NOT_EVALUATED":
+        failure_class = "TECHNICAL_FAILURE" if not vision_backed else "UNCERTAIN_OR_UNVERIFIED"
+
+    # Explicit: never synthesize accept from PROMISING.
+    if quality == "PROMISING" and accept_candidate:
+        # Caller still has legacy accept; verdict records the conflict.
+        pass
+
+    return {
+        "schema": "v3a_phase8_verdict_v1",
+        "safety": safety,
+        "quality": quality,
+        "evidence": evidence,
+        "issue_effect": issue_effect,
+        "global_regression": global_regression,
+        "focus_issue_id": focus_issue_id or fx.get("focus_issue_id"),
+        "evidence_refs": list(validated.get("evidence_of_improvement") or [])[:12]
+        or list(sent_frame_ids)[:12],
+        "observed_changes": fx.get("observed_changes")
+        or validated.get("observed_visuals"),
+        "unresolved_questions": list(fx.get("unresolved_questions") or []),
+        "suggested_next_evidence": fx.get("suggested_next_evidence")
+        or "reobserve_edit_locus_continuous_context",
+        "failure_class": failure_class,
+        "compared_parent_version_id": compared_parent_version_id
+        or fx.get("compared_parent_version_id"),
+        "source_kind": source_kind,
+        "accept_candidate_raw": bool(accept_candidate),
+        "accept_not_synthesized_from_promising": True,
+        "note": (
+            "Advisory for loop policy only. Formal release remains stricter. "
+            "FIXTURE source_kind never establishes real IMPROVED."
         ),
     }
 

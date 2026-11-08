@@ -1,0 +1,89 @@
+{
+  "schema": "v3a_phase8_feedback_memory_v1",
+  "n_records": 1,
+  "records": [
+    {
+      "schema": "v3a_phase8_feedback_v1",
+      "round": 1,
+      "action": "search_add",
+      "source_pts": [
+        3504.14,
+        3515.83
+      ],
+      "quality": "PROMISING",
+      "evidence_status": "PARTIAL",
+      "failure_class": "POSITIVE",
+      "issue_signature": {
+        "category": "transition",
+        "anchor_segment_ids": [
+          "seg_setup",
+          "seg_turn"
+        ],
+        "missing_narrative_info": "causal bridge"
+      },
+      "next_search_requirement": "alternate narrative function",
+      "new_evidence_required_for_retry": true,
+      "source_kind": "FIXTURE",
+      "pts_permanently_banned": false
+    }
+  ],
+  "summary": {
+    "schema": "v3a_phase8_feedback_summary_v1",
+    "n_records": 1,
+    "tried_revisions": [
+      {
+        "round": 1,
+        "action": "search_add",
+        "source_pts": [
+          3504.14,
+          3515.83
+        ],
+        "quality": "PROMISING",
+        "failure_class": "POSITIVE",
+        "issue_signature": {
+          "category": "transition",
+          "anchor_segment_ids": [
+            "seg_setup",
+            "seg_turn"
+          ],
+          "missing_narrative_info": "causal bridge"
+        },
+        "next_search_requirement": "alternate narrative function",
+        "new_evidence_required_for_retry": true
+      }
+    ],
+    "confirmed_negatives": [],
+    "uncertain_or_unverified": [],
+    "technical_failures": [],
+    "positives": [
+      {
+        "schema": "v3a_phase8_feedback_v1",
+        "round": 1,
+        "action": "search_add",
+        "source_pts": [
+          3504.14,
+          3515.83
+        ],
+        "quality": "PROMISING",
+        "evidence_status": "PARTIAL",
+        "failure_class": "POSITIVE",
+        "issue_signature": {
+          "category": "transition",
+          "anchor_segment_ids": [
+            "seg_setup",
+            "seg_turn"
+          ],
+          "missing_narrative_info": "causal bridge"
+        },
+        "next_search_requirement": "alternate narrative function",
+        "new_evidence_required_for_retry": true,
+        "source_kind": "FIXTURE",
+        "pts_permanently_banned": false
+      }
+    ],
+    "current_issue_signatures": [],
+    "forbid_identical_retry_without_new_evidence": true,
+    "never_permanently_ban_pts": true,
+    "opaque_reject_is_not_confirmed_negative": true
+  }
+}

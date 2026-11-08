@@ -1,0 +1,55 @@
+{
+  "schema": "v3a_phase8_offline_loop_audit_v1",
+  "structural_loop_pass": true,
+  "video_semantic_quality_verified": false,
+  "unseen_match_generalization_verified": false,
+  "release_authorized": false,
+  "zero_http": true,
+  "rounds": [
+    {
+      "round": 1,
+      "parent": "v0",
+      "candidate": "v1",
+      "transition": "CONTINUE_WORKING",
+      "action": "search_add",
+      "source_pts": [
+        3504.14,
+        3515.83
+      ],
+      "working": "v1",
+      "best": "v0"
+    },
+    {
+      "round": 2,
+      "parent": "v1",
+      "candidate": "v2",
+      "transition": "STOP_NO_ACTION",
+      "action": "search_add",
+      "source_pts": [
+        4200.0,
+        4210.0
+      ],
+      "working": "v0",
+      "best": "v0",
+      "filtered_out": "cand_old",
+      "kept": "cand_new"
+    },
+    {
+      "round": 3,
+      "transition": "STOP_BUDGET",
+      "working": "v0",
+      "best": "v0",
+      "stop_reason": "STOP_BUDGET"
+    }
+  ],
+  "proof": {
+    "r1_promising_sets_working_not_best": true,
+    "r2_feedback_changes_candidate_pts": true,
+    "r3_budget_stop_preserves_best": true,
+    "two_distinct_source_candidates": [
+      "cand_old@3504-3515",
+      "cand_new@4200-4210"
+    ]
+  },
+  "note": "Fixture control-flow proof only. Not a claim of better real story video."
+}
