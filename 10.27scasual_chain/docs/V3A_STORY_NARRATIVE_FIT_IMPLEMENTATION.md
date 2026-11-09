@@ -30,14 +30,26 @@ This patch does not encode any match-specific PTS, 3504/2273/6400 winner, footba
 ## Required zero-payment server tests before merge
 
 ```bash
-cd /data2/lpy1/worktrees/migu-v3a-audit-fixes-verify/10.27scasual_chain
-# In a NEW isolated worktree for the updated branch HEAD, do not overwrite the
-# original e3044ab 78-pass verification snapshot.
+cd /data2/lpy1/worktrees/migu-v3a-narrative-fit-verify/10.27scasual_chain
+# Isolated worktree on updated branch HEAD; do not overwrite the original
+# e3044ab 78-pass verification snapshot.
+python -m compileall -q algo/story_video_agent_v3
 PYTHONPATH=algo python -m pytest tests/test_v3a_phase8_*.py -q
-PYTHONPATH=algo python -m pytest tests/test_v3a_phase6*.py -q
 ```
 
-Report exact passed/failed/skipped, tracebacks, and which baseline tests were modified. If any fail, do not merge or start paid tests; return the failures to ChatGPT for source changes.
+### Server verification (`d091178` + gap-balance test align)
+
+Worktree: `/data2/lpy1/worktrees/migu-v3a-narrative-fit-verify`  
+Report: `/data2/lpy1/_story_va_outputs/v3/plan2/phase8_narrative_fit_verify_d091178.json`
+
+| Suite | Result |
+|-------|--------|
+| `compileall algo/story_video_agent_v3` | exit 0 |
+| `tests/test_v3a_phase8_narrative_fit.py` | **12 passed / 0 failed / 0 skipped** |
+| First full `tests/test_v3a_phase8_*.py` on `d091178` | **89 passed / 1 failed** — legacy `test_gap_balance_prefers_not_end_proximity_only` still expected mid-gap to outrank heat after `6f6a62e` removed gap-balance from `rank_score` |
+| After aligning that test to diagnostic-only ranking | **90 passed / 0 failed / 0 skipped** (`test_gap_balance_is_diagnostic_not_rank_reward`) |
+
+No paid VLM in this verification. Do not merge main until a story-quality A/B on real video is reviewed.
 
 ## Research-quality next gate
 

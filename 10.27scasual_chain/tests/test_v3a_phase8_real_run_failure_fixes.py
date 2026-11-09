@@ -190,8 +190,9 @@ class TestRealRunFailureRootCauses(unittest.TestCase):
             "llm_returned_no_mutating_intents; retained_search_bound_revise",
         )
 
-    def test_gap_balance_prefers_not_end_proximity_only(self):
-        # Synthetic window: lo=0, hi=100; mid candidate should beat end-proximate heat.
+    def test_gap_balance_is_diagnostic_not_rank_reward(self):
+        # After 6f6a62e / narrative-fit: gap_balance and destination proximity are
+        # retained as diagnostics only. Metadata heat may outrank a mid-gap clip.
         def _ev(eid, mid, typ, heat, crit):
             return {
                 "event_id": eid,
@@ -222,8 +223,20 @@ class TestRealRunFailureRootCauses(unittest.TestCase):
             occupied=[],
         )
         self.assertGreaterEqual(len(ranked), 2)
-        # Balanced residual should outrank end-proximate when heat is similar.
-        self.assertEqual(ranked[0]["event_id"], "balanced")
+        by_id = {r["event_id"]: r for r in ranked}
+        self.assertIn("near_hi", by_id)
+        self.assertIn("balanced", by_id)
+        # Mid-window still reports a higher gap_balance diagnostic.
+        self.assertGreater(
+            float(by_id["balanced"]["gap_balance"]),
+            float(by_id["near_hi"]["gap_balance"]),
+        )
+        # Ranking no longer rewards gap_balance: higher heat+criticality leads.
+        self.assertEqual(ranked[0]["event_id"], "near_hi")
+        self.assertGreater(
+            float(ranked[0]["rank_score"]),
+            float(by_id["balanced"]["rank_score"]),
+        )
         diag = build_candidate_selection_diagnostics(ranked)
         self.assertEqual(diag[0]["evidence_tier"], EVIDENCE_TIER_EVENT_PTS)
 
