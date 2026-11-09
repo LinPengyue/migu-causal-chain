@@ -1,0 +1,52 @@
+{
+  "schema": "v3a_phase8_user_visual_review_attestation_v1",
+  "recorded_date": "2026-11-09",
+  "scope": "Two exact source-PTS candidate windows (not the whole broadcast, not an EDL/release approval)",
+  "source_mp4_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+  "reviewer": "USER_MANUAL_VIDEO_REVIEW",
+  "reviewer_statement": "我审查了这两段，都是首次直播",
+  "reviewed_candidates": [
+    {
+      "candidate_id": "cand_event_000634_6400",
+      "source_pts_start": 6400.9,
+      "source_pts_end": 6412.5,
+      "role": "pre_equalizer_buildup",
+      "first_live_status": "FIRST_LIVE_VERIFIED",
+      "comparison_near_pts": 6344.52,
+      "comparison_pack": "docs/phase8_review_artifacts/visual_compare_20261109/PACK_def_earlier_THEN_candidate.mp4",
+      "comparison_pack_sha256": "a22298de3507ad802f082f8c8509ddb10f9f9dd7e760963778178db11cc68904",
+      "candidate_preview_sha256": "bdef2ee07bdba5ee304b4d55b9b2c8ef7a6a0b971d979d013d878f93a04385b2"
+    },
+    {
+      "candidate_id": "cand_event_000313_2273",
+      "source_pts_start": 2273.2,
+      "source_pts_end": 2290.41,
+      "role": "setup_to_buildup_transition",
+      "first_live_status": "FIRST_LIVE_VERIFIED",
+      "comparison_near_pts": 2084.19,
+      "comparison_pack": "docs/phase8_review_artifacts/visual_compare_20261109/PACK_shot_earlier_THEN_candidate.mp4",
+      "comparison_pack_sha256": "c615476efa7b2f06d7cf4135e7a345dae3697111a23cfe25b6676ba6f2c3f0a5",
+      "candidate_preview_sha256": "1f630a0b23af0e3add3bc7d57140a0d64727b1d5c8951781408a8a8975a3dad4"
+    }
+  ],
+  "assistant_support": {
+    "uploaded_pack_hashes_checked": true,
+    "sampled_frames_inspected": true,
+    "full_original_broadcast_not_independently_inspected": true,
+    "note": "Do not misrepresent sampled concatenated packs as independent full-timeline proof; USER made the explicit visual determination."
+  },
+  "next_stage": {
+    "action": "BIND_HUMAN_REVIEW_TO_PER_WINDOW_TIMELINE_LEDGER_AND_RECHECK_OTHER_HARD_GATES",
+    "raw_video_and_matching_source_hash_required": true,
+    "other_gates_require_checks": [
+      "goal_preservation",
+      "PTS_EDL_render_alignment",
+      "candidate_mp4_exists",
+      "no_replay_slowmo_other_segments",
+      "verifier_evidence",
+      "budget"
+    ],
+    "release_authorized": false,
+    "paid_api_authorized": false
+  }
+}
