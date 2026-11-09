@@ -174,6 +174,21 @@ def validate_narrative_fit_review(
               "baseline_comparison"):
         if not isinstance(review.get(k), str) or len(review[k].strip()) < 8:
             return fail(f"missing_{k}_explanation")
+    if str(record.get("review_method")) == "vlm_ordered_triplet_frames":
+        # The provider must cite actual IDs it was sent for ALL three roles;
+        # merely receiving 6 frames does not mean the model inspected them.
+        cited = review.get("evidence_frame_ids")
+        if not isinstance(cited, list):
+            return fail("vlm_citation_list_missing")
+        known = {
+            str(fr.get("frame_id")): str(fr.get("role"))
+            for fr in frames if fr.get("frame_id")
+        }
+        if not known or any(str(fid) not in known for fid in cited):
+            return fail("vlm_cited_unsent_frame_id")
+        cited_roles = {known[str(fid)] for fid in cited}
+        if cited_roles != _REQUIRED_ROLES:
+            return fail("vlm_triplet_citation_coverage_incomplete")
     if verdict == "SUPPORTS_INSERT":
         if not review.get("missing_information_addressed"):
             return fail("no_diagnosed_missing_information_addressed")
