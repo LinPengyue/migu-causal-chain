@@ -88,6 +88,9 @@ class TestEvidenceFirstTopK(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)
             rows = [event(f"heat{i}", float(i * 100), 15.0) for i in range(1, 6)]
+            # A higher-scoring candidate overlapping the attested window must
+            # not erase its safety-qualified alternative during raw dedup.
+            rows.append(event("overlap_heat", 602.0, 25.0))
             rows.append(event("safe_below_heat_rank", 600.0, 2.0))
             path = root / "events.json"
             path.write_text(json.dumps({"events": rows}), encoding="utf-8")
@@ -119,8 +122,9 @@ class TestEvidenceFirstTopK(unittest.TestCase):
             self.assertEqual(len(selected), 5)
             self.assertEqual(selected[0]["event_id"], "safe_below_heat_rank")
             self.assertTrue(selected[0]["executable_safe_revision"])
-            self.assertEqual(out["targets"][0]["n_candidates_considered"], 6)
+            self.assertEqual(out["targets"][0]["n_candidates_considered"], 7)
             self.assertEqual(out["targets"][0]["n_first_live_executable"], 1)
+            self.assertFalse(any(c["event_id"] == "overlap_heat" for c in selected))
             self.assertTrue(out["executable_search_success"])
 
     def test_no_evidence_keeps_original_event_rank_order(self):
