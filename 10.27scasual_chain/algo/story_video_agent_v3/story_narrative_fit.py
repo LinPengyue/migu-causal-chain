@@ -277,11 +277,10 @@ def enforce_narrative_fit_on_plan(
             continue
         it = dict(raw)
         action = str(it.get("action") or "")
-        # A replace may be purely structural; only require fit when a new
-        # source window is explicitly introduced.
-        adds_new_source = action == "search_add" or (
-            action == "replace" and it.get("bound_source_window") is not None
-        )
+        # Replace can obtain new footage from observations even without an
+        # explicit bound_source_window (see apply_candidate_revision fallback).
+        # Require exact reviewed source-window proof for either action.
+        adds_new_source = action in ("search_add", "replace")
         if adds_new_source and not approved_for(it):
             blocked.append({
                 "intent_id": it.get("intent_id"),
