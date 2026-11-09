@@ -511,29 +511,50 @@ def _annotate_first_live_tier(
     if not source_sha or start is None or end is None or not isinstance(by_key, dict):
         row["reject_or_defer_reason"] = "event_pts_only_pending_first_live_attestation"
         return row
-    from .first_live_window_evidence import window_key
+    from .first_live_window_evidence import (
+        validate_first_live_evidence_record,
+        window_key,
+    )
 
     key = window_key(str(source_sha), float(start), float(end))
     pack = by_key.get(key)
     if not isinstance(pack, dict):
         row["reject_or_defer_reason"] = "no_first_live_evidence_pack_for_window"
         return row
-    review = pack.get("broadcast_timeline_review") if isinstance(pack.get("broadcast_timeline_review"), dict) else {}
-    status = (
-        review.get("first_live_status")
-        or review.get("outcome")
-        or pack.get("first_live_status")
-        or "NOT_VERIFIED"
+    # The Search pre-apply gate must enforce the SAME source/frame/timeline proof
+    # as the post-edit ledger. A string first_live_status is not certification.
+    validation = validate_first_live_evidence_record(
+        pack,
+        source_sha=str(source_sha),
+        pts_start=float(start),
+        pts_end=float(end),
+        require_files_exist=True,
     )
-    row["first_live_status"] = status
     row["first_live_key"] = key
     row["first_live_available"] = True
-    if str(status) == EVIDENCE_TIER_FIRST_LIVE or str(status) == "FIRST_LIVE_VERIFIED":
+    row["first_live_validation"] = {
+        k: validation.get(k)
+        for k in ("ok", "binding_valid", "binding_status", "first_live_verified",
+                  "replay_confirmed", "reason", "method", "manifest_digest")
+    }
+    if validation.get("replay_confirmed"):
+        row["first_live_status"] = "REPLAY_CONFIRMED"
+        row["reject_or_defer_reason"] = "replay_confirmed_by_timeline_review"
+    elif (validation.get("ok") and validation.get("binding_valid")
+          and validation.get("first_live_verified")):
+        row["first_live_status"] = EVIDENCE_TIER_FIRST_LIVE
         row["evidence_tier"] = EVIDENCE_TIER_FIRST_LIVE
         row["executable_safe_revision"] = True
         row["reject_or_defer_reason"] = None
     else:
-        row["reject_or_defer_reason"] = f"first_live_status_{status}"
+        # Keep an unbound positive review visible for diagnostics only; it is not
+        # a certified first-broadcast segment and must never reach apply.
+        row["first_live_status"] = "NOT_VERIFIED"
+        row["review_claimed_first_live_status"] = validation.get("first_live_status")
+        row["reject_or_defer_reason"] = (
+            "first_live_evidence_validation_failed:"
+            + str(validation.get("reason") or validation.get("method") or "incomplete")
+        )
     return row
 
 
@@ -559,6 +580,7 @@ def build_candidate_selection_diagnostics(
                 "evidence_tier": c.get("evidence_tier"),
                 "first_live_status": c.get("first_live_status"),
                 "first_live_available": c.get("first_live_available"),
+                "first_live_validation": c.get("first_live_validation"),
                 "executable_safe_revision": bool(c.get("executable_safe_revision")),
                 "causal_transition_rationale": (c.get("story_defect_fit") or {}).get("rationale"),
                 "reject_or_defer_reason": c.get("reject_or_defer_reason")
