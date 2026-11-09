@@ -268,9 +268,16 @@ def run_vlm_story_critic(
         '"issue_id":str,"story_time":[lo,hi],"observed_fact":str,'
         '"defect_hypothesis":str,"confidence":0-1,'
         '"claims_story_defect":bool,'
+        '"missing_story_information":str|null,"why_transition_breaks":str|null,'
         '"evidence_refs":[{"frame_id":str,"note":str}]'
         "}],"
         '"keep_story_if_no_defect":bool,"overall_narrative_quality":str}\n'
+        "A large gap in source match time is NORMAL highlight editing, not a defect. "
+        "Only claim a transition defect when the supplied frames reveal a specific "
+        "missing event, game-state change, or emotional progression essential to understanding "
+        "the next beat. For jump issues, fill missing_story_information and "
+        "why_transition_breaks with CONCRETE observed facts; otherwise use null and "
+        "claims_story_defect=false. Frame citations alone are insufficient.\n"
         "If transition already understandable, set claims_story_defect=false.\n"
         f"HYPOTHESES:{json.dumps(issues_brief, ensure_ascii=False)}\n"
         f"FRAME_IDS:{json.dumps(fids, ensure_ascii=False)}\n"
