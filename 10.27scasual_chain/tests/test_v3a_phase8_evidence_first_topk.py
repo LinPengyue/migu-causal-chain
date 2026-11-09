@@ -153,5 +153,42 @@ class TestEvidenceFirstTopK(unittest.TestCase):
             self.assertEqual(out["targets"][0]["n_candidates_considered"], 6)
 
 
+    def test_filtered_high_heat_history_does_not_hide_new_lower_rank(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            rows = [event(f"tried{i}", float(i * 100), 18.0) for i in range(1, 6)]
+            rows.append(event("new_alternative", 600.0, 2.0))
+            p = root / "events.json"
+            p.write_text(json.dumps({"events": rows}), encoding="utf-8")
+            issue = {"issue_id": "gap", "category": "transition",
+                     "severity": "major", "evidence_sufficiency": "observed",
+                     "segment_ids": ["a", "b"]}
+            edl = [
+                {"segment_id": "a", "role": "setup", "media_in": 0.0,
+                 "media_out": 10.0, "include_in_cut": True},
+                {"segment_id": "b", "role": "buildup", "media_in": 1000.0,
+                 "media_out": 1010.0, "include_in_cut": True},
+            ]
+            feedback = {"records": [
+                {"action": "search_add",
+                 "source_pts": [float(i * 100) - 2.0, float(i * 100) + 4.0],
+                 "failure_class": "UNCERTAIN_OR_UNVERIFIED",
+                 "issue_signature": {"category": "transition",
+                                     "anchor_segment_ids": ["a", "b"]}}
+                for i in range(1, 6)
+            ]}
+            out = run_story_evidence_search(
+                diagnosis={"issues": [issue]}, edl=edl, events_json=p,
+                feedback_context=feedback,
+            )
+            self.assertEqual(
+                [c["event_id"] for c in out["verified_candidates"]],
+                ["new_alternative"],
+            )
+            self.assertEqual(len(out["feedback_filtered_candidates"]), 5)
+            self.assertFalse(out["executable_search_success"])
+            self.assertEqual(out["targets"][0]["n_candidates_considered"], 6)
+
+
 if __name__ == "__main__":
     unittest.main()
