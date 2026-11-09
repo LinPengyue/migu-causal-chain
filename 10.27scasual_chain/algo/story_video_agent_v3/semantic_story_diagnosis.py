@@ -157,6 +157,7 @@ def enrich_issue_semantic_fields(
             confirmed = False
             confirmation_basis.append("temporal_jump_no_specific_missing_story_state")
             out["missing_story_information_evidenced"] = False
+            out["evidence_tier"] = "SEMANTIC_HYPOTHESIS"
         else:
             out["missing_story_information_evidenced"] = True
             out["missing_information"] = concrete[0]
