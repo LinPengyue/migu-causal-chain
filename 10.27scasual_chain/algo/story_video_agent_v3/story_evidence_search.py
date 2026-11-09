@@ -609,6 +609,7 @@ def run_story_evidence_search(
     already_searched_issue_ids: Optional[Sequence[str]] = None,
     feedback_context: Optional[Mapping[str, Any]] = None,
     first_live_evidence_store: Optional[Mapping[str, Any]] = None,
+    narrative_fit_evidence_store: Optional[Mapping[str, Any]] = None,
     source_sha256: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Critic issues → search targets → ranked EVENT_PTS candidates with PTS.
@@ -617,6 +618,8 @@ def run_story_evidence_search(
     LIVE labels alone never make a candidate executable_safe_revision.
     feedback_context is optional (default None) for Phase 8; legacy callers unchanged.
     """
+    from .story_narrative_fit import annotate_narrative_fit
+
     events = load_match_events(match_json=match_json, events_json=events_json)
     goals = _goal_windows(edl)
     occupied = [(g[0], g[1]) for g in goals]
@@ -722,10 +725,16 @@ def run_story_evidence_search(
             enriched.append(row)
             all_candidates.append(row)
             if gate.get("ok"):
-                local_eligible.append(_annotate_first_live_tier(
+                first_live_row = _annotate_first_live_tier(
                     row,
                     evidence_store=first_live_evidence_store,
                     source_sha=source_sha256,
+                )
+                local_eligible.append(annotate_narrative_fit(
+                    first_live_row,
+                    source_sha=source_sha256,
+                    edl=edl,
+                    evidence_store=narrative_fit_evidence_store,
                 ))
         # Feedback must see the *entire* candidate pool, not only raw top five.
         # This lets a lower-ranked verified alternative survive a failed high-heat
@@ -733,9 +742,17 @@ def run_story_evidence_search(
         verified_before_feedback.extend(local_eligible)
         filtered_here = _apply_feedback_to_candidates(local_eligible, feedback_context)
         feedback_filtered.extend(filtered_here.get("feedback_filtered_candidates") or [])
+        # Narrative rejection from bound triplet review is a negative, not a
+        # generic PTS ban. Unknown fit is proposal-only at the production gate.
+        fit_filtered = [
+            c for c in (filtered_here.get("verified_candidates") or [])
+            if not c.get("narrative_fit_rejects_insert")
+        ]
         ranked_safe_first = sorted(
-            filtered_here.get("verified_candidates") or [],
+            fit_filtered,
             key=lambda r: (
+                1 if (r.get("executable_safe_revision") and
+                      r.get("narrative_fit_supports_insert")) else 0,
                 1 if r.get("executable_safe_revision") else 0,
                 float(r.get("feedback_novelty_bonus") or 0.0)
                 + float(r.get("rank_score") or 0.0),
@@ -764,6 +781,13 @@ def run_story_evidence_search(
                 "n_candidates_considered": len(enriched),
                 "n_event_candidates_eligible": len(local_eligible),
                 "n_feedback_filtered": len(filtered_here.get("feedback_filtered_candidates") or []),
+                "n_narrative_fit_rejected": sum(
+                    1 for c in (filtered_here.get("verified_candidates") or [])
+                    if c.get("narrative_fit_rejects_insert")
+                ),
+                "n_narrative_fit_supported": sum(
+                    1 for c in selected_here if c.get("narrative_fit_supports_insert")
+                ),
                 "verified_count": len(selected_here),
                 "n_first_live_executable": sum(
                     1 for c in selected_here if c.get("executable_safe_revision")
@@ -774,6 +798,8 @@ def run_story_evidence_search(
     verified_out = sorted(
         verified,
         key=lambda r: (
+            1 if (r.get("executable_safe_revision") and
+                  r.get("narrative_fit_supports_insert")) else 0,
             1 if r.get("executable_safe_revision") else 0,
             float(r.get("feedback_novelty_bonus") or 0.0)
             + float(r.get("rank_score") or 0.0),
@@ -796,6 +822,12 @@ def run_story_evidence_search(
         "feedback_filtered_candidates": feedback_filtered,
         "feedback_filter_applied": bool(feedback_context),
         "executable_first_live_candidates": executable,
+        "narrative_fit_supported_candidates": [
+            c for c in executable if c.get("narrative_fit_supports_insert")
+        ],
+        "narrative_fit_review_required_candidates": [
+            c for c in verified_out if not c.get("narrative_fit_supports_insert")
+        ],
         "propose_only_event_pts_candidates": propose_only,
         "selection_diagnostics": diagnostics,
         "search_success": bool(verified_out),
@@ -805,6 +837,8 @@ def run_story_evidence_search(
             "(evidence_tier=EVENT_PTS_CANDIDATE). FIRST_LIVE_VERIFIED comes only from "
             "authenticated per-window broadcast-timeline attestation. "
             "Feedback context may suppress same-context overlaps without permanent PTS bans. "
+            "Narrative fit requires distinct before/candidate/after video evidence; "
+            "event heat and source-gap balance are NOT story quality proxies. "
             "No match-specific timestamps or fixed goal counts."
         ),
     }
