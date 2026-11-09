@@ -295,6 +295,41 @@ class TestNarrativeFit(unittest.TestCase):
         })
         self.assertTrue(real_missing["story_defect_confirmed"])
 
+    def test_llm_cannot_insert_if_defect_unconfirmed_even_with_review(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            _, report = _search(root, _review(root))
+            no_defect = {"issues": [{
+                "issue_id": "missing_pressure",
+                "diagnosis_status": "HYPOTHESIS_NEEDS_VIDEO",
+                "story_defect_confirmed": False,
+            }]}
+            gated = enforce_narrative_fit_on_plan(
+                {"decision": "REVISE", "revision_intents": [_llm_intent()]},
+                search_report=report, diagnosis=no_defect,
+            )
+            self.assertEqual(gated["decision"], "UNRESOLVED")
+            self.assertEqual(gated["revision_intents"][0]["action"], "mark_unresolved")
+
+    def test_llm_replace_without_source_window_cannot_bypass_fit(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            diag, report = _search(root, _review(root))
+            attempt = {
+                "intent_id": "llm_hidden_replace",
+                "action": "replace",
+                "issue_id": "missing_pressure",
+                "anchor_id": "search:unreviewed_event",
+                "target_segment_id": "before",
+                "role": "buildup_bridge_action",
+            }
+            gated = enforce_narrative_fit_on_plan(
+                {"decision": "REVISE", "revision_intents": [attempt]},
+                search_report=report, diagnosis=diag,
+            )
+            self.assertEqual(gated["decision"], "UNRESOLVED")
+            self.assertEqual(gated["revision_intents"][0]["action"], "mark_unresolved")
+
     def test_structural_gap_critic_marks_observation_not_defect(self):
         source_edl = [
             dict(BEFORE, media_in=0.0, media_out=10.0),
