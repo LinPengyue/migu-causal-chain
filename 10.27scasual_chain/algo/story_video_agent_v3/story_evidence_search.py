@@ -338,7 +338,12 @@ def _rank_events_in_window(
             }
         )
     ranked.sort(key=lambda x: (-float(x["rank_score"]), float(x["source_pts_start"])))
-    # Dedup overlapping windows (keep highest score).
+    if max_candidates is None:
+        # Exhaustive mode: preserve overlapping alternatives until the caller
+        # checks first-broadcast evidence and prior feedback. Otherwise a
+        # high-heat but unverified event can erase an attested nearby segment.
+        return ranked
+    # Legacy direct-call mode: dedup overlapping windows (keep highest score).
     kept: List[Dict[str, Any]] = []
     for c in ranked:
         s, e = float(c["source_pts_start"]), float(c["source_pts_end"])
