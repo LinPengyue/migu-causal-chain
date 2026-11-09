@@ -38,3 +38,10 @@ Previous tests in `test_v3a_phase8_second_audit_fixes.py` generated label-only F
 
 ## Next decisive step
 Ask Cursor only to **sync this branch into an isolated server worktree, run `PYTHONPATH=algo python -m pytest tests/test_v3a_phase8_*.py -q`, and return actual failures and input-evidence integrity**; code ownership stays with ChatGPT. Continue independent full-chain code audit before making production branch changes. Preserve all prior experiments.
+## Pass-2 focused changes: evidence-first and feedback-first candidate shortlist
+
+- Implemented in `story_evidence_search.py`: `_rank_events_in_window(max_candidates=None)` yields the full event set including overlapping alternatives; `run_story_evidence_search` now authenticates first-live evidence and applies prior-failure filtering **before** the five-per-issue shortlist. The final selected source windows remain overlap-deduplicated and bounded to five per issue. Status: code committed on this branch, not yet server-tested.
+- Added `tests/test_v3a_phase8_evidence_first_topk.py`: synthetic first-live candidate ranked lower than five heat events, overlapping high-heat rival, and five filtered historical failures revealing a previously hidden alternative. These tests use no real-match identity or paid calls.
+- The selection is still **not** proof of narrative merit. The decisive next observation is a three-way source-video context review (preceding story beat → candidate scene → succeeding beat), plus original vs candidate full cut. Reject generic filler even if FIRST_LIVE_VERIFIED.
+- Do not merge before server results. Run `PYTHONPATH=algo python -m pytest tests/test_v3a_phase8_*.py -q`, record exact skipped/failed counts; if a test fails, preserve failure logs and stop. Cursor should not independently patch these changes unless asked.
+- No second paid authorization. All revisions remain candidate-only until human story-quality review and full final-delivery safety.
