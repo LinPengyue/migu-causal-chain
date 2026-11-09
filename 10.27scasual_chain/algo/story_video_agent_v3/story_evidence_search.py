@@ -294,19 +294,12 @@ def _rank_events_in_window(
         # heat events that still leave a huge early residual — real-run 3504s).
         residual_max = max(mid_c - lo, hi - mid_c)
         gap_balance = max(0.0, 1.0 - (residual_max / gap))
-        # Stronger than single criticality half-point / end-proximity so event heat
-        # near the destination cut cannot dominate a bridge that still leaves a
-        # huge residual jump (real-run 3504 bias).
-        score += gap_balance * 2.0
-        # Mild preference for material nearer the later beat (destination), weaker
-        # than gap_balance so heat+end-proximity cannot dominate alone.
+        # Gap balance and PTS distance are DIAGNOSTICS, not evidence that
+        # a clip resolves an emotional or causal narrative problem.
         proximity_hi = 1.0 - abs(mid_c - hi) / gap
-        score += max(0.0, proximity_hi) * 0.15
-        # Large-gap risk: candidate still leaves >15min residual on either side.
         risks = _candidate_risks(ev, live, start, end, goals)
         if gap >= 900.0 and residual_max >= 900.0:
-            risks.append("large_residual_source_jump")
-            score -= 1.25
+            risks.append("large_residual_source_jump_not_semantic_evidence")
         ranked.append(
             {
                 "candidate_id": f"cand_{ev.get('event_id') or f'{mid:.1f}'}_{int(start)}",
@@ -331,8 +324,8 @@ def _rank_events_in_window(
                     "residual_max_sec": round(residual_max, 3),
                     "proximity_to_destination": round(max(0.0, proximity_hi), 3),
                     "rationale": (
-                        "Ranks by event scores + type hints + how evenly the candidate "
-                        "splits the diagnosed source gap; does not prove causal story value."
+                        "Event metadata provides a search prior only; gap balance and "
+                        "PTS proximity are diagnostics, not a narrative-fit score."
                     ),
                 },
             }
@@ -706,6 +699,8 @@ def run_story_evidence_search(
                 "issue_id": iss.get("issue_id"),
                 "category": iss.get("category"),
                 "narrative_function": win.get("narrative_function"),
+                "missing_narrative_info": iss.get("missing_information"),
+                "story_role": iss.get("story_role"),
                 "role": win.get("role"),
                 "insert_after_segment_id": win.get("insert_after_segment_id"),
                 "before_segment_id": win.get("before_segment_id"),
