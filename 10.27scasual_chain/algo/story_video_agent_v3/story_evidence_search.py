@@ -286,9 +286,26 @@ def _rank_events_in_window(
             + rel
             + live["live_confidence"]
         )
-        # Prefer material nearer the destination cut for bridges (hi side).
-        proximity = 1.0 - abs(((start + end) / 2.0) - hi) / max(hi - lo, 1.0)
-        score += max(0.0, proximity) * 0.5
+        mid_c = (start + end) / 2.0
+        gap = max(hi - lo, 1.0)
+        # Prefer bridges that reduce the *larger residual* source jump (gap balance),
+        # not merely proximity to the destination cut (that bias selected late-gap
+        # heat events that still leave a huge early residual — real-run 3504s).
+        residual_max = max(mid_c - lo, hi - mid_c)
+        gap_balance = max(0.0, 1.0 - (residual_max / gap))
+        # Stronger than single criticality half-point / end-proximity so event heat
+        # near the destination cut cannot dominate a bridge that still leaves a
+        # huge residual jump (real-run 3504 bias).
+        score += gap_balance * 2.0
+        # Mild preference for material nearer the later beat (destination), weaker
+        # than gap_balance so heat+end-proximity cannot dominate alone.
+        proximity_hi = 1.0 - abs(mid_c - hi) / gap
+        score += max(0.0, proximity_hi) * 0.15
+        # Large-gap risk: candidate still leaves >15min residual on either side.
+        risks = _candidate_risks(ev, live, start, end, goals)
+        if gap >= 900.0 and residual_max >= 900.0:
+            risks.append("large_residual_source_jump")
+            score -= 1.25
         ranked.append(
             {
                 "candidate_id": f"cand_{ev.get('event_id') or f'{mid:.1f}'}_{int(start)}",
@@ -303,7 +320,20 @@ def _rank_events_in_window(
                 "type_relevance": rel,
                 "confidence": round(min(0.99, score / 12.0), 3),
                 "rank_score": round(score, 3),
-                "risks": _candidate_risks(ev, live, start, end, goals),
+                "gap_balance": round(gap_balance, 3),
+                "residual_max_sec": round(residual_max, 3),
+                "search_gap_sec": round(gap, 3),
+                "risks": risks,
+                "evidence_tier": EVIDENCE_TIER_EVENT_PTS,
+                "story_defect_fit": {
+                    "gap_balance": round(gap_balance, 3),
+                    "residual_max_sec": round(residual_max, 3),
+                    "proximity_to_destination": round(max(0.0, proximity_hi), 3),
+                    "rationale": (
+                        "Ranks by event scores + type hints + how evenly the candidate "
+                        "splits the diagnosed source gap; does not prove causal story value."
+                    ),
+                },
             }
         )
     ranked.sort(key=lambda x: (-float(x["rank_score"]), float(x["source_pts_start"])))
@@ -340,13 +370,18 @@ def _candidate_risks(
     return risks
 
 
+# Explicit evidence tiers — never collapse event-chain LIVE into first-broadcast.
+EVIDENCE_TIER_EVENT_PTS = "EVENT_PTS_CANDIDATE"
+EVIDENCE_TIER_FIRST_LIVE = "FIRST_LIVE_VERIFIED"
+
+
 def verify_search_candidate(
     candidate: Mapping[str, Any],
     *,
     edl: Sequence[Mapping[str, Any]],
     min_confidence: float = 0.25,
 ) -> Dict[str, Any]:
-    """Deterministic evidence gate (no invented PTS). Optional VLM can refine later."""
+    """Event-chain PTS/LIVE gate only — NOT authenticated first-broadcast proof."""
     start = _num(candidate.get("source_pts_start"))
     end = _num(candidate.get("source_pts_end"))
     live = candidate.get("live") if isinstance(candidate.get("live"), Mapping) else {}
@@ -370,6 +405,11 @@ def verify_search_candidate(
         "verified_source_pts_start": start if ok else None,
         "verified_source_pts_end": end if ok else None,
         "method": "event_chain_live_credibility",
+        "evidence_tier": EVIDENCE_TIER_EVENT_PTS,
+        "note": (
+            "EVENT_PTS_CANDIDATE = event metadata + LIVE label + source PTS. "
+            "Not FIRST_LIVE_VERIFIED broadcast-timeline attestation."
+        ),
     }
 
 
@@ -400,18 +440,25 @@ def _apply_feedback_to_candidates(
                         "evidence_token": t.get("evidence_token"),
                     }
                 )
+        # Also fold uncertain_or_unverified rows (carry full signatures).
+        for t in (feedback_context.get("summary") or {}).get("uncertain_or_unverified") or []:
+            if isinstance(t, dict) and t.get("source_pts"):
+                records.append(dict(t))
     kept: List[Dict[str, Any]] = []
     filtered: List[Dict[str, Any]] = []
     for c in verified:
         if not isinstance(c, dict):
             continue
         sig = {
-            "category": c.get("category") or c.get("narrative_function") or "transition",
+            # Prefer diagnosis category; story_role aliases handled in feedback.
+            "category": c.get("category") or c.get("story_role") or "transition",
             "anchor_segment_ids": [
                 x
                 for x in (c.get("insert_after_segment_id"), c.get("before_segment_id"))
                 if x
             ],
+            "missing_narrative_info": c.get("missing_narrative_info"),
+            "issue_id_raw": c.get("issue_id"),
         }
         # Never pass candidate_id as evidence_token — it would falsely unlock retries.
         tok = c.get("evidence_token")
@@ -434,7 +481,7 @@ def _apply_feedback_to_candidates(
     kept.sort(
         key=lambda r: (
             float(r.get("feedback_novelty_bonus") or 0.0)
-            + float(r.get("score") or r.get("relevance") or 0.0)
+            + float(r.get("rank_score") or r.get("score") or r.get("relevance") or 0.0)
         ),
         reverse=True,
     )
@@ -446,6 +493,82 @@ def _apply_feedback_to_candidates(
     }
 
 
+def _annotate_first_live_tier(
+    candidate: Dict[str, Any],
+    *,
+    evidence_store: Optional[Mapping[str, Any]],
+    source_sha: Optional[str],
+) -> Dict[str, Any]:
+    """Attach first-live attestation status without promoting event LIVE labels."""
+    row = dict(candidate)
+    row.setdefault("evidence_tier", EVIDENCE_TIER_EVENT_PTS)
+    row["first_live_status"] = "NOT_VERIFIED"
+    row["first_live_available"] = False
+    row["executable_safe_revision"] = False
+    start = _num(row.get("source_pts_start"))
+    end = _num(row.get("source_pts_end"))
+    by_key = (evidence_store or {}).get("by_key") if isinstance(evidence_store, Mapping) else None
+    if not source_sha or start is None or end is None or not isinstance(by_key, dict):
+        row["reject_or_defer_reason"] = "event_pts_only_pending_first_live_attestation"
+        return row
+    from .first_live_window_evidence import window_key
+
+    key = window_key(str(source_sha), float(start), float(end))
+    pack = by_key.get(key)
+    if not isinstance(pack, dict):
+        row["reject_or_defer_reason"] = "no_first_live_evidence_pack_for_window"
+        return row
+    review = pack.get("broadcast_timeline_review") if isinstance(pack.get("broadcast_timeline_review"), dict) else {}
+    status = (
+        review.get("first_live_status")
+        or review.get("outcome")
+        or pack.get("first_live_status")
+        or "NOT_VERIFIED"
+    )
+    row["first_live_status"] = status
+    row["first_live_key"] = key
+    row["first_live_available"] = True
+    if str(status) == EVIDENCE_TIER_FIRST_LIVE or str(status) == "FIRST_LIVE_VERIFIED":
+        row["evidence_tier"] = EVIDENCE_TIER_FIRST_LIVE
+        row["executable_safe_revision"] = True
+        row["reject_or_defer_reason"] = None
+    else:
+        row["reject_or_defer_reason"] = f"first_live_status_{status}"
+    return row
+
+
+def build_candidate_selection_diagnostics(
+    candidates: Sequence[Mapping[str, Any]],
+) -> List[Dict[str, Any]]:
+    """Reviewer-readable ranked table (no match-specific hardcoding)."""
+    rows: List[Dict[str, Any]] = []
+    for i, c in enumerate(candidates or []):
+        if not isinstance(c, dict):
+            continue
+        rows.append(
+            {
+                "rank": i + 1,
+                "candidate_id": c.get("candidate_id"),
+                "issue_id": c.get("issue_id"),
+                "story_role": c.get("role"),
+                "event_type": c.get("event_type"),
+                "source_pts": [c.get("source_pts_start"), c.get("source_pts_end")],
+                "rank_score": c.get("rank_score"),
+                "gap_balance": c.get("gap_balance"),
+                "residual_max_sec": c.get("residual_max_sec"),
+                "evidence_tier": c.get("evidence_tier"),
+                "first_live_status": c.get("first_live_status"),
+                "first_live_available": c.get("first_live_available"),
+                "executable_safe_revision": bool(c.get("executable_safe_revision")),
+                "causal_transition_rationale": (c.get("story_defect_fit") or {}).get("rationale"),
+                "reject_or_defer_reason": c.get("reject_or_defer_reason")
+                or ((c.get("feedback_skip") or {}).get("reason")),
+                "risks": list(c.get("risks") or []),
+            }
+        )
+    return rows
+
+
 def run_story_evidence_search(
     *,
     diagnosis: Mapping[str, Any],
@@ -455,9 +578,13 @@ def run_story_evidence_search(
     max_issues: int = 4,
     already_searched_issue_ids: Optional[Sequence[str]] = None,
     feedback_context: Optional[Mapping[str, Any]] = None,
+    first_live_evidence_store: Optional[Mapping[str, Any]] = None,
+    source_sha256: Optional[str] = None,
 ) -> Dict[str, Any]:
-    """Critic issues → search targets → ranked LIVE candidates with PTS.
+    """Critic issues → search targets → ranked EVENT_PTS candidates with PTS.
 
+    first_live_evidence_store annotates FIRST_LIVE_VERIFIED when available; event
+    LIVE labels alone never make a candidate executable_safe_revision.
     feedback_context is optional (default None) for Phase 8; legacy callers unchanged.
     """
     events = load_match_events(match_json=match_json, events_json=events_json)
@@ -572,7 +699,27 @@ def run_story_evidence_search(
         )
 
     fb = _apply_feedback_to_candidates(verified, feedback_context)
-    verified_out = list(fb.get("verified_candidates") or [])
+    verified_out = [
+        _annotate_first_live_tier(
+            dict(c),
+            evidence_store=first_live_evidence_store,
+            source_sha=source_sha256,
+        )
+        for c in (fb.get("verified_candidates") or [])
+        if isinstance(c, dict)
+    ]
+    # Prefer first-live-attested executable candidates in ordering without dropping others.
+    verified_out.sort(
+        key=lambda r: (
+            1 if r.get("executable_safe_revision") else 0,
+            float(r.get("feedback_novelty_bonus") or 0.0)
+            + float(r.get("rank_score") or 0.0),
+        ),
+        reverse=True,
+    )
+    executable = [c for c in verified_out if c.get("executable_safe_revision")]
+    propose_only = [c for c in verified_out if not c.get("executable_safe_revision")]
+    diagnostics = build_candidate_selection_diagnostics(verified_out)
     return {
         "schema": SCHEMA,
         "events_loaded": len(events),
@@ -585,11 +732,17 @@ def run_story_evidence_search(
         "verified_candidates_before_feedback": list(verified),
         "feedback_filtered_candidates": list(fb.get("feedback_filtered_candidates") or []),
         "feedback_filter_applied": bool(fb.get("feedback_filter_applied")),
+        "executable_first_live_candidates": executable,
+        "propose_only_event_pts_candidates": propose_only,
+        "selection_diagnostics": diagnostics,
         "search_success": bool(verified_out),
+        "executable_search_success": bool(executable),
         "note": (
-            "Search uses event-chain LIVE credibility and real media_time PTS. "
-            "No match-specific timestamps or fixed goal counts. "
-            "Feedback context may suppress same-context overlaps without permanent PTS bans."
+            "Search uses event-chain LIVE credibility and real media_time PTS "
+            "(evidence_tier=EVENT_PTS_CANDIDATE). FIRST_LIVE_VERIFIED comes only from "
+            "authenticated per-window broadcast-timeline attestation. "
+            "Feedback context may suppress same-context overlaps without permanent PTS bans. "
+            "No match-specific timestamps or fixed goal counts."
         ),
     }
 
@@ -597,9 +750,20 @@ def run_story_evidence_search(
 def search_candidates_to_observations(
     search_report: Mapping[str, Any],
 ) -> List[Dict[str, Any]]:
-    """Convert verified search hits into observation dicts for apply_candidate_revision."""
+    """Convert FIRST_LIVE-executable search hits into apply observations.
+
+    EVENT_PTS_CANDIDATE rows are intentionally excluded so apply cannot bind
+    uncertified windows even if a stale search_add intent leaks through.
+    """
     obs: List[Dict[str, Any]] = []
-    for c in search_report.get("verified_candidates") or []:
+    pool = list(search_report.get("executable_first_live_candidates") or [])
+    if not pool:
+        pool = [
+            c
+            for c in (search_report.get("verified_candidates") or [])
+            if isinstance(c, dict) and c.get("executable_safe_revision")
+        ]
+    for c in pool:
         if not isinstance(c, dict):
             continue
         gate = c.get("evidence_verification") or {}

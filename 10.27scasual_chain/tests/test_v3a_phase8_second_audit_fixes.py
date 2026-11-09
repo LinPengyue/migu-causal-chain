@@ -109,6 +109,33 @@ def _events_ab(path: Path) -> Path:
     return path
 
 
+def _first_live_store_for_windows(path: Path, source_sha: str, windows):
+    """Minimal FIRST_LIVE_VERIFIED packs so unit tests can exercise executable search_add."""
+    from story_video_agent_v3.first_live_window_evidence import window_key
+
+    by_key = {}
+    for start, end in windows:
+        k = window_key(source_sha, float(start), float(end))
+        by_key[k] = {
+            "key": k,
+            "source_sha256": source_sha,
+            "source_pts_start": float(start),
+            "source_pts_end": float(end),
+            "first_live_status": "FIRST_LIVE_VERIFIED",
+            "broadcast_timeline_review": {
+                "outcome": "FIRST_LIVE_VERIFIED",
+                "first_live_status": "FIRST_LIVE_VERIFIED",
+                "method": "unit_test_attestation",
+            },
+        }
+    payload = {"schema": "v3a_first_live_evidence_store_v1", "by_key": by_key}
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    return path
+
+
+TEST_SOURCE_SHA = "aa" * 32
+
+
 def _diag_confirmed():
     return {
         "issues": [
@@ -376,10 +403,21 @@ class TestAutonomousFeedbackSearchP0C(unittest.TestCase):
         diag = _diag_confirmed()
         with tempfile.TemporaryDirectory() as td:
             ev = _events_ab(Path(td) / "events.json")
+            store_path = _first_live_store_for_windows(
+                Path(td) / "first_live.json",
+                TEST_SOURCE_SHA,
+                [(896.0, 908.0), (1496.0, 1510.0)],
+            )
+            store = json.loads(store_path.read_text(encoding="utf-8"))
             control = run_story_evidence_search(
-                diagnosis=diag, edl=edl, match_json=ev
+                diagnosis=diag,
+                edl=edl,
+                match_json=ev,
+                first_live_evidence_store=store,
+                source_sha256=TEST_SOURCE_SHA,
             )
             self.assertTrue(control["search_success"])
+            self.assertTrue(control["executable_search_success"])
             self.assertEqual(control["verified_candidates"][0]["event_id"], "ev_cand_A")
             plan_a = plan_from_diagnosis(
                 diag, offline=True, search_results=control
@@ -410,7 +448,12 @@ class TestAutonomousFeedbackSearchP0C(unittest.TestCase):
                 "n_records": 1,
             }
             with_fb = run_story_evidence_search(
-                diagnosis=diag, edl=edl, match_json=ev, feedback_context=fb
+                diagnosis=diag,
+                edl=edl,
+                match_json=ev,
+                feedback_context=fb,
+                first_live_evidence_store=store,
+                source_sha256=TEST_SOURCE_SHA,
             )
             filtered_ids = [
                 c["event_id"] for c in with_fb["feedback_filtered_candidates"]
@@ -492,8 +535,17 @@ class TestRunStoryE2EAutonomousFeedback(unittest.TestCase):
         for name in ("story_clean.mp4",):
             (phase5 / name).write_bytes(b"\x00\x00\x00\x18ftypmp42fake")
         src = root / "source.mp4"
-        src.write_bytes(b"\x00\x00\x00\x18ftypmp42fake")
+        src_bytes = b"\x00\x00\x00\x18ftypmp42fake"
+        src.write_bytes(src_bytes)
+        import hashlib
+
+        source_sha = hashlib.sha256(src_bytes).hexdigest()
         ev = _events_ab(root / "events.json")
+        fl_store = _first_live_store_for_windows(
+            root / "first_live.json",
+            source_sha,
+            [(896.0, 908.0), (1496.0, 1510.0)],
+        )
         mj = root / "match.json"
         mj.write_text(json.dumps({"match_id": "p8_auto"}), encoding="utf-8")
         out = root / "out"
@@ -550,6 +602,7 @@ class TestRunStoryE2EAutonomousFeedback(unittest.TestCase):
                     enable_real_api=False,
                     smoke_render=False,
                     max_rounds=2,
+                    first_live_evidence_dir=fl_store,
                     confirm_issue_ids=[
                         "large_source_jump_",  # prefix: confirm structural jumps without scripting PTS
                     ],

@@ -136,10 +136,13 @@ def issue_signature_from_case(case: Mapping[str, Any]) -> Dict[str, Any]:
             anchors.append(str(s))
     return {
         "template_id": case.get("template_id") or case.get("match_tag") or "unknown_template",
-        "category": problem.get("story_role")
-        or problem.get("category")
+        # Prefer diagnosis category (e.g. transition) over story_role labels
+        # (e.g. transition_break) so Search feedback signatures align.
+        "category": problem.get("category")
         or case.get("category")
+        or problem.get("story_role")
         or "unknown",
+        "story_role": problem.get("story_role"),
         "anchor_segment_ids": anchors[:4],
         "missing_narrative_info": problem.get("missing_information")
         or case.get("defect_cause_hypothesis")
@@ -469,6 +472,30 @@ def summarize_feedback(
     }
 
 
+def _category_family(cat: Any) -> str:
+    """Normalize diagnosis category vs story_role labels for feedback matching.
+
+    Real-run bug: feedback signatures used story_role ``transition_break`` while
+    Search candidates carried diagnosis category ``transition``, so same-PTS
+    UNCERTAIN retries were not suppressed.
+    """
+    c = str(cat or "").strip().lower()
+    if c in {"transition", "transition_break", "abrupt_transition", "bridge"}:
+        return "transition"
+    if c in {"buildup", "build_up", "pressure"}:
+        return "buildup"
+    if c in {"ending", "ending_incomplete", "aftermath", "closure"}:
+        return "ending"
+    return c or "unknown"
+
+
+def categories_compatible(a: Any, b: Any) -> bool:
+    fa, fb = _category_family(a), _category_family(b)
+    if not fa or not fb:
+        return True  # missing category ⇒ fall through to anchor/PTS checks
+    return fa == fb
+
+
 def should_penalize_candidate(
     memory: Sequence[Mapping[str, Any]],
     *,
@@ -498,10 +525,9 @@ def should_penalize_candidate(
             continue
         if _pts_iou(window, prev) < iou_threshold:
             continue
-        # Contextual signature: category + anchors + missing-info (P1-8).
+        # Contextual signature: category family + anchors + missing-info (P1-8).
         prev_sig = r.get("issue_signature") or {}
-        same_cat = prev_sig.get("category") == issue_signature.get("category")
-        if not same_cat:
+        if not categories_compatible(prev_sig.get("category"), issue_signature.get("category")):
             continue
         prev_anchors = {str(x) for x in (prev_sig.get("anchor_segment_ids") or []) if x}
         cur_anchors = {str(x) for x in (issue_signature.get("anchor_segment_ids") or []) if x}

@@ -859,6 +859,8 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             match_json=inp.match_json if inp.match_json.is_file() else None,
             events_json=events_path,
             feedback_context=fb_ctx,
+            first_live_evidence_store=first_live_evidence_store,
+            source_sha256=source_sha,
         )
         search_report["events_json_resolved_via"] = (
             "events_enriched"
@@ -940,6 +942,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     if isinstance(i, dict)
                 }
                 llm_has_mut = bool(llm_acts - {"keep", "mark_unresolved"})
+                llm_decision = str(llm_rev.get("decision") or "").upper()
                 if llm_has_mut:
                     rev = {
                         **rev,
@@ -950,27 +953,31 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                         "offline": False,
                         "semantic_confirmation": bool(obs.get("semantic_provider_used")),
                     }
-                elif search_backed:
-                    # Keep executable search-bound REVISE; do not let empty LLM UNRESOLVED erase it.
-                    rev = {
-                        **rev,
-                        "provider_mode": llm_rev.get("provider_mode"),
-                        "offline": False,
-                        "semantic_confirmation": bool(obs.get("semantic_provider_used")),
-                        "llm_overlay_note": (
-                            "llm_returned_no_mutating_intents; retained_search_bound_revise"
-                        ),
-                        "llm_rationale": llm_rev.get("rationale"),
-                    }
                 else:
+                    # REAL_VLM mark_unresolved / KEEP / empty-mutate is an explicit
+                    # refusal. Never silently retain Search-bound REVISE (real-run
+                    # Round2 bug: mark_unresolved overridden → repeated 3504 apply).
+                    note = "llm_unresolved_or_keep_only_honored"
+                    if search_backed:
+                        note = (
+                            "llm_unresolved_or_keep_only_overrides_search_bound_revise"
+                        )
                     rev = {
                         **rev,
-                        "decision": llm_rev.get("decision") or rev.get("decision"),
-                        "revision_intents": llm_intents or rev.get("revision_intents"),
+                        "decision": llm_decision
+                        if llm_decision in {"UNRESOLVED", "KEEP"}
+                        else ("KEEP" if llm_acts <= {"keep"} and llm_acts else "UNRESOLVED"),
+                        "revision_intents": llm_intents,
                         "rationale": llm_rev.get("rationale") or rev.get("rationale"),
                         "provider_mode": llm_rev.get("provider_mode"),
                         "offline": False,
                         "semantic_confirmation": bool(obs.get("semantic_provider_used")),
+                        "llm_overlay_note": note,
+                        "llm_rationale": llm_rev.get("rationale"),
+                        "search_revise_suppressed_by_llm": bool(search_backed),
+                        "suppressed_search_intents": list(rev.get("revision_intents") or [])
+                        if search_backed
+                        else [],
                     }
                 # Honesty: mark_unresolved/keep-only must not be labeled REVISE.
                 acts = {
@@ -986,21 +993,21 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                         "revise_label_without_mutating_intents_normalized_to_unresolved"
                     )
             else:
-                if search_backed:
-                    rev = {
-                        **rev,
-                        "offline": False,
-                        "llm_overlay_note": "llm_revision_planner_failed_retained_search_bound_revise",
-                        "llm_error": (llm_rev or {}).get("error"),
-                    }
-                else:
-                    # Paid planner failed → fail closed to UNRESOLVED, do not pretend KEEP.
-                    rev = {
-                        **rev,
-                        "decision": "UNRESOLVED",
-                        "rationale": f"llm_revision_planner_failed:{(llm_rev or {}).get('error')}",
-                        "offline": False,
-                    }
+                # Paid planner failed → fail closed to UNRESOLVED (do not silently
+                # re-apply Search revise; that caused duplicate invalid bridges).
+                rev = {
+                    **rev,
+                    "decision": "UNRESOLVED",
+                    "revision_intents": [],
+                    "rationale": f"llm_revision_planner_failed:{(llm_rev or {}).get('error')}",
+                    "offline": False,
+                    "llm_overlay_note": (
+                        "llm_revision_planner_failed_fail_closed_unresolved"
+                        + ("; search_bound_revise_not_retained" if search_backed else "")
+                    ),
+                    "llm_error": (llm_rev or {}).get("error"),
+                    "search_revise_suppressed_by_llm": bool(search_backed),
+                }
             usage = provider_usage(paid_api)
             http_calls = int(usage.get("http_attempts") or http_calls)
             est_cost = float(usage.get("est_cost_usd_real") or est_cost)

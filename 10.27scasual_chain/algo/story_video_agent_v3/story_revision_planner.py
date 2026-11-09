@@ -61,35 +61,42 @@ def _intents_from_verified_search(
     search_results: Mapping[str, Any],
     protect: Sequence[str],
 ) -> List[Dict[str, Any]]:
-    """Build executable search_add intents from verified LIVE candidates."""
+    """Build intents from Search candidates with explicit evidence-tier gating.
+
+    EVENT_PTS_CANDIDATE (event-chain LIVE + PTS) may be proposed for observation
+    but is NOT an executable safe revision. Only FIRST_LIVE_VERIFIED windows may
+    become search_add that mutates the working EDL.
+    """
     intents: List[Dict[str, Any]] = []
     used_issues: set = set()
-    for i, c in enumerate(search_results.get("verified_candidates") or []):
-        if not isinstance(c, dict):
-            continue
-        if len(intents) >= 2:
-            break  # keep candidate reviewable: at most two search-bound inserts
+    # Prefer precomputed executable list when present; else fall back to annotated verified.
+    pool = list(search_results.get("executable_first_live_candidates") or [])
+    if not pool:
+        pool = [
+            c
+            for c in (search_results.get("verified_candidates") or [])
+            if isinstance(c, dict) and c.get("executable_safe_revision")
+        ]
+    propose_pool = list(search_results.get("propose_only_event_pts_candidates") or [])
+    if not propose_pool:
+        propose_pool = [
+            c
+            for c in (search_results.get("verified_candidates") or [])
+            if isinstance(c, dict) and not c.get("executable_safe_revision")
+        ]
+
+    def _mk_base(c: Mapping[str, Any], i: int) -> Dict[str, Any]:
         issue_id = str(c.get("issue_id") or "")
-        # One insert per issue to keep EDL changes focused and reviewable.
-        if issue_id and issue_id in used_issues:
-            continue
         role = str(c.get("role") or "buildup_bridge_action")
-        if "goal_action" in role:
-            continue  # never invent goal anchors from search
         start = c.get("source_pts_start")
         end = c.get("source_pts_end")
-        if start is None or end is None:
-            continue
         insert_after = c.get("insert_after_segment_id")
-        if insert_after and str(insert_after) in set(protect):
-            # Inserting *after* a protected goal is fine; do not mutate the goal row.
-            pass
-        # Do not claim neighbor PTS order is preserved unless the search window
-        # itself was constrained between neighbors (apply layer still enforces).
         sw = c.get("search_window") or {}
         order_claim = "requires_apply_neighbor_pts_check"
         if (
-            isinstance(sw, dict)
+            start is not None
+            and end is not None
+            and isinstance(sw, dict)
             and sw.get("lo") is not None
             and sw.get("hi") is not None
             and float(start) >= float(sw["lo"]) - 1e-3
@@ -98,71 +105,143 @@ def _intents_from_verified_search(
         ):
             order_claim = "search_window_bounded_between_neighbors"
         cand_id = str(c.get("candidate_id") or f"auto_{i}")
-        intents.append(
-            {
-                "intent_id": f"search_add_{i}_{cand_id}",
-                "action": "search_add",
-                "issue_id": issue_id or None,
-                "role": role,
-                "anchor_id": f"search:{cand_id}",
-                "target_segment_id": None,
-                "insert_after_segment_id": insert_after,
-                "before_segment_id": c.get("before_segment_id"),
-                "bound_source_window": {
-                    "start": float(start),
-                    "end": float(end),
+        tier = str(c.get("evidence_tier") or "EVENT_PTS_CANDIDATE")
+        return {
+            "intent_id": f"search_add_{i}_{cand_id}",
+            "issue_id": issue_id or None,
+            "role": role,
+            "anchor_id": f"search:{cand_id}",
+            "target_segment_id": None,
+            "insert_after_segment_id": insert_after,
+            "before_segment_id": c.get("before_segment_id"),
+            "bound_source_window": {
+                "start": float(start),
+                "end": float(end),
+            },
+            "new_segment_id": f"seg_{role}_{cand_id}".replace(":", "_")[:80],
+            "event_ids": [c.get("event_id")] if c.get("event_id") else [],
+            "narrative_purpose": c.get("narrative_function") or "supplement_from_search",
+            "evidence_tier": tier,
+            "first_live_status": c.get("first_live_status"),
+            "executable_safe_revision": bool(c.get("executable_safe_revision")),
+            "expected_improvement": (
+                "If and only if the bound footage supplies the missing narrative "
+                "information for the diagnosed issue — not merely longer runtime"
+            ),
+            "expected_observable_improvement": (
+                "Adjacent story beats should show a clearer causal/emotional transition "
+                "attributable to the inserted window; falsify if insert is redundant, "
+                "replay-like, or breaks chronology"
+            ),
+            "defect_cause_hypothesis": (
+                "Missing intermediate narrative information between adjacent cuts"
+            ),
+            "falsification_evidence": (
+                "Insert adds duration without new story info; breaks PTS order; "
+                "introduces replay/scoreboard-as-action; or original issue remains"
+            ),
+            "duration_pad_not_quality_proxy": True,
+            "risk": ",".join(c.get("risks") or []) or "search_bound_unverified_first_live",
+            "goal_anchor_impact": "none_insert_non_goal_only",
+            "causality_impact": order_claim,
+            "affected_segments": [insert_after, c.get("before_segment_id")],
+            "evidence_refs": [
+                {"kind": "diagnosis", "ref": issue_id},
+                {"kind": "search_candidate", "ref": cand_id},
+                {
+                    "kind": "source_pts",
+                    "ref": f"{start}:{end}",
+                    "event_id": c.get("event_id"),
                 },
-                "new_segment_id": f"seg_{role}_{cand_id}".replace(":", "_")[:80],
-                "event_ids": [c.get("event_id")] if c.get("event_id") else [],
-                "narrative_purpose": c.get("narrative_function") or "supplement_from_search",
+                {
+                    "kind": "evidence_tier",
+                    "ref": tier,
+                    "first_live_status": c.get("first_live_status"),
+                },
+                {
+                    "kind": "event_chain_live_credibility",
+                    "ref": (c.get("live") or {}).get("broadcast_phase"),
+                    "confidence": c.get("confidence"),
+                    "note": "Not equivalent to FIRST_LIVE_VERIFIED",
+                },
+            ],
+            "story_defect_fit": c.get("story_defect_fit"),
+            "gap_balance": c.get("gap_balance"),
+            "reject_or_defer_reason": c.get("reject_or_defer_reason"),
+        }
+
+    for i, c in enumerate(pool):
+        if not isinstance(c, dict):
+            continue
+        if len([x for x in intents if x.get("action") == "search_add"]) >= 2:
+            break
+        issue_id = str(c.get("issue_id") or "")
+        if issue_id and issue_id in used_issues:
+            continue
+        if "goal_action" in str(c.get("role") or ""):
+            continue
+        if c.get("source_pts_start") is None or c.get("source_pts_end") is None:
+            continue
+        insert_after = c.get("insert_after_segment_id")
+        if insert_after and str(insert_after) in set(protect):
+            pass
+        cand_id = str(c.get("candidate_id") or f"auto_{i}")
+        base = _mk_base(c, i)
+        base.update(
+            {
+                "action": "search_add",
                 "rationale": (
-                    f"Verified LIVE event {c.get('event_id')} @ "
-                    f"{start}-{end}s for issue {issue_id}"
-                ),
-                "expected_improvement": (
-                    "If and only if the bound footage supplies the missing narrative "
-                    "information for the diagnosed issue — not merely longer runtime"
-                ),
-                "expected_observable_improvement": (
-                    "Adjacent story beats should show a clearer causal/emotional transition "
-                    "attributable to the inserted LIVE window; falsify if insert is redundant, "
-                    "replay-like, or breaks chronology"
+                    f"FIRST_LIVE_VERIFIED event {c.get('event_id')} @ "
+                    f"{c.get('source_pts_start')}-{c.get('source_pts_end')}s for issue {issue_id}"
                 ),
                 "why_candidate_solves_problem": (
-                    f"Candidate {cand_id} is LIVE-verified source footage in the gap "
-                    f"cited by issue {issue_id}; usable only if diagnosis is a confirmed "
-                    "story defect (not a structure gap alone)"
+                    f"Candidate {cand_id} has authenticated first-live attestation in the "
+                    f"gap for issue {issue_id}; still requires confirmed story defect and "
+                    "post-edit verifier — event-chain LIVE alone is insufficient"
                 ),
-                "defect_cause_hypothesis": (
-                    "Missing intermediate narrative information between adjacent cuts"
-                ),
-                "falsification_evidence": (
-                    "Insert adds duration without new story info; breaks PTS order; "
-                    "introduces replay/scoreboard-as-action; or original issue remains"
-                ),
-                "duration_pad_not_quality_proxy": True,
-                "risk": ",".join(c.get("risks") or []) or "search_bound_unverified_first_live",
-                "goal_anchor_impact": "none_insert_non_goal_only",
-                "causality_impact": order_claim,
-                "affected_segments": [insert_after, c.get("before_segment_id")],
-                "evidence_refs": [
-                    {"kind": "diagnosis", "ref": issue_id},
-                    {"kind": "search_candidate", "ref": cand_id},
-                    {
-                        "kind": "source_pts",
-                        "ref": f"{start}:{end}",
-                        "event_id": c.get("event_id"),
-                    },
-                    {
-                        "kind": "live_credibility",
-                        "ref": (c.get("live") or {}).get("broadcast_phase"),
-                        "confidence": c.get("confidence"),
-                    },
-                ],
             }
         )
+        intents.append(base)
         if issue_id:
             used_issues.add(issue_id)
+
+    # Propose-only EVENT_PTS rows: visible mark_unresolved, never silent search_add.
+    for i, c in enumerate(propose_pool):
+        if not isinstance(c, dict):
+            continue
+        if len(intents) >= 6:
+            break
+        issue_id = str(c.get("issue_id") or "")
+        if "goal_action" in str(c.get("role") or ""):
+            continue
+        if c.get("source_pts_start") is None or c.get("source_pts_end") is None:
+            continue
+        # Skip issues already covered by an executable search_add.
+        if issue_id and issue_id in used_issues:
+            continue
+        cand_id = str(c.get("candidate_id") or f"propose_{i}")
+        base = _mk_base(c, 100 + i)
+        base.update(
+            {
+                "intent_id": f"propose_observe_{i}_{cand_id}",
+                "action": "mark_unresolved",
+                "blocked_original_action": "search_add",
+                "block_reason": (
+                    "event_pts_candidate_not_first_live_verified;"
+                    "propose_for_observation_only"
+                ),
+                "rationale": (
+                    f"EVENT_PTS_CANDIDATE {cand_id} @ "
+                    f"{c.get('source_pts_start')}-{c.get('source_pts_end')}s is event-chain "
+                    "LIVE only; defer apply until FIRST_LIVE_VERIFIED and story-fit review"
+                ),
+                "why_candidate_solves_problem": (
+                    "Not claimed as a solved defect — event metadata screening only"
+                ),
+                "narrative_purpose": "defer_until_first_live_and_story_fit",
+            }
+        )
+        intents.append(base)
     return intents
 
 
@@ -373,10 +452,22 @@ def plan_from_diagnosis(
             **fb,
             "search_success": bool(fb.get("verified_candidates")),
         }
+    # search_ok: any EVENT_PTS candidates (for propose/defer paths).
+    # executable_search_ok: FIRST_LIVE_VERIFIED only (drives search_confirmation/REVISE).
     search_ok = bool(
         search_results
         and search_results.get("search_success")
         and (search_results.get("verified_candidates") or [])
+    )
+    executable_search_ok = bool(
+        search_results
+        and (
+            search_results.get("executable_search_success")
+            or any(
+                isinstance(c, dict) and c.get("executable_safe_revision")
+                for c in (search_results.get("verified_candidates") or [])
+            )
+        )
     )
     feedback_summary = None
     if feedback_context is not None:
@@ -456,7 +547,8 @@ def plan_from_diagnosis(
             decision = "REVISE"
         rationale_parts.append("fixture_intents")
     else:
-        # Search-bound inserts ONLY for confirmed defects (not mere PTS-gap hypotheses).
+        # Search-bound inserts ONLY for confirmed defects (not mere PTS-gap hypotheses)
+        # AND only FIRST_LIVE_VERIFIED executable candidates (see evidence tiers).
         search_intents_all = (
             _intents_from_verified_search(search_results or {}, protect) if search_ok else []
         )
@@ -464,11 +556,11 @@ def plan_from_diagnosis(
         deferred_hypothesis_search = []
         for it in search_intents_all:
             iid = str(it.get("issue_id") or "")
-            if iid and iid in confirmed_issue_ids:
-                search_intents.append(
-                    _annotate_problem_driven(it, issues_by_id.get(iid))
-                )
-            else:
+            act = str(it.get("action") or "")
+            annotated = _annotate_problem_driven(it, issues_by_id.get(iid))
+            if act == "search_add" and iid and iid in confirmed_issue_ids:
+                search_intents.append(annotated)
+            elif act == "search_add":
                 deferred_hypothesis_search.append(
                     _annotate_problem_driven(
                         {
@@ -484,6 +576,9 @@ def plan_from_diagnosis(
                         issues_by_id.get(iid),
                     )
                 )
+            else:
+                # propose_observe / mark_unresolved from EVENT_PTS tier
+                deferred_hypothesis_search.append(annotated)
 
         struct_intents = _structure_intents(major_struct or critical_struct, protect)
         struct_exec = [
@@ -498,7 +593,7 @@ def plan_from_diagnosis(
             intents.extend(struct_exec)
             if search_intents:
                 rationale_parts.append(
-                    "confirmed_defect_plus_verified_search_candidates_bound_to_source_pts"
+                    "confirmed_defect_plus_first_live_verified_search_candidates"
                 )
             if struct_exec:
                 rationale_parts.append("confirmed_structure_executable_repairs")
@@ -630,7 +725,9 @@ def plan_from_diagnosis(
         "rationale": ";".join(rationale_parts),
         "offline": offline,
         "semantic_confirmation": semantic_ok,
-        "search_confirmation": search_ok,
+        # Only FIRST_LIVE_VERIFIED candidates count as confirmation for REVISE/fallback.
+        "search_confirmation": executable_search_ok,
+        "event_pts_search_available": search_ok,
         "protected_goal_segment_ids": protect,
         "revision_intents": intents,
         "feedback_context": feedback_summary,
