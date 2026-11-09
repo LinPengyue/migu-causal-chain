@@ -40,6 +40,10 @@ from .story_evidence_search import (
 )
 from .story_observe import observe_layers
 from .story_revision_planner import plan_from_diagnosis
+from .story_narrative_fit import (
+    enforce_narrative_fit_on_plan,
+    load_narrative_fit_store,
+)
 from .revision_case import build_revision_cases_for_round
 from .story_revision_feedback import (
     RevisionFeedbackStore,
@@ -107,6 +111,8 @@ class StoryE2EInputs:
     confirm_issue_ids: Optional[Sequence[str]] = None
     # Optional directory/JSON of validated first-LIVE evidence packs (source SHA + PTS).
     first_live_evidence_dir: Optional[Path] = None
+    # Optional independently reviewed BEFORE→CANDIDATE→AFTER video evidence.
+    narrative_fit_evidence_dir: Optional[Path] = None
     # When True, build local frame-pack evidence for new windows from source MP4 (zero HTTP).
     build_local_first_live_evidence: bool = False
     max_rounds: int = MAX_ROUNDS
@@ -414,6 +420,9 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             "first_live_evidence_dir": (
                 str(inp.first_live_evidence_dir) if inp.first_live_evidence_dir else None
             ),
+            "narrative_fit_evidence_dir": (
+                str(inp.narrative_fit_evidence_dir) if inp.narrative_fit_evidence_dir else None
+            ),
             "run_fresh_v3r": inp.run_fresh_v3r,
             "max_rounds": inp.max_rounds,
             "max_calls": inp.max_calls,
@@ -612,6 +621,20 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
     pending_reobserve: Optional[Dict[str, Any]] = None
     source_sha = sha256_file(inp.source_mp4) if inp.source_mp4.is_file() else None
     first_live_evidence_store = load_evidence_store(inp.first_live_evidence_dir)
+    narrative_fit_evidence_store = load_narrative_fit_store(inp.narrative_fit_evidence_dir)
+    # Offline fixtures explicitly exercise older loop behavior; never bypass
+    # the narrative evidence gate in a real paid/production execution.
+    narrative_fit_required = not (
+        not inp.enable_real_api and (
+            inp.fixture_revision is not None
+            or inp.phase8_round_fixtures is not None
+            or bool(inp.confirm_issue_ids)
+        )
+    )
+    audit["narrative_fit_required"] = narrative_fit_required
+    audit["narrative_fit_review_store_n"] = len(
+        narrative_fit_evidence_store.get("by_key") or {}
+    )
     first_live_prior_ledger: Dict[str, Any] = {
         "schema": "v3a_first_live_window_ledger_v1",
         "source_sha": source_sha or "MISSING_SOURCE_SHA",
@@ -860,7 +883,32 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             events_json=events_path,
             feedback_context=fb_ctx,
             first_live_evidence_store=first_live_evidence_store,
+            narrative_fit_evidence_store=narrative_fit_evidence_store,
             source_sha256=source_sha,
+        )
+        # The review queue exposes source/anchor triples for targeted
+        # BEFORE→CANDIDATE→AFTER visual inspection; it never self-certifies.
+        write_json(
+            round_dir / "narrative_fit_review_queue.json",
+            {
+                "schema": "v3a_narrative_fit_review_queue_v1",
+                "source_sha256": source_sha,
+                "issue_candidates": [
+                    {
+                        "candidate_id": c.get("candidate_id"),
+                        "issue_id": c.get("issue_id"),
+                        "narrative_context": c.get("narrative_context"),
+                        "narrative_fit_status": c.get("narrative_fit_status"),
+                        "narrative_fit_reason": (c.get("narrative_fit") or {}).get("reason"),
+                        "first_live_status": c.get("first_live_status"),
+                    }
+                    for c in (search_report.get("verified_candidates") or [])[:15]
+                ],
+                "note": (
+                    "Prioritize video-backed story information, not time-gap balancing "
+                    "or highlight duration. Missing review does not authorize insert."
+                ),
+            },
         )
         search_report["events_json_resolved_via"] = (
             "events_enriched"
@@ -908,6 +956,8 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             fixture_intents=fixture_intents,
             search_results=search_report,
             feedback_context=fb_ctx,
+            require_narrative_fit=narrative_fit_required,
+            keep_unconfirmed_temporal_gap=narrative_fit_required,
             budget={
                 "max_rounds": inp.max_rounds,
                 "round_idx": round_idx,
@@ -929,6 +979,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     protected_goal_ids=list(diag.get("protected_goal_segment_ids") or []),
                     audit_dir=round_dir / "paid_api",
                     feedback_context=fb_ctx,
+                    search_results=search_report,
                 )
             except Exception as exc:  # noqa: BLE001
                 llm_rev = {"ok": False, "error": f"{type(exc).__name__}:{exc}"}
@@ -1033,6 +1084,10 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                         "narrative_purpose": "fixture",
                     }
                 ]
+        if narrative_fit_required:
+            # Last line of defense: LLM-generated search_add cannot invent its
+            # own narrative-fit status or bypass the bound Search review.
+            rev = enforce_narrative_fit_on_plan(rev, search_report=search_report)
         write_json(round_dir / "revision_plan.json", rev)
         final_decision = str(rev.get("decision") or "UNRESOLVED")
         round_rec["decision"] = final_decision
