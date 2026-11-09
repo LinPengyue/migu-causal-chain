@@ -10,6 +10,8 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
+from unittest import mock
 
 from story_video_agent_v3.first_live_window_evidence import (
     SCHEMA as FIRST_LIVE_SCHEMA, TIMELINE_REVIEW_SCHEMA, window_key,
@@ -20,6 +22,9 @@ from story_video_agent_v3.story_evidence_search import run_story_evidence_search
 from story_video_agent_v3.story_narrative_fit import (
     REJECTED, SCHEMA, SUPPORTED, UNKNOWN, annotate_narrative_fit,
     enforce_narrative_fit_on_plan, validate_narrative_fit_review,
+)
+from story_video_agent_v3.story_narrative_fit_vlm import (
+    run_vlm_narrative_triplet_review,
 )
 from story_video_agent_v3.story_revision_planner import plan_from_diagnosis
 
@@ -329,6 +334,83 @@ class TestNarrativeFit(unittest.TestCase):
             )
             self.assertEqual(gated["decision"], "UNRESOLVED")
             self.assertEqual(gated["revision_intents"][0]["action"], "mark_unresolved")
+
+    def test_six_frame_vlm_triplet_review_fake_provider_zero_http(self):
+        import story_video_agent.frames as frames_module
+        import story_video_agent.media as media_module
+
+        class FakeStore:
+            def __init__(self, media, *, out_dir, budget):
+                self.out_dir = Path(out_dir)
+                self.out_dir.mkdir(parents=True, exist_ok=True)
+                self.n = 0
+
+            def extract_at(self, t, *, gap_id, tool):
+                self.n += 1
+                fp = self.out_dir / f"stub_{self.n}.jpg"
+                fp.write_bytes(f"frame-{self.n}".encode("ascii"))
+                return SimpleNamespace(
+                    frame_id=f"fid_{self.n}", path=str(fp),
+                    requested_media_sec=t, actual_media_sec=t,
+                    pts_status="pts",
+                )
+
+            def write_manifest(self, p):
+                Path(p).write_text("[]", encoding="utf-8")
+
+        class FakeAPI:
+            def __init__(self, incomplete=False):
+                self.calls = 0
+                self.incomplete = incomplete
+
+            def vision_json(self, *, prompt, frame_paths, frame_ids,
+                            mock_obj, frame_bindings):
+                self.calls += 1
+                assert len(frame_paths) == 6
+                cited = (
+                    [frame_ids[0]]
+                    if self.incomplete else [frame_ids[0], frame_ids[2], frame_ids[4]]
+                )
+                return {
+                    "provider_mode": "real",
+                    "content": json.dumps({
+                        "verdict": "SUPPORTS_INSERT",
+                        "story_function": "pressure_escalation",
+                        "before_to_candidate": "The first beat establishes losing momentum",
+                        "candidate_to_after": "The candidate prepares the later offensive beat",
+                        "new_story_information": "An observable change in the side's possession",
+                        "baseline_comparison": "The baseline omits the visible momentum change",
+                        "missing_information_addressed": "How the trailing side built attacking momentum",
+                        "falsifiable_gain": "If adjacent beats remain unrelated the insert fails",
+                        "evidence_frame_ids": cited,
+                    }),
+                    "usage": {"total_tokens": 100},
+                }
+
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            source = root / "source.mp4"
+            source.write_bytes(b"dummy-test-video-not-decoded")
+            with mock.patch.object(frames_module, "FrameStore", FakeStore), mock.patch.object(
+                media_module, "probe_video", return_value=object(),
+            ):
+                api = FakeAPI()
+                result = run_vlm_narrative_triplet_review(
+                    api, source_mp4=source, source_sha=SHA, candidate=_candidate(),
+                    edl=EDL, out_dir=root / "good",
+                )
+                self.assertEqual(api.calls, 1)
+                self.assertTrue(result["ok"])
+                self.assertEqual(result["validation"]["status"], SUPPORTED)
+                bad_api = FakeAPI(incomplete=True)
+                bad = run_vlm_narrative_triplet_review(
+                    bad_api, source_mp4=source, source_sha=SHA,
+                    candidate=_candidate(), edl=EDL, out_dir=root / "bad",
+                )
+                self.assertEqual(bad_api.calls, 1)
+                self.assertFalse(bad["ok"])
+                self.assertEqual(bad["validation"]["reason"],
+                                 "vlm_triplet_citation_coverage_incomplete")
 
     def test_structural_gap_critic_marks_observation_not_defect(self):
         source_edl = [
