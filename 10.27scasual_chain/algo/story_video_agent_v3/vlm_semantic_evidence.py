@@ -205,6 +205,10 @@ def normalize_semantic_evidence_item(
         "frame_refs_missing": missing,
         "observed_fact": observed_fact,
         "defect_hypothesis": hypothesis,
+        # Required for large source-time gaps: distinguish actual omitted story
+        # state from normal highlights time compression.
+        "missing_story_information": raw.get("missing_story_information"),
+        "why_transition_breaks": raw.get("why_transition_breaks"),
         "confidence_model_reported": conf,
         "observation_scope": observation_scope
         or raw.get("observation_scope")
