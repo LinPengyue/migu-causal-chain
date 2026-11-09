@@ -1001,6 +1001,31 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             if http_calls >= int(inp.max_calls) or est_cost >= float(inp.max_cost_usd):
                 paid_api = None
 
+        # Re-write queue after optional contextual VLM review, so review status
+        # matches the final Search shortlist used by Planner.
+        write_json(
+            round_dir / "narrative_fit_review_queue.json",
+            {
+                "schema": "v3a_narrative_fit_review_queue_v1",
+                "source_sha256": source_sha,
+                "issue_candidates": [
+                    {
+                        "candidate_id": c.get("candidate_id"),
+                        "issue_id": c.get("issue_id"),
+                        "narrative_context": c.get("narrative_context"),
+                        "narrative_fit_status": c.get("narrative_fit_status"),
+                        "narrative_fit_reason": (c.get("narrative_fit") or {}).get("reason"),
+                        "first_live_status": c.get("first_live_status"),
+                    }
+                    for c in (search_report.get("verified_candidates") or [])[:15]
+                ],
+                "vlm_contextual_reviews": fit_reviews,
+                "note": (
+                    "Missing triplet evidence never authorizes source-footage insertion. "
+                    "A positive fit review is not a finished-cut quality result."
+                ),
+            },
+        )
         write_json(round_dir / "evidence_search.json", search_report)
         search_obs = search_candidates_to_observations(search_report)
         round_rec["search_success"] = bool(search_report.get("search_success"))
