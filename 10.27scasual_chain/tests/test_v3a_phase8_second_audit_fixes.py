@@ -110,28 +110,64 @@ def _events_ab(path: Path) -> Path:
 
 
 def _first_live_store_for_windows(path: Path, source_sha: str, windows):
-    """Minimal FIRST_LIVE_VERIFIED packs so unit tests can exercise executable search_add."""
-    from story_video_agent_v3.first_live_window_evidence import window_key
+    """Synthetic but structurally valid frame+timeline packs for zero-HTTP tests.
+
+    These bytes are test fixtures, NOT real evidence of a match's first broadcast.
+    Production Search should validate both frame-byte hashes and timeline schema.
+    """
+    import hashlib
+
+    from story_video_agent_v3.first_live_window_evidence import (
+        SCHEMA as FIRST_LIVE_SCHEMA,
+        TIMELINE_REVIEW_SCHEMA,
+        window_key,
+    )
 
     by_key = {}
-    for start, end in windows:
-        k = window_key(source_sha, float(start), float(end))
+    for seq, (start, end) in enumerate(windows):
+        start, end = float(start), float(end)
+        k = window_key(source_sha, start, end)
+        frame_rows = []
+        for idx, t in enumerate((start + 0.2, end - 0.2)):
+            fp = path.parent / f"synthetic_fl_{seq}_{idx}.jpg"
+            payload = f"unit_test_frame:{seq}:{idx}:{t}".encode("ascii")
+            fp.write_bytes(payload)
+            frame_rows.append({
+                "frame_id": f"test_{seq}_{idx}",
+                "source_pts_sec": t,
+                "path": str(fp),
+                "sha256": hashlib.sha256(payload).hexdigest(),
+            })
+        manifest = {
+            "source_sha256": source_sha,
+            "source_pts_start": start,
+            "source_pts_end": end,
+            "frame_sha256": [fr["sha256"] for fr in frame_rows],
+        }
+        digest = hashlib.sha256(
+            json.dumps(manifest, sort_keys=True, ensure_ascii=False).encode("utf-8")
+        ).hexdigest()
         by_key[k] = {
+            "schema": FIRST_LIVE_SCHEMA,
             "key": k,
             "source_sha256": source_sha,
-            "source_pts_start": float(start),
-            "source_pts_end": float(end),
-            "first_live_status": "FIRST_LIVE_VERIFIED",
+            "source_pts_start": start,
+            "source_pts_end": end,
+            "frames": frame_rows,
+            "manifest": manifest,
+            "manifest_digest": digest,
             "broadcast_timeline_review": {
+                "schema": TIMELINE_REVIEW_SCHEMA,
+                "source_sha256": source_sha,
+                "source_pts_start": start,
+                "source_pts_end": end,
                 "outcome": "FIRST_LIVE_VERIFIED",
-                "first_live_status": "FIRST_LIVE_VERIFIED",
-                "method": "unit_test_attestation",
+                "method": "unit_test_synthetic_review_not_match_truth",
             },
         }
     payload = {"schema": "v3a_first_live_evidence_store_v1", "by_key": by_key}
     path.write_text(json.dumps(payload), encoding="utf-8")
     return path
-
 
 TEST_SOURCE_SHA = "aa" * 32
 
