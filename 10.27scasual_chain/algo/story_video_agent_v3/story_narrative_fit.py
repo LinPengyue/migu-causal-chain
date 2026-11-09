@@ -230,6 +230,7 @@ def enforce_narrative_fit_on_plan(
     plan: Mapping[str, Any],
     *,
     search_report: Mapping[str, Any],
+    diagnosis: Optional[Mapping[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Independent post-LLM apply gate, including LLM-authored search_add.
 
@@ -245,7 +246,23 @@ def enforce_narrative_fit_on_plan(
         and (c.get("narrative_fit") or {}).get("binding_valid") is True
     ]
 
+    confirmed_issues = None
+    if diagnosis is not None:
+        confirmed_issues = {
+            str(i.get("issue_id"))
+            for i in (diagnosis.get("issues") or [])
+            if isinstance(i, Mapping) and i.get("issue_id")
+            and (
+                i.get("story_defect_confirmed") is True
+                or str(i.get("diagnosis_status") or "") in (
+                    "CONFIRMED_STORY_DEFECT", "CONFIRMED_STRUCTURE_DEFECT"
+                )
+            )
+        }
+
     def approved_for(intent: Mapping[str, Any]) -> bool:
+        if confirmed_issues is not None and str(intent.get("issue_id") or "") not in confirmed_issues:
+            return False
         span = intent.get("bound_source_window")
         if not isinstance(span, Mapping):
             return False
@@ -286,7 +303,10 @@ def enforce_narrative_fit_on_plan(
                 "intent_id": it.get("intent_id"),
                 "issue_id": it.get("issue_id"),
                 "blocked_action": action,
-                "reason": "no_authenticated_triplet_narrative_gain_for_exact_source_and_anchors",
+                "reason": (
+                    "missing_confirmed_issue_or_authenticated_triplet_narrative_gain"
+                    "_for_exact_source_and_anchors"
+                ),
             })
             it = {
                 **it,
