@@ -60,6 +60,8 @@ def _protect_filter(
 def _intents_from_verified_search(
     search_results: Mapping[str, Any],
     protect: Sequence[str],
+    *,
+    require_narrative_fit: bool = False,
 ) -> List[Dict[str, Any]]:
     """Build intents from Search candidates with explicit evidence-tier gating.
 
@@ -77,13 +79,30 @@ def _intents_from_verified_search(
             for c in (search_results.get("verified_candidates") or [])
             if isinstance(c, dict) and c.get("executable_safe_revision")
         ]
-    propose_pool = list(search_results.get("propose_only_event_pts_candidates") or [])
-    if not propose_pool:
-        propose_pool = [
-            c
-            for c in (search_results.get("verified_candidates") or [])
-            if isinstance(c, dict) and not c.get("executable_safe_revision")
+    if require_narrative_fit:
+        # Safety is independent of narrative value. A FIRST_LIVE clip without
+        # video-observed before→candidate→after gains is proposal-only.
+        all_candidates = [
+            c for c in (search_results.get("verified_candidates") or [])
+            if isinstance(c, dict)
         ]
+        pool = [
+            c for c in pool
+            if c.get("narrative_fit_supports_insert") is True
+            and (c.get("narrative_fit") or {}).get("binding_valid") is True
+        ]
+        propose_pool = [
+            c for c in all_candidates
+            if c not in pool and not c.get("narrative_fit_rejects_insert")
+        ]
+    else:
+        propose_pool = list(search_results.get("propose_only_event_pts_candidates") or [])
+        if not propose_pool:
+            propose_pool = [
+                c
+                for c in (search_results.get("verified_candidates") or [])
+                if isinstance(c, dict) and not c.get("executable_safe_revision")
+            ]
 
     def _mk_base(c: Mapping[str, Any], i: int) -> Dict[str, Any]:
         issue_id = str(c.get("issue_id") or "")
@@ -166,6 +185,9 @@ def _intents_from_verified_search(
                 },
             ],
             "story_defect_fit": c.get("story_defect_fit"),
+            "narrative_fit_status": c.get("narrative_fit_status"),
+            "narrative_fit": c.get("narrative_fit"),
+            "narrative_context": c.get("narrative_context"),
             "gap_balance": c.get("gap_balance"),
             "reject_or_defer_reason": c.get("reject_or_defer_reason"),
         }
@@ -227,13 +249,14 @@ def _intents_from_verified_search(
                 "action": "mark_unresolved",
                 "blocked_original_action": "search_add",
                 "block_reason": (
-                    "event_pts_candidate_not_first_live_verified;"
-                    "propose_for_observation_only"
+                    "candidate_not_first_live_or_narrative_fit_supported;"
+                    "propose_for_triplet_video_review_only"
                 ),
                 "rationale": (
                     f"EVENT_PTS_CANDIDATE {cand_id} @ "
                     f"{c.get('source_pts_start')}-{c.get('source_pts_end')}s is event-chain "
-                    "LIVE only; defer apply until FIRST_LIVE_VERIFIED and story-fit review"
+                    "LIVE/PTS or FIRST_LIVE evidence alone; defer apply until "
+                    "video-triplet narrative fit confirms story value"
                 ),
                 "why_candidate_solves_problem": (
                     "Not claimed as a solved defect — event metadata screening only"
@@ -408,6 +431,8 @@ def plan_from_diagnosis(
     search_results: Optional[Mapping[str, Any]] = None,
     feedback_context: Optional[Mapping[str, Any]] = None,
     budget: Optional[Mapping[str, Any]] = None,
+    require_narrative_fit: bool = False,
+    keep_unconfirmed_temporal_gap: bool = False,
 ) -> Dict[str, Any]:
     """Produce story-level revision plan with explicit decision.
 
@@ -550,7 +575,10 @@ def plan_from_diagnosis(
         # Search-bound inserts ONLY for confirmed defects (not mere PTS-gap hypotheses)
         # AND only FIRST_LIVE_VERIFIED executable candidates (see evidence tiers).
         search_intents_all = (
-            _intents_from_verified_search(search_results or {}, protect) if search_ok else []
+            _intents_from_verified_search(
+                search_results or {}, protect,
+                require_narrative_fit=require_narrative_fit,
+            ) if search_ok else []
         )
         search_intents = []
         deferred_hypothesis_search = []
@@ -628,6 +656,27 @@ def plan_from_diagnosis(
                     )
                 ]
             )
+        elif (
+            keep_unconfirmed_temporal_gap
+            and hypotheses
+            and not confirmed_for_search
+            and all(
+                bool(i.get("temporal_discontinuity_only"))
+                for i in hypotheses
+            )
+        ):
+            # An editor may intentionally jump 20+ minutes. Without video
+            # evidence of omitted story state, no story defect was established.
+            decision = "KEEP"
+            rationale_parts.append("temporal_jump_alone_not_story_defect_keep_baseline")
+            intents.append({
+                "intent_id": "keep_unconfirmed_temporal_gap",
+                "action": "keep",
+                "narrative_purpose": "preserve_intentional_temporal_compression",
+                "rationale": "Source-time discontinuity is an observation, not proof of missing narrative information.",
+                "evidence_refs": [],
+                "duration_pad_not_quality_proxy": True,
+            })
         elif hypotheses or deferred_hypothesis_search:
             decision = "UNRESOLVED"
             rationale_parts.append(
@@ -727,6 +776,10 @@ def plan_from_diagnosis(
         "semantic_confirmation": semantic_ok,
         # Only FIRST_LIVE_VERIFIED candidates count as confirmation for REVISE/fallback.
         "search_confirmation": executable_search_ok,
+        "narrative_fit_required": require_narrative_fit,
+        "narrative_fit_confirmation": bool(
+            (search_results or {}).get("narrative_fit_supported_candidates")
+        ),
         "event_pts_search_available": search_ok,
         "protected_goal_segment_ids": protect,
         "revision_intents": intents,
@@ -736,6 +789,8 @@ def plan_from_diagnosis(
             "no_auto_add_on_large_source_gap_alone": True,
             "duration_pad_not_quality_proxy": True,
             "require_confirmed_defect_for_search_add": True,
+            "require_narrative_fit_triplet_before_insert": require_narrative_fit,
+            "temporal_jump_alone_can_be_kept": keep_unconfirmed_temporal_gap,
             "hypothesis_status": "HYPOTHESIS_NEEDS_VIDEO",
         },
         "phase8_rules": {
