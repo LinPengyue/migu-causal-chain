@@ -915,6 +915,92 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             if events_path is not None and _is_events_enriched_path(events_path)
             else ("explicit_events_json" if events_path is not None else "match_json_only")
         )
+        # Phase8 narrative-fit: one or two narrowly targeted real VLM reviews.
+        # This path is impossible without enable_real_api + i_approve_budget.
+        # Preserve at least TWO remaining HTTP attempts (Planner + Verifier).
+        fit_reviews: List[Dict[str, Any]] = []
+        if paid_api is not None and narrative_fit_required:
+            from .story_narrative_fit_vlm import run_vlm_narrative_triplet_review
+            from .story_paid_eval import provider_usage as _fit_provider_usage
+
+            fit_store_by_key = narrative_fit_evidence_store.setdefault("by_key", {})
+            for c in list(search_report.get("executable_first_live_candidates") or [])[:2]:
+                if c.get("narrative_fit_reviewed"):
+                    continue
+                usage_before = _fit_provider_usage(paid_api)
+                attempted = int(usage_before.get("http_attempts") or http_calls)
+                # A contextual review costs one call; two are held for LLM
+                # Planner and post-render dual-video Verifier.
+                if int(inp.max_calls) - attempted < 3:
+                    fit_reviews.append({
+                        "candidate_id": c.get("candidate_id"),
+                        "status": "skipped_reserved_planner_verifier_budget",
+                    })
+                    break
+                if float(usage_before.get("est_cost_usd_real") or 0.0) >= float(inp.max_cost_usd):
+                    break
+                fit_dir = round_dir / "narrative_fit_vlm" / str(
+                    c.get("candidate_id") or "candidate"
+                ).replace("/", "_")[:64]
+                fit_result = run_vlm_narrative_triplet_review(
+                    paid_api,
+                    source_mp4=inp.source_mp4,
+                    source_sha=str(source_sha or ""),
+                    candidate=c,
+                    edl=working_edl,
+                    out_dir=fit_dir,
+                )
+                fit_reviews.append({
+                    "candidate_id": c.get("candidate_id"),
+                    "ok": bool(fit_result.get("ok")),
+                    "status": (fit_result.get("validation") or {}).get("status"),
+                    "reason": (fit_result.get("validation") or {}).get("reason")
+                    or fit_result.get("error"),
+                    "path": str(fit_dir / "narrative_fit_review.json"),
+                })
+                if (
+                    fit_result.get("ok")
+                    and isinstance(fit_result.get("review"), dict)
+                    and fit_result.get("source_review_key")
+                ):
+                    fit_store_by_key[str(fit_result["source_review_key"])] = fit_result["review"]
+
+            usage_after = _fit_provider_usage(paid_api)
+            http_calls = int(usage_after.get("http_attempts") or http_calls)
+            est_cost = float(usage_after.get("est_cost_usd_real") or est_cost)
+            round_rec["api_usage_after_narrative_fit"] = usage_after
+            if fit_reviews and fit_store_by_key:
+                # Re-run local Search to move supported triplets ahead of
+                # heat-only events, and suppress visually rejected candidates.
+                search_report = run_story_evidence_search(
+                    diagnosis=diag,
+                    edl=working_edl,
+                    match_json=inp.match_json if inp.match_json.is_file() else None,
+                    events_json=events_path,
+                    feedback_context=fb_ctx,
+                    first_live_evidence_store=first_live_evidence_store,
+                    narrative_fit_evidence_store=narrative_fit_evidence_store,
+                    source_sha256=source_sha,
+                )
+                search_report["events_json_resolved_via"] = (
+                    "events_enriched"
+                    if events_path is not None and _is_events_enriched_path(events_path)
+                    else ("explicit_events_json" if events_path is not None else "match_json_only")
+                )
+            write_json(round_dir / "narrative_fit_vlm_summary.json", {
+                "schema": "v3a_narrative_fit_vlm_summary_v1",
+                "reviews": fit_reviews,
+                "http_calls_after": http_calls,
+                "estimated_cost_usd_after": est_cost,
+                "claims_full_video_watch": False,
+                "note": (
+                    "Only explicitly authorized real VLM path uses API. "
+                    "Fit evidence is a model judgment, not measured final quality."
+                ),
+            })
+            if http_calls >= int(inp.max_calls) or est_cost >= float(inp.max_cost_usd):
+                paid_api = None
+
         write_json(round_dir / "evidence_search.json", search_report)
         search_obs = search_candidates_to_observations(search_report)
         round_rec["search_success"] = bool(search_report.get("search_success"))
