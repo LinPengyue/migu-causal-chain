@@ -224,3 +224,91 @@ def annotate_narrative_fit(
     row["narrative_fit_supports_insert"] = result["status"] == SUPPORTED
     row["narrative_fit_rejects_insert"] = result["status"] == REJECTED
     return row
+
+
+def enforce_narrative_fit_on_plan(
+    plan: Mapping[str, Any],
+    *,
+    search_report: Mapping[str, Any],
+) -> Dict[str, Any]:
+    """Independent post-LLM apply gate, including LLM-authored search_add.
+
+    Model-produced prose or a self-declared FIRST_LIVE / narrative-fit flag
+    never substitutes for a Search row validated against actual frame bytes.
+    This does not constrain existing-footage trim/drop/reorder decisions.
+    """
+    approved = [
+        c for c in (search_report.get("narrative_fit_supported_candidates") or [])
+        if isinstance(c, Mapping)
+        and c.get("executable_safe_revision") is True
+        and c.get("narrative_fit_supports_insert") is True
+        and (c.get("narrative_fit") or {}).get("binding_valid") is True
+    ]
+
+    def approved_for(intent: Mapping[str, Any]) -> bool:
+        span = intent.get("bound_source_window")
+        if not isinstance(span, Mapping):
+            return False
+        try:
+            start, end = float(span["start"]), float(span["end"])
+        except (KeyError, TypeError, ValueError):
+            return False
+        iid = str(intent.get("issue_id") or "")
+        after = str(intent.get("insert_after_segment_id") or "")
+        before = str(intent.get("before_segment_id") or "")
+        for c in approved:
+            try:
+                cs, ce = float(c["source_pts_start"]), float(c["source_pts_end"])
+            except (KeyError, TypeError, ValueError):
+                continue
+            if (abs(cs-start) > .05 or abs(ce-end) > .05
+                or str(c.get("issue_id") or "") != iid
+                or str(c.get("insert_after_segment_id") or "") != after
+                or str(c.get("before_segment_id") or "") != before):
+                continue
+            return True
+        return False
+
+    out = dict(plan)
+    intents = []
+    blocked = []
+    for raw in (out.get("revision_intents") or []):
+        if not isinstance(raw, Mapping):
+            continue
+        it = dict(raw)
+        action = str(it.get("action") or "")
+        # A replace may be purely structural; only require fit when a new
+        # source window is explicitly introduced.
+        adds_new_source = action == "search_add" or (
+            action == "replace" and it.get("bound_source_window") is not None
+        )
+        if adds_new_source and not approved_for(it):
+            blocked.append({
+                "intent_id": it.get("intent_id"),
+                "issue_id": it.get("issue_id"),
+                "blocked_action": action,
+                "reason": "no_authenticated_triplet_narrative_gain_for_exact_source_and_anchors",
+            })
+            it = {
+                **it,
+                "action": "mark_unresolved",
+                "blocked_original_action": action,
+                "block_reason": "missing_bound_video_triplet_narrative_fit",
+                "narrative_purpose": "candidate_needs_contextual_video_review",
+            }
+        intents.append(it)
+    out["revision_intents"] = intents
+    out["narrative_fit_apply_gate"] = {
+        "required": True,
+        "approved_candidate_count": len(approved),
+        "blocked_intents": blocked,
+        "n_blocked": len(blocked),
+    }
+    mutate = any(
+        str(i.get("action") or "") not in ("keep", "mark_unresolved", "unresolved")
+        for i in intents
+    )
+    if blocked and not mutate:
+        out["decision"] = "UNRESOLVED"
+        out["normalize_note"] = "narrative_fit_apply_gate_blocked_all_mutating_intents"
+    return out
