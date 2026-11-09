@@ -1087,7 +1087,9 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         if narrative_fit_required:
             # Last line of defense: LLM-generated search_add cannot invent its
             # own narrative-fit status or bypass the bound Search review.
-            rev = enforce_narrative_fit_on_plan(rev, search_report=search_report)
+            rev = enforce_narrative_fit_on_plan(
+                rev, search_report=search_report, diagnosis=diag,
+            )
         write_json(round_dir / "revision_plan.json", rev)
         final_decision = str(rev.get("decision") or "UNRESOLVED")
         round_rec["decision"] = final_decision
