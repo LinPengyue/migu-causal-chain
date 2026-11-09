@@ -74,6 +74,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="Directory/JSON of validated first-LIVE evidence packs (source SHA+PTS)",
     )
     p.add_argument(
+        "--narrative-fit-evidence-dir",
+        type=Path,
+        default=None,
+        help="Optional validated before/candidate/after video-triplet review store JSON/dir",
+    )
+    p.add_argument(
         "--build-local-first-live-evidence",
         action="store_true",
         default=False,
@@ -137,6 +143,15 @@ def main(argv: list[str] | None = None) -> int:
         )
         return 2
 
+    if args.narrative_fit_evidence_dir is not None and not (
+        args.narrative_fit_evidence_dir.is_dir() or args.narrative_fit_evidence_dir.is_file()
+    ):
+        print(
+            f"ERROR: narrative-fit review path missing: {args.narrative_fit_evidence_dir}",
+            file=sys.stderr,
+        )
+        return 2
+
     fixture_revision = None
     fixture_verifier = None
     if args.fixture_revision and args.fixture_revision.is_file():
@@ -176,6 +191,10 @@ def main(argv: list[str] | None = None) -> int:
         fixture_verifier=fixture_verifier,
         first_live_evidence_dir=(
             args.first_live_evidence_dir.resolve() if args.first_live_evidence_dir else None
+        ),
+        narrative_fit_evidence_dir=(
+            args.narrative_fit_evidence_dir.resolve()
+            if args.narrative_fit_evidence_dir else None
         ),
         build_local_first_live_evidence=bool(args.build_local_first_live_evidence),
         max_rounds=int(args.max_rounds),
