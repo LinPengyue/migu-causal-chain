@@ -140,6 +140,28 @@ def enrich_issue_semantic_fields(
                 "MODEL_CLAIMED_observed_without_frame_refs_not_confirmed"
             )
 
+    # In a highlight, skipping 20 minutes is normally intentional. A model can
+    # cite frames and complain about abruptness yet still fail to identify any
+    # *specific missing story state*. Such claims must remain hypotheses.
+    if out.get("temporal_discontinuity_only") and confirmed:
+        concrete = None
+        for raw in list(ev.get("semantic_evidence") or []) + list(ev.get("derived_issues") or []):
+            if not isinstance(raw, Mapping) or str(raw.get("issue_id")) != str(out.get("issue_id")):
+                continue
+            missing = str(raw.get("missing_story_information") or "").strip()
+            broken = str(raw.get("why_transition_breaks") or "").strip()
+            if len(missing) >= 12 and len(broken) >= 12:
+                concrete = (missing, broken)
+                break
+        if concrete is None:
+            confirmed = False
+            confirmation_basis.append("temporal_jump_no_specific_missing_story_state")
+            out["missing_story_information_evidenced"] = False
+        else:
+            out["missing_story_information_evidenced"] = True
+            out["missing_information"] = concrete[0]
+            out["causal_explanation"] = concrete[1]
+
     # confirmed_issue_ids list is advisory only unless DEFECT_CONFIRMED already set.
     if not confirmed:
         for item in ev.get("confirmed_issue_ids") or []:
