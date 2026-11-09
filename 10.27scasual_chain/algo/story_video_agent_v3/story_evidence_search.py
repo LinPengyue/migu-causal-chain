@@ -255,6 +255,7 @@ def _rank_events_in_window(
     hints: Sequence[str],
     goals: Sequence[Tuple[float, float, str]],
     occupied: Sequence[Tuple[float, float]],
+    max_candidates: Optional[int] = _MAX_CANDIDATES_PER_ISSUE,
 ) -> List[Dict[str, Any]]:
     ranked: List[Dict[str, Any]] = []
     for ev in events:
@@ -344,7 +345,9 @@ def _rank_events_in_window(
         if any(e > float(k["source_pts_start"]) and s < float(k["source_pts_end"]) for k in kept):
             continue
         kept.append(c)
-        if len(kept) >= _MAX_CANDIDATES_PER_ISSUE:
+        # None means retrieve all non-overlapping evidence candidates.
+        # The agent must validate evidence + filter prior failures BEFORE truncation.
+        if max_candidates is not None and len(kept) >= max_candidates:
             break
     return kept
 
@@ -639,6 +642,8 @@ def run_story_evidence_search(
     targets: List[Dict[str, Any]] = []
     all_candidates: List[Dict[str, Any]] = []
     verified: List[Dict[str, Any]] = []
+    verified_before_feedback: List[Dict[str, Any]] = []
+    feedback_filtered: List[Dict[str, Any]] = []
 
     for iss in issues:
         win = search_window_for_issue(iss, edl)
@@ -673,6 +678,9 @@ def run_story_evidence_search(
                 }
             )
             continue
+        # Retrieve broadly: the first five highest-heat events may ALL be
+        # unauthenticated or previously rejected, hiding an actionable candidate
+        # outside the raw score top five. Limit only after proof and feedback.
         cands = _rank_events_in_window(
             events,
             lo=lo,
@@ -680,8 +688,10 @@ def run_story_evidence_search(
             hints=list(win.get("hints") or _ACTION_HINTS),
             goals=goals,
             occupied=occupied,
+            max_candidates=None,
         )
-        enriched = []
+        enriched: List[Dict[str, Any]] = []
+        local_eligible: List[Dict[str, Any]] = []
         for c in cands:
             row = {
                 **c,
@@ -699,7 +709,7 @@ def run_story_evidence_search(
                 "visual_evidence": {
                     "kind": "event_chain_live_context",
                     "live": c.get("live"),
-                    "note": "PTS taken from annotated event media_time; frames optional in paid verify.",
+                    "note": "Event metadata candidate only; first broadcast needs source-video proof.",
                 },
             }
             gate = verify_search_candidate(row, edl=edl)
@@ -707,31 +717,57 @@ def run_story_evidence_search(
             enriched.append(row)
             all_candidates.append(row)
             if gate.get("ok"):
-                verified.append(row)
-                occupied.append((float(row["source_pts_start"]), float(row["source_pts_end"])))
+                local_eligible.append(_annotate_first_live_tier(
+                    row,
+                    evidence_store=first_live_evidence_store,
+                    source_sha=source_sha256,
+                ))
+        # Feedback must see the *entire* candidate pool, not only raw top five.
+        # This lets a lower-ranked verified alternative survive a failed high-heat
+        # candidate without any hardcoded match or candidate IDs.
+        verified_before_feedback.extend(local_eligible)
+        filtered_here = _apply_feedback_to_candidates(local_eligible, feedback_context)
+        feedback_filtered.extend(filtered_here.get("feedback_filtered_candidates") or [])
+        ranked_safe_first = sorted(
+            filtered_here.get("verified_candidates") or [],
+            key=lambda r: (
+                1 if r.get("executable_safe_revision") else 0,
+                float(r.get("feedback_novelty_bonus") or 0.0)
+                + float(r.get("rank_score") or 0.0),
+            ),
+            reverse=True,
+        )
+        selected_here = []
+        for c in ranked_safe_first:
+            start_c, end_c = float(c["source_pts_start"]), float(c["source_pts_end"])
+            if any(end_c > a and start_c < b for a, b in occupied):
+                continue
+            selected_here.append(c)
+            occupied.append((start_c, end_c))
+            if len(selected_here) >= _MAX_CANDIDATES_PER_ISSUE:
+                break
+        verified.extend(selected_here)
         targets.append(
             {
                 "issue_id": iss.get("issue_id"),
                 "category": iss.get("category"),
                 "status": "candidates_found" if enriched else "no_credible_candidates",
                 "search_window": win,
-                "candidates": enriched,
-                "verified_count": sum(1 for c in enriched if (c.get("evidence_verification") or {}).get("ok")),
+                # Return the actionable shortlist, while retaining the complete
+                # inspected pool and feedback-filtered rows in the top-level report.
+                "candidates": selected_here,
+                "n_candidates_considered": len(enriched),
+                "n_event_candidates_eligible": len(local_eligible),
+                "n_feedback_filtered": len(filtered_here.get("feedback_filtered_candidates") or []),
+                "verified_count": len(selected_here),
+                "n_first_live_executable": sum(
+                    1 for c in selected_here if c.get("executable_safe_revision")
+                ),
             }
         )
 
-    fb = _apply_feedback_to_candidates(verified, feedback_context)
-    verified_out = [
-        _annotate_first_live_tier(
-            dict(c),
-            evidence_store=first_live_evidence_store,
-            source_sha=source_sha256,
-        )
-        for c in (fb.get("verified_candidates") or [])
-        if isinstance(c, dict)
-    ]
-    # Prefer first-live-attested executable candidates in ordering without dropping others.
-    verified_out.sort(
+    verified_out = sorted(
+        verified,
         key=lambda r: (
             1 if r.get("executable_safe_revision") else 0,
             float(r.get("feedback_novelty_bonus") or 0.0)
@@ -751,9 +787,9 @@ def run_story_evidence_search(
         "targets": targets,
         "candidates": all_candidates,
         "verified_candidates": verified_out,
-        "verified_candidates_before_feedback": list(verified),
-        "feedback_filtered_candidates": list(fb.get("feedback_filtered_candidates") or []),
-        "feedback_filter_applied": bool(fb.get("feedback_filter_applied")),
+        "verified_candidates_before_feedback": verified_before_feedback,
+        "feedback_filtered_candidates": feedback_filtered,
+        "feedback_filter_applied": bool(feedback_context),
         "executable_first_live_candidates": executable,
         "propose_only_event_pts_candidates": propose_only,
         "selection_diagnostics": diagnostics,
