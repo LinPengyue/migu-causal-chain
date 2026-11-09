@@ -6,11 +6,15 @@ Examples:
     --match-json /path/to/match.json \\
     --source-mp4 /path/to/match.mp4 \\
     --phase5-dir .../04_phase5 \\
-    --out-dir /data2/lpy1/_story_va_outputs/v3/plan2/A_story_e2e_<ts> \\
-    --offline
+    --out-dir /data2/lpy1/_story_va_outputs/v3/plan2/A_story_e2e_<ts>
+
+  # Authorized paid multi-round (requires budget flags + env)
+  python -m story_video_agent_v3.story_e2e_cli ... \\
+    --enable-real-api --i-approve-budget --phase8-paid-multi-round \\
+    --first-live-evidence-dir /path/to/evidence_store
 
 Never sends paid HTTP unless --enable-real-api AND --i-approve-budget AND
-STORY_API_ENABLE=1 (and even then this pass stops before calling until authorized).
+STORY_API_ENABLE=1 (provider layer).
 """
 from __future__ import annotations
 
@@ -19,6 +23,7 @@ import json
 import sys
 import time
 from pathlib import Path
+from typing import Any, Dict, Tuple
 
 from .story_e2e_agent import StoryE2EInputs, run_story_e2e
 
@@ -39,16 +44,41 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--initial-story-mp4", type=Path, default=None)
     p.add_argument("--t01-story", type=Path, default=None)
     p.add_argument("--events-json", type=Path, default=None,
-                   help="Raw events for fresh V3-R (required with --run-fresh-v3r)")
+                   help="Events JSON (prefer V3-R events_enriched.json for Search)")
     p.add_argument("--causal-atoms-json", type=Path, default=None,
                    help="Human causal atoms for fresh V3-R")
     p.add_argument("--match-id", type=str, default=None)
     p.add_argument("--algo-root", type=Path, default=None)
     p.add_argument("--run-fresh-v3r", action="store_true", default=False,
                    help="Generate Phase5 from events+causal+video (not JSON alone)")
-    p.add_argument("--offline", action="store_true", default=True)
+    # IMPORTANT: default=False so --enable-real-api can actually leave offline mode.
+    # Without --enable-real-api, resolve_cli_mode still forces skip_vlm=True.
+    p.add_argument(
+        "--offline",
+        action="store_true",
+        default=False,
+        help="Force offline / skip VLM (implied when --enable-real-api is absent)",
+    )
     p.add_argument("--enable-real-api", action="store_true", default=False)
     p.add_argument("--i-approve-budget", action="store_true", default=False)
+    p.add_argument(
+        "--phase8-paid-multi-round",
+        action="store_true",
+        default=False,
+        help="Explicit opt-in for max_rounds>1 with real API (default off)",
+    )
+    p.add_argument(
+        "--first-live-evidence-dir",
+        type=Path,
+        default=None,
+        help="Directory/JSON of validated first-LIVE evidence packs (source SHA+PTS)",
+    )
+    p.add_argument(
+        "--build-local-first-live-evidence",
+        action="store_true",
+        default=False,
+        help="Zero-HTTP: build local frame-binding packs for new EDL windows",
+    )
     p.add_argument("--force-render-initial", action="store_true", default=False)
     p.add_argument("--force-render-candidate", action="store_true", default=False)
     p.add_argument("--no-smoke-render", action="store_true", default=False)
@@ -60,6 +90,36 @@ def build_parser() -> argparse.ArgumentParser:
     return p
 
 
+def resolve_cli_mode(args: argparse.Namespace) -> Tuple[bool, bool, Dict[str, Any]]:
+    """Resolve offline vs real-API mode.
+
+    Rules:
+    - --enable-real-api implies not offline (skip_vlm=False), even if --offline
+      was also passed (emit conflict note; real-api wins for paid path wiring).
+    - Without --enable-real-api, skip_vlm=True (safe default / offline).
+    """
+    enable_real = bool(args.enable_real_api)
+    offline_flag = bool(args.offline)
+    notes: Dict[str, Any] = {
+        "offline_flag": offline_flag,
+        "enable_real_api": enable_real,
+    }
+    if enable_real and offline_flag:
+        notes["conflict"] = "enable_real_api_overrides_offline_flag"
+        offline_effective = False
+    elif enable_real:
+        offline_effective = False
+    else:
+        offline_effective = True
+    skip_vlm = bool(offline_effective) or (not enable_real)
+    # When real API is requested, skip_vlm must be False so VLM path is live.
+    if enable_real:
+        skip_vlm = False
+    notes["offline_effective"] = offline_effective
+    notes["skip_vlm"] = skip_vlm
+    return skip_vlm, enable_real, notes
+
+
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if not args.match_json.is_file():
@@ -67,6 +127,14 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     if not args.source_mp4.is_file():
         print(f"ERROR: source mp4 not found: {args.source_mp4}", file=sys.stderr)
+        return 2
+    if args.first_live_evidence_dir is not None and not (
+        args.first_live_evidence_dir.is_dir() or args.first_live_evidence_dir.is_file()
+    ):
+        print(
+            f"ERROR: first-live evidence path missing: {args.first_live_evidence_dir}",
+            file=sys.stderr,
+        )
         return 2
 
     fixture_revision = None
@@ -76,9 +144,13 @@ def main(argv: list[str] | None = None) -> int:
     if args.fixture_verifier and args.fixture_verifier.is_file():
         fixture_verifier = json.loads(args.fixture_verifier.read_text(encoding="utf-8"))
 
-    # Default out timestamp if user passed a parent pattern — keep exact path.
     out_dir = args.out_dir
     out_dir.mkdir(parents=True, exist_ok=True)
+
+    skip_vlm, enable_real, mode_notes = resolve_cli_mode(args)
+    (out_dir / "cli_mode_resolution.json").write_text(
+        json.dumps(mode_notes, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
 
     inp = StoryE2EInputs(
         match_json=args.match_json.resolve(),
@@ -94,18 +166,23 @@ def main(argv: list[str] | None = None) -> int:
         match_id=args.match_id,
         algo_root=args.algo_root.resolve() if args.algo_root else None,
         run_fresh_v3r=bool(args.run_fresh_v3r),
-        skip_vlm=True if args.offline or not args.enable_real_api else False,
-        enable_real_api=bool(args.enable_real_api),
+        skip_vlm=bool(skip_vlm),
+        enable_real_api=bool(enable_real),
         i_approve_budget=bool(args.i_approve_budget),
         force_render_initial=bool(args.force_render_initial),
         force_render_candidate=bool(args.force_render_candidate),
         smoke_render=not bool(args.no_smoke_render),
         fixture_revision=fixture_revision,
         fixture_verifier=fixture_verifier,
+        first_live_evidence_dir=(
+            args.first_live_evidence_dir.resolve() if args.first_live_evidence_dir else None
+        ),
+        build_local_first_live_evidence=bool(args.build_local_first_live_evidence),
         max_rounds=int(args.max_rounds),
         max_calls=int(args.max_calls),
         max_cost_usd=float(args.max_cost_usd),
         max_retries=0,
+        phase8_paid_multi_round=bool(args.phase8_paid_multi_round),
     )
     t0 = time.time()
     audit = run_story_e2e(inp)
@@ -126,6 +203,8 @@ def main(argv: list[str] | None = None) -> int:
                 "http_calls": audit.get("http_calls"),
                 "est_cost_usd": audit.get("est_cost_usd"),
                 "final_mp4": delivery.get("final_mp4"),
+                "cli_mode": mode_notes,
+                "phase8_paid_multi_round": bool(args.phase8_paid_multi_round),
                 "error": audit.get("error"),
             },
             ensure_ascii=False,

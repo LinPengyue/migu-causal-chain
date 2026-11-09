@@ -410,7 +410,12 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             "skip_vlm": inp.skip_vlm,
             "enable_real_api": inp.enable_real_api,
             "i_approve_budget": inp.i_approve_budget,
+            "phase8_paid_multi_round": bool(inp.phase8_paid_multi_round),
+            "first_live_evidence_dir": (
+                str(inp.first_live_evidence_dir) if inp.first_live_evidence_dir else None
+            ),
             "run_fresh_v3r": inp.run_fresh_v3r,
+            "max_rounds": inp.max_rounds,
             "max_calls": inp.max_calls,
             "max_cost_usd": inp.max_cost_usd,
         },
