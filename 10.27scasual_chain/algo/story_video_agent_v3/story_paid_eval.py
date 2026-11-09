@@ -389,6 +389,7 @@ def run_llm_revision_planner(
     protected_goal_ids: Sequence[str],
     audit_dir: Path,
     feedback_context: Optional[Mapping[str, Any]] = None,
+    search_results: Optional[Mapping[str, Any]] = None,
 ) -> Dict[str, Any]:
     fb = None
     if feedback_context:
@@ -424,6 +425,26 @@ def run_llm_revision_planner(
         },
         "protected_goal_segment_ids": list(protected_goal_ids),
         "phase8_feedback_context": fb,
+        # The text Planner was previously blind to Search candidates. It must
+        # see bounded source/issue/anchor options and whether triplet video
+        # evidence actually supports story gain. Event heat is not quality.
+        "search_candidates": [
+            {
+                "candidate_id": c.get("candidate_id"),
+                "issue_id": c.get("issue_id"),
+                "event_type": c.get("event_type"),
+                "source_pts_start": c.get("source_pts_start"),
+                "source_pts_end": c.get("source_pts_end"),
+                "insert_after_segment_id": c.get("insert_after_segment_id"),
+                "before_segment_id": c.get("before_segment_id"),
+                "first_live_status": c.get("first_live_status"),
+                "narrative_fit_status": c.get("narrative_fit_status"),
+                "narrative_fit": c.get("narrative_fit"),
+                "narrative_context": c.get("narrative_context"),
+            }
+            for c in ((search_results or {}).get("verified_candidates") or [])[:8]
+            if isinstance(c, Mapping)
+        ],
         "constraints": {
             "no_replay": True,
             "no_invented_timestamps": True,
@@ -431,6 +452,9 @@ def run_llm_revision_planner(
             "prefer_unresolved_over_guess": True,
             "do_not_repeat_same_pts_action_without_new_evidence": True,
             "do_not_force_insert_when_no_narrative_live": True,
+            "first_live_is_not_narrative_fit": True,
+            "never_insert_for_source_time_gap_alone": True,
+            "require_review_supported_triplet_for_search_add": True,
         },
     }
     user = (
@@ -442,6 +466,11 @@ def run_llm_revision_planner(
         "anchor_id?, search_windows?). "
         "If VLM did not confirm a structural needs_video_verify issue, use UNRESOLVED "
         "or keep — do not invent edits. "
+        "Do NOT propose search_add unless a candidate shows FIRST_LIVE_VERIFIED "
+        "AND narrative_fit_status=REVIEW_SUPPORTED. A source-time jump is normal "
+        "highlight compression. If no candidate has video-backed story improvement, "
+        "use KEEP when the existing cut is understandable, otherwise UNRESOLVED. "
+        "Never invent a narrative-fit review, source PTS, or candidate anchor. "
         "If phase8_feedback_context lists prior tried source_pts/actions, choose a "
         "DIFFERENT evidence-backed edit or UNRESOLVED; never treat unverified REJECT "
         "as a permanent negative sample."
