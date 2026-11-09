@@ -165,7 +165,8 @@ def structural_diagnosis(
             )
         )
 
-    # Abrupt media jumps between adjacent story beats (structure signal only).
+    # Large source-time jumps are ordinary highlight editing. They are observations
+    # for targeted video review, not evidence that a narrative bridge is missing.
     for a, b in zip(media_segs, media_segs[1:]):
         gap = float(b["media_in"]) - float(a["media_out"])
         if gap > 1200.0:  # >20 min source jump between adjacent cuts
@@ -179,14 +180,20 @@ def structural_diagnosis(
                         f"({a['media_out']} → {b['media_in']}) while contiguous on story timeline."
                     ),
                     narrative_problem=(
-                        "Possible abrupt narrative transition; continuity and emotional bridging "
-                        "need video verification."
+                        "Source-time compression alone is not a story defect. Only propose "
+                        "an insert if video shows specific omitted causal, emotional, or "
+                        "game-state information necessary to understand the next beat."
                     ),
-                    severity="minor",
-                    suggested_fix="verify_transition_or_insert_bridge",
+                    severity="info",
+                    suggested_fix="verify_story_state_before_and_after;keep_if_coherent",
                     evidence_sufficiency="needs_video_verify",
                     category="transition",
                 )
+            )
+            issues[-1]["temporal_discontinuity_only"] = True
+            issues[-1]["source_gap_sec"] = round(gap, 3)
+            issues[-1]["required_missing_information_evidence"] = (
+                "specific_unexplained_story_state_change_observed_in_both_adjacent_cuts"
             )
 
     # Scoreboard-only aftermath after last goal action: structure flag for ending completeness.
