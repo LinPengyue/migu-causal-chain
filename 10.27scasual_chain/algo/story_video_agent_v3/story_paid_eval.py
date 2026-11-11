@@ -595,6 +595,7 @@ def run_llm_verifier(
                     "ok", "provider_mode", "error", "semantic_verification_status",
                     "ok_for_semantic_accept", "sent_frame_ids", "cited_sent_frame_ids",
                     "reasons", "est_cost_usd", "usage", "vision_backed", "validated",
+                    "fullcut_semantic_screen",
                 )
             },
             ensure_ascii=False,
