@@ -160,12 +160,6 @@ def prioritize_confirmed_edits(
     _structure_intents; feedback never makes an unconfirmed action executable.
     """
     records = list((feedback_context or {}).get("records") or [])
-    recent_no_gain = any(
-        str(r.get("screen_status") or "").upper() == "SCREENED_NO_GAIN"
-        and r.get("alternative_edit_priority") == "CONFIRMED_NON_ADDITIVE"
-        and str(r.get("source_kind") or "").upper() == "REAL_VLM"
-        for r in records[-12:]
-    )
     structural = [
         dict(x) for x in structure_intents
         if str(x.get("action") or "") in ("drop", "reorder", "trim")
@@ -174,6 +168,38 @@ def prioritize_confirmed_edits(
         dict(x) for x in insert_intents
         if str(x.get("action") or "") in ("search_add", "replace")
     ]
+    current_issues = {
+        str(it.get("issue_id") or "") for it in structural + additions
+        if it.get("issue_id")
+    }
+    current_anchors = {
+        str(anchor)
+        for it in structural + additions
+        for anchor in (
+            it.get("insert_after_segment_id"),
+            it.get("before_segment_id"),
+            it.get("target_segment_id"),
+        ) if anchor
+    }
+    # Historical no-gain evidence is contextual. A failure on a different
+    # story issue (or an unrelated anchor) must not control this edit choice.
+    def same_issue_context(row: Mapping[str, Any]) -> bool:
+        if str(row.get("issue_id") or "") in current_issues:
+            return True
+        previous = {
+            str(v) for v in (
+                (row.get("issue_signature") or {}).get("anchor_segment_ids") or []
+            ) if v
+        }
+        return bool(previous and current_anchors and
+                    previous.intersection(current_anchors))
+    recent_no_gain = any(
+        str(r.get("screen_status") or "").upper() == "SCREENED_NO_GAIN"
+        and r.get("alternative_edit_priority") == "CONFIRMED_NON_ADDITIVE"
+        and str(r.get("source_kind") or "").upper() == "REAL_VLM"
+        and same_issue_context(r)
+        for r in records[-12:]
+    )
     # Non-additive fixes are preferable by default when actually established,
     # even without past failure; do not make several confounded edits at once.
     ranked = structural + additions
