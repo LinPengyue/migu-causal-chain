@@ -390,3 +390,60 @@ def enforce_confirmed_nonadditive_edits(
         output["decision"] = "UNRESOLVED"
         output["normalize_note"] = "nonadditive_apply_gate_blocked_all_mutations"
     return output
+
+
+def enforce_one_edit_per_round(plan: Mapping[str, Any]) -> Dict[str, Any]:
+    """Post-LLM single-change guard, preserving precise deferred alternatives.
+
+    Without this, a real LLM can overwrite the rule Planner's one-edit proposal
+    with several confounded changes and defeat causal A/B attribution.
+    """
+    out = dict(plan)
+    intents = [
+        dict(i) for i in (out.get("revision_intents") or [])
+        if isinstance(i, Mapping)
+    ]
+    mut_actions = {"drop", "reorder", "trim", "search_add", "replace"}
+    candidates = [
+        (idx, i) for idx, i in enumerate(intents)
+        if str(i.get("action") or "") in mut_actions
+    ]
+    if len(candidates) <= 1:
+        out["one_edit_apply_gate"] = {
+            "required": True,
+            "selected_intent_id": candidates[0][1].get("intent_id") if candidates else None,
+            "deferred_intents": [],
+            "n_deferred": 0,
+        }
+        return out
+    order = {"drop": 0, "trim": 1, "reorder": 2, "search_add": 3, "replace": 4}
+    winner_index, winner = sorted(
+        candidates,
+        key=lambda pair: (order.get(str(pair[1].get("action")), 99), pair[0]),
+    )[0]
+    deferred = []
+    for idx, item in candidates:
+        if idx == winner_index:
+            continue
+        deferred.append({
+            "intent_id": item.get("intent_id"),
+            "issue_id": item.get("issue_id"),
+            "original_action": item.get("action"),
+            "target_segment_id": item.get("target_segment_id"),
+            "bound_source_window": item.get("bound_source_window"),
+        })
+        intents[idx] = {
+            **item,
+            "action": "mark_unresolved",
+            "blocked_original_action": item.get("action"),
+            "block_reason": "deferred_one_edit_per_round_for_causal_attribution",
+        }
+    out["revision_intents"] = intents
+    out["one_edit_apply_gate"] = {
+        "required": True,
+        "selected_intent_id": winner.get("intent_id"),
+        "selected_action": winner.get("action"),
+        "deferred_intents": deferred,
+        "n_deferred": len(deferred),
+    }
+    return out
