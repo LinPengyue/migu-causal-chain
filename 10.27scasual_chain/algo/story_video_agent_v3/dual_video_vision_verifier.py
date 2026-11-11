@@ -64,7 +64,9 @@ def extract_aligned_dual_frames(
     base_tl = build_story_timeline(baseline_edl)
     cand_tl = build_story_timeline(candidate_edl)
     delta = edl_diff([dict(r) for r in baseline_edl], [dict(r) for r in candidate_edl])
-    plan = aligned_narrative_sample_plan(
+    from .story_fullcut_sampling import fullcut_edit_context_sample_plan
+
+    plan = fullcut_edit_context_sample_plan(
         base_tl,
         cand_tl,
         changed_segment_ids=_changed_segment_ids(delta),
@@ -169,10 +171,13 @@ def extract_aligned_dual_frames(
         "candidate_timeline": cand_tl,
         "edl_delta": delta,
         "claims_full_video_watch": False,
-        "observation_method": "aligned_narrative_dual_frame_pairs",
+        "observation_method": "fullcut_edit_context_sampled_dual_frames",
+        "sampling_slots": [p.get("narrative_slot") for p in plan[:max_pairs]],
         "note": (
-            "Frames are story-slot aligned (opening/development/turn/climax/ending/"
-            "edit boundaries), not absolute-second twins. Sparse frames ≠ full watch."
+            "Before/edit/after and where possible eventual ending are sampled "
+            "from TWO finished cuts. An insert's baseline counterpart is its "
+            "unedited cut boundary, not the same event. Sparse stills cannot "
+            "exclude other full-cut regressions or assess audio continuity."
         ),
     }
 
@@ -477,6 +482,13 @@ def run_dual_video_vision_verifier(
     prompt = (
         f"{SYSTEM_VERIFIER}\n"
         "Compare BASELINE vs CANDIDATE using ONLY provided frames (NOT full-video watch).\n"
+        "EDIT_IMPACT is the added/changed segment in CANDIDATE; its BASELINE "
+        "counterpart may be the former cut boundary, NOT the same play. "
+        "PRE_EDIT and POST_EDIT are matched, shared original story segments. "
+        "GLOBAL_ENDING is a check of eventual payoff, not full coverage. "
+        "If these evidence slots are missing, mark semantic gains UNCERTAIN.\n"
+        "Do not reward added run time, emotional heat, or extra shots without "
+        "new story information that improves understanding of the next beat.\n"
         "Reply with SHORT JSON only. Keep per_revision_judgments ≤4 items; "
         "observed_visuals ≤1 short sentence; notes ≤12 words.\n"
         f"Primary schema: {SHORT_PER_REVISION_JSON_SCHEMA}\n"
