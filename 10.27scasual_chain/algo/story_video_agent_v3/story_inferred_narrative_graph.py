@@ -491,8 +491,13 @@ def graph_planner_context(graph: Mapping[str, Any], *, max_nodes: int = 18) -> D
             "model_reviewed_transitions"
         ),
         "graph_edges_are_causal_facts": False,
+        "short_chain_refs_are_verified": False,
+        "event_refs_are_verified": False,
         "instructions": (
             "Use only as inferred narrative state and observation priorities. "
+            "An embedded causal:pred_*:atom_fill_* pointer has been separated into "
+            "an UNVERIFIED predicted-chain reference and an UNVERIFIED atom pointer; "
+            "neither proves the 18-class short causal chain was correct. "
             "Adjacency and role labels do not prove causal links, missing footage "
             "or edit necessity. Cite independently confirmed issues for mutations."
         ),
