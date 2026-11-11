@@ -32,11 +32,17 @@ def fullcut_edit_context_sample_plan(
     c = list(candidate_timeline.get("segments") or [])
     bm = {str(s.get("segment_id")): s for s in b}
     cm = {str(s.get("segment_id")): s for s in c}
-    changed = {str(x) for x in changed_segment_ids}
-    focus_index: Optional[int] = next(
-        (i for i, s in enumerate(c) if str(s.get("segment_id")) in changed),
+    # Preserve ordered change priority: caller lists newly ADDED segments
+    # before incidental modified fields on older rows. Do not collapse to a
+    # set and accidentally sample a metadata-only edit before the true insert.
+    focus_id = next(
+        (str(sid) for sid in changed_segment_ids if str(sid) in cm),
         None,
     )
+    focus_index: Optional[int] = next(
+        (i for i, s in enumerate(c) if str(s.get("segment_id")) == focus_id),
+        None,
+    ) if focus_id is not None else None
     if max_slots < 1 or focus_index is None:
         return aligned_narrative_sample_plan(
             baseline_timeline, candidate_timeline,
