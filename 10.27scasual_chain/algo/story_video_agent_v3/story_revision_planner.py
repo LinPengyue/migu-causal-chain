@@ -433,6 +433,7 @@ def plan_from_diagnosis(
     budget: Optional[Mapping[str, Any]] = None,
     require_narrative_fit: bool = False,
     keep_unconfirmed_temporal_gap: bool = False,
+    use_fullcut_learning: bool = False,
 ) -> Dict[str, Any]:
     """Produce story-level revision plan with explicit decision.
 
@@ -514,7 +515,17 @@ def plan_from_diagnosis(
     major_struct = [
         i
         for i in issues
-        if i.get("severity") in ("critical", "major")
+        if (
+            i.get("severity") in ("critical", "major")
+            or (
+                use_fullcut_learning
+                and i.get("category") == "redundancy"
+                and i.get("severity") == "minor"
+                and i.get("preferred_drop_segment_id")
+                and i.get("evidence_frame_refs")
+                and str(i.get("evidence_tier") or "") == "DEFECT_CONFIRMED"
+            )
+        )
         and _issue_confirmed_for_mutate(i)
         and i.get("category") in (
             "replay_risk", "redundancy", "narrative_order", "narrative_causality",
@@ -541,6 +552,7 @@ def plan_from_diagnosis(
     intents: List[Dict[str, Any]] = []
     decision = "KEEP"
     rationale_parts: List[str] = []
+    fullcut_edit_selection: Optional[Dict[str, Any]] = None
 
     if input_blockers:
         decision = "UNRESOLVED"
@@ -617,14 +629,29 @@ def plan_from_diagnosis(
 
         if search_intents or struct_exec:
             decision = "REVISE"
-            intents.extend(search_intents)
-            intents.extend(struct_exec)
-            if search_intents:
-                rationale_parts.append(
-                    "confirmed_defect_plus_first_live_verified_search_candidates"
+            if use_fullcut_learning:
+                from .story_fullcut_learning import prioritize_confirmed_edits
+
+                fullcut_edit_selection = prioritize_confirmed_edits(
+                    structure_intents=struct_exec,
+                    insert_intents=search_intents,
+                    feedback_context=feedback_context,
+                    max_mutations=1,
                 )
-            if struct_exec:
-                rationale_parts.append("confirmed_structure_executable_repairs")
+                intents.extend(fullcut_edit_selection["selected"])
+                rationale_parts.append(str(fullcut_edit_selection["reason"]))
+                if fullcut_edit_selection["deferred"]:
+                    rationale_parts.append("other_edits_deferred_until_single_edit_verified")
+            else:
+                # Legacy offline-fixture behavior: retain test-controlled multiple edits.
+                intents.extend(search_intents)
+                intents.extend(struct_exec)
+                if search_intents:
+                    rationale_parts.append(
+                        "confirmed_defect_plus_first_live_verified_search_candidates"
+                    )
+                if struct_exec:
+                    rationale_parts.append("confirmed_structure_executable_repairs")
         elif critical_struct and not search_ok:
             decision = "REVISE"
             rationale_parts.append("critical_confirmed_structure_defects")
@@ -784,6 +811,8 @@ def plan_from_diagnosis(
         "protected_goal_segment_ids": protect,
         "revision_intents": intents,
         "feedback_context": feedback_summary,
+        "fullcut_learning_enabled": use_fullcut_learning,
+        "fullcut_edit_selection": fullcut_edit_selection,
         "budget": dict(budget or {}),
         "phase6_rules": {
             "no_auto_add_on_large_source_gap_alone": True,
@@ -791,6 +820,7 @@ def plan_from_diagnosis(
             "require_confirmed_defect_for_search_add": True,
             "require_narrative_fit_triplet_before_insert": require_narrative_fit,
             "temporal_jump_alone_can_be_kept": keep_unconfirmed_temporal_gap,
+            "one_confirmed_edit_per_round": use_fullcut_learning,
             "hypothesis_status": "HYPOTHESIS_NEEDS_VIDEO",
         },
         "phase8_rules": {
