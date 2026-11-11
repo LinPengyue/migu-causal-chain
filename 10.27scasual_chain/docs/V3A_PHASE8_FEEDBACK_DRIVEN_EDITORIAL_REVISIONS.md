@@ -64,6 +64,22 @@ PYTHONPATH=algo python -m pytest tests/test_v3a_phase8_*.py -q
 
 No real HTTP, no merge, no overwriting earlier verified worktrees. Report actual pass/fail/skip, failed tracebacks and branch HEAD; push result JSON for review. Success means new code mechanisms execute, **not** that story quality increased.
 
+### Server verification (`b13da6f`)
+
+Worktree: `/data2/lpy1/worktrees/migu-v3a-editorial-redundancy-verify`  
+Report JSON: `docs/V3A_PHASE8_FEEDBACK_EDITORIAL_SERVER_VERIFY_b13da6f.json`
+
+| Check | Result |
+|-------|--------|
+| `compileall algo/story_video_agent_v3` | exit 0 |
+| `tests/test_v3a_phase8_editorial_redundancy.py` + `test_v3a_phase8_fullcut_learning.py` | **20 passed / 0 failed / 0 skipped** |
+| `tests/test_v3a_phase8_*.py` | **129 passed / 0 failed / 0 skipped** |
+| Paid HTTP / VLM | **0** |
+| Algo edits in verify turn | none |
+| Merge to main | not done |
+
+Mechanism regression is green. Real full-cut story gain remains **UNVERIFIED**. Untouched V3-R remains the retained best baseline.
+
 ## Next evidence step
 
 Once source-level tests pass, use one held-out match + a new narrative template and a real baseline/candidate complete-cut comparison. Count: correctly discovered redundancies, non-goal cut precision, intact first-live/goal anchors, before→after information difference, narrative pace and human preference. Do not claim cross-match generalization from the two existing matches alone.

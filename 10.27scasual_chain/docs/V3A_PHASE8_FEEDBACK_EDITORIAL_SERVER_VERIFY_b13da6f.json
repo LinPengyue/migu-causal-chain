@@ -1,0 +1,38 @@
+{
+  "schema": "v3a_phase8_feedback_editorial_zero_paid_verify_v1",
+  "generated": "2026-11-11T14:58:37.449474+00:00",
+  "worktree": "/data2/lpy1/worktrees/migu-v3a-editorial-redundancy-verify",
+  "branch": "story-va-v3a-full-chain-audit-fixes",
+  "local_branch": "story-va-v3a-full-chain-audit-fixes-editorial-verify",
+  "code_sha": "b13da6f47f2b7dccc2fa57ec9de47cf910658291",
+  "compileall": {
+    "target": "algo/story_video_agent_v3",
+    "exit_code": 0
+  },
+  "pytest_editorial_and_learning": {
+    "command": "PYTHONPATH=algo python -m pytest tests/test_v3a_phase8_editorial_redundancy.py tests/test_v3a_phase8_fullcut_learning.py -q",
+    "passed": 20,
+    "failed": 0,
+    "skipped": 0,
+    "exit_code": 0
+  },
+  "pytest_full_phase8": {
+    "command": "PYTHONPATH=algo python -m pytest tests/test_v3a_phase8_*.py -q",
+    "passed": 129,
+    "failed": 0,
+    "skipped": 0,
+    "exit_code": 0
+  },
+  "paid_http": 0,
+  "delivery_authorized": false,
+  "story_quality_improved": "UNVERIFIED",
+  "best_baseline": "V3-R",
+  "published_for_cross_platform_review": true,
+  "implementation_doc": "docs/V3A_PHASE8_FEEDBACK_DRIVEN_EDITORIAL_REVISIONS.md",
+  "notes": [
+    "No algorithm edits in this verification turn.",
+    "No paid VLM run.",
+    "Did not merge main.",
+    "Non-additive drop/reorder/trim candidates are mechanism-tested only; real full-cut gain still requires video evidence."
+  ]
+}
