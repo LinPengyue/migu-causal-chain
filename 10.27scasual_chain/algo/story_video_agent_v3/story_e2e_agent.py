@@ -1205,6 +1205,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
 
             rev = enforce_confirmed_nonadditive_edits(
                 rev, diagnosis=diag, edl=working_edl,
+                feedback_context=fb_ctx,
             )
             # Adding/replacing source footage additionally requires independent
             # first-live and BEFORE→CANDIDATE→AFTER narrative evidence.
