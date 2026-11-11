@@ -276,6 +276,14 @@ def run_vlm_story_critic(
         }
         for i in (diagnosis.get("issues") or [])[:6]
     ]
+    # P10-B: expose only Agent-inferred long-range story structure; no gold.
+    graph_prompt = None
+    if isinstance(diagnosis.get("agent_narrative_graph"), Mapping):
+        from .story_inferred_narrative_graph import graph_planner_context
+        try:
+            graph_prompt = graph_planner_context(diagnosis["agent_narrative_graph"])
+        except ValueError:
+            graph_prompt = None
     prompt = (
         f"{SYSTEM_CRITIC}\n"
         "You see ORDERED still frames from the finished story cut (NOT full native video).\n"
@@ -308,6 +316,10 @@ def run_vlm_story_critic(
         f"HYPOTHESES:{json.dumps(issues_brief, ensure_ascii=False)}\n"
         f"FRAME_IDS:{json.dumps(fids, ensure_ascii=False)}\n"
         f"FRAME_TO_EDL:{json.dumps([{'frame_id': x['frame_id'], 'segment_id': x.get('segment_id')} for x in editorial_frame_bindings], ensure_ascii=False)}\n"
+        f"AGENT_NARRATIVE_GRAPH_HINTS:{json.dumps(graph_prompt, ensure_ascii=False)}\n"
+        "Graph hints identify where to LOOK for missing or repeated narrative "
+        "information, never evidence of a defect by themselves. Observe supplied "
+        "frames and report concrete match-state transitions, not assumed causal claims.\n"
     )
     mock = {"semantic_evidence": [], "keep_story_if_no_defect": True, "confidence": 0}
     try:
@@ -476,7 +488,15 @@ def run_llm_revision_planner(
             0 if i.get("severity") in ("major", "critical") else 1,
         ),
     )
+    graph_for_planner = None
+    if isinstance(diagnosis.get("agent_narrative_graph"), Mapping):
+        from .story_inferred_narrative_graph import graph_planner_context
+        try:
+            graph_for_planner = graph_planner_context(diagnosis["agent_narrative_graph"])
+        except ValueError:
+            graph_for_planner = None
     payload = {
+        "agent_inferred_narrative_graph": graph_for_planner,
         "issues": prioritized_issues[:12],
         "edl_segment_refs": [
             {"segment_id": x.get("segment_id"), "role": x.get("role")}
@@ -541,6 +561,9 @@ def run_llm_revision_planner(
         "in coherence/pacing. Only cite existing segment IDs in EDL_SEGMENT_REFS "
         "and only use issue_id from supplied diagnosis. "
         "Do NOT invent drop targets, source PTS, trim bounds, or confirmation status. "
+        "The Agent narrative graph is a STRUCTURAL HYPOTHESIS of long-range "
+        "state and role relationships; use it to reason about what needs to be "
+        "observed next, not as an authenticated causal fact or confirmed defect. "
         "An unconfirmed semantic hypothesis is not an executable edit. "
         "Do NOT propose search_add unless a candidate shows FIRST_LIVE_VERIFIED "
         "AND narrative_fit_status=REVIEW_SUPPORTED. A source-time jump is normal "
