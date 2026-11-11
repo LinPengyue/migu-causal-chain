@@ -110,6 +110,14 @@ class TestAgentInferredStoryGraph(unittest.TestCase):
                             for x in graph["evidence_links"]))
         self.assertFalse(graph_planner_context(graph)["graph_edges_are_causal_facts"])
 
+    def test_legacy_duplicate_segment_ids_degrade_graph_not_e2e(self):
+        edl = _edl()
+        edl[1]["segment_id"] = edl[0]["segment_id"]
+        graph = build_inferred_narrative_graph(edl=edl, story_plan={})
+        self.assertEqual(graph["degraded_reason"], "duplicate_active_segment_ids")
+        self.assertEqual(graph["summary"]["node_count"], 0)
+        self.assertEqual(graph_observation_targets(graph), [])
+
     def test_graph_bound_to_source_and_exact_edl_version(self):
         first = _graph()
         second_edl = _edl()
