@@ -1588,6 +1588,28 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             verdict_provenance=verdict_provenance,
             hard_safety_extra=hard_safety_extra,
         )
+        # Full-cut comparison: measured duration/EDL cost, no invented quality.
+        # Keep separate from the existing safety and semantic verifier.
+        from .story_fullcut_delta import compare_fullcut_edls
+        fullcut_delta = compare_fullcut_edls(
+            working_edl, candidate_edl,
+        )
+        fullcut_delta["baseline_mp4_path"] = (
+            str(working_mp4) if working_mp4 else None
+        )
+        fullcut_delta["candidate_mp4_path"] = (
+            str(candidate_mp4) if candidate_mp4 else None
+        )
+        fullcut_delta["baseline_mp4_exists"] = bool(
+            working_mp4 and Path(working_mp4).is_file()
+        )
+        fullcut_delta["candidate_mp4_exists"] = bool(
+            candidate_mp4 and Path(candidate_mp4).is_file()
+        )
+        write_json(round_dir / "fullcut_delta_report.json", fullcut_delta)
+        round_rec["fullcut_delta_report"] = str(
+            round_dir / "fullcut_delta_report.json"
+        )
         write_json(round_dir / "verifier_report.json", vfix)
         round_rec["verdict_provenance"] = verdict_provenance
         gates["semantic_verification_passed"] = (
