@@ -194,6 +194,52 @@ def build_inferred_narrative_graph(
     return graph
 
 
+def rebase_narrative_graph(
+    current: Mapping[str, Any],
+    previous: Optional[Mapping[str, Any]],
+) -> Dict[str, Any]:
+    """Carry cited review state only for *identical* EDL, plan and video.
+
+    A candidate re-edit always reconstructs the graph. Historical evidence is
+    never transplanted to a different cut, even if segment IDs are recycled.
+    """
+    out = json.loads(json.dumps(current, ensure_ascii=False))
+    if (
+        not previous
+        or current.get("schema") != GRAPH_SCHEMA
+        or previous.get("schema") != GRAPH_SCHEMA
+        or current.get("data_role") != GRAPH_ROLE
+        or previous.get("data_role") != GRAPH_ROLE
+        or not current.get("source_sha256")
+        or any(current.get(key) != previous.get(key) for key in (
+            "source_sha256", "edl_sha256", "story_plan_sha256",
+        ))
+    ):
+        out["prior_graph_reused"] = False
+        return out
+    old = {
+        e.get("edge_id"): e
+        for e in previous.get("edges") or []
+        if isinstance(e, Mapping) and e.get("edge_id")
+    }
+    n = 0
+    for edge in out.get("edges") or []:
+        past = old.get(edge.get("edge_id"))
+        if not past or past.get("narrative_evidence_status") != "MODEL_REVIEWED_NOT_HUMAN_VERIFIED":
+            continue
+        edge["narrative_evidence_status"] = past["narrative_evidence_status"]
+        edge["semantic_evidence"] = list(past.get("semantic_evidence") or [])
+        n += 1
+    out["summary"]["model_reviewed_transitions"] = n
+    out["summary"]["unreviewed_narrative_transitions"] = sum(
+        1 for e in out.get("edges") or []
+        if e.get("narrative_transition_hypothesis")
+        and e.get("narrative_evidence_status") == "NOT_REVIEWED"
+    )
+    out["prior_graph_reused"] = True
+    return out
+
+
 def graph_observation_targets(
     graph: Mapping[str, Any],
     *,
@@ -206,6 +252,8 @@ def graph_observation_targets(
     scored = []
     for edge in graph.get("edges") or []:
         if not isinstance(edge, Mapping) or not edge.get("narrative_transition_hypothesis"):
+            continue
+        if edge.get("narrative_evidence_status") == "MODEL_REVIEWED_NOT_HUMAN_VERIFIED":
             continue
         a, b = nodes.get(edge.get("from_node")), nodes.get(edge.get("to_node"))
         if not a or not b:
@@ -296,6 +344,11 @@ def attach_validated_video_review(
     out["summary"]["model_reviewed_transitions"] = sum(
         1 for e in out.get("edges") or []
         if e.get("narrative_evidence_status") == "MODEL_REVIEWED_NOT_HUMAN_VERIFIED"
+    )
+    out["summary"]["unreviewed_narrative_transitions"] = sum(
+        1 for e in out.get("edges") or []
+        if e.get("narrative_transition_hypothesis")
+        and e.get("narrative_evidence_status") == "NOT_REVIEWED"
     )
     return out
 
