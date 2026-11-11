@@ -384,6 +384,12 @@ def evaluate_round_transition(
             and str(v.get("issue_effect") or "").upper() == "RESOLVED"
             and str(v.get("global_regression") or "").upper() == "NO"
             and sk == "REAL_VLM"
+            # Optional production guard: a model sampling sparse story
+            # frames cannot self-authorize full-cut BEST promotion.
+            and (
+                not v.get("require_fullcut_semantic_gate")
+                or v.get("fullcut_gate_promote") is True
+            )
         )
         if can_promote:
             return _out(
