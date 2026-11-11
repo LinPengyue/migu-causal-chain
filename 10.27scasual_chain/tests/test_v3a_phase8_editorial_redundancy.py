@@ -6,6 +6,7 @@ accuracy or story comprehension.
 from __future__ import annotations
 
 import hashlib
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -19,6 +20,8 @@ from story_video_agent_v3.story_fullcut_learning import (
 from story_video_agent_v3.story_revision_planner import plan_from_diagnosis
 from story_video_agent_v3.self_revise_agent import apply_candidate_revision
 from story_video_agent_v3.story_timeline import build_story_timeline
+from story_video_agent_v3.story_paid_eval import run_vlm_story_critic
+from story_video_agent_v3.global_story_critic import merge_observation_into_diagnosis
 
 
 def _edl():
@@ -98,6 +101,100 @@ class TestEditorialRedundancy(unittest.TestCase):
                 a.get("action") == "drop" and a.get("status") == "applied"
                 for a in applied.get("applied") or []
             ))
+
+    def test_fake_real_provider_to_critic_to_planner_to_edl_zero_http(self):
+        class FakeProvider:
+            def __init__(self):
+                self.calls = 0
+            def vision_json(self, *, prompt, frame_paths, frame_ids,
+                            mock_obj, frame_bindings):
+                self.calls += 1
+                assert "FRAME_TO_EDL:" in prompt
+                assert len(frame_paths) == 3
+                assert {x["frame_id"] for x in frame_bindings} == {
+                    "sent_setup", "sent_repeat", "sent_goal"
+                }
+                return {
+                    "provider_mode": "openai_compatible",
+                    "content": json.dumps({
+                        "semantic_evidence": [],
+                        "redundancy_claims": [{
+                            "target_segment_id": "repeat",
+                            "comparison_segment_id": "setup",
+                            "observed_fact": (
+                                "The two segments show the same visible setup story state"
+                            ),
+                            "why_redundant": (
+                                "The repeated buildup does not add distinct narrative state"
+                            ),
+                            "evidence_refs": [
+                                {"frame_id": "sent_setup", "note": "initial setup"},
+                                {"frame_id": "sent_repeat", "note": "repeat setup"},
+                            ],
+                        }],
+                    }),
+                    "finish_reason": "stop",
+                    "usage": {"total_tokens": 100},
+                }
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            pack = []
+            for name, sec in (
+                ("sent_setup", 4.0),
+                ("sent_repeat", 11.0),
+                ("sent_goal", 19.0),
+            ):
+                path = root / (name + ".jpg")
+                path.write_bytes(name.encode("ascii"))
+                pack.append({
+                    "frame_id": name, "story_sec": sec,
+                    "path": str(path), "actual_media_sec": sec,
+                })
+            diagnosis = {
+                "issues": [],
+                "timeline": build_story_timeline(_edl()),
+                "protected_goal_segment_ids": ["goal"],
+            }
+            api = FakeProvider()
+            result = run_vlm_story_critic(
+                api, observations={}, diagnosis=diagnosis,
+                audit_dir=root / "critic", extra_frames=pack,
+            )
+            self.assertEqual(api.calls, 1)
+            self.assertTrue(result["ok"])
+            self.assertEqual(
+                len(result["editorial_redundancy_candidates"]["issues"]), 1
+            )
+            merged = merge_observation_into_diagnosis(
+                diagnosis, {
+                    "derived_issues": result["derived_issues"],
+                    "semantic_evidence": result["semantic_evidence"],
+                    "semantic_provider_used": True,
+                    "fixture_or_offline": False,
+                },
+            )
+            proposed = next(
+                i for i in merged["issues"]
+                if i.get("category") == "redundancy"
+            )
+            self.assertTrue(proposed["story_defect_confirmed"])
+            plan = plan_from_diagnosis(
+                merged, use_fullcut_learning=True,
+                require_narrative_fit=True,
+            )
+            self.assertEqual(plan["decision"], "REVISE")
+            self.assertEqual(plan["revision_intents"][0]["action"], "drop")
+            approved = enforce_confirmed_nonadditive_edits(
+                plan, diagnosis=merged, edl=_edl(),
+            )
+            candidate_edl, report = apply_candidate_revision(
+                _edl(), approved["revision_intents"], observations=[],
+            )
+            self.assertFalse(candidate_edl[1]["include_in_cut"])
+            self.assertTrue(candidate_edl[2]["include_in_cut"])
+            self.assertTrue(
+                any(a.get("status") == "applied" for a in report["applied"])
+            )
 
     def test_citing_only_one_segment_does_not_confirm_redundancy(self):
         with tempfile.TemporaryDirectory() as td:
