@@ -266,6 +266,7 @@ def enforce_confirmed_nonadditive_edits(
     *,
     diagnosis: Mapping[str, Any],
     edl: Sequence[Mapping[str, Any]],
+    feedback_context: Optional[Mapping[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Post-LLM safety for deletion/reordering of *existing* story footage.
 
@@ -282,6 +283,23 @@ def enforce_confirmed_nonadditive_edits(
     protected = {
         str(x) for x in diagnosis.get("protected_goal_segment_ids") or []
     }
+    failed_existing = [
+        r for r in ((feedback_context or {}).get("records") or [])
+        if isinstance(r, Mapping)
+        and r.get("screen_status") == "SCREENED_NO_GAIN"
+        and r.get("source_kind") == "REAL_VLM"
+        and str(r.get("action") or "") in ("drop", "reorder", "trim")
+    ]
+
+    def already_failed_same_target(it: Mapping[str, Any]) -> bool:
+        return any(
+            str(r.get("action") or "") == str(it.get("action") or "")
+            and str(r.get("target_segment_id") or "")
+                == str(it.get("target_segment_id") or "")
+            and str(r.get("issue_id") or "") == str(it.get("issue_id") or "")
+            for r in failed_existing[-12:]
+        )
+
     def essential(sid: str) -> bool:
         r = rows.get(sid) or {}
         role = str(r.get("role") or "").lower()
@@ -337,13 +355,19 @@ def enforce_confirmed_nonadditive_edits(
             continue
         it = dict(raw)
         action = str(it.get("action") or "")
-        if action in ("drop", "reorder", "trim") and not authorizes(it):
+        if action in ("drop", "reorder", "trim") and (
+            not authorizes(it) or already_failed_same_target(it)
+        ):
             blocked.append({
                 "intent_id": it.get("intent_id"),
                 "issue_id": it.get("issue_id"),
                 "target_segment_id": it.get("target_segment_id"),
                 "attempted_action": action,
-                "reason": "missing_confirmed_issue_exact_target_or_protected_segment",
+                "reason": (
+                    "already_screened_no_gain_same_action_target"
+                    if already_failed_same_target(it) else
+                    "missing_confirmed_issue_exact_target_or_protected_segment"
+                ),
             })
             it.update({
                 "action": "mark_unresolved",
