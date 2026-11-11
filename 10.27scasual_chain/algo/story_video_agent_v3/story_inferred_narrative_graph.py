@@ -253,9 +253,22 @@ def attach_validated_video_review(
         str(i.get("issue_id")): i
         for i in diagnosis_issues if isinstance(i, Mapping) and i.get("issue_id")
     }
+    scope = observations.get("observation_scope") or {}
+    sent = {
+        str(fid) for fid in (scope.get("sent_frame_ids") or [])
+    } if isinstance(scope, Mapping) else set()
+    if len(sent) < 2:
+        return out
     evidence_list = observations.get("semantic_evidence") or []
     for item in evidence_list:
         if not isinstance(item, Mapping):
+            continue
+        frame_refs = list(item.get("frame_refs") or [])
+        if (
+            item.get("schema") != "v3a_semantic_evidence_item_v1"
+            or len(frame_refs) < 2
+            or any(str(fid) not in sent for fid in frame_refs)
+        ):
             continue
         issue = issues.get(str(item.get("issue_id") or ""))
         if not issue or item.get("citation_status") != "FRAME_CITED":
