@@ -17,6 +17,7 @@ from story_video_agent_v3.story_fullcut_learning import (
     enforce_confirmed_nonadditive_edits,
 )
 from story_video_agent_v3.story_revision_planner import plan_from_diagnosis
+from story_video_agent_v3.self_revise_agent import apply_candidate_revision
 from story_video_agent_v3.story_timeline import build_story_timeline
 
 
@@ -86,6 +87,17 @@ class TestEditorialRedundancy(unittest.TestCase):
                 verified["revision_intents"][0]["target_segment_id"], "repeat"
             )
             self.assertEqual(verified["nonadditive_apply_gate"]["n_blocked"], 0)
+            unchanged = _edl()
+            modified, applied = apply_candidate_revision(
+                unchanged, verified["revision_intents"], observations=[],
+            )
+            self.assertTrue(unchanged[1]["include_in_cut"])
+            self.assertFalse(modified[1]["include_in_cut"])
+            self.assertTrue(modified[2]["include_in_cut"])
+            self.assertTrue(any(
+                a.get("action") == "drop" and a.get("status") == "applied"
+                for a in applied.get("applied") or []
+            ))
 
     def test_citing_only_one_segment_does_not_confirm_redundancy(self):
         with tempfile.TemporaryDirectory() as td:
