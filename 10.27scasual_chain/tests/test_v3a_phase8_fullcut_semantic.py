@@ -12,6 +12,9 @@ from pathlib import Path
 from story_video_agent_v3.story_fullcut_sampling import fullcut_edit_context_sample_plan
 from story_video_agent_v3.story_fullcut_semantic import screen_fullcut_semantic_gain
 from story_video_agent_v3.story_timeline import build_story_timeline
+from story_video_agent_v3.story_loop_policy import (
+    evaluate_round_transition, init_loop_state,
+)
 
 
 def _edl():
@@ -95,6 +98,15 @@ class TestFullcutSemantic(unittest.TestCase):
         self.assertEqual(
             plan[1]["reason"], "counterfactual_cut_boundary_not_same_event",
         )
+
+    def test_sampler_prefers_new_clip_when_older_row_metadata_also_changed(self):
+        base, cand = _edl()
+        plan = fullcut_edit_context_sample_plan(
+            build_story_timeline(base), build_story_timeline(cand),
+            changed_segment_ids=["new", "setup"], max_slots=4,
+        )
+        focus = [p for p in plan if p["narrative_slot"] == "edit_impact"]
+        self.assertEqual(focus[0]["candidate_segment_id"], "new")
 
     def test_low_budget_cannot_drop_edit_target(self):
         base, cand = _edl()
@@ -194,6 +206,47 @@ class TestFullcutSemantic(unittest.TestCase):
                 finish_reason="length",
             )
             self.assertEqual(out["status"], "UNVERIFIED")
+
+    def test_independent_phase8_policy_refuses_best_promote_from_sampled_stills(self):
+        state = init_loop_state(version_id="v0")
+        candidate = {
+            "version_id": "v1", "parent_version_id": "v0",
+            "edl_changed": True, "rendered": True, "mp4_exists": True,
+        }
+        observation = {
+            "safety": "PASS", "quality": "BETTER", "evidence": "SUFFICIENT",
+            "issue_effect": "RESOLVED", "global_regression": "NO",
+            "source_kind": "REAL_VLM", "hard_vetoes": [],
+            "compared_against_best": True,
+            "require_fullcut_semantic_gate": True,
+            "fullcut_gate_promote": False,
+        }
+        transition = evaluate_round_transition(
+            state, candidate, observation,
+            budget={"rounds_done": 1, "max_rounds": 3},
+        )
+        self.assertFalse(transition["promote"])
+        self.assertEqual(transition["best_ref"], "v0")
+        self.assertNotEqual(transition["next_action"], "PROMOTE_BEST")
+
+    def test_authentic_fullcut_gate_can_still_promote_in_future(self):
+        state = init_loop_state(version_id="v0")
+        transition = evaluate_round_transition(
+            state,
+            {"version_id": "v1", "parent_version_id": "v0",
+             "edl_changed": True, "rendered": True, "mp4_exists": True},
+            {"safety": "PASS", "quality": "BETTER", "evidence": "SUFFICIENT",
+             "issue_effect": "RESOLVED", "global_regression": "NO",
+             "source_kind": "REAL_VLM", "hard_vetoes": [],
+             "compared_against_best": True,
+             "require_fullcut_semantic_gate": True,
+             "fullcut_gate_promote": True},
+            budget={"rounds_done": 1, "max_rounds": 3},
+        )
+        # This only tests the policy wiring. No live code path currently
+        # sets fullcut_gate_promote True from sampled frames.
+        self.assertTrue(transition["promote"])
+        self.assertEqual(transition["next_action"], "PROMOTE_BEST")
 
     def test_missing_semantic_response_is_unverified(self):
         with tempfile.TemporaryDirectory() as td:
