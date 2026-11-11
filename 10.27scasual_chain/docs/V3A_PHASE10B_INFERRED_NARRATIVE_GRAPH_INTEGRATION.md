@@ -1,6 +1,6 @@
 # Phase 10-B: inference-only narrative graph wired into the Story E2E loop
 
-Status: **IMPLEMENTED IN ISOLATED BRANCH; SERVER REGRESSION PENDING**. This is an
+Status: **IMPLEMENTED IN ISOLATED BRANCH; ZERO-PAID SERVER REGRESSION GREEN ON `fc7bed5`**. This is an
 engineering method prototype, *not* a demonstrated ACL contribution or a
 verified improvement in story videos.
 
@@ -116,10 +116,42 @@ The isolated smoke experiment can additionally run existing E2E in OFFLINE
 mode on a known Phase5/video, but is **not** required for source-level
 acceptance and does not prove improved story quality.
 
+### Server verification (`fc7bed5`)
+
+Worktree: `/data2/lpy1/worktrees/migu-v3a-phase10b-verify`  
+Report: `docs/V3A_PHASE10B_SERVER_VERIFY_fc7bed5.json`  
+Graph previews (server): `/tmp/lpy1_phase10b_graph_preview_20261112/`
+
+| Check | Result |
+|-------|--------|
+| `compileall algo/story_video_agent_v3` | exit 0 |
+| `tests/test_v3a_phase10_*.py` | **36 passed / 0 failed / 0 skipped** |
+| `tests/test_v3a_phase8_*.py` | **129 passed / 0 failed / 0 skipped** |
+| Paid HTTP / VLM | **0** |
+| Merge to main | not done |
+
+#### Real V3-R Phase5 graph preview (no Benchmark gold)
+
+| Match | nodes | edges | event/short-chain reference_links (summary) | observation_targets | data_role |
+|-------|------:|------:|---------------------------------------------:|--------------------:|-----------|
+| A UAE–Oman frozen Phase5 | 9 | 8 | 4 | 2 | `AGENT_INFERRED` |
+| B Osasuna–Celta closed_loop Phase5 | 13 | 12 | 5 | 2 | `AGENT_INFERRED` |
+| B strict_lin Phase5 | 12 | 11 | 4 | 2 | `AGENT_INFERRED` |
+
+**Observed real-structure facts (do not backfill with gold):**
+
+1. Graphs build from EDL+story_plan alone; `data_role=AGENT_INFERRED`; limitations explicitly deny gold use.
+2. Action/goal segments carry references when the frozen EDL already has them (plain `event_*` and/or `causal:pred_*:atom_fill_*`). Title / deficit / scoreboard / wrap cards often have **empty** `event_ids` — this matches the V3-R EDL, not a silent gold omission.
+3. Node field `short_chain_ids` was **empty on all three previews**. Causal-chain style IDs currently appear inside `event_ids` / `evidence_links` (`event:causal:...`) rather than a populated `short_chain_ids` list. Treat this as a **schema/data-shape gap on real Phase5**, not as proof of short-chain reasoning quality.
+4. Edges are currently `editorial_adjacency` (`EDL_ORDER_ONLY`). Narrative-transition *hypotheses* exist on some adjacencies; none are video-reviewed (`NOT_REVIEWED` / `UNOBSERVED_ROLE_HYPOTHESIS`).
+5. `observation_targets` prioritize up to two role/state transitions with `story_defect_confirmed=false` (advisory only).
+
+This verifies offline graph construction on real frozen assets. It does **not** prove better observation/planning than a flat event list, nor any story-quality gain over V3-R.
+
 ## 5. Next evidence gates
 
-- **P10-B acceptance**: compileall + old/new regression green, offline
-  graph preview on actual frozen V3-R assets, output provenance reviewed.
+- **P10-B source acceptance (this turn)**: compileall + regressions green; offline graph preview on actual frozen V3-R assets reviewed above.
+- **P10-B method evidence (still open)**: whether graph-guided observation/planning beats flat lists under matched budgets.
 - **P10-C**: introduce isolated exploratory candidate, compare full rendered
   MP4s and blind human preference using P10-A protocol. Existing V3-R remains
   BEST without actual human-supported improvement.
@@ -127,6 +159,4 @@ acceptance and does not prove improved story quality.
   contrasting flat event/issue lists, graph hints, graph-guided observation,
   and graph-guided reflection. No scientific novelty/quality claims yet.
 
-Current factual status: Phase9 produced NO_CANDIDATE_PAIR; P10-A 22 new tests
-and Phase8 129 tests passed on the user's server; P10-B tests are now written
-but **have not yet been run**.
+Current factual status: Phase9 produced NO_CANDIDATE_PAIR; P10-A protocol accepted after 22/22 + 129/129; P10-B on `fc7bed5` has **36/36 phase10 + 129/129 phase8** green and real A/B graph previews recorded. Story-quality / ACL method gain remains **UNVERIFIED**.

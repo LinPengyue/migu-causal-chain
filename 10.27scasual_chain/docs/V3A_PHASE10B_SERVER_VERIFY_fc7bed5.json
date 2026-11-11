@@ -1,0 +1,65 @@
+{
+  "schema": "v3a_phase10b_zero_paid_verify_v1",
+  "generated": "2026-11-11T16:21:52.168635+00:00",
+  "worktree": "/data2/lpy1/worktrees/migu-v3a-phase10b-verify",
+  "branch": "story-va-v3a-phase10-narrative-quality",
+  "code_sha": "fc7bed5174567f2929bbbbb2e258d89fc1dad05f",
+  "compileall": {
+    "exit_code": 0
+  },
+  "pytest_phase10": {
+    "passed": 36,
+    "failed": 0,
+    "skipped": 0,
+    "exit_code": 0
+  },
+  "pytest_phase8": {
+    "passed": 129,
+    "failed": 0,
+    "skipped": 0,
+    "exit_code": 0
+  },
+  "paid_http": 0,
+  "graph_preview": {
+    "out_dir": "/tmp/lpy1_phase10b_graph_preview_20261112",
+    "docs_copies": "docs/phase10b_graph_preview/",
+    "cases": {
+      "A_uae_oman": {
+        "nodes": 9,
+        "edges": 8,
+        "event_or_short_chain_reference_links": 4,
+        "observation_targets": 2,
+        "data_role": "AGENT_INFERRED"
+      },
+      "B_osasuna_celta": {
+        "nodes": 13,
+        "edges": 12,
+        "event_or_short_chain_reference_links": 5,
+        "observation_targets": 2,
+        "data_role": "AGENT_INFERRED"
+      },
+      "B_strict_lin": {
+        "nodes": 12,
+        "edges": 11,
+        "event_or_short_chain_reference_links": 4,
+        "observation_targets": 2,
+        "data_role": "AGENT_INFERRED"
+      }
+    },
+    "structure_findings": [
+      "short_chain_ids empty on all previewed nodes; causal-style IDs appear inside event_ids / evidence_links",
+      "title/deficit/scoreboard/wrap segments often have empty event_ids \u2014 matches frozen V3-R EDL, not gold backfill",
+      "edges are editorial_adjacency only; narrative_transition_hypothesis advisory; no video review yet",
+      "observation_targets <=2 transition reviews with story_defect_confirmed=false",
+      "no Benchmark gold fields present in graph outputs"
+    ]
+  },
+  "method_quality_gain": "UNVERIFIED",
+  "best_baseline": "V3-R",
+  "published_for_cross_platform_review": true,
+  "notes": [
+    "No algo edits",
+    "No paid VLM",
+    "Did not merge main"
+  ]
+}
