@@ -16,7 +16,9 @@ from story_video_agent_v3.story_inferred_narrative_graph import (
     build_inferred_narrative_graph,
     graph_observation_targets,
     graph_planner_context,
+    rebase_narrative_graph,
 )
+from story_video_agent_v3.story_inferred_graph_cli import main as preview_graph_cli
 from story_video_agent_v3.story_paid_eval import (
     run_llm_revision_planner,
     run_vlm_story_critic,
@@ -193,6 +195,56 @@ class TestAgentInferredStoryGraph(unittest.TestCase):
         ))
         self.assertTrue(all(not edge["is_match_causal_claim"] for edge in updated["edges"]))
         self.assertEqual(graph["summary"]["model_reviewed_transitions"], 0)
+
+
+    def test_round_memory_only_reuses_same_source_and_edl(self):
+        graph = _graph()
+        issues = [{"issue_id": "issue_transition", "segment_ids": ["pressure", "goal"]}]
+        reviewed = attach_validated_video_review(
+            graph, observations=_semantic_review(), diagnosis_issues=issues,
+        )
+        reused = rebase_narrative_graph(_graph(), reviewed)
+        self.assertTrue(reused["prior_graph_reused"])
+        self.assertGreater(reused["summary"]["model_reviewed_transitions"], 0)
+        self.assertLessEqual(len(graph_observation_targets(reused)),
+                             len(graph_observation_targets(graph)))
+        new_edl = _edl()
+        new_edl[1]["media_in"] = 31.0
+        changed = build_inferred_narrative_graph(
+            edl=new_edl, story_plan={"story_goal": "How the deficit was reversed"},
+            source_sha256="d" * 64,
+        )
+        reset = rebase_narrative_graph(changed, reviewed)
+        self.assertFalse(reset["prior_graph_reused"])
+        self.assertEqual(reset["summary"]["model_reviewed_transitions"], 0)
+        different_source = build_inferred_narrative_graph(
+            edl=_edl(), story_plan={"story_goal": "How the deficit was reversed"},
+            source_sha256="e" * 64,
+        )
+        self.assertFalse(rebase_narrative_graph(different_source, reviewed)["prior_graph_reused"])
+
+    def test_real_edl_preview_cli_is_offline_and_no_gold(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            edl = root / "edl.json"
+            plan = root / "plan.json"
+            output = root / "graph.json"
+            edl.write_text(json.dumps({"segments": _edl()}), encoding="utf-8")
+            plan.write_text(json.dumps({"story_goal": "How the deficit was reversed"}), encoding="utf-8")
+            self.assertEqual(preview_graph_cli([
+                "--edl", str(edl), "--story-plan", str(plan),
+                "--source-sha256", "d" * 64, "--out", str(output),
+            ]), 0)
+            doc = json.loads(output.read_text(encoding="utf-8"))
+            self.assertEqual(doc["data_role"], GRAPH_ROLE)
+            self.assertEqual(doc["summary"]["node_count"], 4)
+            self.assertTrue(doc["observation_targets"])
+            plan.write_text(json.dumps({
+                "story_goal": "leaked", "bench": {"data_role": "BENCHMARK_GOLD"},
+            }), encoding="utf-8")
+            self.assertEqual(preview_graph_cli([
+                "--edl", str(edl), "--story-plan", str(plan), "--out", str(output),
+            ]), 2)
 
     def test_unknown_issue_ref_cannot_annotate_graph(self):
         graph = _graph()
