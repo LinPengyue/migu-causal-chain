@@ -1069,6 +1069,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             feedback_context=fb_ctx,
             require_narrative_fit=narrative_fit_required,
             keep_unconfirmed_temporal_gap=narrative_fit_required,
+            use_fullcut_learning=narrative_fit_required and fixture_intents is None,
             budget={
                 "max_rounds": inp.max_rounds,
                 "round_idx": round_idx,
@@ -1079,6 +1080,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             },
         )
         write_json(round_dir / "planner_feedback_context.json", rev.get("feedback_context") or {})
+        write_json(round_dir / "fullcut_edit_selection.json", rev.get("fullcut_edit_selection") or {})
         if paid_api is not None and fixture_intents is None:
             from .story_paid_eval import provider_usage, run_llm_revision_planner
 
@@ -1859,7 +1861,27 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 e["failure_class"] = phase8_verdict["failure_class"]
             if obs_token:
                 e["evidence_token"] = obs_token
+        # Convert SOURCE-BOUND two-finished-cut screening into actionable
+        # *conditional* feedback for next round; never a ground-truth negative.
+        # Production-only: offline fixtures must not masquerade as observation.
+        from .story_fullcut_learning import extract_fullcut_learning
+
+        fullcut_learning = extract_fullcut_learning(
+            screen=fullcut_semantic_screen,
+            revision_plan=rev,
+            diagnosis=diag,
+            parent_version_id=parent_version_id,
+            candidate_version_id=cand_version_id,
+            source_sha256=source_sha,
+            round_idx=round_idx,
+            provider_mode=verdict_provenance,
+        )
+        write_json(round_dir / "fullcut_revision_learning.json", fullcut_learning)
         feedback_store.extend(fb_entries)
+        feedback_store.extend(fullcut_learning.get("entries") or [])
+        round_rec["fullcut_feedback_entries"] = len(
+            fullcut_learning.get("entries") or []
+        )
         feedback_store.write_json(out / "phase8_feedback_memory.json")
         feedback_store.write_json(round_dir / "phase8_feedback_memory_snapshot.json")
 
