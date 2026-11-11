@@ -210,7 +210,7 @@ def attach_validated_video_review(
         if not isinstance(item, Mapping):
             continue
         issue = issues.get(str(item.get("issue_id") or ""))
-        if not issue or item.get("citation_status") not in ("CITED_SENT_FRAMES", "VALID"):
+        if not issue or item.get("citation_status") != "FRAME_CITED":
             continue
         if item.get("claim_status") not in (
             "DEFECT_CONFIRMED", "FRAME_CITED", "SEMANTIC_HYPOTHESIS",
