@@ -11,6 +11,11 @@ from typing import Any, Dict, List, Mapping, Optional, Sequence
 SCHEMA = "v3a_fullcut_revision_learning_v1"
 
 
+def _sha256_digest(value: Any) -> bool:
+    raw = str(value or "").lower()
+    return len(raw) == 64 and all(c in "0123456789abcdef" for c in raw)
+
+
 def _issue_by_id(diagnosis: Mapping[str, Any]) -> Dict[str, Mapping[str, Any]]:
     return {
         str(i["issue_id"]): i
@@ -43,10 +48,9 @@ def extract_fullcut_learning(
     admissible = (
         provider_mode == "REAL_VLM"
         and status in ("SCREENED_NO_GAIN", "SCREENED_BETTER")
-        and isinstance(s.get("baseline_mp4_sha256"), str)
-        and len(str(s.get("baseline_mp4_sha256"))) == 64
-        and isinstance(s.get("candidate_mp4_sha256"), str)
-        and len(str(s.get("candidate_mp4_sha256"))) == 64
+        and _sha256_digest(source_sha256)
+        and _sha256_digest(s.get("baseline_mp4_sha256"))
+        and _sha256_digest(s.get("candidate_mp4_sha256"))
         and s.get("authorizes_promote_best") is False
         and s.get("improvement_verified") is False
         and bool(s.get("sampled_frame_sha256"))
@@ -160,7 +164,10 @@ def prioritize_confirmed_edits(
     Structural deletion/reordering must already be supported by Critic and
     _structure_intents; feedback never makes an unconfirmed action executable.
     """
-    records = list((feedback_context or {}).get("records") or [])
+    records = [
+        x for x in ((feedback_context or {}).get("records") or [])
+        if isinstance(x, Mapping)
+    ]
     structural = [
         dict(x) for x in structure_intents
         if str(x.get("action") or "") in ("drop", "reorder", "trim")
