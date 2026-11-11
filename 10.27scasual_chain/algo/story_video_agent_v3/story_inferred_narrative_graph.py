@@ -83,11 +83,30 @@ def build_inferred_narrative_graph(
     segments = list(timeline.get("segments") or [])
     ids = [str(s.get("segment_id") or "") for s in segments]
     if len(ids) != len(set(ids)):
-        raise ValueError("duplicate active EDL segment_id in narrative graph")
+        # Graph is advisory and cannot disambiguate reused segment IDs.
+        # Degrade this graph, but do not break legacy story rendering.
+        return {
+            "schema": GRAPH_SCHEMA,
+            "data_role": GRAPH_ROLE,
+            "edl_sha256": _fingerprint(edl),
+            "source_sha256": source_sha256,
+            "story_plan_sha256": _fingerprint(plan),
+            "story_goal_hint": None,
+            "nodes": [], "edges": [], "evidence_links": [],
+            "summary": {
+                "node_count": 0, "edge_count": 0,
+                "event_or_short_chain_reference_links": 0,
+                "unreviewed_narrative_transitions": 0,
+                "model_reviewed_transitions": 0,
+            },
+            "degraded_reason": "duplicate_active_segment_ids",
+            "limitations": ["Graph unavailable; never promote narrative hypotheses to facts."],
+        }
     # Only exact segment_id matches link a story-plan hint to an EDL segment;
     # never join on fuzzy text similarity, match-specific PTS or assumed goals.
     plan_refs: Dict[str, Mapping[str, Any]] = {}
-    for item in plan.get("segments") or []:
+    plan_segments = plan.get("segments")
+    for item in plan_segments if isinstance(plan_segments, list) else []:
         if isinstance(item, Mapping) and isinstance(item.get("segment_id"), str):
             plan_refs[item["segment_id"]] = item
     nodes: list[Dict[str, Any]] = []
