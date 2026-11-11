@@ -124,7 +124,16 @@ def fullcut_edit_context_sample_plan(
         }
     ]
     if shared_late:
-        add_shared("global_ending", shared_late[0])
+        late = shared_late[0]
+        late_role = str(late.get("role") or "").lower()
+        label = (
+            "global_ending"
+            if any(k in late_role for k in ("ending", "wrap", "close", "aftermath"))
+            else "global_tail"
+        )
+        # An arbitrary late clip is not a proven conclusion; the screen gate
+        # requires an actual ending-role observation before claiming coverage.
+        add_shared(label, late)
 
     if len(slots) < max_slots:
         shared_first = next(
@@ -143,11 +152,11 @@ def fullcut_edit_context_sample_plan(
             slots,
             key=lambda s: {
                 "edit_impact": 0, "pre_edit": 1, "post_edit": 2,
-                "global_ending": 3, "global_opening": 4,
+                "global_ending": 3, "global_tail": 4, "global_opening": 5,
             }.get(s["narrative_slot"], 5),
         )[:max_slots]
         slots = sorted(chosen, key=lambda s: {
             "global_opening": 0, "pre_edit": 1, "edit_impact": 2,
-            "post_edit": 3, "global_ending": 4,
+            "post_edit": 3, "global_ending": 4, "global_tail": 5,
         }.get(s["narrative_slot"], 5))
     return slots
