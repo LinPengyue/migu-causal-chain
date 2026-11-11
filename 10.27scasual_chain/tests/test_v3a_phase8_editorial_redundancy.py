@@ -68,7 +68,7 @@ class TestEditorialRedundancy(unittest.TestCase):
             issue = out["issues"][0]
             self.assertEqual(issue["preferred_drop_segment_id"], "repeat")
             self.assertEqual(issue["evidence_tier"], "DEFECT_CONFIRMED")
-            self.assertFalse(out["does_not_authorize_best_promotion"])
+            self.assertTrue(out["does_not_authorize_best_promotion"])
             # Unchanged EDL part can be removed without any invented source PTS.
             diagnosis = {
                 "issues": [issue], "protected_goal_segment_ids": ["goal"],
