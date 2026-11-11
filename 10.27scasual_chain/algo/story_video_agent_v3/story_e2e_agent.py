@@ -1892,6 +1892,14 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         has_distinct = bool(search_report.get("verified_candidates")) and bool(
             search_report.get("feedback_filtered_candidates")
         )
+        # A previously diagnosed, executable non-additive alternative must
+        # remain available when the sampled full-cut screen rejects a bridge.
+        # Otherwise SAME would STOP prematurely without trying that alternative.
+        deferred_evidence_edits = list(
+            (rev.get("fullcut_edit_selection") or {}).get("deferred") or []
+        )
+        has_distinct = has_distinct or bool(deferred_evidence_edits)
+        round_rec["deferred_confirmed_alternatives"] = len(deferred_evidence_edits)
         suggested = phase8_verdict.get("suggested_next_evidence")
         specific_reobserve = None
         if isinstance(suggested, dict) and suggested.get("question") and (
