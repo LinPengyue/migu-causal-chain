@@ -1389,6 +1389,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         vision_backed = bool(sent_frame_ids)
         llm_v = None
         real_provider_validated: Optional[Dict[str, Any]] = None
+        fullcut_semantic_screen: Optional[Dict[str, Any]] = None
         if (
             paid_api is not None
             and final_decision == "REVISE"
@@ -1439,9 +1440,42 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     and bool(llm_v.get("sent_frame_ids"))
                     and str(llm_v.get("provider_mode") or "") in ("real", "openai_compatible")
                 ):
-                    real_provider_validated = dict(llm_v["validated"])
                     verdict_provenance = "REAL_VLM"
+                    fullcut_semantic_screen = dict(
+                        llm_v.get("fullcut_semantic_screen") or {}
+                    )
+                    # A few still pairs establish only a *screening hypothesis*.
+                    # They cannot confirm audio/rhythm or exclude problems in
+                    # unseen story beats. Never convert sampled-stills BETTER
+                    # into formal IMPROVED / PROMOTE_BEST.
+                    screened = str(fullcut_semantic_screen.get("status") or "")
+                    advisory = {
+                        "SCREENED_BETTER": "PROMISING",
+                        "SCREENED_NO_GAIN": "SAME",
+                    }.get(screened, "UNCERTAIN")
+                    real_provider_validated = {
+                        **dict(llm_v["validated"]),
+                        "quality_delta_vs_baseline": "NOT_EVALUATED",
+                        "accept_candidate": False,
+                        "soft_quality": advisory,
+                        "phase8_quality": advisory,
+                        "global_regression": "UNKNOWN",
+                        "original_issue_resolved": None,
+                        "fullcut_semantic_screen_status": screened or "NOT_EVALUATED",
+                        "sampled_stills_not_fullcut_semantic_certificate": True,
+                    }
                     quality_overlay = real_provider_validated
+                    round_rec["fullcut_semantic_screen_status"] = (
+                        screened or "NOT_EVALUATED"
+                    )
+                    write_json(
+                        round_dir / "fullcut_semantic_screen.json",
+                        fullcut_semantic_screen or {
+                            "status": "UNVERIFIED",
+                            "reason": "no_structured_fullcut_screen_from_real_vlm",
+                            "authorizes_promote_best": False,
+                        },
+                    )
                 sent_frame_ids = list(llm_v.get("sent_frame_ids") or [])
                 vision_backed = bool(llm_v.get("vision_backed")) and bool(sent_frame_ids)
                 usage = provider_usage(paid_api)
@@ -1606,6 +1640,10 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         fullcut_delta["candidate_mp4_exists"] = bool(
             candidate_mp4 and Path(candidate_mp4).is_file()
         )
+        fullcut_delta["semantic_screen_status"] = (
+            (fullcut_semantic_screen or {}).get("status") or "NOT_EVALUATED"
+        )
+        fullcut_delta["fullcut_improvement_not_authenticated"] = True
         write_json(round_dir / "fullcut_delta_report.json", fullcut_delta)
         round_rec["fullcut_delta_report"] = str(
             round_dir / "fullcut_delta_report.json"
