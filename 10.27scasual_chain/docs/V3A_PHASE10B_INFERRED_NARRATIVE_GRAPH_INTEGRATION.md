@@ -160,3 +160,78 @@ This verifies offline graph construction on real frozen assets. It does **not** 
   and graph-guided reflection. No scientific novelty/quality claims yet.
 
 Current factual status: Phase9 produced NO_CANDIDATE_PAIR; P10-A protocol accepted after 22/22 + 129/129; P10-B on `fc7bed5` has **36/36 phase10 + 129/129 phase8** green and real A/B graph previews recorded. Story-quality / ACL method gain remains **UNVERIFIED**.
+
+
+## 6. Post-server-review fix: typed causal prediction pointers (UNVERIFIED)
+
+The independent server verification committed at `2faf498` completed:
+`compileall=0`, Phase10 `36 passed`, Phase8 `129 passed`, paid HTTP `0`.
+Actual frozen Phase5 preview found that every `short_chain_ids` list was empty.
+Inspection of the committed **three real preview JSONs** revealed the source
+references were not all plain event IDs:
+
+- A UAE–Oman: 3 of 4 references use `causal:pred_*:atom_fill_*`.
+- B closed_loop: 3 of 5 references use the same composite encoding.
+- B strict_lin: 1 of 4 references uses the composite encoding.
+- Other identifiers are `event_*`, `atom_fill_*`, or `v3_goal_*`.
+  No gold-derived ID is involved.
+
+The graph previously mislabeled the entire composite string as an event.
+The corrective `_typed_material_refs` decoder now recognizes only the
+**exact observed syntax** `causal:pred_<id>:atom_fill_<id>`:
+it creates a `pred_*` **predicted short-chain pointer** and a separate
+`atom_fill_*` **event/atom pointer**, while keeping the untouched composite
+string in `typed_reference_provenance[].raw_source_ref` and each
+`evidence_links[].raw_source_ref`.
+
+IMPORTANT: splitting an existing identifier is **not validation of a chain**.
+Both links have `validated_against_source_inventory=false` and
+`is_match_causal_claim=false`. Inference prompt explicitly says decoded
+references are unverified. They must never be conflated with the 18-category
+human short-range chain ground truth.
+
+Unknown `causal:` formats go to `unclassified_source_refs`, NOT to a
+fabricated event or short-chain. Plain event refs and explicitly supplied
+short-chain IDs are preserved. Title/scoreboard/wrap with no source refs
+remain empty; do NOT backfill from benchmark labels.
+
+With identical input and no other changes, **expected** link counts after
+fix (not yet confirmed by rerunning the server preview):
+
+| Graph | Old combined links | Expected event links | Expected predicted short-chain links | Expected combined |
+|---|---:|---:|---:|---:|
+| A | 4 | 4 | 3 | 7 |
+| B closed_loop | 5 | 5 | 3 | 8 |
+| B strict_lin | 4 | 4 | 1 | 5 |
+
+The semantic relation graph remains editorial-adjacency-only. Typed
+reference links do NOT create factual match-causality edges and do NOT
+prove narrative-graph gains.
+
+**Follow-up check on the server**: run `compileall`, all
+`test_v3a_phase10_*.py`, all `test_v3a_phase8_*.py`, and regenerate
+all three previews with the existing `story_inferred_graph_cli`.
+Record counts, decoded IDs, any unclassified refs, raw provenance,
+and unchanged observation targets. Do not run a paid experiment or
+merge the branch. This fix is **source submitted, regression PENDING**.
+
+## 7. Phase10-C interface decision (not implemented here)
+
+The existing `self_revise_agent.apply_candidate_revision` already supports
+source-bound EDL candidate edits. The next phase should create an **isolated
+experimental** caller, not relax P10-B's evidence semantics or alter
+production release authorization:
+
+- `EXPLORATORY_HYPOTHESIS` is separate from `CONFIRMED_STORY_DEFECT`.
+- A candidate `search_add` needs source PTS, independently verified first-LIVE,
+  and bound narrative-fit triplet evidence, even when story defect is uncertain.
+- Non-additive trials need an exact nonessential segment, explicit reason,
+  source/EDL lineage and goal/scoreboard/title protection.
+- Apply exactly one change on a copy; render a full candidate MP4, preserve
+  baseline MP4/EDL and both hashes. No valid candidate is also a valid result.
+- Neither a model review, candidate generation, nor a successful render
+  changes BEST. Promotion remains the P10-A full-video G0/G1/G2 human protocol.
+
+Do not turn time gaps, predicted chain IDs, or graph adjacency into a reason
+to inject an arbitrary clip. The underlying scientific question is whether
+the inferred narrative state leads to *better* changes than a flat baseline.
