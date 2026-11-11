@@ -61,6 +61,7 @@ from .story_inferred_narrative_graph import (
     attach_validated_video_review,
     build_inferred_narrative_graph,
     graph_observation_targets,
+    rebase_narrative_graph,
 )
 from .story_revision_feedback import make_observation_evidence_token
 from .first_live_window_evidence import (
@@ -692,6 +693,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         "false_or_unverified_improve_claims": 0,
     }
 
+    previous_narrative_graph: Optional[Dict[str, Any]] = None
     for round_idx in range(1, max(1, min(inp.max_rounds, MAX_ROUNDS)) + 1):
         round_dir = out / f"02_round_{round_idx:02d}"
         round_dir.mkdir(parents=True, exist_ok=True)
@@ -711,6 +713,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         narrative_graph = build_inferred_narrative_graph(
             edl=working_edl, story_plan=plan, source_sha256=source_sha,
         )
+        narrative_graph = rebase_narrative_graph(narrative_graph, previous_narrative_graph)
         graph_targets = graph_observation_targets(narrative_graph, max_targets=2)
         diag["agent_narrative_graph"] = narrative_graph
         diag["graph_observation_targets"] = graph_targets
@@ -862,6 +865,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             diagnosis_issues=diag.get("issues") or [],
         )
         diag["agent_narrative_graph"] = narrative_graph
+        previous_narrative_graph = narrative_graph
         write_json(round_dir / "agent_narrative_graph.json", narrative_graph)
         # Offline confirm AFTER semantic merge so HYPOTHESIS layer cannot wipe it.
         # Does NOT inject revision intents or candidate PTS — search/planner choose.
