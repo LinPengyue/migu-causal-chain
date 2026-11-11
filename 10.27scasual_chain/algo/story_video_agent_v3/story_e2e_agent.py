@@ -1448,22 +1448,12 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     # They cannot confirm audio/rhythm or exclude problems in
                     # unseen story beats. Never convert sampled-stills BETTER
                     # into formal IMPROVED / PROMOTE_BEST.
+                    from .story_fullcut_semantic import constrain_sampled_verifier_payload
+
                     screened = str(fullcut_semantic_screen.get("status") or "")
-                    advisory = {
-                        "SCREENED_BETTER": "PROMISING",
-                        "SCREENED_NO_GAIN": "SAME",
-                    }.get(screened, "UNCERTAIN")
-                    real_provider_validated = {
-                        **dict(llm_v["validated"]),
-                        "quality_delta_vs_baseline": "NOT_EVALUATED",
-                        "accept_candidate": False,
-                        "soft_quality": advisory,
-                        "phase8_quality": advisory,
-                        "global_regression": "UNKNOWN",
-                        "original_issue_resolved": None,
-                        "fullcut_semantic_screen_status": screened or "NOT_EVALUATED",
-                        "sampled_stills_not_fullcut_semantic_certificate": True,
-                    }
+                    real_provider_validated = constrain_sampled_verifier_payload(
+                        dict(llm_v["validated"]), fullcut_semantic_screen,
+                    )
                     quality_overlay = real_provider_validated
                     round_rec["fullcut_semantic_screen_status"] = (
                         screened or "NOT_EVALUATED"
