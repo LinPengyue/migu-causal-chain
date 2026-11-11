@@ -448,6 +448,13 @@ def plan_from_diagnosis(
     - if feedback wiped remaining LIVE options → stop (UNRESOLVED), do not force-insert
     """
     issues = list(diagnosis.get("issues") or [])
+    # The Phase10-B graph is an INFERENCE context, not a new issue source:
+    # no graph-only hypothesis can authorize a non-additive or insertion edit.
+    narrative_graph = diagnosis.get("agent_narrative_graph") or {}
+    if not isinstance(narrative_graph, Mapping) or (
+        narrative_graph.get("data_role") != "AGENT_INFERRED"
+    ):
+        narrative_graph = {}
     issues_by_id = {
         str(i.get("issue_id")): i for i in issues if isinstance(i, dict) and i.get("issue_id")
     }
@@ -813,6 +820,12 @@ def plan_from_diagnosis(
         "feedback_context": feedback_summary,
         "fullcut_learning_enabled": use_fullcut_learning,
         "fullcut_edit_selection": fullcut_edit_selection,
+        "agent_narrative_graph_context": {
+            "data_role": narrative_graph.get("data_role"),
+            "edl_sha256": narrative_graph.get("edl_sha256"),
+            "summary": narrative_graph.get("summary"),
+            "authorizes_revision": False,
+        } if narrative_graph else None,
         "budget": dict(budget or {}),
         "phase6_rules": {
             "no_auto_add_on_large_source_gap_alone": True,
