@@ -84,6 +84,7 @@ def _search():
     }
     return {
         "search_success": True,
+        "feedback_filter_applied": True,
         "executable_search_success": True,
         "verified_candidates": [row],
         "executable_first_live_candidates": [row],
