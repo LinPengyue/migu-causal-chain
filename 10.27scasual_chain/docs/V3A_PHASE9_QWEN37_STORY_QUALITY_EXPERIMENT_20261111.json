@@ -1,0 +1,201 @@
+{
+  "schema": "v3a_phase9_qwen37_story_quality_report_v1",
+  "generated": "2026-11-11T15:28:51.888672+00:00",
+  "code_sha": "6768d52e3e1a38f84bf93fa1a42537ae7c40d691",
+  "branch": "story-va-v3a-full-chain-audit-fixes",
+  "worktree": "/data2/lpy1/worktrees/migu-v3a-phase9-story-quality",
+  "models": {
+    "llm": "DeepSeek-V4-Pro-0813",
+    "vlm": "Qwen3.7-Plus",
+    "note": "Switched VLM from Qwen3.6-Plus to Qwen3.7-Plus after multimodal HTTP500 on 3.6"
+  },
+  "budget": {
+    "max_calls": 5,
+    "max_cost_usd": 0.1,
+    "max_rounds": 3,
+    "max_retries": 0
+  },
+  "usage": {
+    "http_calls": 4,
+    "est_cost_usd": 0.006704,
+    "elapsed_sec": 135.685
+  },
+  "outcome": {
+    "decision": "UNRESOLVED",
+    "delivery_label": "BLOCKED",
+    "status_gates": {
+      "workflow_completed": true,
+      "story_diagnosis_valid": true,
+      "revision_applied": false,
+      "candidate_rendered": false,
+      "semantic_verification_passed": false,
+      "release_authorized": false,
+      "final_mp4_exists": true
+    },
+    "revision_status_totals": {
+      "APPLIED": 0,
+      "VERIFIED": 0,
+      "IMPROVED": 0
+    },
+    "loop_stop_reason": "STOP_NO_ACTION",
+    "best_version": "v0",
+    "APPLIED": 0,
+    "VERIFIED": 0,
+    "IMPROVED": 0
+  },
+  "critic": {
+    "ok": true,
+    "error": null,
+    "provider_mode": "real",
+    "model": "Qwen3.7-Plus",
+    "usage": {
+      "prompt_tokens": 4887,
+      "completion_tokens": 466,
+      "total_tokens": 5353,
+      "completion_tokens_details": {
+        "text_tokens": 466
+      }
+    },
+    "raw_excerpt_len": 1549,
+    "raw_excerpt_head": "{\n  \"semantic_evidence\": [\n    {\n      \"issue_id\": \"large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472\",\n      \"story_time\": [\n        28.0,\n        29.0\n      ],\n      \"observed_fact\": \"Frame t28p00 shows match clock 12:45 with score UAE 0-1 OMA. Frame t29p00 immediately cuts to match clock 46:53 with identical score UAE 0-1 OMA. The visual context shifts from midfield play in the first half to an attacking phase near the penalty area in the second half.\",\n      \"defect_hypothesis\": \"The transition skips the entire second half kickoff and initial possession phase. However, the narrative state (UAE trailing 0-1) remains constant, and the subtitle '蓄力' (building up/charging) in frame t29p00 logically bridges the time gap by implying accumulated pressure or a new wave of attack, making the jump narratively functional rather than defective.\",\n      \"confidence\": 0.95,\n      \"claims_story_defect\": false,\n      \"missing_story_information\": null,\n      \"why_transition_breaks\": null,\n      \"evidence_refs\": [\n        {\n          \"frame_id\": \"story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t28p00\",\n          \"note\": \"Clock 12:45, Score 0-1.\"\n        },\n   ",
+    "redundancy_issues_n": 0,
+    "redundancy_rejected_n": 0
+  },
+  "diagnosis_issues": [
+    {
+      "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472",
+      "category": "transition",
+      "confirmed": false,
+      "status": "needs_video_verify"
+    },
+    {
+      "issue_id": "large_source_jump_seg_buildup_event_000472_to_seg_equalizer_goal_action",
+      "category": "transition",
+      "confirmed": false,
+      "status": "needs_video_verify"
+    },
+    {
+      "issue_id": "thin_post_climax_tail",
+      "category": "ending",
+      "confirmed": false,
+      "status": "needs_video_verify"
+    }
+  ],
+  "planner": {
+    "decision": "UNRESOLVED",
+    "rationale": "All three issues are HYPOTHESIS_NEEDS_VIDEO with story_defect_confirmed=false. The VLM critic summary contains no confirmed issues and rates overall_narrative_quality as High. Source-time jumps alone are normal highlight compression and not story defects. The only REVIEW_SUPPORTED candidate (cand_event_000634_6400) has narrative_fit status REVIEW_SUPPORTED but its review_verdict is SUPPORTS_INSERT with binding_valid=true — however, the underlying issue it addresses is itself unconfirmed (story_defect_confirmed=false), and the review method note says 'triplet_review_bound_not_proof_of_improvement'. The thin_post_climax_tail issue is also unconfirmed. No issue explicitly names a preferred_drop_segment_id. Per constraints, an unconfirmed semantic hypothesis is not an executable edit, and no candidate has video-backed story improvement tied to a confirmed defect.",
+    "intents": [
+      {
+        "intent_id": "mark_unresolved_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472",
+        "action": "mark_unresolved"
+      },
+      {
+        "intent_id": "mark_unresolved_large_source_jump_seg_buildup_event_000472_to_seg_equalizer_goal_action",
+        "action": "mark_unresolved"
+      },
+      {
+        "intent_id": "mark_unresolved_thin_post_climax_tail",
+        "action": "mark_unresolved"
+      }
+    ],
+    "llm_ok": true,
+    "model": "DeepSeek-V4-Pro-0813"
+  },
+  "apply_and_edl": {
+    "apply_report": {
+      "skipped": true
+    },
+    "edl_diff": {
+      "changed": false
+    },
+    "revision_status": {
+      "schema": "v3a_revision_status_v1",
+      "APPLIED": false,
+      "VERIFIED": false,
+      "IMPROVED": false,
+      "safety_ok": true,
+      "edl_changed": false,
+      "candidate_rendered": false,
+      "candidate_accepted": false,
+      "vision_backed": false,
+      "semantic_passed": false,
+      "quality_delta": "NOT_EVALUATED",
+      "BETTER_not_auto_IMPROVED": true,
+      "note": "APPLIED=EDL mutated under safety; VERIFIED=accepted with vision; IMPROVED=verified+accepted+vision+semantic+safety+quality_delta. One model BETTER never auto-upgrades to IMPROVED. PTS/first-live/goal gates cannot be overridden by BETTER."
+    }
+  },
+  "narrative_fit_vlm": {
+    "schema": "v3a_narrative_fit_vlm_summary_v1",
+    "reviews": [
+      {
+        "candidate_id": "cand_event_000313_2273",
+        "ok": true,
+        "status": "REVIEW_REJECTED",
+        "reason": "triplet_review_bound_not_proof_of_improvement",
+        "path": "/tmp/lpy1_phase9_qwen37_20261111/real_vlm_run/02_round_01/narrative_fit_vlm/cand_event_000313_2273/narrative_fit_review.json"
+      },
+      {
+        "candidate_id": "cand_event_000634_6400",
+        "ok": true,
+        "status": "REVIEW_SUPPORTED",
+        "reason": "triplet_review_bound_not_proof_of_improvement",
+        "path": "/tmp/lpy1_phase9_qwen37_20261111/real_vlm_run/02_round_01/narrative_fit_vlm/cand_event_000634_6400/narrative_fit_review.json"
+      }
+    ],
+    "http_calls_after": 3,
+    "estimated_cost_usd_after": 0.005519,
+    "claims_full_video_watch": false,
+    "note": "Only explicitly authorized real VLM path uses API. Fit evidence is a model judgment, not measured final quality."
+  },
+  "fullcut": {
+    "has_edit": false,
+    "semantic_screen_status": "NOT_EVALUATED",
+    "candidate_better_than_baseline": "UNVERIFIED",
+    "authorizes_promote_best": false
+  },
+  "videos": {
+    "v3r_baseline_mp4": "/tmp/lpy1_phase9_qwen37_20261111/preserved_v3r_story_clean.mp4",
+    "v3r_sha256": "7b0bfa49a7ff22d041496efe65c944cc57e9a2502107c2ad438119b85e4199f7",
+    "v3r_duration_sec": 94.877,
+    "v3a_candidate_mp4": null,
+    "v3a_candidate_reason": "no_executable_revision",
+    "blind_pack": "/tmp/lpy1_phase9_qwen37_20261111/blind_review",
+    "blind_status": "NO_CANDIDATE_PAIR",
+    "out_dir": "/tmp/lpy1_phase9_qwen37_20261111/real_vlm_run"
+  },
+  "safety": {
+    "release_authorized": false,
+    "no_second_paid_run": true,
+    "claims": "Do not treat APPLIED/SCREENED_BETTER/PROMISING as IMPROVED; IMPROVED=0",
+    "best_baseline_remains": "V3-R"
+  },
+  "preflight": {
+    "schema": "v3a_phase9_qwen37_preflight_v1",
+    "generated": "2026-11-11T15:25:40.052091+00:00",
+    "status": "PASS",
+    "code_sha": "6768d52e3e1a38f84bf93fa1a42537ae7c40d691",
+    "checks": {
+      "match_json": true,
+      "source_mp4": true,
+      "phase5_files": true,
+      "events": true,
+      "evidence_dir": true,
+      "clean_sha_ok": true,
+      "source_size": 6113318593,
+      "ffprobe_source": "8149.480000",
+      "ffprobe_v3r": "94.877000",
+      "dns_tcp": "ok",
+      "llm_model": "DeepSeek-V4-Pro-0813",
+      "vlm_model": "Qwen3.7-Plus",
+      "multimodal_smoke": "ok:SEEN"
+    },
+    "authorized": {
+      "max_calls": 5,
+      "max_cost_usd": 0.1,
+      "max_rounds": 3,
+      "max_retries": 0
+    },
+    "out_dir": "/tmp/lpy1_phase9_qwen37_20261111/real_vlm_run",
+    "note": "VLM switched to Qwen3.7-Plus after Qwen3.6-Plus multimodal HTTP500; LLM remains DeepSeek-V4-Pro-0813"
+  }
+}
