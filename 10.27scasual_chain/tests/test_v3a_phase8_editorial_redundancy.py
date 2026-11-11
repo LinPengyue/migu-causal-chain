@@ -163,6 +163,40 @@ class TestEditorialRedundancy(unittest.TestCase):
                 validated["revision_intents"][0]["action"], "mark_unresolved"
             )
 
+    def test_model_cannot_retry_same_failed_drop_after_fullcut_screen(self):
+        with tempfile.TemporaryDirectory() as td:
+            frames, claims = _make_review(Path(td))
+            issue = _validate(frames, claims)["issues"][0]
+            diagnosis = {
+                "issues": [issue], "protected_goal_segment_ids": ["goal"],
+            }
+            intent = {
+                "action": "drop", "issue_id": issue["issue_id"],
+                "target_segment_id": "repeat",
+            }
+            prior = {
+                "records": [{
+                    "source_kind": "REAL_VLM",
+                    "screen_status": "SCREENED_NO_GAIN",
+                    "action": "drop",
+                    "issue_id": issue["issue_id"],
+                    "target_segment_id": "repeat",
+                }]
+            }
+            blocked = enforce_confirmed_nonadditive_edits(
+                {"decision": "REVISE", "revision_intents": [intent]},
+                diagnosis=diagnosis, edl=_edl(),
+                feedback_context=prior,
+            )
+            self.assertEqual(blocked["decision"], "UNRESOLVED")
+            self.assertEqual(
+                blocked["revision_intents"][0]["action"], "mark_unresolved"
+            )
+            self.assertEqual(
+                blocked["nonadditive_apply_gate"]["blocked_intents"][0]["reason"],
+                "already_screened_no_gain_same_action_target",
+            )
+
     def test_protected_goal_cannot_be_deleted_by_claimed_confirmation(self):
         diag = {
             "protected_goal_segment_ids": ["goal"],
