@@ -104,6 +104,7 @@ def extract_fullcut_learning(
             "issue_signature": sig,
             "intent_id": it.get("intent_id"),
             "action": act,
+            "target_segment_id": it.get("target_segment_id"),
             "source_pts": pts,
             "parent_version_id": parent_version_id,
             "candidate_version_id": candidate_version_id,
@@ -200,19 +201,50 @@ def prioritize_confirmed_edits(
         and same_issue_context(r)
         for r in records[-12:]
     )
-    # Non-additive fixes are preferable by default when actually established,
-    # even without past failure; do not make several confounded edits at once.
+    # Avoid the identical failed structural action in the SAME run, while
+    # preserving distinct target segments. Footage additions are handled by
+    # the separate PTS/anchor/observation-grade Search feedback filter.
+    def repeated_structural_failure(it: Mapping[str, Any]) -> bool:
+        target = str(it.get("target_segment_id") or "")
+        if not target:
+            return False
+        return any(
+            str(r.get("screen_status") or "") == "SCREENED_NO_GAIN"
+            and str(r.get("source_kind") or "") == "REAL_VLM"
+            and str(r.get("action") or "") == str(it.get("action") or "")
+            and str(r.get("target_segment_id") or "") == target
+            and (
+                str(r.get("issue_id") or "") == str(it.get("issue_id") or "")
+                or target in {
+                    str(x) for x in (
+                        (r.get("issue_signature") or {}).get("anchor_segment_ids") or []
+                    )
+                }
+            )
+            for r in records[-12:]
+        )
+
+    skipped_repeat = [
+        it for it in structural if repeated_structural_failure(it)
+    ]
+    structural = [
+        it for it in structural if not repeated_structural_failure(it)
+    ]
+    # Non-additive fixes are preferable when independently confirmed. A single
+    # edit per round makes full-cut A/B attribution interpretable.
     ranked = structural + additions
     if not ranked:
         return {
             "selected": [], "deferred": [], "recent_no_gain": recent_no_gain,
-            "reason": "no_confirmed_executable_mutations",
+            "skipped_repeated_structural": skipped_repeat,
+            "reason": "no_fresh_confirmed_executable_mutations",
         }
     limit = max(1, int(max_mutations))
     return {
         "selected": ranked[:limit],
         "deferred": ranked[limit:],
         "recent_no_gain": recent_no_gain,
+        "skipped_repeated_structural": skipped_repeat,
         "reason": (
             "fullcut_failure_favors_confirmed_nonadditive_repair"
             if recent_no_gain and structural
