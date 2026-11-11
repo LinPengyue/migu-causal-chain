@@ -473,7 +473,9 @@ def run_dual_video_vision_verifier(
             f"segment_id={f.get('segment_id')} role={f.get('role')}"
         )
     from .truncated_response_recovery import SHORT_PER_REVISION_JSON_SCHEMA
+    from .story_fullcut_delta import compare_fullcut_edls
 
+    fullcut_delta = compare_fullcut_edls(baseline_edl, candidate_edl)
     focus = build_verifier_focus_from_revision_cases(revision_cases)
     (audit_dir / "verifier_focus_from_revision_cases.json").write_text(
         json.dumps(focus, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
@@ -508,6 +510,21 @@ def run_dual_video_vision_verifier(
         "  evidence_of_improvement / cited frame_ids from FRAME_MANIFEST only.\n"
         "PROMISING = partial narrative gain without full resolution; do NOT set "
         "accept_candidate true for PROMISING alone. Formal accept gate unchanged.\n"
+        "ALSO give fullcut_comparison with FIVE concise aspects: "
+        "information_gain, beat_continuity, pacing_tradeoff, redundancy, "
+        "global_regression. Each aspect is "
+        "{verdict:STRING,observed_difference:STRING,frame_ids:[BASELINE_ID,CANDIDATE_ID]}. "
+        "Use verdicts: information_gain YES|NO|UNCERTAIN; "
+        "beat_continuity IMPROVED|SAME|WORSE|UNCERTAIN; "
+        "pacing_tradeoff JUSTIFIED|NOT_JUSTIFIED|UNCERTAIN; "
+        "redundancy NO|YES|UNCERTAIN; global_regression NO|YES|UNKNOWN. "
+        "Also include recommendation CANDIDATE_PREFERABLE|KEEP_BASELINE|UNRESOLVED "
+        "and marginal_gain_vs_duration as one concrete sentence. "
+        "Cite BOTH versions for every aspect; include edit_impact plus "
+        "pre_edit/post_edit context and global_ending when present. "
+        "If samples cannot show audio or complete story transitions, report UNKNOWN "
+        "rather than guessing absence of regression. "
+        f"FULLCUT_EDL_DURATION_DIFFERENCE:{json.dumps({'baseline_duration_sec': fullcut_delta.get('baseline_duration_sec'), 'candidate_duration_sec': fullcut_delta.get('candidate_duration_sec'), 'duration_delta_sec': fullcut_delta.get('duration_delta_sec')})}\n"
         "Cite only FRAME_MANIFEST ids.\n"
         f"FRAME_MANIFEST:\n" + "\n".join(meta_lines) + "\n"
     )
@@ -638,6 +655,19 @@ def run_dual_video_vision_verifier(
         }
 
     gate = validate_visual_verifier_payload(parsed, sent_frame_ids=fids)
+    from .story_fullcut_semantic import screen_fullcut_semantic_gain
+
+    fullcut_screen = screen_fullcut_semantic_gain(
+        parsed.get("fullcut_comparison"),
+        frame_pack=pack,
+        baseline_mp4=baseline_mp4,
+        candidate_mp4=candidate_mp4,
+        finish_reason=raw.get("finish_reason"),
+    )
+    (audit_dir / "fullcut_semantic_screen.json").write_text(
+        json.dumps(fullcut_screen, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
     # Attach any extra recovered per-revision rows for case binding.
     if recovery.get("recovered") and not parsed.get("per_revision_judgments"):
         parsed = dict(gate["validated"])
@@ -657,6 +687,7 @@ def run_dual_video_vision_verifier(
         "usage": raw.get("usage"),
         "reasons": gate.get("reasons") or [],
         "vision_backed": True,
+        "fullcut_semantic_screen": fullcut_screen,
         "truncated_recovery": recovery,
         "per_revision_judgments_recovered": recovery.get("recovered") or [],
     }
