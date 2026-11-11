@@ -1212,6 +1212,10 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             rev = enforce_narrative_fit_on_plan(
                 rev, search_report=search_report, diagnosis=diag,
             )
+            if fixture_intents is None:
+                from .story_fullcut_learning import enforce_one_edit_per_round
+
+                rev = enforce_one_edit_per_round(rev)
         write_json(round_dir / "revision_plan.json", rev)
         final_decision = str(rev.get("decision") or "UNRESOLVED")
         round_rec["decision"] = final_decision
@@ -1906,6 +1910,9 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         # Otherwise SAME would STOP prematurely without trying that alternative.
         deferred_evidence_edits = list(
             (rev.get("fullcut_edit_selection") or {}).get("deferred") or []
+        )
+        deferred_evidence_edits.extend(
+            list((rev.get("one_edit_apply_gate") or {}).get("deferred_intents") or [])
         )
         has_distinct = has_distinct or bool(deferred_evidence_edits)
         round_rec["deferred_confirmed_alternatives"] = len(deferred_evidence_edits)
