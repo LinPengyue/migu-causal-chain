@@ -12,6 +12,7 @@ from story_video_agent_v3.story_fullcut_learning import (
     prioritize_confirmed_edits,
 )
 from story_video_agent_v3.story_revision_planner import plan_from_diagnosis
+from story_video_agent_v3.story_loop_policy import init_loop_state, evaluate_round_transition
 
 
 def _fullcut_screen(status="SCREENED_NO_GAIN"):
@@ -191,6 +192,52 @@ class TestFullcutLearning(unittest.TestCase):
         self.assertEqual(
             plan["fullcut_edit_selection"]["deferred"][0]["action"], "search_add",
         )
+
+    def test_failed_structural_edit_not_repeated_when_another_target_exists(self):
+        history = [{
+            "source_kind": "REAL_VLM",
+            "screen_status": "SCREENED_NO_GAIN",
+            "alternative_edit_priority": "CONFIRMED_NON_ADDITIVE",
+            "action": "drop",
+            "issue_id": "duplicate_non_goal",
+            "target_segment_id": "repeat",
+            "issue_signature": {"anchor_segment_ids": ["repeat"]},
+        }]
+        ranked = prioritize_confirmed_edits(
+            structure_intents=[
+                {"action": "drop", "issue_id": "duplicate_non_goal",
+                 "target_segment_id": "repeat"},
+                {"action": "drop", "issue_id": "duplicate_non_goal",
+                 "target_segment_id": "different_redundant_cut"},
+            ],
+            insert_intents=[],
+            feedback_context={"records": history},
+        )
+        self.assertEqual(len(ranked["selected"]), 1)
+        self.assertEqual(
+            ranked["selected"][0]["target_segment_id"], "different_redundant_cut"
+        )
+        self.assertEqual(len(ranked["skipped_repeated_structural"]), 1)
+
+    def test_screened_same_can_replan_when_distinct_confirmed_edit_waits(self):
+        transition = evaluate_round_transition(
+            init_loop_state(version_id="v0"),
+            {
+                "version_id": "v1", "parent_version_id": "v0",
+                "edl_changed": True, "rendered": True,
+            },
+            {
+                "safety": "PASS", "quality": "SAME", "evidence": "PARTIAL",
+                "source_kind": "REAL_VLM", "hard_vetoes": [],
+            },
+            budget={
+                "rounds_done": 1, "max_rounds": 3,
+                "has_distinct_alternative": True,
+            },
+        )
+        self.assertEqual(transition["next_action"], "REPLAN_FROM_BEST")
+        self.assertFalse(transition["promote"])
+        self.assertEqual(transition["best_ref"], "v0")
 
     def test_no_confirmed_structure_never_invents_drop(self):
         diag = _diagnosis()
