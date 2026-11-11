@@ -1,0 +1,39 @@
+{
+  "schema": "v3a_phase10a_zero_paid_verify_v1",
+  "generated": "2026-11-11T15:58:23.269183+00:00",
+  "worktree": "/data2/lpy1/worktrees/migu-v3a-phase10a-verify",
+  "branch": "story-va-v3a-phase10-narrative-quality",
+  "local_branch": "story-va-v3a-phase10-narrative-quality-verify",
+  "code_sha": "161e2b3b8eaccd69c9db0635a908498262b516cf",
+  "compileall": {
+    "target": "algo/story_video_agent_v3",
+    "exit_code": 0
+  },
+  "pytest_phase10": {
+    "command": "PYTHONPATH=algo python -m pytest tests/test_v3a_phase10_*.py -q",
+    "passed": 22,
+    "failed": 0,
+    "skipped": 0,
+    "exit_code": 0
+  },
+  "pytest_phase8": {
+    "command": "PYTHONPATH=algo python -m pytest tests/test_v3a_phase8_*.py -q",
+    "passed": 129,
+    "failed": 0,
+    "skipped": 0,
+    "exit_code": 0
+  },
+  "paid_http": 0,
+  "p10a_acceptance_claimed": false,
+  "human_benchmark_labels": "NOT_YET_COLLECTED",
+  "best_baseline": "V3-R",
+  "published_for_cross_platform_review": true,
+  "implementation_doc": "docs/V3A_PHASE10A_STORY_QUALITY_AND_LONG_CHAIN_PROTOCOL_V1.md",
+  "notes": [
+    "No algorithm edits in this verification turn.",
+    "No paid VLM.",
+    "Did not merge main.",
+    "Benchmark gold remains separate from agent-inferred story structure.",
+    "P10-A protocol/tests green; human labels and P10-B still pending."
+  ]
+}

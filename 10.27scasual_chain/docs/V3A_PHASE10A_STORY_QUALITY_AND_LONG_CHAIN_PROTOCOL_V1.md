@@ -193,7 +193,23 @@ first-live and factual constraints.
 ## 9. Phase10-A exit status
 
 - Protocol, validator, CLI and unit tests: source committed on isolated branch.
-- Execution of compileall/pytest on real server: **PENDING**.
+- Execution of compileall/pytest on real server: **DONE** on `161e2b3` (see below).
 - Real human benchmark labels: **NOT YET COLLECTED**.
 - Agent inference graph integration: **P10-B PENDING**.
 - End-to-end rendered story quality improvement: **UNVERIFIED**.
+
+### Server zero-paid regression (`161e2b3`)
+
+Worktree: `/data2/lpy1/worktrees/migu-v3a-phase10a-verify`  
+Report JSON: `docs/V3A_PHASE10A_SERVER_VERIFY_161e2b3.json`
+
+| Check | Result |
+|-------|--------|
+| `compileall algo/story_video_agent_v3` | exit 0 |
+| `tests/test_v3a_phase10_*.py` | **22 passed / 0 failed / 0 skipped** |
+| `tests/test_v3a_phase8_*.py` | **129 passed / 0 failed / 0 skipped** |
+| Paid HTTP / VLM | **0** |
+| Algo edits in verify turn | none |
+| Merge to main | not done |
+
+Mechanism/protocol regression is green. This does **not** claim P10-A human-benchmark acceptance or story-quality improvement over V3-R.
