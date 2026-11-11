@@ -457,8 +457,32 @@ def run_llm_revision_planner(
                 "opaque_reject_is_not_confirmed_negative": True,
                 "never_permanently_ban_pts": True,
             }
+    # Authenticated non-additive defects are sparse and must not disappear
+    # behind twelve source-time-gap hypotheses. Preserve exact segment
+    # targets, while leaving model-only unsupported claims unconfirmed.
+    all_issues = [
+        i for i in (diagnosis.get("issues") or [])
+        if isinstance(i, Mapping)
+    ]
+    prioritized_issues = sorted(
+        all_issues,
+        key=lambda i: (
+            0 if (
+                i.get("category") in ("redundancy", "narrative_order", "replay_risk")
+                and (i.get("story_defect_confirmed") is True
+                     or i.get("diagnosis_status") in
+                     ("CONFIRMED_STORY_DEFECT", "CONFIRMED_STRUCTURE_DEFECT"))
+            ) else 1,
+            0 if i.get("severity") in ("major", "critical") else 1,
+        ),
+    )
     payload = {
-        "issues": (diagnosis.get("issues") or [])[:12],
+        "issues": prioritized_issues[:12],
+        "edl_segment_refs": [
+            {"segment_id": x.get("segment_id"), "role": x.get("role")}
+            for x in ((diagnosis.get("timeline") or {}).get("segments") or [])[:60]
+            if isinstance(x, Mapping)
+        ],
         "vlm_critic_summary": {
             k: (vlm_critic.get("parsed") or {}).get(k)
             for k in (
@@ -510,6 +534,14 @@ def run_llm_revision_planner(
         "anchor_id?, search_windows?). "
         "If VLM did not confirm a structural needs_video_verify issue, use UNRESOLVED "
         "or keep — do not invent edits. "
+        "Prefer ONE evidence-backed edit per iteration. If a confirmed "
+        "redundancy issue explicitly names preferred_drop_segment_id, consider "
+        "dropping that exact non-goal cut before searching for more footage; "
+        "explain which story information is duplicated and the expected change "
+        "in coherence/pacing. Only cite existing segment IDs in EDL_SEGMENT_REFS "
+        "and only use issue_id from supplied diagnosis. "
+        "Do NOT invent drop targets, source PTS, trim bounds, or confirmation status. "
+        "An unconfirmed semantic hypothesis is not an executable edit. "
         "Do NOT propose search_add unless a candidate shows FIRST_LIVE_VERIFIED "
         "AND narrative_fit_status=REVIEW_SUPPORTED. A source-time jump is normal "
         "highlight compression. If no candidate has video-backed story improvement, "
