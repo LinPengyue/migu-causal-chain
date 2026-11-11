@@ -295,7 +295,7 @@ class TestAgentInferredStoryGraph(unittest.TestCase):
             )
         self.assertTrue(result["ok"])
         self.assertIn("AGENT_NARRATIVE_GRAPH_HINTS", model.vision_prompt)
-        self.assertIn("not evidence of a defect", model.vision_prompt)
+        self.assertIn("never evidence of a defect", model.vision_prompt)
         self.assertFalse(result["claims_full_video_watch"])
 
 
