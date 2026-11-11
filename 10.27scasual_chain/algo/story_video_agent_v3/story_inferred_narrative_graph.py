@@ -12,6 +12,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import re
 from typing import Any, Dict, Mapping, Optional, Sequence
 
 from .story_timeline import build_story_timeline, narrative_slot_for_role
@@ -36,6 +37,99 @@ def _identifiers(row: Mapping[str, Any], singular: str, plural: str) -> list[str
         elif isinstance(v, (tuple, list)):
             result.extend(x for x in v if isinstance(x, str) and x.strip())
     return list(dict.fromkeys(result))[:12]
+
+
+# Frozen Phase5 embeds a *predicted* short chain and its atom in an
+# event-like reference: causal:pred_0007:atom_fill_0004_Goal_1337123.
+# This is a POINTER to a predicted chain, not a verified causal claim.
+_EMBEDDED_PRED = re.compile(r"^causal:(pred_[^:]+):(atom_fill_[^:]+)$")
+
+
+def _typed_material_refs(
+    row: Mapping[str, Any],
+    plan_item: Mapping[str, Any],
+) -> Dict[str, Any]:
+    raw_event_ids = list(dict.fromkeys(
+        _identifiers(row, "event_id", "event_ids")
+        + _identifiers(row, "source_event_id", "source_event_ids")
+        + _identifiers(plan_item, "event_id", "event_ids")
+    ))[:32]
+    raw_chains = list(dict.fromkeys(
+        _identifiers(row, "chain_id", "chain_ids")
+        + _identifiers(row, "causal_chain_id", "short_chain_ids")
+        + _identifiers(plan_item, "chain_id", "short_chain_ids")
+    ))[:32]
+    event_refs: list[str] = []
+    chain_refs: list[str] = []
+    provenance: list[Dict[str, Any]] = []
+    unknown: list[str] = []
+
+    for raw in raw_event_ids:
+        match = _EMBEDDED_PRED.fullmatch(raw)
+        if match:
+            pred_id, atom_id = match.groups()
+            # Both identifiers appear literally in the frozen source pointer;
+            # decomposition cannot independently verify either semantic fact.
+            chain_refs.append(pred_id)
+            event_refs.append(atom_id)
+            provenance.extend([
+                {
+                    "ref_type": "predicted_short_chain",
+                    "ref_id": pred_id,
+                    "raw_source_ref": raw,
+                    "extraction": "embedded_causal_prediction_pointer",
+                    "validated_against_short_chain_inventory": False,
+                },
+                {
+                    "ref_type": "atom_event",
+                    "ref_id": atom_id,
+                    "raw_source_ref": raw,
+                    "extraction": "embedded_causal_prediction_pointer",
+                    "validated_against_event_inventory": False,
+                },
+            ])
+        elif raw.startswith("causal:"):
+            # Unknown causal wrapper: do not mislabel as a factual event.
+            unknown.append(raw)
+        else:
+            event_refs.append(raw)
+            provenance.append({
+                "ref_type": "atom_event",
+                "ref_id": raw,
+                "raw_source_ref": raw,
+                "extraction": "explicit_edl_or_plan_event_id",
+                "validated_against_event_inventory": False,
+            })
+    for raw in raw_chains:
+        if raw.startswith("causal:"):
+            match = _EMBEDDED_PRED.fullmatch(raw)
+            if match:
+                chain_id, _ = match.groups()
+                chain_refs.append(chain_id)
+                provenance.append({
+                    "ref_type": "predicted_short_chain",
+                    "ref_id": chain_id,
+                    "raw_source_ref": raw,
+                    "extraction": "embedded_causal_prediction_pointer",
+                    "validated_against_short_chain_inventory": False,
+                })
+            else:
+                unknown.append(raw)
+            continue
+        chain_refs.append(raw)
+        provenance.append({
+            "ref_type": "predicted_short_chain",
+            "ref_id": raw,
+            "raw_source_ref": raw,
+            "extraction": "explicit_edl_or_plan_short_chain_id",
+            "validated_against_short_chain_inventory": False,
+        })
+    return {
+        "event_ids": list(dict.fromkeys(event_refs))[:16],
+        "short_chain_ids": list(dict.fromkeys(chain_refs))[:16],
+        "reference_provenance": provenance[:48],
+        "unclassified_source_refs": list(dict.fromkeys(unknown))[:16],
+    }
 
 
 def _reject_benchmark_gold(plan: Mapping[str, Any], edl: Sequence[Mapping[str, Any]]) -> None:
@@ -117,30 +211,19 @@ def build_inferred_narrative_graph(
             if s.get("has_media_window") else None
         )
         plan_item = plan_refs.get(str(s["segment_id"])) or {}
-        event_refs = list(dict.fromkeys(
-            _identifiers(row, "event_id", "event_ids")
-            + _identifiers(row, "source_event_id", "source_event_ids")
-            + _identifiers(plan_item, "event_id", "event_ids")
-        ))[:12]
-        chain_refs = list(dict.fromkeys(
-            _identifiers(row, "chain_id", "chain_ids")
-            + _identifiers(row, "causal_chain_id", "short_chain_ids")
-            + _identifiers(plan_item, "chain_id", "short_chain_ids")
-        ))[:12]
-        for event_id in event_refs:
+        typed_refs = _typed_material_refs(row, plan_item)
+        event_refs = typed_refs["event_ids"]
+        chain_refs = typed_refs["short_chain_ids"]
+        for ref in typed_refs["reference_provenance"]:
+            event = ref["ref_type"] == "atom_event"
             evidence_links.append({
-                "from_node": "event:" + event_id,
+                "from_node": ("event:" if event else "short_chain:") + ref["ref_id"],
                 "to_node": "edl:" + str(s["segment_id"]),
                 "relation": "referenced_as_story_material",
                 "relation_status": "INPUT_REFERENCE_ONLY",
-                "is_match_causal_claim": False,
-            })
-        for chain_id in chain_refs:
-            evidence_links.append({
-                "from_node": "short_chain:" + chain_id,
-                "to_node": "edl:" + str(s["segment_id"]),
-                "relation": "referenced_as_story_material",
-                "relation_status": "INPUT_REFERENCE_ONLY",
+                "raw_source_ref": ref["raw_source_ref"],
+                "extraction": ref["extraction"],
+                "validated_against_source_inventory": False,
                 "is_match_causal_claim": False,
             })
         nodes.append({
@@ -152,6 +235,8 @@ def build_inferred_narrative_graph(
             "source_window": media_window,
             "event_ids": event_refs,
             "short_chain_ids": chain_refs,
+            "typed_reference_provenance": typed_refs["reference_provenance"],
+            "unclassified_source_refs": typed_refs["unclassified_source_refs"],
             "source_binding": "EDL_WINDOW_NOT_LIVE_VERIFIED" if media_window else "NON_MEDIA_CARD",
             "semantic_status": "UNOBSERVED_ROLE_HYPOTHESIS",
             "protected_goal_action_hint": "goal_action" in str(s.get("role") or ""),
@@ -199,6 +284,13 @@ def build_inferred_narrative_graph(
             "node_count": len(nodes),
             "edge_count": len(edges),
             "event_or_short_chain_reference_links": len(evidence_links),
+            "event_reference_links": sum(x["from_node"].startswith("event:") for x in evidence_links),
+            "short_chain_prediction_reference_links": sum(
+                x["from_node"].startswith("short_chain:") for x in evidence_links
+            ),
+            "unclassified_reference_count": sum(
+                len(n["unclassified_source_refs"]) for n in nodes
+            ),
             "unreviewed_narrative_transitions": sum(
                 bool(e["narrative_transition_hypothesis"]) for e in edges
             ),
@@ -206,6 +298,7 @@ def build_inferred_narrative_graph(
         },
         "limitations": [
             "EDL adjacency/role annotations are not verified match causality or narrative quality.",
+            "Embedded causal:pred_*:atom_fill_* references yield unverified predicted-chain and atom pointers, NOT confirmed 18-class causal labels.",
             "No Benchmark gold chain, annotated test EDL or human review is an Agent input.",
             "This graph alone never confirms a story defect or authorizes an edit.",
         ],
