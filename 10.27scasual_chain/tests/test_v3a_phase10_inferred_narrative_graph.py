@@ -110,6 +110,68 @@ class TestAgentInferredStoryGraph(unittest.TestCase):
                             for x in graph["evidence_links"]))
         self.assertFalse(graph_planner_context(graph)["graph_edges_are_causal_facts"])
 
+    def test_frozen_phase5_causal_pointer_decodes_without_claiming_causality(self):
+        # Exact ID pattern observed in real Phase10-B A/B graph previews.
+        edl = [
+            {"segment_id": "opener", "role": "opponent_opening_goal_action",
+             "media_in": 10.0, "media_out": 18.0,
+             "event_id": "causal:pred_0007:atom_fill_0004_Goal_1337123"},
+            {"segment_id": "development", "role": "buildup_action",
+             "media_in": 30.0, "media_out": 38.0, "event_id": "event_000472"},
+        ]
+        graph = build_inferred_narrative_graph(edl=edl, story_plan={})
+        opener, development = graph["nodes"]
+        self.assertEqual(opener["event_ids"], ["atom_fill_0004_Goal_1337123"])
+        self.assertEqual(opener["short_chain_ids"], ["pred_0007"])
+        self.assertEqual(development["event_ids"], ["event_000472"])
+        self.assertEqual(development["short_chain_ids"], [])
+        self.assertEqual(graph["summary"]["short_chain_prediction_reference_links"], 1)
+        self.assertEqual(graph["summary"]["event_reference_links"], 2)
+        self.assertEqual(graph["summary"]["event_or_short_chain_reference_links"], 3)
+        self.assertFalse(any(
+            link["is_match_causal_claim"] or link["validated_against_source_inventory"]
+            for link in graph["evidence_links"]
+        ))
+        self.assertEqual(
+            {x["raw_source_ref"] for x in opener["typed_reference_provenance"]},
+            {"causal:pred_0007:atom_fill_0004_Goal_1337123"},
+        )
+        self.assertTrue(any(
+            link["from_node"] == "short_chain:pred_0007"
+            and link["extraction"] == "embedded_causal_prediction_pointer"
+            for link in graph["evidence_links"]
+        ))
+
+    def test_unknown_causal_wrapper_not_mislabeled_event_or_chain(self):
+        edl = [
+            {"segment_id": "a", "role": "buildup_action",
+             "media_in": 3.0, "media_out": 7.0,
+             "event_id": "causal:unexpected_format"},
+            {"segment_id": "b", "role": "equalizer_goal_action",
+             "media_in": 10.0, "media_out": 14.0, "event_id": "atom_fill_001"},
+        ]
+        graph = build_inferred_narrative_graph(edl=edl, story_plan={})
+        self.assertEqual(graph["nodes"][0]["event_ids"], [])
+        self.assertEqual(graph["nodes"][0]["short_chain_ids"], [])
+        self.assertEqual(graph["nodes"][0]["unclassified_source_refs"], ["causal:unexpected_format"])
+        self.assertEqual(graph["summary"]["unclassified_reference_count"], 1)
+
+    def test_explicit_short_chain_ids_remain_explicit(self):
+        edl = [
+            {"segment_id": "a", "role": "buildup_action",
+             "media_in": 3.0, "media_out": 7.0,
+             "event_id": "event_123", "short_chain_ids": ["chain_123"]},
+            {"segment_id": "b", "role": "equalizer_goal_action",
+             "media_in": 10.0, "media_out": 14.0, "event_id": "event_124"},
+        ]
+        graph = build_inferred_narrative_graph(edl=edl, story_plan={})
+        self.assertEqual(graph["nodes"][0]["short_chain_ids"], ["chain_123"])
+        self.assertTrue(any(
+            p["extraction"] == "explicit_edl_or_plan_short_chain_id"
+            and p["raw_source_ref"] == "chain_123"
+            for p in graph["nodes"][0]["typed_reference_provenance"]
+        ))
+
     def test_legacy_duplicate_segment_ids_degrade_graph_not_e2e(self):
         edl = _edl()
         edl[1]["segment_id"] = edl[0]["segment_id"]
