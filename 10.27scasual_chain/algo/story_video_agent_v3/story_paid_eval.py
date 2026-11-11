@@ -221,11 +221,29 @@ def run_vlm_story_critic(
             "provider_mode": "skipped",
         }
     paths = [Path(f["path"]) for f in frames]
+    from .story_timeline import story_time_to_media
+
+    timeline = diagnosis.get("timeline") or {}
     fids = []
     bindings = []
+    editorial_frame_bindings = []
     for i, fr in enumerate(frames):
         fid = str(fr.get("frame_id") or f"f{i}")
         fids.append(fid)
+        story_sec_raw = fr.get("story_sec")
+        if story_sec_raw is None:
+            story_sec_raw = fr.get("requested_media_sec")
+        try:
+            story_sec = float(story_sec_raw)
+            mapped = story_time_to_media(timeline, story_sec) or {}
+        except (TypeError, ValueError):
+            mapped = {}
+        editorial_frame_bindings.append({
+            "frame_id": fid,
+            "segment_id": mapped.get("segment_id"),
+            "story_sec": story_sec_raw,
+            "path": str(fr.get("path") or ""),
+        })
         bindings.append(
             {
                 "frame_id": fid,
@@ -271,7 +289,15 @@ def run_vlm_story_critic(
         '"missing_story_information":str|null,"why_transition_breaks":str|null,'
         '"evidence_refs":[{"frame_id":str,"note":str}]'
         "}],"
-        '"keep_story_if_no_defect":bool,"overall_narrative_quality":str}\n'
+        '"keep_story_if_no_defect":bool,"overall_narrative_quality":str,'
+        '"redundancy_claims":[{"target_segment_id":str,'
+        '"comparison_segment_id":str,"observed_fact":str,'
+        '"why_redundant":str,"evidence_refs":[{"frame_id":str,"note":str}]}]}\n'
+        "Redundancy_claims is OPTIONAL (max ONE). Only report a redundant non-goal "
+        "scene when sent frames from TWO DIFFERENT EDL segments concretely show "
+        "the same narrative information, and identify the exact expendable target. "
+        "Do not declare redundant because two clips show the same team or pitch. "
+        "Never target a goal, scoreboard, title, or ending; cite both segments.\n"
         "A large gap in source match time is NORMAL highlight editing, not a defect. "
         "Only claim a transition defect when the supplied frames reveal a specific "
         "missing event, game-state change, or emotional progression essential to understanding "
@@ -281,6 +307,7 @@ def run_vlm_story_critic(
         "If transition already understandable, set claims_story_defect=false.\n"
         f"HYPOTHESES:{json.dumps(issues_brief, ensure_ascii=False)}\n"
         f"FRAME_IDS:{json.dumps(fids, ensure_ascii=False)}\n"
+        f"FRAME_TO_EDL:{json.dumps([{'frame_id': x['frame_id'], 'segment_id': x.get('segment_id')} for x in editorial_frame_bindings], ensure_ascii=False)}\n"
     )
     mock = {"semantic_evidence": [], "keep_story_if_no_defect": True, "confidence": 0}
     try:
@@ -348,6 +375,19 @@ def run_vlm_story_critic(
     (audit_dir / "vlm_semantic_evidence.json").write_text(
         json.dumps(updates, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
+    from .story_editorial_redundancy import validate_editorial_redundancy_claims
+
+    editorial_result = validate_editorial_redundancy_claims(
+        (parsed or {}).get("redundancy_claims") or []
+        if mode == "real" and parsed is not None and not parse_error else [],
+        frame_bindings=editorial_frame_bindings,
+        timeline=timeline,
+        protected_goal_ids=diagnosis.get("protected_goal_segment_ids") or [],
+    )
+    (audit_dir / "vlm_editorial_redundancy_candidates.json").write_text(
+        json.dumps(editorial_result, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
     if parsed is None and not updates.get("semantic_evidence"):
         return {
             "ok": False,
@@ -364,7 +404,11 @@ def run_vlm_story_critic(
         "ok": mode == "real" and parsed is not None,
         "provider_mode": mode,
         "parsed": parsed,
-        "derived_issues": updates.get("derived_issues") or [],
+        "derived_issues": (
+            list(updates.get("derived_issues") or [])
+            + list(editorial_result.get("issues") or [])
+        ),
+        "editorial_redundancy_candidates": editorial_result,
         "confirmed_issue_ids": updates.get("confirmed_issue_ids") or [],
         "semantic_evidence": updates.get("semantic_evidence") or [],
         "observation_updates": updates,
