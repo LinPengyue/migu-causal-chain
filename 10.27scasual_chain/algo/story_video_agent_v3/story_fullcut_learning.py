@@ -252,3 +252,110 @@ def prioritize_confirmed_edits(
         ),
         "no_new_unverified_edits_synthesized": True,
     }
+
+
+def enforce_confirmed_nonadditive_edits(
+    plan: Mapping[str, Any],
+    *,
+    diagnosis: Mapping[str, Any],
+    edl: Sequence[Mapping[str, Any]],
+) -> Dict[str, Any]:
+    """Post-LLM safety for deletion/reordering of *existing* story footage.
+
+    The LLM can recommend a change, but may not invent a confirmed diagnosis or
+    remove arbitrary EDL segments. This runs on production after an LLM overlay;
+    offline Phase8 fixtures retain their historical control-flow contract.
+    """
+    issues = _issue_by_id(diagnosis)
+    rows = {
+        str(r.get("segment_id")): r for r in edl
+        if isinstance(r, Mapping) and r.get("segment_id")
+        and r.get("include_in_cut", True)
+    }
+    protected = {
+        str(x) for x in diagnosis.get("protected_goal_segment_ids") or []
+    }
+    def essential(sid: str) -> bool:
+        r = rows.get(sid) or {}
+        role = str(r.get("role") or "").lower()
+        return (sid in protected or any(x in role for x in
+                ("goal_action", "scoreboard", "title", "ending", "wrap")))
+
+    def authorizes(it: Mapping[str, Any]) -> bool:
+        action = str(it.get("action") or "")
+        target = str(it.get("target_segment_id") or "")
+        iss = issues.get(str(it.get("issue_id") or "")) or {}
+        if not iss or target not in rows or essential(target):
+            return False
+        if not (
+            iss.get("story_defect_confirmed") is True
+            or iss.get("diagnosis_status") in (
+                "CONFIRMED_STORY_DEFECT", "CONFIRMED_STRUCTURE_DEFECT"
+            )
+        ):
+            return False
+        category = str(iss.get("category") or "")
+        known = {
+            str(x) for x in iss.get("segment_ids") or [] if x
+        }
+        if category == "redundancy" and action == "drop":
+            return (
+                str(iss.get("preferred_drop_segment_id") or "") == target
+                and target in known
+            )
+        if category == "replay_risk" and action == "drop":
+            return target in known
+        if category == "narrative_order" and action == "reorder":
+            moves = {
+                str(x) for x in it.get("move_segment_ids") or [] if x
+            }
+            return (
+                target in known and moves
+                and moves.issubset(known)
+                and not any(essential(x) for x in moves)
+            )
+        if category in ("redundancy", "narrative_order") and action == "trim":
+            # evaluate_trim_bounds still independently requires time/frame evidence
+            return (
+                target in known and bool(iss.get("evidence_frame_refs"))
+                and str(iss.get("evidence_tier") or "") == "DEFECT_CONFIRMED"
+            )
+        return False
+
+    output = dict(plan)
+    selected = []
+    blocked = []
+    for raw in output.get("revision_intents") or []:
+        if not isinstance(raw, Mapping):
+            continue
+        it = dict(raw)
+        action = str(it.get("action") or "")
+        if action in ("drop", "reorder", "trim") and not authorizes(it):
+            blocked.append({
+                "intent_id": it.get("intent_id"),
+                "issue_id": it.get("issue_id"),
+                "target_segment_id": it.get("target_segment_id"),
+                "attempted_action": action,
+                "reason": "missing_confirmed_issue_exact_target_or_protected_segment",
+            })
+            it.update({
+                "action": "mark_unresolved",
+                "blocked_original_action": action,
+                "block_reason": "nonadditive_edit_requires_exact_confirmed_issue",
+            })
+        selected.append(it)
+    output["revision_intents"] = selected
+    output["nonadditive_apply_gate"] = {
+        "required": True,
+        "blocked_intents": blocked,
+        "n_blocked": len(blocked),
+        "explicitly_protected_goals": sorted(protected),
+    }
+    mutating = any(
+        str(i.get("action") or "") not in ("keep", "mark_unresolved", "unresolved")
+        for i in selected
+    )
+    if blocked and not mutating:
+        output["decision"] = "UNRESOLVED"
+        output["normalize_note"] = "nonadditive_apply_gate_blocked_all_mutations"
+    return output
