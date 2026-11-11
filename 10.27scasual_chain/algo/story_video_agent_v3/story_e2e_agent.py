@@ -1198,8 +1198,16 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     }
                 ]
         if narrative_fit_required:
-            # Last line of defense: LLM-generated search_add cannot invent its
-            # own narrative-fit status or bypass the bound Search review.
+            # Both rule and model edits are candidates, never license to
+            # remove unrelated cuts. Bind existing-footage repairs to exact
+            # confirmed diagnosis and unprotected segment before applying.
+            from .story_fullcut_learning import enforce_confirmed_nonadditive_edits
+
+            rev = enforce_confirmed_nonadditive_edits(
+                rev, diagnosis=diag, edl=working_edl,
+            )
+            # Adding/replacing source footage additionally requires independent
+            # first-live and BEFORE→CANDIDATE→AFTER narrative evidence.
             rev = enforce_narrative_fit_on_plan(
                 rev, search_report=search_report, diagnosis=diag,
             )
