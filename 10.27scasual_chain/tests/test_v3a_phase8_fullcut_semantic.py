@@ -110,6 +110,18 @@ class TestFullcutSemantic(unittest.TestCase):
         focus = [p for p in plan if p["narrative_slot"] == "edit_impact"]
         self.assertEqual(focus[0]["candidate_segment_id"], "new")
 
+    def test_arbitrary_late_beat_cannot_masquerade_as_ending(self):
+        base, cand = _edl()
+        base[-1] = {**base[-1], "role": "generic_midfield"}
+        cand[-1] = {**cand[-1], "role": "generic_midfield"}
+        plan = fullcut_edit_context_sample_plan(
+            build_story_timeline(base), build_story_timeline(cand),
+            changed_segment_ids=["new"], max_slots=4,
+        )
+        slots = [p["narrative_slot"] for p in plan]
+        self.assertIn("global_tail", slots)
+        self.assertNotIn("global_ending", slots)
+
     def test_low_budget_cannot_drop_edit_target(self):
         base, cand = _edl()
         plan = fullcut_edit_context_sample_plan(
