@@ -40,11 +40,21 @@ def _identifiers(row: Mapping[str, Any], singular: str, plural: str) -> list[str
 
 def _reject_benchmark_gold(plan: Mapping[str, Any], edl: Sequence[Mapping[str, Any]]) -> None:
     """Defend the research protocol at the inference entrypoint."""
-    for obj in [plan, *edl]:
-        if not isinstance(obj, Mapping):
-            continue
-        if obj.get("data_role") == "BENCHMARK_GOLD" or obj.get("schema") == GOLD_SCHEMA:
-            raise ValueError("Benchmark gold story chain cannot be used as an Agent input")
+    # Recursively reject even nested benchmark labels, rather than merely
+    # omitting one suspicious top-level field from a Planner prompt.
+    stack: list[Any] = [plan, *edl]
+    checked = 0
+    while stack:
+        obj = stack.pop()
+        checked += 1
+        if checked > 10000:
+            raise ValueError("oversized/cyclic story input cannot be safely screened")
+        if isinstance(obj, Mapping):
+            if obj.get("data_role") == "BENCHMARK_GOLD" or obj.get("schema") == GOLD_SCHEMA:
+                raise ValueError("Benchmark gold story chain cannot be used as an Agent input")
+            stack.extend(obj.values())
+        elif isinstance(obj, (tuple, list)):
+            stack.extend(obj)
 
 
 def _slot(seg: Mapping[str, Any]) -> str:
@@ -74,12 +84,46 @@ def build_inferred_narrative_graph(
     ids = [str(s.get("segment_id") or "") for s in segments]
     if len(ids) != len(set(ids)):
         raise ValueError("duplicate active EDL segment_id in narrative graph")
+    # Only exact segment_id matches link a story-plan hint to an EDL segment;
+    # never join on fuzzy text similarity, match-specific PTS or assumed goals.
+    plan_refs: Dict[str, Mapping[str, Any]] = {}
+    for item in plan.get("segments") or []:
+        if isinstance(item, Mapping) and isinstance(item.get("segment_id"), str):
+            plan_refs[item["segment_id"]] = item
     nodes: list[Dict[str, Any]] = []
+    evidence_links: list[Dict[str, Any]] = []
     for s, row in zip(segments, active):
         media_window = (
             [s["media_in"], s["media_out"]]
             if s.get("has_media_window") else None
         )
+        plan_item = plan_refs.get(str(s["segment_id"])) or {}
+        event_refs = list(dict.fromkeys(
+            _identifiers(row, "event_id", "event_ids")
+            + _identifiers(row, "source_event_id", "source_event_ids")
+            + _identifiers(plan_item, "event_id", "event_ids")
+        ))[:12]
+        chain_refs = list(dict.fromkeys(
+            _identifiers(row, "chain_id", "chain_ids")
+            + _identifiers(row, "causal_chain_id", "short_chain_ids")
+            + _identifiers(plan_item, "chain_id", "short_chain_ids")
+        ))[:12]
+        for event_id in event_refs:
+            evidence_links.append({
+                "from_node": "event:" + event_id,
+                "to_node": "edl:" + str(s["segment_id"]),
+                "relation": "referenced_as_story_material",
+                "relation_status": "INPUT_REFERENCE_ONLY",
+                "is_match_causal_claim": False,
+            })
+        for chain_id in chain_refs:
+            evidence_links.append({
+                "from_node": "short_chain:" + chain_id,
+                "to_node": "edl:" + str(s["segment_id"]),
+                "relation": "referenced_as_story_material",
+                "relation_status": "INPUT_REFERENCE_ONLY",
+                "is_match_causal_claim": False,
+            })
         nodes.append({
             "node_id": "edl:" + str(s["segment_id"]),
             "segment_id": s["segment_id"],
@@ -87,8 +131,8 @@ def build_inferred_narrative_graph(
             "narrative_slot_hint": _slot(s),
             "story_time_range": [s["story_in"], s["story_out"]],
             "source_window": media_window,
-            "event_ids": _identifiers(row, "event_id", "event_ids"),
-            "short_chain_ids": _identifiers(row, "chain_id", "short_chain_ids"),
+            "event_ids": event_refs,
+            "short_chain_ids": chain_refs,
             "source_binding": "EDL_WINDOW_NOT_LIVE_VERIFIED" if media_window else "NON_MEDIA_CARD",
             "semantic_status": "UNOBSERVED_ROLE_HYPOTHESIS",
             "protected_goal_action_hint": "goal_action" in str(s.get("role") or ""),
@@ -129,9 +173,13 @@ def build_inferred_narrative_graph(
         "story_goal_hint": story_goal,
         "nodes": nodes,
         "edges": edges,
+        # Typed event/short-causal-chain → long-story-unit references. These
+        # edges never assert that short chains cause other long-story units.
+        "evidence_links": evidence_links,
         "summary": {
             "node_count": len(nodes),
             "edge_count": len(edges),
+            "event_or_short_chain_reference_links": len(evidence_links),
             "unreviewed_narrative_transitions": sum(
                 bool(e["narrative_transition_hypothesis"]) for e in edges
             ),
