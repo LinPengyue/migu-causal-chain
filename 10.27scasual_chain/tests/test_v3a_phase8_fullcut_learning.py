@@ -10,6 +10,7 @@ import unittest
 from story_video_agent_v3.story_fullcut_learning import (
     extract_fullcut_learning,
     prioritize_confirmed_edits,
+    enforce_one_edit_per_round,
 )
 from story_video_agent_v3.story_revision_planner import plan_from_diagnosis
 from story_video_agent_v3.story_loop_policy import init_loop_state, evaluate_round_transition
@@ -238,6 +239,34 @@ class TestFullcutLearning(unittest.TestCase):
         self.assertEqual(transition["next_action"], "REPLAN_FROM_BEST")
         self.assertFalse(transition["promote"])
         self.assertEqual(transition["best_ref"], "v0")
+
+    def test_llm_multi_mutation_is_reduced_to_one_attributable_edit(self):
+        original = {"decision": "REVISE", "revision_intents": [
+            {"intent_id": "insert", "action": "search_add",
+             "issue_id": "missing_change"},
+            {"intent_id": "cut", "action": "drop",
+             "issue_id": "duplicate_non_goal", "target_segment_id": "repeat"},
+        ]}
+        result = enforce_one_edit_per_round(original)
+        self.assertEqual(result["decision"], "REVISE")
+        active = [i for i in result["revision_intents"] if
+                  i.get("action") in ("drop", "search_add")]
+        self.assertEqual(len(active), 1)
+        self.assertEqual(active[0]["action"], "drop")
+        self.assertEqual(result["one_edit_apply_gate"]["n_deferred"], 1)
+        self.assertEqual(
+            result["one_edit_apply_gate"]["deferred_intents"][0]["original_action"],
+            "search_add",
+        )
+        self.assertEqual(original["revision_intents"][0]["action"], "search_add")
+
+    def test_single_edit_does_not_change_user_intent(self):
+        inp = {"decision": "REVISE", "revision_intents": [{
+            "action": "drop", "intent_id": "only", "target_segment_id": "repeat",
+        }]}
+        result = enforce_one_edit_per_round(inp)
+        self.assertEqual(result["revision_intents"][0]["action"], "drop")
+        self.assertEqual(result["one_edit_apply_gate"]["n_deferred"], 0)
 
     def test_no_confirmed_structure_never_invents_drop(self):
         diag = _diagnosis()
