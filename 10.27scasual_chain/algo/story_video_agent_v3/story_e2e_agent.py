@@ -57,6 +57,11 @@ from .story_loop_policy import (
 )
 from .final_goal_evidence import build_delivery_and_candidate_evidence, sha256_file
 from .story_timeline import build_story_timeline
+from .story_inferred_narrative_graph import (
+    attach_validated_video_review,
+    build_inferred_narrative_graph,
+    graph_observation_targets,
+)
 from .story_revision_feedback import make_observation_evidence_token
 from .first_live_window_evidence import (
     build_local_first_live_evidence_pack,
@@ -700,13 +705,28 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             initial_story_mp4=working_mp4,
             source_video=inp.source_mp4,
         )
+        # P10-B: rederive an inference-only, source/EDL-bound narrative graph.
+        # NEVER read benchmark gold labels in this production path. Graph role
+        # hints and editorial adjacency are NOT story defects or match causation.
+        narrative_graph = build_inferred_narrative_graph(
+            edl=working_edl, story_plan=plan, source_sha256=source_sha,
+        )
+        graph_targets = graph_observation_targets(narrative_graph, max_targets=2)
+        diag["agent_narrative_graph"] = narrative_graph
+        diag["graph_observation_targets"] = graph_targets
+        write_json(round_dir / "agent_narrative_graph_pre_observe.json", narrative_graph)
+        write_json(round_dir / "agent_graph_observation_targets.json", graph_targets)
         # Observe (ffmpeg layers always; optional paid VLM critic)
         obs = observe_layers(
             story_mp4=working_mp4,
             source_mp4=inp.source_mp4,
             edl=working_edl,
             work_dir=round_dir / "observe",
-            diagnosis_issues=diag.get("issues") or [],
+            diagnosis_issues=(
+                (graph_targets if inp.fixture_revision is None and
+                 inp.phase8_round_fixtures is None else [])
+                + list(diag.get("issues") or [])
+            ),
             skip_vlm=True,  # VLM is invoked explicitly below when authorized
         )
         vlm_critic = None
@@ -834,6 +854,15 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 paid_api = None
 
         diag = merge_observation_into_diagnosis(diag, obs)
+        # Update graph with citation-normalized video *claims*, not new facts;
+        # note VLM evidence is still sparse sampling, not fullcut human judgment.
+        narrative_graph = attach_validated_video_review(
+            narrative_graph,
+            observations=obs,
+            diagnosis_issues=diag.get("issues") or [],
+        )
+        diag["agent_narrative_graph"] = narrative_graph
+        write_json(round_dir / "agent_narrative_graph.json", narrative_graph)
         # Offline confirm AFTER semantic merge so HYPOTHESIS layer cannot wipe it.
         # Does NOT inject revision intents or candidate PTS — search/planner choose.
         confirm_ids = set(str(x) for x in (inp.confirm_issue_ids or []) if x)
@@ -867,6 +896,14 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         gates["story_diagnosis_valid"] = bool(diag.get("story_diagnosis_valid"))
         round_rec["diagnosis_issue_count"] = len(diag.get("issues") or [])
         round_rec["semantic_observation_claimed"] = diag.get("semantic_observation_claimed")
+        round_rec["agent_narrative_graph"] = {
+            "schema": narrative_graph.get("schema"),
+            "node_count": (narrative_graph.get("summary") or {}).get("node_count"),
+            "unreviewed_transition_count": (narrative_graph.get("summary") or {}).get("unreviewed_narrative_transitions"),
+            "model_reviewed_transition_count": (narrative_graph.get("summary") or {}).get("model_reviewed_transitions"),
+            "observation_target_count": len(graph_targets),
+            "benchmark_gold_used": False,
+        }
 
         # Active evidence search (Critic gaps → source PTS candidates).
         # Prefer V3-R events_enriched.json; raw events_json must not bypass it.
