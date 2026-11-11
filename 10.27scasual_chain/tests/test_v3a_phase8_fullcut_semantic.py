@@ -10,7 +10,9 @@ import unittest
 from pathlib import Path
 
 from story_video_agent_v3.story_fullcut_sampling import fullcut_edit_context_sample_plan
-from story_video_agent_v3.story_fullcut_semantic import screen_fullcut_semantic_gain
+from story_video_agent_v3.story_fullcut_semantic import (
+    screen_fullcut_semantic_gain, constrain_sampled_verifier_payload,
+)
 from story_video_agent_v3.story_timeline import build_story_timeline
 from story_video_agent_v3.story_loop_policy import (
     evaluate_round_transition, init_loop_state,
@@ -206,6 +208,30 @@ class TestFullcutSemantic(unittest.TestCase):
                 finish_reason="length",
             )
             self.assertEqual(out["status"], "UNVERIFIED")
+
+    def test_llm_claimed_better_or_accept_never_leaks_through_sampled_overlay(self):
+        claimed = {
+            "quality_delta_vs_baseline": "IMPROVED",
+            "accept_candidate": True,
+            "soft_quality": "BETTER",
+            "original_issue_resolved": True,
+            "global_regression": "NO",
+            "source_kind": "REAL_VLM",
+        }
+        result = constrain_sampled_verifier_payload(
+            claimed, {"status": "SCREENED_BETTER"},
+        )
+        self.assertEqual(result["quality_delta_vs_baseline"], "NOT_EVALUATED")
+        self.assertEqual(result["soft_quality"], "PROMISING")
+        self.assertFalse(result["accept_candidate"])
+        self.assertIsNone(result["original_issue_resolved"])
+        self.assertEqual(result["global_regression"], "UNKNOWN")
+        negative = constrain_sampled_verifier_payload(
+            claimed, {"status": "SCREENED_NO_GAIN"},
+        )
+        self.assertEqual(negative["soft_quality"], "SAME")
+        uncertain = constrain_sampled_verifier_payload(claimed, {})
+        self.assertEqual(uncertain["soft_quality"], "UNCERTAIN")
 
     def test_independent_phase8_policy_refuses_best_promote_from_sampled_stills(self):
         state = init_loop_state(version_id="v0")
