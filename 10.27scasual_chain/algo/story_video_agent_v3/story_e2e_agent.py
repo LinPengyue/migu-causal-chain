@@ -1778,6 +1778,19 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         else:
             phase8_verdict["verdict_provenance"] = verdict_provenance
             phase8_verdict["source_kind"] = verdict_provenance
+        # Independent of LLM quality labels: sampled stills cannot establish
+        # no global regression or certify complete audio/tempo continuity.
+        # Explicit loop policy gate prevents unreviewed PROMOTE_BEST even if a
+        # future payload accidentally reintroduces quality=BETTER.
+        if verdict_provenance == "REAL_VLM":
+            phase8_verdict["require_fullcut_semantic_gate"] = True
+            phase8_verdict["fullcut_gate_promote"] = False
+            phase8_verdict["fullcut_semantic_screen_status"] = (
+                (fullcut_semantic_screen or {}).get("status") or "NOT_EVALUATED"
+            )
+            phase8_verdict["fullcut_semantic_observation_scope"] = (
+                "aligned_sampled_finished_cuts_not_continuous_video"
+            )
         # Compared against best requires parent==best OR an explicit vs-best observation.
         # Parent==working≠best alone is NOT a full-story best comparison (P1-F).
         best_id_now = str(loop_state.get("best_verified_version_id") or "v0")
