@@ -1,0 +1,35 @@
+{
+  "schema": "v3a_phase8_fullcut_verifier_zero_paid_verify_v1",
+  "generated": "2026-11-11T14:28:13.343615+00:00",
+  "worktree": "/data2/lpy1/worktrees/migu-v3a-fullcut-verifier-verify",
+  "branch": "story-va-v3a-full-chain-audit-fixes",
+  "local_branch": "story-va-v3a-full-chain-audit-fixes-fullcut-verify",
+  "code_sha": "803965725870c3e2b39a6769a38c754a5a732077",
+  "compileall": {
+    "target": "algo/story_video_agent_v3",
+    "exit_code": 0
+  },
+  "pytest_fullcut": {
+    "command": "PYTHONPATH=algo python -m pytest tests/test_v3a_phase8_fullcut_*.py -q",
+    "passed": 19,
+    "failed": 0,
+    "skipped": 0,
+    "exit_code": 0
+  },
+  "pytest_full_phase8": {
+    "command": "PYTHONPATH=algo python -m pytest tests/test_v3a_phase8_*.py -q",
+    "passed": 109,
+    "failed": 0,
+    "skipped": 0,
+    "exit_code": 0
+  },
+  "notes": [
+    "No algorithm edits.",
+    "No paid VLM.",
+    "Did not merge main.",
+    "V3-R remains best baseline; sparse-frame support cannot auto-IMPROVED/BEST.",
+    "Pushed to GitHub after zero-paid server regression for cross-platform audit."
+  ],
+  "published_for_cross_platform_review": true,
+  "implementation_doc": "docs/V3A_FULLCUT_SEMANTIC_VERIFIER_IMPLEMENTATION.md"
+}

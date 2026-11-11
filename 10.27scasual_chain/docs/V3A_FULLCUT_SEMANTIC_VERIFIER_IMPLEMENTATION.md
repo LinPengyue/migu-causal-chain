@@ -4,7 +4,7 @@
 
 Starting from the existing dual-video Verifier, fill the gap between **candidate clip suitability** and **actual completed story quality** without changing V1/V2 or encoding any match-specific IDs. The prior offline B/C full-cut comparisons showed that new interesting footage can slow a complete story without explaining a missing narrative state. This design checks *incremental story gain*, not footage heat or duration by itself.
 
-**Implementation status:** committed source + synthetic tests; no server regression or real paid VLM verification has been performed on this HEAD. The existing 90-pass result pertains to the earlier `e258a23` version only.
+**Implementation status:** committed source + synthetic tests. Zero-paid server regression on `8039657` is recorded below. No real paid VLM verification has been performed on this HEAD. The earlier 90-pass result pertains to `e258a23` only.
 
 ## Code path
 
@@ -35,6 +35,23 @@ PYTHONPATH=algo python -m pytest tests/test_v3a_phase6*.py -q
 ```
 
 The new tests are pure, use synthetic files and have **zero HTTP**. Record actual pass/fail/skipped counts, tracebacks, and HEAD. Do not claim the new suite has passed until the server reports its result.
+
+### Server verification (`8039657`)
+
+Worktree: `/data2/lpy1/worktrees/migu-v3a-fullcut-verifier-verify`  
+Report JSON: `docs/V3A_FULLCUT_SEMANTIC_VERIFIER_SERVER_VERIFY_8039657.json`  
+Local mirror: `/data2/lpy1/_story_va_outputs/v3/plan2/phase8_fullcut_verifier_verify_8039657.json`
+
+| Check | Result |
+|-------|--------|
+| `compileall algo/story_video_agent_v3` | exit 0 |
+| `tests/test_v3a_phase8_fullcut_*.py` | **19 passed / 0 failed / 0 skipped** |
+| `tests/test_v3a_phase8_*.py` | **109 passed / 0 failed / 0 skipped** |
+| Paid HTTP / VLM | **0** |
+| Algo edits in verify turn | none |
+| Merge to main | not done |
+
+Sparse-frame fullcut screening still cannot auto-`IMPROVED` / `PROMOTE_BEST`. Untouched V3-R remains the retained best baseline.
 
 ## End-to-end quality gate after code regression
 
