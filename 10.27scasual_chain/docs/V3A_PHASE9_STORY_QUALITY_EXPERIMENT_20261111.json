@@ -1,0 +1,141 @@
+{
+  "schema": "v3a_phase9_story_quality_experiment_report_v1",
+  "generated": "2026-11-11T15:16:50.197176+00:00",
+  "code_sha": "bcacb851cb600f461a62f82c2df7940223eb78cb",
+  "branch": "story-va-v3a-full-chain-audit-fixes",
+  "worktree": "/data2/lpy1/worktrees/migu-v3a-phase9-story-quality",
+  "match": {
+    "id": "A_uae_oman",
+    "phase5_dir": "/data2/lpy1/_story_va_outputs/v3/plan2/closed_loop_A_uae_oman/fresh_e2e_A_real_20261105_183136/01_to_04_fresh_v3r/04_phase5",
+    "source_mp4": "/mnt/data4/migu/10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语.mp4",
+    "source_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c"
+  },
+  "resume_decision": {
+    "attempt1_resumable": false,
+    "reasons": [
+      "process already exited with finalized STOP_NO_ACTION",
+      "no story_e2e_cli resume/checkpoint flag",
+      "continuing would mix failed VLM round state with new HTTP and contaminate attribution",
+      "remaining budget after attempt1 was 1 call — insufficient for Critic+Planner+Verifier redo"
+    ],
+    "action_taken": "clean re-exec as attempt2 in new out_dir; preserve attempt1"
+  },
+  "budget_authorized": {
+    "max_calls": 5,
+    "max_cost_usd": 0.1,
+    "max_rounds": 3,
+    "max_retries": 0
+  },
+  "attempts": [
+    {
+      "id": 1,
+      "out_dir": "/tmp/lpy1_phase9_story_quality_20261111/attempt1_vlm500_unresolved",
+      "http_calls": 4,
+      "est_cost_usd": 0.001149,
+      "decision": "UNRESOLVED",
+      "vlm_issue": "Qwen3.6-Plus HTTP 500 connection error → empty critic",
+      "APPLIED": 0,
+      "candidate_rendered": false
+    },
+    {
+      "id": 2,
+      "out_dir": "/tmp/lpy1_phase9_story_quality_20261111_rerun2/real_vlm_run",
+      "http_calls": 4,
+      "est_cost_usd": 0.004355,
+      "decision": "UNRESOLVED",
+      "delivery_label": "BLOCKED",
+      "vlm_http_500_lines_in_console": 1,
+      "APPLIED": 0,
+      "VERIFIED": 0,
+      "IMPROVED": 0,
+      "candidate_rendered": false,
+      "release_authorized": false
+    }
+  ],
+  "attempt2_detail": {
+    "status_gates": {
+      "workflow_completed": true,
+      "story_diagnosis_valid": true,
+      "revision_applied": false,
+      "candidate_rendered": false,
+      "semantic_verification_passed": false,
+      "release_authorized": false,
+      "final_mp4_exists": true
+    },
+    "loop_stop_reason": "STOP_NO_ACTION",
+    "best_version": "v0",
+    "delivery_version": "v0",
+    "critic": {
+      "ok": true,
+      "error": null,
+      "provider_mode": "real"
+    },
+    "planner_decision": "UNRESOLVED",
+    "planner_rationale": "All three issues are HYPOTHESIS_NEEDS_VIDEO with story_defect_confirmed=false. The VLM critic summary explicitly states the time compression does not break narrative logic and game state remains consistent across cuts. No candidate has FIRST_LIVE_VERIFIED AND narrative_fit_status=REVIEW_SUPPORTED. Source-time jumps alone are normal highlight compression and not executable defects.",
+    "revision_intents": [
+      {
+        "intent_id": "mark_unresolved_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472",
+        "action": "mark_unresolved"
+      },
+      {
+        "intent_id": "mark_unresolved_large_source_jump_seg_buildup_event_000472_to_seg_equalizer_goal_action",
+        "action": "mark_unresolved"
+      },
+      {
+        "intent_id": "mark_unresolved_thin_post_climax_tail",
+        "action": "mark_unresolved"
+      }
+    ],
+    "apply_report": {
+      "skipped": true
+    },
+    "edl_diff": {
+      "changed": false
+    },
+    "editorial_redundancy_issues_n": 0,
+    "fullcut_delta": {
+      "has_edit": false,
+      "semantic_screen_status": "NOT_EVALUATED",
+      "candidate_better_than_baseline": "UNVERIFIED",
+      "authorizes_promote_best": false
+    },
+    "baseline_edl_rows": 9,
+    "round1_edl_rows": 9,
+    "final_edl_rows": 9,
+    "edl_unchanged": true
+  },
+  "videos": {
+    "v3r_baseline_mp4": "/tmp/lpy1_phase9_story_quality_20261111_rerun2/preserved_v3r_story_clean.mp4",
+    "v3r_baseline_sha256": "7b0bfa49a7ff22d041496efe65c944cc57e9a2502107c2ad438119b85e4199f7",
+    "v3r_duration_sec": 94.877,
+    "v3a_candidate_mp4": null,
+    "v3a_candidate_reason": "No executable revision; candidate render skipped (edl_unchanged). Not fabricated.",
+    "server_paths": {
+      "attempt1": "/tmp/lpy1_phase9_story_quality_20261111/attempt1_vlm500_unresolved",
+      "attempt2": "/tmp/lpy1_phase9_story_quality_20261111_rerun2/real_vlm_run",
+      "blind_pack": "/tmp/lpy1_phase9_story_quality_20261111_rerun2/blind_review",
+      "mirror_pointer": "/data2/lpy1/_story_va_outputs/v3/plan2/phase9_story_quality_20261111"
+    }
+  },
+  "safety_checks": {
+    "goal_protection_intact_in_verifier": true,
+    "first_live_on_final_goals": "UNRESOLVED for all 3 goal anchors in final manifest (baseline retained; no new insert)",
+    "story_time_order": "baseline EDL retained; no edit",
+    "information_change_vs_v3r": "NONE (identical EDL/MP4)"
+  },
+  "claims_forbidden": {
+    "APPLIED_as_IMPROVED": false,
+    "SCREENED_BETTER_as_IMPROVED": false,
+    "PROMISING_as_IMPROVED": false,
+    "note": "None of APPLIED/SCREENED_BETTER/PROMISING occurred as success; IMPROVED=0"
+  },
+  "scientific_outcome": {
+    "autonomous_redundancy_discovery": "NOT_OBSERVED (VLM critic failed empty / no redundancy claims)",
+    "non_additive_edit_executed": false,
+    "better_fullcut_than_v3r": "UNVERIFIED_NO_CANDIDATE",
+    "best_baseline_remains": "V3-R",
+    "meaningful_negative_result": true,
+    "third_paid_run_started": false
+  },
+  "api_note": "Health check showed key+both models OK on text; multimodal critic path still hit provider HTTP 500 on both attempts."
+}
