@@ -193,3 +193,30 @@ def screen_fullcut_semantic_gain(
     ):
         return _result("SCREENED_BETTER", "PROMISING", details=details)
     return _result("UNVERIFIED", "UNCERTAIN", details=details)
+
+
+def constrain_sampled_verifier_payload(
+    validated: Mapping[str, Any],
+    fullcut_screen: Optional[Mapping[str, Any]],
+) -> Dict[str, Any]:
+    """Convert a sparse-frame model opinion to an advisory, never formal gain.
+
+    Applying this AFTER the real provider call prevents a model's own
+    accept_candidate/BETTER/REAL_VLM claims from bypassing final safety gates.
+    """
+    status = str((fullcut_screen or {}).get("status") or "UNVERIFIED")
+    advisory = {
+        "SCREENED_BETTER": "PROMISING",
+        "SCREENED_NO_GAIN": "SAME",
+    }.get(status, "UNCERTAIN")
+    return {
+        **dict(validated),
+        "quality_delta_vs_baseline": "NOT_EVALUATED",
+        "accept_candidate": False,
+        "soft_quality": advisory,
+        "phase8_quality": advisory,
+        "global_regression": "UNKNOWN",
+        "original_issue_resolved": None,
+        "fullcut_semantic_screen_status": status,
+        "sampled_stills_not_fullcut_semantic_certificate": True,
+    }
