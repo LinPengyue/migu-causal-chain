@@ -191,6 +191,135 @@ def _frame_paths_from_observe(obs: Mapping[str, Any], *, limit: int = 8) -> List
     return frames[:limit]
 
 
+def select_critic_frame_bundle(
+    observations: Mapping[str, Any],
+    diagnosis: Mapping[str, Any],
+    *,
+    extra_frames: Optional[Sequence[Mapping[str, Any]]] = None,
+    max_frames: int = 10,
+) -> Dict[str, Any]:
+    """Balance bounded critique across the whole *finished* story.
+
+    Prior implementation sent dense frames from only the FIRST structure
+    hypothesis, or the FIRST eight global frames (often missing the ending).
+    Reuse already extracted fullcut global/paragraph frames, reserving a few
+    slots for the dense issue, then spread the rest across distinct segments.
+    No extra VLM call. Do not classify segments with missing visual coverage.
+    """
+    from .story_timeline import story_time_to_media
+
+    timeline = diagnosis.get("timeline") or {}
+    active = list(timeline.get("segments") or [])
+    media_ids = [
+        str(x.get("segment_id")) for x in active
+        if x.get("has_media_window") and x.get("segment_id")
+    ]
+    max_frames = max(0, min(int(max_frames), 10))
+    if max_frames == 0:
+        return {
+            "frames": [], "coverage": {
+                "covered_segment_ids": [], "unobserved_media_segment_ids": media_ids,
+                "all_media_segments_covered": False, "claims_full_video_watch": False,
+            }
+        }
+
+    def _bind(fr: Mapping[str, Any]) -> Optional[Dict[str, Any]]:
+        if not isinstance(fr, Mapping) or not fr.get("path"):
+            return None
+        item = dict(fr)
+        t = item.get("story_sec")
+        if t is None:
+            # Legacy global/paragraph observation entries before P11.
+            t = item.get("requested_media_sec")
+        try:
+            mapped = story_time_to_media(timeline, float(t))
+        except (TypeError, ValueError, OverflowError):
+            mapped = None
+        # Never trust an unvalidated user-provided segment_id; only map from
+        # decoded finished-story playback time against the working EDL.
+        item["segment_id"] = mapped.get("segment_id") if mapped else None
+        return item
+
+    layers = observations.get("layers") or {}
+    raw_global = list((layers.get("global") or {}).get("frames") or [])
+    raw_para = [
+        fr for para in (layers.get("paragraph") or []) if isinstance(para, Mapping)
+        for fr in (para.get("frames") or [])
+    ]
+    dense = [x for x in (_bind(fr) for fr in (extra_frames or [])) if x]
+    global_candidates = [x for x in (_bind(fr) for fr in raw_global) if x]
+    paragraph_candidates = [x for x in (_bind(fr) for fr in raw_para) if x]
+
+    selected: List[Dict[str, Any]] = []
+    seen_keys: set[str] = set()
+
+    def add(fr: Mapping[str, Any]) -> bool:
+        key = str(fr.get("frame_id") or fr.get("path") or "")
+        if not key or key in seen_keys or len(selected) >= max_frames:
+            return False
+        selected.append(dict(fr))
+        seen_keys.add(key)
+        return True
+
+    # Dense evidence still gets local continuity, but cannot monopolize the
+    # entire Critic VLM packet. Spread samples over the detected issue window.
+    dense_slots = min(len(dense), max(1, max_frames // 3)) if dense else 0
+    if dense_slots:
+        indices = (
+            [len(dense) // 2] if dense_slots == 1 else
+            [round(i * (len(dense) - 1) / (dense_slots - 1))
+             for i in range(dense_slots)]
+        )
+        for i in indices:
+            add(dense[i])
+
+    available = max_frames - len(selected)
+    # One representative frame per observed segment first; select from across
+    # the full ordered timeline rather than always from the opening.
+    distinct: Dict[str, Dict[str, Any]] = {}
+    for fr in global_candidates + paragraph_candidates:
+        sid = str(fr.get("segment_id") or "")
+        if sid and sid not in distinct:
+            distinct[sid] = fr
+    ordered = [distinct[sid] for sid in
+               [str(seg.get("segment_id")) for seg in active] if sid in distinct]
+    if available > 0 and ordered:
+        if len(ordered) <= available:
+            picks = ordered
+        elif available == 1:
+            picks = [ordered[len(ordered) // 2]]
+        else:
+            picks = [ordered[round(i * (len(ordered) - 1) / (available - 1))]
+                     for i in range(available)]
+        for fr in picks:
+            add(fr)
+
+    # Remaining slots preserve end-to-end overview and useful source context
+    # even when the timeline is missing from a legacy fixture.
+    for pool in (global_candidates, paragraph_candidates, dense):
+        for fr in pool:
+            if len(selected) >= max_frames:
+                break
+            add(fr)
+    covered = set(str(fr.get("segment_id")) for fr in selected if fr.get("segment_id"))
+    return {
+        "frames": selected,
+        "coverage": {
+            "schema": "v3a_vlm_critic_frame_coverage_v1",
+            "sent_frame_count": len(selected),
+            "media_segment_count": len(media_ids),
+            "covered_segment_ids": [sid for sid in media_ids if sid in covered],
+            "unobserved_media_segment_ids": [sid for sid in media_ids if sid not in covered],
+            "all_media_segments_covered": bool(media_ids) and all(sid in covered for sid in media_ids),
+            "claims_full_video_watch": False,
+            "semantic_relevance_unobserved_is_unknown": True,
+            "dense_issue_frames_available": len(dense),
+            "global_frames_available": len(global_candidates),
+            "paragraph_frames_available": len(paragraph_candidates),
+        },
+    }
+
+
 def run_vlm_story_critic(
     api: ApiProvider,
     *,
@@ -205,20 +334,17 @@ def run_vlm_story_critic(
     over sparse global samples so bridge/ending hypotheses get contiguous coverage.
     Still NOT a native continuous-video watch unless the provider ingested video bytes.
     """
-    frames: List[Dict[str, Any]] = []
-    if extra_frames:
-        for fr in extra_frames:
-            if isinstance(fr, dict) and fr.get("path"):
-                frames.append(dict(fr))
-            if len(frames) >= 10:
-                break
-    if len(frames) < 2:
-        frames = _frame_paths_from_observe(observations, limit=8)
+    bundle = select_critic_frame_bundle(
+        observations, diagnosis, extra_frames=extra_frames, max_frames=10,
+    )
+    frames = bundle["frames"]
+    frame_coverage = bundle["coverage"]
     if len(frames) < 2:
         return {
             "ok": False,
             "error": "insufficient_frames_for_vlm_critic",
             "provider_mode": "skipped",
+            "frame_coverage": frame_coverage,
         }
     paths = [Path(f["path"]) for f in frames]
     from .story_timeline import story_time_to_media
@@ -360,6 +486,7 @@ def run_vlm_story_critic(
                 "usage": raw.get("usage"),
                 "finish_reason": raw.get("finish_reason"),
                 "sent_frame_ids": fids,
+                "frame_coverage": frame_coverage,
                 "call_audit": call_audit,
                 "request_audit": raw.get("request_audit"),
                 "response_audit": raw.get("response_audit"),
@@ -410,6 +537,7 @@ def run_vlm_story_critic(
             "usage": raw.get("usage"),
             "finish_reason": raw.get("finish_reason"),
             "frame_ids": fids,
+            "frame_coverage": frame_coverage,
             "claims_full_video_watch": False,
         }
     return {
@@ -427,6 +555,7 @@ def run_vlm_story_critic(
         "est_cost_usd": raw.get("est_cost_usd"),
         "usage": raw.get("usage"),
         "frame_ids": fids,
+        "frame_coverage": frame_coverage,
         "finish_reason": raw.get("finish_reason"),
         "parse_error": parse_error,
         "claims_full_video_watch": False,
