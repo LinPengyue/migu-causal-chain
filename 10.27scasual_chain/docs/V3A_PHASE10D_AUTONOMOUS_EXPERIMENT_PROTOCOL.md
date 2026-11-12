@@ -1,7 +1,9 @@
 # P10-D: authentic model-selected exploratory story cut
 
-Status: **CODE PREPARED, SERVER REGRESSION PENDING, NO NEW PAID RUN**.
+Status: **ZERO-PAID REGRESSION GREEN; ONE PAID A-MATCH RUN COMPLETE ON `ba70dd2`**.
 Branch: `story-va-v3a-phase10d-real-autonomous`. V3-R remains BEST.
+Human story quality remains **UNVERIFIED** even if a model-proposed X/Y pair
+exists. See `docs/V3A_PHASE10D_SERVER_EXPERIMENT_ba70dd2.json`.
 
 ## Objective
 
@@ -58,11 +60,12 @@ blind pair paths, and any regression or schema mismatch. Push
 verification JSON to the experiment branch. Keep large videos on
 server, not Git.
 
-## Cursor task B: PAID REAL-MODEL EXPERIMENT (NOT YET AUTHORIZED)
+## Cursor task B: PAID REAL-MODEL EXPERIMENT
 
-**Do not execute task B until user explicitly confirms a maximum USD
-budget for this new P10-D run.** A previous Phase9 budget and an
-instruction to continue coding are not new payment authorization.
+**Authorization used for the `ba70dd2` server run:** user-confirmed
+`--enable-real-api --i-approve-budget --max-calls 5 --max-cost-usd 0.10`
+on match A only, no fixture. Do not treat that approval as transferable to
+additional matches or a second paid A re-run without a new budget message.
 
 After approval, use existing source MP4 and event JSON, frozen V3-R
 Phase5, a unique output directory and the existing capped real-provider

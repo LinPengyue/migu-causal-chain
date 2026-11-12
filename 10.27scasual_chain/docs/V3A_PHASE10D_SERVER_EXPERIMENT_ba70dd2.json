@@ -1,0 +1,200 @@
+{
+  "schema": "v3a_phase10d_server_experiment_report_v1",
+  "generated": "2026-11-12T04:03:49.807473+00:00",
+  "worktree": "/data2/lpy1/worktrees/migu-v3a-phase10d-verify",
+  "branch": "story-va-v3a-phase10d-real-autonomous",
+  "code_sha": "ba70dd2ae6cceaf24c4ff1bc9b4556754c6c324b",
+  "compileall": {
+    "exit_code": 0
+  },
+  "pytest": {
+    "phase10_glob_phase10_star": {
+      "passed": 57,
+      "note": "misses phase10d_ filename"
+    },
+    "phase10_including_phase10d_autonomy": {
+      "passed": 63,
+      "failed": 0
+    },
+    "phase10d_autonomy_only": {
+      "passed": 6,
+      "failed": 0
+    },
+    "phase8": {
+      "passed": 129,
+      "failed": 0
+    }
+  },
+  "task_a_offline_fixture_audit": {
+    "autonomous_candidate_status": "FIXTURE_ONLY",
+    "fixture_used": true,
+    "real_model_proposal": false,
+    "http_attempts": 0,
+    "report": "docs/phase10d_offline_preview/offline_autonomy_audit.json"
+  },
+  "task_b_paid_real_model": {
+    "autonomous_candidate_status": "MODEL_PROPOSED_AND_RENDERED",
+    "human_story_quality": "UNVERIFIED",
+    "release_authorized": false,
+    "best_updated": false,
+    "formal_decision": "KEEP",
+    "http_calls": 4,
+    "est_cost_usd": 0.004632,
+    "usage": {
+      "planner_usage": {
+        "prompt_tokens": 6590,
+        "completion_tokens": 363,
+        "total_tokens": 6953,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "critic_usage": {
+        "prompt_tokens": 5704,
+        "completion_tokens": 448,
+        "total_tokens": 6152,
+        "completion_tokens_details": {
+          "text_tokens": 448
+        }
+      },
+      "planner_call_audit": {
+        "model": "DeepSeek-V4-Pro-0813",
+        "provider_mode": "real",
+        "logical_role": "revision_planner",
+        "thinking_object_disabled_sent": true,
+        "thinking_params_sent": false,
+        "enable_thinking_sent": null,
+        "thinking_budget_sent": null,
+        "token_param_sent": "max_tokens",
+        "token_limit_sent": 1200,
+        "prompt_tokens": 6590,
+        "completion_tokens": 363,
+        "reasoning_tokens": 0,
+        "text_tokens": null,
+        "finish_reason": "stop",
+        "visible_output_chars": 1610,
+        "est_cost_usd": 0.0012063,
+        "http_ok": true,
+        "empty_content": false
+      },
+      "critic_call_audit": {
+        "model": "Qwen3.7-Plus",
+        "provider_mode": "real",
+        "logical_role": "vision",
+        "thinking_object_disabled_sent": true,
+        "thinking_params_sent": false,
+        "enable_thinking_sent": null,
+        "thinking_budget_sent": null,
+        "token_param_sent": "max_tokens",
+        "token_limit_sent": 1200,
+        "prompt_tokens": 5704,
+        "completion_tokens": 448,
+        "reasoning_tokens": null,
+        "text_tokens": 448,
+        "finish_reason": "stop",
+        "visible_output_chars": 1490,
+        "est_cost_usd": 0.0011244,
+        "http_ok": true,
+        "empty_content": false
+      },
+      "critic_sent_frame_ids": [
+        "story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t27p00",
+        "story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t28p00",
+        "story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t29p00",
+        "story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t30p00"
+      ]
+    },
+    "provenance": {
+      "schema": "v3a_phase10d_model_autonomy_provenance_v1",
+      "model_planner_called": true,
+      "planner_ok": true,
+      "planner_provider_mode": "real",
+      "exploration_source": "REAL_LLM",
+      "model_selected_target": "seg_buildup_event_000472",
+      "model_selected_action": "drop",
+      "real_model_proposal": true,
+      "fixture_used": false,
+      "candidate_rendered": true,
+      "candidate_story_quality": "UNVERIFIED",
+      "formal_best": "UNCHANGED",
+      "http_attempts_so_far": 4,
+      "est_cost_usd_so_far": 0.004632
+    },
+    "proposal": {
+      "action": "drop",
+      "target_segment_id": "seg_buildup_event_000472",
+      "hypothesis": "The buildup_action segment at source 4706.45-4718.45 may be a redundant bridge between the deficit scoreboard and the equalizer goal; removing it could tighten pacing without losing essential game-state information since the scoreboard already establishes the deficit and the equalizer goal action carries the turn.",
+      "expected_effect": "Tighter development-to-turn transition; removes a potentially dispensable non-goal bridge segment and reduces the perceived source-time jump between setup and equalizer.",
+      "risk": "May lose visual context of the buildup phase that motivates the equalizer sequence; audience could perceive the equalizer as abrupt without preceding action.",
+      "media_in": null,
+      "media_out": null,
+      "insert_before_segment_id": null
+    },
+    "edl_diff": {
+      "dropped_active": [
+        "seg_buildup_event_000472"
+      ],
+      "added_active": [],
+      "baseline_active": [
+        "seg_title_open",
+        "seg_opponent_opening_goal_action",
+        "seg_setup_deficit",
+        "seg_buildup_event_000472",
+        "seg_equalizer_goal_action",
+        "seg_equalizer_scoreboard",
+        "seg_go_ahead_goal_action",
+        "seg_go_ahead_scoreboard",
+        "seg_title_close"
+      ],
+      "proposed_active": [
+        "seg_title_open",
+        "seg_opponent_opening_goal_action",
+        "seg_setup_deficit",
+        "seg_equalizer_goal_action",
+        "seg_equalizer_scoreboard",
+        "seg_go_ahead_goal_action",
+        "seg_go_ahead_scoreboard",
+        "seg_title_close"
+      ]
+    },
+    "goals_preserved": true,
+    "fullcut_aligned": true,
+    "durations_sec": {
+      "baseline_story": 94.5,
+      "baseline_mp4": 94.877,
+      "candidate_story": 82.5,
+      "candidate_mp4": 82.826,
+      "X": 94.877,
+      "Y": 82.826
+    },
+    "source_sha_record": {
+      "path": "/mnt/data4/migu/10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语.mp4",
+      "size": 6113318593,
+      "mtime_ns": 1792987348000000000,
+      "sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c"
+    },
+    "baseline_phase5_hashes_unchanged": true,
+    "xy_anonymous": {
+      "blind_review_dir": "/tmp/lpy1_phase10d_verify_20261112/paid_real_A_uae_oman/02_round_01/phase10_exploratory/blind_review",
+      "X_mp4": "/tmp/lpy1_phase10d_verify_20261112/paid_real_A_uae_oman/02_round_01/phase10_exploratory/blind_review/X.mp4",
+      "Y_mp4": "/tmp/lpy1_phase10d_verify_20261112/paid_real_A_uae_oman/02_round_01/phase10_exploratory/blind_review/Y.mp4",
+      "X_duration_sec": 94.877,
+      "Y_duration_sec": 82.826,
+      "X_bytes": 40949856,
+      "Y_bytes": 36445023,
+      "X_sha256": "7b0bfa49a7ff22d041496efe65c944cc57e9a2502107c2ad438119b85e4199f7",
+      "Y_sha256": "b841c5859e04b775fc30ec63f45e240b45971273a9bd79cfc09fd401fe381e8b",
+      "private_unblinding_server_path": "/tmp/lpy1_phase10d_verify_20261112/paid_real_A_uae_oman/02_round_01/phase10_exploratory/PRIVATE_unblinding.json",
+      "do_not_share_mapping_until_reviews_sealed": true
+    },
+    "critic_keep_story_if_no_defect": true,
+    "critic_claims_story_defect_any": false,
+    "server_out_dir": "/tmp/lpy1_phase10d_verify_20261112/paid_real_A_uae_oman",
+    "stderr_note": "One vision proxy Tunnel 502 during run; overall http_calls=4 and REAL_LLM proposal recorded."
+  },
+  "method_quality_gain": "UNVERIFIED",
+  "best_baseline": "V3-R",
+  "algo_edits_by_cursor": false,
+  "merged_to_main": false,
+  "published_for_cross_platform_review": true
+}

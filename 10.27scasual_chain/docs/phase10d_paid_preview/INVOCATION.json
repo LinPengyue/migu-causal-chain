@@ -1,0 +1,27 @@
+{
+  "schema": "v3a_phase10d_real_autonomous_invocation_v1",
+  "generated": "2026-11-12T04:03:49.806830+00:00",
+  "code_sha": "ba70dd2ae6cceaf24c4ff1bc9b4556754c6c324b",
+  "models": {
+    "llm": "DeepSeek-V4-Pro-0813",
+    "vlm": "Qwen3.7-Plus"
+  },
+  "budget": {
+    "max_calls": 5,
+    "max_cost_usd": 0.1,
+    "max_rounds": 1
+  },
+  "flags": [
+    "--enable-real-api",
+    "--i-approve-budget",
+    "--phase10-explore",
+    "--no-smoke-render"
+  ],
+  "no_fixture": true,
+  "paths": {
+    "match_json": ".../10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语.json",
+    "source_mp4": "/mnt/data4/migu/10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语.mp4",
+    "phase5_dir": "/data2/lpy1/_story_va_outputs/v3/plan2/closed_loop_A_uae_oman/fresh_e2e_A_real_20261105_183136/01_to_04_fresh_v3r/04_phase5",
+    "out_dir": "/tmp/lpy1_phase10d_verify_20261112/paid_real_A_uae_oman"
+  }
+}

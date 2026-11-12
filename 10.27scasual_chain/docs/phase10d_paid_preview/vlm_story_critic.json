@@ -1,0 +1,105 @@
+{
+  "raw_excerpt": "{\n  \"semantic_evidence\": [\n    {\n      \"issue_id\": \"large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472\",\n      \"story_time\": [\n        28.0,\n        29.0\n      ],\n      \"observed_fact\": \"Frame t28p00 shows match clock 12:45 with score UAE 0-1 OMA. Frame t29p00 immediately cuts to match clock 46:53 with the same score (UAE 0-1 OMA). The visual context shifts from first-half midfield play to second-half attacking phase without showing the halftime break or restart.\",\n      \"defect_hypothesis\": \"The transition skips ~34 minutes of source time. While the score state remains constant (0-1), the jump bypasses the start of the second half. However, since the narrative focus is on the specific buildup event leading to the equalizer later, and the deficit state is preserved, this is a standard highlight compression rather than a confusing narrative defect.\",\n      \"confidence\": 1.0,\n      \"claims_story_defect\": false,\n      \"missing_story_information\": null,\n      \"why_transition_breaks\": null,\n      \"evidence_refs\": [\n        {\n          \"frame_id\": \"story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t28p00\",\n          \"note\": \"Clock 12:45, Score 0-1\"\n        },\n        {\n          \"frame_id\": \"story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t29p00\",\n          \"note\": \"Clock 46:53, Score 0-1\"\n        }\n      ]\n    }\n  ],\n  \"keep_story_if_no_defect\": true,\n  \"overall_narrative_quality\": \"High\",\n  \"redundancy_claims\": []\n}",
+  "parsed": {
+    "semantic_evidence": [
+      {
+        "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472",
+        "story_time": [
+          28.0,
+          29.0
+        ],
+        "observed_fact": "Frame t28p00 shows match clock 12:45 with score UAE 0-1 OMA. Frame t29p00 immediately cuts to match clock 46:53 with the same score (UAE 0-1 OMA). The visual context shifts from first-half midfield play to second-half attacking phase without showing the halftime break or restart.",
+        "defect_hypothesis": "The transition skips ~34 minutes of source time. While the score state remains constant (0-1), the jump bypasses the start of the second half. However, since the narrative focus is on the specific buildup event leading to the equalizer later, and the deficit state is preserved, this is a standard highlight compression rather than a confusing narrative defect.",
+        "confidence": 1.0,
+        "claims_story_defect": false,
+        "missing_story_information": null,
+        "why_transition_breaks": null,
+        "evidence_refs": [
+          {
+            "frame_id": "story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t28p00",
+            "note": "Clock 12:45, Score 0-1"
+          },
+          {
+            "frame_id": "story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t29p00",
+            "note": "Clock 46:53, Score 0-1"
+          }
+        ]
+      }
+    ],
+    "keep_story_if_no_defect": true,
+    "overall_narrative_quality": "High",
+    "redundancy_claims": []
+  },
+  "parse_error": null,
+  "usage": {
+    "prompt_tokens": 5704,
+    "completion_tokens": 448,
+    "total_tokens": 6152,
+    "completion_tokens_details": {
+      "text_tokens": 448
+    }
+  },
+  "finish_reason": "stop",
+  "sent_frame_ids": [
+    "story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t27p00",
+    "story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t28p00",
+    "story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t29p00",
+    "story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t30p00"
+  ],
+  "call_audit": {
+    "model": "Qwen3.7-Plus",
+    "provider_mode": "real",
+    "logical_role": "vision",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "prompt_tokens": 5704,
+    "completion_tokens": 448,
+    "reasoning_tokens": null,
+    "text_tokens": 448,
+    "finish_reason": "stop",
+    "visible_output_chars": 1490,
+    "est_cost_usd": 0.0011244,
+    "http_ok": true,
+    "empty_content": false
+  },
+  "request_audit": {
+    "role": "vision",
+    "model": "Qwen3.7-Plus",
+    "request_profile": "video_rsi",
+    "token_param_configured": "max_tokens",
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "temperature_sent": 0.0,
+    "stream_sent": false,
+    "thinking_params_sent": false,
+    "thinking_object_disabled_sent": true,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "sends_both_token_params": false,
+    "sends_both_thinking_formats": false,
+    "message_count": 2,
+    "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+    "paratera_thinking_object_documented": false
+  },
+  "response_audit": {
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "visible_output_chars": 1490,
+    "usage_keys_present": [
+      "completion_tokens",
+      "completion_tokens_details",
+      "prompt_tokens",
+      "prompt_tokens_details",
+      "total_tokens"
+    ],
+    "has_completion_tokens_details": true,
+    "reasoning_content_present": false,
+    "completion_tokens_reported": 448,
+    "output_token_limit": 1200,
+    "output_budget_exceeded": false
+  }
+}

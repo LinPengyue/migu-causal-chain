@@ -1,0 +1,85 @@
+{
+  "raw_excerpt": "{\n  \"decision\": \"KEEP\",\n  \"rationale\": \"All three issues are HYPOTHESIS_NEEDS_VIDEO with story_defect_confirmed=false. The VLM critic summary reports overall_narrative_quality=High with no confirmed issues. Source-time jumps alone are normal highlight compression and do not constitute story defects. The only REVIEW_SUPPORTED candidate (cand_event_000634_6400) has narrative_fit_status=REVIEW_SUPPORTED but its own reason states 'triplet_review_bound_not_proof_of_improvement', and the issue it addresses is not a confirmed defect. No issue explicitly names a preferred_drop_segment_id. Protected goal segments must not be touched without overturn evidence.\",\n  \"revision_intents\": [],\n  \"exploratory_intents\": [\n    {\n      \"action\": \"drop\",\n      \"target_segment_id\": \"seg_buildup_event_000472\",\n      \"hypothesis\": \"The buildup_action segment at source 4706.45-4718.45 may be a redundant bridge between the deficit scoreboard and the equalizer goal; removing it could tighten pacing without losing essential game-state information since the scoreboard already establishes the deficit and the equalizer goal action carries the turn.\",\n      \"expected_effect\": \"Tighter development-to-turn transition; removes a potentially dispensable non-goal bridge segment and reduces the perceived source-time jump between setup and equalizer.\",\n      \"risk\": \"May lose visual context of the buildup phase that motivates the equalizer sequence; audience could perceive the equalizer as abrupt without preceding action.\",\n      \"media_in\": null,\n      \"media_out\": null,\n      \"insert_before_segment_id\": null\n    }\n  ]\n}",
+  "parsed": {
+    "decision": "KEEP",
+    "rationale": "All three issues are HYPOTHESIS_NEEDS_VIDEO with story_defect_confirmed=false. The VLM critic summary reports overall_narrative_quality=High with no confirmed issues. Source-time jumps alone are normal highlight compression and do not constitute story defects. The only REVIEW_SUPPORTED candidate (cand_event_000634_6400) has narrative_fit_status=REVIEW_SUPPORTED but its own reason states 'triplet_review_bound_not_proof_of_improvement', and the issue it addresses is not a confirmed defect. No issue explicitly names a preferred_drop_segment_id. Protected goal segments must not be touched without overturn evidence.",
+    "revision_intents": [],
+    "exploratory_intents": [
+      {
+        "action": "drop",
+        "target_segment_id": "seg_buildup_event_000472",
+        "hypothesis": "The buildup_action segment at source 4706.45-4718.45 may be a redundant bridge between the deficit scoreboard and the equalizer goal; removing it could tighten pacing without losing essential game-state information since the scoreboard already establishes the deficit and the equalizer goal action carries the turn.",
+        "expected_effect": "Tighter development-to-turn transition; removes a potentially dispensable non-goal bridge segment and reduces the perceived source-time jump between setup and equalizer.",
+        "risk": "May lose visual context of the buildup phase that motivates the equalizer sequence; audience could perceive the equalizer as abrupt without preceding action.",
+        "media_in": null,
+        "media_out": null,
+        "insert_before_segment_id": null
+      }
+    ]
+  },
+  "usage": {
+    "prompt_tokens": 6590,
+    "completion_tokens": 363,
+    "total_tokens": 6953,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "call_audit": {
+    "model": "DeepSeek-V4-Pro-0813",
+    "provider_mode": "real",
+    "logical_role": "revision_planner",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "prompt_tokens": 6590,
+    "completion_tokens": 363,
+    "reasoning_tokens": 0,
+    "text_tokens": null,
+    "finish_reason": "stop",
+    "visible_output_chars": 1610,
+    "est_cost_usd": 0.0012063,
+    "http_ok": true,
+    "empty_content": false
+  },
+  "request_audit": {
+    "role": "planner",
+    "model": "DeepSeek-V4-Pro-0813",
+    "request_profile": "default",
+    "token_param_configured": "max_tokens",
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "temperature_sent": 0.1,
+    "stream_sent": false,
+    "thinking_params_sent": false,
+    "thinking_object_disabled_sent": true,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "sends_both_token_params": false,
+    "sends_both_thinking_formats": false,
+    "message_count": 2,
+    "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+    "paratera_thinking_object_documented": false
+  },
+  "response_audit": {
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "visible_output_chars": 1610,
+    "usage_keys_present": [
+      "completion_tokens",
+      "completion_tokens_details",
+      "prompt_tokens",
+      "prompt_tokens_details",
+      "total_tokens"
+    ],
+    "has_completion_tokens_details": true,
+    "reasoning_content_present": false,
+    "completion_tokens_reported": 363,
+    "output_token_limit": 1200,
+    "output_budget_exceeded": false
+  },
+  "finish_reason": "stop"
+}

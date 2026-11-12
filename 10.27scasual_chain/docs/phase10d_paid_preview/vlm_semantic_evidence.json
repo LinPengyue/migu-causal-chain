@@ -1,0 +1,111 @@
+{
+  "schema": "v3a_vlm_observation_updates_v1",
+  "semantic_evidence": [
+    {
+      "schema": "v3a_semantic_evidence_item_v1",
+      "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472",
+      "story_time": [
+        28.0,
+        29.0
+      ],
+      "frame_refs": [
+        "story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t28p00",
+        "story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t29p00"
+      ],
+      "frame_refs_missing": [],
+      "observed_fact": "Frame t28p00 shows match clock 12:45 with score UAE 0-1 OMA. Frame t29p00 immediately cuts to match clock 46:53 with the same score (UAE 0-1 OMA). The visual context shifts from first-half midfield play to second-half attacking phase without showing the halftime break or restart.",
+      "defect_hypothesis": "The transition skips ~34 minutes of source time. While the score state remains constant (0-1), the jump bypasses the start of the second half. However, since the narrative focus is on the specific buildup event leading to the equalizer later, and the deficit state is preserved, this is a standard highlight compression rather than a confusing narrative defect.",
+      "missing_story_information": null,
+      "why_transition_breaks": null,
+      "confidence_model_reported": 1.0,
+      "observation_scope": {
+        "method": "dense_or_ordered_multi_frame_vlm",
+        "claims_full_video_watch": false,
+        "sent_frame_ids": [
+          "story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t27p00",
+          "story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t28p00",
+          "story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t29p00",
+          "story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t30p00"
+        ],
+        "limitation": "Sparse/dense still frames in story-time order — NOT native continuous video bitstream watch unless explicitly provided."
+      },
+      "citation_status": "FRAME_CITED",
+      "evidence_tier": "SEMANTIC_HYPOTHESIS",
+      "claim_status": "SEMANTIC_HYPOTHESIS",
+      "legacy_claim_alias": "SEMANTIC_HYPOTHESIS",
+      "supports_original_issue": false,
+      "evidence_sufficiency": "needs_video_verify",
+      "note": "FRAME_CITED ≠ DEFECT_CONFIRMED. Two checkable frame_ids alone never confirm a narrative defect. DEFECT_CONFIRMED needs issue_id + distinct observed_fact + defect_hypothesis + FRAME_CITED + substantive per-cite notes/mentions. Model confidence alone never confirms."
+    }
+  ],
+  "derived_issues": [
+    {
+      "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472",
+      "category": "transition",
+      "severity": "minor",
+      "observation": "Frame t28p00 shows match clock 12:45 with score UAE 0-1 OMA. Frame t29p00 immediately cuts to match clock 46:53 with the same score (UAE 0-1 OMA). The visual context shifts from first-half midfield play to second-half attacking phase without showing the halftime break or restart.",
+      "observed_evidence": "Frame t28p00 shows match clock 12:45 with score UAE 0-1 OMA. Frame t29p00 immediately cuts to match clock 46:53 with the same score (UAE 0-1 OMA). The visual context shifts from first-half midfield play to second-half attacking phase without showing the halftime break or restart.",
+      "narrative_problem": "The transition skips ~34 minutes of source time. While the score state remains constant (0-1), the jump bypasses the start of the second half. However, since the narrative focus is on the specific buildup event leading to the equalizer later, and the deficit state is preserved, this is a standard highlight compression rather than a confusing narrative defect.",
+      "missing_information": "The transition skips ~34 minutes of source time. While the score state remains constant (0-1), the jump bypasses the start of the second half. However, since the narrative focus is on the specific buildup event leading to the equalizer later, and the deficit state is preserved, this is a standard highlight compression rather than a confusing narrative defect.",
+      "causal_explanation": "The transition skips ~34 minutes of source time. While the score state remains constant (0-1), the jump bypasses the start of the second half. However, since the narrative focus is on the specific buildup event leading to the equalizer later, and the deficit state is preserved, this is a standard highlight compression rather than a confusing narrative defect.",
+      "story_time_range": [
+        28.0,
+        29.0
+      ],
+      "segment_ids": [],
+      "evidence_sufficiency": "needs_video_verify",
+      "evidence_refs": [
+        {
+          "frame_id": "story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t28p00",
+          "note": "vlm_semantic_evidence"
+        },
+        {
+          "frame_id": "story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t29p00",
+          "note": "vlm_semantic_evidence"
+        }
+      ],
+      "claim_status": "SEMANTIC_HYPOTHESIS",
+      "evidence_tier": "SEMANTIC_HYPOTHESIS",
+      "citation_status": "FRAME_CITED",
+      "legacy_claim_alias": "SEMANTIC_HYPOTHESIS",
+      "suggested_fix": "needs_more_video_evidence",
+      "confidence": 1.0,
+      "observation_scope": {
+        "method": "dense_or_ordered_multi_frame_vlm",
+        "claims_full_video_watch": false,
+        "sent_frame_ids": [
+          "story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t27p00",
+          "story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t28p00",
+          "story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t29p00",
+          "story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t30p00"
+        ],
+        "limitation": "Sparse/dense still frames in story-time order — NOT native continuous video bitstream watch unless explicitly provided."
+      }
+    }
+  ],
+  "confirmed_issue_ids": [],
+  "model_claimed_only_ids": [
+    "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472"
+  ],
+  "frame_cited_only_ids": [],
+  "observation_scope": {
+    "method": "dense_or_ordered_multi_frame_vlm",
+    "claims_full_video_watch": false,
+    "sent_frame_ids": [
+      "story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t27p00",
+      "story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t28p00",
+      "story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t29p00",
+      "story_large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472_t30p00"
+    ],
+    "limitation": "Sparse/dense still frames in story-time order — NOT native continuous video bitstream watch unless explicitly provided."
+  },
+  "stats": {
+    "n_evidence": 1,
+    "n_defect_confirmed": 0,
+    "n_evidence_supported": 0,
+    "n_semantic_hypothesis": 1,
+    "n_frame_cited": 0,
+    "n_model_claimed": 1,
+    "n_confirmed_issue_ids": 0
+  }
+}
