@@ -196,10 +196,83 @@ def enrich_delivery_events(
     return out
 
 
+
+def enrich_with_independent_atoms(
+    raw: Dict[str, Any], annotations: Dict[str, Any], *, tol_ms: int = 500,
+) -> Dict[str, Any]:
+    """Merge *independent event-level* annotations, never causal/story labels.
+
+    Accept only an explicit `atomic_events` list. The supplied record is a
+    detector/annotator observation, not a verified first-live video proof.
+    """
+    if not isinstance(annotations, dict) or not isinstance(annotations.get("atomic_events"), list):
+        raise ValueError("independent atomic input requires atomic_events list")
+    if any(k in annotations for k in ("causal_chains", "story_chains", "story_graph", "edges")):
+        raise ValueError("causal_or_story_labels_forbidden_in_independent_atoms")
+    raw_events = list(raw.get("events") or [])
+    injected = []
+    duplicates = 0
+    for index, a in enumerate(annotations["atomic_events"]):
+        if not isinstance(a, dict):
+            raise ValueError("atomic_event_must_be_object")
+        if any(k in a for k in (
+            "chain_category", "causal_chain_subtype", "causal_chains",
+            "story_role", "story", "edges", "segment_time_video",
+        )):
+            raise ValueError("causal_or_story_field_forbidden_in_atomic_event")
+        typ = _norm_type(a.get("event_type") or a.get("type_en"))
+        t_ms = a.get("t_ms")
+        if not typ or t_ms is None:
+            raise ValueError("atomic_event_requires_type_and_t_ms")
+        try:
+            t_ms = int(round(float(t_ms)))
+        except (TypeError, ValueError, OverflowError):
+            raise ValueError("atomic_event_invalid_t_ms") from None
+        if t_ms < 0:
+            raise ValueError("atomic_event_negative_t_ms")
+        if _raw_has_equivalent(raw_events + injected, typ=typ, t_ms=t_ms, tol_ms=tol_ms):
+            duplicates += 1
+            continue
+        # Unknown broadcast status is NOT LIVE. Never manufacture first-live.
+        broadcast = str(a.get("broadcast_phase") or "UNKNOWN").upper()
+        if broadcast not in {"LIVE", "REPLAY", "UNKNOWN"}:
+            raise ValueError("atomic_event_invalid_broadcast_phase")
+        atom = {
+            "type_en": typ, "type_zh": a.get("event_type_zh"),
+            "t_ms": t_ms, "is_replay": broadcast == "REPLAY",
+            "source_event_ids": [str(a.get("event_id"))] if a.get("event_id") else [],
+        }
+        ev = atom_to_delivery_event(atom, seq=index)
+        ev["event_id"] = f"independent_atom_{index:05d}_{typ}_{t_ms}"
+        ev["video_context"]["broadcast_phase"] = broadcast
+        ev["video_context"]["is_replay"] = broadcast == "REPLAY"
+        ev["enrichment"]["provenance"] = "independent_atomic_annotation"
+        ev["enrichment"]["broadcast_status_verified"] = False
+        injected.append(ev)
+    merged = raw_events + injected
+    merged.sort(key=lambda e: (_event_time_sec(e) if _event_time_sec(e) is not None else 1e18, str(e.get("event_id") or "")))
+    out = dict(raw)
+    out["events"] = merged
+    out["enrichment_report"] = {
+        "schema": "v3_atomic_enrich_v1",
+        "n_raw_events": len(raw_events),
+        "n_causal_atoms_unique": 0,
+        "n_injected": len(injected),
+        "n_skipped_duplicate": duplicates,
+        "injected_by_type": dict(__import__("collections").Counter(e["event_type"] for e in injected)),
+        "n_goal_injected": sum(str(e["event_type"]).lower() == "goal" for e in injected),
+        "n_goal_injected_live": sum(str(e["event_type"]).lower() == "goal" and e["video_context"]["broadcast_phase"] == "LIVE" for e in injected),
+        "n_goal_injected_replay": sum(str(e["event_type"]).lower() == "goal" and e["video_context"]["broadcast_phase"] == "REPLAY" for e in injected),
+        "note": "Independent event-level annotations only; broadcast flags are unverified metadata.",
+    }
+    return out
+
+
 def enrich_files(
     *,
     events_path: Path,
     causal_path: Optional[Path] = None,
+    independent_atoms_path: Optional[Path] = None,
     out_events_path: Path,
     out_report_path: Optional[Path] = None,
 ) -> Dict[str, Any]:
@@ -208,7 +281,13 @@ def enrich_files(
         raise ValueError("events input must be a delivery event object with events list")
     # Official no-gold evaluation is raw-only. Do not manufacture human Goal
     # atoms from the scorer, frame times or annotator data.
-    if causal_path is None:
+    if causal_path is not None and independent_atoms_path is not None:
+        raise ValueError("causal_and_independent_atoms_mutually_exclusive")
+    if independent_atoms_path is not None:
+        annotations = json.loads(Path(independent_atoms_path).read_text(encoding="utf-8"))
+        enriched = enrich_with_independent_atoms(raw, annotations)
+        input_mode = "INDEPENDENT_ATOMIC_ANNOTATED"
+    elif causal_path is None:
         enriched = enrich_delivery_events(raw, {"causal_chains": []})
         input_mode = "RAW_EVENTS_ONLY"
     else:
@@ -229,8 +308,11 @@ def enrich_files(
     report["source_events"] = str(events_path)
     report["source_causal_atoms_only"] = str(causal_path) if causal_path else None
     report["input_mode"] = input_mode
-    report["human_annotation_atoms_used"] = causal_path is not None
-    report["eligible_for_raw_only_evaluation"] = causal_path is None
+    report["human_annotation_atoms_used"] = causal_path is not None or independent_atoms_path is not None
+    report["independent_atomic_annotations_used"] = independent_atoms_path is not None
+    report["source_independent_atoms"] = str(independent_atoms_path) if independent_atoms_path else None
+    report["eligible_for_raw_only_evaluation"] = causal_path is None and independent_atoms_path is None
+    report["eligible_for_event_annotated_evaluation"] = causal_path is None
     report["goal_recovery_reliance"] = (
         "raw_event_score_transitions_and_actions" if causal_path is None
         else "human_atoms_plus_raw_events_dev_only"
