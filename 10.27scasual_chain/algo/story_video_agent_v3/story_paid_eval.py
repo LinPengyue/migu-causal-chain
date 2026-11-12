@@ -191,6 +191,33 @@ def _frame_paths_from_observe(obs: Mapping[str, Any], *, limit: int = 8) -> List
     return frames[:limit]
 
 
+def _story_frame_segment_id(
+    timeline: Mapping[str, Any], story_sec: Any, *, seam_guard_sec: float = 0.4,
+) -> Optional[str]:
+    """Bind sampled finished-story frames only away from uncertain cut seams.
+
+    Decoder/audio/transition timing can differ slightly from EDL timing. An
+    exact boundary's EDL owner is well-defined, but a decoded frame at that
+    nominal second must not certify visual content on either side.
+    """
+    from .story_timeline import story_time_to_media
+    try:
+        mapped = story_time_to_media(timeline, float(story_sec))
+    except (TypeError, ValueError, OverflowError):
+        return None
+    if not mapped:
+        return None
+    seg = mapped.get("segment") or {}
+    try:
+        t = float(story_sec)
+        begin, end = float(seg["story_in"]), float(seg["story_out"])
+    except (TypeError, ValueError, KeyError):
+        return None
+    if t - begin < seam_guard_sec or end - t < seam_guard_sec:
+        return None
+    return str(mapped.get("segment_id")) or None
+
+
 def select_critic_frame_bundle(
     observations: Mapping[str, Any],
     diagnosis: Mapping[str, Any],
@@ -206,8 +233,6 @@ def select_critic_frame_bundle(
     slots for the dense issue, then spread the rest across distinct segments.
     No extra VLM call. Do not classify segments with missing visual coverage.
     """
-    from .story_timeline import story_time_to_media
-
     timeline = diagnosis.get("timeline") or {}
     active = list(timeline.get("segments") or [])
     media_ids = [
@@ -231,13 +256,9 @@ def select_critic_frame_bundle(
         if t is None:
             # Legacy global/paragraph observation entries before P11.
             t = item.get("requested_media_sec")
-        try:
-            mapped = story_time_to_media(timeline, float(t))
-        except (TypeError, ValueError, OverflowError):
-            mapped = None
-        # Never trust an unvalidated user-provided segment_id; only map from
-        # decoded finished-story playback time against the working EDL.
-        item["segment_id"] = mapped.get("segment_id") if mapped else None
+        # Never trust an unvalidated user-provided segment_id; only map
+        # finished-cut time against the EDL, excluding uncertain cut seams.
+        item["segment_id"] = _story_frame_segment_id(timeline, t)
         return item
 
     layers = observations.get("layers") or {}
@@ -347,8 +368,6 @@ def run_vlm_story_critic(
             "frame_coverage": frame_coverage,
         }
     paths = [Path(f["path"]) for f in frames]
-    from .story_timeline import story_time_to_media
-
     timeline = diagnosis.get("timeline") or {}
     fids = []
     bindings = []
@@ -359,24 +378,23 @@ def run_vlm_story_critic(
         story_sec_raw = fr.get("story_sec")
         if story_sec_raw is None:
             story_sec_raw = fr.get("requested_media_sec")
-        try:
-            story_sec = float(story_sec_raw)
-            mapped = story_time_to_media(timeline, story_sec) or {}
-        except (TypeError, ValueError):
-            mapped = {}
         editorial_frame_bindings.append({
             "frame_id": fid,
-            "segment_id": mapped.get("segment_id"),
+            "segment_id": _story_frame_segment_id(timeline, story_sec_raw),
             "story_sec": story_sec_raw,
             "path": str(fr.get("path") or ""),
         })
         bindings.append(
             {
                 "frame_id": fid,
-                "requested_media_sec": fr.get("story_sec")
-                or fr.get("requested_media_sec")
-                or fr.get("actual_media_sec"),
-                "actual_media_sec": fr.get("actual_media_sec") or fr.get("story_sec"),
+                "requested_media_sec": (
+                    fr.get("story_sec") if fr.get("story_sec") is not None
+                    else fr.get("requested_media_sec", fr.get("actual_media_sec"))
+                ),
+                "actual_media_sec": (
+                    fr.get("actual_media_sec") if fr.get("actual_media_sec") is not None
+                    else fr.get("story_sec")
+                ),
                 "pts_status": fr.get("pts_status") or "story_playback",
             }
         )
