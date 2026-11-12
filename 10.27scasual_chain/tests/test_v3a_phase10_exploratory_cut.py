@@ -96,7 +96,7 @@ class TestPhase10CExploration(unittest.TestCase):
     def test_no_goal_scoreboard_title_opening_ending_or_protected_override(self):
         base = _edl()
         base.insert(5, {"segment_id": "score", "role": "equalizer_scoreboard",
-                        "media_in": 50.0, "media_out": 55.0})
+                        "media_in": 71.0, "media_out": 75.0})
         for target in ("goal", "score", "title", "intro", "end"):
             result = propose_exploratory_cut(
                 baseline_edl=base, proposal=_proposal(target=target), source="FIXTURE",
