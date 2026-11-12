@@ -96,7 +96,7 @@ class StoryE2EInputs:
     baseline_edl: Optional[Path] = None
     story_plan: Optional[Path] = None
     t01_story: Optional[Path] = None
-    # Fresh V3-R path (JSON+MP4 alone is insufficient without events/causal atoms).
+    # Fresh V3-R can run from raw events + MP4; human atoms are DEV-only.
     events_json: Optional[Path] = None
     causal_atoms_json: Optional[Path] = None
     match_id: Optional[str] = None
@@ -196,11 +196,11 @@ def _copy_or_link(src: Path, dst: Path) -> None:
 def resolve_baseline(inp: StoryE2EInputs) -> Dict[str, Any]:
     """Locate or stage V3-R baseline artifacts under out_dir/00_baseline.
 
-    Honest input contract:
-    - match_json + source_mp4 alone do NOT produce Phase5; V3-R needs events +
-      causal atoms (or a reused Phase5 directory).
-    - When run_fresh_v3r=True and events/causal are provided, invoke closed_loop
-      run_match to generate Phase5 under out_dir (never mutate foreign Phase5).
+    Input contract:
+    - Fresh production inference uses original event JSON + video.
+    - Human causal atoms remain optional for backward-compatible DEV studies
+      only; never claim such a run as gold-free benchmark inference.
+    - Frozen Phase5 reuse is allowed only for diagnostic regression.
     """
     base_dir = inp.out_dir / "00_baseline"
     base_dir.mkdir(parents=True, exist_ok=True)
@@ -222,17 +222,19 @@ def resolve_baseline(inp: StoryE2EInputs) -> Dict[str, Any]:
     if inp.run_fresh_v3r:
         events = inp.events_json
         causal = inp.causal_atoms_json
-        if events is None or causal is None or not events.is_file() or not causal.is_file():
+        if events is None or not events.is_file() or (
+            causal is not None and not causal.is_file()
+        ):
+            missing_inputs = ["events_json"] if events is None or not events.is_file() else []
+            if causal is not None and not causal.is_file():
+                missing_inputs.append("causal_atoms_json")
             return {
                 "ok": False,
-                "missing": ["events_json", "causal_atoms_json"],
+                "missing": missing_inputs,
                 "reuse_frozen_v3r": False,
                 "raw_json_mp4_sufficient": False,
                 "paths": {},
-                "note": (
-                    "run_fresh_v3r requires --events-json and --causal-atoms-json in addition "
-                    "to match JSON + source MP4. Match JSON alone is not a V3-R input."
-                ),
+                "note": "Fresh V3-R requires original event JSON + source MP4; optional causal atoms are DEV-only.",
             }
         from .closed_loop_cli import run_match
 
@@ -271,7 +273,16 @@ def resolve_baseline(inp: StoryE2EInputs) -> Dict[str, Any]:
         "missing": missing,
         "reuse_frozen_v3r": bool(phase5 and not missing and not inp.run_fresh_v3r),
         "ran_fresh_v3r": bool(inp.run_fresh_v3r and not missing),
-        "raw_json_mp4_sufficient": False,
+        "raw_json_mp4_sufficient": bool(
+            inp.run_fresh_v3r and inp.causal_atoms_json is None and not missing
+        ),
+        "input_mode": (
+            "RAW_EVENTS_ONLY" if inp.run_fresh_v3r and inp.causal_atoms_json is None
+            else ("HUMAN_ATOM_ENRICHED_DEV" if inp.run_fresh_v3r else "FROZEN_PHASE5_REGRESSION")
+        ),
+        "eligible_for_raw_only_evaluation": bool(
+            inp.run_fresh_v3r and inp.causal_atoms_json is None and not missing
+        ),
         "raw_only_attempt_detected": bool(raw_only),
         "fresh_meta": fresh_meta,
         "paths": {},
@@ -281,8 +292,8 @@ def resolve_baseline(inp: StoryE2EInputs) -> Dict[str, Any]:
         staged["ok"] = False
         staged["note"] = (
             "V3-A story E2E requires a V3-R Phase5 baseline (EDL + plan + initial MP4). "
-            "match_json + source_mp4 alone are NOT sufficient. Provide --phase5-dir for "
-            "regression, or --run-fresh-v3r with --events-json and --causal-atoms-json."
+            "Provide --phase5-dir for regression, or --run-fresh-v3r with original "
+            "--events-json + source MP4; legacy --causal-atoms-json is optional DEV-only."
         )
         return staged
 
