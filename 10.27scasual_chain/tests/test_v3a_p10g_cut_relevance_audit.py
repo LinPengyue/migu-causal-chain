@@ -2,11 +2,12 @@
 from __future__ import annotations
 
 import copy
+import json
 
 import pytest
 
 from story_video_agent_v3.story_cut_relevance_audit import (
-    audit_playback_observations, build_cut_relevance_inventory,
+    audit_playback_observations, build_cut_relevance_inventory, main,
 )
 from story_video_agent_v3.story_timeline import build_story_timeline, story_time_to_media
 
@@ -82,3 +83,17 @@ def test_invalid_times_or_nonfinite_radius_fail_closed():
         audit_playback_observations(_edl(), [4], rendered_duration_sec=-4)
     with pytest.raises(ValueError):
         audit_playback_observations(_edl(), [4], rendered_duration_sec=float("inf"))
+
+
+def test_cli_outputs_read_only_json_for_runtime_edl(tmp_path):
+    edl_path = tmp_path / "edl.json"
+    output_path = tmp_path / "report.json"
+    edl_path.write_text(json.dumps({"segments": _edl()}), encoding="utf-8")
+    assert main([
+        "--edl", str(edl_path), "--time", "6.5",
+        "--rendered-duration-sec", "32", "--out", str(output_path),
+    ]) == 0
+    report = json.loads(output_path.read_text(encoding="utf-8"))
+    assert report["observations"][0]["status"] == "NEEDS_BOUNDARY_VIDEO_REVIEW"
+    assert report["no_automatic_deletion"] is True
+    assert json.loads(edl_path.read_text(encoding="utf-8")) == {"segments": _edl()}
