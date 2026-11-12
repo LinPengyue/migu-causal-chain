@@ -157,6 +157,40 @@ def search_window_for_issue(
     sids = [str(x) for x in (issue.get("segment_ids") or []) if x]
     goals = _goal_windows(edl)
 
+    if cat == "goal_coverage":
+        # The Critic supplies a score-OBSERVED bounded prior, not a Goal PTS.
+        # Only video-semantic verification may turn a source candidate into
+        # an actual action. The normal Planner never auto-inserts goal roles.
+        interval = issue.get("possible_action_interval") or {}
+        lo, hi = _num(interval.get("media_in")), _num(interval.get("media_out"))
+        if lo is None or hi is None or hi - lo < 6.0:
+            return None
+        rows = active_cut_rows(edl)
+        after_id = sids[-1] if sids else None
+        if after_id and "scoreboard" not in str(
+            (_row_by_id(edl, after_id) or {}).get("role") or ""
+        ).lower():
+            after_id = None
+        before_id = sids[0] if len(sids) >= 2 else None
+        if after_id and not before_id:
+            for i, row in enumerate(rows):
+                if str(row.get("segment_id") or "") == after_id and i > 0:
+                    before_id = str(rows[i - 1].get("segment_id") or "") or None
+                    break
+        return {
+            "kind": "missing_goal_action_evidence_search",
+            "lo": max(0.0, float(lo)),
+            "hi": float(hi),
+            "insert_after_segment_id": before_id,
+            "before_segment_id": after_id,
+            "narrative_function": "investigate_missing_goal_action_not_autoinsert",
+            "role": "goal_action_probe",
+            "hints": ("goal", "shot", "header", "cross", "corner", "射", "进球", "头球"),
+            "score_confirmation_sec": issue.get("score_confirmation_sec"),
+            "requires_video_semantic_goal_and_first_live": True,
+            "auto_insert_authorized": False,
+        }
+
     if cat in ("transition", "buildup"):
         if len(sids) >= 2:
             a = _row_by_id(edl, sids[0])
@@ -625,6 +659,7 @@ def run_story_evidence_search(
     searchable_cats = {
         "transition", "buildup", "ending", "narrative_order",
         "redundancy", "replay_risk", "narrative_causality",
+        "goal_coverage",
     }
     issues = [
         i for i in (diagnosis.get("issues") or [])
@@ -633,10 +668,13 @@ def run_story_evidence_search(
         and str(i.get("issue_id") or "") not in skip
     ]
     # Prefer needs_video_verify / major+ first.
-    def _prio(iss: Mapping[str, Any]) -> Tuple[int, int]:
+    def _prio(iss: Mapping[str, Any]) -> Tuple[int, int, int]:
+        # Prioritize a scored state-change with a missing story action over
+        # generic source-time jumps; otherwise a top-4 truncation hides it.
+        goal_first = 0 if iss.get("category") == "goal_coverage" else 1
         sev = {"critical": 0, "major": 1, "minor": 2}.get(str(iss.get("severity")), 3)
         suf = 0 if iss.get("evidence_sufficiency") == "needs_video_verify" else 1
-        return (suf, sev)
+        return (goal_first, suf, sev)
 
     issues = sorted(issues, key=_prio)[: max(1, max_issues)]
 
@@ -705,6 +743,12 @@ def run_story_evidence_search(
                 "insert_after_segment_id": win.get("insert_after_segment_id"),
                 "before_segment_id": win.get("before_segment_id"),
                 "search_window": {"lo": lo, "hi": hi, "kind": win.get("kind")},
+                "goal_probe_only": bool(iss.get("category") == "goal_coverage"),
+                "goal_video_semantic_verified": False,
+                "score_confirmation_sec": (
+                    iss.get("score_confirmation_sec")
+                    if iss.get("category") == "goal_coverage" else None
+                ),
                 "event_association": {
                     "event_id": c.get("event_id"),
                     "event_type": c.get("event_type"),
