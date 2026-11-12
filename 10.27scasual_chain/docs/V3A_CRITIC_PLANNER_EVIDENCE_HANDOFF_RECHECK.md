@@ -34,7 +34,8 @@ against speculative edits. The fix adds:
   despite a prompt claiming the packet was ordered. This is a real narrative
   sequencing error, independent of hallucination or paid provider quality.
 - `video_critic_observations`: only checkable, normalized cited facts from
-  an actual real critic; no raw model evidence or fabricated frame IDs;
+  an actual real critic; frame refs are checked against the actual
+  `frame_ids` sent to that Critic; no raw model evidence or fabricated IDs;
   sampled `keep_story_if_no_defect` is passed as an observation, **not a
   full-video quality proof**.
 - `existing_clip_narrative_function_hints`: target/before/after roles and
