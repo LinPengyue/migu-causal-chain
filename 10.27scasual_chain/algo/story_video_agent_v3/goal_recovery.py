@@ -315,6 +315,76 @@ def link_strip_chains(
     return out
 
 
+def propose_unresolved_goal_video_windows(
+    candidates: Sequence[Dict[str, Any]],
+    *,
+    max_windows_per_goal: int = 5,
+    window_sec: float = 16.0,
+) -> List[Dict[str, Any]]:
+    """Bounded observation requests, never inferred goal-action timestamps.
+
+    Detector events can be absent over a valid scoreboard transition. Use the
+    bracket from two actual score observations and linked predicted-strip time
+    spans to *request* inspection of source footage. Even a strip labeled
+    'shot' is not visual proof of a goal, and none of these windows is
+    eligible for an EDL until an independent first-LIVE verifier binds it.
+    """
+    requests: List[Dict[str, Any]] = []
+    for cand in candidates:
+        if not cand.get("single_goal_increment") or cand.get("goal_action_sec") is not None:
+            continue
+        interval = cand.get("possible_action_interval") or {}
+        try:
+            lo = float(interval["media_in"])
+            hi = float(interval["media_out"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        if not (0 <= lo < hi):
+            continue
+        duration = max(2.0, float(window_sec))
+        count = max(1, min(8, int(max_windows_per_goal)))
+        # Divide the full score-observation bracket evenly. This guarantees
+        # coverage of early as well as late hypotheses instead of inspecting
+        # only the scoreboard-confirmation neighborhood.
+        width = (hi - lo) / count
+        windows = []
+        for i in range(count):
+            left = lo + i * width
+            right = min(hi, lo + (i + 1) * width)
+            center = (left + right) / 2.0
+            start = max(lo, center - duration / 2.0)
+            end = min(hi, start + duration)
+            start = max(lo, end - duration)
+            overlaps = []
+            for chain in cand.get("linked_strip_chain_ids") or []:
+                try:
+                    a, b = float(chain["t0_sec"]), float(chain["t1_sec"])
+                except (KeyError, TypeError, ValueError):
+                    continue
+                if a < end and b > start:
+                    overlaps.append(str(chain.get("clip_id") or ""))
+            windows.append({
+                "media_in": round(start, 3),
+                "media_out": round(end, 3),
+                "supporting_strip_clip_ids": sorted(set(x for x in overlaps if x)),
+                "visual_goal_action_confirmed": False,
+                "first_live_verified": False,
+            })
+        requests.append({
+            "candidate_id": cand["candidate_id"],
+            "score_before": cand["score_before"],
+            "score_after": cand["score_after"],
+            "score_confirmation_sec": cand["score_confirmation_sec"],
+            "search_interval": {"media_in": lo, "media_out": hi},
+            "observation_windows": windows,
+            "status": "VIDEO_EVIDENCE_REQUIRED",
+            "no_action_time_inferred": True,
+            "no_automatic_edl_insertion": True,
+            "note": "Sampled windows are search requests, not verified goal shots; score board and strip class cannot certify first LIVE.",
+        })
+    return requests
+
+
 def default_g22_overlay_paths(match_tag: str) -> List[Path]:
     root = Path("/data2/lpy1/_story_va_outputs/v2/cross_match_g2/g22_first_live") / match_tag / "roles"
     paths = []
@@ -359,11 +429,15 @@ def recover_match_goals(
     if strip_path and Path(strip_path).is_file():
         strip = json.loads(Path(strip_path).read_text(encoding="utf-8"))
         cands = link_strip_chains(cands, strip)
+    pending_video_search = propose_unresolved_goal_video_windows(cands)
     payload = {
         "schema": "v3_goal_recovery_v1",
         "n_candidates": len(cands),
         "n_single_goal": sum(1 for c in cands if c.get("single_goal_increment")),
         "n_with_goal_action_sec": sum(1 for c in cands if c.get("goal_action_sec") is not None),
+        "n_unresolved_single_goals": len(pending_video_search),
+        "pending_goal_video_search": pending_video_search,
+        "all_single_goal_actions_located": not bool(pending_video_search),
         "candidates": cands,
         "paid_api_calls": 0,
         "forbidden_inputs": ["*_causal.json", "strip_gold.json"],
