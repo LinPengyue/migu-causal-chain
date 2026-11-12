@@ -131,6 +131,8 @@ def prepare_controlled(
         "source_mp4": str(Path(source_mp4).resolve()),
         "reference_not_available_to_agent": True,
         "no_paid_http": True,
+        "upstream_plan_may_contain_goal_information": True,
+        "goal_omission_evaluation_scope": "EDL_REPAIR_ONLY_NOT_RAW_VIDEO_DISCOVERY",
     }
     _write(case_dir / "run_manifest.json", manifest)
     return manifest
@@ -275,6 +277,31 @@ def score_case(case_dir: Path, *, external_reference_edl: Path | None = None) ->
         }
     diag = _read(diag_path) if diag_path.is_file() else {}
     audit = _read(audit_path) if audit_path.is_file() else {}
+    search_path = run_root / "02_round_01" / "evidence_search.json"
+    plan_path = run_root / "02_round_01" / "revision_plan.json"
+    render_path = run_root / "02_round_01" / "candidate_render.json"
+    search = _read(search_path) if search_path.is_file() else {}
+    revision = _read(plan_path) if plan_path.is_file() else {}
+    rendering = _read(render_path) if render_path.is_file() else {}
+    # These are OBSERVED pipeline gates, not inferred causal explanations.
+    # A generic source-PTS jump is not an explicit missing-goal diagnosis.
+    goal_issue_found = any(
+        i.get("category") in ("goal_coverage", "missing_goal", "goal_omission")
+        for i in diag.get("issues") or [] if isinstance(i, dict)
+    )
+    search_candidates = len(search.get("verified_candidates") or [])
+    revision_actions = [
+        str(i.get("action") or "") for i in revision.get("revision_intents") or []
+        if isinstance(i, dict)
+    ]
+    mutating_revision = any(
+        x not in ("keep", "mark_unresolved", "unresolved") for x in revision_actions
+    )
+    candidate_rendered = bool(
+        rendering.get("story_clean") or (
+            rendering.get("ok") and not rendering.get("skipped")
+        )
+    )
     edl_recovered = bool(missing) and all(
         x["source_window_overlap"] for x in recovered.values()
     )
@@ -289,6 +316,17 @@ def score_case(case_dir: Path, *, external_reference_edl: Path | None = None) ->
             {"issue_id": i.get("issue_id"), "category": i.get("category")}
             for i in diag.get("issues") or [] if isinstance(i, dict)
         ],
+        "stage_observations": {
+            "explicit_goal_omission_diagnosed": goal_issue_found,
+            "generic_temporal_jump_not_counted_as_goal_detection": True,
+            "search_candidates_in_main_chain": search_candidates,
+            "revision_decision": revision.get("decision"),
+            "revision_actions": revision_actions,
+            "mutating_revision_requested": mutating_revision,
+            "candidate_rendered": candidate_rendered,
+            "final_mp4_exists": (run_root / "99_final" / "story_final.mp4").is_file(),
+            "offline_without_semantic_vlm": True,
+        },
         "recovery": recovered,
         "final_edl_exists": True,
         "agent_decision": audit.get("decision"),
