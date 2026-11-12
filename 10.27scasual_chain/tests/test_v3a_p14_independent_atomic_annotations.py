@@ -104,3 +104,51 @@ def test_cli_accepts_independent_atoms_but_strict_raw_only_rejects(tmp_path):
     args.strict_raw_only = False
     args.causal_json = atoms
     assert "independent_atoms_and_causal_gold_mutually_exclusive" in validate_inputs(args)
+
+
+def test_goal_recovery_uses_independent_atom_without_first_live_upgrade():
+    from story_video_agent_v3.goal_recovery import (
+        recover_goal_candidates, attach_independent_goal_atoms,
+    )
+    raw = {"events": [
+        {"event_id": "score_pre", "event_type": "Pass",
+         "media_time": {"event_time_sec": 100},
+         "attributes": {"Score_Recognition": ["0:1"]}},
+        {"event_id": "score_after", "event_type": "Pass",
+         "media_time": {"event_time_sec": 200},
+         "attributes": {"Score_Recognition": ["1:1"]}},
+    ]}
+    enriched = enrich_with_independent_atoms(raw, {"atomic_events": [
+        {"event_type": "Goal", "t_ms": 145000, "broadcast_phase": "UNKNOWN"},
+    ]})
+    cands = recover_goal_candidates(enriched["events"])
+    assert len(cands) == 1 and cands[0]["goal_action_sec"] is None
+    bound = attach_independent_goal_atoms(cands, enriched["events"])
+    assert bound[0]["goal_action_sec"] == 145.0
+    assert bound[0]["verification_status"] == "annotated_goal_action_unverified_video"
+    assert "independent_atomic_annotation" in bound[0]["evidence_sources"]
+    assert bound[0]["is_replay"] is False
+    assert cands[0]["goal_action_sec"] is None
+
+
+def test_ambiguous_independent_goals_do_not_guess_one():
+    from story_video_agent_v3.goal_recovery import (
+        recover_goal_candidates, attach_independent_goal_atoms,
+    )
+    raw = {"events": [
+        {"event_id": "pre", "event_type": "Pass",
+         "media_time": {"event_time_sec": 100},
+         "attributes": {"Score_Recognition": ["0:1"]}},
+        {"event_id": "post", "event_type": "Pass",
+         "media_time": {"event_time_sec": 200},
+         "attributes": {"Score_Recognition": ["1:1"]}},
+    ]}
+    enriched = enrich_with_independent_atoms(raw, {"atomic_events": [
+        {"event_type": "Goal", "t_ms": 145000},
+        {"event_type": "Goal", "t_ms": 146000},
+    ]})
+    bound = attach_independent_goal_atoms(
+        recover_goal_candidates(enriched["events"]), enriched["events"]
+    )
+    assert bound[0]["goal_action_sec"] is None
+    assert "ambiguous_independent_goal_atoms" in bound[0]["notes"]
