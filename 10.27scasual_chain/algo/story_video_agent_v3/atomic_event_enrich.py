@@ -199,16 +199,26 @@ def enrich_delivery_events(
 def enrich_files(
     *,
     events_path: Path,
-    causal_path: Path,
+    causal_path: Optional[Path] = None,
     out_events_path: Path,
     out_report_path: Optional[Path] = None,
 ) -> Dict[str, Any]:
     raw = json.loads(Path(events_path).read_text(encoding="utf-8"))
-    causal = json.loads(Path(causal_path).read_text(encoding="utf-8"))
-    # Refuse if caller accidentally passes strip gold shaped as causal without atoms
-    if "causal_chains" not in causal:
-        raise ValueError("causal file must contain causal_chains for atom extraction only")
-    enriched = enrich_delivery_events(raw, causal)
+    if not isinstance(raw, dict) or not isinstance(raw.get("events"), list):
+        raise ValueError("events input must be a delivery event object with events list")
+    # Official no-gold evaluation is raw-only. Do not manufacture human Goal
+    # atoms from the scorer, frame times or annotator data.
+    if causal_path is None:
+        enriched = enrich_delivery_events(raw, {"causal_chains": []})
+        input_mode = "RAW_EVENTS_ONLY"
+    else:
+        causal = json.loads(Path(causal_path).read_text(encoding="utf-8"))
+        # Preserve the historical development mode without treating it as
+        # benchmark-eligible Agent inference.
+        if not isinstance(causal, dict) or "causal_chains" not in causal:
+            raise ValueError("causal file must contain causal_chains for atom extraction only")
+        enriched = enrich_delivery_events(raw, causal)
+        input_mode = "HUMAN_ATOM_ENRICHED_DEV"
     report = enriched.pop("enrichment_report")
     out_events_path = Path(out_events_path)
     out_events_path.parent.mkdir(parents=True, exist_ok=True)
@@ -217,7 +227,14 @@ def enrich_files(
     )
     report["out_events"] = str(out_events_path)
     report["source_events"] = str(events_path)
-    report["source_causal_atoms_only"] = str(causal_path)
+    report["source_causal_atoms_only"] = str(causal_path) if causal_path else None
+    report["input_mode"] = input_mode
+    report["human_annotation_atoms_used"] = causal_path is not None
+    report["eligible_for_raw_only_evaluation"] = causal_path is None
+    report["goal_recovery_reliance"] = (
+        "raw_event_score_transitions_and_actions" if causal_path is None
+        else "human_atoms_plus_raw_events_dev_only"
+    )
     if out_report_path:
         Path(out_report_path).parent.mkdir(parents=True, exist_ok=True)
         Path(out_report_path).write_text(
