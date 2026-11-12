@@ -79,7 +79,10 @@ def prepare_source_video_goal_queue(
                 identity={"issue_id": iid, "evidence_type": "goal_action_search"},
                 max_candidates=max_candidates_per_issue,
                 max_video_read_sec=max_video_read_sec,
-                skip_ocr=True,
+                # Critical for delayed TV score confirmation: P13's OCR
+                # tightened first-after-score from the later event carrier,
+                # keeping the original goal action within the candidate pool.
+                skip_ocr=False,
             )
             rows.append({
                 "issue_id": iid,
