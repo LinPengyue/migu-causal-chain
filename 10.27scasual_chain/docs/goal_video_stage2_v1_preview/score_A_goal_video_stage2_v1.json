@@ -1,0 +1,79 @@
+{
+  "schema": "v3a_blind_story_repair_challenge_v1",
+  "variant": "CONTROLLED_EDL_OMISSION",
+  "input_mode": "HUMAN_ATOM_ENRICHED_DEV",
+  "status": "NOT_REPAIRED",
+  "missing_goal_roles_evaluator_only": [
+    "equalizer_goal_action"
+  ],
+  "diagnosed_issues": [
+    {
+      "issue_id": "goal_coverage_01_to_11",
+      "category": "goal_coverage"
+    },
+    {
+      "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472",
+      "category": "transition"
+    },
+    {
+      "issue_id": "large_source_jump_seg_buildup_event_000472_to_seg_equalizer_scoreboard",
+      "category": "transition"
+    },
+    {
+      "issue_id": "thin_post_climax_tail",
+      "category": "ending"
+    }
+  ],
+  "stage_observations": {
+    "explicit_goal_omission_diagnosed": true,
+    "generic_temporal_jump_not_counted_as_goal_detection": true,
+    "search_candidates_in_main_chain": 12,
+    "revision_decision": "UNRESOLVED",
+    "revision_actions": [
+      "mark_unresolved",
+      "mark_unresolved",
+      "mark_unresolved",
+      "mark_unresolved",
+      "mark_unresolved",
+      "mark_unresolved"
+    ],
+    "mutating_revision_requested": false,
+    "candidate_rendered": false,
+    "candidate_goal_window_repaired": false,
+    "candidate_goal_source_window_matches": {
+      "equalizer_goal_action": []
+    },
+    "goal_source_video_review_queue_status": "VIDEO_REVIEW_PENDING",
+    "goal_source_video_clip_counts": [
+      3
+    ],
+    "goal_semantic_vlm_probe_status": null,
+    "goal_video_repair_decisions": [
+      {
+        "issue_id": "goal_coverage_01_to_11",
+        "status": "UNRESOLVED",
+        "reason": "missing_or_mismatched_issue_and_score_transition",
+        "review_provided": false
+      }
+    ],
+    "candidate_video_exists": false,
+    "final_mp4_exists": true,
+    "preexisting_goal_roles_lost": [],
+    "source_pts_monotonic_ok": true,
+    "offline_without_semantic_vlm": true
+  },
+  "recovery": {
+    "equalizer_goal_action": {
+      "role_restored": false,
+      "matching_windows": [],
+      "source_window_overlap": false
+    }
+  },
+  "final_edl_exists": true,
+  "agent_decision": null,
+  "release_authorized": false,
+  "first_live_video_verified": false,
+  "story_quality_improved": "UNVERIFIED",
+  "formal_benchmark": false,
+  "reference_not_given_to_agent": true
+}

@@ -1,6 +1,6 @@
 # V3-A Stage-2 missing-goal VIDEO repair: Critic → source footage → gated EDL candidate
 
-**Status: CODE COMMITTED, SERVER RUN NOT YET DONE.** No claim of recovered goal,
+Status: **ZERO-PAID SERVER RUN COMPLETE ON `76fd9c3` (`goal_video_stage2_v1`)**. A: DETECTED + 3 continuous source clips, `VIDEO_REVIEW_PENDING`, `NOT_REPAIRED`. B: DETECTED + 2 continuous source clips, same. C: `NO_GOAL_GAP_ISSUES` / `NO_UNNECESSARY_EDL_EDIT`. No unsupported EDL insert; no first-live / quality claim. See `docs/V3A_GOAL_VIDEO_REPAIR_STAGE2_SERVER_VERIFY_76fd9c3.json`.
 FIRST_LIVE_VERIFIED, accepted story, improved story quality, or benchmark score.
 
 Base is the frozen A/B/C DETECTED=true audit at commit `cf9b97c`.
