@@ -322,6 +322,20 @@ def select_critic_frame_bundle(
             if len(selected) >= max_frames:
                 break
             add(fr)
+    # Selection intentionally reserves dense issue frames first, but the
+    # model is told the resulting packet is ORDERED. Never send issue-late
+    # frames before opening frames: this can manufacture visual jump/reversal
+    # impressions and corrupt story-level transition judgment.
+    def _story_clock(fr: Mapping[str, Any]) -> float:
+        t = fr.get("story_sec")
+        if t is None:
+            t = fr.get("requested_media_sec")
+        try:
+            return float(t)
+        except (TypeError, ValueError, OverflowError):
+            return float("inf")
+
+    selected.sort(key=_story_clock)
     covered = set(str(fr.get("segment_id")) for fr in selected if fr.get("segment_id"))
     return {
         "frames": selected,
