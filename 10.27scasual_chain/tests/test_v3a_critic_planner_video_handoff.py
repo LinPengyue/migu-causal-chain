@@ -11,6 +11,7 @@ import json
 from story_video_agent_v3.story_paid_eval import (
     _planner_video_critic_context,
     run_llm_revision_planner,
+    select_critic_frame_bundle,
 )
 from story_video_agent_v3.story_timeline import build_story_timeline
 
@@ -136,3 +137,28 @@ def test_evidence_packet_is_bounded_and_uncited_text_not_transferred():
     assert len(rows) == 3
     assert all(len(x["observed_fact"]) <= 420 for x in rows)
     assert all(x["issue_id"] != "uncited" for x in rows)
+
+
+def test_critic_dense_and_global_frames_reordered_into_story_chronology():
+    # Historical bug: dense issue frames were appended before early/mid/late
+    # global samples. VLM saw a late match scene before opening setup while
+    # the prompt explicitly said the frames were ordered.
+    diag = _diag()
+    global_frames = [
+        {"frame_id": f"global_{i}", "story_sec": t, "path": f"/tmp/g{i}.jpg"}
+        for i, t in enumerate((0.5, 3.8, 6.0, 14.0, 20.5))
+    ]
+    dense = [
+        {"frame_id": f"dense_{i}", "story_sec": t, "path": f"/tmp/d{i}.jpg"}
+        for i, t in enumerate((14.1, 14.8, 15.5, 16.2, 16.9, 17.6))
+    ]
+    bundle = select_critic_frame_bundle(
+        {"layers": {"global": {"frames": global_frames}, "paragraph": []}},
+        diag, extra_frames=dense, max_frames=6,
+    )
+    selected = bundle["frames"]
+    times = [float(fr["story_sec"]) for fr in selected]
+    assert times == sorted(times)
+    assert any(fr["frame_id"].startswith("dense_") for fr in selected)
+    assert any(fr["frame_id"].startswith("global_") for fr in selected)
+    assert bundle["coverage"]["claims_full_video_watch"] is False
