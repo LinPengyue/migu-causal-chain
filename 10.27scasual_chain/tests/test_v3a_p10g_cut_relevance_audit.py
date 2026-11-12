@@ -53,7 +53,7 @@ def test_boundary_conservatively_includes_both_source_bound_windows():
 def test_render_duration_discrepancy_expands_uncertainty_without_fake_offset():
     edl = _edl()
     report = audit_playback_observations(
-        edl, [6.8], rendered_duration_sec=34.0, observation_radius_sec=0.5,
+        edl, [7.6], rendered_duration_sec=34.0, observation_radius_sec=0.5,
     )
     obs = report["observations"][0]
     assert report["effective_uncertainty_radius_sec"] == 2.5
