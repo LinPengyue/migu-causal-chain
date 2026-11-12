@@ -422,6 +422,61 @@ def _annotate_problem_driven(intent: Dict[str, Any], iss: Optional[Mapping[str, 
     return out
 
 
+def gate_unverified_goal_coverage_mutations(
+    plan: Mapping[str, Any],
+    *,
+    diagnosis: Mapping[str, Any],
+) -> Dict[str, Any]:
+    """A scoreboard-vs-EDL gap can request search, never auto-insert a goal.
+
+    This applies after any LLM overlay, so a model cannot reinterpret
+    score-confirmation PTS as authenticated on-ball/first-live footage.
+    A future dedicated goal-video verifier must introduce a separate
+    evidence-bound authorization path before this can be relaxed.
+    """
+    gap_issue_ids = {
+        str(i.get("issue_id"))
+        for i in (diagnosis.get("issues") or [])
+        if isinstance(i, Mapping) and i.get("category") == "goal_coverage"
+        and i.get("issue_id")
+    }
+    out = dict(plan)
+    blocked = []
+    intents = []
+    for raw in out.get("revision_intents") or []:
+        if not isinstance(raw, Mapping):
+            continue
+        intent = dict(raw)
+        action = str(intent.get("action") or "")
+        if str(intent.get("issue_id") or "") in gap_issue_ids and action not in (
+            "keep", "mark_unresolved", "unresolved",
+        ):
+            blocked.append({
+                "issue_id": intent.get("issue_id"),
+                "action": action,
+                "intent_id": intent.get("intent_id"),
+            })
+            intent["action"] = "mark_unresolved"
+            intent["blocked_original_action"] = action
+            intent["block_reason"] = (
+                "score_transition_not_video_verified_goal_action;"
+                "first_live_and_goal_semantics_required_before_edit"
+            )
+        intents.append(intent)
+    out["revision_intents"] = intents
+    out["goal_coverage_mutation_gate"] = {
+        "blocked": blocked,
+        "n_blocked": len(blocked),
+        "no_auto_goal_from_scoreboard": True,
+    }
+    if blocked and not any(
+        str(i.get("action") or "") not in ("keep", "mark_unresolved", "unresolved")
+        for i in intents
+    ):
+        out["decision"] = "UNRESOLVED"
+    return out
+
+
 def plan_from_diagnosis(
     diagnosis: Mapping[str, Any],
     *,
