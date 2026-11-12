@@ -631,6 +631,17 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
     }
     pending_reobserve: Optional[Dict[str, Any]] = None
     source_sha = sha256_file(inp.source_mp4) if inp.source_mp4.is_file() else None
+    # Retain EVERY source-bound cut, including protected goal/score windows,
+    # for narrative-relevance review. Structural protection is not evidence of
+    # semantic necessity; this read-only inventory never edits or rates clips.
+    from .story_cut_relevance_audit import build_cut_relevance_inventory
+    cut_inventory = build_cut_relevance_inventory(best_edl, source_sha256=source_sha)
+    write_json(out / "00_baseline" / "cut_relevance_inventory.json", cut_inventory)
+    audit["cut_relevance_inventory"] = {
+        "status": "SEMANTIC_RELEVANCE_UNVERIFIED",
+        "segment_count": cut_inventory["segment_count"],
+        "path": str(out / "00_baseline" / "cut_relevance_inventory.json"),
+    }
     first_live_evidence_store = load_evidence_store(inp.first_live_evidence_dir)
     narrative_fit_evidence_store = load_narrative_fit_store(inp.narrative_fit_evidence_dir)
     # Offline fixtures explicitly exercise older loop behavior; never bypass
