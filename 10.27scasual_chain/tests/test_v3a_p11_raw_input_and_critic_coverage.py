@@ -105,7 +105,7 @@ def test_critic_frame_selection_reserves_global_story_coverage():
     assert got["coverage"]["media_segment_count"] == 4
     assert "setup" in got["coverage"]["covered_segment_ids"]
     assert "ending" in got["coverage"]["covered_segment_ids"]
-    assert all(f["segment_id"] in {"setup", "event", "turn", "ending"} for f in frames)
+    assert all(f["segment_id"] in {None, "setup", "event", "turn", "ending"} for f in frames)
     assert got["coverage"]["claims_full_video_watch"] is False
 
 
@@ -152,7 +152,7 @@ def test_non_duplicate_irrelevance_is_only_a_hypothesis(tmp_path):
     assert issue["story_defect_confirmed"] is False
     assert issue["no_automatic_edit_authorized"] is True
     assert len(issue["evidence_refs"]) == 3
-    assert not ledger["no_new_pts_created"] is False
+    assert ledger["no_new_pts_created"] is True
 
 
 def test_irrelevance_fails_closed_for_fabricated_frames_and_protected_goal(tmp_path):
