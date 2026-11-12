@@ -756,11 +756,26 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
 
         # Critic on current WORKING parent (not only last accepted best).
         parent_version_id = str(loop_state.get("working_version_id") or "v0")
+        # Resolve the same permitted event source for Critic and Search.
+        # Frozen-Phase5 challenge inputs carry only their own event JSON;
+        # no benchmark labels or private reference EDL are loaded.
+        events_path = resolve_events_json_for_agent(
+            events_json=inp.events_json,
+            phase5_dir=inp.phase5_dir,
+            out_dir=out,
+        )
+        from .story_evidence_search import load_match_events
+
+        permitted_events = load_match_events(
+            match_json=inp.match_json if inp.match_json.is_file() else None,
+            events_json=events_path,
+        )
         diag = structural_diagnosis(
             edl=working_edl,
             story_plan=plan,
             initial_story_mp4=working_mp4,
             source_video=inp.source_mp4,
+            raw_events=permitted_events,
         )
         # P10-B: rederive an inference-only, source/EDL-bound narrative graph.
         # NEVER read benchmark gold labels in this production path. Graph role
@@ -964,13 +979,8 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             "benchmark_gold_used": False,
         }
 
-        # Active evidence search (Critic gaps → source PTS candidates).
-        # Prefer V3-R events_enriched.json; raw events_json must not bypass it.
-        events_path = resolve_events_json_for_agent(
-            events_json=inp.events_json,
-            phase5_dir=inp.phase5_dir,
-            out_dir=out,
-        )
+        # Active evidence search uses the exact same permitted event file
+        # as the Critic's observed scoreboard transitions.
         fb_ctx = feedback_store.to_dict()
         search_report = run_story_evidence_search(
             diagnosis=diag,
