@@ -189,7 +189,13 @@ def detect_goal_coverage_hypotheses(
             float(after["story_in"]) if after is not None
             else float(timeline.get("story_duration_sec") or story_start)
         )
-        story_range = [min(story_start, story_end), max(story_start, story_end)]
+        story_duration = float(timeline.get("story_duration_sec") or 0.0)
+        # The omission creates an immediate cut seam (zero-duration gap).
+        # Give the video Critic actual BEFORE/AFTER context at that seam.
+        story_range = [
+            max(0.0, min(story_start, story_end) - 3.0),
+            min(story_duration, max(story_start, story_end) + 3.0),
+        ]
         issue = _issue(
             issue_id=(
                 f"goal_coverage_{score_before[0]}{score_before[1]}"
