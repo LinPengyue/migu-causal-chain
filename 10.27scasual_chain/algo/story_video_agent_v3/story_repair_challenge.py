@@ -210,7 +210,20 @@ def prepare_historical(
     return manifest
 
 
-def run_offline(case_dir: Path) -> dict[str, Any]:
+def _run_dir(case_dir: Path, run_id: str | None = None) -> Path:
+    """Isolate reruns of the same frozen A/B/C challenge input."""
+    if run_id is None:
+        return Path(case_dir) / "agent_run"
+    token = str(run_id)
+    if (
+        not (1 <= len(token) <= 48)
+        or not all(ch.isascii() and (ch.isalnum() or ch in "_-") for ch in token)
+    ):
+        raise ValueError("invalid_run_id_use_ascii_alnum_dash_underscore")
+    return Path(case_dir) / ("agent_run_" + token)
+
+
+def run_offline(case_dir: Path, *, run_id: str | None = None) -> dict[str, Any]:
     """Run the REAL V3-A main chain. No model fixture, oracle or paid HTTP."""
     from .story_e2e_agent import StoryE2EInputs, run_story_e2e
 
@@ -223,7 +236,7 @@ def run_offline(case_dir: Path) -> dict[str, Any]:
     for p in (phase5, Path(manifest["events_json"])):
         if input_root != p.resolve() and input_root not in p.resolve().parents:
             raise ValueError("agent_input_escapes_isolated_case")
-    out = case_dir / "agent_run"
+    out = _run_dir(case_dir, run_id)
     if out.exists():
         raise FileExistsError("agent_run_already_exists_refuse_overwrite")
     return run_story_e2e(StoryE2EInputs(
@@ -240,12 +253,15 @@ def run_offline(case_dir: Path) -> dict[str, Any]:
     ))
 
 
-def score_case(case_dir: Path, *, external_reference_edl: Path | None = None) -> dict[str, Any]:
+def score_case(
+    case_dir: Path, *, external_reference_edl: Path | None = None,
+    run_id: str | None = None,
+) -> dict[str, Any]:
     """Read-only evaluator. Reference may not live under agent_input/agent_run."""
     case_dir = Path(case_dir)
     manifest = _read(case_dir / "run_manifest.json")
     input_root = (case_dir / "agent_input").resolve()
-    run_root = (case_dir / "agent_run").resolve()
+    run_root = _run_dir(case_dir, run_id).resolve()
     if external_reference_edl:
         reference = Path(external_reference_edl).resolve()
         if input_root in reference.parents or run_root in reference.parents:
@@ -430,8 +446,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     b.add_argument("--case-dir", required=True, type=Path)
     c = sub.add_parser("run-offline")
     c.add_argument("--case-dir", required=True, type=Path)
+    c.add_argument("--run-id", default=None)
     d = sub.add_parser("score")
     d.add_argument("--case-dir", required=True, type=Path)
+    d.add_argument("--run-id", default=None)
     d.add_argument("--external-reference-edl", type=Path, default=None)
     args = p.parse_args(argv)
     if args.cmd == "controlled":
@@ -452,9 +470,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             raw_events_json=args.raw_events_json, case_dir=args.case_dir,
         )
     elif args.cmd == "run-offline":
-        result = run_offline(args.case_dir)
+        result = run_offline(args.case_dir, run_id=args.run_id)
     else:
-        result = score_case(args.case_dir, external_reference_edl=args.external_reference_edl)
+        result = score_case(
+            args.case_dir, external_reference_edl=args.external_reference_edl,
+            run_id=args.run_id,
+        )
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0
 
