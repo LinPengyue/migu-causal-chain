@@ -416,7 +416,8 @@ def score_case(
         "formal_benchmark": False,
         "reference_not_given_to_agent": True,
     }
-    _write(case_dir / "private_eval" / "score.json", out)
+    score_name = "score.json" if run_id is None else f"score_{run_id}.json"
+    _write(case_dir / "private_eval" / score_name, out)
     return out
 
 
