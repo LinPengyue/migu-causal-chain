@@ -138,6 +138,41 @@ def prepare_controlled(
     return manifest
 
 
+def prepare_clean_control(
+    *,
+    complete_edl: Path,
+    story_plan: Path,
+    baseline_mp4: Path,
+    source_mp4: Path,
+    events_json: Path,
+    case_dir: Path,
+) -> dict[str, Any]:
+    """No-defect negative control: the Agent should not invent repairs."""
+    case_dir = Path(case_dir)
+    if case_dir.exists() and any(case_dir.iterdir()):
+        raise FileExistsError("case_dir_must_be_new_and_empty")
+    _protect_input_paths(
+        case_dir, [complete_edl, story_plan, baseline_mp4, source_mp4, events_json]
+    )
+    phase5 = case_dir / "agent_input" / "04_phase5"
+    phase5.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(complete_edl, phase5 / "candidate_edl.json")
+    shutil.copy2(story_plan, phase5 / "story_plan.json")
+    shutil.copy2(baseline_mp4, phase5 / "story_clean.mp4")
+    shutil.copy2(events_json, case_dir / "agent_input" / "events.json")
+    manifest = {
+        "schema": SCHEMA, "variant": "CLEAN_NO_DEFECT_CONTROL",
+        "input_mode": "HUMAN_ATOM_ENRICHED_DEV",
+        "phase5_dir": str(phase5),
+        "events_json": str(case_dir / "agent_input" / "events.json"),
+        "source_mp4": str(Path(source_mp4).resolve()),
+        "reference_not_available_to_agent": True,
+        "no_paid_http": True,
+    }
+    _write(case_dir / "run_manifest.json", manifest)
+    return manifest
+
+
 def prepare_historical(
     *,
     failed_phase5: Path,
@@ -305,12 +340,16 @@ def score_case(case_dir: Path, *, external_reference_edl: Path | None = None) ->
     edl_recovered = bool(missing) and all(
         x["source_window_overlap"] for x in recovered.values()
     )
+    is_clean_control = manifest.get("variant") == "CLEAN_NO_DEFECT_CONTROL"
+    if is_clean_control:
+        status = "NO_UNNECESSARY_EDL_EDIT" if after == before else "UNNECESSARY_EDL_EDIT"
+    else:
+        status = "EDL_WINDOW_RESTORED_UNVERIFIED" if edl_recovered else "NOT_REPAIRED"
     out = {
         "schema": SCHEMA,
         "variant": manifest.get("variant"),
         "input_mode": manifest.get("input_mode"),
-        "status": "EDL_WINDOW_RESTORED_UNVERIFIED" if edl_recovered
-                  else "NOT_REPAIRED",
+        "status": status,
         "missing_goal_roles_evaluator_only": list(missing),
         "diagnosed_issues": [
             {"issue_id": i.get("issue_id"), "category": i.get("category")}
@@ -352,6 +391,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     a.add_argument("--omit-role", default="equalizer_goal_action")
     a.add_argument("--input-mode", choices=["HUMAN_ATOM_ENRICHED_DEV", "RAW_EVENTS_ONLY"],
                    default="HUMAN_ATOM_ENRICHED_DEV")
+    e = sub.add_parser("clean-control")
+    e.add_argument("--complete-edl", required=True, type=Path)
+    e.add_argument("--story-plan", required=True, type=Path)
+    e.add_argument("--baseline-mp4", required=True, type=Path)
+    e.add_argument("--source-mp4", required=True, type=Path)
+    e.add_argument("--events-json", required=True, type=Path)
+    e.add_argument("--case-dir", required=True, type=Path)
     b = sub.add_parser("historical")
     b.add_argument("--failed-phase5", required=True, type=Path)
     b.add_argument("--source-mp4", required=True, type=Path)
@@ -368,6 +414,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             complete_edl=args.complete_edl, story_plan=args.story_plan,
             source_mp4=args.source_mp4, events_json=args.events_json,
             case_dir=args.case_dir, omitted_role=args.omit_role, input_mode=args.input_mode,
+        )
+    elif args.cmd == "clean-control":
+        result = prepare_clean_control(
+            complete_edl=args.complete_edl, story_plan=args.story_plan,
+            baseline_mp4=args.baseline_mp4, source_mp4=args.source_mp4,
+            events_json=args.events_json, case_dir=args.case_dir,
         )
     elif args.cmd == "historical":
         result = prepare_historical(
