@@ -359,7 +359,7 @@ def test_existing_p13_localizer_reused_without_gold_or_paid_api(tmp_path, monkey
     assert called["video"] == video
     assert called["events_path"] == events
     assert called.get("human_review_by_candidate") in (None, {})
-    assert called["skip_ocr"] is True
+    assert called["skip_ocr"] is False  # score confirmation may lag the action
     assert called["historical_clues"] == []
     assert report["issues"][0]["status"] == "SOURCE_CLIPS_READY_UNVERIFIED"
     assert report["issues"][0]["auto_edl_insert_authorized"] is False
