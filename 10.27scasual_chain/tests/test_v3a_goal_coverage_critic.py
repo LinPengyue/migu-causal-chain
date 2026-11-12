@@ -94,6 +94,9 @@ def test_missing_equalizer_detected_without_time_or_gold_leakage():
     assert issue["auto_insert_authorized"] is False
     assert issue["board_confirmation_is_not_action"] is True
     assert issue["possible_action_interval"]["media_out"] < 164
+    assert issue["source_search_interval"]["media_in"] >= 120
+    assert issue["source_search_interval"]["media_out"] < 164
+    assert issue["story_time_range"][1] > issue["story_time_range"][0]
     assert "equalizer" not in issue["segment_ids"]
     assert "equalizer_board" in issue["segment_ids"]
     assert "151.0" not in issue["observation"]
@@ -133,6 +136,7 @@ def test_score_gap_routes_into_source_search_as_goal_probe_only(tmp_path):
     assert window["kind"] == "missing_goal_action_evidence_search"
     assert window["role"] == "goal_action_probe"
     assert window["auto_insert_authorized"] is False
+    assert window["lo"] >= 120
     assert window["before_segment_id"] == "equalizer_board"
     result = run_story_evidence_search(
         diagnosis={"issues": [issue]}, edl=_broken(),
