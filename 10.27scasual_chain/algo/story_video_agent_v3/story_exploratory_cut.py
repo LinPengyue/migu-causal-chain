@@ -236,6 +236,15 @@ def execute_exploratory_trial(
     fixture renders cannot become evidence that the candidate is high-quality.
     """
     out_dir.mkdir(parents=True, exist_ok=True)
+    # This is a one-shot experiment, never overwrite an old blind allocation.
+    # Reuse of a run directory could make stale X/Y appear to be newly generated.
+    if (out_dir / "PRIVATE_unblinding.json").exists() or (out_dir / "blind_review").exists():
+        return {
+            "schema": SCHEMA, "status": "BLOCKED",
+            "reason": "exploratory_output_already_exists_use_fresh_run_dir",
+            "candidate_rendered": False, "blind_pair_status": "NO_CANDIDATE_PAIR",
+            "release_authorized": False, "promote_best": False,
+        }
     screened = propose_exploratory_cut(
         baseline_edl=baseline_edl, proposal=proposal, source=source,
     )
@@ -338,6 +347,10 @@ def execute_exploratory_trial(
             "promote_best": False,
         })
     except Exception as exc:  # noqa: BLE001 - record renderer failure in sandbox
+        # A failed copy must not leave a partial X/Y blind pack available.
+        partial_blind = out_dir / "blind_review"
+        if partial_blind.exists():
+            shutil.rmtree(partial_blind)
         result.update(status="RENDER_FAILED",
                       reason=f"{type(exc).__name__}:{exc}",
                       candidate_rendered=False)
