@@ -175,7 +175,7 @@ def run_match(
     *,
     match_id: str,
     events_path: Path,
-    causal_atoms_path: Path,
+    causal_atoms_path: Optional[Path] = None,
     video: Path,
     out_dir: Path,
     algo_root: Path,
@@ -313,6 +313,9 @@ def run_match(
 
     summary = {
         "schema": "v3_closed_loop_run_v1",
+        "input_mode": enrich_report["input_mode"],
+        "human_annotation_atoms_used": enrich_report["human_annotation_atoms_used"],
+        "eligible_for_raw_only_evaluation": enrich_report["eligible_for_raw_only_evaluation"],
         "match_id": match_id,
         "paid_api_calls": 0,
         "enrich": enrich_report,
@@ -372,8 +375,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     p = argparse.ArgumentParser(description="V3 closed loop: enrich→8.31→V1 phase5")
     p.add_argument("--match-id", required=True)
     p.add_argument("--events", type=Path, required=True)
-    p.add_argument("--causal-atoms", type=Path, required=True,
-                   help="*_causal.json used ONLY for atomic type/time extraction")
+    p.add_argument("--causal-atoms", type=Path, default=None,
+                   help="Optional historical DEV atom enrichment; never raw-only benchmark input")
     p.add_argument("--video", type=Path, required=True)
     p.add_argument("--out-dir", type=Path, required=True)
     p.add_argument("--algo-root", type=Path, required=True)
