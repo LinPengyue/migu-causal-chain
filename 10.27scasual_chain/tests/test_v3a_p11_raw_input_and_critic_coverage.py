@@ -77,7 +77,8 @@ def test_full_e2e_requires_only_raw_mp4_and_events_and_strict_rejects_human(tmp_
     assert args.causal_json is None
     assert validate_inputs(args) == []
     args2 = build_parser().parse_args(common + ["--causal-json", str(causal)])
-    assert "strict_raw_only_rejects_human_causal_json" in validate_inputs(args2)
+    # P14 unified token: strict-raw rejects causal_json and independent_atoms_json alike.
+    assert "strict_raw_only_rejects_external_event_annotations" in validate_inputs(args2)
 
 
 def _observations():

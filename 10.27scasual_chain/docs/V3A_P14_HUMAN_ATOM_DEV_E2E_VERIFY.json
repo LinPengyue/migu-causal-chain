@@ -1,0 +1,650 @@
+{
+  "schema": "v3a_p14_human_atom_enriched_dev_e2e_verify_v1",
+  "generated": "2026-11-12T09:27:15.010912+00:00",
+  "code_sha": "baa8d59a9f021186a44b007a7800a40f5a11689f",
+  "worktree": "/data2/lpy1/worktrees/migu-v3a-p14-verify",
+  "branch": "story-va-v3a-p14-independent-atomic-events",
+  "mode": "HUMAN_ATOM_ENRICHED_DEV",
+  "formal_benchmark": false,
+  "paid_http": 0,
+  "out_dir": "/tmp/lpy1_p14_human_atom_dev_e2e_20261112",
+  "pytest_after_p11_token_fix": {
+    "passed": 29,
+    "failed": 0
+  },
+  "p11_fix": {
+    "file": "tests/test_v3a_p11_raw_input_and_critic_coverage.py",
+    "change": "assert token updated to strict_raw_only_rejects_external_event_annotations (validation behavior unchanged)"
+  },
+  "enrich": {
+    "input_mode": "HUMAN_ATOM_ENRICHED_DEV",
+    "human_annotation_atoms_used": true,
+    "eligible_for_raw_only_evaluation": false,
+    "n_raw_events": 749,
+    "n_injected": 130,
+    "n_goal_injected": 28,
+    "n_goal_injected_live": 3,
+    "n_goal_injected_replay": 25
+  },
+  "goal_recovery": {
+    "n_candidates": 5,
+    "n_with_goal_action_sec": 3,
+    "n_single_goal": 3,
+    "all_single_goal_actions_located": true,
+    "single_goals": [
+      {
+        "candidate_id": "goalcand_00_00_to_01",
+        "score_before": [
+          0,
+          0
+        ],
+        "score_after": [
+          0,
+          1
+        ],
+        "goal_action_sec": 1335.974,
+        "score_confirmation_sec": 1410.43,
+        "verification_status": "provisional_from_nearby_event"
+      },
+      {
+        "candidate_id": "goalcand_03_01_to_11",
+        "score_before": [
+          0,
+          1
+        ],
+        "score_after": [
+          1,
+          1
+        ],
+        "goal_action_sec": 6448.924,
+        "score_confirmation_sec": 6535.62,
+        "verification_status": "provisional_from_nearby_event"
+      },
+      {
+        "candidate_id": "goalcand_04_11_to_21",
+        "score_before": [
+          1,
+          1
+        ],
+        "score_after": [
+          2,
+          1
+        ],
+        "goal_action_sec": 6841.456,
+        "score_confirmation_sec": 6957.12,
+        "verification_status": "provisional_from_nearby_event"
+      }
+    ]
+  },
+  "strip831_note": "timeline/strip artifacts present under 02_strip831; Goal atoms flowed via enrich→strip→adapt (see predicted_causal)",
+  "story_graph_goalish_nodes": [
+    {
+      "id": "seg_title_open",
+      "role": "story_title",
+      "media_in": null,
+      "media_out": null,
+      "type": "story_segment"
+    },
+    {
+      "id": "seg_opponent_opening_goal_action",
+      "role": "opponent_opening_goal_action",
+      "media_in": 1325.123,
+      "media_out": 1347.123,
+      "type": "story_segment"
+    },
+    {
+      "id": "event:causal:pred_0007:atom_fill_0004_Goal_1337123",
+      "type": "event"
+    },
+    {
+      "id": "seg_setup_deficit",
+      "role": "deficit_scoreboard_anchor",
+      "media_in": 1409.43,
+      "media_out": 1412.93,
+      "type": "story_segment"
+    },
+    {
+      "id": "seg_buildup_event_000472",
+      "role": "buildup_action",
+      "media_in": 4706.45,
+      "media_out": 4718.45,
+      "type": "story_segment"
+    },
+    {
+      "id": "seg_equalizer_goal_action",
+      "role": "equalizer_goal_action",
+      "media_in": 6436.924,
+      "media_out": 6458.924,
+      "type": "story_segment"
+    },
+    {
+      "id": "event:v3_goal_goalcand_03_01_to_11",
+      "type": "event"
+    },
+    {
+      "id": "seg_equalizer_scoreboard",
+      "role": "equalizer_scoreboard_anchor",
+      "media_in": 6534.62,
+      "media_out": 6538.12,
+      "type": "story_segment"
+    },
+    {
+      "id": "seg_go_ahead_goal_action",
+      "role": "go_ahead_goal_action",
+      "media_in": 6829.456,
+      "media_out": 6851.456,
+      "type": "story_segment"
+    },
+    {
+      "id": "event:v3_goal_goalcand_04_11_to_21",
+      "type": "event"
+    },
+    {
+      "id": "seg_go_ahead_scoreboard",
+      "role": "go_ahead_scoreboard_anchor",
+      "media_in": 6956.12,
+      "media_out": 6959.62,
+      "type": "story_segment"
+    },
+    {
+      "id": "seg_title_close",
+      "role": "story_wrap_title",
+      "media_in": null,
+      "media_out": null,
+      "type": "story_segment"
+    }
+  ],
+  "candidate_edl_goal_actions": [
+    {
+      "role": "opponent_opening_goal_action",
+      "segment_id": "seg_opponent_opening_goal_action",
+      "goal_anchor_t_sec": 1337.123,
+      "media_in": 1325.123,
+      "media_out": 1347.123,
+      "is_replay": false,
+      "shot_kind": "live",
+      "blocking_reasons": [
+        "awaiting_internal_media_verification",
+        "phase5_candidate_delivery",
+        "semantic_unverified"
+      ],
+      "event_ids": [
+        "causal:pred_0007:atom_fill_0004_Goal_1337123"
+      ],
+      "pipeline_verified": false,
+      "include_in_cut": true
+    },
+    {
+      "role": "equalizer_goal_action",
+      "segment_id": "seg_equalizer_goal_action",
+      "goal_anchor_t_sec": 6448.924,
+      "media_in": 6436.924,
+      "media_out": 6458.924,
+      "is_replay": false,
+      "shot_kind": "live",
+      "blocking_reasons": [
+        "awaiting_internal_media_verification",
+        "phase5_candidate_delivery",
+        "semantic_unverified"
+      ],
+      "event_ids": [
+        "v3_goal_goalcand_03_01_to_11"
+      ],
+      "pipeline_verified": false,
+      "include_in_cut": true
+    },
+    {
+      "role": "go_ahead_goal_action",
+      "segment_id": "seg_go_ahead_goal_action",
+      "goal_anchor_t_sec": 6841.456,
+      "media_in": 6829.456,
+      "media_out": 6851.456,
+      "is_replay": false,
+      "shot_kind": "live",
+      "blocking_reasons": [
+        "awaiting_internal_media_verification",
+        "phase5_candidate_delivery",
+        "semantic_unverified"
+      ],
+      "event_ids": [
+        "v3_goal_goalcand_04_11_to_21"
+      ],
+      "pipeline_verified": false,
+      "include_in_cut": true
+    }
+  ],
+  "final_edl_goal_actions": [
+    {
+      "role": "opponent_opening_goal_action",
+      "segment_id": "seg_opponent_opening_goal_action",
+      "goal_anchor_t_sec": 1337.123,
+      "media_in": 1325.123,
+      "media_out": 1347.123,
+      "is_replay": false,
+      "shot_kind": "live",
+      "blocking_reasons": [
+        "awaiting_internal_media_verification",
+        "phase5_candidate_delivery",
+        "semantic_unverified"
+      ],
+      "event_ids": [
+        "causal:pred_0007:atom_fill_0004_Goal_1337123"
+      ],
+      "pipeline_verified": false,
+      "include_in_cut": true
+    },
+    {
+      "role": "equalizer_goal_action",
+      "segment_id": "seg_equalizer_goal_action",
+      "goal_anchor_t_sec": 6448.924,
+      "media_in": 6436.924,
+      "media_out": 6458.924,
+      "is_replay": false,
+      "shot_kind": "live",
+      "blocking_reasons": [
+        "awaiting_internal_media_verification",
+        "phase5_candidate_delivery",
+        "semantic_unverified"
+      ],
+      "event_ids": [
+        "v3_goal_goalcand_03_01_to_11"
+      ],
+      "pipeline_verified": false,
+      "include_in_cut": true
+    },
+    {
+      "role": "go_ahead_goal_action",
+      "segment_id": "seg_go_ahead_goal_action",
+      "goal_anchor_t_sec": 6841.456,
+      "media_in": 6829.456,
+      "media_out": 6851.456,
+      "is_replay": false,
+      "shot_kind": "live",
+      "blocking_reasons": [
+        "awaiting_internal_media_verification",
+        "phase5_candidate_delivery",
+        "semantic_unverified"
+      ],
+      "event_ids": [
+        "v3_goal_goalcand_04_11_to_21"
+      ],
+      "pipeline_verified": false,
+      "include_in_cut": true
+    }
+  ],
+  "per_goal_compare_vs_historical_v3r": [
+    {
+      "role": "opponent_opening_goal_action",
+      "in_candidate_edl": true,
+      "in_final_edl": true,
+      "current": {
+        "role": "opponent_opening_goal_action",
+        "segment_id": "seg_opponent_opening_goal_action",
+        "goal_anchor_t_sec": 1337.123,
+        "media_in": 1325.123,
+        "media_out": 1347.123,
+        "is_replay": false,
+        "shot_kind": "live",
+        "blocking_reasons": [
+          "awaiting_internal_media_verification",
+          "phase5_candidate_delivery",
+          "semantic_unverified"
+        ],
+        "event_ids": [
+          "causal:pred_0007:atom_fill_0004_Goal_1337123"
+        ],
+        "pipeline_verified": false,
+        "include_in_cut": true
+      },
+      "baseline_closed_loop_live_goals": {
+        "role": "opponent_opening_goal_action",
+        "segment_id": "seg_opponent_opening_goal_action",
+        "goal_anchor_t_sec": 1337.123,
+        "media_in": 1325.123,
+        "media_out": 1347.123,
+        "is_replay": false,
+        "shot_kind": "live",
+        "blocking_reasons": [
+          "awaiting_internal_media_verification",
+          "phase5_candidate_delivery",
+          "semantic_unverified"
+        ],
+        "event_ids": [
+          "causal:pred_0007:atom_fill_0004_Goal_1337123"
+        ],
+        "pipeline_verified": false,
+        "include_in_cut": true
+      },
+      "baseline_full_e2e_strict": {
+        "role": "opponent_opening_goal_action",
+        "segment_id": "seg_opponent_opening_goal_action",
+        "goal_anchor_t_sec": 1337.123,
+        "media_in": 1325.123,
+        "media_out": 1347.123,
+        "is_replay": false,
+        "shot_kind": "live",
+        "blocking_reasons": [
+          "awaiting_internal_media_verification",
+          "phase5_candidate_delivery",
+          "semantic_unverified"
+        ],
+        "event_ids": [
+          "causal:pred_0007:atom_fill_0004_Goal_1337123"
+        ],
+        "pipeline_verified": false,
+        "include_in_cut": true
+      },
+      "delta_sec_vs_closed_loop": 0.0,
+      "delta_sec_vs_full_e2e": 0.0,
+      "lineage": {
+        "lineage_class": "INFERRED",
+        "goal_action_sec": 1335.974,
+        "first_live_status": "UNRESOLVED",
+        "in_final_mp4": true,
+        "gaps": [
+          "first_live_unresolved"
+        ],
+        "strict_complete": false,
+        "recovery_candidate_id": "goalcand_00_00_to_01",
+        "prediction_source": "causal_chain6_predicted"
+      },
+      "is_replay_flag": false,
+      "shot_kind": "live",
+      "first_live_status": "UNRESOLVED"
+    },
+    {
+      "role": "equalizer_goal_action",
+      "in_candidate_edl": true,
+      "in_final_edl": true,
+      "current": {
+        "role": "equalizer_goal_action",
+        "segment_id": "seg_equalizer_goal_action",
+        "goal_anchor_t_sec": 6448.924,
+        "media_in": 6436.924,
+        "media_out": 6458.924,
+        "is_replay": false,
+        "shot_kind": "live",
+        "blocking_reasons": [
+          "awaiting_internal_media_verification",
+          "phase5_candidate_delivery",
+          "semantic_unverified"
+        ],
+        "event_ids": [
+          "v3_goal_goalcand_03_01_to_11"
+        ],
+        "pipeline_verified": false,
+        "include_in_cut": true
+      },
+      "baseline_closed_loop_live_goals": {
+        "role": "equalizer_goal_action",
+        "segment_id": "seg_equalizer_goal_action",
+        "goal_anchor_t_sec": 6449.644,
+        "media_in": 6437.644,
+        "media_out": 6459.644,
+        "is_replay": false,
+        "shot_kind": "live",
+        "blocking_reasons": [
+          "awaiting_internal_media_verification",
+          "phase5_candidate_delivery",
+          "semantic_unverified"
+        ],
+        "event_ids": [
+          "causal:pred_0062:atom_fill_0075_Goal_6449644"
+        ],
+        "pipeline_verified": false,
+        "include_in_cut": true
+      },
+      "baseline_full_e2e_strict": {
+        "role": "equalizer_goal_action",
+        "segment_id": "seg_equalizer_goal_action",
+        "goal_anchor_t_sec": 6448.924,
+        "media_in": 6436.924,
+        "media_out": 6458.924,
+        "is_replay": false,
+        "shot_kind": "live",
+        "blocking_reasons": [
+          "awaiting_internal_media_verification",
+          "phase5_candidate_delivery",
+          "semantic_unverified"
+        ],
+        "event_ids": [
+          "v3_goal_goalcand_01_01_to_11"
+        ],
+        "pipeline_verified": false,
+        "include_in_cut": true
+      },
+      "delta_sec_vs_closed_loop": -0.72,
+      "delta_sec_vs_full_e2e": 0.0,
+      "lineage": {
+        "lineage_class": "STRICT_COMPLETE",
+        "goal_action_sec": 6448.924,
+        "first_live_status": "UNRESOLVED",
+        "in_final_mp4": true,
+        "gaps": [
+          "first_live_unresolved"
+        ],
+        "strict_complete": true,
+        "recovery_candidate_id": "goalcand_03_01_to_11",
+        "prediction_source": "v3_goal_recovery+optional_8.31_antecedent"
+      },
+      "is_replay_flag": false,
+      "shot_kind": "live",
+      "first_live_status": "UNRESOLVED"
+    },
+    {
+      "role": "go_ahead_goal_action",
+      "in_candidate_edl": true,
+      "in_final_edl": true,
+      "current": {
+        "role": "go_ahead_goal_action",
+        "segment_id": "seg_go_ahead_goal_action",
+        "goal_anchor_t_sec": 6841.456,
+        "media_in": 6829.456,
+        "media_out": 6851.456,
+        "is_replay": false,
+        "shot_kind": "live",
+        "blocking_reasons": [
+          "awaiting_internal_media_verification",
+          "phase5_candidate_delivery",
+          "semantic_unverified"
+        ],
+        "event_ids": [
+          "v3_goal_goalcand_04_11_to_21"
+        ],
+        "pipeline_verified": false,
+        "include_in_cut": true
+      },
+      "baseline_closed_loop_live_goals": {
+        "role": "go_ahead_goal_action",
+        "segment_id": "seg_go_ahead_goal_action",
+        "goal_anchor_t_sec": 6843.088,
+        "media_in": 6831.088,
+        "media_out": 6853.088,
+        "is_replay": false,
+        "shot_kind": "live",
+        "blocking_reasons": [
+          "awaiting_internal_media_verification",
+          "phase5_candidate_delivery",
+          "semantic_unverified"
+        ],
+        "event_ids": [
+          "causal:pred_0067:atom_fill_0104_Goal_6843088"
+        ],
+        "pipeline_verified": false,
+        "include_in_cut": true
+      },
+      "baseline_full_e2e_strict": {
+        "role": "go_ahead_goal_action",
+        "segment_id": "seg_go_ahead_goal_action",
+        "goal_anchor_t_sec": 6841.456,
+        "media_in": 6829.456,
+        "media_out": 6851.456,
+        "is_replay": false,
+        "shot_kind": "live",
+        "blocking_reasons": [
+          "awaiting_internal_media_verification",
+          "phase5_candidate_delivery",
+          "semantic_unverified"
+        ],
+        "event_ids": [
+          "v3_goal_goalcand_02_11_to_21"
+        ],
+        "pipeline_verified": false,
+        "include_in_cut": true
+      },
+      "delta_sec_vs_closed_loop": -1.632,
+      "delta_sec_vs_full_e2e": 0.0,
+      "lineage": {
+        "lineage_class": "STRICT_COMPLETE",
+        "goal_action_sec": 6841.456,
+        "first_live_status": "UNRESOLVED",
+        "in_final_mp4": true,
+        "gaps": [
+          "first_live_unresolved"
+        ],
+        "strict_complete": true,
+        "recovery_candidate_id": "goalcand_04_11_to_21",
+        "prediction_source": "v3_goal_recovery+optional_8.31_antecedent"
+      },
+      "is_replay_flag": false,
+      "shot_kind": "live",
+      "first_live_status": "UNRESOLVED"
+    }
+  ],
+  "lineage_summary": {
+    "n_final_goal_segments": 3,
+    "n_strict_complete": 2,
+    "n_inferred": 1,
+    "n_unresolved": 0,
+    "n_structurally_traced_to_mp4": 2
+  },
+  "first_live_visual_audit": {
+    "schema": "v3a_first_live_historical_v3r_ref_v1",
+    "authority_for_release": false,
+    "path": "/tmp/lpy1_p14_human_atom_dev_e2e_20261112/run/01_to_04_fresh_v3r/05_live_audit/first_live_visual_audit.json",
+    "note": "V3-R audit is inheritance candidate only; RELEASE_READY uses final_goal_evidence_manifest",
+    "v3r_status_counts": {
+      "FIRST_LIVE_VERIFIED": 0,
+      "POSSIBLE_FIRST_LIVE": 0,
+      "REPLAY_DETECTED": 0,
+      "UNRESOLVED": 3
+    }
+  },
+  "replay_goal_segments_in_edl": [],
+  "known_replay_mixed_into_goal_action_roles": false,
+  "story_mp4": {
+    "path": "/tmp/lpy1_p14_human_atom_dev_e2e_20261112/run/01_to_04_fresh_v3r/04_phase5/story_clean.mp4",
+    "symlink_target": "/tmp/lpy1_p14_human_atom_dev_e2e_20261112/run/01_to_04_fresh_v3r/04_phase5/story_clean.mp4",
+    "ffprobe": {
+      "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
+      "duration": "94.877000",
+      "size": "40329365"
+    },
+    "playable": true
+  },
+  "delivery_status_summary": {
+    "release_authorized": false,
+    "delivery_label": "BLOCKED",
+    "delivery_status": "BLOCKED",
+    "blocked_reasons": [
+      "unresolved_without_safe_candidate_preview"
+    ],
+    "final_mp4": null,
+    "final_edl": "/tmp/lpy1_p14_human_atom_dev_e2e_20261112/run/99_final/final_edl.json",
+    "decision": "UNRESOLVED",
+    "final_goal_evidence_manifest": "/tmp/lpy1_p14_human_atom_dev_e2e_20261112/run/99_final/final_goal_evidence_manifest.json",
+    "goal_lineage_report": "/tmp/lpy1_p14_human_atom_dev_e2e_20261112/run/99_final/goal_lineage_report.json",
+    "note": "Formal delivery requires release_authorized=true under full conjunction gates. workflow_completed / final_mp4_exists / semantic_verification_passed alone never authorize. HUMAN_REVIEW_REQUIRED means a safe candidate preview exists for human judgment. RELEASE_READY requires FIRST_LIVE_VERIFIED on every final-delivery EDL goal (final_goal_evidence_manifest), not V3-R historical first-live stats."
+  },
+  "status_gates": {
+    "workflow_completed": true,
+    "story_diagnosis_valid": true,
+    "revision_applied": false,
+    "candidate_rendered": false,
+    "semantic_verification_passed": false,
+    "release_authorized": false,
+    "final_mp4_exists": true
+  },
+  "acceptance": {
+    "three_key_goals_in_candidate_edl": true,
+    "complete_playable_story_mp4": true,
+    "no_known_replay_in_goal_action_roles": true,
+    "unverified_first_live_marked_UNRESOLVED": true,
+    "per_goal_compare_report_written": true,
+    "story_quality_improved_claimed": false,
+    "formal_benchmark_claimed": false
+  },
+  "console_tail_keywords": [
+    "  \"delivery_status\": \"BLOCKED\",",
+    "  \"delivery_label\": \"BLOCKED\",",
+    "    \"v3a_final_delivery\": true",
+    "    \"v3a_final_delivery\": true",
+    "      \"v3a_final_delivery\": {",
+    "        \"delivery_status\": \"BLOCKED\",",
+    "    \"delivery_label\": \"BLOCKED\""
+  ],
+  "algo_edits_by_cursor": [
+    "tests/test_v3a_p11_raw_input_and_critic_coverage.py token string only"
+  ],
+  "best_baseline": "V3-R",
+  "merged_to_main": false,
+  "delivery_status_top_keys": [
+    "release_authorized",
+    "delivery_label",
+    "delivery_status",
+    "blocked_reasons",
+    "human_review",
+    "final_mp4",
+    "final_edl",
+    "decision",
+    "release_gate",
+    "metrics",
+    "timeline_mp4_alignment",
+    "first_live_visual",
+    "final_goal_evidence_manifest",
+    "goal_lineage_report",
+    "goal_lineage",
+    "note"
+  ],
+  "release_gate": {
+    "release_authorized": false,
+    "reasons": [
+      "edl_unchanged",
+      "candidate_not_rendered",
+      "candidate_not_accepted",
+      "semantic_verification_not_passed",
+      "decision_not_revise",
+      "fixture_or_offline_source_not_releasable"
+    ],
+    "final_mp4_duration_sec": 94.877,
+    "edl_hard_ok": true,
+    "blocking_issue_ids": [],
+    "note": "workflow_completed/final_mp4_exists/semantic_verification_passed alone never authorize formal release.",
+    "delivery_version_id": "v0",
+    "delivery_snapshot": {
+      "version_id": "v0",
+      "parent_version_id": null,
+      "safety": "UNKNOWN",
+      "quality": "BASELINE_UNVERIFIED",
+      "verdict_provenance": "OFFLINE_RULE",
+      "semantic_verification_passed": false,
+      "candidate_rendered": true,
+      "compared_against_best": null,
+      "mp4_path": "/tmp/lpy1_p14_human_atom_dev_e2e_20261112/run/01_initial_story/story_clean.mp4",
+      "edl_path": "/tmp/lpy1_p14_human_atom_dev_e2e_20261112/run/01_initial_story/candidate_edl.json"
+    },
+    "delivery_source": "OFFLINE_RULE",
+    "last_round_ignored_for_release": true,
+    "last_verifier_version_id": "v1",
+    "note_phase8": "Release authorization is version-specific from delivery snapshot; a later rejected/uncertain round does not revoke or grant release of selected best.",
+    "delivery_digest_check": {
+      "source_sha256_expected": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+      "edl_sha256_expected": "77057324c688189c2f7b53fe7bc59985eb9b17a87cf0f5b02000377798bceb79",
+      "mp4_sha256_expected": "7764010f0aa1f41282e22faeee295df88e5c0ec26b07d09f4f110c1d80e3553a",
+      "edl_sha256_now": "77057324c688189c2f7b53fe7bc59985eb9b17a87cf0f5b02000377798bceb79",
+      "mp4_sha256_now": "7764010f0aa1f41282e22faeee295df88e5c0ec26b07d09f4f110c1d80e3553a",
+      "ok": true,
+      "reasons": []
+    }
+  }
+}
