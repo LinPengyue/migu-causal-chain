@@ -856,6 +856,44 @@ def cross_check_visible_evidence(
     }
 
 
+def _goal_video_round_evidence_complete(record: Mapping[str, Any]) -> bool:
+    """A single cited shot→net LIVE candidate; not first-live certification."""
+    inf = record.get("vlm_inference") or {}
+    return bool(
+        record.get("ok")
+        and inf.get("observed_shot") is True
+        and inf.get("observed_net") is True
+        and str(inf.get("live_or_replay") or "").lower() == "live"
+        and inf.get("attacking_team_match") is True
+        and inf.get("claims_continuous_live") is True
+        and inf.get("shot_frame_ids")
+        and inf.get("net_frame_ids")
+        and not inf.get("uncertain")
+    )
+
+
+def _goal_video_round_rank(record: Mapping[str, Any]) -> Tuple[int, int, int, int]:
+    """Prefer complete per-call evidence, never union partial claims across calls."""
+    inf = record.get("vlm_inference") or {}
+    if not record.get("ok") or not inf:
+        return (0, 0, 0, 0)
+    has_shot = inf.get("observed_shot") is True and bool(inf.get("shot_frame_ids"))
+    has_net = inf.get("observed_net") is True and bool(inf.get("net_frame_ids"))
+    complete = has_shot and has_net
+    live_claim = (
+        str(inf.get("live_or_replay") or "").lower() == "live"
+        and inf.get("attacking_team_match") is True
+        and inf.get("claims_continuous_live") is True
+    )
+    clean = not bool(inf.get("uncertain"))
+    return (
+        int(bool(complete and live_claim and clean)),
+        int(bool(complete)),
+        int(bool(has_shot)) + int(bool(has_net)),
+        int(bool(live_claim and clean)),
+    )
+
+
 def run_remote_vlm_verification(
     *,
     video: Path,
@@ -982,19 +1020,7 @@ def run_remote_vlm_verification(
     # case the first pass can see post-shot/net frames while omitting the actual
     # shot and broadcast context. Continue to an earlier dense subwindow unless
     # the SAME round cites both shot and net and claims live continuity.
-    r1_inf = r1.get("vlm_inference") or {}
-    r1_complete = bool(
-        r1.get("ok")
-        and r1_inf.get("observed_shot") is True
-        and r1_inf.get("observed_net") is True
-        and str(r1_inf.get("live_or_replay") or "").lower() == "live"
-        and r1_inf.get("attacking_team_match") is True
-        and r1_inf.get("claims_continuous_live") is True
-        and r1_inf.get("shot_frame_ids")
-        and r1_inf.get("net_frame_ids")
-        and not r1_inf.get("uncertain")
-    )
-    need_r2 = not r1_complete
+    need_r2 = not _goal_video_round_evidence_complete(r1)
     r2_frames: List[Dict[str, Any]] = []
     if need_r2 and api.stats.summary().get("http_attempts", 0) < (max_calls or 3):
         # Focus on earlier half of candidate (pre-celebration / action)
@@ -1035,28 +1061,8 @@ def run_remote_vlm_verification(
     # Compare each independent round as a WHOLE observation. Do not merge a
     # shot from one model call with a net from another and claim continuity.
     # Prefer a complete, cited shot→net round over a net-only first result.
-    def _round_rank(record: Dict[str, Any]) -> Tuple[int, int, int, int]:
-        inf = record.get("vlm_inference") or {}
-        if not record.get("ok") or not inf:
-            return (0, 0, 0, 0)
-        has_shot = inf.get("observed_shot") is True and bool(inf.get("shot_frame_ids"))
-        has_net = inf.get("observed_net") is True and bool(inf.get("net_frame_ids"))
-        complete = has_shot and has_net
-        live_claim = (
-            str(inf.get("live_or_replay") or "").lower() == "live"
-            and inf.get("attacking_team_match") is True
-            and inf.get("claims_continuous_live") is True
-        )
-        clean = not bool(inf.get("uncertain"))
-        return (
-            int(bool(complete and live_claim and clean)),
-            int(bool(complete)),
-            int(bool(has_shot)) + int(bool(has_net)),
-            int(bool(live_claim and clean)),
-        )
-
     ranked = [r for r in rounds if r.get("vlm_inference")]
-    best_record = max(ranked, key=_round_rank) if ranked else None
+    best_record = max(ranked, key=_goal_video_round_rank) if ranked else None
     best_inf = (best_record or {}).get("vlm_inference")
     best_round = (best_record or {}).get("round")
 
