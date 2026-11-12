@@ -1,0 +1,150 @@
+{
+  "schema": "v3a_p12_zero_paid_server_verify_v1",
+  "generated": "2026-11-12T07:11:49.822776+00:00",
+  "worktree": "/data2/lpy1/worktrees/migu-v3a-p12-verify",
+  "branch": "story-va-v3a-p12-goal-evidence-recall",
+  "code_sha": "5b0642381d606e1a30ec7117294f2e9008986058",
+  "compileall": {
+    "exit_code": 0
+  },
+  "pytest": {
+    "p12_plus_p11": {
+      "passed": 18,
+      "failed": 0
+    },
+    "phase8": {
+      "passed": 129,
+      "failed": 0
+    },
+    "phase10_d_e_f": {
+      "passed": 71,
+      "failed": 0
+    }
+  },
+  "paid_http": 0,
+  "raw_only_A": {
+    "exit_code": 1,
+    "ok": false,
+    "input_mode": "RAW_EVENTS_ONLY",
+    "eligible_for_raw_only_evaluation": true,
+    "human_annotation_atoms_used": false,
+    "phase5_reuse": false,
+    "decision": "UNRESOLVED",
+    "delivery_label": "BLOCKED",
+    "events_sha256": "ddae99b21cbfcd1c75ddf620d957578e57c2c013d607ac893655c4d52b7e779e",
+    "out_dir": "/tmp/lpy1_p12_raw_only_20261112/run",
+    "pts_monotonic_ok": true,
+    "goal_recovery": {
+      "n_candidates": 5,
+      "n_single_goal": 3,
+      "n_with_goal_action_sec": 2,
+      "n_unresolved_single_goals": 1,
+      "all_single_goal_actions_located": false,
+      "pending_n": 1,
+      "pending_candidate_ids": [
+        "goalcand_03_01_to_11"
+      ]
+    },
+    "stage_validity": {
+      "all_required_valid": true,
+      "blocking_errors": [
+        "03_score_confirmed_goal_action_missing"
+      ],
+      "03_v1_adapt": {
+        "present": true,
+        "valid": true,
+        "n_recovery_candidates": 5,
+        "n_with_goal_action_sec": 2,
+        "n_single_goal": 3,
+        "n_unresolved_single_goals": 1,
+        "all_single_goal_actions_located": false,
+        "goal_recovery_used": true,
+        "entered_predicted_causal": true,
+        "n_v3_outcome_chains": 2,
+        "n_goal_terminals": 2,
+        "unresolved_goal_candidate_ids": [
+          "goalcand_03_01_to_11"
+        ]
+      },
+      "note_gate_semantics": "blocking_errors includes 03_score_confirmed_goal_action_missing while all_required_valid remained True in this run — factual observation for follow-up; Cursor did not patch."
+    },
+    "first_live": {
+      "FIRST_LIVE_VERIFIED": 0,
+      "POSSIBLE_FIRST_LIVE": 0,
+      "REPLAY_DETECTED": 0,
+      "UNRESOLVED": 2
+    },
+    "edl_segments": [
+      {
+        "segment_id": "seg_title_open",
+        "role": "story_title",
+        "media_in": null,
+        "media_out": null
+      },
+      {
+        "segment_id": "seg_opponent_opening_goal_action",
+        "role": "opponent_opening_goal_action",
+        "media_in": 1293.71,
+        "media_out": 1315.71
+      },
+      {
+        "segment_id": "seg_setup_deficit",
+        "role": "deficit_scoreboard_anchor",
+        "media_in": 1409.43,
+        "media_out": 1412.93
+      },
+      {
+        "segment_id": "seg_buildup_event_000411",
+        "role": "buildup_action",
+        "media_in": 3442.75,
+        "media_out": 3454.75
+      },
+      {
+        "segment_id": "seg_equalizer_scoreboard",
+        "role": "equalizer_scoreboard_anchor",
+        "media_in": 6534.62,
+        "media_out": 6538.12
+      },
+      {
+        "segment_id": "seg_go_ahead_goal_action",
+        "role": "go_ahead_goal_action",
+        "media_in": 6801.28,
+        "media_out": 6823.28
+      },
+      {
+        "segment_id": "seg_go_ahead_scoreboard",
+        "role": "go_ahead_scoreboard_anchor",
+        "media_in": 6956.12,
+        "media_out": 6959.62
+      },
+      {
+        "segment_id": "seg_title_close",
+        "role": "story_wrap_title",
+        "media_in": null,
+        "media_out": null
+      }
+    ],
+    "equalizer_goal_action_segment_present": false
+  },
+  "equalizer_visual_scout": {
+    "candidate_id": "goalcand_03_01_to_11",
+    "search_interval": {
+      "media_in": 6410.07,
+      "media_out": 6535.62
+    },
+    "n_windows": 5,
+    "n_frames_ok": 25,
+    "n_frames_fail": 0,
+    "server_pack": "/tmp/lpy1_p12_raw_only_20261112/equalizer_scout_frames",
+    "download_sample_folder": "/data2/lpy1/_story_va_outputs/v3/plan2/phase12_equalizer_scout",
+    "claims_not_made": {
+      "goal_action_found": false,
+      "first_live_verified": false,
+      "scoreboard_alone_certifies_goal": false
+    }
+  },
+  "method_quality_gain": "UNVERIFIED",
+  "best_baseline": "V3-R",
+  "algo_edits_by_cursor": false,
+  "merged_to_main": false
+}

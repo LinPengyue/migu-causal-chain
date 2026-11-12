@@ -78,5 +78,7 @@ goal timestamps as algorithm inputs.
    newly annotated global story chains) and complete E2E Agent (~half).
    No novelty or quality claim until independent held-out evidence.
 
-**Status:** code submitted, server regression and real-video evidence
-pending. No demonstrated improvement in story quality.
+**Status:** ZERO-PAID SERVER REGRESSION EXECUTED ON `5b06423`. Equalizer
+`pending_goal_video_search` emitted; 25 scout frames extracted (not
+first-LIVE verified). See `docs/V3A_P12_SERVER_VERIFY_5b06423.json`.
+No demonstrated story-quality improvement; V3-R remains BEST.
