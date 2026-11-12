@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 from .pipeline import dump
-from .v1_causal_adapter import _parse_score_token, load_raw_events
+from .v1_causal_adapter import load_raw_events, score_pair_from_raw_event
 
 _ACTION_TYPES = frozenset({
     "Shot", "Save", "Corner_kick", "Free_kick", "Dribble_past", "Throw_in",
@@ -34,10 +34,7 @@ def _is_replay(e: Dict[str, Any]) -> bool:
 def score_observations(raw_events: Sequence[Dict[str, Any]]) -> List[Dict[str, Any]]:
     out = []
     for e in raw_events:
-        sc = (e.get("attributes") or {}).get("Score_Recognition") or []
-        if not sc:
-            continue
-        pair = _parse_score_token(sc[0])
+        pair = score_pair_from_raw_event(e)
         if pair is None:
             continue
         t = _event_time(e)
