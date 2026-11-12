@@ -101,4 +101,4 @@ benchmark + new long-story benchmark (~half), complete E2E Agent
 (~half). Report event-annotated vs raw/noisy-event conditions without
 mixing the metrics or using target chain labels as inputs.
 
-**Status: code submitted; no server run or improvement claimed.**
+Status: **ZERO-PAID SERVER VERIFY ON **. Documented suite 28 passed / 1 failed (P11 strict-reject token rename). **No genuine independent atomic annotation file found** on server; E2E with  not run (no fabrication / no causal extract). See .

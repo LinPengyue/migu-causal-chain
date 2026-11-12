@@ -1,0 +1,108 @@
+{
+  "schema": "v3a_p14_zero_paid_server_verify_v1",
+  "generated": "2026-11-12T09:14:11.959240+00:00",
+  "worktree": "/data2/lpy1/worktrees/migu-v3a-p14-verify",
+  "branch": "story-va-v3a-p14-independent-atomic-events",
+  "code_sha": "2b47ee72fdd44d26ed0e685481d64c84f380a592",
+  "paid_http": 0,
+  "full_e2e_run": false,
+  "independent_atoms_e2e_blocked": true,
+  "compileall": {
+    "exit_code": 0,
+    "target": "algo/story_video_agent_v3"
+  },
+  "pytest_documented_suite": {
+    "files": [
+      "tests/test_v3a_p14_independent_atomic_annotations.py",
+      "tests/test_v3a_p13_reuse_goal_localizer_and_semantic_gate.py",
+      "tests/test_v3a_p12_goal_evidence_recall.py",
+      "tests/test_v3a_p11_raw_input_and_critic_coverage.py"
+    ],
+    "passed": 28,
+    "failed": 1,
+    "failure": {
+      "test": "tests/test_v3a_p11_raw_input_and_critic_coverage.py::test_full_e2e_requires_only_raw_mp4_and_events_and_strict_rejects_human",
+      "expected_error_token": "strict_raw_only_rejects_human_causal_json",
+      "actual_error_token": "strict_raw_only_rejects_external_event_annotations",
+      "note": "P14 generalized strict-raw rejection to cover causal_json OR independent_atoms_json under one token; P11 assertion string not updated. Real regression in documented suite; no Cursor algo edit."
+    }
+  },
+  "pytest_p14_only": {
+    "passed": 7,
+    "failed": 0
+  },
+  "independent_atoms_search": {
+    "schema_sought": {
+      "atomic_events": [
+        {
+          "event_type": "Goal",
+          "t_ms": "...",
+          "broadcast_phase": "LIVE|REPLAY|UNKNOWN"
+        }
+      ]
+    },
+    "roots_scanned": [
+      "/data2/lpy1/worktrees/migu-v3a-p14-verify",
+      "/data2/lpy1/causal-chain2",
+      "/data2/lpy1/_story_va_outputs",
+      "/tmp/migu-va2a",
+      "/data2/lpy1/dataset",
+      "/data2/lpy1/desktop",
+      "/data2/lpy1/worktrees/migu-v3a-*/10.27scasual_chain/data",
+      "/mnt/data4/migu",
+      "/tmp"
+    ],
+    "json_files_schema_scanned_approx": 15246,
+    "genuine_independent_atomic_annotation_files_found": 0,
+    "false_positive_checked": {
+      "path": "/tmp/atoms-only.json",
+      "verdict": "NOT soccer atomic events; unrelated list of Chinese emergency-plan rule cards (id/upper/cards)"
+    },
+    "fabricated_from_human_causal": false,
+    "extracted_from_p10f_sealed_or_testset_gold": false
+  },
+  "available_data_sources_inventory": {
+    "match_A_uae_oman": {
+      "source_mp4": "/mnt/data4/migu/10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语.mp4",
+      "raw_events_json": "10.27scasual_chain/data/交付_out/10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语.json",
+      "raw_n_events": 749,
+      "raw_goal_events": 0,
+      "human_causal_json": "10.27scasual_chain/data/交付_out/10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语_causal.json",
+      "human_causal_n_chains": 25,
+      "human_causal_event_type_counts_top": {
+        "射门": 41,
+        "进球": 28,
+        "传球": 17,
+        "扑救": 17
+      },
+      "human_causal_goalish_event_count": 28,
+      "note": "Human causal contains Goal-like atoms (type=进球) nested inside causal_chains with chain subtype/edges/segment gold. Per P14 protocol this is HUMAN_ATOM_ENRICHED_DEV only — NOT a fair independent annotation input. Cursor did not strip/export these into --independent-atoms-json."
+    },
+    "also_present_for_other_matches": "Paired raw+*_causal.json under data/交付_out for Osasuna/Celta, Croatia, France, etc. Same provenance class as A.",
+    "prior_p11_p12_p13_runs": {
+      "mode": "RAW_EVENTS_ONLY / strict-raw-only",
+      "independent_atoms_json": null,
+      "equalizer_goal_action": "missing in raw-only (P11/P12/P13)"
+    }
+  },
+  "e2e_with_independent_atoms": {
+    "attempted": false,
+    "reason": "No genuine independent event-level annotation file available. Doc forbids fabrication and forbids extracting from *_causal.json then calling it independent."
+  },
+  "claims": {
+    "one_to_one_goal_restored_in_final_edl": false,
+    "first_live_verified": false,
+    "narrative_quality_verified": false,
+    "story_quality_improved": false,
+    "v3r_still_best_baseline": true
+  },
+  "blocking_prerequisite": "Provide a real INDEPENDENT_ATOMIC_ANNOTATED file (atomic_events only; provenance that it was not derived from human causal/story chain gold / P10-F sealed labels), then re-run story_full_e2e_cli without --strict-raw-only.",
+  "legal_reuse_options_for_decision": [
+    "Create new independent event-level annotations (Goal t_ms + broadcast_phase) without reading causal_chains / story roles / EDL gold",
+    "Or explicitly authorize a reported HUMAN_ATOM_ENRICHED_DEV reproduction path (not fair causal/story prediction eval) using legacy --causal-json",
+    "Do NOT silently convert *_causal.json atoms into --independent-atoms-json"
+  ],
+  "algo_edits_by_cursor": false,
+  "merged_to_main": false,
+  "best_baseline": "V3-R"
+}
