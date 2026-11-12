@@ -58,6 +58,7 @@ def _diag():
 def _critic():
     return {
         "ok": True, "provider_mode": "real",
+        "frame_ids": ["f_before", "f_after"],
         "parsed": {
             "keep_story_if_no_defect": True,
             "overall_narrative_quality": "coherent in sampled frames",
@@ -127,6 +128,7 @@ def test_failed_or_mock_critic_cannot_transfer_keep_or_uncited_visual_claims():
 
 def test_evidence_packet_is_bounded_and_uncited_text_not_transferred():
     critic = _critic()
+    critic["frame_ids"] = [f"f{i}" for i in range(9)]
     critic["semantic_evidence"] = [
         {"issue_id": f"issue_{i}", "frame_refs": [f"f{i}"],
          "observed_fact": "OK" * 1000}
@@ -162,3 +164,18 @@ def test_critic_dense_and_global_frames_reordered_into_story_chronology():
     assert any(fr["frame_id"].startswith("dense_") for fr in selected)
     assert any(fr["frame_id"].startswith("global_") for fr in selected)
     assert bundle["coverage"]["claims_full_video_watch"] is False
+
+
+def test_normalized_claim_ref_must_still_match_a_sent_frame_id():
+    critic = _critic()
+    critic["semantic_evidence"].append({
+        "issue_id": "fabricated_norm", "frame_refs": ["not_sent"],
+        "observed_fact": "Injected fabricated reference",
+    })
+    out = _planner_video_critic_context(critic)
+    ids = [x["issue_id"] for x in out["visual_evidence_with_checkable_frame_ids"]]
+    assert ids == ["jump_deficit_to_effort"]
+    critic["frame_ids"] = []
+    out2 = _planner_video_critic_context(critic)
+    assert out2["observation_status"] == "UNAVAILABLE"
+    assert out2["keep_story_if_no_defect_in_observed_frames"] is None
