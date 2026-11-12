@@ -56,7 +56,7 @@ def _looks_like_intermediate(path: Path) -> Optional[str]:
 
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
-        description="One-click Story Video E2E from MP4 + events + causal only"
+        description="One-click Story Video E2E from raw events JSON + source MP4"
     )
     p.add_argument("--source-mp4", type=Path, required=True)
     p.add_argument("--events-json", type=Path, required=True,
@@ -365,8 +365,17 @@ def evaluate_stages(
             n_seg = len(edl) if isinstance(edl, list) else len(
                 (edl.get("segments") if isinstance(edl, dict) else None) or []
             )
-            edl_ok = n_seg > 0
-            edl_detail = {"n_segments": n_seg}
+            from .story_edl_safety import check_source_pts_monotonic
+            from .story_timeline import edl_rows
+            pts = check_source_pts_monotonic(edl_rows(edl))
+            edl_ok = n_seg > 0 and pts.get("ok") is True
+            edl_detail = {
+                "n_segments": n_seg,
+                "source_pts_monotonic": bool(pts.get("ok")),
+                "source_pts_breaks": pts.get("breaks") or [],
+            }
+            if not pts.get("ok"):
+                blocking.append("04_phase5_source_pts_nonmonotonic")
         except Exception as exc:  # noqa: BLE001
             blocking.append(f"04_phase5_edl_invalid:{exc}")
     stages["04_phase5_edl"] = {"present": edl_p.is_file(), "valid": edl_ok, **edl_detail}
