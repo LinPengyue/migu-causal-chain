@@ -533,6 +533,35 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         story = _read_json(Path(t01p))
     initial_mp4 = Path(baseline["paths"]["story_clean.mp4"])
 
+    # Fresh no-reuse inference may not begin revision/render on an EDL whose
+    # source time moves backwards. Never silently sort, delete or recover an
+    # atom-fill overlap here; preserve evidence and fail the new-run contract.
+    input_pts_gate = check_source_pts_monotonic(edl)
+    write_json(out / "00_baseline" / "input_edl_pts_safety.json", input_pts_gate)
+    audit["input_edl_pts_safety"] = input_pts_gate
+    if inp.run_fresh_v3r and not input_pts_gate.get("ok"):
+        audit["ok"] = False
+        audit["error"] = "fresh_baseline_source_pts_nonmonotonic"
+        gates["workflow_completed"] = True
+        gates["final_mp4_exists"] = False
+        final_dir = out / "99_final"
+        final_dir.mkdir(parents=True, exist_ok=True)
+        write_json(final_dir / "final_edl.json", edl)
+        delivery = {
+            "release_authorized": False, "delivery_label": "BLOCKED",
+            "delivery_status": "BLOCKED", "final_mp4": None,
+            "final_edl": str(final_dir / "final_edl.json"),
+            "blocked_reasons": ["fresh_baseline_source_pts_nonmonotonic"],
+            "decision": "UNRESOLVED",
+            "note": "Do not force-render or silently repair baseline source PTS inversion.",
+        }
+        write_json(final_dir / "delivery_status.json", delivery)
+        audit["delivery"] = delivery
+        audit["status_gates"] = gates
+        write_json(out / "story_e2e_audit.json", audit)
+        write_json(out / "status_gates.json", gates)
+        return audit
+
     # Smoke-render to prove V3-R renderer wiring (non-delivery)
     smoke = None
     if inp.smoke_render:
