@@ -252,6 +252,9 @@ def score_case(case_dir: Path, *, external_reference_edl: Path | None = None) ->
             raise ValueError("reference_edl_not_private")
         ref_rows = _rows(reference)
         truth = None
+    elif manifest.get("variant") == "CLEAN_NO_DEFECT_CONTROL":
+        ref_rows = _rows(Path(manifest["phase5_dir"]) / "candidate_edl.json")
+        truth = None
     else:
         private = case_dir / "private_eval" / "truth.json"
         if not private.is_file():
