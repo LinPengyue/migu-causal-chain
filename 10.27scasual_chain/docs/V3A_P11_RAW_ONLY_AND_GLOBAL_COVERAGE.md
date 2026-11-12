@@ -32,8 +32,12 @@ P10-F sealed risk predictions must remain unread until human labels are locked.
 2. `closed_loop_cli.run_match` and `story_e2e_agent.resolve_baseline`
    permit optional `causal_atoms_path=None`. Reuse existing score-based Goal
    Recovery, predicted 8.31 causal chain, Phase5 V3-R and unified V3-A loop.
-   Do not silently backfill missing Goal from human labels. A match lacking
-   recoverable score transitions must remain UNRESOLVED/BLOCKED.
+   Do not silently backfill missing Goal from human labels. The existing
+   V2 adapter's score-field precedence is reused for both
+   `attributes.Score_Recognition` and `scores.score_recognition` (list/string),
+   including alternate raw delivery variants. Score confirmation remains
+   distinct from visually verified goal action. A match lacking recoverable
+   score transitions must remain UNRESOLVED/BLOCKED.
 3. `story_full_e2e_cli` accepts just `--events-json --source-mp4`, adds
    `--strict-raw-only` to reject annotated causal inputs and records exact
    input mode in the contract and run summary. A legacy `--causal-json` run
