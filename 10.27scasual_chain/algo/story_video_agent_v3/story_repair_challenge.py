@@ -278,10 +278,13 @@ def score_case(case_dir: Path, *, external_reference_edl: Path | None = None) ->
     audit_path = run_root / "story_e2e_audit.json"
     diag_path = run_root / "02_round_01" / "story_diagnosis.json"
     if not output.is_file():
+        run_audit = _read(audit_path) if audit_path.is_file() else {}
         return {
-            "schema": SCHEMA, "status": "NOT_RUN",
+            "schema": SCHEMA,
+            "status": "BLOCKED_NO_FINAL_EDL" if audit_path.is_file() else "NOT_RUN",
             "missing_goal_count": len(missing),
             "run_audit_exists": audit_path.is_file(),
+            "run_error": run_audit.get("error"),
             "no_quality_or_first_live_claim": True,
         }
     after = _rows(output)
@@ -343,11 +346,28 @@ def score_case(case_dir: Path, *, external_reference_edl: Path | None = None) ->
     edl_recovered = bool(missing) and all(
         x["source_window_overlap"] for x in recovered.values()
     )
+    preserved_goal_roles = {
+        str(x.get("role") or "") for x in before
+        if x.get("include_in_cut", True)
+        and "goal_action" in str(x.get("role") or "")
+    }
+    missing_preexisting_goals = sorted(preserved_goal_roles - after_roles)
+    from .story_edl_safety import check_source_pts_monotonic
+    source_pts_safe = bool(check_source_pts_monotonic(after).get("ok"))
+    final_video = run_root / "99_final" / "story_final.mp4"
     is_clean_control = manifest.get("variant") == "CLEAN_NO_DEFECT_CONTROL"
     if is_clean_control:
         status = "NO_UNNECESSARY_EDL_EDIT" if after == before else "UNNECESSARY_EDL_EDIT"
+    elif not edl_recovered:
+        status = "NOT_REPAIRED"
+    elif missing_preexisting_goals:
+        status = "REPAIR_REGRESSION_GOAL_LOSS"
+    elif not source_pts_safe:
+        status = "EDL_RESTORED_PTS_INVALID"
+    elif not final_video.is_file():
+        status = "EDL_WINDOW_RESTORED_NO_MP4"
     else:
-        status = "EDL_WINDOW_RESTORED_UNVERIFIED" if edl_recovered else "NOT_REPAIRED"
+        status = "EDL_WINDOW_RESTORED_UNVERIFIED"
     out = {
         "schema": SCHEMA,
         "variant": manifest.get("variant"),
@@ -366,7 +386,9 @@ def score_case(case_dir: Path, *, external_reference_edl: Path | None = None) ->
             "revision_actions": revision_actions,
             "mutating_revision_requested": mutating_revision,
             "candidate_rendered": candidate_rendered,
-            "final_mp4_exists": (run_root / "99_final" / "story_final.mp4").is_file(),
+            "final_mp4_exists": final_video.is_file(),
+            "preexisting_goal_roles_lost": missing_preexisting_goals,
+            "source_pts_monotonic_ok": source_pts_safe,
             "offline_without_semantic_vlm": True,
         },
         "recovery": recovered,
