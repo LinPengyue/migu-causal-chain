@@ -313,6 +313,9 @@ def evaluate_stages(
     live_p = fresh_root / "03_v1_adapt" / "predicted_causal_live_goals_only.json"
     v1_ok = False
     recovery_impact = None
+    # None means the goal inventory was unavailable; do not silently claim
+    # completeness when the recovery stage itself never ran.
+    goal_actions_present: Optional[bool] = None
     v1_detail: Dict[str, Any] = {}
     if live_p.is_file() and predicted_p.is_file() and recovery_p.is_file():
         try:
@@ -347,10 +350,16 @@ def evaluate_stages(
             # particular, scoreboard-only equalizers must not silently pass
             # the release-oriented stage gate just because two other goals
             # supplied action timestamps.
-            unresolved = [
+            single_goals = [
                 c for c in (rec.get("candidates") or [])
-                if c.get("single_goal_increment") and c.get("goal_action_sec") is None
+                if c.get("single_goal_increment")
             ]
+            unresolved = [
+                c for c in single_goals if c.get("goal_action_sec") is None
+            ]
+            goal_actions_present = (
+                not bool(unresolved) if single_goals else None
+            )
             v1_detail["unresolved_goal_candidate_ids"] = [
                 str(c.get("candidate_id")) for c in unresolved
             ]
@@ -592,16 +601,20 @@ def evaluate_stages(
     # Execution-stage validity is not equivalent to a complete story.
     # A score-confirmed goal without an action is a semantic blocker even
     # when the adapter ran correctly and generated some other goal chains.
-    goal_actions_present = not any(
-        error == "03_score_confirmed_goal_action_missing" for error in blocking
-    )
     all_required_valid = pipeline_stages_valid and not blocking
+    delivery_label = delivery.get("delivery_label") or delivery.get("delivery_status")
+    release_ready = (
+        all_required_valid
+        and delivery_label == "RELEASE_READY"
+        and bool(delivery.get("release_authorized"))
+    )
     return {
         "schema": "v3a_full_e2e_stage_validity_v1",
         "stages": stages,
         "pipeline_stages_valid": pipeline_stages_valid,
         "story_goal_actions_present": goal_actions_present,
         "all_required_valid": all_required_valid,
+        "release_ready": release_ready,
         "blocking_errors": blocking,
         "goal_recovery_impact": recovery_impact,
         "first_live_visual": first_live_visual,
