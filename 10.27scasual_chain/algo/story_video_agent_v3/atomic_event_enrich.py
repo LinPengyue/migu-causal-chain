@@ -6,7 +6,7 @@ Never copies chain_category, subtype, edges, segment windows, or story roles.
 from __future__ import annotations
 
 import json
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
@@ -259,7 +259,7 @@ def enrich_with_independent_atoms(
         "n_causal_atoms_unique": 0,
         "n_injected": len(injected),
         "n_skipped_duplicate": duplicates,
-        "injected_by_type": dict(__import__("collections").Counter(e["event_type"] for e in injected)),
+        "injected_by_type": dict(Counter(e["event_type"] for e in injected)),
         "n_goal_injected": sum(str(e["event_type"]).lower() == "goal" for e in injected),
         "n_goal_injected_live": sum(str(e["event_type"]).lower() == "goal" and e["video_context"]["broadcast_phase"] == "LIVE" for e in injected),
         "n_goal_injected_replay": sum(str(e["event_type"]).lower() == "goal" and e["video_context"]["broadcast_phase"] == "REPLAY" for e in injected),
@@ -314,8 +314,9 @@ def enrich_files(
     report["eligible_for_raw_only_evaluation"] = causal_path is None and independent_atoms_path is None
     report["eligible_for_event_annotated_evaluation"] = causal_path is None
     report["goal_recovery_reliance"] = (
-        "raw_event_score_transitions_and_actions" if causal_path is None
-        else "human_atoms_plus_raw_events_dev_only"
+        "human_atoms_plus_raw_events_dev_only" if causal_path is not None
+        else ("independent_annotated_atoms_plus_raw_events" if independent_atoms_path is not None
+              else "raw_event_score_transitions_and_actions")
     )
     if out_report_path:
         Path(out_report_path).parent.mkdir(parents=True, exist_ok=True)
