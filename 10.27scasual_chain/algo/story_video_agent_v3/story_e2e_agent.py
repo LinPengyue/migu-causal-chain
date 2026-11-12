@@ -1145,18 +1145,54 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         # first broadcast, shot/net, or repair authorization.
         from .story_goal_video_repair import prepare_source_video_goal_queue
 
-        goal_video_queue = prepare_source_video_goal_queue(
-            diagnosis=diag,
-            source_mp4=inp.source_mp4,
-            events_path=events_path,
-            out_dir=round_dir / "source_goal_video_review",
-            max_issues=1, max_candidates_per_issue=3,
-            max_video_read_sec=75.0,
-        )
+        if round_idx == 1:
+            goal_video_queue = prepare_source_video_goal_queue(
+                diagnosis=diag,
+                source_mp4=inp.source_mp4,
+                events_path=events_path,
+                out_dir=round_dir / "source_goal_video_review",
+                max_issues=1, max_candidates_per_issue=3,
+                max_video_read_sec=75.0,
+            )
+        else:
+            goal_video_queue = {
+                "status": "SKIPPED_AFTER_FIRST_ROUND_REUSE_EXISTING_EVIDENCE",
+                "issues": [],
+            }
+        goal_semantic = None
+        if paid_api is not None and (goal_video_queue.get("issues") or []):
+            from .story_goal_video_repair import observe_source_goal_video_with_shared_vlm
+            from .story_paid_eval import provider_usage as goal_provider_usage
+
+            goal_semantic = observe_source_goal_video_with_shared_vlm(
+                queue=goal_video_queue,
+                source_mp4=inp.source_mp4,
+                api=paid_api,
+                out_dir=round_dir / "source_goal_video_review" / "real_vlm_probe",
+                max_calls=int(inp.max_calls), max_cost_usd=float(inp.max_cost_usd),
+            )
+            usage = goal_provider_usage(paid_api)
+            http_calls = int(usage.get("http_attempts") or http_calls)
+            est_cost = float(usage.get("est_cost_usd_real") or est_cost)
+            round_rec["api_usage_after_goal_video_observation"] = usage
+            if http_calls >= int(inp.max_calls) or est_cost >= float(inp.max_cost_usd):
+                paid_api = None
+        if goal_semantic:
+            # Source VLM observation is distinct from autonomous first-LIVE
+            # certification. It cannot confirm the missing-goal diagnosis
+            # or authorize a goal-action segment by itself.
+            diag["goal_video_semantic_observation"] = {
+                k: goal_semantic.get(k) for k in (
+                    "status", "source_issue_id", "candidate_id", "source_window",
+                    "frame_ids_sent", "source_video_crosscheck",
+                    "first_live_verified", "n_real_vlm_calls",
+                )
+            }
+            write_diagnosis(round_dir / "story_diagnosis.json", diag)
         round_rec["goal_video_review_queue"] = {
             "status": goal_video_queue.get("status"),
             "issue_count": len(goal_video_queue.get("issues") or []),
-            "video_semantic_confirmed": False,
+            "video_semantic_observation": (goal_semantic or {}).get("status"),
             "first_live_verified": False,
         }
         search_obs = search_candidates_to_observations(search_report)
