@@ -1,0 +1,138 @@
+{
+  "schema": "v3a_phase10c_zero_paid_verify_v1",
+  "generated": "2026-11-12T03:41:31.820587+00:00",
+  "worktree": "/data2/lpy1/worktrees/migu-v3a-phase10c-verify",
+  "branch": "story-va-v3a-phase10c-exploratory",
+  "local_verify_branch": "story-va-v3a-phase10c-exploratory-verify",
+  "code_sha": "fda622c5c4a99ad00f28e105f8139c6e8a619ecb",
+  "compileall": {
+    "exit_code": 0
+  },
+  "pytest_phase10": {
+    "passed": 57,
+    "failed": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "note": "includes new P10-C exploratory tests vs P10-B 36"
+  },
+  "pytest_phase8": {
+    "passed": 129,
+    "failed": 0,
+    "skipped": 0,
+    "exit_code": 0
+  },
+  "paid_http": 0,
+  "algo_source_edits_by_cursor": false,
+  "merged_to_main": false,
+  "p10b_typed_ref_fix": {
+    "cases": {
+      "A_uae_oman": {
+        "n_nodes": 9,
+        "n_edges": 8,
+        "nodes_with_short_chain_ids": 3,
+        "nodes_with_event_ids": 4,
+        "nodes_still_holding_causal_colon_in_event_ids": 0,
+        "observation_targets": 2,
+        "summary": {
+          "node_count": 9,
+          "edge_count": 8,
+          "event_or_short_chain_reference_links": 7,
+          "event_reference_links": 4,
+          "short_chain_prediction_reference_links": 3,
+          "unclassified_reference_count": 0,
+          "unreviewed_narrative_transitions": 3,
+          "model_reviewed_transitions": 0
+        },
+        "split_example_count": 3
+      },
+      "B_osasuna_celta": {
+        "n_nodes": 13,
+        "n_edges": 12,
+        "nodes_with_short_chain_ids": 3,
+        "nodes_with_event_ids": 5,
+        "nodes_still_holding_causal_colon_in_event_ids": 0,
+        "observation_targets": 2,
+        "summary": {
+          "node_count": 13,
+          "edge_count": 12,
+          "event_or_short_chain_reference_links": 8,
+          "event_reference_links": 5,
+          "short_chain_prediction_reference_links": 3,
+          "unclassified_reference_count": 0,
+          "unreviewed_narrative_transitions": 4,
+          "model_reviewed_transitions": 0
+        },
+        "split_example_count": 3
+      },
+      "B_strict_lin": {
+        "n_nodes": 12,
+        "n_edges": 11,
+        "nodes_with_short_chain_ids": 1,
+        "nodes_with_event_ids": 4,
+        "nodes_still_holding_causal_colon_in_event_ids": 0,
+        "observation_targets": 2,
+        "summary": {
+          "node_count": 12,
+          "edge_count": 11,
+          "event_or_short_chain_reference_links": 5,
+          "event_reference_links": 4,
+          "short_chain_prediction_reference_links": 1,
+          "unclassified_reference_count": 0,
+          "unreviewed_narrative_transitions": 4,
+          "model_reviewed_transitions": 0
+        },
+        "split_example_count": 1
+      }
+    },
+    "findings": [
+      "causal:pred_*:atom_fill_* now splits into short_chain_ids=pred_* and event_ids=atom_fill_*",
+      "typed_reference_provenance retains raw_source_ref and marks predicted_short_chain / atom_event",
+      "validated_against_*_inventory remains False — pointers are NOT confirmed causal truth",
+      "limitations state embedded causal pointers are unverified predicted-chain refs"
+    ]
+  },
+  "p10c_zero_paid_explore": {
+    "match": "A_uae_oman",
+    "phase5_dir": "/data2/lpy1/_story_va_outputs/v3/plan2/closed_loop_A_uae_oman/fresh_e2e_A_real_20261105_183136/01_to_04_fresh_v3r/04_phase5",
+    "nonprotected_target": "seg_buildup_event_000472",
+    "fixture": "docs not stored large; server /tmp/.../A_drop_buildup_fixture.json",
+    "explore_out": "/tmp/lpy1_phase10c_verify_20261112/explore/A_uae_oman_drop_buildup_r2",
+    "cli_http_calls": 0,
+    "formal_decision": "UNRESOLVED",
+    "formal_revision_applied": false,
+    "exploratory_status": "EXPLORATORY_RENDERED_NOT_VERIFIED",
+    "blind_pair_status": "BLIND_PAIR_READY",
+    "candidate_rendered": true,
+    "release_authorized": false,
+    "promote_best": false,
+    "human_quality_improved": false,
+    "g0_confirmed": false,
+    "baseline_frozen_unchanged": true,
+    "goals_identical": true,
+    "dropped_active_segments": [
+      "seg_buildup_event_000472"
+    ],
+    "durations_sec": {
+      "baseline_mp4": 94.877,
+      "candidate_mp4": 82.826,
+      "X_mp4": 94.877,
+      "Y_mp4": 82.826,
+      "baseline_edl_media_span": 88.5,
+      "proposed_edl_media_span": 76.5
+    },
+    "fullcut_aligned": true,
+    "server_video_paths": {
+      "explore_out": "/tmp/lpy1_phase10c_verify_20261112/explore/A_uae_oman_drop_buildup_r2",
+      "exploratory_dir": "/tmp/lpy1_phase10c_verify_20261112/explore/A_uae_oman_drop_buildup_r2/02_round_01/phase10_exploratory",
+      "blind_review_dir": "/tmp/lpy1_phase10c_verify_20261112/explore/A_uae_oman_drop_buildup_r2/02_round_01/phase10_exploratory/blind_review",
+      "candidate_mp4": "/tmp/lpy1_phase10c_verify_20261112/explore/A_uae_oman_drop_buildup_r2/02_round_01/phase10_exploratory/candidate_render/story_clean.mp4",
+      "baseline_mp4": "/data2/lpy1/_story_va_outputs/v3/plan2/closed_loop_A_uae_oman/fresh_e2e_A_real_20261105_183136/01_to_04_fresh_v3r/04_phase5/story_clean.mp4",
+      "X": "/tmp/lpy1_phase10c_verify_20261112/explore/A_uae_oman_drop_buildup_r2/02_round_01/phase10_exploratory/blind_review/X.mp4",
+      "Y": "/tmp/lpy1_phase10c_verify_20261112/explore/A_uae_oman_drop_buildup_r2/02_round_01/phase10_exploratory/blind_review/Y.mp4"
+    },
+    "note": "Fixture dry-run only; does NOT prove Agent-discovered defect or story-quality gain. V3-R remains BEST."
+  },
+  "method_quality_gain": "UNVERIFIED",
+  "best_baseline": "V3-R",
+  "published_for_cross_platform_review": true
+}

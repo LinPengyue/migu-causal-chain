@@ -1,0 +1,617 @@
+{
+  "schema": "v3a_agent_inferred_narrative_graph_v1",
+  "data_role": "AGENT_INFERRED",
+  "edl_sha256": "52e15beb0051a7867f2f4941c7c9913a46290816a5fff0ce0b77f149547b2b06",
+  "source_sha256": null,
+  "story_plan_sha256": "f1ebb3e883c7fa8c74e0f382d1f8218b986c3d500ccd63e33b3f929ad8f15710",
+  "story_goal_hint": null,
+  "nodes": [
+    {
+      "node_id": "edl:seg_title_open",
+      "segment_id": "seg_title_open",
+      "role_hint": "story_title",
+      "narrative_slot_hint": "other",
+      "story_time_range": [
+        0.0,
+        3.0
+      ],
+      "source_window": null,
+      "event_ids": [],
+      "short_chain_ids": [],
+      "typed_reference_provenance": [],
+      "unclassified_source_refs": [],
+      "source_binding": "NON_MEDIA_CARD",
+      "semantic_status": "UNOBSERVED_ROLE_HYPOTHESIS",
+      "protected_goal_action_hint": false
+    },
+    {
+      "node_id": "edl:seg_arc_background_title",
+      "segment_id": "seg_arc_background_title",
+      "role_hint": "arc_background_title",
+      "narrative_slot_hint": "development",
+      "story_time_range": [
+        3.0,
+        6.0
+      ],
+      "source_window": null,
+      "event_ids": [],
+      "short_chain_ids": [],
+      "typed_reference_provenance": [],
+      "unclassified_source_refs": [],
+      "source_binding": "NON_MEDIA_CARD",
+      "semantic_status": "UNOBSERVED_ROLE_HYPOTHESIS",
+      "protected_goal_action_hint": false
+    },
+    {
+      "node_id": "edl:seg_arc_background_board_1",
+      "segment_id": "seg_arc_background_board_1",
+      "role_hint": "arc_background_scoreboard",
+      "narrative_slot_hint": "development",
+      "story_time_range": [
+        6.0,
+        9.5
+      ],
+      "source_window": [
+        2070.43,
+        2073.93
+      ],
+      "event_ids": [],
+      "short_chain_ids": [],
+      "typed_reference_provenance": [],
+      "unclassified_source_refs": [],
+      "source_binding": "EDL_WINDOW_NOT_LIVE_VERIFIED",
+      "semantic_status": "UNOBSERVED_ROLE_HYPOTHESIS",
+      "protected_goal_action_hint": false
+    },
+    {
+      "node_id": "edl:seg_arc_background_board_2",
+      "segment_id": "seg_arc_background_board_2",
+      "role_hint": "arc_background_scoreboard",
+      "narrative_slot_hint": "development",
+      "story_time_range": [
+        9.5,
+        13.0
+      ],
+      "source_window": [
+        2659.82,
+        2663.32
+      ],
+      "event_ids": [],
+      "short_chain_ids": [],
+      "typed_reference_provenance": [],
+      "unclassified_source_refs": [],
+      "source_binding": "EDL_WINDOW_NOT_LIVE_VERIFIED",
+      "semantic_status": "UNOBSERVED_ROLE_HYPOTHESIS",
+      "protected_goal_action_hint": false
+    },
+    {
+      "node_id": "edl:seg_opponent_opening_goal_action",
+      "segment_id": "seg_opponent_opening_goal_action",
+      "role_hint": "opponent_opening_goal_action",
+      "narrative_slot_hint": "opening",
+      "story_time_range": [
+        13.0,
+        35.0
+      ],
+      "source_window": [
+        3121.968,
+        3143.968
+      ],
+      "event_ids": [
+        "atom_fill_0072_Goal_3133968"
+      ],
+      "short_chain_ids": [
+        "pred_0030"
+      ],
+      "typed_reference_provenance": [
+        {
+          "ref_type": "predicted_short_chain",
+          "ref_id": "pred_0030",
+          "raw_source_ref": "causal:pred_0030:atom_fill_0072_Goal_3133968",
+          "extraction": "embedded_causal_prediction_pointer",
+          "validated_against_short_chain_inventory": false
+        },
+        {
+          "ref_type": "atom_event",
+          "ref_id": "atom_fill_0072_Goal_3133968",
+          "raw_source_ref": "causal:pred_0030:atom_fill_0072_Goal_3133968",
+          "extraction": "embedded_causal_prediction_pointer",
+          "validated_against_event_inventory": false
+        }
+      ],
+      "unclassified_source_refs": [],
+      "source_binding": "EDL_WINDOW_NOT_LIVE_VERIFIED",
+      "semantic_status": "UNOBSERVED_ROLE_HYPOTHESIS",
+      "protected_goal_action_hint": true
+    },
+    {
+      "node_id": "edl:seg_setup_deficit",
+      "segment_id": "seg_setup_deficit",
+      "role_hint": "deficit_scoreboard_anchor",
+      "narrative_slot_hint": "development",
+      "story_time_range": [
+        35.0,
+        38.5
+      ],
+      "source_window": [
+        3198.66,
+        3202.16
+      ],
+      "event_ids": [],
+      "short_chain_ids": [],
+      "typed_reference_provenance": [],
+      "unclassified_source_refs": [],
+      "source_binding": "EDL_WINDOW_NOT_LIVE_VERIFIED",
+      "semantic_status": "UNOBSERVED_ROLE_HYPOTHESIS",
+      "protected_goal_action_hint": false
+    },
+    {
+      "node_id": "edl:seg_buildup_event_000458",
+      "segment_id": "seg_buildup_event_000458",
+      "role_hint": "buildup_action",
+      "narrative_slot_hint": "development",
+      "story_time_range": [
+        38.5,
+        50.5
+      ],
+      "source_window": [
+        3204.75,
+        3216.75
+      ],
+      "event_ids": [
+        "event_000458"
+      ],
+      "short_chain_ids": [],
+      "typed_reference_provenance": [
+        {
+          "ref_type": "atom_event",
+          "ref_id": "event_000458",
+          "raw_source_ref": "event_000458",
+          "extraction": "explicit_edl_or_plan_event_id",
+          "validated_against_event_inventory": false
+        }
+      ],
+      "unclassified_source_refs": [],
+      "source_binding": "EDL_WINDOW_NOT_LIVE_VERIFIED",
+      "semantic_status": "UNOBSERVED_ROLE_HYPOTHESIS",
+      "protected_goal_action_hint": false
+    },
+    {
+      "node_id": "edl:seg_buildup_atom_fill_0115_Shot_5657158",
+      "segment_id": "seg_buildup_atom_fill_0115_Shot_5657158",
+      "role_hint": "buildup_action",
+      "narrative_slot_hint": "development",
+      "story_time_range": [
+        50.5,
+        62.5
+      ],
+      "source_window": [
+        5653.158,
+        5665.158
+      ],
+      "event_ids": [
+        "atom_fill_0115_Shot_5657158"
+      ],
+      "short_chain_ids": [],
+      "typed_reference_provenance": [
+        {
+          "ref_type": "atom_event",
+          "ref_id": "atom_fill_0115_Shot_5657158",
+          "raw_source_ref": "atom_fill_0115_Shot_5657158",
+          "extraction": "explicit_edl_or_plan_event_id",
+          "validated_against_event_inventory": false
+        }
+      ],
+      "unclassified_source_refs": [],
+      "source_binding": "EDL_WINDOW_NOT_LIVE_VERIFIED",
+      "semantic_status": "UNOBSERVED_ROLE_HYPOTHESIS",
+      "protected_goal_action_hint": false
+    },
+    {
+      "node_id": "edl:seg_equalizer_goal_action",
+      "segment_id": "seg_equalizer_goal_action",
+      "role_hint": "equalizer_goal_action",
+      "narrative_slot_hint": "turn",
+      "story_time_range": [
+        62.5,
+        84.5
+      ],
+      "source_window": [
+        5645.621,
+        5667.621
+      ],
+      "event_ids": [
+        "atom_fill_0116_Goal_5657621"
+      ],
+      "short_chain_ids": [
+        "pred_0053"
+      ],
+      "typed_reference_provenance": [
+        {
+          "ref_type": "predicted_short_chain",
+          "ref_id": "pred_0053",
+          "raw_source_ref": "causal:pred_0053:atom_fill_0116_Goal_5657621",
+          "extraction": "embedded_causal_prediction_pointer",
+          "validated_against_short_chain_inventory": false
+        },
+        {
+          "ref_type": "atom_event",
+          "ref_id": "atom_fill_0116_Goal_5657621",
+          "raw_source_ref": "causal:pred_0053:atom_fill_0116_Goal_5657621",
+          "extraction": "embedded_causal_prediction_pointer",
+          "validated_against_event_inventory": false
+        }
+      ],
+      "unclassified_source_refs": [],
+      "source_binding": "EDL_WINDOW_NOT_LIVE_VERIFIED",
+      "semantic_status": "UNOBSERVED_ROLE_HYPOTHESIS",
+      "protected_goal_action_hint": true
+    },
+    {
+      "node_id": "edl:seg_equalizer_scoreboard",
+      "segment_id": "seg_equalizer_scoreboard",
+      "role_hint": "equalizer_scoreboard_anchor",
+      "narrative_slot_hint": "turn",
+      "story_time_range": [
+        84.5,
+        88.0
+      ],
+      "source_window": [
+        5711.01,
+        5714.51
+      ],
+      "event_ids": [],
+      "short_chain_ids": [],
+      "typed_reference_provenance": [],
+      "unclassified_source_refs": [],
+      "source_binding": "EDL_WINDOW_NOT_LIVE_VERIFIED",
+      "semantic_status": "UNOBSERVED_ROLE_HYPOTHESIS",
+      "protected_goal_action_hint": false
+    },
+    {
+      "node_id": "edl:seg_go_ahead_goal_action",
+      "segment_id": "seg_go_ahead_goal_action",
+      "role_hint": "go_ahead_goal_action",
+      "narrative_slot_hint": "climax",
+      "story_time_range": [
+        88.0,
+        110.0
+      ],
+      "source_window": [
+        6779.882,
+        6801.882
+      ],
+      "event_ids": [
+        "atom_fill_0159_Goal_6791882"
+      ],
+      "short_chain_ids": [
+        "pred_0065"
+      ],
+      "typed_reference_provenance": [
+        {
+          "ref_type": "predicted_short_chain",
+          "ref_id": "pred_0065",
+          "raw_source_ref": "causal:pred_0065:atom_fill_0159_Goal_6791882",
+          "extraction": "embedded_causal_prediction_pointer",
+          "validated_against_short_chain_inventory": false
+        },
+        {
+          "ref_type": "atom_event",
+          "ref_id": "atom_fill_0159_Goal_6791882",
+          "raw_source_ref": "causal:pred_0065:atom_fill_0159_Goal_6791882",
+          "extraction": "embedded_causal_prediction_pointer",
+          "validated_against_event_inventory": false
+        }
+      ],
+      "unclassified_source_refs": [],
+      "source_binding": "EDL_WINDOW_NOT_LIVE_VERIFIED",
+      "semantic_status": "UNOBSERVED_ROLE_HYPOTHESIS",
+      "protected_goal_action_hint": true
+    },
+    {
+      "node_id": "edl:seg_go_ahead_scoreboard",
+      "segment_id": "seg_go_ahead_scoreboard",
+      "role_hint": "go_ahead_scoreboard_anchor",
+      "narrative_slot_hint": "climax",
+      "story_time_range": [
+        110.0,
+        113.5
+      ],
+      "source_window": [
+        6880.94,
+        6884.44
+      ],
+      "event_ids": [],
+      "short_chain_ids": [],
+      "typed_reference_provenance": [],
+      "unclassified_source_refs": [],
+      "source_binding": "EDL_WINDOW_NOT_LIVE_VERIFIED",
+      "semantic_status": "UNOBSERVED_ROLE_HYPOTHESIS",
+      "protected_goal_action_hint": false
+    },
+    {
+      "node_id": "edl:seg_title_close",
+      "segment_id": "seg_title_close",
+      "role_hint": "story_wrap_title",
+      "narrative_slot_hint": "ending",
+      "story_time_range": [
+        113.5,
+        116.5
+      ],
+      "source_window": null,
+      "event_ids": [],
+      "short_chain_ids": [],
+      "typed_reference_provenance": [],
+      "unclassified_source_refs": [],
+      "source_binding": "NON_MEDIA_CARD",
+      "semantic_status": "UNOBSERVED_ROLE_HYPOTHESIS",
+      "protected_goal_action_hint": false
+    }
+  ],
+  "edges": [
+    {
+      "edge_id": "adj:275a913ee2ac4ccb",
+      "from_node": "edl:seg_title_open",
+      "to_node": "edl:seg_arc_background_title",
+      "relation": "editorial_adjacency",
+      "relation_status": "EDL_ORDER_ONLY",
+      "narrative_transition_hypothesis": false,
+      "narrative_evidence_status": "NOT_REVIEWED",
+      "semantic_evidence": [],
+      "is_match_causal_claim": false
+    },
+    {
+      "edge_id": "adj:252e70a50dad5ba7",
+      "from_node": "edl:seg_arc_background_title",
+      "to_node": "edl:seg_arc_background_board_1",
+      "relation": "editorial_adjacency",
+      "relation_status": "EDL_ORDER_ONLY",
+      "narrative_transition_hypothesis": false,
+      "narrative_evidence_status": "NOT_REVIEWED",
+      "semantic_evidence": [],
+      "is_match_causal_claim": false
+    },
+    {
+      "edge_id": "adj:e61611aa5c900412",
+      "from_node": "edl:seg_arc_background_board_1",
+      "to_node": "edl:seg_arc_background_board_2",
+      "relation": "editorial_adjacency",
+      "relation_status": "EDL_ORDER_ONLY",
+      "narrative_transition_hypothesis": false,
+      "narrative_evidence_status": "NOT_REVIEWED",
+      "semantic_evidence": [],
+      "is_match_causal_claim": false
+    },
+    {
+      "edge_id": "adj:93e1e75ab3f2bd96",
+      "from_node": "edl:seg_arc_background_board_2",
+      "to_node": "edl:seg_opponent_opening_goal_action",
+      "relation": "editorial_adjacency",
+      "relation_status": "EDL_ORDER_ONLY",
+      "narrative_transition_hypothesis": true,
+      "narrative_evidence_status": "NOT_REVIEWED",
+      "semantic_evidence": [],
+      "is_match_causal_claim": false
+    },
+    {
+      "edge_id": "adj:9c2b25e56ee647aa",
+      "from_node": "edl:seg_opponent_opening_goal_action",
+      "to_node": "edl:seg_setup_deficit",
+      "relation": "editorial_adjacency",
+      "relation_status": "EDL_ORDER_ONLY",
+      "narrative_transition_hypothesis": true,
+      "narrative_evidence_status": "NOT_REVIEWED",
+      "semantic_evidence": [],
+      "is_match_causal_claim": false
+    },
+    {
+      "edge_id": "adj:579e71532f70c98d",
+      "from_node": "edl:seg_setup_deficit",
+      "to_node": "edl:seg_buildup_event_000458",
+      "relation": "editorial_adjacency",
+      "relation_status": "EDL_ORDER_ONLY",
+      "narrative_transition_hypothesis": false,
+      "narrative_evidence_status": "NOT_REVIEWED",
+      "semantic_evidence": [],
+      "is_match_causal_claim": false
+    },
+    {
+      "edge_id": "adj:a6fa4be16f6636e7",
+      "from_node": "edl:seg_buildup_event_000458",
+      "to_node": "edl:seg_buildup_atom_fill_0115_Shot_5657158",
+      "relation": "editorial_adjacency",
+      "relation_status": "EDL_ORDER_ONLY",
+      "narrative_transition_hypothesis": false,
+      "narrative_evidence_status": "NOT_REVIEWED",
+      "semantic_evidence": [],
+      "is_match_causal_claim": false
+    },
+    {
+      "edge_id": "adj:1bc8e8db72369012",
+      "from_node": "edl:seg_buildup_atom_fill_0115_Shot_5657158",
+      "to_node": "edl:seg_equalizer_goal_action",
+      "relation": "editorial_adjacency",
+      "relation_status": "EDL_ORDER_ONLY",
+      "narrative_transition_hypothesis": true,
+      "narrative_evidence_status": "NOT_REVIEWED",
+      "semantic_evidence": [],
+      "is_match_causal_claim": false
+    },
+    {
+      "edge_id": "adj:a2cdd4cfc21c1f25",
+      "from_node": "edl:seg_equalizer_goal_action",
+      "to_node": "edl:seg_equalizer_scoreboard",
+      "relation": "editorial_adjacency",
+      "relation_status": "EDL_ORDER_ONLY",
+      "narrative_transition_hypothesis": false,
+      "narrative_evidence_status": "NOT_REVIEWED",
+      "semantic_evidence": [],
+      "is_match_causal_claim": false
+    },
+    {
+      "edge_id": "adj:cf1c7130efd9a864",
+      "from_node": "edl:seg_equalizer_scoreboard",
+      "to_node": "edl:seg_go_ahead_goal_action",
+      "relation": "editorial_adjacency",
+      "relation_status": "EDL_ORDER_ONLY",
+      "narrative_transition_hypothesis": true,
+      "narrative_evidence_status": "NOT_REVIEWED",
+      "semantic_evidence": [],
+      "is_match_causal_claim": false
+    },
+    {
+      "edge_id": "adj:fd79f3070570fd54",
+      "from_node": "edl:seg_go_ahead_goal_action",
+      "to_node": "edl:seg_go_ahead_scoreboard",
+      "relation": "editorial_adjacency",
+      "relation_status": "EDL_ORDER_ONLY",
+      "narrative_transition_hypothesis": false,
+      "narrative_evidence_status": "NOT_REVIEWED",
+      "semantic_evidence": [],
+      "is_match_causal_claim": false
+    },
+    {
+      "edge_id": "adj:d8c161085b0557f6",
+      "from_node": "edl:seg_go_ahead_scoreboard",
+      "to_node": "edl:seg_title_close",
+      "relation": "editorial_adjacency",
+      "relation_status": "EDL_ORDER_ONLY",
+      "narrative_transition_hypothesis": false,
+      "narrative_evidence_status": "NOT_REVIEWED",
+      "semantic_evidence": [],
+      "is_match_causal_claim": false
+    }
+  ],
+  "evidence_links": [
+    {
+      "from_node": "short_chain:pred_0030",
+      "to_node": "edl:seg_opponent_opening_goal_action",
+      "relation": "referenced_as_story_material",
+      "relation_status": "INPUT_REFERENCE_ONLY",
+      "raw_source_ref": "causal:pred_0030:atom_fill_0072_Goal_3133968",
+      "extraction": "embedded_causal_prediction_pointer",
+      "validated_against_source_inventory": false,
+      "is_match_causal_claim": false
+    },
+    {
+      "from_node": "event:atom_fill_0072_Goal_3133968",
+      "to_node": "edl:seg_opponent_opening_goal_action",
+      "relation": "referenced_as_story_material",
+      "relation_status": "INPUT_REFERENCE_ONLY",
+      "raw_source_ref": "causal:pred_0030:atom_fill_0072_Goal_3133968",
+      "extraction": "embedded_causal_prediction_pointer",
+      "validated_against_source_inventory": false,
+      "is_match_causal_claim": false
+    },
+    {
+      "from_node": "event:event_000458",
+      "to_node": "edl:seg_buildup_event_000458",
+      "relation": "referenced_as_story_material",
+      "relation_status": "INPUT_REFERENCE_ONLY",
+      "raw_source_ref": "event_000458",
+      "extraction": "explicit_edl_or_plan_event_id",
+      "validated_against_source_inventory": false,
+      "is_match_causal_claim": false
+    },
+    {
+      "from_node": "event:atom_fill_0115_Shot_5657158",
+      "to_node": "edl:seg_buildup_atom_fill_0115_Shot_5657158",
+      "relation": "referenced_as_story_material",
+      "relation_status": "INPUT_REFERENCE_ONLY",
+      "raw_source_ref": "atom_fill_0115_Shot_5657158",
+      "extraction": "explicit_edl_or_plan_event_id",
+      "validated_against_source_inventory": false,
+      "is_match_causal_claim": false
+    },
+    {
+      "from_node": "short_chain:pred_0053",
+      "to_node": "edl:seg_equalizer_goal_action",
+      "relation": "referenced_as_story_material",
+      "relation_status": "INPUT_REFERENCE_ONLY",
+      "raw_source_ref": "causal:pred_0053:atom_fill_0116_Goal_5657621",
+      "extraction": "embedded_causal_prediction_pointer",
+      "validated_against_source_inventory": false,
+      "is_match_causal_claim": false
+    },
+    {
+      "from_node": "event:atom_fill_0116_Goal_5657621",
+      "to_node": "edl:seg_equalizer_goal_action",
+      "relation": "referenced_as_story_material",
+      "relation_status": "INPUT_REFERENCE_ONLY",
+      "raw_source_ref": "causal:pred_0053:atom_fill_0116_Goal_5657621",
+      "extraction": "embedded_causal_prediction_pointer",
+      "validated_against_source_inventory": false,
+      "is_match_causal_claim": false
+    },
+    {
+      "from_node": "short_chain:pred_0065",
+      "to_node": "edl:seg_go_ahead_goal_action",
+      "relation": "referenced_as_story_material",
+      "relation_status": "INPUT_REFERENCE_ONLY",
+      "raw_source_ref": "causal:pred_0065:atom_fill_0159_Goal_6791882",
+      "extraction": "embedded_causal_prediction_pointer",
+      "validated_against_source_inventory": false,
+      "is_match_causal_claim": false
+    },
+    {
+      "from_node": "event:atom_fill_0159_Goal_6791882",
+      "to_node": "edl:seg_go_ahead_goal_action",
+      "relation": "referenced_as_story_material",
+      "relation_status": "INPUT_REFERENCE_ONLY",
+      "raw_source_ref": "causal:pred_0065:atom_fill_0159_Goal_6791882",
+      "extraction": "embedded_causal_prediction_pointer",
+      "validated_against_source_inventory": false,
+      "is_match_causal_claim": false
+    }
+  ],
+  "summary": {
+    "node_count": 13,
+    "edge_count": 12,
+    "event_or_short_chain_reference_links": 8,
+    "event_reference_links": 5,
+    "short_chain_prediction_reference_links": 3,
+    "unclassified_reference_count": 0,
+    "unreviewed_narrative_transitions": 4,
+    "model_reviewed_transitions": 0
+  },
+  "limitations": [
+    "EDL adjacency/role annotations are not verified match causality or narrative quality.",
+    "Embedded causal:pred_*:atom_fill_* references yield unverified predicted-chain and atom pointers, NOT confirmed 18-class causal labels.",
+    "No Benchmark gold chain, annotated test EDL or human review is an Agent input.",
+    "This graph alone never confirms a story defect or authorizes an edit."
+  ],
+  "observation_targets": [
+    {
+      "issue_id": "graph_review_adj_1bc8e8db72369012",
+      "category": "graph_transition_review_only",
+      "story_time_range": [
+        61.25,
+        63.75
+      ],
+      "segment_ids": [
+        "seg_buildup_atom_fill_0115_Shot_5657158",
+        "seg_equalizer_goal_action"
+      ],
+      "evidence_sufficiency": "needs_video_verify",
+      "diagnosis_status": "OBSERVATION_PRIORITY_NOT_STORY_DEFECT",
+      "story_defect_confirmed": false,
+      "note": "Observe role/state transition; source-time jump alone is NOT a defect."
+    },
+    {
+      "issue_id": "graph_review_adj_cf1c7130efd9a864",
+      "category": "graph_transition_review_only",
+      "story_time_range": [
+        86.75,
+        89.25
+      ],
+      "segment_ids": [
+        "seg_equalizer_scoreboard",
+        "seg_go_ahead_goal_action"
+      ],
+      "evidence_sufficiency": "needs_video_verify",
+      "diagnosis_status": "OBSERVATION_PRIORITY_NOT_STORY_DEFECT",
+      "story_defect_confirmed": false,
+      "note": "Observe role/state transition; source-time jump alone is NOT a defect."
+    }
+  ]
+}

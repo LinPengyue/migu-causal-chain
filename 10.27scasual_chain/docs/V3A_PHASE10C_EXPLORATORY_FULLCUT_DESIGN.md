@@ -1,7 +1,8 @@
 # V3-A Phase 10-C | Isolated exploratory edit → fullcut X/Y blind comparison
 
-Status: **IMPLEMENTED / NOT YET SERVER REGRESSED**. Engineering trial does
-not imply scientifically demonstrated story improvement.
+Status: **IMPLEMENTED; ZERO-PAID SERVER REGRESSION GREEN ON `fda622c`**.
+Engineering fixture trial does **not** imply scientifically demonstrated
+story improvement.
 
 Branch: `story-va-v3a-phase10c-exploratory` (from latest
 `story-va-v3a-phase10-narrative-quality`, including its pending typed
@@ -182,6 +183,51 @@ On held-out matches, freeze baseline V3-R and compare:
 The "baseline" in a P10-C trial is the current working parent of V3-A.
 If baseline deduplication already altered it, DO NOT label it identical to
 an untouched V3-R frozen video without comparing source/EDL/MP4 hashes.
+
+### Server verification (`fda622c`)
+
+Worktree: `/data2/lpy1/worktrees/migu-v3a-phase10c-verify`  
+Report: `docs/V3A_PHASE10C_SERVER_VERIFY_fda622c.json`  
+Artifacts (server): `/tmp/lpy1_phase10c_verify_20261112/`
+
+| Check | Result |
+|-------|--------|
+| `compileall algo/story_video_agent_v3` | exit 0 |
+| `tests/test_v3a_phase10_*.py` | **57 passed / 0 failed / 0 skipped** |
+| `tests/test_v3a_phase8_*.py` | **129 passed / 0 failed / 0 skipped** |
+| Paid HTTP / VLM | **0** |
+| Algo edits by Cursor | none |
+| Merge to main | not done |
+
+#### P10-B typed-link recheck (real A / B / B strict_lin)
+
+`causal:pred_*:atom_fill_*` now splits into `short_chain_ids=[pred_*]` and
+`event_ids=[atom_fill_*]`, with `typed_reference_provenance.raw_source_ref`
+preserving the original pointer. `validated_against_*_inventory=False`; these
+remain **unverified predicted-chain references**, not confirmed match-causal
+labels. Nodes with `causal:` still inside `event_ids`: **0** on all three
+previews.
+
+#### P10-C zero-paid fixture fullcut (A UAE–Oman)
+
+- Non-protected target: `seg_buildup_event_000472` (`buildup_action`).
+- CLI: `--phase10-explore` + `--phase10-explore-fixture` + `--max-rounds 1`
+  + `--no-smoke-render`; **no** `--enable-real-api`.
+- Formal loop: `decision=UNRESOLVED`, `revision_applied=false`, working
+  parent EDL unchanged (buildup still present in formal candidate).
+- Exploratory: `EXPLORATORY_RENDERED_NOT_VERIFIED`,
+  `blind_pair_status=BLIND_PAIR_READY`, `release_authorized=false`,
+  `promote_best=false`, `human_quality_improved=false`.
+- EDL delta: drop only `seg_buildup_event_000472`; three goal actions
+  unchanged.
+- Fullcut integrity: baseline/candidate **aligned**; durations
+  ~94.9s / ~82.8s vs story 94.5s / 82.5s.
+- Frozen Phase5 `candidate_edl.json` / `story_clean.mp4` hashes unchanged.
+- Blind pack on server under
+  `.../phase10_exploratory/blind_review/{X,Y}.mp4` (large MP4 not committed).
+
+This satisfies **code-level** exit criteria. Method-level human/story gain
+remains **UNVERIFIED**; V3-R remains BEST.
 
 ### Exit criteria
 
