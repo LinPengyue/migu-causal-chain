@@ -35,7 +35,9 @@ goal, first broadcast, or better finished story.
    action *candidates*, and marks them `goal_probe_only`. No candidate
    is deemed FIRST_LIVE_VERIFIED or goal-semantic-confirmed from event PTS.
    `goal_action_probe` roles cannot go through the current generic auto-add
-   code. We still need a dedicated video-semantic goal confirmation and
+   code. A separate post-LLM `goal_coverage_mutation_gate` also blocks a
+   text Planner from fabricating a goal-action insert solely from scoreboard
+   timing. We still need a dedicated video-semantic goal confirmation and
    goal-action replacement/insertion mechanism.
 4. Challenge CLI supports `--run-id goal_coverage_v1`: rerun the **same
    frozen prepared cases** in separate `agent_run_goal_coverage_v1` folders,
