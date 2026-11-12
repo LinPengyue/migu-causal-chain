@@ -9,6 +9,7 @@ from typing import Any, Dict, List, Mapping, Optional, Sequence
 
 
 CATEGORY_TO_STORY_ROLE = {
+    "goal_coverage": "missing_key_action_hypothesis",
     "buildup": "setup_insufficiency",
     "transition": "transition_break",
     "ending": "ending_incomplete",
