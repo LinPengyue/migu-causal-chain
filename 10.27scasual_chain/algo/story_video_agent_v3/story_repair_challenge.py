@@ -340,6 +340,36 @@ def score_case(
     search = _read(search_path) if search_path.is_file() else {}
     revision = _read(plan_path) if plan_path.is_file() else {}
     rendering = _read(render_path) if render_path.is_file() else {}
+    goal_queue_path = run_root / "02_round_01" / "source_goal_video_review" / "source_goal_video_review_queue.json"
+    goal_queue = _read(goal_queue_path) if goal_queue_path.is_file() else {}
+    goal_probe_path = run_root / "02_round_01" / "source_goal_video_review" / "real_vlm_probe" / "source_goal_vlm_observation.json"
+    goal_probe = _read(goal_probe_path) if goal_probe_path.is_file() else {}
+    goal_repair_path = run_root / "02_round_01" / "goal_video_repair_decisions.json"
+    goal_repair = _read(goal_repair_path) if goal_repair_path.is_file() else {}
+    candidate_edl_path = run_root / "02_round_01" / "candidate_edl.json"
+    candidate_rows = _rows(candidate_edl_path) if candidate_edl_path.is_file() else []
+    candidate_restored = {}
+    for role, reference in missing.items():
+        matching = []
+        for row in candidate_rows:
+            if not row.get("include_in_cut", True) or str(row.get("role") or "") != role:
+                continue
+            try:
+                a, b = float(row["media_in"]), float(row["media_out"])
+                lo, hi = float(reference["media_in"]), float(reference["media_out"])
+            except (KeyError, TypeError, ValueError):
+                continue
+            overlap = max(0.0, min(b, hi) - max(a, lo))
+            matching.append({
+                "segment_id": row.get("segment_id"),
+                "source_window_overlaps_reference": overlap > 0,
+                "is_replay_flag": row.get("is_replay"),
+            })
+        candidate_restored[role] = matching
+    candidate_window_repaired = bool(missing) and all(
+        any(x["source_window_overlaps_reference"] for x in items)
+        for items in candidate_restored.values()
+    )
     # These are OBSERVED pipeline gates, not inferred causal explanations.
     # A generic source-PTS jump is not an explicit missing-goal diagnosis.
     goal_issue_found = any(
@@ -402,6 +432,19 @@ def score_case(
             "revision_actions": revision_actions,
             "mutating_revision_requested": mutating_revision,
             "candidate_rendered": candidate_rendered,
+            "candidate_goal_window_repaired": candidate_window_repaired,
+            "candidate_goal_source_window_matches": candidate_restored,
+            "goal_source_video_review_queue_status": goal_queue.get("status"),
+            "goal_source_video_clip_counts": [
+                x.get("candidate_count") for x in goal_queue.get("issues") or []
+                if isinstance(x, dict)
+            ],
+            "goal_semantic_vlm_probe_status": goal_probe.get("status"),
+            "goal_video_repair_decisions": goal_repair.get("decisions") or [],
+            "candidate_video_exists": bool(
+                rendering.get("story_clean")
+                and Path(str(rendering["story_clean"])).is_file()
+            ),
             "final_mp4_exists": final_video.is_file(),
             "preexisting_goal_roles_lost": missing_preexisting_goals,
             "source_pts_monotonic_ok": source_pts_safe,
