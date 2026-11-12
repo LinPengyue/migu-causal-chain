@@ -1,0 +1,134 @@
+{
+  "schema": "v3a_phase10e_zero_paid_verify_v1",
+  "generated": "2026-11-12T05:06:07.454154+00:00",
+  "worktree": "/data2/lpy1/worktrees/migu-v3a-phase10e-verify",
+  "branch": "story-va-v3a-phase10e-narrative-function",
+  "code_sha": "d054b961e107384994b44716ea2181c354fe7637",
+  "compileall": {
+    "exit_code": 0
+  },
+  "pytest_phase10_incl_d_e": {
+    "passed": 68,
+    "failed": 0,
+    "skipped": 0,
+    "summary_line": "68 passed in 0.35s"
+  },
+  "pytest_phase8": {
+    "passed": 129,
+    "failed": 0,
+    "skipped": 0,
+    "summary_line": "129 passed in 4.96s"
+  },
+  "paid_http": 0,
+  "offline_structural_fixture_A": {
+    "out_dir": "/tmp/lpy1_phase10e_verify_20261112/offline_fixture_A",
+    "http_calls": 0,
+    "trial_status": "EXPLORATORY_RENDERED_NOT_VERIFIED",
+    "source": "FIXTURE",
+    "candidate_rendered": true,
+    "blind_pair_status": "BLIND_PAIR_READY",
+    "release_authorized": false,
+    "promote_best": false,
+    "narrative_function_loss": {
+      "schema": "v3a_narrative_function_loss_v1",
+      "status": "STRUCTURAL_SCREENED",
+      "target_segment_id": "seg_buildup_event_000472",
+      "action": "drop",
+      "risk_level": "HIGH_UNVERIFIED",
+      "semantic_video_verified": false,
+      "human_quality_inferred": false,
+      "requires_contextual_video_review": true,
+      "signals": [
+        "potential_motivation_or_effort_visual_removed",
+        "setup_to_turn_bridge_may_be_lost"
+      ],
+      "limitations": [
+        "Role labels and editorial adjacency are hypotheses, not visual semantics.",
+        "No segment ID or match-specific human preference is hardcoded."
+      ],
+      "target_role_hint": "buildup_action",
+      "preceding_role_hints": [
+        "opponent_opening_goal_action",
+        "deficit_scoreboard_anchor"
+      ],
+      "following_role_hints": [
+        "equalizer_goal_action",
+        "equalizer_scoreboard_anchor"
+      ],
+      "removed": true,
+      "recommendation": "Inspect full before-target-after video and judge whether effort, motivation or anticipation becomes implicit; compare blind fullcuts."
+    },
+    "role_context_from_frozen_edl": [
+      {
+        "segment_id": "seg_setup_deficit",
+        "role": "deficit_scoreboard_anchor",
+        "shot_kind": "scoreboard_anchor"
+      },
+      {
+        "segment_id": "seg_buildup_event_000472",
+        "role": "buildup_action",
+        "shot_kind": "live"
+      },
+      {
+        "segment_id": "seg_equalizer_goal_action",
+        "role": "equalizer_goal_action",
+        "shot_kind": "live"
+      }
+    ],
+    "assert_risk_HIGH_UNVERIFIED": true,
+    "signals_include_setup_to_turn_bridge": true,
+    "dropped_active": [
+      "seg_buildup_event_000472"
+    ],
+    "goals_identical": true,
+    "baseline_hashes_unchanged": true,
+    "baseline_pre": {
+      "edl": "f259da7bbb6fd9c5ae07dbb9acbefe5e7b4574e553d73b8db8f3f2bc3a4b715c",
+      "clean": "7b0bfa49a7ff22d041496efe65c944cc57e9a2502107c2ad438119b85e4199f7",
+      "plan": "fdb62b990bf4dbd4be389ba859d6d989b067465685d17e1f781c9f3d4f0d0132"
+    },
+    "baseline_post": {
+      "edl": "f259da7bbb6fd9c5ae07dbb9acbefe5e7b4574e553d73b8db8f3f2bc3a4b715c",
+      "clean": "7b0bfa49a7ff22d041496efe65c944cc57e9a2502107c2ad438119b85e4199f7",
+      "plan": "fdb62b990bf4dbd4be389ba859d6d989b067465685d17e1f781c9f3d4f0d0132"
+    },
+    "fullcut_aligned": true,
+    "integrity_slim": {
+      "baseline": {
+        "aligned": true,
+        "mp4_duration_sec": 94.877,
+        "story_duration_sec": 94.5,
+        "media_duration_sec": 88.5,
+        "placeholder_duration_sec": 6.0,
+        "delta_sec": 0.377,
+        "tolerance_sec": 2.0,
+        "root_cause_hint": "placeholder_title_cards_included_in_story_duration"
+      },
+      "candidate": {
+        "aligned": true,
+        "mp4_duration_sec": 82.826,
+        "story_duration_sec": 82.5,
+        "media_duration_sec": 76.5,
+        "placeholder_duration_sec": 6.0,
+        "delta_sec": 0.326,
+        "tolerance_sec": 2.0,
+        "root_cause_hint": "placeholder_title_cards_included_in_story_duration"
+      }
+    },
+    "xy_anonymous": {
+      "blind_review_dir": "/tmp/lpy1_phase10e_verify_20261112/offline_fixture_A/02_round_01/phase10_exploratory/blind_review",
+      "X_mp4": "/tmp/lpy1_phase10e_verify_20261112/offline_fixture_A/02_round_01/phase10_exploratory/blind_review/X.mp4",
+      "Y_mp4": "/tmp/lpy1_phase10e_verify_20261112/offline_fixture_A/02_round_01/phase10_exploratory/blind_review/Y.mp4",
+      "X_duration_sec": 82.826,
+      "Y_duration_sec": 94.877,
+      "note": "anonymous; do not reveal mapping"
+    },
+    "note": "Structural regression only; fixture drop remains renderable; audit flags HIGH_UNVERIFIED without blocking. No match-specific hardcode claim; roles inspected from frozen EDL."
+  },
+  "method_quality_gain": "UNVERIFIED",
+  "best_baseline": "V3-R",
+  "algo_edits_by_cursor": false,
+  "merged_to_main": false,
+  "next_gate": "held-out match + negative controls for truly redundant clips before paid A/B prompt test",
+  "published_for_cross_platform_review": true
+}

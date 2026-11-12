@@ -1,0 +1,29 @@
+{
+  "schema": "v3a_narrative_function_loss_v1",
+  "status": "STRUCTURAL_SCREENED",
+  "target_segment_id": "seg_buildup_event_000472",
+  "action": "drop",
+  "risk_level": "HIGH_UNVERIFIED",
+  "semantic_video_verified": false,
+  "human_quality_inferred": false,
+  "requires_contextual_video_review": true,
+  "signals": [
+    "potential_motivation_or_effort_visual_removed",
+    "setup_to_turn_bridge_may_be_lost"
+  ],
+  "limitations": [
+    "Role labels and editorial adjacency are hypotheses, not visual semantics.",
+    "No segment ID or match-specific human preference is hardcoded."
+  ],
+  "target_role_hint": "buildup_action",
+  "preceding_role_hints": [
+    "opponent_opening_goal_action",
+    "deficit_scoreboard_anchor"
+  ],
+  "following_role_hints": [
+    "equalizer_goal_action",
+    "equalizer_scoreboard_anchor"
+  ],
+  "removed": true,
+  "recommendation": "Inspect full before-target-after video and judge whether effort, motivation or anticipation becomes implicit; compare blind fullcuts."
+}

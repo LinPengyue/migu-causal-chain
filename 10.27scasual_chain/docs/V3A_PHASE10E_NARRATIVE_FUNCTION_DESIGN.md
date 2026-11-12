@@ -1,6 +1,9 @@
 # P10-E: narrative-function preservation after P10-D blind feedback
 
-Status: IMPLEMENTED IN EXPERIMENTAL BRANCH; SERVER TESTS AND CROSS-VIDEO VALIDATION PENDING.
+Status: **ZERO-PAID SERVER REGRESSION GREEN ON `d054b96`**; CROSS-VIDEO /
+NEGATIVE-CONTROL VALIDATION STILL PENDING. See
+`docs/V3A_PHASE10E_SERVER_VERIFY_d054b96.json`. No paid HTTP; story-quality
+gain remains UNVERIFIED; V3-R remains BEST.
 
 ## Human feedback (evaluation-only; never runtime Agent input)
 
@@ -50,6 +53,25 @@ its audit is marked `HIGH_UNVERIFIED` when EDL role hints place it
 between setup and turn; inspect actual role hints rather than
 manufacturing expected result. Preserve original baseline hashes,
 goals, PTS, first-live checks and anonymous fullcut X/Y.
+
+### Server verification (`d054b96`)
+
+Worktree: `/data2/lpy1/worktrees/migu-v3a-phase10e-verify`
+
+| Check | Result |
+|-------|--------|
+| compileall | exit 0 |
+| `test_v3a_phase10_*.py` + d + e | **68 passed** |
+| `test_v3a_phase8_*.py` | **129 passed** |
+| Paid HTTP | **0** |
+| A offline fixture drop | still `EXPLORATORY_RENDERED_NOT_VERIFIED` / `BLIND_PAIR_READY` |
+| `narrative_function_loss.risk_level` | **`HIGH_UNVERIFIED`** |
+| Actual role context | `deficit_scoreboard_anchor` → `buildup_action` → `equalizer_goal_action` |
+| Signals | `potential_motivation_or_effort_visual_removed`, `setup_to_turn_bridge_may_be_lost` |
+| Goals / baseline hashes / fullcut align | preserved / unchanged / aligned |
+
+This does **not** validate that the heuristic improves story quality or
+correctly spares redundant clips on held-out matches.
 
 ## Next research gate
 
