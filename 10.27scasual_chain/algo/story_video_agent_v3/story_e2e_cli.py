@@ -87,6 +87,14 @@ def build_parser() -> argparse.ArgumentParser:
     )
     p.add_argument("--force-render-initial", action="store_true", default=False)
     p.add_argument("--force-render-candidate", action="store_true", default=False)
+    p.add_argument(
+        "--phase10-explore", action="store_true", default=False,
+        help="Opt in to ONE isolated exploratory fullcut pair; never promote BEST",
+    )
+    p.add_argument(
+        "--phase10-explore-fixture", type=Path, default=None,
+        help="Offline development-only hypothesis JSON; incompatible with real API",
+    )
     p.add_argument("--no-smoke-render", action="store_true", default=False)
     p.add_argument("--max-rounds", type=int, default=3)
     p.add_argument("--max-calls", type=int, default=5)
@@ -134,6 +142,16 @@ def main(argv: list[str] | None = None) -> int:
     if not args.source_mp4.is_file():
         print(f"ERROR: source mp4 not found: {args.source_mp4}", file=sys.stderr)
         return 2
+    if args.phase10_explore_fixture is not None:
+        if not args.phase10_explore:
+            print("ERROR: --phase10-explore-fixture requires --phase10-explore", file=sys.stderr)
+            return 2
+        if args.enable_real_api:
+            print("ERROR: exploratory fixture cannot be combined with real API", file=sys.stderr)
+            return 2
+        if not args.phase10_explore_fixture.is_file():
+            print("ERROR: exploratory fixture JSON missing", file=sys.stderr)
+            return 2
     if args.first_live_evidence_dir is not None and not (
         args.first_live_evidence_dir.is_dir() or args.first_live_evidence_dir.is_file()
     ):
@@ -154,6 +172,14 @@ def main(argv: list[str] | None = None) -> int:
 
     fixture_revision = None
     fixture_verifier = None
+    phase10_explore_fixture = None
+    if args.phase10_explore_fixture:
+        phase10_explore_fixture = json.loads(
+            args.phase10_explore_fixture.read_text(encoding="utf-8")
+        )
+        if not isinstance(phase10_explore_fixture, dict):
+            print("ERROR: exploratory fixture must be a JSON object", file=sys.stderr)
+            return 2
     if args.fixture_revision and args.fixture_revision.is_file():
         fixture_revision = json.loads(args.fixture_revision.read_text(encoding="utf-8"))
     if args.fixture_verifier and args.fixture_verifier.is_file():
@@ -186,6 +212,8 @@ def main(argv: list[str] | None = None) -> int:
         i_approve_budget=bool(args.i_approve_budget),
         force_render_initial=bool(args.force_render_initial),
         force_render_candidate=bool(args.force_render_candidate),
+        phase10_explore=bool(args.phase10_explore),
+        phase10_explore_fixture=phase10_explore_fixture,
         smoke_render=not bool(args.no_smoke_render),
         fixture_revision=fixture_revision,
         fixture_verifier=fixture_verifier,
