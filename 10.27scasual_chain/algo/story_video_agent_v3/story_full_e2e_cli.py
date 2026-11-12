@@ -588,10 +588,19 @@ def evaluate_stages(
         "05_live_audit",
         "v3a_final_delivery",
     )
-    all_required_valid = all(stages[k].get("valid") for k in required)
+    pipeline_stages_valid = all(bool(stages[k].get("valid")) for k in required)
+    # Execution-stage validity is not equivalent to a complete story.
+    # A score-confirmed goal without an action is a semantic blocker even
+    # when the adapter ran correctly and generated some other goal chains.
+    goal_actions_present = not any(
+        error == "03_score_confirmed_goal_action_missing" for error in blocking
+    )
+    all_required_valid = pipeline_stages_valid and not blocking
     return {
         "schema": "v3a_full_e2e_stage_validity_v1",
         "stages": stages,
+        "pipeline_stages_valid": pipeline_stages_valid,
+        "story_goal_actions_present": goal_actions_present,
         "all_required_valid": all_required_valid,
         "blocking_errors": blocking,
         "goal_recovery_impact": recovery_impact,
