@@ -22,6 +22,7 @@ from story_video_agent.v2_g2_first_live_retrieval import (
 from story_video_agent.v2_video_evidence_gate import NOT_VERIFIED
 
 from .pipeline import dump
+from .v1_causal_adapter import score_pair_from_raw_event
 
 SEMANTIC_LABELS = (
     "pre_goal_only",
@@ -153,18 +154,16 @@ def load_events_rows(events_path: Path) -> List[Dict[str, Any]]:
         if t is None:
             continue
         vc = e.get("video_context") or {}
-        attrs = e.get("attributes") or {}
-        scores = attrs.get("Score_Recognition") or []
-        sp = None
-        if isinstance(scores, list) and scores:
-            sp = _score_tuple(scores[0])
+        # Reuse the canonical raw-event score decoder also used by Goal Recovery.
+        # Some matches carry scores.score_recognition rather than attributes.
+        sp = score_pair_from_raw_event(e)
         out.append({
             "event_id": e.get("event_id"),
             "event_type": e.get("event_type"),
             "event_time_sec": float(t),
-            "media_start_sec": float(mt.get("start_time_sec") or t),
-            "media_end_sec": float(mt.get("end_time_sec") or t),
-            "is_replay": bool(vc.get("is_replay")),
+            "media_start_sec": float(mt.get("start_time_sec") if mt.get("start_time_sec") is not None else t),
+            "media_end_sec": float(mt.get("end_time_sec") if mt.get("end_time_sec") is not None else t),
+            "is_replay": bool(vc.get("is_replay")) or str(vc.get("broadcast_phase") or "").upper() == "REPLAY",
             "broadcast_phase": vc.get("broadcast_phase"),
             "score_pair": list(sp) if sp else None,
         })
@@ -964,3 +963,142 @@ def _verdict_bucket(top: Optional[Dict[str, Any]]) -> str:
     if lab in {"shot_only", "pre_goal_only", "post_goal_celebration", "replay"}:
         return "possible_clip_semantic_insufficient_for_auto_verify"
     return "not_found_in_budget"
+
+
+def localize_unresolved_recovered_goals(
+    *,
+    video: Path,
+    events_path: Path,
+    recovery_path: Path,
+    out_dir: Path,
+    candidate_ids: Optional[Sequence[str]] = None,
+    max_candidates: int = 4,
+    max_video_read_sec: float = 90.0,
+    skip_ocr: bool = False,
+) -> Dict[str, Any]:
+    """Run existing P3 OCR + continuous-video localizer for P12 unresolved goals.
+
+    This is the existing localizer, NOT a second timestamp inference path.
+    It produces continuous clips and bound visual frames for independent
+    inspection. Without grounded shot/net and broadcast proof it cannot
+    fill `goal_action_sec`, upgrade first-LIVE or authorize EDL insertion.
+    """
+    video = Path(video)
+    events_path = Path(events_path)
+    recovery_path = Path(recovery_path)
+    out_dir = Path(out_dir)
+    if not video.is_file() or not events_path.is_file() or not recovery_path.is_file():
+        raise FileNotFoundError("raw_mp4_raw_events_and_recovery_report_required")
+    if not (1 <= int(max_candidates) <= 8 and 1.0 <= float(max_video_read_sec) <= 240.0):
+        raise ValueError("localizer_budget_out_of_range")
+    if out_dir.exists() and any(out_dir.iterdir()):
+        raise ValueError("refuse_reuse_nonempty_evidence_dir")
+    recovery = json.loads(recovery_path.read_text(encoding="utf-8"))
+    if recovery.get("schema") != "v3_goal_recovery_v1":
+        raise ValueError("recovery_schema_mismatch")
+    pending = [
+        c for c in recovery.get("candidates") or []
+        if c.get("single_goal_increment") and c.get("goal_action_sec") is None
+    ]
+    selected_ids = set(str(x) for x in candidate_ids) if candidate_ids else None
+    if selected_ids is not None:
+        available = {str(c.get("candidate_id")) for c in pending}
+        missing = selected_ids - available
+        if missing:
+            raise ValueError("candidate_id_not_unresolved:" + ",".join(sorted(missing)))
+        pending = [c for c in pending if str(c.get("candidate_id")) in selected_ids]
+    # Also protects against accidentally feeding a previously edited story clip
+    # as the reference: the operator must explicitly pass the raw source MP4.
+    video_sha = _sha256(video)
+    events_sha = _sha256(events_path)
+    out_dir.mkdir(parents=True, exist_ok=False)
+    records: List[Dict[str, Any]] = []
+    for c in pending:
+        cid = str(c["candidate_id"])
+        row = {
+            "score_before": c["score_before"],
+            "score_after": c["score_after"],
+            "score_confirmation_sec": c["score_confirmation_sec"],
+        }
+        res = run_first_live_localization(
+            video=video,
+            role=cid,
+            task_row=row,
+            out_dir=out_dir / cid,
+            events_path=events_path,
+            historical_clues=[],  # no external V1/P3 gold or recalled PTS
+            human_score_observations=[],  # raw-only evaluation
+            human_review_by_candidate={},
+            frame_notes_by_candidate={},
+            identity={"candidate_id": cid, "raw_only": True},
+            max_candidates=max_candidates,
+            max_video_read_sec=max_video_read_sec,
+            skip_ocr=skip_ocr,
+        )
+        records.append({
+            "candidate_id": cid,
+            "score_before": c["score_before"],
+            "score_after": c["score_after"],
+            "score_confirmation_sec": c["score_confirmation_sec"],
+            "previous_goal_action_sec": None,
+            "source_score_bracket": c.get("possible_action_interval"),
+            "ocr_score_bounds": res["bounds"].get("unknown_interval"),
+            "n_continuous_clips_extracted": res["summary"].get("n_candidate_extracted_ok"),
+            "candidate_evidence_path": str(out_dir / cid / "candidate_audits.json"),
+            "evidence_pack_path": str(out_dir / cid / "evidence_pack.json"),
+            "first_live_status": res["summary"].get("verdict_bucket"),
+            "action_timestamp_autofilled": False,
+            "edl_inserted": False,
+        })
+    report = {
+        "schema": "v3a_raw_only_unresolved_goal_video_evidence_v1",
+        "inputs": {
+            "original_events_json": str(events_path.resolve()),
+            "events_sha256": events_sha,
+            "original_source_mp4": str(video.resolve()),
+            "source_sha256": video_sha,
+            "goal_recovery_json": str(recovery_path.resolve()),
+            "recovery_sha256": _sha256(recovery_path),
+        },
+        "n_unresolved_requested": len(records),
+        "results": records,
+        "actual_visual_semantic_verification": False,
+        "no_automatic_goal_timestamp_or_edl": True,
+        "no_gold_or_historical_overlay": True,
+        "paid_http": 0,
+        "next_step": "Review continuous clips for shot/net, first broadcast LIVE and action boundaries before binding any revised goal evidence.",
+    }
+    dump(out_dir / "raw_only_video_localization_summary.json", report)
+    return report
+
+
+def main(argv: Optional[Sequence[str]] = None) -> int:
+    import argparse
+    parser = argparse.ArgumentParser(
+        description="Zero-paid reuse of the existing P3 first-LIVE video localizer on raw-only unresolved goals"
+    )
+    parser.add_argument("--source-mp4", type=Path, required=True)
+    parser.add_argument("--events-json", type=Path, required=True)
+    parser.add_argument("--goal-recovery", type=Path, required=True)
+    parser.add_argument("--out-dir", type=Path, required=True)
+    parser.add_argument("--candidate-id", action="append", default=None)
+    parser.add_argument("--max-candidates", type=int, default=4)
+    parser.add_argument("--max-video-read-sec", type=float, default=90.0)
+    parser.add_argument("--skip-ocr", action="store_true")
+    args = parser.parse_args(argv)
+    result = localize_unresolved_recovered_goals(
+        video=args.source_mp4,
+        events_path=args.events_json,
+        recovery_path=args.goal_recovery,
+        out_dir=args.out_dir,
+        candidate_ids=args.candidate_id,
+        max_candidates=args.max_candidates,
+        max_video_read_sec=args.max_video_read_sec,
+        skip_ocr=args.skip_ocr,
+    )
+    print(json.dumps(result, indent=2, ensure_ascii=False))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
