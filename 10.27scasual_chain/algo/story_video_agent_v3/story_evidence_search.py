@@ -161,7 +161,11 @@ def search_window_for_issue(
         # The Critic supplies a score-OBSERVED bounded prior, not a Goal PTS.
         # Only video-semantic verification may turn a source candidate into
         # an actual action. The normal Planner never auto-inserts goal roles.
-        interval = issue.get("possible_action_interval") or {}
+        interval = (
+            issue.get("source_search_interval")
+            or issue.get("possible_action_interval")
+            or {}
+        )
         lo, hi = _num(interval.get("media_in")), _num(interval.get("media_out"))
         if lo is None or hi is None or hi - lo < 6.0:
             return None
