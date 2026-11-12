@@ -107,12 +107,16 @@ def test_scorer_repair_needs_matching_source_window_not_only_goal_label(tmp_path
     assert not wrong["recovery"]["equalizer_goal_action"]["source_window_overlap"]
     # Even matching oracle PTS can only establish the edited window, not the
     # visual correctness/first-LIVE or full-story quality.
-    _write(dest, broken + [{
+    restored = broken[:2] + [{
         "segment_id": "agent_discovered_candidate", "role": "equalizer_goal_action",
         "media_in": 49.0, "media_out": 62.0, "is_replay": False
-    }])
+    }] + broken[2:]
+    _write(dest, restored)
+    assert score_case(case)["status"] == "EDL_WINDOW_RESTORED_NO_MP4"
+    (dest.parent / "story_final.mp4").write_bytes(b"synthetic_video_only_not_verified")
     recovered = score_case(case)
     assert recovered["status"] == "EDL_WINDOW_RESTORED_UNVERIFIED"
+    assert recovered["stage_observations"]["source_pts_monotonic_ok"]
     assert recovered["first_live_video_verified"] is False
     assert recovered["story_quality_improved"] == "UNVERIFIED"
     assert recovered["formal_benchmark"] is False
