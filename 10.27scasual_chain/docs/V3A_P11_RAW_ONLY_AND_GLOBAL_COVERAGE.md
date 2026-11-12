@@ -1,6 +1,6 @@
 # P11 — Raw-only unified E2E + evidence-budgeted fullcut Critic
 
-**Status: SOURCE COMMITTED; SERVER REGRESSION AND REAL-VIDEO VALIDATION PENDING.**
+**Status: ZERO-PAID SERVER REGRESSION EXECUTED ON `144c2ab` (raw-only A run BLOCKED/UNRESOLVED as formal delivery; stages valid). See `docs/V3A_P11_SERVER_VERIFY_144c2ab.json`. Paid VLM semantics still PENDING. V3-R remains BEST.**
 Branch: `story-va-v3a-p11-raw-input-coverage`, based directly on verified
 P10-F `10b1c06` (NOT the superseded P10-G diagnostic branch).
 Historical BEST remains unmodified V3-R. No paid API authorized by this patch.

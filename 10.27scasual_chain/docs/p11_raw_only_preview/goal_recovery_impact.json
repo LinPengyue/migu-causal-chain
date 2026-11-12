@@ -1,0 +1,58 @@
+{
+  "schema": "v3a_goal_recovery_impact_v1",
+  "goal_recovery_used": true,
+  "n_recovery_candidates": 5,
+  "n_single_goal": 3,
+  "n_with_goal_action_sec": 2,
+  "n_v3_outcome_chains": 2,
+  "n_goal_terminals_in_adapted_chains": 2,
+  "n_recovery_sourced_chains": 2,
+  "n_recovery_sourced_goal_events": 2,
+  "recovery_goal_events": [
+    {
+      "annotation_id": "v3_outcome_0079",
+      "event_id": "v3_goal_goalcand_00_00_to_01",
+      "t_ms": 1305710.0,
+      "t_sec": 1305.71,
+      "source": "v3_goal_recovery"
+    },
+    {
+      "annotation_id": "v3_outcome_0083",
+      "event_id": "v3_goal_goalcand_04_11_to_21",
+      "t_ms": 6813280.0,
+      "t_sec": 6813.28,
+      "source": "v3_goal_recovery"
+    }
+  ],
+  "entered_predicted_causal": true,
+  "candidates_with_action": [
+    {
+      "candidate_id": "goalcand_00_00_to_01",
+      "goal_action_sec": 1305.71,
+      "score_confirmation_sec": 1410.43,
+      "score_before": [
+        0,
+        0
+      ],
+      "score_after": [
+        0,
+        1
+      ],
+      "action_neq_confirm": true
+    },
+    {
+      "candidate_id": "goalcand_04_11_to_21",
+      "goal_action_sec": 6813.28,
+      "score_confirmation_sec": 6957.12,
+      "score_before": [
+        1,
+        1
+      ],
+      "score_after": [
+        2,
+        1
+      ],
+      "action_neq_confirm": true
+    }
+  ]
+}

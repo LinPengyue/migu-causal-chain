@@ -1,0 +1,258 @@
+{
+  "schema": "v3a_p11_zero_paid_server_verify_v1",
+  "generated": "2026-11-12T06:39:34.080255+00:00",
+  "worktree": "/data2/lpy1/worktrees/migu-v3a-p11-verify",
+  "branch": "story-va-v3a-p11-raw-input-coverage",
+  "code_sha": "144c2ab21a6f72f1270fe8b28034d1380215425c",
+  "compileall": {
+    "exit_code": 0
+  },
+  "pytest": {
+    "test_v3a_p11_raw_input_and_critic_coverage.py": {
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0
+    },
+    "test_v3a_phase8_*.py": {
+      "passed": 129,
+      "failed": 0,
+      "skipped": 0
+    },
+    "test_v3a_phase10_d_e_f": {
+      "passed": 71,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "paid_http": 0,
+  "p10f_sealed_predictions_unread": true,
+  "raw_only_full_e2e": {
+    "exit_code": 1,
+    "ok": false,
+    "meaning": "Pipeline completed stages; formal delivery BLOCKED (not a crash). No causal JSON / Phase5 reuse substituted.",
+    "out_dir": "/tmp/lpy1_p11_raw_only_20261112/run",
+    "elapsed_sec": 138.94,
+    "input_mode": "RAW_EVENTS_ONLY",
+    "eligible_for_raw_only_evaluation": true,
+    "human_annotation_atoms_used": false,
+    "fresh_v3r": true,
+    "phase5_reuse": false,
+    "decision": "UNRESOLVED",
+    "delivery_label": "BLOCKED",
+    "blocked_reasons": [
+      "unresolved_without_safe_candidate_preview"
+    ],
+    "inputs": {
+      "events_json": "/data2/lpy1/worktrees/migu-v3a-p11-verify/10.27scasual_chain/data/交付_out/10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语.json",
+      "events_sha256": "ddae99b21cbfcd1c75ddf620d957578e57c2c013d607ac893655c4d52b7e779e",
+      "source_mp4": "/mnt/data4/migu/10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语.mp4",
+      "source_bytes": 6113318593,
+      "strict_raw_only": true,
+      "no_causal_json": true,
+      "no_phase5_reuse": true,
+      "source_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c"
+    },
+    "enrich_report": {
+      "input_mode": "RAW_EVENTS_ONLY",
+      "human_annotation_atoms_used": false,
+      "n_raw_events": 749,
+      "n_injected": 0,
+      "n_goal_injected": 0
+    },
+    "stage_validity": {
+      "all_required_valid": true,
+      "blocking_errors": [],
+      "stages": {
+        "01_enrich": {
+          "present": true,
+          "valid": true,
+          "n_events": 749,
+          "n_injected": 0,
+          "n_goal_injected": 0
+        },
+        "02_strip831": {
+          "present": true,
+          "valid": true,
+          "n_chains": 79
+        },
+        "03_v1_adapt": {
+          "present": true,
+          "valid": true,
+          "n_recovery_candidates": 5,
+          "n_with_goal_action_sec": 2,
+          "goal_recovery_used": true,
+          "entered_predicted_causal": true,
+          "n_v3_outcome_chains": 2,
+          "n_goal_terminals": 2
+        },
+        "04_phase5_edl": {
+          "present": true,
+          "valid": true,
+          "n_segments": 8,
+          "source_pts_monotonic": true,
+          "source_pts_breaks": []
+        },
+        "04_phase5_mp4": {
+          "present": true,
+          "valid": true,
+          "bytes": 21936278
+        },
+        "05_live_audit": {
+          "present": true,
+          "valid": true,
+          "n_meta_goal_terminals": 2,
+          "n_visual_anchors": 2,
+          "n_extracted": 2,
+          "status_counts": {
+            "FIRST_LIVE_VERIFIED": 0,
+            "POSSIBLE_FIRST_LIVE": 0,
+            "REPLAY_DETECTED": 0,
+            "UNRESOLVED": 2
+          },
+          "false_verified_claim": false
+        },
+        "v3a_final_delivery": {
+          "present": true,
+          "valid": true,
+          "delivery_status": "BLOCKED",
+          "release_authorized": false,
+          "final_mp4_ok": true,
+          "candidate_mp4_ok": null,
+          "aligned": true,
+          "n_final_goal_evidence": 2,
+          "final_first_live_counts": {
+            "FIRST_LIVE_VERIFIED": 0,
+            "POSSIBLE_FIRST_LIVE": 0,
+            "REPLAY_DETECTED": 0,
+            "UNRESOLVED": 2
+          },
+          "n_lineage_strict_complete": 2,
+          "n_lineage_inferred": 0,
+          "n_lineage_unresolved": 0,
+          "n_lineage_traced_strict": 2
+        }
+      }
+    },
+    "goal_recovery": {
+      "n_candidates": 5,
+      "n_with_goal_action_sec": 2,
+      "entered_predicted_causal": true,
+      "n_v3_outcome_chains": 2,
+      "recovery_goal_events": [
+        {
+          "annotation_id": "v3_outcome_0079",
+          "event_id": "v3_goal_goalcand_00_00_to_01",
+          "t_ms": 1305710.0,
+          "t_sec": 1305.71,
+          "source": "v3_goal_recovery"
+        },
+        {
+          "annotation_id": "v3_outcome_0083",
+          "event_id": "v3_goal_goalcand_04_11_to_21",
+          "t_ms": 6813280.0,
+          "t_sec": 6813.28,
+          "source": "v3_goal_recovery"
+        }
+      ]
+    },
+    "pts_monotonic_ok": true,
+    "pts_breaks": [],
+    "first_live": {
+      "any_first_live_verified": false,
+      "status_counts": {
+        "FIRST_LIVE_VERIFIED": 0,
+        "POSSIBLE_FIRST_LIVE": 0,
+        "REPLAY_DETECTED": 0,
+        "UNRESOLVED": 2
+      },
+      "n_goal_anchors": 2
+    },
+    "edl_segments": [
+      {
+        "segment_id": "seg_title_open",
+        "role": "story_title",
+        "media_in": null,
+        "media_out": null,
+        "goal_action_complete": null
+      },
+      {
+        "segment_id": "seg_opponent_opening_goal_action",
+        "role": "opponent_opening_goal_action",
+        "media_in": 1293.71,
+        "media_out": 1315.71,
+        "goal_action_complete": true
+      },
+      {
+        "segment_id": "seg_setup_deficit",
+        "role": "deficit_scoreboard_anchor",
+        "media_in": 1409.43,
+        "media_out": 1412.93,
+        "goal_action_complete": null
+      },
+      {
+        "segment_id": "seg_buildup_event_000411",
+        "role": "buildup_action",
+        "media_in": 3442.75,
+        "media_out": 3454.75,
+        "goal_action_complete": null
+      },
+      {
+        "segment_id": "seg_equalizer_scoreboard",
+        "role": "equalizer_scoreboard_anchor",
+        "media_in": 6534.62,
+        "media_out": 6538.12,
+        "goal_action_complete": null
+      },
+      {
+        "segment_id": "seg_go_ahead_goal_action",
+        "role": "go_ahead_goal_action",
+        "media_in": 6801.28,
+        "media_out": 6823.28,
+        "goal_action_complete": true
+      },
+      {
+        "segment_id": "seg_go_ahead_scoreboard",
+        "role": "go_ahead_scoreboard_anchor",
+        "media_in": 6956.12,
+        "media_out": 6959.62,
+        "goal_action_complete": null
+      },
+      {
+        "segment_id": "seg_title_close",
+        "role": "story_wrap_title",
+        "media_in": null,
+        "media_out": null,
+        "goal_action_complete": null
+      }
+    ],
+    "note_missing_equalizer_goal_action": "Raw-only EDL has equalizer_scoreboard but no equalizer_goal_action segment; only 2 recovery-sourced goal terminals (opening + go-ahead)."
+  },
+  "critic_coverage_offline": {
+    "sent_frame_count": 10,
+    "media_segment_count": 6,
+    "covered_segment_ids": [
+      "seg_opponent_opening_goal_action",
+      "seg_setup_deficit",
+      "seg_buildup_event_000411",
+      "seg_equalizer_scoreboard",
+      "seg_go_ahead_goal_action"
+    ],
+    "unobserved_media_segment_ids": [
+      "seg_go_ahead_scoreboard"
+    ],
+    "all_media_segments_covered": false,
+    "claims_full_video_watch": false,
+    "dense_issue_frames_available": 0,
+    "global_frames_available": 12,
+    "paragraph_frames_available": 24,
+    "note": "Offline selector only; no VLM semantics. Early/mid/tail covered among available media; go_ahead_scoreboard remains UNOBSERVED."
+  },
+  "artifact_locations": {
+    "server_run": "/tmp/lpy1_p11_raw_only_20261112/run",
+    "docs_preview": "docs/p11_raw_only_preview/"
+  },
+  "method_quality_gain": "UNVERIFIED",
+  "best_baseline": "V3-R",
+  "algo_edits_by_cursor": false,
+  "merged_to_main": false
+}

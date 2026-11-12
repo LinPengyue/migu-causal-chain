@@ -1,0 +1,24 @@
+{
+  "schema": "v3a_full_e2e_input_contract_v1",
+  "formal_inputs": {
+    "source_mp4": "/mnt/data4/migu/10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语.mp4",
+    "events_json": "/data2/lpy1/worktrees/migu-v3a-p11-verify/10.27scasual_chain/data/交付_out/10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语.json",
+    "causal_json": null
+  },
+  "input_mode": "RAW_EVENTS_ONLY",
+  "eligible_for_raw_only_evaluation": true,
+  "human_annotation_atoms_used": false,
+  "causal_roles": {
+    "user_causal_json": "Optional DEV-only annotated atoms for legacy reproduction; never a permitted raw-only evaluation input.",
+    "predicted_short_causal": "Algorithm strip→V1 adaptation under 03_v1_adapt; Phase5 input.",
+    "v3r_long_story_chain": "Produced inside Phase5 planner/graph from enriched events + predicted causal."
+  },
+  "forbidden": [
+    "phase5_dir reuse",
+    "baseline_edl",
+    "prebuilt story_clean.mp4",
+    "events_enriched as input",
+    "predicted_causal as input"
+  ],
+  "pipeline": "atomic_enrich → strip831 → v1_adapt → phase5(V3-R) → V3-A(critic/search/revise/render/verify) → delivery_status"
+}

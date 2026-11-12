@@ -1,0 +1,662 @@
+{
+  "schema": "v3_goal_recovery_v1",
+  "n_candidates": 5,
+  "n_single_goal": 3,
+  "n_with_goal_action_sec": 2,
+  "candidates": [
+    {
+      "candidate_id": "goalcand_00_00_to_01",
+      "score_before": [
+        0,
+        0
+      ],
+      "score_after": [
+        0,
+        1
+      ],
+      "delta": [
+        0,
+        1
+      ],
+      "single_goal_increment": true,
+      "scoring_side": "away_or_right",
+      "score_confirmation_sec": 1410.43,
+      "score_confirmation_reliability": "high",
+      "score_confirmation_event_id": "event_000173",
+      "score_confirmation_event_type": "Pass",
+      "last_before_score_obs_sec": 1311.0,
+      "first_after_score_obs_sec": 1410.43,
+      "possible_action_interval": {
+        "media_in": 1311.0,
+        "media_out": 1410.43,
+        "note": "Board lag window from Score_Recognition; NOT the action time itself"
+      },
+      "nearby_events": [
+        {
+          "event_id": "event_000171",
+          "event_type": "Dribble_past",
+          "media_sec": 1305.71,
+          "is_replay": false,
+          "media_start_sec": 1304.06,
+          "media_end_sec": 1315.52
+        },
+        {
+          "event_id": "event_000176",
+          "event_type": "Ball_possession",
+          "media_sec": 1418.15,
+          "is_replay": false,
+          "media_start_sec": 1409.22,
+          "media_end_sec": 1420.14
+        },
+        {
+          "event_id": "event_000177",
+          "event_type": "Ball_possession",
+          "media_sec": 1426.7,
+          "is_replay": false,
+          "media_start_sec": 1424.33,
+          "media_end_sec": 1434.95
+        }
+      ],
+      "goal_action_sec": 1305.71,
+      "goal_action_interval": {
+        "media_in": 1303.71,
+        "media_out": 1311.71
+      },
+      "is_replay": false,
+      "evidence_sources": [
+        "score_recognition",
+        "nearby_detector_event"
+      ],
+      "verification_status": "provisional_from_nearby_event",
+      "linked_strip_chain_ids": [
+        {
+          "strip_index": 8,
+          "clip_id": "clip08",
+          "chain_category": "special",
+          "template_id": "quick_restart_set_piece_chain",
+          "t0_sec": 1261.61,
+          "t1_sec": 1438.89,
+          "event_ids": [
+            "event_000157",
+            "event_000158",
+            "event_000159",
+            "event_000160",
+            "event_000161",
+            "event_000162",
+            "event_000163",
+            "event_000164",
+            "event_000165",
+            "event_000166",
+            "event_000167",
+            "event_000168",
+            "event_000169",
+            "event_000170",
+            "event_000171",
+            "event_000172",
+            "event_000173",
+            "event_000174",
+            "event_000175",
+            "event_000176",
+            "event_000177",
+            "event_000178",
+            "event_000179",
+            "event_000180"
+          ]
+        },
+        {
+          "strip_index": 7,
+          "clip_id": "clip07",
+          "chain_category": "special",
+          "template_id": "quick_restart_set_piece_chain",
+          "t0_sec": 1197.46,
+          "t1_sec": 1311.0,
+          "event_ids": [
+            "event_000135",
+            "event_000136",
+            "event_000137",
+            "event_000138",
+            "event_000139",
+            "event_000140",
+            "event_000141",
+            "event_000142",
+            "event_000143",
+            "event_000144",
+            "event_000145",
+            "event_000146",
+            "event_000147",
+            "event_000148",
+            "event_000149",
+            "event_000150",
+            "event_000151",
+            "event_000152",
+            "event_000153",
+            "event_000154",
+            "event_000155",
+            "event_000156",
+            "event_000157",
+            "event_000158",
+            "event_000159",
+            "event_000160",
+            "event_000161",
+            "event_000162",
+            "event_000163",
+            "event_000164",
+            "event_000165",
+            "event_000166",
+            "event_000167",
+            "event_000168",
+            "event_000169",
+            "event_000170",
+            "event_000171",
+            "event_000172"
+          ]
+        },
+        {
+          "strip_index": 6,
+          "clip_id": "clip06",
+          "chain_category": "special",
+          "template_id": "throw_in_build_up_chain",
+          "t0_sec": 1101.95,
+          "t1_sec": 1258.39,
+          "event_ids": [
+            "event_000109",
+            "event_000110",
+            "event_000111",
+            "event_000112",
+            "event_000113",
+            "event_000114",
+            "event_000115",
+            "event_000116",
+            "event_000117",
+            "event_000118",
+            "event_000119",
+            "event_000120",
+            "event_000121",
+            "event_000122",
+            "event_000123",
+            "event_000124",
+            "event_000125",
+            "event_000126",
+            "event_000127",
+            "event_000128",
+            "event_000129",
+            "event_000130",
+            "event_000131",
+            "event_000132",
+            "event_000133",
+            "event_000134",
+            "event_000135",
+            "event_000136",
+            "event_000137",
+            "event_000138",
+            "event_000139",
+            "event_000140",
+            "event_000141",
+            "event_000142",
+            "event_000143",
+            "event_000144",
+            "event_000145",
+            "event_000146",
+            "event_000147",
+            "event_000148",
+            "event_000149",
+            "event_000150",
+            "event_000151",
+            "event_000152",
+            "event_000153",
+            "event_000154",
+            "event_000155",
+            "event_000156"
+          ]
+        },
+        {
+          "strip_index": 9,
+          "clip_id": "clip09",
+          "chain_category": "special",
+          "template_id": "quick_restart_set_piece_chain",
+          "t0_sec": 1410.43,
+          "t1_sec": 1529.35,
+          "event_ids": [
+            "event_000173",
+            "event_000174",
+            "event_000175",
+            "event_000176",
+            "event_000177",
+            "event_000178",
+            "event_000179",
+            "event_000180",
+            "event_000181",
+            "event_000182",
+            "event_000183",
+            "event_000184",
+            "event_000185",
+            "event_000186",
+            "event_000187",
+            "event_000188",
+            "event_000189",
+            "event_000190",
+            "event_000191",
+            "event_000192",
+            "event_000193",
+            "event_000194",
+            "event_000195",
+            "event_000196",
+            "event_000197",
+            "event_000198",
+            "event_000199",
+            "event_000200",
+            "event_000201",
+            "event_000202",
+            "event_000203",
+            "event_000204",
+            "event_000205"
+          ]
+        }
+      ],
+      "notes": [
+        "weak_prior_from_Dribble_past; not ball-over-line proof"
+      ],
+      "provisional_event_id": "event_000171"
+    },
+    {
+      "candidate_id": "goalcand_01_01_to_5815",
+      "score_before": [
+        0,
+        1
+      ],
+      "score_after": [
+        58,
+        15
+      ],
+      "delta": [
+        58,
+        14
+      ],
+      "single_goal_increment": false,
+      "scoring_side": "unknown",
+      "score_confirmation_sec": 5388.71,
+      "score_confirmation_reliability": "reject_non_single",
+      "score_confirmation_event_id": "event_000547",
+      "score_confirmation_event_type": "Foul_Being_fouled",
+      "last_before_score_obs_sec": 5346.75,
+      "first_after_score_obs_sec": 5388.71,
+      "possible_action_interval": {
+        "media_in": 5346.75,
+        "media_out": 5388.71,
+        "note": "Board lag window from Score_Recognition; NOT the action time itself"
+      },
+      "nearby_events": [
+        {
+          "event_id": "event_000545",
+          "event_type": "Throw_in",
+          "media_sec": 5344.35,
+          "is_replay": false,
+          "media_start_sec": 5338.91,
+          "media_end_sec": 5350.87
+        }
+      ],
+      "goal_action_sec": null,
+      "goal_action_interval": null,
+      "is_replay": false,
+      "evidence_sources": [
+        "score_recognition"
+      ],
+      "verification_status": "rejected_non_single_increment",
+      "linked_strip_chain_ids": [
+        {
+          "strip_index": 49,
+          "clip_id": "clip49",
+          "chain_category": "special",
+          "template_id": "throw_in_build_up_chain",
+          "t0_sec": 5311.33,
+          "t1_sec": 5463.19,
+          "event_ids": [
+            "event_000542",
+            "event_000543",
+            "event_000544",
+            "event_000545",
+            "event_000546",
+            "event_000547",
+            "event_000548",
+            "event_000549",
+            "event_000550",
+            "event_000551",
+            "event_000552",
+            "event_000553",
+            "event_000554",
+            "event_000555",
+            "event_000556",
+            "event_000557"
+          ]
+        },
+        {
+          "strip_index": 48,
+          "clip_id": "clip48",
+          "chain_category": "special",
+          "template_id": "throw_in_build_up_chain",
+          "t0_sec": 5226.47,
+          "t1_sec": 5394.14,
+          "event_ids": [
+            "event_000534",
+            "event_000535",
+            "event_000536",
+            "event_000537",
+            "event_000538",
+            "event_000539",
+            "event_000540",
+            "event_000541",
+            "event_000542",
+            "event_000543",
+            "event_000544",
+            "event_000545",
+            "event_000546",
+            "event_000547",
+            "event_000548"
+          ]
+        }
+      ],
+      "notes": []
+    },
+    {
+      "candidate_id": "goalcand_02_5815_to_01",
+      "score_before": [
+        58,
+        15
+      ],
+      "score_after": [
+        0,
+        1
+      ],
+      "delta": [
+        -58,
+        -14
+      ],
+      "single_goal_increment": false,
+      "scoring_side": "unknown",
+      "score_confirmation_sec": 5394.14,
+      "score_confirmation_reliability": "reject_non_single",
+      "score_confirmation_event_id": "event_000548",
+      "score_confirmation_event_type": "Receive_a_card",
+      "last_before_score_obs_sec": 5388.71,
+      "first_after_score_obs_sec": 5394.14,
+      "possible_action_interval": {
+        "media_in": 5388.71,
+        "media_out": 5394.14,
+        "note": "Board lag window from Score_Recognition; NOT the action time itself"
+      },
+      "nearby_events": [],
+      "goal_action_sec": null,
+      "goal_action_interval": null,
+      "is_replay": false,
+      "evidence_sources": [
+        "score_recognition"
+      ],
+      "verification_status": "rejected_non_single_increment",
+      "linked_strip_chain_ids": [
+        {
+          "strip_index": 49,
+          "clip_id": "clip49",
+          "chain_category": "special",
+          "template_id": "throw_in_build_up_chain",
+          "t0_sec": 5311.33,
+          "t1_sec": 5463.19,
+          "event_ids": [
+            "event_000542",
+            "event_000543",
+            "event_000544",
+            "event_000545",
+            "event_000546",
+            "event_000547",
+            "event_000548",
+            "event_000549",
+            "event_000550",
+            "event_000551",
+            "event_000552",
+            "event_000553",
+            "event_000554",
+            "event_000555",
+            "event_000556",
+            "event_000557"
+          ]
+        },
+        {
+          "strip_index": 48,
+          "clip_id": "clip48",
+          "chain_category": "special",
+          "template_id": "throw_in_build_up_chain",
+          "t0_sec": 5226.47,
+          "t1_sec": 5394.14,
+          "event_ids": [
+            "event_000534",
+            "event_000535",
+            "event_000536",
+            "event_000537",
+            "event_000538",
+            "event_000539",
+            "event_000540",
+            "event_000541",
+            "event_000542",
+            "event_000543",
+            "event_000544",
+            "event_000545",
+            "event_000546",
+            "event_000547",
+            "event_000548"
+          ]
+        }
+      ],
+      "notes": []
+    },
+    {
+      "candidate_id": "goalcand_03_01_to_11",
+      "score_before": [
+        0,
+        1
+      ],
+      "score_after": [
+        1,
+        1
+      ],
+      "delta": [
+        1,
+        0
+      ],
+      "single_goal_increment": true,
+      "scoring_side": "home_or_left",
+      "score_confirmation_sec": 6535.62,
+      "score_confirmation_reliability": "high",
+      "score_confirmation_event_id": "event_000637",
+      "score_confirmation_event_type": "Win_an_aerial_duel",
+      "last_before_score_obs_sec": 6410.07,
+      "first_after_score_obs_sec": 6535.62,
+      "possible_action_interval": {
+        "media_in": 6410.07,
+        "media_out": 6535.62,
+        "note": "Board lag window from Score_Recognition; NOT the action time itself"
+      },
+      "nearby_events": [],
+      "goal_action_sec": null,
+      "goal_action_interval": null,
+      "is_replay": false,
+      "evidence_sources": [
+        "score_recognition"
+      ],
+      "verification_status": "unresolved_goal_action",
+      "linked_strip_chain_ids": [
+        {
+          "strip_index": 62,
+          "clip_id": "clip62",
+          "chain_category": "danger",
+          "template_id": "shot_post_bar_chain",
+          "t0_sec": 6403.81,
+          "t1_sec": 6567.9,
+          "event_ids": [
+            "event_000634",
+            "event_000635",
+            "event_000636",
+            "event_000637",
+            "event_000638",
+            "event_000639",
+            "event_000640",
+            "event_000641",
+            "event_000642",
+            "event_000643"
+          ]
+        },
+        {
+          "strip_index": 63,
+          "clip_id": "clip63",
+          "chain_category": "danger",
+          "template_id": "shot_post_bar_chain",
+          "t0_sec": 6535.62,
+          "t1_sec": 6659.69,
+          "event_ids": [
+            "event_000637",
+            "event_000638",
+            "event_000639",
+            "event_000640",
+            "event_000641",
+            "event_000642",
+            "event_000643",
+            "event_000644",
+            "event_000645",
+            "event_000646",
+            "event_000647",
+            "event_000648",
+            "event_000649",
+            "event_000650",
+            "event_000651"
+          ]
+        }
+      ],
+      "notes": []
+    },
+    {
+      "candidate_id": "goalcand_04_11_to_21",
+      "score_before": [
+        1,
+        1
+      ],
+      "score_after": [
+        2,
+        1
+      ],
+      "delta": [
+        1,
+        0
+      ],
+      "single_goal_increment": true,
+      "scoring_side": "home_or_left",
+      "score_confirmation_sec": 6957.12,
+      "score_confirmation_reliability": "high",
+      "score_confirmation_event_id": "event_000670",
+      "score_confirmation_event_type": "Substitution",
+      "last_before_score_obs_sec": 6821.96,
+      "first_after_score_obs_sec": 6957.12,
+      "possible_action_interval": {
+        "media_in": 6821.96,
+        "media_out": 6957.12,
+        "note": "Board lag window from Score_Recognition; NOT the action time itself"
+      },
+      "nearby_events": [
+        {
+          "event_id": "event_000667",
+          "event_type": "Dribble_past",
+          "media_sec": 6813.28,
+          "is_replay": false,
+          "media_start_sec": 6810.16,
+          "media_end_sec": 6824.07
+        }
+      ],
+      "goal_action_sec": 6813.28,
+      "goal_action_interval": {
+        "media_in": 6811.28,
+        "media_out": 6819.28
+      },
+      "is_replay": false,
+      "evidence_sources": [
+        "score_recognition",
+        "nearby_detector_event"
+      ],
+      "verification_status": "provisional_from_nearby_event",
+      "linked_strip_chain_ids": [
+        {
+          "strip_index": 66,
+          "clip_id": "clip66",
+          "chain_category": "danger",
+          "template_id": "shot_post_bar_chain",
+          "t0_sec": 6768.94,
+          "t1_sec": 6821.96,
+          "event_ids": [
+            "event_000659",
+            "event_000660",
+            "event_000661",
+            "event_000662",
+            "event_000663",
+            "event_000664",
+            "event_000665",
+            "event_000666",
+            "event_000667",
+            "event_000668",
+            "event_000669"
+          ]
+        },
+        {
+          "strip_index": 65,
+          "clip_id": "clip65",
+          "chain_category": "special",
+          "template_id": "quick_restart_set_piece_chain",
+          "t0_sec": 6660.67,
+          "t1_sec": 6821.96,
+          "event_ids": [
+            "event_000652",
+            "event_000653",
+            "event_000654",
+            "event_000655",
+            "event_000656",
+            "event_000657",
+            "event_000658",
+            "event_000659",
+            "event_000660",
+            "event_000661",
+            "event_000662",
+            "event_000663",
+            "event_000664",
+            "event_000665",
+            "event_000666",
+            "event_000667",
+            "event_000668",
+            "event_000669"
+          ]
+        },
+        {
+          "strip_index": 67,
+          "clip_id": "clip67",
+          "chain_category": "danger",
+          "template_id": "goal_line_extreme_save_chain",
+          "t0_sec": 6957.12,
+          "t1_sec": 7010.65,
+          "event_ids": [
+            "event_000670",
+            "event_000671",
+            "event_000672",
+            "event_000673",
+            "event_000674",
+            "event_000675"
+          ]
+        }
+      ],
+      "notes": [
+        "weak_prior_from_Dribble_past; not ball-over-line proof"
+      ],
+      "provisional_event_id": "event_000667"
+    }
+  ],
+  "paid_api_calls": 0,
+  "forbidden_inputs": [
+    "*_causal.json",
+    "strip_gold.json"
+  ],
+  "render_ready": false,
+  "note": "score_confirmation_sec is never copied into goal_action_sec"
+}
