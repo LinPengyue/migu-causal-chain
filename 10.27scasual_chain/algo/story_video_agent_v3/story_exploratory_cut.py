@@ -228,6 +228,7 @@ def execute_exploratory_trial(
     story_plan: Mapping[str, Any],
     out_dir: Path,
     renderer: Callable[..., Mapping[str, Any]],
+    integrity_checker: Optional[Callable[..., Mapping[str, Any]]] = None,
 ) -> Dict[str, Any]:
     """Render ONE full candidate and X/Y pack outside main revision/delivery.
 
@@ -271,6 +272,26 @@ def execute_exploratory_trial(
             result.update(status="RENDER_FAILED", reason="renderer_did_not_produce_mp4")
             _write(out_dir / "exploratory_trial.json", result)
             return result
+        # Ensure BOTH fullcut videos match their EDL story timelines before
+        # allocating a blind pair. A file named *.mp4 may be truncated or
+        # contain only a single segment; file presence is not sufficient.
+        if integrity_checker is None:
+            from .story_video_verifier import timeline_mp4_aligned
+            integrity_checker = timeline_mp4_aligned
+        base_check = dict(integrity_checker(edl=baseline_edl, mp4=baseline_mp4))
+        candidate_check = dict(integrity_checker(edl=candidate, mp4=path))
+        _write(out_dir / "fullcut_timeline_integrity.json", {
+            "baseline": base_check,
+            "candidate": candidate_check,
+        })
+        if not (base_check.get("aligned") and candidate_check.get("aligned")):
+            result.update(
+                status="RENDER_FAILED",
+                reason="baseline_or_candidate_fullcut_timeline_misaligned",
+                integrity_check="FAILED",
+            )
+            _write(out_dir / "exploratory_trial.json", result)
+            return result
         # Blind folder contains ONLY anonymized X/Y videos and instructions.
         # Unblinding key is stored outside it, never returned with blind pack.
         blind = out_dir / "blind_review"
@@ -309,6 +330,7 @@ def execute_exploratory_trial(
             "blind_pair_status": "BLIND_PAIR_READY",
             "candidate_mp4": str(path),
             "blind_review_dir": str(blind),
+            "fullcut_timeline_integrity": "ALIGNED",
             "private_allocation_path": str(out_dir / "PRIVATE_unblinding.json"),
             "candidate_edl_path": str(out_dir / "proposed_candidate_edl.json"),
             "g0_confirmed": False,
