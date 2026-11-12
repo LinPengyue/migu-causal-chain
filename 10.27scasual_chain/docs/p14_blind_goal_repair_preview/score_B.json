@@ -1,0 +1,57 @@
+{
+  "schema": "v3a_blind_story_repair_challenge_v1",
+  "variant": "HISTORICAL_RAW_ONLY",
+  "input_mode": "RAW_EVENTS_ONLY",
+  "status": "NOT_REPAIRED",
+  "missing_goal_roles_evaluator_only": [
+    "equalizer_goal_action"
+  ],
+  "diagnosed_issues": [
+    {
+      "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000411",
+      "category": "transition"
+    },
+    {
+      "issue_id": "large_source_jump_seg_buildup_event_000411_to_seg_equalizer_scoreboard",
+      "category": "transition"
+    },
+    {
+      "issue_id": "thin_post_climax_tail",
+      "category": "ending"
+    }
+  ],
+  "stage_observations": {
+    "explicit_goal_omission_diagnosed": false,
+    "generic_temporal_jump_not_counted_as_goal_detection": true,
+    "search_candidates_in_main_chain": 10,
+    "revision_decision": "UNRESOLVED",
+    "revision_actions": [
+      "mark_unresolved",
+      "mark_unresolved",
+      "mark_unresolved",
+      "mark_unresolved",
+      "mark_unresolved",
+      "mark_unresolved"
+    ],
+    "mutating_revision_requested": false,
+    "candidate_rendered": false,
+    "final_mp4_exists": true,
+    "preexisting_goal_roles_lost": [],
+    "source_pts_monotonic_ok": true,
+    "offline_without_semantic_vlm": true
+  },
+  "recovery": {
+    "equalizer_goal_action": {
+      "role_restored": false,
+      "matching_windows": [],
+      "source_window_overlap": false
+    }
+  },
+  "final_edl_exists": true,
+  "agent_decision": null,
+  "release_authorized": false,
+  "first_live_video_verified": false,
+  "story_quality_improved": "UNVERIFIED",
+  "formal_benchmark": false,
+  "reference_not_given_to_agent": true
+}

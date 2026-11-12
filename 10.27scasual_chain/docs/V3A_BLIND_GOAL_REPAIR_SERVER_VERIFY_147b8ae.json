@@ -1,0 +1,1758 @@
+{
+  "schema": "v3a_blind_goal_repair_challenge_server_verify_v1",
+  "generated": "2026-11-12T10:28:03.804905+00:00",
+  "worktree": "/data2/lpy1/worktrees/migu-v3a-goal-repair-verify",
+  "branch": "story-va-v3a-goal-repair-challenge",
+  "code_sha": "147b8aec03211e4a8be69782d82d6f430764fe54",
+  "paid_http": 0,
+  "pytest": {
+    "challenge_and_handoff": "12 passed in 0.19s",
+    "phase8_10_11": "214 passed in 4.76s"
+  },
+  "inputs_verified": {
+    "source_mp4": "/mnt/data4/migu/10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语.mp4",
+    "p14_phase5": "/tmp/lpy1_p14_human_atom_dev_e2e_20261112/run/01_to_04_fresh_v3r",
+    "p12_phase5": "/tmp/lpy1_p12_raw_only_20261112/run/01_to_04_fresh_v3r/04_phase5"
+  },
+  "cases": {
+    "A_controlled": {
+      "case_dir": "/tmp/lpy1_v3a_blind_repair_A_controlled_20261112",
+      "result": {
+        "schema": "v3a_blind_story_repair_challenge_v1",
+        "variant": "CONTROLLED_EDL_OMISSION",
+        "input_mode": "HUMAN_ATOM_ENRICHED_DEV",
+        "status": "NOT_REPAIRED",
+        "missing_goal_roles_evaluator_only": [
+          "equalizer_goal_action"
+        ],
+        "diagnosed_issues": [
+          {
+            "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472",
+            "category": "transition"
+          },
+          {
+            "issue_id": "large_source_jump_seg_buildup_event_000472_to_seg_equalizer_scoreboard",
+            "category": "transition"
+          },
+          {
+            "issue_id": "thin_post_climax_tail",
+            "category": "ending"
+          }
+        ],
+        "stage_observations": {
+          "explicit_goal_omission_diagnosed": false,
+          "generic_temporal_jump_not_counted_as_goal_detection": true,
+          "search_candidates_in_main_chain": 10,
+          "revision_decision": "UNRESOLVED",
+          "revision_actions": [
+            "mark_unresolved",
+            "mark_unresolved",
+            "mark_unresolved",
+            "mark_unresolved",
+            "mark_unresolved",
+            "mark_unresolved"
+          ],
+          "mutating_revision_requested": false,
+          "candidate_rendered": false,
+          "final_mp4_exists": true,
+          "preexisting_goal_roles_lost": [],
+          "source_pts_monotonic_ok": true,
+          "offline_without_semantic_vlm": true
+        },
+        "recovery": {
+          "equalizer_goal_action": {
+            "role_restored": false,
+            "matching_windows": [],
+            "source_window_overlap": false
+          }
+        },
+        "final_edl_exists": true,
+        "agent_decision": null,
+        "release_authorized": false,
+        "first_live_video_verified": false,
+        "story_quality_improved": "UNVERIFIED",
+        "formal_benchmark": false,
+        "reference_not_given_to_agent": true
+      },
+      "pass_tiers": {
+        "DETECTED": false,
+        "GROUNDED": false,
+        "EDL_REPAIRED": false,
+        "FIRST_LIVE_VERIFIED": false,
+        "STORY_IMPROVED": false,
+        "status": "NOT_REPAIRED"
+      },
+      "stages_compact": {
+        "story_diagnosis.json": {
+          "n_issues": 3,
+          "issues": [
+            {
+              "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472",
+              "category": "transition",
+              "severity": "info",
+              "story_role": "transition_break",
+              "temporal_discontinuity_only": true
+            },
+            {
+              "issue_id": "large_source_jump_seg_buildup_event_000472_to_seg_equalizer_scoreboard",
+              "category": "transition",
+              "severity": "info",
+              "story_role": "transition_break",
+              "temporal_discontinuity_only": true
+            },
+            {
+              "issue_id": "thin_post_climax_tail",
+              "category": "ending",
+              "severity": "minor",
+              "story_role": "ending_incomplete",
+              "temporal_discontinuity_only": null
+            }
+          ],
+          "story_diagnosis_valid": true,
+          "semantic_observation_claimed": false
+        },
+        "evidence_search.json": {
+          "n_candidates": 378,
+          "search_success": true,
+          "executable_search_success": false,
+          "n_verified": 10,
+          "n_propose_only": 10,
+          "note": "Search uses event-chain LIVE credibility and real media_time PTS (evidence_tier=EVENT_PTS_CANDIDATE). FIRST_LIVE_VERIFIED comes only from authenticated per-window broadcast-timeline attestation. Feedback context may suppress same-context overlaps without permanent PTS bans. Narrative fit requires distinct before/candidate/after video evidence; event heat and source-gap balance are NOT story quality proxies. No match-specific timestamps or fixed goal counts."
+        },
+        "revision_plan.json": {
+          "decision": "UNRESOLVED",
+          "rationale": "hypothesis_needs_video_no_auto_search_add_on_gap_alone;search_candidates_deferred_pending_semantic_confirmation",
+          "offline": true,
+          "semantic_confirmation": false,
+          "n_revision_intents": 6,
+          "protected_goal_segment_ids": [
+            "seg_opponent_opening_goal_action",
+            "seg_go_ahead_goal_action"
+          ]
+        },
+        "edl_diff.json": {
+          "changed": false
+        },
+        "candidate_render.json": {
+          "skipped": true,
+          "reason": "edl_unchanged_reuse_working_parent",
+          "baseline_mp4": "/tmp/lpy1_v3a_blind_repair_A_controlled_20261112/agent_run/01_initial_story/story_clean.mp4",
+          "parent_version_id": "v0"
+        },
+        "apply_report.json": {
+          "skipped": true
+        },
+        "revision_status.json": {
+          "schema": "v3a_revision_status_v1",
+          "APPLIED": false,
+          "VERIFIED": false,
+          "IMPROVED": false,
+          "safety_ok": true,
+          "edl_changed": false,
+          "candidate_rendered": false,
+          "candidate_accepted": false,
+          "vision_backed": false,
+          "semantic_passed": false,
+          "quality_delta": "NOT_EVALUATED",
+          "BETTER_not_auto_IMPROVED": true,
+          "note": "APPLIED=EDL mutated under safety; VERIFIED=accepted with vision; IMPROVED=verified+accepted+vision+semantic+safety+quality_delta. One model BETTER never auto-upgrades to IMPROVED. PTS/first-live/goal gates cannot be overridden by BETTER."
+        },
+        "verifier_report.json": {
+          "schema": "v3a_story_video_verifier_v1",
+          "decision_input": "UNRESOLVED",
+          "hard_vetoes": [],
+          "warnings": [
+            "vision_backed_explicitly_false"
+          ],
+          "render_rows_ok": true,
+          "goal_protection": {
+            "baseline_goals": {
+              "seg_opponent_opening_goal_action": [
+                1325.123,
+                1347.123
+              ],
+              "seg_go_ahead_goal_action": [
+                6829.456,
+                6851.456
+              ]
+            },
+            "candidate_goals": {
+              "seg_opponent_opening_goal_action": [
+                1325.123,
+                1347.123
+              ],
+              "seg_go_ahead_goal_action": [
+                6829.456,
+                6851.456
+              ]
+            },
+            "intact": true
+          },
+          "video_probe": {
+            "baseline_exists": true,
+            "candidate_exists": true,
+            "baseline_duration_sec": 72.841,
+            "candidate_duration_sec": 72.841,
+            "duration_delta_sec": 0.0,
+            "method": "ffprobe_duration_and_existence",
+            "note": "Technical probe only; not semantic story quality."
+          },
+          "edl_delta": {
+            "baseline_count": 8,
+            "candidate_count": 8,
+            "added_segment_ids": [],
+            "removed_segment_ids": [],
+            "changed_segments": [],
+            "exactly_equal": true
+          },
+          "sent_frame_ids": [],
+          "vision_backed": false,
+          "dual_verifier": {
+            "rule_verification_status": "FAILED",
+            "semantic_verification_status": "NOT_EVALUATED",
+            "ok_for_semantic_accept": false,
+            "provider_mode": "skipped",
+            "rule_baseline_score": null,
+            "rule_candidate_score": null
+          },
+          "dual_verifier_full": {
+            "rule_baseline": {
+              "track": "rule",
+              "ok": true,
+              "rule_verification_status": "FAILED",
+              "audit": {
+                "schema": "v3a_story_quality_audit_v1",
+                "mode": "READ_ONLY_RULE_BASELINE",
+                "match_id": "10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语",
+                "story_tier": "story",
+                "dimensions": {
+                  "story_element_coverage": {
+                    "score": 66.7,
+                    "score_kind": "candidate_edl_role_proxy",
+                    "required_roles": [
+                      {
+                        "name": "opponent_opening",
+                        "required": true,
+                        "edl_present": true,
+                        "status": "EDL_PRESENT_UNVERIFIED",
+                        "segment_ids": [
+                          "seg_opponent_opening_goal_action"
+                        ]
+                      },
+                      {
+                        "name": "equalizer",
+                        "required": true,
+                        "edl_present": false,
+                        "status": "MISSING_EDL",
+                        "segment_ids": []
+                      },
+                      {
+                        "name": "go_ahead",
+                        "required": true,
+                        "edl_present": true,
+                        "status": "EDL_PRESENT_UNVERIFIED",
+                        "segment_ids": [
+                          "seg_go_ahead_goal_action"
+                        ]
+                      }
+                    ],
+                    "not_measured": [
+                      "visual_truth",
+                      "missing_unannotated_events",
+                      "tactical_causality"
+                    ]
+                  },
+                  "story_coherence": {
+                    "score": 100.0,
+                    "score_kind": "edl_structural_proxy",
+                    "checks": {
+                      "valid_media_windows": true,
+                      "narrative_beat_order": true,
+                      "unique_goal_event_roles": true
+                    },
+                    "not_measured": [
+                      "semantic_narrative_coherence",
+                      "shot_relevance"
+                    ]
+                  },
+                  "image_quality": {
+                    "status": "NOT_MEASURED",
+                    "score": null,
+                    "reason": "no_rendered_video_supplied"
+                  }
+                },
+                "hard_gate_findings": [
+                  {
+                    "kind": "missing_story_element",
+                    "severity": "P0",
+                    "target": "equalizer",
+                    "detail": "Required T01 arc goal action absent from cut; scoreboard/title is not a substitute.",
+                    "suggested_action": "locate_or_recover_story_evidence"
+                  }
+                ],
+                "diagnostic_issues": [
+                  {
+                    "kind": "missing_story_element",
+                    "severity": "P0",
+                    "target": "equalizer",
+                    "detail": "Required T01 arc goal action absent from cut; scoreboard/title is not a substitute.",
+                    "suggested_action": "locate_or_recover_story_evidence"
+                  }
+                ],
+                "unverified": [
+                  "live_vs_replay_visual_truth",
+                  "VLM_semantics",
+                  "shot_event_grounding"
+                ],
+                "input_missing_evidence": [
+                  "behind_carrier_unresolved:event_000173",
+                  "buildup_dropped_unattributed_setpiece:event_000276",
+                  "equalizer_carrier_unresolved:event_000637",
+                  "go_ahead_carrier_unresolved:event_000670",
+                  "ending_wrap_score_skipped_duplicate_of_go_ahead_board",
+                  "ending_match_end_rejected:match_end_beyond_candidate_horizon:dt=1055.81"
+                ],
+                "revision_requests": [
+                  {
+                    "kind": "missing_story_element",
+                    "severity": "P0",
+                    "target": "equalizer",
+                    "detail": "Required T01 arc goal action absent from cut; scoreboard/title is not a substitute.",
+                    "suggested_action": "locate_or_recover_story_evidence"
+                  }
+                ],
+                "structural_proxy_pass": false,
+                "render_ready": false,
+                "release_decision": "NOT_AUTHORIZED",
+                "note": "Scores are deterministic structural proxies, not calibrated quality or semantic release certification."
+              },
+              "p0_count": 1,
+              "semantic_scores": {
+                "story_element_coverage": "NOT_EVALUATED",
+                "narrative_coherence": "NOT_EVALUATED",
+                "image_content_quality": "NOT_EVALUATED",
+                "live_authenticity": "NOT_EVALUATED"
+              },
+              "note": "Rule track does not certify multimodal semantic quality."
+            },
+            "rule_candidate": {
+              "track": "rule",
+              "ok": true,
+              "rule_verification_status": "FAILED",
+              "audit": {
+                "schema": "v3a_story_quality_audit_v1",
+                "mode": "READ_ONLY_RULE_BASELINE",
+                "match_id": "10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语",
+                "story_tier": "story",
+                "dimensions": {
+                  "story_element_coverage": {
+                    "score": 66.7,
+                    "score_kind": "candidate_edl_role_proxy",
+                    "required_roles": [
+                      {
+                        "name": "opponent_opening",
+                        "required": true,
+                        "edl_present": true,
+                        "status": "EDL_PRESENT_UNVERIFIED",
+                        "segment_ids": [
+                          "seg_opponent_opening_goal_action"
+                        ]
+                      },
+                      {
+                        "name": "equalizer",
+                        "required": true,
+                        "edl_present": false,
+                        "status": "MISSING_EDL",
+                        "segment_ids": []
+                      },
+                      {
+                        "name": "go_ahead",
+                        "required": true,
+                        "edl_present": true,
+                        "status": "EDL_PRESENT_UNVERIFIED",
+                        "segment_ids": [
+                          "seg_go_ahead_goal_action"
+                        ]
+                      }
+                    ],
+                    "not_measured": [
+                      "visual_truth",
+                      "missing_unannotated_events",
+                      "tactical_causality"
+                    ]
+                  },
+                  "story_coherence": {
+                    "score": 100.0,
+                    "score_kind": "edl_structural_proxy",
+                    "checks": {
+                      "valid_media_windows": true,
+                      "narrative_beat_order": true,
+                      "unique_goal_event_roles": true
+                    },
+                    "not_measured": [
+                      "semantic_narrative_coherence",
+                      "shot_relevance"
+                    ]
+                  },
+                  "image_quality": {
+                    "status": "NOT_MEASURED",
+                    "score": null,
+                    "reason": "no_rendered_video_supplied"
+                  }
+                },
+                "hard_gate_findings": [
+                  {
+                    "kind": "missing_story_element",
+                    "severity": "P0",
+                    "target": "equalizer",
+                    "detail": "Required T01 arc goal action absent from cut; scoreboard/title is not a substitute.",
+                    "suggested_action": "locate_or_recover_story_evidence"
+                  }
+                ],
+                "diagnostic_issues": [
+                  {
+                    "kind": "missing_story_element",
+                    "severity": "P0",
+                    "target": "equalizer",
+                    "detail": "Required T01 arc goal action absent from cut; scoreboard/title is not a substitute.",
+                    "suggested_action": "locate_or_recover_story_evidence"
+                  }
+                ],
+                "unverified": [
+                  "live_vs_replay_visual_truth",
+                  "VLM_semantics",
+                  "shot_event_grounding"
+                ],
+                "input_missing_evidence": [
+                  "behind_carrier_unresolved:event_000173",
+                  "buildup_dropped_unattributed_setpiece:event_000276",
+                  "equalizer_carrier_unresolved:event_000637",
+                  "go_ahead_carrier_unresolved:event_000670",
+                  "ending_wrap_score_skipped_duplicate_of_go_ahead_board",
+                  "ending_match_end_rejected:match_end_beyond_candidate_horizon:dt=1055.81"
+                ],
+                "revision_requests": [
+                  {
+                    "kind": "missing_story_element",
+                    "severity": "P0",
+                    "target": "equalizer",
+                    "detail": "Required T01 arc goal action absent from cut; scoreboard/title is not a substitute.",
+                    "suggested_action": "locate_or_recover_story_evidence"
+                  }
+                ],
+                "structural_proxy_pass": false,
+                "render_ready": false,
+                "release_decision": "NOT_AUTHORIZED",
+                "note": "Scores are deterministic structural proxies, not calibrated quality or semantic release certification."
+              },
+              "p0_count": 1,
+              "semantic_scores": {
+                "story_element_coverage": "NOT_EVALUATED",
+                "narrative_coherence": "NOT_EVALUATED",
+                "image_content_quality": "NOT_EVALUATED",
+                "live_authenticity": "NOT_EVALUATED"
+              },
+              "note": "Rule track does not certify multimodal semantic quality."
+            },
+            "api": {
+              "ok": false,
+              "error": "api_verifier_not_authorized",
+              "provider_mode": "skipped",
+              "ok_for_semantic_accept": false,
+              "semantic_verification_status": "NOT_EVALUATED",
+              "rule_fallback_success": false,
+              "semantic_pretend_pass": false,
+              "validated": {
+                "issues": [],
+                "dimensions": {
+                  "story_element_coverage": {
+                    "status": "NOT_EVALUATED",
+                    "summary": "API Verifier unavailable or failed; score not assigned",
+                    "evidence_refs": [],
+                    "problems": [],
+                    "score": null
+                  },
+                  "narrative_coherence": {
+                    "status": "NOT_EVALUATED",
+                    "summary": "API Verifier unavailable or failed; score not assigned",
+                    "evidence_refs": [],
+                    "problems": [],
+                    "score": null
+                  },
+                  "image_content_quality": {
+                    "status": "NOT_EVALUATED",
+                    "summary": "API Verifier unavailable or failed; score not assigned",
+                    "evidence_refs": [],
+                    "problems": [],
+                    "score": null
+                  },
+                  "live_authenticity": {
+                    "status": "NOT_EVALUATED",
+                    "summary": "API Verifier unavailable or failed; score not assigned",
+                    "evidence_refs": [],
+                    "problems": [],
+                    "score": null
+                  }
+                },
+                "hard_vetoes": [],
+                "evidence_of_improvement": [],
+                "quality_delta_vs_baseline": "NOT_EVALUATED",
+                "validated": true,
+                "semantic_status": "NOT_EVALUATED"
+              },
+              "fallback_reason": "api_verifier_not_authorized"
+            },
+            "rule_verification_status": "FAILED",
+            "semantic_verification_status": "NOT_EVALUATED",
+            "ok_for_semantic_accept": false,
+            "ok": false,
+            "validated": {
+              "issues": [],
+              "dimensions": {
+                "story_element_coverage": {
+                  "status": "NOT_EVALUATED",
+                  "summary": "API Verifier unavailable or failed; score not assigned",
+                  "evidence_refs": [],
+                  "problems": [],
+                  "score": null
+                },
+                "narrative_coherence": {
+                  "status": "NOT_EVALUATED",
+                  "summary": "API Verifier unavailable or failed; score not assigned",
+                  "evidence_refs": [],
+                  "problems": [],
+                  "score": null
+                },
+                "image_content_quality": {
+                  "status": "NOT_EVALUATED",
+                  "summary": "API Verifier unavailable or failed; score not assigned",
+                  "evidence_refs": [],
+                  "problems": [],
+                  "score": null
+                },
+                "live_authenticity": {
+                  "status": "NOT_EVALUATED",
+                  "summary": "API Verifier unavailable or failed; score not assigned",
+                  "evidence_refs": [],
+                  "problems": [],
+                  "score": null
+                }
+              },
+              "hard_vetoes": [],
+              "evidence_of_improvement": [],
+              "quality_delta_vs_baseline": "NOT_EVALUATED",
+              "validated": true
+            },
+            "provider_mode": "skipped",
+            "error": "api_verifier_not_authorized",
+            "attempts": [],
+            "rule_fallback_success": false,
+            "semantic_pretend_pass": false,
+            "fallback_reason": "api_verifier_not_authorized"
+          },
+          "candidate_accepted": false,
+          "retain_baseline": true,
+          "phase8_verdict": {
+            "schema": "v3a_phase8_verdict_v1",
+            "safety": "PASS",
+            "hard_safety": {
+              "safety": "PASS",
+              "reasons": [],
+              "accept_candidate_ignored": true,
+              "first_live_status": "N_A_NO_NEW_FOOTAGE",
+              "first_live_ledger": {
+                "schema": "v3a_first_live_window_ledger_v1",
+                "source_sha": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+                "windows": [],
+                "n_windows": 0,
+                "all_windows_verified": false,
+                "any_window_unverified": false,
+                "any_replay_confirmed": false,
+                "any_frame_bound_pending_timeline": false,
+                "aggregate_status": "N_A_NO_NEW_WINDOWS",
+                "note": "FRAME_BOUND_VALID ≠ FIRST_LIVE_VERIFIED. Hard-safety PASS needs independent broadcast-timeline review on every new window; binding-only stays UNKNOWN; REPLAY_CONFIRMED ⇒ FAIL."
+              }
+            },
+            "quality": "UNCERTAIN",
+            "evidence": "INSUFFICIENT",
+            "issue_effect": "UNOBSERVED",
+            "global_regression": "UNKNOWN",
+            "focus_issue_id": null,
+            "evidence_refs": [],
+            "observed_changes": null,
+            "unresolved_questions": [],
+            "suggested_next_evidence": null,
+            "failure_class": "TECHNICAL_FAILURE",
+            "compared_parent_version_id": null,
+            "verdict_provenance": "OFFLINE_RULE",
+            "source_kind": "OFFLINE_RULE",
+            "accept_candidate_raw": false,
+            "accept_not_synthesized_from_promising": true,
+            "safety_independent_of_accept_candidate": true,
+            "note": "Hard safety is independent of narrative accept_candidate. FIXTURE/OFFLINE_RULE never establish real IMPROVED; REAL_VLM requires recorded successful provider call + frame bindings."
+          },
+          "evidence_basis": "insufficient_visual_evidence",
+          "note": "Semantic accept requires aligned dual-video frames with citable frame_ids. EDL/text/ffprobe alone never authorizes release. phase8_verdict is advisory for exploration; accept_candidate does not synthesize from PROMISING."
+        },
+        "final_goal_roles": [
+          "opponent_opening_goal_action",
+          "go_ahead_goal_action"
+        ]
+      },
+      "failure_stage": "CRITIC_NO_EXPLICIT_GOAL_OMISSION → PLANNER_UNRESOLVED → EDL_UNCHANGED",
+      "scientific_baseline": true
+    },
+    "B_historical": {
+      "case_dir": "/tmp/lpy1_v3a_blind_repair_B_historical_20261112",
+      "result": {
+        "schema": "v3a_blind_story_repair_challenge_v1",
+        "variant": "HISTORICAL_RAW_ONLY",
+        "input_mode": "RAW_EVENTS_ONLY",
+        "status": "NOT_REPAIRED",
+        "missing_goal_roles_evaluator_only": [
+          "equalizer_goal_action"
+        ],
+        "diagnosed_issues": [
+          {
+            "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000411",
+            "category": "transition"
+          },
+          {
+            "issue_id": "large_source_jump_seg_buildup_event_000411_to_seg_equalizer_scoreboard",
+            "category": "transition"
+          },
+          {
+            "issue_id": "thin_post_climax_tail",
+            "category": "ending"
+          }
+        ],
+        "stage_observations": {
+          "explicit_goal_omission_diagnosed": false,
+          "generic_temporal_jump_not_counted_as_goal_detection": true,
+          "search_candidates_in_main_chain": 10,
+          "revision_decision": "UNRESOLVED",
+          "revision_actions": [
+            "mark_unresolved",
+            "mark_unresolved",
+            "mark_unresolved",
+            "mark_unresolved",
+            "mark_unresolved",
+            "mark_unresolved"
+          ],
+          "mutating_revision_requested": false,
+          "candidate_rendered": false,
+          "final_mp4_exists": true,
+          "preexisting_goal_roles_lost": [],
+          "source_pts_monotonic_ok": true,
+          "offline_without_semantic_vlm": true
+        },
+        "recovery": {
+          "equalizer_goal_action": {
+            "role_restored": false,
+            "matching_windows": [],
+            "source_window_overlap": false
+          }
+        },
+        "final_edl_exists": true,
+        "agent_decision": null,
+        "release_authorized": false,
+        "first_live_video_verified": false,
+        "story_quality_improved": "UNVERIFIED",
+        "formal_benchmark": false,
+        "reference_not_given_to_agent": true
+      },
+      "pass_tiers": {
+        "DETECTED": false,
+        "GROUNDED": false,
+        "EDL_REPAIRED": false,
+        "FIRST_LIVE_VERIFIED": false,
+        "STORY_IMPROVED": false,
+        "status": "NOT_REPAIRED"
+      },
+      "stages_compact": {
+        "story_diagnosis.json": {
+          "n_issues": 3,
+          "issues": [
+            {
+              "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000411",
+              "category": "transition",
+              "severity": "info",
+              "story_role": "transition_break",
+              "temporal_discontinuity_only": true
+            },
+            {
+              "issue_id": "large_source_jump_seg_buildup_event_000411_to_seg_equalizer_scoreboard",
+              "category": "transition",
+              "severity": "info",
+              "story_role": "transition_break",
+              "temporal_discontinuity_only": true
+            },
+            {
+              "issue_id": "thin_post_climax_tail",
+              "category": "ending",
+              "severity": "minor",
+              "story_role": "ending_incomplete",
+              "temporal_discontinuity_only": null
+            }
+          ],
+          "story_diagnosis_valid": true,
+          "semantic_observation_claimed": false
+        },
+        "evidence_search.json": {
+          "n_candidates": 363,
+          "search_success": true,
+          "executable_search_success": false,
+          "n_verified": 10,
+          "n_propose_only": 10,
+          "note": "Search uses event-chain LIVE credibility and real media_time PTS (evidence_tier=EVENT_PTS_CANDIDATE). FIRST_LIVE_VERIFIED comes only from authenticated per-window broadcast-timeline attestation. Feedback context may suppress same-context overlaps without permanent PTS bans. Narrative fit requires distinct before/candidate/after video evidence; event heat and source-gap balance are NOT story quality proxies. No match-specific timestamps or fixed goal counts."
+        },
+        "revision_plan.json": {
+          "decision": "UNRESOLVED",
+          "rationale": "hypothesis_needs_video_no_auto_search_add_on_gap_alone;search_candidates_deferred_pending_semantic_confirmation",
+          "offline": true,
+          "semantic_confirmation": false,
+          "n_revision_intents": 6,
+          "protected_goal_segment_ids": [
+            "seg_opponent_opening_goal_action",
+            "seg_go_ahead_goal_action"
+          ]
+        },
+        "edl_diff.json": {
+          "changed": false
+        },
+        "candidate_render.json": {
+          "skipped": true,
+          "reason": "edl_unchanged_reuse_working_parent",
+          "baseline_mp4": "/tmp/lpy1_v3a_blind_repair_B_historical_20261112/agent_run/01_initial_story/story_clean.mp4",
+          "parent_version_id": "v0"
+        },
+        "apply_report.json": {
+          "skipped": true
+        },
+        "revision_status.json": {
+          "schema": "v3a_revision_status_v1",
+          "APPLIED": false,
+          "VERIFIED": false,
+          "IMPROVED": false,
+          "safety_ok": true,
+          "edl_changed": false,
+          "candidate_rendered": false,
+          "candidate_accepted": false,
+          "vision_backed": false,
+          "semantic_passed": false,
+          "quality_delta": "NOT_EVALUATED",
+          "BETTER_not_auto_IMPROVED": true,
+          "note": "APPLIED=EDL mutated under safety; VERIFIED=accepted with vision; IMPROVED=verified+accepted+vision+semantic+safety+quality_delta. One model BETTER never auto-upgrades to IMPROVED. PTS/first-live/goal gates cannot be overridden by BETTER."
+        },
+        "verifier_report.json": {
+          "schema": "v3a_story_video_verifier_v1",
+          "decision_input": "UNRESOLVED",
+          "hard_vetoes": [],
+          "warnings": [
+            "vision_backed_explicitly_false"
+          ],
+          "render_rows_ok": true,
+          "goal_protection": {
+            "baseline_goals": {
+              "seg_opponent_opening_goal_action": [
+                1293.71,
+                1315.71
+              ],
+              "seg_go_ahead_goal_action": [
+                6801.28,
+                6823.28
+              ]
+            },
+            "candidate_goals": {
+              "seg_opponent_opening_goal_action": [
+                1293.71,
+                1315.71
+              ],
+              "seg_go_ahead_goal_action": [
+                6801.28,
+                6823.28
+              ]
+            },
+            "intact": true
+          },
+          "video_probe": {
+            "baseline_exists": true,
+            "candidate_exists": true,
+            "baseline_duration_sec": 72.818,
+            "candidate_duration_sec": 72.818,
+            "duration_delta_sec": 0.0,
+            "method": "ffprobe_duration_and_existence",
+            "note": "Technical probe only; not semantic story quality."
+          },
+          "edl_delta": {
+            "baseline_count": 8,
+            "candidate_count": 8,
+            "added_segment_ids": [],
+            "removed_segment_ids": [],
+            "changed_segments": [],
+            "exactly_equal": true
+          },
+          "sent_frame_ids": [],
+          "vision_backed": false,
+          "dual_verifier": {
+            "rule_verification_status": "FAILED",
+            "semantic_verification_status": "NOT_EVALUATED",
+            "ok_for_semantic_accept": false,
+            "provider_mode": "skipped",
+            "rule_baseline_score": null,
+            "rule_candidate_score": null
+          },
+          "dual_verifier_full": {
+            "rule_baseline": {
+              "track": "rule",
+              "ok": true,
+              "rule_verification_status": "FAILED",
+              "audit": {
+                "schema": "v3a_story_quality_audit_v1",
+                "mode": "READ_ONLY_RULE_BASELINE",
+                "match_id": "10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语",
+                "story_tier": "story",
+                "dimensions": {
+                  "story_element_coverage": {
+                    "score": 66.7,
+                    "score_kind": "candidate_edl_role_proxy",
+                    "required_roles": [
+                      {
+                        "name": "opponent_opening",
+                        "required": true,
+                        "edl_present": true,
+                        "status": "EDL_PRESENT_UNVERIFIED",
+                        "segment_ids": [
+                          "seg_opponent_opening_goal_action"
+                        ]
+                      },
+                      {
+                        "name": "equalizer",
+                        "required": true,
+                        "edl_present": false,
+                        "status": "MISSING_EDL",
+                        "segment_ids": []
+                      },
+                      {
+                        "name": "go_ahead",
+                        "required": true,
+                        "edl_present": true,
+                        "status": "EDL_PRESENT_UNVERIFIED",
+                        "segment_ids": [
+                          "seg_go_ahead_goal_action"
+                        ]
+                      }
+                    ],
+                    "not_measured": [
+                      "visual_truth",
+                      "missing_unannotated_events",
+                      "tactical_causality"
+                    ]
+                  },
+                  "story_coherence": {
+                    "score": 100.0,
+                    "score_kind": "edl_structural_proxy",
+                    "checks": {
+                      "valid_media_windows": true,
+                      "narrative_beat_order": true,
+                      "unique_goal_event_roles": true
+                    },
+                    "not_measured": [
+                      "semantic_narrative_coherence",
+                      "shot_relevance"
+                    ]
+                  },
+                  "image_quality": {
+                    "status": "NOT_MEASURED",
+                    "score": null,
+                    "reason": "no_rendered_video_supplied"
+                  }
+                },
+                "hard_gate_findings": [
+                  {
+                    "kind": "missing_story_element",
+                    "severity": "P0",
+                    "target": "equalizer",
+                    "detail": "Required T01 arc goal action absent from cut; scoreboard/title is not a substitute.",
+                    "suggested_action": "locate_or_recover_story_evidence"
+                  }
+                ],
+                "diagnostic_issues": [
+                  {
+                    "kind": "missing_story_element",
+                    "severity": "P0",
+                    "target": "equalizer",
+                    "detail": "Required T01 arc goal action absent from cut; scoreboard/title is not a substitute.",
+                    "suggested_action": "locate_or_recover_story_evidence"
+                  }
+                ],
+                "unverified": [
+                  "live_vs_replay_visual_truth",
+                  "VLM_semantics",
+                  "shot_event_grounding"
+                ],
+                "input_missing_evidence": [
+                  "behind_carrier_unresolved:event_000173",
+                  "buildup_dropped_unattributed_setpiece:event_000276",
+                  "equalizer_carrier_unresolved:event_000637",
+                  "missing_live_goal_action:equalizer",
+                  "go_ahead_carrier_unresolved:event_000670",
+                  "ending_wrap_score_skipped_duplicate_of_go_ahead_board",
+                  "ending_match_end_rejected:match_end_beyond_candidate_horizon:dt=1055.81"
+                ],
+                "revision_requests": [
+                  {
+                    "kind": "missing_story_element",
+                    "severity": "P0",
+                    "target": "equalizer",
+                    "detail": "Required T01 arc goal action absent from cut; scoreboard/title is not a substitute.",
+                    "suggested_action": "locate_or_recover_story_evidence"
+                  }
+                ],
+                "structural_proxy_pass": false,
+                "render_ready": false,
+                "release_decision": "NOT_AUTHORIZED",
+                "note": "Scores are deterministic structural proxies, not calibrated quality or semantic release certification."
+              },
+              "p0_count": 1,
+              "semantic_scores": {
+                "story_element_coverage": "NOT_EVALUATED",
+                "narrative_coherence": "NOT_EVALUATED",
+                "image_content_quality": "NOT_EVALUATED",
+                "live_authenticity": "NOT_EVALUATED"
+              },
+              "note": "Rule track does not certify multimodal semantic quality."
+            },
+            "rule_candidate": {
+              "track": "rule",
+              "ok": true,
+              "rule_verification_status": "FAILED",
+              "audit": {
+                "schema": "v3a_story_quality_audit_v1",
+                "mode": "READ_ONLY_RULE_BASELINE",
+                "match_id": "10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语",
+                "story_tier": "story",
+                "dimensions": {
+                  "story_element_coverage": {
+                    "score": 66.7,
+                    "score_kind": "candidate_edl_role_proxy",
+                    "required_roles": [
+                      {
+                        "name": "opponent_opening",
+                        "required": true,
+                        "edl_present": true,
+                        "status": "EDL_PRESENT_UNVERIFIED",
+                        "segment_ids": [
+                          "seg_opponent_opening_goal_action"
+                        ]
+                      },
+                      {
+                        "name": "equalizer",
+                        "required": true,
+                        "edl_present": false,
+                        "status": "MISSING_EDL",
+                        "segment_ids": []
+                      },
+                      {
+                        "name": "go_ahead",
+                        "required": true,
+                        "edl_present": true,
+                        "status": "EDL_PRESENT_UNVERIFIED",
+                        "segment_ids": [
+                          "seg_go_ahead_goal_action"
+                        ]
+                      }
+                    ],
+                    "not_measured": [
+                      "visual_truth",
+                      "missing_unannotated_events",
+                      "tactical_causality"
+                    ]
+                  },
+                  "story_coherence": {
+                    "score": 100.0,
+                    "score_kind": "edl_structural_proxy",
+                    "checks": {
+                      "valid_media_windows": true,
+                      "narrative_beat_order": true,
+                      "unique_goal_event_roles": true
+                    },
+                    "not_measured": [
+                      "semantic_narrative_coherence",
+                      "shot_relevance"
+                    ]
+                  },
+                  "image_quality": {
+                    "status": "NOT_MEASURED",
+                    "score": null,
+                    "reason": "no_rendered_video_supplied"
+                  }
+                },
+                "hard_gate_findings": [
+                  {
+                    "kind": "missing_story_element",
+                    "severity": "P0",
+                    "target": "equalizer",
+                    "detail": "Required T01 arc goal action absent from cut; scoreboard/title is not a substitute.",
+                    "suggested_action": "locate_or_recover_story_evidence"
+                  }
+                ],
+                "diagnostic_issues": [
+                  {
+                    "kind": "missing_story_element",
+                    "severity": "P0",
+                    "target": "equalizer",
+                    "detail": "Required T01 arc goal action absent from cut; scoreboard/title is not a substitute.",
+                    "suggested_action": "locate_or_recover_story_evidence"
+                  }
+                ],
+                "unverified": [
+                  "live_vs_replay_visual_truth",
+                  "VLM_semantics",
+                  "shot_event_grounding"
+                ],
+                "input_missing_evidence": [
+                  "behind_carrier_unresolved:event_000173",
+                  "buildup_dropped_unattributed_setpiece:event_000276",
+                  "equalizer_carrier_unresolved:event_000637",
+                  "missing_live_goal_action:equalizer",
+                  "go_ahead_carrier_unresolved:event_000670",
+                  "ending_wrap_score_skipped_duplicate_of_go_ahead_board",
+                  "ending_match_end_rejected:match_end_beyond_candidate_horizon:dt=1055.81"
+                ],
+                "revision_requests": [
+                  {
+                    "kind": "missing_story_element",
+                    "severity": "P0",
+                    "target": "equalizer",
+                    "detail": "Required T01 arc goal action absent from cut; scoreboard/title is not a substitute.",
+                    "suggested_action": "locate_or_recover_story_evidence"
+                  }
+                ],
+                "structural_proxy_pass": false,
+                "render_ready": false,
+                "release_decision": "NOT_AUTHORIZED",
+                "note": "Scores are deterministic structural proxies, not calibrated quality or semantic release certification."
+              },
+              "p0_count": 1,
+              "semantic_scores": {
+                "story_element_coverage": "NOT_EVALUATED",
+                "narrative_coherence": "NOT_EVALUATED",
+                "image_content_quality": "NOT_EVALUATED",
+                "live_authenticity": "NOT_EVALUATED"
+              },
+              "note": "Rule track does not certify multimodal semantic quality."
+            },
+            "api": {
+              "ok": false,
+              "error": "api_verifier_not_authorized",
+              "provider_mode": "skipped",
+              "ok_for_semantic_accept": false,
+              "semantic_verification_status": "NOT_EVALUATED",
+              "rule_fallback_success": false,
+              "semantic_pretend_pass": false,
+              "validated": {
+                "issues": [],
+                "dimensions": {
+                  "story_element_coverage": {
+                    "status": "NOT_EVALUATED",
+                    "summary": "API Verifier unavailable or failed; score not assigned",
+                    "evidence_refs": [],
+                    "problems": [],
+                    "score": null
+                  },
+                  "narrative_coherence": {
+                    "status": "NOT_EVALUATED",
+                    "summary": "API Verifier unavailable or failed; score not assigned",
+                    "evidence_refs": [],
+                    "problems": [],
+                    "score": null
+                  },
+                  "image_content_quality": {
+                    "status": "NOT_EVALUATED",
+                    "summary": "API Verifier unavailable or failed; score not assigned",
+                    "evidence_refs": [],
+                    "problems": [],
+                    "score": null
+                  },
+                  "live_authenticity": {
+                    "status": "NOT_EVALUATED",
+                    "summary": "API Verifier unavailable or failed; score not assigned",
+                    "evidence_refs": [],
+                    "problems": [],
+                    "score": null
+                  }
+                },
+                "hard_vetoes": [],
+                "evidence_of_improvement": [],
+                "quality_delta_vs_baseline": "NOT_EVALUATED",
+                "validated": true,
+                "semantic_status": "NOT_EVALUATED"
+              },
+              "fallback_reason": "api_verifier_not_authorized"
+            },
+            "rule_verification_status": "FAILED",
+            "semantic_verification_status": "NOT_EVALUATED",
+            "ok_for_semantic_accept": false,
+            "ok": false,
+            "validated": {
+              "issues": [],
+              "dimensions": {
+                "story_element_coverage": {
+                  "status": "NOT_EVALUATED",
+                  "summary": "API Verifier unavailable or failed; score not assigned",
+                  "evidence_refs": [],
+                  "problems": [],
+                  "score": null
+                },
+                "narrative_coherence": {
+                  "status": "NOT_EVALUATED",
+                  "summary": "API Verifier unavailable or failed; score not assigned",
+                  "evidence_refs": [],
+                  "problems": [],
+                  "score": null
+                },
+                "image_content_quality": {
+                  "status": "NOT_EVALUATED",
+                  "summary": "API Verifier unavailable or failed; score not assigned",
+                  "evidence_refs": [],
+                  "problems": [],
+                  "score": null
+                },
+                "live_authenticity": {
+                  "status": "NOT_EVALUATED",
+                  "summary": "API Verifier unavailable or failed; score not assigned",
+                  "evidence_refs": [],
+                  "problems": [],
+                  "score": null
+                }
+              },
+              "hard_vetoes": [],
+              "evidence_of_improvement": [],
+              "quality_delta_vs_baseline": "NOT_EVALUATED",
+              "validated": true
+            },
+            "provider_mode": "skipped",
+            "error": "api_verifier_not_authorized",
+            "attempts": [],
+            "rule_fallback_success": false,
+            "semantic_pretend_pass": false,
+            "fallback_reason": "api_verifier_not_authorized"
+          },
+          "candidate_accepted": false,
+          "retain_baseline": true,
+          "phase8_verdict": {
+            "schema": "v3a_phase8_verdict_v1",
+            "safety": "PASS",
+            "hard_safety": {
+              "safety": "PASS",
+              "reasons": [],
+              "accept_candidate_ignored": true,
+              "first_live_status": "N_A_NO_NEW_FOOTAGE",
+              "first_live_ledger": {
+                "schema": "v3a_first_live_window_ledger_v1",
+                "source_sha": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+                "windows": [],
+                "n_windows": 0,
+                "all_windows_verified": false,
+                "any_window_unverified": false,
+                "any_replay_confirmed": false,
+                "any_frame_bound_pending_timeline": false,
+                "aggregate_status": "N_A_NO_NEW_WINDOWS",
+                "note": "FRAME_BOUND_VALID ≠ FIRST_LIVE_VERIFIED. Hard-safety PASS needs independent broadcast-timeline review on every new window; binding-only stays UNKNOWN; REPLAY_CONFIRMED ⇒ FAIL."
+              }
+            },
+            "quality": "UNCERTAIN",
+            "evidence": "INSUFFICIENT",
+            "issue_effect": "UNOBSERVED",
+            "global_regression": "UNKNOWN",
+            "focus_issue_id": null,
+            "evidence_refs": [],
+            "observed_changes": null,
+            "unresolved_questions": [],
+            "suggested_next_evidence": null,
+            "failure_class": "TECHNICAL_FAILURE",
+            "compared_parent_version_id": null,
+            "verdict_provenance": "OFFLINE_RULE",
+            "source_kind": "OFFLINE_RULE",
+            "accept_candidate_raw": false,
+            "accept_not_synthesized_from_promising": true,
+            "safety_independent_of_accept_candidate": true,
+            "note": "Hard safety is independent of narrative accept_candidate. FIXTURE/OFFLINE_RULE never establish real IMPROVED; REAL_VLM requires recorded successful provider call + frame bindings."
+          },
+          "evidence_basis": "insufficient_visual_evidence",
+          "note": "Semantic accept requires aligned dual-video frames with citable frame_ids. EDL/text/ffprobe alone never authorizes release. phase8_verdict is advisory for exploration; accept_candidate does not synthesize from PROMISING."
+        },
+        "final_goal_roles": [
+          "opponent_opening_goal_action",
+          "go_ahead_goal_action"
+        ]
+      },
+      "failure_stage": "CRITIC_NO_EXPLICIT_GOAL_OMISSION → PLANNER_UNRESOLVED → EDL_UNCHANGED (raw-only upstream hole preserved)",
+      "scientific_baseline": true,
+      "note": "Harder case: Agent never received P14 enriched events/plan/corrected EDL/causal gold; P14 EDL used only in post-run score."
+    },
+    "C_clean_control": {
+      "case_dir": "/tmp/lpy1_v3a_blind_repair_C_clean_control_20261112",
+      "result": {
+        "schema": "v3a_blind_story_repair_challenge_v1",
+        "variant": "CLEAN_NO_DEFECT_CONTROL",
+        "input_mode": "HUMAN_ATOM_ENRICHED_DEV",
+        "status": "NO_UNNECESSARY_EDL_EDIT",
+        "missing_goal_roles_evaluator_only": [],
+        "diagnosed_issues": [
+          {
+            "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472",
+            "category": "transition"
+          },
+          {
+            "issue_id": "large_source_jump_seg_buildup_event_000472_to_seg_equalizer_goal_action",
+            "category": "transition"
+          },
+          {
+            "issue_id": "thin_post_climax_tail",
+            "category": "ending"
+          }
+        ],
+        "stage_observations": {
+          "explicit_goal_omission_diagnosed": false,
+          "generic_temporal_jump_not_counted_as_goal_detection": true,
+          "search_candidates_in_main_chain": 10,
+          "revision_decision": "UNRESOLVED",
+          "revision_actions": [
+            "mark_unresolved",
+            "mark_unresolved",
+            "mark_unresolved",
+            "mark_unresolved",
+            "mark_unresolved",
+            "mark_unresolved"
+          ],
+          "mutating_revision_requested": false,
+          "candidate_rendered": false,
+          "final_mp4_exists": true,
+          "preexisting_goal_roles_lost": [],
+          "source_pts_monotonic_ok": true,
+          "offline_without_semantic_vlm": true
+        },
+        "recovery": {},
+        "final_edl_exists": true,
+        "agent_decision": null,
+        "release_authorized": false,
+        "first_live_video_verified": false,
+        "story_quality_improved": "UNVERIFIED",
+        "formal_benchmark": false,
+        "reference_not_given_to_agent": true
+      },
+      "pass_tiers": {
+        "DETECTED": false,
+        "GROUNDED": false,
+        "EDL_REPAIRED": false,
+        "FIRST_LIVE_VERIFIED": false,
+        "STORY_IMPROVED": false,
+        "status": "NO_UNNECESSARY_EDL_EDIT"
+      },
+      "stages_compact": {
+        "story_diagnosis.json": {
+          "n_issues": 3,
+          "issues": [
+            {
+              "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472",
+              "category": "transition",
+              "severity": "info",
+              "story_role": "transition_break",
+              "temporal_discontinuity_only": true
+            },
+            {
+              "issue_id": "large_source_jump_seg_buildup_event_000472_to_seg_equalizer_goal_action",
+              "category": "transition",
+              "severity": "info",
+              "story_role": "transition_break",
+              "temporal_discontinuity_only": true
+            },
+            {
+              "issue_id": "thin_post_climax_tail",
+              "category": "ending",
+              "severity": "minor",
+              "story_role": "ending_incomplete",
+              "temporal_discontinuity_only": null
+            }
+          ],
+          "story_diagnosis_valid": true,
+          "semantic_observation_claimed": false
+        },
+        "evidence_search.json": {
+          "n_candidates": 373,
+          "search_success": true,
+          "executable_search_success": false,
+          "n_verified": 10,
+          "n_propose_only": 10,
+          "note": "Search uses event-chain LIVE credibility and real media_time PTS (evidence_tier=EVENT_PTS_CANDIDATE). FIRST_LIVE_VERIFIED comes only from authenticated per-window broadcast-timeline attestation. Feedback context may suppress same-context overlaps without permanent PTS bans. Narrative fit requires distinct before/candidate/after video evidence; event heat and source-gap balance are NOT story quality proxies. No match-specific timestamps or fixed goal counts."
+        },
+        "revision_plan.json": {
+          "decision": "UNRESOLVED",
+          "rationale": "hypothesis_needs_video_no_auto_search_add_on_gap_alone;search_candidates_deferred_pending_semantic_confirmation",
+          "offline": true,
+          "semantic_confirmation": false,
+          "n_revision_intents": 6,
+          "protected_goal_segment_ids": [
+            "seg_opponent_opening_goal_action",
+            "seg_equalizer_goal_action",
+            "seg_go_ahead_goal_action"
+          ]
+        },
+        "edl_diff.json": {
+          "changed": false
+        },
+        "candidate_render.json": {
+          "skipped": true,
+          "reason": "edl_unchanged_reuse_working_parent",
+          "baseline_mp4": "/tmp/lpy1_v3a_blind_repair_C_clean_control_20261112/agent_run/01_initial_story/story_clean.mp4",
+          "parent_version_id": "v0"
+        },
+        "apply_report.json": {
+          "skipped": true
+        },
+        "revision_status.json": {
+          "schema": "v3a_revision_status_v1",
+          "APPLIED": false,
+          "VERIFIED": false,
+          "IMPROVED": false,
+          "safety_ok": true,
+          "edl_changed": false,
+          "candidate_rendered": false,
+          "candidate_accepted": false,
+          "vision_backed": false,
+          "semantic_passed": false,
+          "quality_delta": "NOT_EVALUATED",
+          "BETTER_not_auto_IMPROVED": true,
+          "note": "APPLIED=EDL mutated under safety; VERIFIED=accepted with vision; IMPROVED=verified+accepted+vision+semantic+safety+quality_delta. One model BETTER never auto-upgrades to IMPROVED. PTS/first-live/goal gates cannot be overridden by BETTER."
+        },
+        "verifier_report.json": {
+          "schema": "v3a_story_video_verifier_v1",
+          "decision_input": "UNRESOLVED",
+          "hard_vetoes": [],
+          "warnings": [
+            "vision_backed_explicitly_false"
+          ],
+          "render_rows_ok": true,
+          "goal_protection": {
+            "baseline_goals": {
+              "seg_opponent_opening_goal_action": [
+                1325.123,
+                1347.123
+              ],
+              "seg_equalizer_goal_action": [
+                6436.924,
+                6458.924
+              ],
+              "seg_go_ahead_goal_action": [
+                6829.456,
+                6851.456
+              ]
+            },
+            "candidate_goals": {
+              "seg_opponent_opening_goal_action": [
+                1325.123,
+                1347.123
+              ],
+              "seg_equalizer_goal_action": [
+                6436.924,
+                6458.924
+              ],
+              "seg_go_ahead_goal_action": [
+                6829.456,
+                6851.456
+              ]
+            },
+            "intact": true
+          },
+          "video_probe": {
+            "baseline_exists": true,
+            "candidate_exists": true,
+            "baseline_duration_sec": 94.877,
+            "candidate_duration_sec": 94.877,
+            "duration_delta_sec": 0.0,
+            "method": "ffprobe_duration_and_existence",
+            "note": "Technical probe only; not semantic story quality."
+          },
+          "edl_delta": {
+            "baseline_count": 9,
+            "candidate_count": 9,
+            "added_segment_ids": [],
+            "removed_segment_ids": [],
+            "changed_segments": [],
+            "exactly_equal": true
+          },
+          "sent_frame_ids": [],
+          "vision_backed": false,
+          "dual_verifier": {
+            "rule_verification_status": "PASSED",
+            "semantic_verification_status": "NOT_EVALUATED",
+            "ok_for_semantic_accept": false,
+            "provider_mode": "skipped",
+            "rule_baseline_score": null,
+            "rule_candidate_score": null
+          },
+          "dual_verifier_full": {
+            "rule_baseline": {
+              "track": "rule",
+              "ok": true,
+              "rule_verification_status": "PASSED",
+              "audit": {
+                "schema": "v3a_story_quality_audit_v1",
+                "mode": "READ_ONLY_RULE_BASELINE",
+                "match_id": "10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语",
+                "story_tier": "story",
+                "dimensions": {
+                  "story_element_coverage": {
+                    "score": 100.0,
+                    "score_kind": "candidate_edl_role_proxy",
+                    "required_roles": [
+                      {
+                        "name": "opponent_opening",
+                        "required": true,
+                        "edl_present": true,
+                        "status": "EDL_PRESENT_UNVERIFIED",
+                        "segment_ids": [
+                          "seg_opponent_opening_goal_action"
+                        ]
+                      },
+                      {
+                        "name": "equalizer",
+                        "required": true,
+                        "edl_present": true,
+                        "status": "EDL_PRESENT_UNVERIFIED",
+                        "segment_ids": [
+                          "seg_equalizer_goal_action"
+                        ]
+                      },
+                      {
+                        "name": "go_ahead",
+                        "required": true,
+                        "edl_present": true,
+                        "status": "EDL_PRESENT_UNVERIFIED",
+                        "segment_ids": [
+                          "seg_go_ahead_goal_action"
+                        ]
+                      }
+                    ],
+                    "not_measured": [
+                      "visual_truth",
+                      "missing_unannotated_events",
+                      "tactical_causality"
+                    ]
+                  },
+                  "story_coherence": {
+                    "score": 100.0,
+                    "score_kind": "edl_structural_proxy",
+                    "checks": {
+                      "valid_media_windows": true,
+                      "narrative_beat_order": true,
+                      "unique_goal_event_roles": true
+                    },
+                    "not_measured": [
+                      "semantic_narrative_coherence",
+                      "shot_relevance"
+                    ]
+                  },
+                  "image_quality": {
+                    "status": "NOT_MEASURED",
+                    "score": null,
+                    "reason": "no_rendered_video_supplied"
+                  }
+                },
+                "hard_gate_findings": [],
+                "diagnostic_issues": [],
+                "unverified": [
+                  "live_vs_replay_visual_truth",
+                  "VLM_semantics",
+                  "shot_event_grounding"
+                ],
+                "input_missing_evidence": [
+                  "behind_carrier_unresolved:event_000173",
+                  "buildup_dropped_unattributed_setpiece:event_000276",
+                  "equalizer_carrier_unresolved:event_000637",
+                  "go_ahead_carrier_unresolved:event_000670",
+                  "ending_wrap_score_skipped_duplicate_of_go_ahead_board",
+                  "ending_match_end_rejected:match_end_beyond_candidate_horizon:dt=1055.81"
+                ],
+                "revision_requests": [],
+                "structural_proxy_pass": true,
+                "render_ready": false,
+                "release_decision": "NOT_AUTHORIZED",
+                "note": "Scores are deterministic structural proxies, not calibrated quality or semantic release certification."
+              },
+              "p0_count": 0,
+              "semantic_scores": {
+                "story_element_coverage": "NOT_EVALUATED",
+                "narrative_coherence": "NOT_EVALUATED",
+                "image_content_quality": "NOT_EVALUATED",
+                "live_authenticity": "NOT_EVALUATED"
+              },
+              "note": "Rule track does not certify multimodal semantic quality."
+            },
+            "rule_candidate": {
+              "track": "rule",
+              "ok": true,
+              "rule_verification_status": "PASSED",
+              "audit": {
+                "schema": "v3a_story_quality_audit_v1",
+                "mode": "READ_ONLY_RULE_BASELINE",
+                "match_id": "10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语",
+                "story_tier": "story",
+                "dimensions": {
+                  "story_element_coverage": {
+                    "score": 100.0,
+                    "score_kind": "candidate_edl_role_proxy",
+                    "required_roles": [
+                      {
+                        "name": "opponent_opening",
+                        "required": true,
+                        "edl_present": true,
+                        "status": "EDL_PRESENT_UNVERIFIED",
+                        "segment_ids": [
+                          "seg_opponent_opening_goal_action"
+                        ]
+                      },
+                      {
+                        "name": "equalizer",
+                        "required": true,
+                        "edl_present": true,
+                        "status": "EDL_PRESENT_UNVERIFIED",
+                        "segment_ids": [
+                          "seg_equalizer_goal_action"
+                        ]
+                      },
+                      {
+                        "name": "go_ahead",
+                        "required": true,
+                        "edl_present": true,
+                        "status": "EDL_PRESENT_UNVERIFIED",
+                        "segment_ids": [
+                          "seg_go_ahead_goal_action"
+                        ]
+                      }
+                    ],
+                    "not_measured": [
+                      "visual_truth",
+                      "missing_unannotated_events",
+                      "tactical_causality"
+                    ]
+                  },
+                  "story_coherence": {
+                    "score": 100.0,
+                    "score_kind": "edl_structural_proxy",
+                    "checks": {
+                      "valid_media_windows": true,
+                      "narrative_beat_order": true,
+                      "unique_goal_event_roles": true
+                    },
+                    "not_measured": [
+                      "semantic_narrative_coherence",
+                      "shot_relevance"
+                    ]
+                  },
+                  "image_quality": {
+                    "status": "NOT_MEASURED",
+                    "score": null,
+                    "reason": "no_rendered_video_supplied"
+                  }
+                },
+                "hard_gate_findings": [],
+                "diagnostic_issues": [],
+                "unverified": [
+                  "live_vs_replay_visual_truth",
+                  "VLM_semantics",
+                  "shot_event_grounding"
+                ],
+                "input_missing_evidence": [
+                  "behind_carrier_unresolved:event_000173",
+                  "buildup_dropped_unattributed_setpiece:event_000276",
+                  "equalizer_carrier_unresolved:event_000637",
+                  "go_ahead_carrier_unresolved:event_000670",
+                  "ending_wrap_score_skipped_duplicate_of_go_ahead_board",
+                  "ending_match_end_rejected:match_end_beyond_candidate_horizon:dt=1055.81"
+                ],
+                "revision_requests": [],
+                "structural_proxy_pass": true,
+                "render_ready": false,
+                "release_decision": "NOT_AUTHORIZED",
+                "note": "Scores are deterministic structural proxies, not calibrated quality or semantic release certification."
+              },
+              "p0_count": 0,
+              "semantic_scores": {
+                "story_element_coverage": "NOT_EVALUATED",
+                "narrative_coherence": "NOT_EVALUATED",
+                "image_content_quality": "NOT_EVALUATED",
+                "live_authenticity": "NOT_EVALUATED"
+              },
+              "note": "Rule track does not certify multimodal semantic quality."
+            },
+            "api": {
+              "ok": false,
+              "error": "api_verifier_not_authorized",
+              "provider_mode": "skipped",
+              "ok_for_semantic_accept": false,
+              "semantic_verification_status": "NOT_EVALUATED",
+              "rule_fallback_success": false,
+              "semantic_pretend_pass": false,
+              "validated": {
+                "issues": [],
+                "dimensions": {
+                  "story_element_coverage": {
+                    "status": "NOT_EVALUATED",
+                    "summary": "API Verifier unavailable or failed; score not assigned",
+                    "evidence_refs": [],
+                    "problems": [],
+                    "score": null
+                  },
+                  "narrative_coherence": {
+                    "status": "NOT_EVALUATED",
+                    "summary": "API Verifier unavailable or failed; score not assigned",
+                    "evidence_refs": [],
+                    "problems": [],
+                    "score": null
+                  },
+                  "image_content_quality": {
+                    "status": "NOT_EVALUATED",
+                    "summary": "API Verifier unavailable or failed; score not assigned",
+                    "evidence_refs": [],
+                    "problems": [],
+                    "score": null
+                  },
+                  "live_authenticity": {
+                    "status": "NOT_EVALUATED",
+                    "summary": "API Verifier unavailable or failed; score not assigned",
+                    "evidence_refs": [],
+                    "problems": [],
+                    "score": null
+                  }
+                },
+                "hard_vetoes": [],
+                "evidence_of_improvement": [],
+                "quality_delta_vs_baseline": "NOT_EVALUATED",
+                "validated": true,
+                "semantic_status": "NOT_EVALUATED"
+              },
+              "fallback_reason": "api_verifier_not_authorized"
+            },
+            "rule_verification_status": "PASSED",
+            "semantic_verification_status": "NOT_EVALUATED",
+            "ok_for_semantic_accept": false,
+            "ok": false,
+            "validated": {
+              "issues": [],
+              "dimensions": {
+                "story_element_coverage": {
+                  "status": "NOT_EVALUATED",
+                  "summary": "API Verifier unavailable or failed; score not assigned",
+                  "evidence_refs": [],
+                  "problems": [],
+                  "score": null
+                },
+                "narrative_coherence": {
+                  "status": "NOT_EVALUATED",
+                  "summary": "API Verifier unavailable or failed; score not assigned",
+                  "evidence_refs": [],
+                  "problems": [],
+                  "score": null
+                },
+                "image_content_quality": {
+                  "status": "NOT_EVALUATED",
+                  "summary": "API Verifier unavailable or failed; score not assigned",
+                  "evidence_refs": [],
+                  "problems": [],
+                  "score": null
+                },
+                "live_authenticity": {
+                  "status": "NOT_EVALUATED",
+                  "summary": "API Verifier unavailable or failed; score not assigned",
+                  "evidence_refs": [],
+                  "problems": [],
+                  "score": null
+                }
+              },
+              "hard_vetoes": [],
+              "evidence_of_improvement": [],
+              "quality_delta_vs_baseline": "NOT_EVALUATED",
+              "validated": true
+            },
+            "provider_mode": "skipped",
+            "error": "api_verifier_not_authorized",
+            "attempts": [],
+            "rule_fallback_success": false,
+            "semantic_pretend_pass": false,
+            "fallback_reason": "api_verifier_not_authorized"
+          },
+          "candidate_accepted": false,
+          "retain_baseline": true,
+          "phase8_verdict": {
+            "schema": "v3a_phase8_verdict_v1",
+            "safety": "PASS",
+            "hard_safety": {
+              "safety": "PASS",
+              "reasons": [],
+              "accept_candidate_ignored": true,
+              "first_live_status": "N_A_NO_NEW_FOOTAGE",
+              "first_live_ledger": {
+                "schema": "v3a_first_live_window_ledger_v1",
+                "source_sha": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+                "windows": [],
+                "n_windows": 0,
+                "all_windows_verified": false,
+                "any_window_unverified": false,
+                "any_replay_confirmed": false,
+                "any_frame_bound_pending_timeline": false,
+                "aggregate_status": "N_A_NO_NEW_WINDOWS",
+                "note": "FRAME_BOUND_VALID ≠ FIRST_LIVE_VERIFIED. Hard-safety PASS needs independent broadcast-timeline review on every new window; binding-only stays UNKNOWN; REPLAY_CONFIRMED ⇒ FAIL."
+              }
+            },
+            "quality": "UNCERTAIN",
+            "evidence": "INSUFFICIENT",
+            "issue_effect": "UNOBSERVED",
+            "global_regression": "UNKNOWN",
+            "focus_issue_id": null,
+            "evidence_refs": [],
+            "observed_changes": null,
+            "unresolved_questions": [],
+            "suggested_next_evidence": null,
+            "failure_class": "TECHNICAL_FAILURE",
+            "compared_parent_version_id": null,
+            "verdict_provenance": "OFFLINE_RULE",
+            "source_kind": "OFFLINE_RULE",
+            "accept_candidate_raw": false,
+            "accept_not_synthesized_from_promising": true,
+            "safety_independent_of_accept_candidate": true,
+            "note": "Hard safety is independent of narrative accept_candidate. FIXTURE/OFFLINE_RULE never establish real IMPROVED; REAL_VLM requires recorded successful provider call + frame bindings."
+          },
+          "evidence_basis": "insufficient_visual_evidence",
+          "note": "Semantic accept requires aligned dual-video frames with citable frame_ids. EDL/text/ffprobe alone never authorizes release. phase8_verdict is advisory for exploration; accept_candidate does not synthesize from PROMISING."
+        },
+        "final_goal_roles": [
+          "opponent_opening_goal_action",
+          "equalizer_goal_action",
+          "go_ahead_goal_action"
+        ]
+      },
+      "failure_stage": null,
+      "control_ok": true
+    }
+  },
+  "summary": {
+    "A_status": "NOT_REPAIRED",
+    "B_status": "NOT_REPAIRED",
+    "C_status": "NO_UNNECESSARY_EDL_EDIT",
+    "agent_repaired_missing_equalizer": false,
+    "explicit_goal_omission_ever_diagnosed": false,
+    "next_algo_hint_from_doc": "If Critic misses goal omission, add generic score-transition vs narrative action-coverage hypothesis (no hardcoded 6448/match/segment id). Do not claim success."
+  },
+  "claims": {
+    "agent_autonomous_goal_repair_success": false,
+    "story_quality_improved": false,
+    "first_live_verified": false,
+    "formal_benchmark": false
+  },
+  "algo_edits_by_cursor": false,
+  "merged_to_main": false,
+  "best_baseline": "V3-R"
+}

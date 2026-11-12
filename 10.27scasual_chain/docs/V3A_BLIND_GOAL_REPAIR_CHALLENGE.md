@@ -1,6 +1,6 @@
 # V3-A real-failure repair challenge: controlled vs historical missing-goal EDL
 
-**Status: CHALLENGE CODE COMMITTED, ACTUAL SERVER RUN PENDING.**
+Status: **ZERO-PAID SERVER RUN COMPLETE ON `147b8ae`**. A=`NOT_REPAIRED`, B=`NOT_REPAIRED`, C=`NO_UNNECESSARY_EDL_EDIT`. Critic diagnosed temporal jumps only — **no explicit missing-goal detection**; Planner UNRESOLVED; EDL unchanged. Useful failure baseline retained. See `docs/V3A_BLIND_GOAL_REPAIR_SERVER_VERIFY_147b8ae.json`.
 No paid HTTP, no replay approval, no story-quality-gain claim.
 
 ## Why
