@@ -640,9 +640,11 @@ def _planner_video_critic_context(
     coverage = critic.get("frame_coverage") or {}
     if not isinstance(coverage, Mapping):
         coverage = {}
+    sent_ids = {str(x) for x in critic.get("frame_ids") or [] if x}
     real = (
         critic.get("ok") is True
         and str(critic.get("provider_mode") or "") == "real"
+        and bool(sent_ids)
     )
     rows: List[Dict[str, Any]] = []
     if real:
@@ -650,7 +652,10 @@ def _planner_video_critic_context(
         for item in critic.get("semantic_evidence") or []:
             if not isinstance(item, Mapping):
                 continue
-            cited = [str(x) for x in item.get("frame_refs") or [] if x]
+            cited = [
+                str(x) for x in item.get("frame_refs") or []
+                if x and str(x) in sent_ids
+            ]
             if not cited:
                 continue
             rows.append({
