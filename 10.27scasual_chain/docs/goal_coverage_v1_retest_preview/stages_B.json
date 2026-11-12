@@ -1,0 +1,1554 @@
+{
+  "goal_coverage_issues": [
+    {
+      "issue_id": "goal_coverage_01_to_11",
+      "category": "goal_coverage",
+      "severity": "major",
+      "score_before": [
+        0,
+        1
+      ],
+      "score_after": [
+        1,
+        1
+      ],
+      "score_confirmation_sec": 6535.62,
+      "possible_action_interval": {
+        "media_in": 6355.62,
+        "media_out": 6535.12,
+        "source": "score_recognition_bounded_180s_not_goal_action"
+      },
+      "story_defect_confirmed": false,
+      "diagnosis_status": "HYPOTHESIS_NEEDS_VIDEO"
+    }
+  ],
+  "n_issues": 4,
+  "search": {
+    "n_targets": 4,
+    "goal_related_targets": [
+      {
+        "issue_id": "goal_coverage_01_to_11",
+        "category": "goal_coverage",
+        "status": "candidates_found",
+        "search_window": {
+          "kind": "missing_goal_action_evidence_search",
+          "lo": 6380.07,
+          "hi": 6535.12,
+          "insert_after_segment_id": "seg_buildup_event_000411",
+          "before_segment_id": "seg_equalizer_scoreboard",
+          "narrative_function": "investigate_missing_goal_action_not_autoinsert",
+          "role": "goal_action_probe",
+          "hints": [
+            "goal",
+            "shot",
+            "header",
+            "cross",
+            "corner",
+            "射",
+            "进球",
+            "头球"
+          ],
+          "score_confirmation_sec": 6535.62,
+          "requires_video_semantic_goal_and_first_live": true,
+          "auto_insert_authorized": false
+        },
+        "candidates": [
+          {
+            "candidate_id": "cand_event_000634_6400",
+            "event_id": "event_000634",
+            "event_type": "Defensive_action",
+            "event_type_zh": "防守动作",
+            "source_pts_start": 6400.9,
+            "source_pts_end": 6412.5,
+            "event_t_sec": 6403.81,
+            "live": {
+              "live_ok": true,
+              "broadcast_phase": "LIVE",
+              "is_replay": false,
+              "is_slow_motion": false,
+              "live_confidence": 0.85,
+              "replay_of_event_id": null
+            },
+            "scores": {
+              "overall_score": 2.0,
+              "emotional_heat_score": 2.0,
+              "criticality_score": 2.0
+            },
+            "type_relevance": 0.0,
+            "confidence": 0.487,
+            "rank_score": 5.85,
+            "gap_balance": 0.172,
+            "residual_max_sec": 128.42,
+            "search_gap_sec": 155.05,
+            "risks": [],
+            "evidence_tier": "EVENT_PTS_CANDIDATE",
+            "story_defect_fit": {
+              "gap_balance": 0.172,
+              "residual_max_sec": 128.42,
+              "proximity_to_destination": 0.172,
+              "rationale": "Event metadata provides a search prior only; gap balance and PTS proximity are diagnostics, not a narrative-fit score."
+            },
+            "issue_id": "goal_coverage_01_to_11",
+            "category": "goal_coverage",
+            "narrative_function": "investigate_missing_goal_action_not_autoinsert",
+            "missing_narrative_info": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+            "story_role": "missing_key_action_hypothesis",
+            "role": "goal_action_probe",
+            "insert_after_segment_id": "seg_buildup_event_000411",
+            "before_segment_id": "seg_equalizer_scoreboard",
+            "search_window": {
+              "lo": 6380.07,
+              "hi": 6535.12,
+              "kind": "missing_goal_action_evidence_search"
+            },
+            "goal_probe_only": true,
+            "goal_video_semantic_verified": false,
+            "score_confirmation_sec": 6535.62,
+            "event_association": {
+              "event_id": "event_000634",
+              "event_type": "Defensive_action"
+            },
+            "visual_evidence": {
+              "kind": "score_transition_goal_action_probe",
+              "live": {
+                "live_ok": true,
+                "broadcast_phase": "LIVE",
+                "is_replay": false,
+                "is_slow_motion": false,
+                "live_confidence": 0.85,
+                "replay_of_event_id": null
+              },
+              "note": "Event metadata candidate only; first broadcast needs source-video proof."
+            },
+            "evidence_verification": {
+              "ok": true,
+              "reasons": [],
+              "verified_source_pts_start": 6400.9,
+              "verified_source_pts_end": 6412.5,
+              "method": "event_chain_live_credibility",
+              "evidence_tier": "EVENT_PTS_CANDIDATE",
+              "note": "EVENT_PTS_CANDIDATE = event metadata + LIVE label + source PTS. Not FIRST_LIVE_VERIFIED broadcast-timeline attestation."
+            },
+            "first_live_status": "NOT_VERIFIED",
+            "first_live_available": false,
+            "executable_safe_revision": false,
+            "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+            "narrative_context": {
+              "issue_id": "goal_coverage_01_to_11",
+              "before": {
+                "segment_id": "seg_buildup_event_000411",
+                "role": "buildup_action",
+                "source_pts_start": 3442.75,
+                "source_pts_end": 3454.75
+              },
+              "after": {
+                "segment_id": "seg_equalizer_scoreboard",
+                "role": "equalizer_scoreboard_anchor",
+                "source_pts_start": 6534.62,
+                "source_pts_end": 6538.12
+              },
+              "candidate": {
+                "source_pts_start": 6400.9,
+                "source_pts_end": 6412.5,
+                "event_id": "event_000634",
+                "event_type": "Defensive_action"
+              },
+              "semantic_fit_not_inferred_from_gap_or_event_type": true
+            },
+            "narrative_fit": {
+              "status": "NEEDS_VIDEO_REVIEW",
+              "binding_valid": false,
+              "reason": "missing_triplet_review"
+            },
+            "narrative_fit_status": "NEEDS_VIDEO_REVIEW",
+            "narrative_fit_reviewed": false,
+            "narrative_fit_supports_insert": false,
+            "narrative_fit_rejects_insert": false,
+            "feedback_novelty_bonus": 0.15
+          }
+        ],
+        "n_candidates_considered": 3,
+        "n_event_candidates_eligible": 3,
+        "n_feedback_filtered": 0,
+        "n_narrative_fit_rejected": 0,
+        "n_narrative_fit_supported": 0,
+        "verified_count": 1,
+        "n_first_live_executable": 0
+      },
+      {
+        "issue_id": "thin_post_climax_tail",
+        "category": "ending",
+        "status": "no_credible_candidates",
+        "search_window": {
+          "kind": "post_climax_aftermath",
+          "lo": 6824.28,
+          "hi": 6913.28,
+          "insert_after_segment_id": "seg_go_ahead_goal_action",
+          "before_segment_id": "seg_go_ahead_scoreboard",
+          "narrative_function": "extend_ending_closure",
+          "role": "ending_closure_action",
+          "hints": [
+            "celebration",
+            "shot",
+            "save",
+            "foul",
+            "substitution",
+            "aerial",
+            "free_kick",
+            "defensive",
+            "pass",
+            "possession",
+            "庆祝",
+            "换人",
+            "犯规",
+            "扑",
+            "射"
+          ]
+        },
+        "candidates": [],
+        "n_candidates_considered": 0,
+        "n_event_candidates_eligible": 0,
+        "n_feedback_filtered": 0,
+        "n_narrative_fit_rejected": 0,
+        "n_narrative_fit_supported": 0,
+        "verified_count": 0,
+        "n_first_live_executable": 0
+      },
+      {
+        "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000411",
+        "category": "transition",
+        "status": "candidates_found",
+        "search_window": {
+          "kind": "bridge_between_cuts",
+          "lo": 1413.93,
+          "hi": 3441.75,
+          "insert_after_segment_id": "seg_setup_deficit",
+          "before_segment_id": "seg_buildup_event_000411",
+          "narrative_function": "supplement_buildup_or_transition_bridge",
+          "role": "buildup_bridge_action",
+          "hints": [
+            "shot",
+            "save",
+            "chance",
+            "cross",
+            "tackle",
+            "dribble",
+            "header",
+            "block",
+            "clearance",
+            "corner",
+            "free_kick",
+            "freekick",
+            "foul",
+            "card",
+            "offside",
+            "aerial",
+            "defensive",
+            "attack",
+            "pass",
+            "possession",
+            "throw",
+            "interception",
+            "射",
+            "扑",
+            "传",
+            "角",
+            "任意",
+            "抢",
+            "解围",
+            "犯规",
+            "头球",
+            "突破",
+            "机会"
+          ]
+        },
+        "candidates": [
+          {
+            "candidate_id": "cand_event_000313_2273",
+            "event_id": "event_000313",
+            "event_type": "Shot",
+            "event_type_zh": "射门",
+            "source_pts_start": 2273.2,
+            "source_pts_end": 2290.41,
+            "event_t_sec": 2285.84,
+            "live": {
+              "live_ok": true,
+              "broadcast_phase": "LIVE",
+              "is_replay": false,
+              "is_slow_motion": false,
+              "live_confidence": 0.85,
+              "replay_of_event_id": null
+            },
+            "scores": {
+              "overall_score": 3.0,
+              "emotional_heat_score": 3.0,
+              "criticality_score": 2.0
+            },
+            "type_relevance": 2.0,
+            "confidence": 0.821,
+            "rank_score": 9.85,
+            "gap_balance": 0.428,
+            "residual_max_sec": 1159.945,
+            "search_gap_sec": 2027.82,
+            "risks": [
+              "long_clip",
+              "large_residual_source_jump_not_semantic_evidence"
+            ],
+            "evidence_tier": "EVENT_PTS_CANDIDATE",
+            "story_defect_fit": {
+              "gap_balance": 0.428,
+              "residual_max_sec": 1159.945,
+              "proximity_to_destination": 0.428,
+              "rationale": "Event metadata provides a search prior only; gap balance and PTS proximity are diagnostics, not a narrative-fit score."
+            },
+            "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000411",
+            "category": "transition",
+            "narrative_function": "supplement_buildup_or_transition_bridge",
+            "missing_narrative_info": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+            "story_role": "transition_break",
+            "role": "buildup_bridge_action",
+            "insert_after_segment_id": "seg_setup_deficit",
+            "before_segment_id": "seg_buildup_event_000411",
+            "search_window": {
+              "lo": 1413.93,
+              "hi": 3441.75,
+              "kind": "bridge_between_cuts"
+            },
+            "goal_probe_only": false,
+            "goal_video_semantic_verified": false,
+            "score_confirmation_sec": null,
+            "event_association": {
+              "event_id": "event_000313",
+              "event_type": "Shot"
+            },
+            "visual_evidence": {
+              "kind": "event_chain_live_context",
+              "live": {
+                "live_ok": true,
+                "broadcast_phase": "LIVE",
+                "is_replay": false,
+                "is_slow_motion": false,
+                "live_confidence": 0.85,
+                "replay_of_event_id": null
+              },
+              "note": "Event metadata candidate only; first broadcast needs source-video proof."
+            },
+            "evidence_verification": {
+              "ok": true,
+              "reasons": [],
+              "verified_source_pts_start": 2273.2,
+              "verified_source_pts_end": 2290.41,
+              "method": "event_chain_live_credibility",
+              "evidence_tier": "EVENT_PTS_CANDIDATE",
+              "note": "EVENT_PTS_CANDIDATE = event metadata + LIVE label + source PTS. Not FIRST_LIVE_VERIFIED broadcast-timeline attestation."
+            },
+            "first_live_status": "NOT_VERIFIED",
+            "first_live_available": false,
+            "executable_safe_revision": false,
+            "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+            "narrative_context": {
+              "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000411",
+              "before": {
+                "segment_id": "seg_setup_deficit",
+                "role": "deficit_scoreboard_anchor",
+                "source_pts_start": 1409.43,
+                "source_pts_end": 1412.93
+              },
+              "after": {
+                "segment_id": "seg_buildup_event_000411",
+                "role": "buildup_action",
+                "source_pts_start": 3442.75,
+                "source_pts_end": 3454.75
+              },
+              "candidate": {
+                "source_pts_start": 2273.2,
+                "source_pts_end": 2290.41,
+                "event_id": "event_000313",
+                "event_type": "Shot"
+              },
+              "semantic_fit_not_inferred_from_gap_or_event_type": true
+            },
+            "narrative_fit": {
+              "status": "NEEDS_VIDEO_REVIEW",
+              "binding_valid": false,
+              "reason": "missing_triplet_review"
+            },
+            "narrative_fit_status": "NEEDS_VIDEO_REVIEW",
+            "narrative_fit_reviewed": false,
+            "narrative_fit_supports_insert": false,
+            "narrative_fit_rejects_insert": false,
+            "feedback_novelty_bonus": 0.15
+          },
+          {
+            "candidate_id": "cand_event_000395_3307",
+            "event_id": "event_000395",
+            "event_type": "Pass",
+            "event_type_zh": "传球",
+            "source_pts_start": 3307.14,
+            "source_pts_end": 3324.12,
+            "event_t_sec": 3313.6,
+            "live": {
+              "live_ok": true,
+              "broadcast_phase": "LIVE",
+              "is_replay": false,
+              "is_slow_motion": false,
+              "live_confidence": 0.85,
+              "replay_of_event_id": null
+            },
+            "scores": {
+              "overall_score": 2.0,
+              "emotional_heat_score": 2.0,
+              "criticality_score": 2.0
+            },
+            "type_relevance": 3.0,
+            "confidence": 0.737,
+            "rank_score": 8.85,
+            "gap_balance": 0.062,
+            "residual_max_sec": 1901.7,
+            "search_gap_sec": 2027.82,
+            "risks": [
+              "long_clip",
+              "large_residual_source_jump_not_semantic_evidence"
+            ],
+            "evidence_tier": "EVENT_PTS_CANDIDATE",
+            "story_defect_fit": {
+              "gap_balance": 0.062,
+              "residual_max_sec": 1901.7,
+              "proximity_to_destination": 0.938,
+              "rationale": "Event metadata provides a search prior only; gap balance and PTS proximity are diagnostics, not a narrative-fit score."
+            },
+            "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000411",
+            "category": "transition",
+            "narrative_function": "supplement_buildup_or_transition_bridge",
+            "missing_narrative_info": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+            "story_role": "transition_break",
+            "role": "buildup_bridge_action",
+            "insert_after_segment_id": "seg_setup_deficit",
+            "before_segment_id": "seg_buildup_event_000411",
+            "search_window": {
+              "lo": 1413.93,
+              "hi": 3441.75,
+              "kind": "bridge_between_cuts"
+            },
+            "goal_probe_only": false,
+            "goal_video_semantic_verified": false,
+            "score_confirmation_sec": null,
+            "event_association": {
+              "event_id": "event_000395",
+              "event_type": "Pass"
+            },
+            "visual_evidence": {
+              "kind": "event_chain_live_context",
+              "live": {
+                "live_ok": true,
+                "broadcast_phase": "LIVE",
+                "is_replay": false,
+                "is_slow_motion": false,
+                "live_confidence": 0.85,
+                "replay_of_event_id": null
+              },
+              "note": "Event metadata candidate only; first broadcast needs source-video proof."
+            },
+            "evidence_verification": {
+              "ok": true,
+              "reasons": [],
+              "verified_source_pts_start": 3307.14,
+              "verified_source_pts_end": 3324.12,
+              "method": "event_chain_live_credibility",
+              "evidence_tier": "EVENT_PTS_CANDIDATE",
+              "note": "EVENT_PTS_CANDIDATE = event metadata + LIVE label + source PTS. Not FIRST_LIVE_VERIFIED broadcast-timeline attestation."
+            },
+            "first_live_status": "NOT_VERIFIED",
+            "first_live_available": false,
+            "executable_safe_revision": false,
+            "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+            "narrative_context": {
+              "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000411",
+              "before": {
+                "segment_id": "seg_setup_deficit",
+                "role": "deficit_scoreboard_anchor",
+                "source_pts_start": 1409.43,
+                "source_pts_end": 1412.93
+              },
+              "after": {
+                "segment_id": "seg_buildup_event_000411",
+                "role": "buildup_action",
+                "source_pts_start": 3442.75,
+                "source_pts_end": 3454.75
+              },
+              "candidate": {
+                "source_pts_start": 3307.14,
+                "source_pts_end": 3324.12,
+                "event_id": "event_000395",
+                "event_type": "Pass"
+              },
+              "semantic_fit_not_inferred_from_gap_or_event_type": true
+            },
+            "narrative_fit": {
+              "status": "NEEDS_VIDEO_REVIEW",
+              "binding_valid": false,
+              "reason": "missing_triplet_review"
+            },
+            "narrative_fit_status": "NEEDS_VIDEO_REVIEW",
+            "narrative_fit_reviewed": false,
+            "narrative_fit_supports_insert": false,
+            "narrative_fit_rejects_insert": false,
+            "feedback_novelty_bonus": 0.15
+          },
+          {
+            "candidate_id": "cand_event_000367_3015",
+            "event_id": "event_000367",
+            "event_type": "Defensive_action",
+            "event_type_zh": "防守动作",
+            "source_pts_start": 3015.26,
+            "source_pts_end": 3026.01,
+            "event_t_sec": 3020.38,
+            "live": {
+              "live_ok": true,
+              "broadcast_phase": "LIVE",
+              "is_replay": false,
+              "is_slow_motion": false,
+              "live_confidence": 0.85,
+              "replay_of_event_id": null
+            },
+            "scores": {
+              "overall_score": 2.0,
+              "emotional_heat_score": 2.0,
+              "criticality_score": 3.0
+            },
+            "type_relevance": 2.0,
+            "confidence": 0.696,
+            "rank_score": 8.35,
+            "gap_balance": 0.208,
+            "residual_max_sec": 1606.705,
+            "search_gap_sec": 2027.82,
+            "risks": [
+              "large_residual_source_jump_not_semantic_evidence"
+            ],
+            "evidence_tier": "EVENT_PTS_CANDIDATE",
+            "story_defect_fit": {
+              "gap_balance": 0.208,
+              "residual_max_sec": 1606.705,
+              "proximity_to_destination": 0.792,
+              "rationale": "Event metadata provides a search prior only; gap balance and PTS proximity are diagnostics, not a narrative-fit score."
+            },
+            "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000411",
+            "category": "transition",
+            "narrative_function": "supplement_buildup_or_transition_bridge",
+            "missing_narrative_info": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+            "story_role": "transition_break",
+            "role": "buildup_bridge_action",
+            "insert_after_segment_id": "seg_setup_deficit",
+            "before_segment_id": "seg_buildup_event_000411",
+            "search_window": {
+              "lo": 1413.93,
+              "hi": 3441.75,
+              "kind": "bridge_between_cuts"
+            },
+            "goal_probe_only": false,
+            "goal_video_semantic_verified": false,
+            "score_confirmation_sec": null,
+            "event_association": {
+              "event_id": "event_000367",
+              "event_type": "Defensive_action"
+            },
+            "visual_evidence": {
+              "kind": "event_chain_live_context",
+              "live": {
+                "live_ok": true,
+                "broadcast_phase": "LIVE",
+                "is_replay": false,
+                "is_slow_motion": false,
+                "live_confidence": 0.85,
+                "replay_of_event_id": null
+              },
+              "note": "Event metadata candidate only; first broadcast needs source-video proof."
+            },
+            "evidence_verification": {
+              "ok": true,
+              "reasons": [],
+              "verified_source_pts_start": 3015.26,
+              "verified_source_pts_end": 3026.01,
+              "method": "event_chain_live_credibility",
+              "evidence_tier": "EVENT_PTS_CANDIDATE",
+              "note": "EVENT_PTS_CANDIDATE = event metadata + LIVE label + source PTS. Not FIRST_LIVE_VERIFIED broadcast-timeline attestation."
+            },
+            "first_live_status": "NOT_VERIFIED",
+            "first_live_available": false,
+            "executable_safe_revision": false,
+            "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+            "narrative_context": {
+              "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000411",
+              "before": {
+                "segment_id": "seg_setup_deficit",
+                "role": "deficit_scoreboard_anchor",
+                "source_pts_start": 1409.43,
+                "source_pts_end": 1412.93
+              },
+              "after": {
+                "segment_id": "seg_buildup_event_000411",
+                "role": "buildup_action",
+                "source_pts_start": 3442.75,
+                "source_pts_end": 3454.75
+              },
+              "candidate": {
+                "source_pts_start": 3015.26,
+                "source_pts_end": 3026.01,
+                "event_id": "event_000367",
+                "event_type": "Defensive_action"
+              },
+              "semantic_fit_not_inferred_from_gap_or_event_type": true
+            },
+            "narrative_fit": {
+              "status": "NEEDS_VIDEO_REVIEW",
+              "binding_valid": false,
+              "reason": "missing_triplet_review"
+            },
+            "narrative_fit_status": "NEEDS_VIDEO_REVIEW",
+            "narrative_fit_reviewed": false,
+            "narrative_fit_supports_insert": false,
+            "narrative_fit_rejects_insert": false,
+            "feedback_novelty_bonus": 0.15
+          },
+          {
+            "candidate_id": "cand_event_000178_1424",
+            "event_id": "event_000178",
+            "event_type": "Pass",
+            "event_type_zh": "传球",
+            "source_pts_start": 1424.33,
+            "source_pts_end": 1434.95,
+            "event_t_sec": 1430.32,
+            "live": {
+              "live_ok": true,
+              "broadcast_phase": "LIVE",
+              "is_replay": false,
+              "is_slow_motion": false,
+              "live_confidence": 0.85,
+              "replay_of_event_id": null
+            },
+            "scores": {
+              "overall_score": 2.0,
+              "emotional_heat_score": 2.0,
+              "criticality_score": 2.0
+            },
+            "type_relevance": 2.0,
+            "confidence": 0.654,
+            "rank_score": 7.85,
+            "gap_balance": 0.008,
+            "residual_max_sec": 2012.11,
+            "search_gap_sec": 2027.82,
+            "risks": [
+              "large_residual_source_jump_not_semantic_evidence"
+            ],
+            "evidence_tier": "EVENT_PTS_CANDIDATE",
+            "story_defect_fit": {
+              "gap_balance": 0.008,
+              "residual_max_sec": 2012.11,
+              "proximity_to_destination": 0.008,
+              "rationale": "Event metadata provides a search prior only; gap balance and PTS proximity are diagnostics, not a narrative-fit score."
+            },
+            "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000411",
+            "category": "transition",
+            "narrative_function": "supplement_buildup_or_transition_bridge",
+            "missing_narrative_info": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+            "story_role": "transition_break",
+            "role": "buildup_bridge_action",
+            "insert_after_segment_id": "seg_setup_deficit",
+            "before_segment_id": "seg_buildup_event_000411",
+            "search_window": {
+              "lo": 1413.93,
+              "hi": 3441.75,
+              "kind": "bridge_between_cuts"
+            },
+            "goal_probe_only": false,
+            "goal_video_semantic_verified": false,
+            "score_confirmation_sec": null,
+            "event_association": {
+              "event_id": "event_000178",
+              "event_type": "Pass"
+            },
+            "visual_evidence": {
+              "kind": "event_chain_live_context",
+              "live": {
+                "live_ok": true,
+                "broadcast_phase": "LIVE",
+                "is_replay": false,
+                "is_slow_motion": false,
+                "live_confidence": 0.85,
+                "replay_of_event_id": null
+              },
+              "note": "Event metadata candidate only; first broadcast needs source-video proof."
+            },
+            "evidence_verification": {
+              "ok": true,
+              "reasons": [],
+              "verified_source_pts_start": 1424.33,
+              "verified_source_pts_end": 1434.95,
+              "method": "event_chain_live_credibility",
+              "evidence_tier": "EVENT_PTS_CANDIDATE",
+              "note": "EVENT_PTS_CANDIDATE = event metadata + LIVE label + source PTS. Not FIRST_LIVE_VERIFIED broadcast-timeline attestation."
+            },
+            "first_live_status": "NOT_VERIFIED",
+            "first_live_available": false,
+            "executable_safe_revision": false,
+            "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+            "narrative_context": {
+              "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000411",
+              "before": {
+                "segment_id": "seg_setup_deficit",
+                "role": "deficit_scoreboard_anchor",
+                "source_pts_start": 1409.43,
+                "source_pts_end": 1412.93
+              },
+              "after": {
+                "segment_id": "seg_buildup_event_000411",
+                "role": "buildup_action",
+                "source_pts_start": 3442.75,
+                "source_pts_end": 3454.75
+              },
+              "candidate": {
+                "source_pts_start": 1424.33,
+                "source_pts_end": 1434.95,
+                "event_id": "event_000178",
+                "event_type": "Pass"
+              },
+              "semantic_fit_not_inferred_from_gap_or_event_type": true
+            },
+            "narrative_fit": {
+              "status": "NEEDS_VIDEO_REVIEW",
+              "binding_valid": false,
+              "reason": "missing_triplet_review"
+            },
+            "narrative_fit_status": "NEEDS_VIDEO_REVIEW",
+            "narrative_fit_reviewed": false,
+            "narrative_fit_supports_insert": false,
+            "narrative_fit_rejects_insert": false,
+            "feedback_novelty_bonus": 0.15
+          },
+          {
+            "candidate_id": "cand_event_000179_1435",
+            "event_id": "event_000179",
+            "event_type": "Pass",
+            "event_type_zh": "传球",
+            "source_pts_start": 1435.26,
+            "source_pts_end": 1446.13,
+            "event_t_sec": 1435.92,
+            "live": {
+              "live_ok": true,
+              "broadcast_phase": "LIVE",
+              "is_replay": false,
+              "is_slow_motion": false,
+              "live_confidence": 0.85,
+              "replay_of_event_id": null
+            },
+            "scores": {
+              "overall_score": 2.0,
+              "emotional_heat_score": 2.0,
+              "criticality_score": 2.0
+            },
+            "type_relevance": 2.0,
+            "confidence": 0.654,
+            "rank_score": 7.85,
+            "gap_balance": 0.013,
+            "residual_max_sec": 2001.055,
+            "search_gap_sec": 2027.82,
+            "risks": [
+              "large_residual_source_jump_not_semantic_evidence"
+            ],
+            "evidence_tier": "EVENT_PTS_CANDIDATE",
+            "story_defect_fit": {
+              "gap_balance": 0.013,
+              "residual_max_sec": 2001.055,
+              "proximity_to_destination": 0.013,
+              "rationale": "Event metadata provides a search prior only; gap balance and PTS proximity are diagnostics, not a narrative-fit score."
+            },
+            "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000411",
+            "category": "transition",
+            "narrative_function": "supplement_buildup_or_transition_bridge",
+            "missing_narrative_info": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+            "story_role": "transition_break",
+            "role": "buildup_bridge_action",
+            "insert_after_segment_id": "seg_setup_deficit",
+            "before_segment_id": "seg_buildup_event_000411",
+            "search_window": {
+              "lo": 1413.93,
+              "hi": 3441.75,
+              "kind": "bridge_between_cuts"
+            },
+            "goal_probe_only": false,
+            "goal_video_semantic_verified": false,
+            "score_confirmation_sec": null,
+            "event_association": {
+              "event_id": "event_000179",
+              "event_type": "Pass"
+            },
+            "visual_evidence": {
+              "kind": "event_chain_live_context",
+              "live": {
+                "live_ok": true,
+                "broadcast_phase": "LIVE",
+                "is_replay": false,
+                "is_slow_motion": false,
+                "live_confidence": 0.85,
+                "replay_of_event_id": null
+              },
+              "note": "Event metadata candidate only; first broadcast needs source-video proof."
+            },
+            "evidence_verification": {
+              "ok": true,
+              "reasons": [],
+              "verified_source_pts_start": 1435.26,
+              "verified_source_pts_end": 1446.13,
+              "method": "event_chain_live_credibility",
+              "evidence_tier": "EVENT_PTS_CANDIDATE",
+              "note": "EVENT_PTS_CANDIDATE = event metadata + LIVE label + source PTS. Not FIRST_LIVE_VERIFIED broadcast-timeline attestation."
+            },
+            "first_live_status": "NOT_VERIFIED",
+            "first_live_available": false,
+            "executable_safe_revision": false,
+            "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+            "narrative_context": {
+              "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000411",
+              "before": {
+                "segment_id": "seg_setup_deficit",
+                "role": "deficit_scoreboard_anchor",
+                "source_pts_start": 1409.43,
+                "source_pts_end": 1412.93
+              },
+              "after": {
+                "segment_id": "seg_buildup_event_000411",
+                "role": "buildup_action",
+                "source_pts_start": 3442.75,
+                "source_pts_end": 3454.75
+              },
+              "candidate": {
+                "source_pts_start": 1435.26,
+                "source_pts_end": 1446.13,
+                "event_id": "event_000179",
+                "event_type": "Pass"
+              },
+              "semantic_fit_not_inferred_from_gap_or_event_type": true
+            },
+            "narrative_fit": {
+              "status": "NEEDS_VIDEO_REVIEW",
+              "binding_valid": false,
+              "reason": "missing_triplet_review"
+            },
+            "narrative_fit_status": "NEEDS_VIDEO_REVIEW",
+            "narrative_fit_reviewed": false,
+            "narrative_fit_supports_insert": false,
+            "narrative_fit_rejects_insert": false,
+            "feedback_novelty_bonus": 0.15
+          }
+        ],
+        "n_candidates_considered": 212,
+        "n_event_candidates_eligible": 212,
+        "n_feedback_filtered": 0,
+        "n_narrative_fit_rejected": 0,
+        "n_narrative_fit_supported": 0,
+        "verified_count": 5,
+        "n_first_live_executable": 0
+      },
+      {
+        "issue_id": "large_source_jump_seg_buildup_event_000411_to_seg_equalizer_scoreboard",
+        "category": "transition",
+        "status": "candidates_found",
+        "search_window": {
+          "kind": "bridge_between_cuts",
+          "lo": 3455.75,
+          "hi": 6533.62,
+          "insert_after_segment_id": "seg_buildup_event_000411",
+          "before_segment_id": "seg_equalizer_scoreboard",
+          "narrative_function": "supplement_buildup_or_transition_bridge",
+          "role": "buildup_bridge_action",
+          "hints": [
+            "shot",
+            "save",
+            "chance",
+            "cross",
+            "tackle",
+            "dribble",
+            "header",
+            "block",
+            "clearance",
+            "corner",
+            "free_kick",
+            "freekick",
+            "foul",
+            "card",
+            "offside",
+            "aerial",
+            "defensive",
+            "attack",
+            "pass",
+            "possession",
+            "throw",
+            "interception",
+            "射",
+            "扑",
+            "传",
+            "角",
+            "任意",
+            "抢",
+            "解围",
+            "犯规",
+            "头球",
+            "突破",
+            "机会"
+          ]
+        },
+        "candidates": [
+          {
+            "candidate_id": "cand_event_000417_3504",
+            "event_id": "event_000417",
+            "event_type": "Save",
+            "event_type_zh": "扑救",
+            "source_pts_start": 3504.14,
+            "source_pts_end": 3515.83,
+            "event_t_sec": 3508.34,
+            "live": {
+              "live_ok": true,
+              "broadcast_phase": "LIVE",
+              "is_replay": false,
+              "is_slow_motion": false,
+              "live_confidence": 0.85,
+              "replay_of_event_id": null
+            },
+            "scores": {
+              "overall_score": 3.0,
+              "emotional_heat_score": 3.0,
+              "criticality_score": 3.0
+            },
+            "type_relevance": 2.0,
+            "confidence": 0.862,
+            "rank_score": 10.35,
+            "gap_balance": 0.018,
+            "residual_max_sec": 3023.635,
+            "search_gap_sec": 3077.87,
+            "risks": [
+              "large_residual_source_jump_not_semantic_evidence"
+            ],
+            "evidence_tier": "EVENT_PTS_CANDIDATE",
+            "story_defect_fit": {
+              "gap_balance": 0.018,
+              "residual_max_sec": 3023.635,
+              "proximity_to_destination": 0.018,
+              "rationale": "Event metadata provides a search prior only; gap balance and PTS proximity are diagnostics, not a narrative-fit score."
+            },
+            "issue_id": "large_source_jump_seg_buildup_event_000411_to_seg_equalizer_scoreboard",
+            "category": "transition",
+            "narrative_function": "supplement_buildup_or_transition_bridge",
+            "missing_narrative_info": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+            "story_role": "transition_break",
+            "role": "buildup_bridge_action",
+            "insert_after_segment_id": "seg_buildup_event_000411",
+            "before_segment_id": "seg_equalizer_scoreboard",
+            "search_window": {
+              "lo": 3455.75,
+              "hi": 6533.62,
+              "kind": "bridge_between_cuts"
+            },
+            "goal_probe_only": false,
+            "goal_video_semantic_verified": false,
+            "score_confirmation_sec": null,
+            "event_association": {
+              "event_id": "event_000417",
+              "event_type": "Save"
+            },
+            "visual_evidence": {
+              "kind": "event_chain_live_context",
+              "live": {
+                "live_ok": true,
+                "broadcast_phase": "LIVE",
+                "is_replay": false,
+                "is_slow_motion": false,
+                "live_confidence": 0.85,
+                "replay_of_event_id": null
+              },
+              "note": "Event metadata candidate only; first broadcast needs source-video proof."
+            },
+            "evidence_verification": {
+              "ok": true,
+              "reasons": [],
+              "verified_source_pts_start": 3504.14,
+              "verified_source_pts_end": 3515.83,
+              "method": "event_chain_live_credibility",
+              "evidence_tier": "EVENT_PTS_CANDIDATE",
+              "note": "EVENT_PTS_CANDIDATE = event metadata + LIVE label + source PTS. Not FIRST_LIVE_VERIFIED broadcast-timeline attestation."
+            },
+            "first_live_status": "NOT_VERIFIED",
+            "first_live_available": false,
+            "executable_safe_revision": false,
+            "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+            "narrative_context": {
+              "issue_id": "large_source_jump_seg_buildup_event_000411_to_seg_equalizer_scoreboard",
+              "before": {
+                "segment_id": "seg_buildup_event_000411",
+                "role": "buildup_action",
+                "source_pts_start": 3442.75,
+                "source_pts_end": 3454.75
+              },
+              "after": {
+                "segment_id": "seg_equalizer_scoreboard",
+                "role": "equalizer_scoreboard_anchor",
+                "source_pts_start": 6534.62,
+                "source_pts_end": 6538.12
+              },
+              "candidate": {
+                "source_pts_start": 3504.14,
+                "source_pts_end": 3515.83,
+                "event_id": "event_000417",
+                "event_type": "Save"
+              },
+              "semantic_fit_not_inferred_from_gap_or_event_type": true
+            },
+            "narrative_fit": {
+              "status": "NEEDS_VIDEO_REVIEW",
+              "binding_valid": false,
+              "reason": "missing_triplet_review"
+            },
+            "narrative_fit_status": "NEEDS_VIDEO_REVIEW",
+            "narrative_fit_reviewed": false,
+            "narrative_fit_supports_insert": false,
+            "narrative_fit_rejects_insert": false,
+            "feedback_novelty_bonus": 0.15
+          },
+          {
+            "candidate_id": "cand_event_000421_3543",
+            "event_id": "event_000421",
+            "event_type": "Save",
+            "event_type_zh": "扑救",
+            "source_pts_start": 3543.01,
+            "source_pts_end": 3553.57,
+            "event_t_sec": 3548.12,
+            "live": {
+              "live_ok": true,
+              "broadcast_phase": "LIVE",
+              "is_replay": false,
+              "is_slow_motion": false,
+              "live_confidence": 0.85,
+              "replay_of_event_id": null
+            },
+            "scores": {
+              "overall_score": 3.0,
+              "emotional_heat_score": 2.0,
+              "criticality_score": 3.0
+            },
+            "type_relevance": 2.0,
+            "confidence": 0.779,
+            "rank_score": 9.35,
+            "gap_balance": 0.03,
+            "residual_max_sec": 2985.33,
+            "search_gap_sec": 3077.87,
+            "risks": [
+              "large_residual_source_jump_not_semantic_evidence"
+            ],
+            "evidence_tier": "EVENT_PTS_CANDIDATE",
+            "story_defect_fit": {
+              "gap_balance": 0.03,
+              "residual_max_sec": 2985.33,
+              "proximity_to_destination": 0.03,
+              "rationale": "Event metadata provides a search prior only; gap balance and PTS proximity are diagnostics, not a narrative-fit score."
+            },
+            "issue_id": "large_source_jump_seg_buildup_event_000411_to_seg_equalizer_scoreboard",
+            "category": "transition",
+            "narrative_function": "supplement_buildup_or_transition_bridge",
+            "missing_narrative_info": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+            "story_role": "transition_break",
+            "role": "buildup_bridge_action",
+            "insert_after_segment_id": "seg_buildup_event_000411",
+            "before_segment_id": "seg_equalizer_scoreboard",
+            "search_window": {
+              "lo": 3455.75,
+              "hi": 6533.62,
+              "kind": "bridge_between_cuts"
+            },
+            "goal_probe_only": false,
+            "goal_video_semantic_verified": false,
+            "score_confirmation_sec": null,
+            "event_association": {
+              "event_id": "event_000421",
+              "event_type": "Save"
+            },
+            "visual_evidence": {
+              "kind": "event_chain_live_context",
+              "live": {
+                "live_ok": true,
+                "broadcast_phase": "LIVE",
+                "is_replay": false,
+                "is_slow_motion": false,
+                "live_confidence": 0.85,
+                "replay_of_event_id": null
+              },
+              "note": "Event metadata candidate only; first broadcast needs source-video proof."
+            },
+            "evidence_verification": {
+              "ok": true,
+              "reasons": [],
+              "verified_source_pts_start": 3543.01,
+              "verified_source_pts_end": 3553.57,
+              "method": "event_chain_live_credibility",
+              "evidence_tier": "EVENT_PTS_CANDIDATE",
+              "note": "EVENT_PTS_CANDIDATE = event metadata + LIVE label + source PTS. Not FIRST_LIVE_VERIFIED broadcast-timeline attestation."
+            },
+            "first_live_status": "NOT_VERIFIED",
+            "first_live_available": false,
+            "executable_safe_revision": false,
+            "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+            "narrative_context": {
+              "issue_id": "large_source_jump_seg_buildup_event_000411_to_seg_equalizer_scoreboard",
+              "before": {
+                "segment_id": "seg_buildup_event_000411",
+                "role": "buildup_action",
+                "source_pts_start": 3442.75,
+                "source_pts_end": 3454.75
+              },
+              "after": {
+                "segment_id": "seg_equalizer_scoreboard",
+                "role": "equalizer_scoreboard_anchor",
+                "source_pts_start": 6534.62,
+                "source_pts_end": 6538.12
+              },
+              "candidate": {
+                "source_pts_start": 3543.01,
+                "source_pts_end": 3553.57,
+                "event_id": "event_000421",
+                "event_type": "Save"
+              },
+              "semantic_fit_not_inferred_from_gap_or_event_type": true
+            },
+            "narrative_fit": {
+              "status": "NEEDS_VIDEO_REVIEW",
+              "binding_valid": false,
+              "reason": "missing_triplet_review"
+            },
+            "narrative_fit_status": "NEEDS_VIDEO_REVIEW",
+            "narrative_fit_reviewed": false,
+            "narrative_fit_supports_insert": false,
+            "narrative_fit_rejects_insert": false,
+            "feedback_novelty_bonus": 0.15
+          },
+          {
+            "candidate_id": "cand_event_000476_4755",
+            "event_id": "event_000476",
+            "event_type": "Pass",
+            "event_type_zh": "传球",
+            "source_pts_start": 4755.79,
+            "source_pts_end": 4769.62,
+            "event_t_sec": 4764.1,
+            "live": {
+              "live_ok": true,
+              "broadcast_phase": "LIVE",
+              "is_replay": false,
+              "is_slow_motion": false,
+              "live_confidence": 0.85,
+              "replay_of_event_id": null
+            },
+            "scores": {
+              "overall_score": 2.0,
+              "emotional_heat_score": 2.0,
+              "criticality_score": 2.0
+            },
+            "type_relevance": 3.0,
+            "confidence": 0.737,
+            "rank_score": 8.85,
+            "gap_balance": 0.425,
+            "residual_max_sec": 1770.915,
+            "search_gap_sec": 3077.87,
+            "risks": [
+              "large_residual_source_jump_not_semantic_evidence"
+            ],
+            "evidence_tier": "EVENT_PTS_CANDIDATE",
+            "story_defect_fit": {
+              "gap_balance": 0.425,
+              "residual_max_sec": 1770.915,
+              "proximity_to_destination": 0.425,
+              "rationale": "Event metadata provides a search prior only; gap balance and PTS proximity are diagnostics, not a narrative-fit score."
+            },
+            "issue_id": "large_source_jump_seg_buildup_event_000411_to_seg_equalizer_scoreboard",
+            "category": "transition",
+            "narrative_function": "supplement_buildup_or_transition_bridge",
+            "missing_narrative_info": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+            "story_role": "transition_break",
+            "role": "buildup_bridge_action",
+            "insert_after_segment_id": "seg_buildup_event_000411",
+            "before_segment_id": "seg_equalizer_scoreboard",
+            "search_window": {
+              "lo": 3455.75,
+              "hi": 6533.62,
+              "kind": "bridge_between_cuts"
+            },
+            "goal_probe_only": false,
+            "goal_video_semantic_verified": false,
+            "score_confirmation_sec": null,
+            "event_association": {
+              "event_id": "event_000476",
+              "event_type": "Pass"
+            },
+            "visual_evidence": {
+              "kind": "event_chain_live_context",
+              "live": {
+                "live_ok": true,
+                "broadcast_phase": "LIVE",
+                "is_replay": false,
+                "is_slow_motion": false,
+                "live_confidence": 0.85,
+                "replay_of_event_id": null
+              },
+              "note": "Event metadata candidate only; first broadcast needs source-video proof."
+            },
+            "evidence_verification": {
+              "ok": true,
+              "reasons": [],
+              "verified_source_pts_start": 4755.79,
+              "verified_source_pts_end": 4769.62,
+              "method": "event_chain_live_credibility",
+              "evidence_tier": "EVENT_PTS_CANDIDATE",
+              "note": "EVENT_PTS_CANDIDATE = event metadata + LIVE label + source PTS. Not FIRST_LIVE_VERIFIED broadcast-timeline attestation."
+            },
+            "first_live_status": "NOT_VERIFIED",
+            "first_live_available": false,
+            "executable_safe_revision": false,
+            "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+            "narrative_context": {
+              "issue_id": "large_source_jump_seg_buildup_event_000411_to_seg_equalizer_scoreboard",
+              "before": {
+                "segment_id": "seg_buildup_event_000411",
+                "role": "buildup_action",
+                "source_pts_start": 3442.75,
+                "source_pts_end": 3454.75
+              },
+              "after": {
+                "segment_id": "seg_equalizer_scoreboard",
+                "role": "equalizer_scoreboard_anchor",
+                "source_pts_start": 6534.62,
+                "source_pts_end": 6538.12
+              },
+              "candidate": {
+                "source_pts_start": 4755.79,
+                "source_pts_end": 4769.62,
+                "event_id": "event_000476",
+                "event_type": "Pass"
+              },
+              "semantic_fit_not_inferred_from_gap_or_event_type": true
+            },
+            "narrative_fit": {
+              "status": "NEEDS_VIDEO_REVIEW",
+              "binding_valid": false,
+              "reason": "missing_triplet_review"
+            },
+            "narrative_fit_status": "NEEDS_VIDEO_REVIEW",
+            "narrative_fit_reviewed": false,
+            "narrative_fit_supports_insert": false,
+            "narrative_fit_rejects_insert": false,
+            "feedback_novelty_bonus": 0.15
+          },
+          {
+            "candidate_id": "cand_event_000418_3521",
+            "event_id": "event_000418",
+            "event_type": "Pass",
+            "event_type_zh": "传球",
+            "source_pts_start": 3521.5,
+            "source_pts_end": 3536.19,
+            "event_t_sec": 3523.29,
+            "live": {
+              "live_ok": true,
+              "broadcast_phase": "LIVE",
+              "is_replay": false,
+              "is_slow_motion": false,
+              "live_confidence": 0.85,
+              "replay_of_event_id": null
+            },
+            "scores": {
+              "overall_score": 2.0,
+              "emotional_heat_score": 2.0,
+              "criticality_score": 2.0
+            },
+            "type_relevance": 2.0,
+            "confidence": 0.654,
+            "rank_score": 7.85,
+            "gap_balance": 0.024,
+            "residual_max_sec": 3004.775,
+            "search_gap_sec": 3077.87,
+            "risks": [
+              "large_residual_source_jump_not_semantic_evidence"
+            ],
+            "evidence_tier": "EVENT_PTS_CANDIDATE",
+            "story_defect_fit": {
+              "gap_balance": 0.024,
+              "residual_max_sec": 3004.775,
+              "proximity_to_destination": 0.024,
+              "rationale": "Event metadata provides a search prior only; gap balance and PTS proximity are diagnostics, not a narrative-fit score."
+            },
+            "issue_id": "large_source_jump_seg_buildup_event_000411_to_seg_equalizer_scoreboard",
+            "category": "transition",
+            "narrative_function": "supplement_buildup_or_transition_bridge",
+            "missing_narrative_info": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+            "story_role": "transition_break",
+            "role": "buildup_bridge_action",
+            "insert_after_segment_id": "seg_buildup_event_000411",
+            "before_segment_id": "seg_equalizer_scoreboard",
+            "search_window": {
+              "lo": 3455.75,
+              "hi": 6533.62,
+              "kind": "bridge_between_cuts"
+            },
+            "goal_probe_only": false,
+            "goal_video_semantic_verified": false,
+            "score_confirmation_sec": null,
+            "event_association": {
+              "event_id": "event_000418",
+              "event_type": "Pass"
+            },
+            "visual_evidence": {
+              "kind": "event_chain_live_context",
+              "live": {
+                "live_ok": true,
+                "broadcast_phase": "LIVE",
+                "is_replay": false,
+                "is_slow_motion": false,
+                "live_confidence": 0.85,
+                "replay_of_event_id": null
+              },
+              "note": "Event metadata candidate only; first broadcast needs source-video proof."
+            },
+            "evidence_verification": {
+              "ok": true,
+              "reasons": [],
+              "verified_source_pts_start": 3521.5,
+              "verified_source_pts_end": 3536.19,
+              "method": "event_chain_live_credibility",
+              "evidence_tier": "EVENT_PTS_CANDIDATE",
+              "note": "EVENT_PTS_CANDIDATE = event metadata + LIVE label + source PTS. Not FIRST_LIVE_VERIFIED broadcast-timeline attestation."
+            },
+            "first_live_status": "NOT_VERIFIED",
+            "first_live_available": false,
+            "executable_safe_revision": false,
+            "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+            "narrative_context": {
+              "issue_id": "large_source_jump_seg_buildup_event_000411_to_seg_equalizer_scoreboard",
+              "before": {
+                "segment_id": "seg_buildup_event_000411",
+                "role": "buildup_action",
+                "source_pts_start": 3442.75,
+                "source_pts_end": 3454.75
+              },
+              "after": {
+                "segment_id": "seg_equalizer_scoreboard",
+                "role": "equalizer_scoreboard_anchor",
+                "source_pts_start": 6534.62,
+                "source_pts_end": 6538.12
+              },
+              "candidate": {
+                "source_pts_start": 3521.5,
+                "source_pts_end": 3536.19,
+                "event_id": "event_000418",
+                "event_type": "Pass"
+              },
+              "semantic_fit_not_inferred_from_gap_or_event_type": true
+            },
+            "narrative_fit": {
+              "status": "NEEDS_VIDEO_REVIEW",
+              "binding_valid": false,
+              "reason": "missing_triplet_review"
+            },
+            "narrative_fit_status": "NEEDS_VIDEO_REVIEW",
+            "narrative_fit_reviewed": false,
+            "narrative_fit_supports_insert": false,
+            "narrative_fit_rejects_insert": false,
+            "feedback_novelty_bonus": 0.15
+          },
+          {
+            "candidate_id": "cand_event_000464_4649",
+            "event_id": "event_000464",
+            "event_type": "Pass",
+            "event_type_zh": "传球",
+            "source_pts_start": 4649.21,
+            "source_pts_end": 4665.86,
+            "event_t_sec": 4654.24,
+            "live": {
+              "live_ok": true,
+              "broadcast_phase": "LIVE",
+              "is_replay": false,
+              "is_slow_motion": false,
+              "live_confidence": 0.85,
+              "replay_of_event_id": null
+            },
+            "scores": {
+              "overall_score": 2.0,
+              "emotional_heat_score": 2.0,
+              "criticality_score": 2.0
+            },
+            "type_relevance": 2.0,
+            "confidence": 0.654,
+            "rank_score": 7.85,
+            "gap_balance": 0.39,
+            "residual_max_sec": 1876.085,
+            "search_gap_sec": 3077.87,
+            "risks": [
+              "long_clip",
+              "large_residual_source_jump_not_semantic_evidence"
+            ],
+            "evidence_tier": "EVENT_PTS_CANDIDATE",
+            "story_defect_fit": {
+              "gap_balance": 0.39,
+              "residual_max_sec": 1876.085,
+              "proximity_to_destination": 0.39,
+              "rationale": "Event metadata provides a search prior only; gap balance and PTS proximity are diagnostics, not a narrative-fit score."
+            },
+            "issue_id": "large_source_jump_seg_buildup_event_000411_to_seg_equalizer_scoreboard",
+            "category": "transition",
+            "narrative_function": "supplement_buildup_or_transition_bridge",
+            "missing_narrative_info": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+            "story_role": "transition_break",
+            "role": "buildup_bridge_action",
+            "insert_after_segment_id": "seg_buildup_event_000411",
+            "before_segment_id": "seg_equalizer_scoreboard",
+            "search_window": {
+              "lo": 3455.75,
+              "hi": 6533.62,
+              "kind": "bridge_between_cuts"
+            },
+            "goal_probe_only": false,
+            "goal_video_semantic_verified": false,
+            "score_confirmation_sec": null,
+            "event_association": {
+              "event_id": "event_000464",
+              "event_type": "Pass"
+            },
+            "visual_evidence": {
+              "kind": "event_chain_live_context",
+              "live": {
+                "live_ok": true,
+                "broadcast_phase": "LIVE",
+                "is_replay": false,
+                "is_slow_motion": false,
+                "live_confidence": 0.85,
+                "replay_of_event_id": null
+              },
+              "note": "Event metadata candidate only; first broadcast needs source-video proof."
+            },
+            "evidence_verification": {
+              "ok": true,
+              "reasons": [],
+              "verified_source_pts_start": 4649.21,
+              "verified_source_pts_end": 4665.86,
+              "method": "event_chain_live_credibility",
+              "evidence_tier": "EVENT_PTS_CANDIDATE",
+              "note": "EVENT_PTS_CANDIDATE = event metadata + LIVE label + source PTS. Not FIRST_LIVE_VERIFIED broadcast-timeline attestation."
+            },
+            "first_live_status": "NOT_VERIFIED",
+            "first_live_available": false,
+            "executable_safe_revision": false,
+            "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+            "narrative_context": {
+              "issue_id": "large_source_jump_seg_buildup_event_000411_to_seg_equalizer_scoreboard",
+              "before": {
+                "segment_id": "seg_buildup_event_000411",
+                "role": "buildup_action",
+                "source_pts_start": 3442.75,
+                "source_pts_end": 3454.75
+              },
+              "after": {
+                "segment_id": "seg_equalizer_scoreboard",
+                "role": "equalizer_scoreboard_anchor",
+                "source_pts_start": 6534.62,
+                "source_pts_end": 6538.12
+              },
+              "candidate": {
+                "source_pts_start": 4649.21,
+                "source_pts_end": 4665.86,
+                "event_id": "event_000464",
+                "event_type": "Pass"
+              },
+              "semantic_fit_not_inferred_from_gap_or_event_type": true
+            },
+            "narrative_fit": {
+              "status": "NEEDS_VIDEO_REVIEW",
+              "binding_valid": false,
+              "reason": "missing_triplet_review"
+            },
+            "narrative_fit_status": "NEEDS_VIDEO_REVIEW",
+            "narrative_fit_reviewed": false,
+            "narrative_fit_supports_insert": false,
+            "narrative_fit_rejects_insert": false,
+            "feedback_novelty_bonus": 0.15
+          }
+        ],
+        "n_candidates_considered": 148,
+        "n_event_candidates_eligible": 148,
+        "n_feedback_filtered": 0,
+        "n_narrative_fit_rejected": 0,
+        "n_narrative_fit_supported": 0,
+        "verified_count": 5,
+        "n_first_live_executable": 0
+      }
+    ],
+    "n_candidates": 363,
+    "n_goal_probeish_candidates": 363,
+    "search_success": true,
+    "executable_search_success": false,
+    "sample_goal_cand": {
+      "candidate_id": "cand_event_000634_6400",
+      "event_id": "event_000634",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "source_pts_start": 6400.9,
+      "source_pts_end": 6412.5,
+      "event_t_sec": 6403.81,
+      "live": {
+        "live_ok": true,
+        "broadcast_phase": "LIVE",
+        "is_replay": false,
+        "is_slow_motion": false,
+        "live_confidence": 0.85,
+        "replay_of_event_id": null
+      },
+      "scores": {
+        "overall_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "criticality_score": 2.0
+      },
+      "type_relevance": 0.0,
+      "confidence": 0.487,
+      "rank_score": 5.85,
+      "gap_balance": 0.172,
+      "residual_max_sec": 128.42,
+      "search_gap_sec": 155.05,
+      "risks": [],
+      "evidence_tier": "EVENT_PTS_CANDIDATE",
+      "story_defect_fit": {
+        "gap_balance": 0.172,
+        "residual_max_sec": 128.42,
+        "proximity_to_destination": 0.172,
+        "rationale": "Event metadata provides a search prior only; gap balance and PTS proximity are diagnostics, not a narrative-fit score."
+      },
+      "issue_id": "goal_coverage_01_to_11",
+      "category": "goal_coverage"
+    }
+  },
+  "revision_plan": {
+    "decision": "UNRESOLVED",
+    "rationale": "hypothesis_needs_video_no_auto_search_add_on_gap_alone;search_candidates_deferred_pending_semantic_confirmation",
+    "semantic_confirmation": false,
+    "n_intents": 6
+  },
+  "edl_diff": {
+    "changed": false
+  },
+  "candidate_render": {
+    "skipped": true,
+    "reason": "edl_unchanged_reuse_working_parent",
+    "baseline_mp4": "/tmp/lpy1_v3a_blind_repair_B_historical_20261112/agent_run_goal_coverage_v1/01_initial_story/story_clean.mp4",
+    "parent_version_id": "v0"
+  },
+  "revision_status": {
+    "APPLIED": false,
+    "VERIFIED": false,
+    "IMPROVED": false,
+    "edl_changed": false,
+    "candidate_rendered": false,
+    "semantic_passed": false,
+    "note": "APPLIED=EDL mutated under safety; VERIFIED=accepted with vision; IMPROVED=verified+accepted+vision+semantic+safety+quality_delta. One model BETTER never auto-upgrades to IMPROVED. PTS/first-live/goal gates cannot be overridden by BETTER."
+  }
+}

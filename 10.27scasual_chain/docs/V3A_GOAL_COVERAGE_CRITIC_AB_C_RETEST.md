@@ -1,6 +1,6 @@
 # V3-A Missing-Goal Challenge: First Actual Algorithm Repair (Critic → Search)
 
-**Status:** SOURCE COMMITTED; SERVER VALIDATION PENDING. This is an upgrade to
+Status: **ZERO-PAID SERVER RETEST COMPLETE ON `0187eee` (`goal_coverage_v1`)**. A/B `DETECTED=true` (`goal_coverage_01_to_11`), still `NOT_REPAIRED` / `EDL_REPAIRED=false`. C remains `NO_UNNECESSARY_EDL_EDIT` without false goal_coverage. Prior `572e153` artifacts preserved. See `docs/V3A_GOAL_COVERAGE_CRITIC_SERVER_VERIFY_0187eee.json`.
 real V3-A's failure detection and source-evidence search, NOT proof of a recovered
 goal, first broadcast, or better finished story.
 
