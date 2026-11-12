@@ -108,9 +108,13 @@ def story_time_to_media(
     story_sec: float,
 ) -> Optional[Dict[str, Any]]:
     """Locate source media PTS (or placeholder) for a story playback time."""
-    for seg in timeline.get("segments") or []:
+    segments = timeline.get("segments") or []
+    for index, seg in enumerate(segments):
         si, so = float(seg["story_in"]), float(seg["story_out"])
-        if not (si - 1e-6 <= story_sec <= so + 1e-6):
+        # A cut seam belongs to the following segment, not the previous one.
+        # Half-open intervals prevent claiming frames from the wrong shot.
+        final_end = index == len(segments) - 1 and story_sec == so
+        if story_sec < si or (story_sec >= so and not final_end):
             continue
         if seg.get("has_media_window"):
             frac = 0.0 if so <= si else (story_sec - si) / (so - si)
