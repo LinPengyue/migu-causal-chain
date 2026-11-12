@@ -33,7 +33,7 @@ def _parse_model_json_lenient(content: str) -> Dict[str, Any]:
 
 
 SYSTEM_CRITIC = (
-    "You are a football story-cut critic. Reply with strict JSON only. "
+    "You are a sports-broadcast story-cut critic. Reply with strict JSON only. "
     "Judge narrative opening, pressure/buildup, turn, climax, ending, and transitions "
     "from the PROVIDED ordered frames of the finished cut. "
     "Do not invent media timestamps. Do not assume match names or scores. "
@@ -426,12 +426,24 @@ def run_vlm_story_critic(
         '"keep_story_if_no_defect":bool,"overall_narrative_quality":str,'
         '"redundancy_claims":[{"target_segment_id":str,'
         '"comparison_segment_id":str,"observed_fact":str,'
-        '"why_redundant":str,"evidence_refs":[{"frame_id":str,"note":str}]}]}\n'
+        '"why_redundant":str,"evidence_refs":[{"frame_id":str,"note":str}]}],'
+        '"irrelevance_claims":[{"target_segment_id":str,'
+        '"observed_content":str,"why_not_support_story":str,'
+        '"why_removal_may_preserve_continuity":str,'
+        '"evidence_refs":[{"frame_id":str,"note":str}]}]}\n'
         "Redundancy_claims is OPTIONAL (max ONE). Only report a redundant non-goal "
         "scene when sent frames from TWO DIFFERENT EDL segments concretely show "
         "the same narrative information, and identify the exact expendable target. "
         "Do not declare redundant because two clips show the same team or pitch. "
         "Never target a goal, scoreboard, title, or ending; cite both segments.\n"
+        "Irrelevance_claims is OPTIONAL (max ONE) and is DIFFERENT from repeated footage: "
+        "a unique event may add no information to the specific narrative goal. "
+        "Only hypothesize this for a non-protected TARGET when you have ACTUAL "
+        "cited frames from the exact preceding, target and following EDL media segments. "
+        "Describe the visible target, why it does not support this story, and "
+        "why omitting it might preserve before-to-after continuity. Never claim "
+        "that sparse frames prove the whole segment is useless, or that a goal "
+        "action/scoreboard should be removed. No citations means NO claim.\n"
         "A large gap in source match time is NORMAL highlight editing, not a defect. "
         "Only claim a transition defect when the supplied frames reveal a specific "
         "missing event, game-state change, or emotional progression essential to understanding "
@@ -527,6 +539,18 @@ def run_vlm_story_critic(
         json.dumps(editorial_result, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
+    from .story_editorial_redundancy import validate_editorial_irrelevance_claims
+    irrelevance_result = validate_editorial_irrelevance_claims(
+        (parsed or {}).get("irrelevance_claims") or []
+        if mode == "real" and parsed is not None and not parse_error else [],
+        frame_bindings=editorial_frame_bindings,
+        timeline=timeline,
+        protected_goal_ids=diagnosis.get("protected_goal_segment_ids") or [],
+    )
+    (audit_dir / "vlm_editorial_irrelevance_hypotheses.json").write_text(
+        json.dumps(irrelevance_result, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
     if parsed is None and not updates.get("semantic_evidence"):
         return {
             "ok": False,
@@ -547,8 +571,10 @@ def run_vlm_story_critic(
         "derived_issues": (
             list(updates.get("derived_issues") or [])
             + list(editorial_result.get("issues") or [])
+            + list(irrelevance_result.get("issues") or [])
         ),
         "editorial_redundancy_candidates": editorial_result,
+        "editorial_irrelevance_hypotheses": irrelevance_result,
         "confirmed_issue_ids": updates.get("confirmed_issue_ids") or [],
         "semantic_evidence": updates.get("semantic_evidence") or [],
         "observation_updates": updates,
