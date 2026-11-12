@@ -61,6 +61,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--source-mp4", type=Path, required=True)
     p.add_argument("--events-json", type=Path, required=True,
                    help="Raw delivery events JSON (not events_enriched.json)")
+    p.add_argument("--independent-atoms-json", type=Path, default=None,
+                   help="Independent event-level annotations: atomic_events list, never causal/story gold")
     p.add_argument("--causal-json", type=Path, default=None,
                    help="Optional historical development-only human causal atoms; invalid for raw-only eval")
     p.add_argument("--strict-raw-only", action="store_true", default=False,
@@ -86,14 +88,18 @@ def validate_inputs(args: argparse.Namespace) -> list[str]:
     errs: list[str] = []
     if args.phase5_dir is not None or args.baseline_edl is not None:
         errs.append("phase5_dir/baseline_edl_forbidden_in_full_e2e")
-    if getattr(args, "strict_raw_only", False) and args.causal_json is not None:
-        errs.append("strict_raw_only_rejects_human_causal_json")
+    if args.independent_atoms_json is not None and args.causal_json is not None:
+        errs.append("independent_atoms_and_causal_gold_mutually_exclusive")
+    if getattr(args, "strict_raw_only", False) and (args.causal_json is not None or args.independent_atoms_json is not None):
+        errs.append("strict_raw_only_rejects_external_event_annotations")
     inputs = [
         ("source_mp4", args.source_mp4),
         ("events_json", args.events_json),
     ]
     if args.causal_json is not None:
         inputs.append(("causal_json", args.causal_json))
+    if args.independent_atoms_json is not None:
+        inputs.append(("independent_atoms_json", args.independent_atoms_json))
     for label, path in inputs:
         if not path.is_file():
             errs.append(f"missing_{label}:{path}")
@@ -140,7 +146,10 @@ def main(argv: list[str] | None = None) -> int:
     algo_root = args.algo_root or Path(__file__).resolve().parents[2]
 
     # A legacy annotated-atom run is never a raw-only evaluation case.
-    raw_only = args.causal_json is None
+    raw_only = args.causal_json is None and args.independent_atoms_json is None
+    input_mode = ("RAW_EVENTS_ONLY" if raw_only else (
+        "INDEPENDENT_ATOMIC_ANNOTATED" if args.independent_atoms_json is not None
+        else "HUMAN_ATOM_ENRICHED_DEV"))
     # Contract note persisted for auditors.
     contract = {
         "schema": "v3a_full_e2e_input_contract_v1",
@@ -148,10 +157,12 @@ def main(argv: list[str] | None = None) -> int:
             "source_mp4": str(args.source_mp4.resolve()),
             "events_json": str(args.events_json.resolve()),
             "causal_json": str(args.causal_json.resolve()) if args.causal_json else None,
+            "independent_atoms_json": str(args.independent_atoms_json.resolve()) if args.independent_atoms_json else None,
         },
-        "input_mode": "RAW_EVENTS_ONLY" if raw_only else "HUMAN_ATOM_ENRICHED_DEV",
+        "input_mode": input_mode,
         "eligible_for_raw_only_evaluation": raw_only,
         "human_annotation_atoms_used": not raw_only,
+        "eligible_for_event_annotated_evaluation": args.causal_json is None,
         "causal_roles": {
             "user_causal_json": (
                 "Optional DEV-only annotated atoms for legacy reproduction; "
@@ -187,6 +198,7 @@ def main(argv: list[str] | None = None) -> int:
         phase5_dir=None,
         events_json=args.events_json.resolve(),
         causal_atoms_json=args.causal_json.resolve() if args.causal_json else None,
+        independent_atoms_json=args.independent_atoms_json.resolve() if args.independent_atoms_json else None,
         match_id=match_id,
         algo_root=algo_root.resolve(),
         run_fresh_v3r=True,
