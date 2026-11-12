@@ -1011,7 +1011,7 @@ def localize_unresolved_recovered_goals(
     # as the reference: the operator must explicitly pass the raw source MP4.
     video_sha = _sha256(video)
     events_sha = _sha256(events_path)
-    out_dir.mkdir(parents=True, exist_ok=False)
+    out_dir.mkdir(parents=True, exist_ok=True)
     records: List[Dict[str, Any]] = []
     for c in pending:
         cid = str(c["candidate_id"])
@@ -1046,7 +1046,7 @@ def localize_unresolved_recovered_goals(
             "n_continuous_clips_extracted": res["summary"].get("n_candidate_extracted_ok"),
             "candidate_evidence_path": str(out_dir / cid / "candidate_audits.json"),
             "evidence_pack_path": str(out_dir / cid / "evidence_pack.json"),
-            "first_live_status": res["summary"].get("verdict_bucket"),
+            "localization_verdict_bucket": res["summary"].get("verdict_bucket"),
             "action_timestamp_autofilled": False,
             "edl_inserted": False,
         })
