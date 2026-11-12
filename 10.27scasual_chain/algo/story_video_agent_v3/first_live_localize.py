@@ -975,6 +975,8 @@ def localize_unresolved_recovered_goals(
     max_candidates: int = 4,
     max_video_read_sec: float = 90.0,
     skip_ocr: bool = False,
+    expected_source_sha256: Optional[str] = None,
+    expected_events_sha256: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Run existing P3 OCR + continuous-video localizer for P12 unresolved goals.
 
@@ -1007,10 +1009,15 @@ def localize_unresolved_recovered_goals(
         if missing:
             raise ValueError("candidate_id_not_unresolved:" + ",".join(sorted(missing)))
         pending = [c for c in pending if str(c.get("candidate_id")) in selected_ids]
-    # Also protects against accidentally feeding a previously edited story clip
-    # as the reference: the operator must explicitly pass the raw source MP4.
+    # A digest binds the resulting frame packs to a specific file; it does not
+    # by itself prove that the file was the original broadcast. Optional
+    # expected hashes come from the trusted raw-only input contract.
     video_sha = _sha256(video)
     events_sha = _sha256(events_path)
+    if expected_source_sha256 and video_sha.lower() != expected_source_sha256.lower():
+        raise ValueError("source_video_sha256_mismatch")
+    if expected_events_sha256 and events_sha.lower() != expected_events_sha256.lower():
+        raise ValueError("original_events_sha256_mismatch")
     out_dir.mkdir(parents=True, exist_ok=True)
     records: List[Dict[str, Any]] = []
     for c in pending:
@@ -1085,6 +1092,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser.add_argument("--max-candidates", type=int, default=4)
     parser.add_argument("--max-video-read-sec", type=float, default=90.0)
     parser.add_argument("--skip-ocr", action="store_true")
+    parser.add_argument("--expected-source-sha256")
+    parser.add_argument("--expected-events-sha256")
     args = parser.parse_args(argv)
     result = localize_unresolved_recovered_goals(
         video=args.source_mp4,
@@ -1095,6 +1104,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         max_candidates=args.max_candidates,
         max_video_read_sec=args.max_video_read_sec,
         skip_ocr=args.skip_ocr,
+        expected_source_sha256=args.expected_source_sha256,
+        expected_events_sha256=args.expected_events_sha256,
     )
     print(json.dumps(result, indent=2, ensure_ascii=False))
     return 0
