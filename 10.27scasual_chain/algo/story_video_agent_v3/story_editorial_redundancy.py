@@ -149,3 +149,138 @@ def validate_editorial_redundancy_claims(
         "does_not_authorize_best_promotion": True,
         "no_new_pts_created": True,
     }
+
+
+
+def validate_editorial_irrelevance_claims(
+    claims: Sequence[Mapping[str, Any]],
+    *,
+    frame_bindings: Sequence[Mapping[str, Any]],
+    timeline: Mapping[str, Any],
+    protected_goal_ids: Sequence[str],
+    max_issues: int = 1,
+) -> Dict[str, Any]:
+    """Video-cited *hypotheses* for independent but narratively unhelpful cuts.
+
+    Unlike repeated footage, unrelated content can be unique. Require frame
+    citations from the exact BEFORE, TARGET, AFTER neighboring story segments.
+    Never call an absence-of-contribution judgment a confirmed defect from
+    sparse stills; these issues can direct re-observation or P10-C exploration
+    but cannot bypass confirmed-nonadditive mutation gates.
+    """
+    active = [
+        seg for seg in (timeline.get("segments") or [])
+        if isinstance(seg, Mapping) and seg.get("segment_id") and seg.get("has_media_window")
+    ]
+    ids = [str(seg["segment_id"]) for seg in active]
+    if len(ids) != len(set(ids)):
+        return {"schema": "v3a_editorial_irrelevance_candidate_v1",
+                "issues": [], "rejected": [{"reason": "ambiguous_segment_ids"}],
+                "story_defect_confirmed": False}
+    protected = {str(x) for x in protected_goal_ids}
+    frames: Dict[str, Dict[str, str]] = {}
+    for fr in frame_bindings:
+        if not isinstance(fr, Mapping):
+            continue
+        fid, sid = str(fr.get("frame_id") or ""), str(fr.get("segment_id") or "")
+        if not fid or fid in frames or sid not in ids:
+            continue
+        path = Path(str(fr.get("path") or ""))
+        if not path.is_file():
+            continue
+        try:
+            sha = hashlib.sha256(path.read_bytes()).hexdigest()
+        except OSError:
+            continue
+        frames[fid] = {"segment_id": sid, "sha256": sha}
+
+    issues: List[Dict[str, Any]] = []
+    rejected: List[Dict[str, Any]] = []
+    for index, raw in enumerate(claims or []):
+        if not isinstance(raw, Mapping):
+            continue
+        target = str(raw.get("target_segment_id") or "")
+        visual = str(raw.get("observed_content") or "").strip()
+        missing = str(raw.get("why_not_support_story") or "").strip()
+        continuity = str(raw.get("why_removal_may_preserve_continuity") or "").strip()
+        cited = raw.get("evidence_refs")
+        refs = [
+            str(x.get("frame_id") or "") for x in cited
+            if isinstance(x, Mapping) and x.get("frame_id")
+        ] if isinstance(cited, list) else []
+        reason = None
+        if target not in ids or ids.index(target) in (0, len(ids) - 1):
+            reason = "target_must_have_two_active_media_neighbors"
+        else:
+            seg = active[ids.index(target)]
+            role = str(seg.get("role") or "").lower()
+            if target in protected or any(word in role for word in (
+                "goal", "scoreboard", "confirm", "ending", "wrap", "title",
+                "opening", "penalty", "red_card", "var",
+            )):
+                reason = "protected_or_essential_story_segment"
+        if reason is None and (
+            len(visual) < 18 or len(missing) < 18 or len(continuity) < 18
+            or visual.lower() == missing.lower()
+        ):
+            reason = "missing_specific_visual_narrative_explanation"
+        if reason is None and (
+            len(set(refs)) < 3 or any(fid not in frames for fid in refs)
+        ):
+            reason = "missing_or_fabricated_cited_frames"
+        if reason is None:
+            pos = ids.index(target)
+            expected = {ids[pos - 1], target, ids[pos + 1]}
+            if not expected.issubset({frames[fid]["segment_id"] for fid in refs}):
+                reason = "not_cited_exact_before_target_after_context"
+        if reason is not None:
+            rejected.append({"claim_index": index, "target_segment_id": target,
+                             "reason": reason})
+            continue
+
+        pos = ids.index(target)
+        before, segment, after = active[pos-1:pos+2]
+        issues.append({
+            "issue_id": f"story_irrelevance_hypothesis_{target}",
+            "category": "narrative_relevance",
+            "severity": "minor",
+            "segment_ids": [ids[pos-1], target, ids[pos+1]],
+            "target_segment_id": target,
+            "preferred_drop_segment_id": target,
+            "story_time_range": [
+                float(before["story_in"]), float(after["story_out"])
+            ],
+            "observation": visual,
+            "narrative_problem": missing,
+            "expected_edit_effect_hypothesis": continuity,
+            "evidence_sufficiency": "needs_video_verify",
+            "diagnosis_status": "HYPOTHESIS_NEEDS_VIDEO",
+            "story_defect_confirmed": False,
+            "claim_status": "VIDEO_CITED_RELEVANCE_HYPOTHESIS",
+            "observation_scope": {
+                "method": "sparse_before_target_after_frames",
+                "claims_full_video_watch": False,
+            },
+            "evidence_frame_refs": refs,
+            "evidence_refs": [
+                {"kind": "story_frame_sha256", "frame_id": fid,
+                 "sha256": frames[fid]["sha256"],
+                 "segment_id": frames[fid]["segment_id"]}
+                for fid in refs
+            ],
+            "suggested_fix": "observe_full_target_and_context_before_any_edit",
+            "no_automatic_edit_authorized": True,
+            "model_based_edit_proposal": True,
+            "note": "A unique video event may still be irrelevant, but three cited stills never prove removal improves the finished story.",
+        })
+        if len(issues) >= max(1, max_issues):
+            break
+    return {
+        "schema": "v3a_editorial_irrelevance_candidate_v1",
+        "issues": issues,
+        "rejected": rejected,
+        "story_defect_confirmed": False,
+        "requires_video_reobservation": bool(issues),
+        "no_automatic_edit_authorized": True,
+        "no_new_pts_created": True,
+    }
