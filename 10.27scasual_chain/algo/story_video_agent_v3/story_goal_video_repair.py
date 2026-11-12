@@ -1,0 +1,431 @@
+"""Missing-story-goal repair using independent source-video evidence.
+
+Critic score transitions only OPEN a review queue. Neither an event Goal label
+nor a nearby score confirmation may authorize a Goal EDL insertion. A repair
+requires a source-hash/PTS-bound frame pack, a distinct first-broadcast timeline
+review, and a cited shot→net semantic video review. This module does not
+contain or import any reference/Gold EDL or match-specific goal timestamp.
+"""
+from __future__ import annotations
+
+import copy
+import hashlib
+import json
+from pathlib import Path
+from typing import Any, Dict, List, Mapping, Optional, Sequence
+
+from .first_live_window_evidence import validate_first_live_evidence_record, window_key
+from .remote_vlm_verify import cross_check_visible_evidence
+from .story_edl_safety import check_source_pts_monotonic
+
+SCHEMA = "v3a_goal_video_repair_v1"
+
+
+def _write(path: Path, obj: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(obj, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def goal_coverage_issues(diagnosis: Mapping[str, Any]) -> List[Dict[str, Any]]:
+    return [
+        dict(x) for x in diagnosis.get("issues") or []
+        if isinstance(x, Mapping)
+        and str(x.get("category") or "") == "goal_coverage"
+        and str(x.get("diagnosis_status") or "") == "HYPOTHESIS_NEEDS_VIDEO"
+    ]
+
+
+def prepare_source_video_goal_queue(
+    *,
+    diagnosis: Mapping[str, Any],
+    source_mp4: Path,
+    events_path: Optional[Path],
+    out_dir: Path,
+    max_issues: int = 1,
+    max_candidates_per_issue: int = 3,
+    max_video_read_sec: float = 75.0,
+) -> Dict[str, Any]:
+    """Reuse P13 first_live_localize (no VLM, no human hints, zero HTTP).
+
+    Generates continuous candidate clips and dense source frames. It NEVER
+    returns a verified action, and cannot mutate EDL.
+    """
+    from .first_live_localize import run_first_live_localization
+
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    issues = goal_coverage_issues(diagnosis)
+    rows: List[Dict[str, Any]] = []
+    for issue in issues[:max(0, int(max_issues))]:
+        iid = str(issue.get("issue_id") or "")
+        task = {
+            "score_before": issue.get("score_before"),
+            "score_after": issue.get("score_after"),
+            "score_confirmation_sec": issue.get("score_confirmation_sec"),
+        }
+        if task["score_confirmation_sec"] is None or not Path(source_mp4).is_file():
+            rows.append({"issue_id": iid, "status": "MISSING_VIDEO_OR_SCORE_CONFIRMATION"})
+            continue
+        try:
+            # The localization role is a neutral issue identifier, never a
+            # storyboard role or a preview of the missing ground truth.
+            result = run_first_live_localization(
+                video=Path(source_mp4),
+                role="goal_gap_" + iid[:80],
+                task_row=task,
+                out_dir=out_dir / iid,
+                events_path=events_path,
+                historical_clues=[],
+                identity={"issue_id": iid, "evidence_type": "goal_action_search"},
+                max_candidates=max_candidates_per_issue,
+                max_video_read_sec=max_video_read_sec,
+                skip_ocr=True,
+            )
+            rows.append({
+                "issue_id": iid,
+                "status": "SOURCE_CLIPS_READY_UNVERIFIED",
+                "score_before": task["score_before"],
+                "score_after": task["score_after"],
+                "score_confirmation_sec": task["score_confirmation_sec"],
+                "candidate_count": len(result.get("audits") or []),
+                "continuous_candidate_clips": [
+                    {
+                        "candidate_id": a.get("candidate_id"),
+                        "clip_path": a.get("clip_path"),
+                        "media_in": a.get("media_in"),
+                        "media_out": a.get("media_out"),
+                        "frame_paths": a.get("frame_paths") or [],
+                        "semantic_label": a.get("semantic_label"),
+                        "first_live_status": a.get("verification_status"),
+                    }
+                    for a in (result.get("audits") or [])
+                ],
+                "no_goal_action_verified": True,
+                "first_live_verified": False,
+                "auto_edl_insert_authorized": False,
+            })
+        except Exception as exc:  # noqa: BLE001
+            rows.append({
+                "issue_id": iid,
+                "status": "SOURCE_LOCALIZATION_FAILED",
+                "error": f"{type(exc).__name__}:{exc}",
+            })
+    report = {
+        "schema": SCHEMA,
+        "status": "VIDEO_REVIEW_PENDING" if rows else "NO_GOAL_GAP_ISSUES",
+        "source_video": str(source_mp4),
+        "events_path": str(events_path) if events_path else None,
+        "issues": rows,
+        "zero_http": True,
+        "no_oracle_used": True,
+        "no_autonomous_goal_verification_claim": True,
+    }
+    _write(out_dir / "source_goal_video_review_queue.json", report)
+    return report
+
+
+def _valid_issue_binding(review: Mapping[str, Any], issue: Mapping[str, Any]) -> bool:
+    return bool(
+        str(review.get("issue_id") or "") == str(issue.get("issue_id") or "")
+        and list(review.get("score_before") or []) == list(issue.get("score_before") or [])
+        and list(review.get("score_after") or []) == list(issue.get("score_after") or [])
+    )
+
+
+def validate_goal_video_review(
+    *,
+    review: Optional[Mapping[str, Any]],
+    issue: Mapping[str, Any],
+    source_sha: str,
+) -> Dict[str, Any]:
+    """Independent action evidence AND first broadcast must pass.
+
+    A manually edited JSON claiming shot/net=true, without real frame bytes
+    and source-bound review, does not pass. This is an audit protocol; the
+    origin of the semantic reviewer is recorded and not misreported as
+    autonomous if it was a human.
+    """
+    fail = lambda why: {
+        "ok": False, "status": "UNRESOLVED", "reason": why,
+        "first_live_verified": False, "goal_video_semantic_verified": False,
+    }
+    if not isinstance(review, Mapping) or not _valid_issue_binding(review, issue):
+        return fail("missing_or_mismatched_issue_and_score_transition")
+    if str(review.get("source_sha256") or "") != str(source_sha) or len(source_sha) != 64:
+        return fail("source_sha256_mismatch")
+    try:
+        mi, mo = float(review["media_in"]), float(review["media_out"])
+    except (KeyError, TypeError, ValueError):
+        return fail("invalid_source_clip_window")
+    if not 0 <= mi < mo or mo - mi > 45:
+        return fail("clip_duration_invalid_or_over_45s")
+    bounds = issue.get("possible_action_interval") or {}
+    try:
+        lo, hi = float(bounds["media_in"]), float(bounds["media_out"])
+        confirm = float(issue["score_confirmation_sec"])
+    except (TypeError, ValueError, KeyError):
+        return fail("invalid_score_search_bracket")
+    # A real action has to occur before the scoreboard says the new score;
+    # allow the candidate clip to extend outside the search bracket by
+    # at most 15s for lead-in/celebration, without admitting a replay.
+    if mo < lo - 15.0 or mi > hi + 5.0 or mi >= confirm - 0.5:
+        return fail("candidate_outside_observed_score_transition_bracket")
+
+    binding = review.get("first_live_evidence")
+    timeline_review = review.get("broadcast_timeline_review")
+    first_live = validate_first_live_evidence_record(
+        binding if isinstance(binding, Mapping) else None,
+        source_sha=source_sha, pts_start=mi, pts_end=mo,
+        timeline_review=timeline_review if isinstance(timeline_review, Mapping) else None,
+        require_files_exist=True,
+    )
+    if not first_live.get("ok"):
+        return fail("no_bound_independent_first_broadcast_proof:" + str(first_live.get("reason")))
+
+    observation = review.get("video_semantic_observation") or {}
+    if not isinstance(observation, Mapping):
+        return fail("missing_video_semantic_observation")
+    provenance = str(observation.get("reviewer_type") or "")
+    if provenance not in ("REAL_VIDEO_MODEL_REVIEW", "HUMAN_CONTINUOUS_VIDEO_REVIEW"):
+        return fail("semantic_reviewer_unverifiable_or_fixture")
+    if provenance == "REAL_VIDEO_MODEL_REVIEW" and not observation.get("model_response_audit"):
+        return fail("real_model_review_missing_auditable_response")
+    inference = observation.get("vlm_inference") or {}
+    if not isinstance(inference, Mapping):
+        return fail("missing_structured_shot_net_inference")
+    rows = list(observation.get("frames") or [])
+    if len(rows) < 2:
+        return fail("insufficient_original_video_frame_evidence")
+    validated_frames = []
+    manifest_frames = {
+        str(f.get("frame_id")): f
+        for f in (binding.get("frames") or []) if isinstance(f, Mapping)
+    }
+    for row in rows:
+        if not isinstance(row, Mapping):
+            return fail("malformed_observation_frame")
+        fid = str(row.get("frame_id") or "")
+        bound = manifest_frames.get(fid)
+        if bound is None:
+            return fail("observation_frame_not_in_source_binding")
+        if str(bound.get("path") or "") != str(row.get("path") or ""):
+            return fail("observation_frame_path_binding_mismatch")
+        t = bound.get("source_pts_sec")
+        if t is None:
+            return fail("bound_frame_missing_original_source_pts")
+        validated_frames.append({
+            "frame_id": fid,
+            "path": str(bound.get("path")),
+            "actual_media_sec": float(t),
+        })
+    semantic = cross_check_visible_evidence(
+        vlm_inference=dict(inference),
+        frames=validated_frames,
+        score_bounds={
+            "first_after_obs": {"media_sec": confirm},
+        },
+        media_in=mi,
+        media_out=mo,
+        continuous_clip_ok=bool(observation.get("continuous_source_clip_sha256")),
+        continuous_clip_path=observation.get("continuous_source_clip_path"),
+    )
+    if not semantic.get("structurally_ready_for_automated_verify"):
+        return fail("video_semantic_shot_net_or_live_crosscheck_incomplete")
+    # Make continuous footage auditable: source clip hash must match actual bytes.
+    clip = Path(str(observation.get("continuous_source_clip_path") or ""))
+    clip_sha = str(observation.get("continuous_source_clip_sha256") or "")
+    if not clip.is_file() or not clip_sha or (
+        hashlib.sha256(clip.read_bytes()).hexdigest() != clip_sha
+    ):
+        return fail("continuous_clip_bytes_hash_mismatch")
+    action_sec = (semantic.get("derived_times") or {}).get("net_sec")
+    if action_sec is None or not lo - 5.0 <= float(action_sec) <= confirm - 0.5:
+        return fail("net_action_pts_not_bounded_by_preconfirmation_score_state")
+    return {
+        "ok": True,
+        "status": "ACTION_AND_FIRST_LIVE_VIDEO_BOUND",
+        "issue_id": issue.get("issue_id"),
+        "source_sha256": source_sha,
+        "media_in": mi, "media_out": mo,
+        "action_sec": float(action_sec),
+        "shot_sec": (semantic.get("derived_times") or {}).get("shot_sec"),
+        "reviewer_type": provenance,
+        "first_live_verified": True,
+        "goal_video_semantic_verified": True,
+        "first_live_evidence": dict(binding),
+        "broadcast_timeline_review": dict(timeline_review),
+        "frame_refs": list(inference.get("shot_frame_ids") or [])
+                      + list(inference.get("net_frame_ids") or []),
+        "note": "Review-backed action, not inferred from scoreboard timestamps.",
+    }
+
+
+def apply_video_verified_goal_repair(
+    *,
+    edl: Sequence[Mapping[str, Any]],
+    issue: Mapping[str, Any],
+    validated: Mapping[str, Any],
+) -> Dict[str, Any]:
+    """Insert one previously absent goal action at chronological story position.
+
+    This is a guarded *apply* stage, never a search heuristic. Existing goals,
+    scoreboard rows and their order must be preserved. Final story-level video
+    verification/acceptance remains the existing V3-A Verifier's decision.
+    """
+    result: Dict[str, Any] = {
+        "applied": False, "reason": "unverified_goal_video_evidence",
+        "edl": [dict(x) for x in edl],
+        "new_segment_id": None,
+    }
+    if not validated.get("ok") or not (
+        validated.get("first_live_verified")
+        and validated.get("goal_video_semantic_verified")
+    ):
+        return result
+    a, b = float(validated["media_in"]), float(validated["media_out"])
+    rows = [dict(x) for x in edl]
+    from .story_timeline import active_cut_rows
+
+    active = active_cut_rows(rows)
+    for r in active:
+        try:
+            ri, ro = float(r.get("media_in")), float(r.get("media_out"))
+        except (TypeError, ValueError):
+            continue
+        if ri < b and a < ro:
+            result["reason"] = "new_window_overlaps_existing_footage"
+            return result
+
+    # Locate target by existing storyboard score confirmation, never by
+    # target reference/Gold. Require a concrete later role anchor to avoid
+    # inventing which protagonist's story this goal belongs to.
+    score_confirm = float(issue.get("score_confirmation_sec") or 0)
+    board_indices = [
+        (idx, r) for idx, r in enumerate(rows)
+        if r.get("include_in_cut", True)
+        and "scoreboard" in str(r.get("role") or "").lower()
+        and r.get("media_in") is not None
+        and abs(float(r["media_in"]) - score_confirm) <= 35.0
+    ]
+    if not board_indices:
+        result["reason"] = "no_storyboard_score_anchor_near_confirm"
+        return result
+    insert_idx, board = min(
+        board_indices, key=lambda p: abs(float(p[1]["media_in"]) - score_confirm)
+    )
+    stem = str(board.get("role") or "").replace("_scoreboard_anchor", "").replace("_scoreboard", "")
+    if not stem or stem == str(board.get("role") or ""):
+        result["reason"] = "cannot_infer_story_role_from_scoreboard_anchor"
+        return result
+    role = stem + "_goal_action"
+    sid = "seg_goal_video_repair_" + str(issue["issue_id"])[:80]
+    if any(str(r.get("segment_id")) == sid for r in rows):
+        result["reason"] = "duplicate_goal_video_repair_id"
+        return result
+    row = {
+        "segment_id": sid,
+        "role": role,
+        "media_in": round(a, 3), "media_out": round(b, 3),
+        "goal_anchor_t_sec": round(float(validated["action_sec"]), 3),
+        "include_in_cut": True, "is_replay": False,
+        "shot_kind": "live",
+        "goal_action_complete": True,
+        "first_live_status": "FIRST_LIVE_VERIFIED",
+        "agent_auto_verified": (
+            validated.get("reviewer_type") == "REAL_VIDEO_MODEL_REVIEW"
+        ),
+        "goal_coverage_repair": True,
+        "repair_issue_id": issue.get("issue_id"),
+        "evidence_status": "SOURCE_VIDEO_GOAL_SEMANTIC_AND_FIRST_LIVE_BOUND",
+        "reviewer_type": validated.get("reviewer_type"),
+        "validated_evidence": validated.get("first_live_evidence"),
+        "broadcast_timeline_review": validated.get("broadcast_timeline_review"),
+    }
+    rows.insert(insert_idx, row)
+    pts = check_source_pts_monotonic(rows)
+    if not pts.get("ok"):
+        result["reason"] = "repaired_edl_fails_source_pts_chronology"
+        result["pts_breaks"] = pts.get("breaks") or []
+        return result
+    result.update({
+        "applied": True,
+        "reason": "video_evidence_bound_goal_edl_insert",
+        "edl": rows,
+        "new_segment_id": sid,
+        "new_role": role,
+        "source_pts": [a, b],
+        "action_sec": float(validated["action_sec"]),
+        "reviewer_type": validated.get("reviewer_type"),
+        "does_not_claim_story_improvement": True,
+    })
+    return result
+
+
+def load_goal_review_for_issue(
+    review_dir: Optional[Path], issue_id: str,
+) -> Optional[Dict[str, Any]]:
+    """Explicit source-video review input; never scans private evaluation dirs."""
+    if review_dir is None:
+        return None
+    path = Path(review_dir)
+    if not path.is_dir():
+        return None
+    safe = "".join(x for x in str(issue_id) if x.isascii() and (x.isalnum() or x in "_-"))
+    if safe != str(issue_id):
+        return None
+    target = path / (safe + ".json")
+    if not target.is_file():
+        return None
+    obj = json.loads(target.read_text(encoding="utf-8"))
+    return obj if isinstance(obj, dict) else None
+
+
+def repair_goal_coverage_from_video_reviews(
+    *,
+    edl: Sequence[Mapping[str, Any]],
+    diagnosis: Mapping[str, Any],
+    source_sha: str,
+    review_dir: Optional[Path],
+) -> Dict[str, Any]:
+    """Produce at most one video-authorized edit; no other Agent action mutated."""
+    working = [dict(r) for r in edl]
+    decisions = []
+    for issue in goal_coverage_issues(diagnosis):
+        review = load_goal_review_for_issue(review_dir, str(issue.get("issue_id") or ""))
+        validated = validate_goal_video_review(
+            review=review, issue=issue, source_sha=source_sha
+        )
+        if not validated.get("ok"):
+            decisions.append({
+                "issue_id": issue.get("issue_id"),
+                "status": "UNRESOLVED",
+                "reason": validated.get("reason"),
+                "review_provided": review is not None,
+            })
+            continue
+        proposal = apply_video_verified_goal_repair(
+            edl=working, issue=issue, validated=validated,
+        )
+        decisions.append({
+            "issue_id": issue.get("issue_id"),
+            "status": "EDL_REPAIR_APPLIED" if proposal.get("applied") else "UNRESOLVED",
+            "reason": proposal.get("reason"),
+            "reviewer_type": validated.get("reviewer_type"),
+            "new_segment_id": proposal.get("new_segment_id"),
+        })
+        if proposal.get("applied"):
+            working = proposal["edl"]
+            break
+    return {
+        "schema": SCHEMA,
+        "edl": working,
+        "changed": working != [dict(r) for r in edl],
+        "decisions": decisions,
+        "auto_succeeded_without_video_proof": False,
+        "release_authorized": False,
+        "candidate_quality_improved": "UNVERIFIED",
+        "input_review_mode": (
+            "EXTERNALLY_SUPPLIED_VIDEO_REVIEW" if review_dir is not None
+            else "NO_EXTERNAL_REVIEW"
+        ),
+    }
