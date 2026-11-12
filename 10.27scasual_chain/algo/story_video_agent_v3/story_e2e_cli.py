@@ -80,6 +80,15 @@ def build_parser() -> argparse.ArgumentParser:
         help="Optional validated before/candidate/after video-triplet review store JSON/dir",
     )
     p.add_argument(
+        "--goal-repair-evidence-dir",
+        type=Path,
+        default=None,
+        help=(
+            "Optional independently reviewed missing-goal SOURCE-video evidence "
+            "(one <goal_coverage_issue_id>.json per issue); no Gold EDL."
+        ),
+    )
+    p.add_argument(
         "--build-local-first-live-evidence",
         action="store_true",
         default=False,
@@ -170,6 +179,13 @@ def main(argv: list[str] | None = None) -> int:
         )
         return 2
 
+    if args.goal_repair_evidence_dir is not None and not args.goal_repair_evidence_dir.is_dir():
+        print(
+            "ERROR: --goal-repair-evidence-dir must be an existing directory",
+            file=sys.stderr,
+        )
+        return 2
+
     fixture_revision = None
     fixture_verifier = None
     phase10_explore_fixture = None
@@ -228,6 +244,9 @@ def main(argv: list[str] | None = None) -> int:
         narrative_fit_evidence_dir=(
             args.narrative_fit_evidence_dir.resolve()
             if args.narrative_fit_evidence_dir else None
+        ),
+        goal_repair_evidence_dir=(
+            args.goal_repair_evidence_dir.resolve() if args.goal_repair_evidence_dir else None
         ),
         build_local_first_live_evidence=bool(args.build_local_first_live_evidence),
         max_rounds=int(args.max_rounds),
