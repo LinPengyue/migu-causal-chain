@@ -55,11 +55,31 @@ _CAT_EN_TO_ZH = {
 def _parse_score_token(tok: Any) -> Optional[Tuple[int, int]]:
     if tok is None:
         return None
-    s = str(tok).strip().replace("：", ":")
+    s = str(tok).strip().replace("：", ":").replace("-", ":").replace("–", ":")
     m = re.match(r"^(\d+)\s*:\s*(\d+)$", s)
     if not m:
         return None
     return int(m.group(1)), int(m.group(2))
+
+
+def score_pair_from_raw_event(e: Dict[str, Any]) -> Optional[Tuple[int, int]]:
+    """Decode broadcast score cues using existing V2 event-adapter precedence.
+
+    Historical raw-event formats put the same scoreboard under either
+    attributes.Score_Recognition or scores.score_recognition, as a string or
+    list. These are OBSERVED board states, not goal action timestamps.
+    """
+    attrs = e.get("attributes") if isinstance(e.get("attributes"), dict) else {}
+    scores = e.get("scores") if isinstance(e.get("scores"), dict) else {}
+    for candidate in (attrs.get("Score_Recognition"), scores.get("score_recognition")):
+        if isinstance(candidate, list):
+            candidate = candidate[0] if candidate else None
+        if candidate is None:
+            continue
+        parsed = _parse_score_token(candidate)
+        if parsed is not None:
+            return parsed
+    return None
 
 
 def load_raw_events(events_path: Path) -> List[Dict[str, Any]]:
@@ -73,11 +93,7 @@ def score_transitions_from_events(raw_events: Sequence[Dict[str, Any]]) -> List[
     out: List[Dict[str, Any]] = []
     prev: Optional[Tuple[int, int]] = None
     for e in raw_events:
-        attrs = e.get("attributes") or {}
-        scores = attrs.get("Score_Recognition") or []
-        if not scores:
-            continue
-        cur = _parse_score_token(scores[0])
+        cur = score_pair_from_raw_event(e)
         if cur is None:
             continue
         if prev is None:
