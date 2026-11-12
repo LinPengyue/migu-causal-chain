@@ -213,6 +213,13 @@ def detect_goal_coverage_hypotheses(
             evidence_sufficiency="needs_video_verify",
             category="goal_coverage",
         )
+        last_before = cand.get("last_before_score_obs_sec")
+        try:
+            search_lo = max(lo, float(last_before) - 30.0) if last_before is not None else lo
+        except (TypeError, ValueError, OverflowError):
+            search_lo = lo
+        if hi - search_lo < 6.0:
+            search_lo = lo
         issue.update({
             "diagnosis_status": "HYPOTHESIS_NEEDS_VIDEO",
             "story_defect_confirmed": False,
@@ -220,6 +227,12 @@ def detect_goal_coverage_hypotheses(
             "score_after": list(score_after),
             "score_confirmation_sec": round(confirm, 3),
             "score_confirmation_carrier_event_id": cand.get("score_confirmation_event_id"),
+            "source_search_interval": {
+                "media_in": round(search_lo, 3),
+                "media_out": round(hi, 3),
+                "source": "last_old_score_observation_with_30s_lag_pad",
+                "note": "Source search prior only, not the goal timestamp.",
+            },
             "possible_action_interval": {
                 "media_in": round(lo, 3),
                 "media_out": round(hi, 3),
