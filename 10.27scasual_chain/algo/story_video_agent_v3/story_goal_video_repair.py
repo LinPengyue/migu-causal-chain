@@ -124,6 +124,144 @@ def prepare_source_video_goal_queue(
     return report
 
 
+def observe_source_goal_video_with_shared_vlm(
+    *,
+    queue: Mapping[str, Any],
+    source_mp4: Path,
+    api: Any,
+    out_dir: Path,
+    max_calls: int,
+    max_cost_usd: float,
+) -> Dict[str, Any]:
+    """Optional, explicitly authorized REAL source VLM observation (one call).
+
+    Reuses the caller's ApiProvider, so global Critic/goal observation/Planner
+    share the SAME call/cost ceilings. Never creates a first-live certificate
+    or emits an EDL mutation from a single sampled-frame VLM opinion.
+    """
+    from .story_paid_eval import provider_usage
+    from .remote_vlm_verify import (
+        call_goal_verify_round, cross_check_visible_evidence, extract_dense_frames,
+    )
+
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    result: Dict[str, Any] = {
+        "schema": SCHEMA,
+        "status": "SKIPPED_UNAUTHORIZED_OR_INSUFFICIENT_BUDGET",
+        "observation_only": True,
+        "first_live_verified": False,
+        "goal_edl_insertion_authorized": False,
+        "n_real_vlm_calls": 0,
+    }
+    before = provider_usage(api)
+    attempts = int(before.get("http_attempts") or 0)
+    spent = float(before.get("est_cost_usd_real") or 0.0)
+    if attempts + 3 > int(max_calls) or spent >= float(max_cost_usd):
+        _write(out_dir / "source_goal_vlm_observation.json", result)
+        return result
+    candidates = []
+    for issue in queue.get("issues") or []:
+        if not isinstance(issue, Mapping):
+            continue
+        if issue.get("status") != "SOURCE_CLIPS_READY_UNVERIFIED":
+            continue
+        conf = issue.get("score_confirmation_sec")
+        for c in issue.get("continuous_candidate_clips") or []:
+            if not isinstance(c, Mapping):
+                continue
+            p = Path(str(c.get("clip_path") or ""))
+            if not p.is_file():
+                continue
+            try:
+                mi, mo = float(c["media_in"]), float(c["media_out"])
+                delta = abs(float(conf) - min(mo, float(conf)))
+            except (TypeError, ValueError, KeyError):
+                continue
+            candidates.append((delta, issue, c, mi, mo))
+    if not candidates:
+        result["status"] = "NO_LOCALIZED_VIDEO_CLIPS"
+        _write(out_dir / "source_goal_vlm_observation.json", result)
+        return result
+    # Prefer a window near the score change; score proximity is only a
+    # retrieval heuristic, not evidence that the goal is there.
+    _, issue, candidate, mi, mo = min(candidates, key=lambda x: x[0])
+    cid = str(candidate.get("candidate_id") or "candidate")
+    goal_frames = []
+    try:
+        _, goal_frames = extract_dense_frames(
+            video=Path(source_mp4),
+            media_in=mi, media_out=mo,
+            out_dir=out_dir / "dense_goal_frames",
+            count=8,
+            gap_id="goal_gap_" + str(issue.get("issue_id") or "")[:60],
+            tool="source_goal_action_video_observe",
+        )
+        visual = call_goal_verify_round(
+            api=api,
+            frames=goal_frames,
+            gap_id=str(issue.get("issue_id") or "goal_gap"),
+            media_in=mi,
+            media_out=mo,
+            score_before=issue.get("score_before"),
+            score_after=issue.get("score_after"),
+            attacking_team_hint="scoring side indicated by score_before→score_after",
+            round_name="v3a_goal_gap_source_semantic_probe",
+        )
+        if not visual.get("ok") or visual.get("provider_mode") != "real":
+            result.update({
+                "status": "VIDEO_SEMANTIC_UNRESOLVED",
+                "error": visual.get("error"),
+                "provider_mode": visual.get("provider_mode"),
+            })
+        else:
+            clip = Path(str(candidate.get("clip_path") or ""))
+            cross = cross_check_visible_evidence(
+                vlm_inference=visual.get("vlm_inference"),
+                frames=goal_frames,
+                score_bounds={
+                    "first_after_obs": {"media_sec": issue.get("score_confirmation_sec")},
+                },
+                media_in=mi,
+                media_out=mo,
+                continuous_clip_ok=clip.is_file(),
+                continuous_clip_path=str(clip),
+            )
+            result.update({
+                "status": (
+                    "GOAL_SEMANTIC_CANDIDATE_OBSERVED_FIRST_LIVE_UNVERIFIED"
+                    if cross.get("structurally_ready_for_automated_verify")
+                    else "VIDEO_SEMANTIC_UNRESOLVED"
+                ),
+                "provider_mode": "real",
+                "source_issue_id": issue.get("issue_id"),
+                "candidate_id": cid,
+                "source_window": [mi, mo],
+                "frame_ids_sent": [f.get("frame_id") for f in goal_frames],
+                "source_video_crosscheck": cross,
+                "vlm_inference": visual.get("vlm_inference"),
+                "model_raw_response_excerpt": visual.get("raw_response_excerpt"),
+                "first_live_verified": False,
+                "not_native_continuous_video_ingest": True,
+                "next_requirement": (
+                    "independent SHA/PTS-bound full broadcast-timeline review "
+                    "and exact original source binding before authorization"
+                ),
+            })
+    except Exception as exc:  # noqa: BLE001
+        result.update({
+            "status": "VIDEO_SEMANTIC_UNRESOLVED",
+            "error": f"{type(exc).__name__}:{exc}",
+        })
+    after = provider_usage(api)
+    result["n_real_vlm_calls"] = (
+        int(after.get("http_attempts") or 0) - attempts
+    )
+    result["api_usage_after"] = after
+    _write(out_dir / "source_goal_vlm_observation.json", result)
+    return result
+
+
 def _valid_issue_binding(review: Mapping[str, Any], issue: Mapping[str, Any]) -> bool:
     return bool(
         str(review.get("issue_id") or "") == str(issue.get("issue_id") or "")
@@ -331,9 +469,9 @@ def apply_video_verified_goal_repair(
         "shot_kind": "live",
         "goal_action_complete": True,
         "first_live_status": "FIRST_LIVE_VERIFIED",
-        "agent_auto_verified": (
-            validated.get("reviewer_type") == "REAL_VIDEO_MODEL_REVIEW"
-        ),
+        # External reviewed files, even when originating from a real model,
+        # are not independently authenticated as an active Agent VLM call.
+        "agent_auto_verified": False,
         "goal_coverage_repair": True,
         "repair_issue_id": issue.get("issue_id"),
         "evidence_status": "SOURCE_VIDEO_GOAL_SEMANTIC_AND_FIRST_LIVE_BOUND",
