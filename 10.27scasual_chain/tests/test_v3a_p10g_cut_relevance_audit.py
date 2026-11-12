@@ -80,3 +80,5 @@ def test_invalid_times_or_nonfinite_radius_fail_closed():
         audit_playback_observations(_edl(), [4], observation_radius_sec=float("nan"))
     with pytest.raises(ValueError):
         audit_playback_observations(_edl(), [4], rendered_duration_sec=-4)
+    with pytest.raises(ValueError):
+        audit_playback_observations(_edl(), [4], rendered_duration_sec=float("inf"))
