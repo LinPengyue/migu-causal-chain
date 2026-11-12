@@ -6,9 +6,11 @@ from pathlib import Path
 
 from story_video_agent_v3.atomic_event_enrich import enrich_files
 from story_video_agent_v3.story_editorial_redundancy import validate_editorial_irrelevance_claims
-from story_video_agent_v3.story_full_e2e_cli import build_parser, validate_inputs
-from story_video_agent_v3.story_paid_eval import select_critic_frame_bundle
-from story_video_agent_v3.story_timeline import build_story_timeline
+from story_video_agent_v3.story_full_e2e_cli import build_parser, validate_inputs, evaluate_stages
+from story_video_agent_v3.story_paid_eval import (
+    select_critic_frame_bundle, _story_frame_segment_id,
+)
+from story_video_agent_v3.story_timeline import build_story_timeline, story_time_to_media
 
 
 def _edl():
@@ -176,3 +178,41 @@ def test_irrelevance_requires_exact_before_target_after_not_three_arbitrary_fram
     )
     assert not bad["issues"]
     assert bad["rejected"][0]["reason"] == "not_cited_exact_before_target_after_context"
+
+
+def test_exact_cut_boundary_belongs_to_following_segment():
+    timeline = build_story_timeline(_edl())
+    assert story_time_to_media(timeline, 3.0)["segment_id"] == "event"
+    assert story_time_to_media(timeline, 7.0)["segment_id"] == "turn"
+    assert story_time_to_media(timeline, 14.0)["segment_id"] == "ending"
+
+
+def test_seam_adjacent_frame_has_no_trusted_segment_binding():
+    timeline = build_story_timeline(_edl())
+    assert _story_frame_segment_id(timeline, 7.0) is None
+    assert _story_frame_segment_id(timeline, 7.2) is None
+    assert _story_frame_segment_id(timeline, 8.0) == "turn"
+
+
+def test_official_full_e2e_stage_validation_blocks_nonmonotonic_input_edl(tmp_path):
+    fresh_root = tmp_path / "fresh"
+    phase5 = fresh_root / "04_phase5"
+    phase5.mkdir(parents=True)
+    edl = [
+        {"segment_id": "a", "role": "buildup_action", "media_in": 100, "media_out": 110},
+        {"segment_id": "b", "role": "equalizer_goal_action", "media_in": 105, "media_out": 116},
+    ]
+    (phase5 / "candidate_edl.json").write_text(json.dumps(edl), encoding="utf-8")
+    report = evaluate_stages(out_dir=tmp_path, fresh_root=fresh_root, delivery={})
+    assert report["stages"]["04_phase5_edl"]["source_pts_monotonic"] is False
+    assert report["stages"]["04_phase5_edl"]["valid"] is False
+    assert "04_phase5_source_pts_nonmonotonic" in report["blocking_errors"]
+    assert not report["all_required_valid"]
+
+
+def test_raw_only_rejects_malformed_event_file(tmp_path):
+    import pytest
+    raw = tmp_path / "bad.json"
+    raw.write_text(json.dumps({"causal_chains": []}), encoding="utf-8")
+    with pytest.raises(ValueError, match="events input must"):
+        enrich_files(events_path=raw, out_events_path=tmp_path / "out.json")
