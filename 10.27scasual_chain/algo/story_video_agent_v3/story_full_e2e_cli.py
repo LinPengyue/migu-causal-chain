@@ -1,24 +1,25 @@
-"""Official one-click Story Video E2E from three raw inputs only.
+"""One-click Story E2E from original event JSON + full video.
 
-Formal inputs (required):
+Formal raw-only inference (required):
   --source-mp4      full match video
   --events-json     delivery events JSON (not enriched)
-  --causal-json     human causal-chain JSON (atoms for enrich only)
+Historical development ONLY:
+  --causal-json     optional human annotated causal atoms; NOT gold-free eval
 
 This entrypoint NEVER accepts Phase5 / EDL / story graph / initial MP4 reuse.
-It always runs: atomic enrich → strip/V1 short causal → Phase5 V3-R → V3-A story loop.
+It always runs: raw events (optional DEV atom enrich) → strip/V1 causal
+prediction with Goal Recovery → Phase5 V3-R → V3-A story loop.
 
 Causal-chain contract (do not mix):
-  - User causal JSON: long-form human annotations used only to *supplement missing atoms*
-    into events via atomic_event_enrich (structure not reused as story plan).
-  - Predicted short causal (03_v1_adapt): algorithm strip→V1 adaptation for Phase5.
+  - Optional user causal JSON is historical development supervision, excluded
+    from raw-only / benchmark-qualified runs.
+  - Predicted short causal (03_v1_adapt): strip→V1 + Goal Recovery for Phase5.
   - V3-R long story chain: produced inside Phase5 planner/graph (not the human file).
 
 Examples:
   python -m story_video_agent_v3.story_full_e2e_cli \\
     --source-mp4 /path/match.mp4 \\
     --events-json /path/match.json \\
-    --causal-json /path/match_causal.json \\
     --out-dir /data2/lpy1/_story_va_outputs/v3/plan2/full_e2e_A_<ts> \\
     --match-id uae_oman_dev
 """
@@ -60,8 +61,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--source-mp4", type=Path, required=True)
     p.add_argument("--events-json", type=Path, required=True,
                    help="Raw delivery events JSON (not events_enriched.json)")
-    p.add_argument("--causal-json", type=Path, required=True,
-                   help="Human causal atoms JSON (*_causal.json)")
+    p.add_argument("--causal-json", type=Path, default=None,
+                   help="Optional historical development-only human causal atoms; invalid for raw-only eval")
+    p.add_argument("--strict-raw-only", action="store_true", default=False,
+                   help="Reject any human causal annotation input (recommended for official evaluation)")
     p.add_argument("--out-dir", type=Path, required=True)
     p.add_argument("--match-id", type=str, default=None)
     p.add_argument("--algo-root", type=Path, default=None)
@@ -83,11 +86,15 @@ def validate_inputs(args: argparse.Namespace) -> list[str]:
     errs: list[str] = []
     if args.phase5_dir is not None or args.baseline_edl is not None:
         errs.append("phase5_dir/baseline_edl_forbidden_in_full_e2e")
-    for label, path in (
+    if getattr(args, "strict_raw_only", False) and args.causal_json is not None:
+        errs.append("strict_raw_only_rejects_human_causal_json")
+    inputs = [
         ("source_mp4", args.source_mp4),
         ("events_json", args.events_json),
-        ("causal_json", args.causal_json),
-    ):
+    ]
+    if args.causal_json is not None:
+        inputs.append(("causal_json", args.causal_json))
+    for label, path in inputs:
         if not path.is_file():
             errs.append(f"missing_{label}:{path}")
             continue
@@ -132,18 +139,23 @@ def main(argv: list[str] | None = None) -> int:
     match_id = args.match_id or args.events_json.stem
     algo_root = args.algo_root or Path(__file__).resolve().parents[2]
 
+    # A legacy annotated-atom run is never a raw-only evaluation case.
+    raw_only = args.causal_json is None
     # Contract note persisted for auditors.
     contract = {
         "schema": "v3a_full_e2e_input_contract_v1",
         "formal_inputs": {
             "source_mp4": str(args.source_mp4.resolve()),
             "events_json": str(args.events_json.resolve()),
-            "causal_json": str(args.causal_json.resolve()),
+            "causal_json": str(args.causal_json.resolve()) if args.causal_json else None,
         },
+        "input_mode": "RAW_EVENTS_ONLY" if raw_only else "HUMAN_ATOM_ENRICHED_DEV",
+        "eligible_for_raw_only_evaluation": raw_only,
+        "human_annotation_atoms_used": not raw_only,
         "causal_roles": {
             "user_causal_json": (
-                "Human long-form causal annotations; used only by atomic_event_enrich "
-                "to inject missing atoms into events. Not used as story plan."
+                "Optional DEV-only annotated atoms for legacy reproduction; "
+                "never a permitted raw-only evaluation input."
             ),
             "predicted_short_causal": (
                 "Algorithm strip→V1 adaptation under 03_v1_adapt; Phase5 input."
@@ -174,7 +186,7 @@ def main(argv: list[str] | None = None) -> int:
         out_dir=out_dir,
         phase5_dir=None,
         events_json=args.events_json.resolve(),
-        causal_atoms_json=args.causal_json.resolve(),
+        causal_atoms_json=args.causal_json.resolve() if args.causal_json else None,
         match_id=match_id,
         algo_root=algo_root.resolve(),
         run_fresh_v3r=True,
@@ -216,6 +228,9 @@ def main(argv: list[str] | None = None) -> int:
         "stage_validity": stage_eval,
         "fresh_v3r": True,
         "phase5_reuse": False,
+        "input_mode": "RAW_EVENTS_ONLY" if raw_only else "HUMAN_ATOM_ENRICHED_DEV",
+        "eligible_for_raw_only_evaluation": raw_only,
+        "human_annotation_atoms_used": not raw_only,
         "http_calls": audit.get("http_calls"),
         "est_cost_usd": audit.get("est_cost_usd"),
         "error": audit.get("error") or stage_eval.get("blocking_errors"),
