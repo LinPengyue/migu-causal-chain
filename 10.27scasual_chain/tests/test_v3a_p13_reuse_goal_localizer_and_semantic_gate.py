@@ -147,3 +147,4 @@ def test_all_pipeline_stages_valid_but_missing_goal_blocks_all_required(tmp_path
     assert result["story_goal_actions_present"] is False
     assert "03_score_confirmed_goal_action_missing" in result["blocking_errors"]
     assert result["all_required_valid"] is False
+    assert result["release_ready"] is False
