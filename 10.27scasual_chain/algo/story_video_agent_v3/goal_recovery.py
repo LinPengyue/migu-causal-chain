@@ -235,6 +235,56 @@ def apply_action_overlays(
     return out
 
 
+
+def attach_independent_goal_atoms(
+    candidates: Sequence[Dict[str, Any]],
+    raw_events: Sequence[Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    """Associate annotated Goal events to score transitions, not video verification."""
+    goals = []
+    for e in raw_events:
+        if str(e.get("event_type") or "").lower() not in {"goal", "own_goal"}:
+            continue
+        if (e.get("enrichment") or {}).get("provenance") != "independent_atomic_annotation":
+            continue
+        t = _event_time(e)
+        if t is None or _is_replay(e):
+            continue
+        phase = str((e.get("video_context") or {}).get("broadcast_phase") or "UNKNOWN").upper()
+        goals.append((float(t), str(e.get("event_id")), phase))
+    out = [dict(c) for c in candidates]
+    used = set()
+    for c in out:
+        if not c.get("single_goal_increment") or c.get("goal_action_sec") is not None:
+            continue
+        confirm = float(c["score_confirmation_sec"])
+        interval = c.get("possible_action_interval") or {}
+        lo = max(0.0, float(interval.get("media_in") if interval.get("media_in") is not None else confirm - 180.0) - 10.0)
+        hi = confirm - 0.5
+        eligible = [(t, eid, phase) for t, eid, phase in goals if eid not in used and lo <= t <= hi]
+        if len(eligible) != 1:
+            if len(eligible) > 1:
+                c.setdefault("notes", []).append("ambiguous_independent_goal_atoms")
+            continue
+        t, eid, phase = eligible[0]
+        used.add(eid)
+        c["goal_action_sec"] = round(t, 3)
+        c["goal_action_interval"] = {
+            "media_in": round(max(0.0, t - 2.0), 3),
+            "media_out": round(t + 6.0, 3),
+        }
+        c["evidence_sources"] = list(dict.fromkeys(
+            list(c.get("evidence_sources") or []) + ["independent_atomic_annotation"]
+        ))
+        c["verification_status"] = "annotated_goal_action_unverified_video"
+        c["provisional_event_id"] = eid
+        c["is_replay"] = phase == "REPLAY"
+        c.setdefault("notes", []).append(
+            "Independent Goal annotation only; first-LIVE still requires video."
+        )
+    return out
+
+
 def provisional_action_from_nearby_events(
     candidates: Sequence[Dict[str, Any]],
 ) -> List[Dict[str, Any]]:
@@ -424,6 +474,7 @@ def recover_match_goals(
     # Prefer explicit LIVE overlays (e.g. P3/P4) over G2.2 packs.
     overlays = list(extra_overlays or []) + load_action_overlays(overlay_paths or [])
     cands = apply_action_overlays(cands, overlays)
+    cands = attach_independent_goal_atoms(cands, raw)
     cands = provisional_action_from_nearby_events(cands)
     strip = {}
     if strip_path and Path(strip_path).is_file():
