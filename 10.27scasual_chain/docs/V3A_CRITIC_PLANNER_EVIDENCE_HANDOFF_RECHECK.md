@@ -27,6 +27,12 @@ citation-normalized semantic evidence, sampled KEEP finding and coverage
 limits**. This prevented the Planner from weighing observed narrative facts
 against speculative edits. The fix adds:
 
+- `select_critic_frame_bundle` now sorts the selected dense + global
+  finished-cut stills by **story playback time** before passing them to the
+  VLM. Previously it selected dense issue frames first and then the global
+  story sample, so a late issue frame could be shown *before* an opening frame,
+  despite a prompt claiming the packet was ordered. This is a real narrative
+  sequencing error, independent of hallucination or paid provider quality.
 - `video_critic_observations`: only checkable, normalized cited facts from
   an actual real critic; no raw model evidence or fabricated frame IDs;
   sampled `keep_story_if_no_defect` is passed as an observation, **not a
@@ -58,16 +64,19 @@ Checks:
    `FRAME_CITED` observation and sampled KEEP must appear; fabricated raw
    frame IDs must not. Missing/degraded critic must show UNAVAILABLE, not
    invent evidence.
-2. Confirm protected goals do not appear in editable-hint targets.
-3. Confirm existing nonadditive/first-live/replay gates, P10-C sandbox,
+2. Confirm the actual VLM frame packet is monotonically ordered by
+   finished-story timestamp even when dense and global frames interleave.
+   Sample distribution/coverage must remain unchanged.
+3. Confirm protected goals do not appear in editable-hint targets.
+4. Confirm existing nonadditive/first-live/replay gates, P10-C sandbox,
    P14 event-mode rules and P8 historical behavior remain unchanged.
-4. If a case fails, fix the smallest source-level cause and report
+5. If a case fails, fix the smallest source-level cause and report
    exact test name/line. No edits of expected behavior just to make it green.
-5. Reuse *existing* P10-D A and P10-F B anonymous X/Y files for independent
+6. Reuse *existing* P10-D A and P10-F B anonymous X/Y files for independent
    whole-story viewing and label collection. Do not unseal P10-F risk
    predictions until labels are sealed. Historical candidate pairs are
    negative/uncertain controls; do not call them improvements.
-6. Optionally replay saved P9/P10-D `vlm_story_critic.json` parsed and
+7. Optionally replay saved P9/P10-D `vlm_story_critic.json` parsed and
    normalized evidence through the fake Planner to audit the new payload;
    no new real-provider calls. A changed *prompt* does not establish that
    the real model now makes a better edit.
