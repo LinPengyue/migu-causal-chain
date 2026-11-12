@@ -3,6 +3,9 @@
 Branch: `story-va-v3a-p13-reuse-first-live-localizer`
 Base: P12 server-verified `4e90953603b6f008eb06f99487f6518cf6aad333`.
 
+Status: **ZERO-PAID LOCALIZE RUN COMPLETE ON `1e3d83f`**. Equalizer evidence pack under `/tmp/lpy1_p13_equalizer_source_video_evidence_20261112` — verdict `not_found_in_budget` / unresolved; not first-LIVE. See `docs/V3A_P13_SERVER_VERIFY_1e3d83f.json`.
+
+
 ## Critical distinction: execution passed, goal missing, release blocked
 
 P12 actual raw-only A pipeline:

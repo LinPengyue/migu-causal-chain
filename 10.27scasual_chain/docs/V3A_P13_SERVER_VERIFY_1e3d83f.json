@@ -1,0 +1,356 @@
+{
+  "schema": "v3a_p13_zero_paid_server_verify_v1",
+  "generated": "2026-11-12T08:27:23.807738+00:00",
+  "worktree": "/data2/lpy1/worktrees/migu-v3a-p13-verify",
+  "branch": "story-va-v3a-p13-reuse-first-live-localizer",
+  "code_sha": "1e3d83fd03a580624acaff0fdf204b3e9e32dbc4",
+  "compileall": {
+    "exit_code": 0
+  },
+  "pytest_p13_p12_p11": {
+    "passed": 22,
+    "failed": 0
+  },
+  "paid_http": 0,
+  "full_phase5_rerun": false,
+  "localize_run": {
+    "exit_code": 0,
+    "out_dir": "/tmp/lpy1_p13_equalizer_source_video_evidence_20261112",
+    "candidate_id": "goalcand_03_01_to_11",
+    "ocr_enabled": true,
+    "inputs": {
+      "original_events_json": "/data2/lpy1/worktrees/migu-v3a-p13-verify/10.27scasual_chain/data/交付_out/10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语.json",
+      "events_sha256": "ddae99b21cbfcd1c75ddf620d957578e57c2c013d607ac893655c4d52b7e779e",
+      "original_source_mp4": "/mnt/data4/migu/10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语.mp4",
+      "source_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+      "goal_recovery_json": "/tmp/lpy1_p12_raw_only_20261112/run/01_to_04_fresh_v3r/03_v1_adapt/goal_recovery.json",
+      "recovery_sha256": "da58fb65029600e1252282229ae850be558a0b9d9018ca63b36208f087fa0c32"
+    },
+    "result": {
+      "candidate_id": "goalcand_03_01_to_11",
+      "score_before": [
+        0,
+        1
+      ],
+      "score_after": [
+        1,
+        1
+      ],
+      "score_confirmation_sec": 6535.62,
+      "previous_goal_action_sec": null,
+      "source_score_bracket": {
+        "media_in": 6410.07,
+        "media_out": 6535.62,
+        "note": "Board lag window from Score_Recognition; NOT the action time itself"
+      },
+      "ocr_score_bounds": {
+        "media_in": 6410.07,
+        "media_out": 6460.62
+      },
+      "n_continuous_clips_extracted": 3,
+      "candidate_evidence_path": "/tmp/lpy1_p13_equalizer_source_video_evidence_20261112/goalcand_03_01_to_11/candidate_audits.json",
+      "evidence_pack_path": "/tmp/lpy1_p13_equalizer_source_video_evidence_20261112/goalcand_03_01_to_11/evidence_pack.json",
+      "localization_verdict_bucket": "not_found_in_budget",
+      "action_timestamp_autofilled": false,
+      "edl_inserted": false
+    },
+    "score_bounds_slim": {
+      "score_before": [
+        0,
+        1
+      ],
+      "score_after": [
+        1,
+        1
+      ],
+      "last_before_obs": {
+        "media_sec": 6410.07,
+        "score_tuple": [
+          0,
+          1
+        ],
+        "source": "event_score_recognition",
+        "event_id": "event_000636",
+        "status": "event"
+      },
+      "first_after_obs": {
+        "media_sec": 6460.62,
+        "score_tuple": [
+          1,
+          1
+        ],
+        "source": "ocr",
+        "status": "ok"
+      },
+      "unknown_interval": {
+        "media_in": 6410.07,
+        "media_out": 6460.62
+      },
+      "n_observations": 620,
+      "note": "Score bounds constrain search only; not goal_action_sec. Board lag / OCR noise / confirm delay must not be treated as exact goal time."
+    },
+    "localization_plan": {
+      "role": "goalcand_03_01_to_11",
+      "search_in": 6395.07,
+      "search_out": 6465.62,
+      "covered_historical": [],
+      "uncovered_gaps": [
+        {
+          "media_in": 6395.07,
+          "media_out": 6465.62
+        }
+      ],
+      "n_replay_event_spans": 0,
+      "n_live_shots": 0,
+      "candidates": [
+        {
+          "media_in": 6402.07,
+          "media_out": 6437.07,
+          "origin": "score_unknown_core",
+          "priority": 1100,
+          "rejected_prefilter": false,
+          "bound_source": "score_bounds",
+          "candidate_id": "goalcand_03_01_to_11_score_unknown_core_6402"
+        },
+        {
+          "media_in": 6440.62,
+          "media_out": 6465.62,
+          "origin": "uncovered_gap_tail",
+          "priority": 1000,
+          "rejected_prefilter": false,
+          "gap_index": 0,
+          "candidate_id": "goalcand_03_01_to_11_uncovered_gap_tail_6440"
+        },
+        {
+          "media_in": 6395.07,
+          "media_out": 6415.07,
+          "origin": "uncovered_gap_head",
+          "priority": 900,
+          "rejected_prefilter": false,
+          "gap_index": 0,
+          "candidate_id": "goalcand_03_01_to_11_uncovered_gap_head_6395"
+        }
+      ],
+      "rejected_or_demoted": [],
+      "planned_video_read_sec": 80.0,
+      "constraints": {
+        "live_only": true,
+        "reject_replay": true,
+        "no_score_confirm_as_goal_action": true,
+        "prefer_uncovered_over_historical_recut": true,
+        "max_candidates": 4,
+        "max_video_read_sec": 90.0
+      }
+    },
+    "localization_summary": {
+      "schema": "v3_p3_first_live_localization_v1",
+      "role": "goalcand_03_01_to_11",
+      "score_before": [
+        0,
+        1
+      ],
+      "score_after": [
+        1,
+        1
+      ],
+      "score_confirmation_sec": 6535.62,
+      "score_bounds": {
+        "last_before": {
+          "media_sec": 6410.07,
+          "score_tuple": [
+            0,
+            1
+          ],
+          "source": "event_score_recognition",
+          "event_id": "event_000636",
+          "status": "event"
+        },
+        "first_after": {
+          "media_sec": 6460.62,
+          "score_tuple": [
+            1,
+            1
+          ],
+          "source": "ocr",
+          "status": "ok"
+        },
+        "unknown_interval": {
+          "media_in": 6410.07,
+          "media_out": 6460.62
+        }
+      },
+      "n_candidates": 3,
+      "labels": [
+        "unresolved",
+        "unresolved",
+        "unresolved"
+      ],
+      "top_candidate_id": "goalcand_03_01_to_11_uncovered_gap_head_6395",
+      "top_semantic_label": "unresolved",
+      "n_candidate_extracted_ok": 3,
+      "n_goal_action_verified_ok": 0,
+      "n_agent_auto_verified": 0,
+      "n_human_video_supported": 0,
+      "verdict_bucket": "not_found_in_budget",
+      "render_ready": false
+    },
+    "candidate_audits_compact": [
+      {
+        "candidate_id": "goalcand_03_01_to_11_score_unknown_core_6402",
+        "origin": "score_unknown_core",
+        "media_in": 6402.07,
+        "media_out": 6437.07,
+        "clip_path": "/tmp/lpy1_p13_equalizer_source_video_evidence_20261112/goalcand_03_01_to_11/roles/goalcand_03_01_to_11/clips/goalcand_03_01_to_11_score_unknown_core_6402_continuous_accurate.mp4",
+        "frame_paths": [
+          "/tmp/lpy1_p13_equalizer_source_video_evidence_20261112/goalcand_03_01_to_11/roles/goalcand_03_01_to_11/frames/goalcand_03_01_to_11_score_unknown_core_6402_f0_6403070.jpg",
+          "/tmp/lpy1_p13_equalizer_source_video_evidence_20261112/goalcand_03_01_to_11/roles/goalcand_03_01_to_11/frames/goalcand_03_01_to_11_score_unknown_core_6402_f1_6419570.jpg",
+          "/tmp/lpy1_p13_equalizer_source_video_evidence_20261112/goalcand_03_01_to_11/roles/goalcand_03_01_to_11/frames/goalcand_03_01_to_11_score_unknown_core_6402_f2_6435570.jpg"
+        ],
+        "extraction_ok": true,
+        "first_live_status": "unresolved",
+        "semantic_label": "unresolved",
+        "classification_reason": "insufficient_signals",
+        "evidence_gaps": [
+          "observed_shot_unconfirmed",
+          "observed_net_unconfirmed",
+          "first_live_unconfirmed",
+          "attacking_team_unconfirmed"
+        ],
+        "observed_shot": false,
+        "observed_net": false,
+        "goal_action_verified_ok": false
+      },
+      {
+        "candidate_id": "goalcand_03_01_to_11_uncovered_gap_tail_6440",
+        "origin": "uncovered_gap_tail",
+        "media_in": 6440.62,
+        "media_out": 6465.62,
+        "clip_path": "/tmp/lpy1_p13_equalizer_source_video_evidence_20261112/goalcand_03_01_to_11/roles/goalcand_03_01_to_11/clips/goalcand_03_01_to_11_uncovered_gap_tail_6440_continuous_accurate.mp4",
+        "frame_paths": [
+          "/tmp/lpy1_p13_equalizer_source_video_evidence_20261112/goalcand_03_01_to_11/roles/goalcand_03_01_to_11/frames/goalcand_03_01_to_11_uncovered_gap_tail_6440_f0_6441620.jpg",
+          "/tmp/lpy1_p13_equalizer_source_video_evidence_20261112/goalcand_03_01_to_11/roles/goalcand_03_01_to_11/frames/goalcand_03_01_to_11_uncovered_gap_tail_6440_f1_6453120.jpg",
+          "/tmp/lpy1_p13_equalizer_source_video_evidence_20261112/goalcand_03_01_to_11/roles/goalcand_03_01_to_11/frames/goalcand_03_01_to_11_uncovered_gap_tail_6440_f2_6464120.jpg"
+        ],
+        "extraction_ok": true,
+        "first_live_status": "unresolved",
+        "semantic_label": "unresolved",
+        "classification_reason": "insufficient_signals",
+        "evidence_gaps": [
+          "observed_shot_unconfirmed",
+          "observed_net_unconfirmed",
+          "first_live_unconfirmed",
+          "attacking_team_unconfirmed"
+        ],
+        "observed_shot": false,
+        "observed_net": false,
+        "goal_action_verified_ok": false
+      },
+      {
+        "candidate_id": "goalcand_03_01_to_11_uncovered_gap_head_6395",
+        "origin": "uncovered_gap_head",
+        "media_in": 6395.07,
+        "media_out": 6415.07,
+        "clip_path": "/tmp/lpy1_p13_equalizer_source_video_evidence_20261112/goalcand_03_01_to_11/roles/goalcand_03_01_to_11/clips/goalcand_03_01_to_11_uncovered_gap_head_6395_continuous_accurate.mp4",
+        "frame_paths": [
+          "/tmp/lpy1_p13_equalizer_source_video_evidence_20261112/goalcand_03_01_to_11/roles/goalcand_03_01_to_11/frames/goalcand_03_01_to_11_uncovered_gap_head_6395_f0_6396070.jpg",
+          "/tmp/lpy1_p13_equalizer_source_video_evidence_20261112/goalcand_03_01_to_11/roles/goalcand_03_01_to_11/frames/goalcand_03_01_to_11_uncovered_gap_head_6395_f1_6405070.jpg",
+          "/tmp/lpy1_p13_equalizer_source_video_evidence_20261112/goalcand_03_01_to_11/roles/goalcand_03_01_to_11/frames/goalcand_03_01_to_11_uncovered_gap_head_6395_f2_6413570.jpg"
+        ],
+        "extraction_ok": true,
+        "first_live_status": "unresolved",
+        "semantic_label": "unresolved",
+        "classification_reason": "insufficient_signals",
+        "evidence_gaps": [
+          "observed_shot_unconfirmed",
+          "observed_net_unconfirmed",
+          "first_live_unconfirmed",
+          "attacking_team_unconfirmed"
+        ],
+        "observed_shot": false,
+        "observed_net": false,
+        "goal_action_verified_ok": false
+      }
+    ],
+    "evidence_pack": {
+      "schema": "v3_targeted_evidence_pack_v1",
+      "match_id": null,
+      "goals": [
+        {
+          "role": "goalcand_03_01_to_11",
+          "identity": {
+            "candidate_id": "goalcand_03_01_to_11",
+            "raw_only": true
+          },
+          "live_or_replay": "unknown",
+          "observed_shot": false,
+          "observed_net": false,
+          "first_live_visual_ok": false,
+          "attacking_team_match": false,
+          "claims_continuous_live": true,
+          "media_in": 6395.07,
+          "media_out": 6415.07,
+          "shot_sec": null,
+          "net_sec": null,
+          "clip_path": "/tmp/lpy1_p13_equalizer_source_video_evidence_20261112/goalcand_03_01_to_11/roles/goalcand_03_01_to_11/clips/goalcand_03_01_to_11_uncovered_gap_head_6395_continuous_accurate.mp4",
+          "frame_paths": [
+            "/tmp/lpy1_p13_equalizer_source_video_evidence_20261112/goalcand_03_01_to_11/roles/goalcand_03_01_to_11/frames/goalcand_03_01_to_11_uncovered_gap_head_6395_f0_6396070.jpg",
+            "/tmp/lpy1_p13_equalizer_source_video_evidence_20261112/goalcand_03_01_to_11/roles/goalcand_03_01_to_11/frames/goalcand_03_01_to_11_uncovered_gap_head_6395_f1_6405070.jpg",
+            "/tmp/lpy1_p13_equalizer_source_video_evidence_20261112/goalcand_03_01_to_11/roles/goalcand_03_01_to_11/frames/goalcand_03_01_to_11_uncovered_gap_head_6395_f2_6413570.jpg"
+          ],
+          "semantic_label": "unresolved",
+          "semantic_verification_class": "NOT_VERIFIED",
+          "human_video_supported": false,
+          "agent_auto_verified": false,
+          "verification_status": "unresolved",
+          "candidate_id": "goalcand_03_01_to_11_uncovered_gap_head_6395",
+          "evidence_gaps": [
+            "observed_shot_unconfirmed",
+            "observed_net_unconfirmed",
+            "first_live_unconfirmed",
+            "attacking_team_unconfirmed"
+          ],
+          "classification_reason": "insufficient_signals",
+          "net_seen_only_in_replay": false,
+          "human_review_record": null,
+          "candidate_extracted_ok": true,
+          "goal_action_verified_ok": false,
+          "render_ready": false
+        }
+      ],
+      "n_agent_auto_verified": 0,
+      "n_human_video_supported": 0,
+      "note": "P3 localization pack; extraction ≠ verification",
+      "render_ready": false
+    },
+    "continuous_clips": [
+      {
+        "path": "/tmp/lpy1_p13_equalizer_source_video_evidence_20261112/goalcand_03_01_to_11/roles/goalcand_03_01_to_11/clips/goalcand_03_01_to_11_score_unknown_core_6402_continuous_accurate.mp4",
+        "bytes": 41132817,
+        "name": "goalcand_03_01_to_11_score_unknown_core_6402_continuous_accurate.mp4"
+      },
+      {
+        "path": "/tmp/lpy1_p13_equalizer_source_video_evidence_20261112/goalcand_03_01_to_11/roles/goalcand_03_01_to_11/clips/goalcand_03_01_to_11_uncovered_gap_head_6395_continuous_accurate.mp4",
+        "bytes": 25338975,
+        "name": "goalcand_03_01_to_11_uncovered_gap_head_6395_continuous_accurate.mp4"
+      },
+      {
+        "path": "/tmp/lpy1_p13_equalizer_source_video_evidence_20261112/goalcand_03_01_to_11/roles/goalcand_03_01_to_11/clips/goalcand_03_01_to_11_uncovered_gap_tail_6440_continuous_accurate.mp4",
+        "bytes": 36907806,
+        "name": "goalcand_03_01_to_11_uncovered_gap_tail_6440_continuous_accurate.mp4"
+      }
+    ],
+    "verdict_bucket": "not_found_in_budget",
+    "actual_visual_semantic_verification": false,
+    "claims": {
+      "equalizer_goal_found": false,
+      "first_live_verified": false,
+      "action_timestamp_autofilled": false,
+      "edl_inserted": false,
+      "story_quality_improved": false
+    },
+    "note": "OCR narrowed unknown score interval to [6410.07,6460.62]; 3 continuous clips extracted; automatic classification unresolved / not_found_in_budget. Human/video review still required before Goal Recovery bind-back."
+  },
+  "best_baseline": "V3-R",
+  "algo_edits_by_cursor": false,
+  "merged_to_main": false
+}
