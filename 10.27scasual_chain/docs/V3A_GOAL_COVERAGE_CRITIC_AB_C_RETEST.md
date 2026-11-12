@@ -40,6 +40,8 @@ goal, first broadcast, or better finished story.
 4. Challenge CLI supports `--run-id goal_coverage_v1`: rerun the **same
    frozen prepared cases** in separate `agent_run_goal_coverage_v1` folders,
    without re-rendering their baseline videos or overwriting prior audits.
+   Tagged scores are written to `private_eval/score_goal_coverage_v1.json`;
+   the original `private_eval/score.json` stays unchanged.
 
 These are match-agnostic engineering rules. Do not infer any match goal count,
 timestamp, exact scoreline, expected role, or benchmark gold at inference.
