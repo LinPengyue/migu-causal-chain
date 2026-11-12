@@ -324,3 +324,119 @@ def test_provider_probe_does_not_call_api_when_budget_insufficient(tmp_path):
         )
     assert result["n_real_vlm_calls"] == 0
     assert result["status"] == "SKIPPED_UNAUTHORIZED_OR_INSUFFICIENT_BUDGET"
+
+
+def test_existing_p13_localizer_reused_without_gold_or_paid_api(tmp_path, monkeypatch):
+    issue = _issue()
+    video = tmp_path / "source.mp4"
+    video.write_bytes(b"fake_football_source_unit_only")
+    events = tmp_path / "original_events.json"
+    events.write_text(json.dumps({"events": []}), encoding="utf-8")
+    called = {}
+
+    def fake_localizer(**kwargs):
+        called.update(kwargs)
+        return {
+            "audits": [{
+                "candidate_id": "sample_1",
+                "clip_path": str(tmp_path / "sample.mp4"),
+                "media_in": 145.0, "media_out": 157.0,
+                "frame_paths": [str(tmp_path / "frame.jpg")],
+                "semantic_label": "unresolved",
+                "verification_status": "unresolved",
+            }],
+        }
+
+    monkeypatch.setattr(
+        "story_video_agent_v3.first_live_localize.run_first_live_localization",
+        fake_localizer,
+    )
+    report = prepare_source_video_goal_queue(
+        diagnosis={"issues": [issue]},
+        source_mp4=video, events_path=events,
+        out_dir=tmp_path / "queue", max_issues=1,
+    )
+    assert called["video"] == video
+    assert called["events_path"] == events
+    assert called.get("human_review_by_candidate") in (None, {})
+    assert called["skip_ocr"] is True
+    assert called["historical_clues"] == []
+    assert report["issues"][0]["status"] == "SOURCE_CLIPS_READY_UNVERIFIED"
+    assert report["issues"][0]["auto_edl_insert_authorized"] is False
+
+
+def test_real_source_video_semantic_probe_remains_observation_only(
+    tmp_path, monkeypatch,
+):
+    from story_video_agent_v3.story_goal_video_repair import (
+        observe_source_goal_video_with_shared_vlm,
+    )
+    from story_video_agent_v3 import story_paid_eval
+    from story_video_agent_v3 import remote_vlm_verify
+
+    class FakeSharedApi:
+        calls = 0
+
+    api = FakeSharedApi()
+    monkeypatch.setattr(
+        story_paid_eval, "provider_usage",
+        lambda got: {"http_attempts": got.calls, "est_cost_usd_real": 0.001},
+    )
+    source = tmp_path / "source.mp4"
+    source.write_bytes(b"synthetic_source")
+    clip = tmp_path / "continuous.mp4"
+    clip.write_bytes(b"synthetic_clip")
+    img_paths = []
+    for i in range(2):
+        p = tmp_path / f"f{i}.jpg"
+        p.write_bytes(f"frame{i}".encode())
+        img_paths.append(p)
+    monkeypatch.setattr(
+        remote_vlm_verify, "extract_dense_frames",
+        lambda **kwargs: (None, [
+            {"frame_id": f"f{i}", "path": str(p),
+             "actual_media_sec": sec, "requested_media_sec": sec}
+            for i, (p, sec) in enumerate(zip(img_paths, (149.0, 153.0)))
+        ]),
+    )
+
+    def fake_call(**kwargs):
+        assert kwargs["api"] is api
+        api.calls += 1
+        return {
+            "ok": True, "provider_mode": "real",
+            "vlm_inference": {
+                "observed_shot": True,
+                "observed_net": True,
+                "live_or_replay": "live",
+                "attacking_team_match": True,
+                "claims_continuous_live": True,
+                "shot_frame_ids": ["f0"],
+                "net_frame_ids": ["f1"],
+                "uncertain": [],
+            },
+        }
+
+    monkeypatch.setattr(remote_vlm_verify, "call_goal_verify_round", fake_call)
+    queue = {"issues": [{
+        "status": "SOURCE_CLIPS_READY_UNVERIFIED",
+        "issue_id": "goal_coverage_01_to_11",
+        "score_before": [0, 1], "score_after": [1, 1],
+        "score_confirmation_sec": 164.0,
+        "continuous_candidate_clips": [{
+            "candidate_id": "candidate",
+            "clip_path": str(clip),
+            "media_in": 145., "media_out": 157.,
+        }],
+    }]}
+    out = observe_source_goal_video_with_shared_vlm(
+        queue=queue, source_mp4=source, api=api,
+        out_dir=tmp_path / "probe",
+        max_calls=5, max_cost_usd=0.1,
+    )
+    assert api.calls == 1
+    assert out["n_real_vlm_calls"] == 1
+    assert out["status"] == "GOAL_SEMANTIC_CANDIDATE_OBSERVED_FIRST_LIVE_UNVERIFIED"
+    assert out["first_live_verified"] is False
+    assert out["goal_edl_insertion_authorized"] is False
+    assert (tmp_path / "probe/source_goal_vlm_observation.json").is_file()
