@@ -99,6 +99,7 @@ class StoryE2EInputs:
     # Fresh V3-R can run from raw events + MP4; human atoms are DEV-only.
     events_json: Optional[Path] = None
     causal_atoms_json: Optional[Path] = None
+    independent_atoms_json: Optional[Path] = None
     match_id: Optional[str] = None
     algo_root: Optional[Path] = None
     run_fresh_v3r: bool = False
@@ -222,12 +223,19 @@ def resolve_baseline(inp: StoryE2EInputs) -> Dict[str, Any]:
     if inp.run_fresh_v3r:
         events = inp.events_json
         causal = inp.causal_atoms_json
+        independent_atoms = inp.independent_atoms_json
+        if causal is not None and independent_atoms is not None:
+            return {"ok": False, "missing": ["mutually_exclusive_atom_sources"],
+                    "reuse_frozen_v3r": False, "raw_json_mp4_sufficient": False,
+                    "paths": {}, "note": "Use independent atoms OR historical causal DEV atoms."}
         if events is None or not events.is_file() or (
             causal is not None and not causal.is_file()
-        ):
+        ) or (independent_atoms is not None and not independent_atoms.is_file()):
             missing_inputs = ["events_json"] if events is None or not events.is_file() else []
             if causal is not None and not causal.is_file():
                 missing_inputs.append("causal_atoms_json")
+            if independent_atoms is not None and not independent_atoms.is_file():
+                missing_inputs.append("independent_atoms_json")
             return {
                 "ok": False,
                 "missing": missing_inputs,
@@ -246,6 +254,7 @@ def resolve_baseline(inp: StoryE2EInputs) -> Dict[str, Any]:
             match_id=str(mid),
             events_path=events,
             causal_atoms_path=causal,
+            independent_atoms_path=independent_atoms,
             video=inp.source_mp4,
             out_dir=fresh_root,
             algo_root=Path(algo),
@@ -274,11 +283,12 @@ def resolve_baseline(inp: StoryE2EInputs) -> Dict[str, Any]:
         "reuse_frozen_v3r": bool(phase5 and not missing and not inp.run_fresh_v3r),
         "ran_fresh_v3r": bool(inp.run_fresh_v3r and not missing),
         "raw_json_mp4_sufficient": bool(
-            inp.run_fresh_v3r and inp.causal_atoms_json is None and not missing
+            inp.run_fresh_v3r and inp.causal_atoms_json is None and inp.independent_atoms_json is None and not missing
         ),
         "input_mode": (
-            "RAW_EVENTS_ONLY" if inp.run_fresh_v3r and inp.causal_atoms_json is None
-            else ("HUMAN_ATOM_ENRICHED_DEV" if inp.run_fresh_v3r else "FROZEN_PHASE5_REGRESSION")
+            ("INDEPENDENT_ATOMIC_ANNOTATED" if inp.independent_atoms_json is not None
+             else ("RAW_EVENTS_ONLY" if inp.causal_atoms_json is None else "HUMAN_ATOM_ENRICHED_DEV"))
+            if inp.run_fresh_v3r else "FROZEN_PHASE5_REGRESSION"
         ),
         "eligible_for_raw_only_evaluation": bool(
             inp.run_fresh_v3r and inp.causal_atoms_json is None and not missing
