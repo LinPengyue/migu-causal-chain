@@ -11,7 +11,7 @@ import json
 import os
 import socket
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 from urllib.parse import urlparse
 
 from story_video_agent.api_provider import (
