@@ -1,0 +1,33 @@
+{
+  "schema": "v3a_phase10f_human_label_sheet_v1",
+  "status": "AWAITING_HUMAN_LABELS",
+  "note": "Fill human_label only. Keep sealed_predictions unread until sheet is complete.",
+  "cases": [
+    {
+      "case_id": "B_strict_drop_seg_buildup_event_000458",
+      "match_id": "10月27日_25-26赛季西甲第10轮_奥萨苏纳VS塞尔塔_国语",
+      "blind_pack_dir": "/tmp/lpy1_phase10f_verify_20261112/human_blind_packs/B_strict_case01",
+      "X_mp4": "/tmp/lpy1_phase10f_verify_20261112/human_blind_packs/B_strict_case01/X.mp4",
+      "Y_mp4": "/tmp/lpy1_phase10f_verify_20261112/human_blind_packs/B_strict_case01/Y.mp4",
+      "human_label": null,
+      "rater_notes": null
+    },
+    {
+      "case_id": "B_closed_blocked_seg_buildup_event_000458",
+      "match_id": "10月27日_25-26赛季西甲第10轮_奥萨苏纳VS塞尔塔_国语",
+      "blind_pack_dir": null,
+      "status": "NO_PAIR_BASELINE_PTS_NOT_MONOTONIC",
+      "human_label": null,
+      "rater_notes": "Cannot fullcut-compare until a monotonic eligible baseline exists for this frozen closed_loop EDL."
+    },
+    {
+      "case_id": "B_closed_blocked_seg_buildup_atom_fill_0115_Shot_5657158",
+      "match_id": "10月27日_25-26赛季西甲第10轮_奥萨苏纳VS塞尔塔_国语",
+      "blind_pack_dir": null,
+      "status": "NO_PAIR_BASELINE_PTS_NOT_MONOTONIC",
+      "propose_block_reason": "baseline_source_pts_not_monotonic",
+      "human_label": null,
+      "rater_notes": "This unprotected segment is also the PTS-break predecessor vs equalizer; exploratory pair blocked by safety gate. Do not force-render."
+    }
+  ]
+}

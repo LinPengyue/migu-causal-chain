@@ -1,0 +1,26 @@
+{
+  "schema": "v3a_phase10f_human_label_instructions_v1",
+  "case_id": "B_strict_drop_seg_buildup_event_000458",
+  "match_id": "10月27日_25-26赛季西甲第10轮_奥萨苏纳VS塞尔塔_国语",
+  "match_variant": "B_strict_lin_frozen_phase5",
+  "task": "Watch BOTH full videos X and Y. Decide whether the SHORTER cut removes a NECESSARY motivational/continuity beat, a REDUNDANT beat, or UNCERTAIN.",
+  "labels": [
+    "NECESSARY",
+    "REDUNDANT",
+    "UNCERTAIN"
+  ],
+  "rules": [
+    "Do not ask which video is baseline vs candidate until labels are sealed.",
+    "Judge the whole story, not role-name heuristics.",
+    "A buildup-named segment can be REDUNDANT; a neutral role can be NECESSARY.",
+    "Do not look at sealed risk predictions before labeling."
+  ],
+  "videos": {
+    "X": "/tmp/lpy1_phase10f_verify_20261112/human_blind_packs/B_strict_case01/X.mp4",
+    "Y": "/tmp/lpy1_phase10f_verify_20261112/human_blind_packs/B_strict_case01/Y.mp4",
+    "download_folder": "/data2/lpy1/_story_va_outputs/v3/plan2/phase10f_blind_xy_download",
+    "X_duration_sec": 92.904,
+    "Y_duration_sec": 104.931
+  },
+  "durations_hint": "One video is shorter; use story quality, not duration alone."
+}

@@ -1,0 +1,80 @@
+{
+  "schema": "v3a_phase10f_sealed_risk_predictions_v1",
+  "seal_status": "SEALED_UNTIL_HUMAN_LABELS_COMPLETE",
+  "cases": [
+    {
+      "case_id": "B_strict_drop_seg_buildup_event_000458",
+      "match_id": "10月27日_25-26赛季西甲第10轮_奥萨苏纳VS塞尔塔_国语",
+      "match_variant": "B_strict_lin",
+      "target_segment_id": "seg_buildup_event_000458",
+      "action": "drop",
+      "risk_level": "HIGH_UNVERIFIED",
+      "narrative_function_loss": {
+        "schema": "v3a_narrative_function_loss_v1",
+        "status": "STRUCTURAL_SCREENED",
+        "target_segment_id": "seg_buildup_event_000458",
+        "action": "drop",
+        "risk_level": "HIGH_UNVERIFIED",
+        "semantic_video_verified": false,
+        "human_quality_inferred": false,
+        "requires_contextual_video_review": true,
+        "signals": [
+          "potential_motivation_or_effort_visual_removed",
+          "setup_to_turn_bridge_may_be_lost"
+        ],
+        "limitations": [
+          "Role labels and editorial adjacency are hypotheses, not visual semantics.",
+          "No segment ID or match-specific human preference is hardcoded."
+        ],
+        "target_role_hint": "buildup_action",
+        "preceding_role_hints": [
+          "opponent_opening_goal_action",
+          "deficit_scoreboard_anchor"
+        ],
+        "following_role_hints": [
+          "equalizer_goal_action",
+          "equalizer_scoreboard_anchor"
+        ],
+        "removed": true,
+        "recommendation": "Inspect full before-target-after video and judge whether effort, motivation or anticipation becomes implicit; compare blind fullcuts."
+      },
+      "trial_status": "EXPLORATORY_RENDERED_NOT_VERIFIED",
+      "blind_pair_status": "BLIND_PAIR_READY",
+      "private_unblinding_path": "/tmp/lpy1_phase10f_verify_20261112/offline_B_strict_drop_buildup458/02_round_01/phase10_exploratory/PRIVATE_unblinding.json",
+      "fullcut_integrity_slim": {
+        "baseline": {
+          "aligned": true,
+          "mp4_duration_sec": 104.931,
+          "story_duration_sec": 104.5,
+          "media_duration_sec": 95.5,
+          "placeholder_duration_sec": 9.0,
+          "delta_sec": 0.431,
+          "tolerance_sec": 2.0,
+          "root_cause_hint": "placeholder_title_cards_included_in_story_duration"
+        },
+        "candidate": {
+          "aligned": true,
+          "mp4_duration_sec": 92.904,
+          "story_duration_sec": 92.5,
+          "media_duration_sec": 83.5,
+          "placeholder_duration_sec": 9.0,
+          "delta_sec": 0.404,
+          "tolerance_sec": 2.0,
+          "root_cause_hint": "placeholder_title_cards_included_in_story_duration"
+        }
+      }
+    },
+    {
+      "case_id": "B_closed_blocked_seg_buildup_event_000458",
+      "risk_level": "UNKNOWN",
+      "note": "No exploratory proposal completed; baseline PTS gate blocked before narrative audit attachment.",
+      "propose_reason": "baseline_source_pts_not_monotonic"
+    },
+    {
+      "case_id": "B_closed_blocked_seg_buildup_atom_fill_0115_Shot_5657158",
+      "risk_level": "UNKNOWN",
+      "propose_reason": "baseline_source_pts_not_monotonic",
+      "note": "Same baseline PTS break; segment itself is the prev side of the break vs equalizer."
+    }
+  ]
+}

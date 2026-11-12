@@ -1,0 +1,81 @@
+{
+  "schema": "v3a_phase10f_zero_paid_verify_v1",
+  "generated": "2026-11-12T05:16:54.184609+00:00",
+  "worktree": "/data2/lpy1/worktrees/migu-v3a-phase10f-verify",
+  "branch": "story-va-v3a-phase10f-crossmatch-controls",
+  "code_sha": "de80ddc9a239597ba760b38ea207e8922ef28e9d",
+  "compileall": {
+    "exit_code": 0
+  },
+  "pytest_phase10_d_e_f": {
+    "passed": 71,
+    "failed": 0,
+    "summary_line": "71 passed in 0.51s"
+  },
+  "pytest_phase8": {
+    "passed": 129,
+    "failed": 0,
+    "summary_line": "129 passed in 5.66s"
+  },
+  "paid_http": 0,
+  "inventory": {
+    "B_closed_loop": {
+      "phase5": "/data2/lpy1/_story_va_outputs/v3/plan2/closed_loop_B_osasuna_celta/04_phase5",
+      "baseline_pts_monotonic_ok": false,
+      "unprotected_media": [
+        "seg_buildup_event_000458",
+        "seg_buildup_atom_fill_0115_Shot_5657158"
+      ],
+      "safety_eligible": [],
+      "block_reason": "baseline_source_pts_not_monotonic (buildup_atom_fill overlaps/precedes equalizer incorrectly)"
+    },
+    "B_strict_lin": {
+      "phase5": "/data2/lpy1/_story_va_outputs/v3/plan2/full_e2e_B_strict_lin_20261108_095704/01_to_04_fresh_v3r/04_phase5",
+      "baseline_pts_monotonic_ok": true,
+      "unprotected_media": [
+        "seg_buildup_event_000458"
+      ],
+      "safety_eligible": [
+        "seg_buildup_event_000458"
+      ]
+    },
+    "source_sha256": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa"
+  },
+  "offline_pairs": {
+    "rendered": [
+      {
+        "case_id": "B_strict_drop_seg_buildup_event_000458",
+        "status": "EXPLORATORY_RENDERED_NOT_VERIFIED",
+        "blind_pair_status": "BLIND_PAIR_READY",
+        "http_calls": 0,
+        "human_pack": "/tmp/lpy1_phase10f_verify_20261112/human_blind_packs/B_strict_case01",
+        "download_folder": "/data2/lpy1/_story_va_outputs/v3/plan2/phase10f_blind_xy_download",
+        "X_duration_sec": 92.904,
+        "Y_duration_sec": 104.931,
+        "risk_exposed_in_human_pack": false
+      }
+    ],
+    "blocked": [
+      {
+        "case_id": "B_closed_blocked_seg_buildup_event_000458",
+        "reason": "baseline_source_pts_not_monotonic"
+      },
+      {
+        "case_id": "B_closed_blocked_seg_buildup_atom_fill_0115_Shot_5657158",
+        "reason": "baseline_source_pts_not_monotonic"
+      }
+    ]
+  },
+  "human_labels": "AWAITING — do not run metrics until sheet filled; keep sealed risk unread",
+  "evaluation_metrics": "NOT_RUN_PENDING_SEALED_LABELS",
+  "method_quality_gain": "UNVERIFIED",
+  "best_baseline": "V3-R",
+  "algo_edits_by_cursor": false,
+  "merged_to_main": false,
+  "notes": [
+    "B closed_loop frozen Phase5 cannot produce exploratory pairs due to real PTS safety break; recorded without force-render.",
+    "B strict_lin yields one eligible unprotected buildup; anonymous X/Y prepared for human necessity/redundancy judgment.",
+    "Only one renderable B case so far — insufficient for balanced NECESSARY+REDUNDANT cross-match metrics until labels and more cases exist.",
+    "P10-E improvement not claimed."
+  ]
+}

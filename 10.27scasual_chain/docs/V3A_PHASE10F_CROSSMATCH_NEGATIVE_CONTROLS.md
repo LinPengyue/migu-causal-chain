@@ -1,6 +1,9 @@
 # P10-F: held-out match and genuinely redundant segment controls
 
-Status: PROTOCOL + READ-ONLY EVALUATOR COMMITTED; SERVER REGRESSION AND HUMAN VIDEO LABELS PENDING.
+Status: **ZERO-PAID SERVER REGRESSION GREEN ON `de80ddc`**; B inventories +
+one anonymous fullcut pair ready; **HUMAN LABELS STILL PENDING** (do not
+unseal risk predictions before labeling). Metrics not computed yet.
+V3-R remains BEST. See `docs/V3A_PHASE10F_SERVER_VERIFY_de80ddc.json`.
 
 ## Question
 
@@ -59,6 +62,20 @@ PYTHONPATH=algo python -m story_video_agent_v3.story_phase10f_evaluation \
    confusion matrix and per-match distribution. At least two matches
    plus both label classes required even for descriptive evidence.
    Do not call it generalization proof. Upload small JSON and logs only.
+
+### Server verification (`de80ddc`) — steps 1–4 done; 5–7 await human
+
+| Check | Result |
+|-------|--------|
+| compileall | exit 0 |
+| phase10(+d/e/f) | **71 passed** |
+| phase8 | **129 passed** |
+| Paid HTTP | **0** |
+| B closed_loop inventory | 2 unprotected media; **0 eligible** — `baseline_source_pts_not_monotonic` (atom_fill buildup vs equalizer). No force-render. |
+| B strict_lin inventory | 1 unprotected media; **1 eligible** — offline pair rendered |
+| Human blind pack | `_story_va_outputs/v3/plan2/phase10f_blind_xy_download/{X,Y}.mp4` |
+| Risk predictions | sealed under `docs/phase10f_preview/SEALED_RISK_PREDICTIONS.json` — open only after labels |
+| Metrics | **NOT RUN** (`AWAITING_HUMAN_LABELS`) |
 
 ## Decision
 
