@@ -1550,6 +1550,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         goal_repair = repair_goal_coverage_from_video_reviews(
             edl=working_edl, diagnosis=diag, source_sha=str(source_sha or ""),
             review_dir=inp.goal_repair_evidence_dir,
+            source_mp4=inp.source_mp4,
         )
         if final_decision != "REVISE" and candidate_edl == working_edl and goal_repair.get("changed"):
             candidate_edl = list(goal_repair["edl"])
