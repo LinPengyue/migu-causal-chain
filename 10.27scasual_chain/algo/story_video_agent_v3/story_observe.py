@@ -99,7 +99,16 @@ def observe_layers(
             ts = _even_times(a, b, per)
             g_times.extend(ts)
             pack = _extract_ordered(store, ts, gap_id=f"global_span_{i}")
-            g_frames.extend(pack["frames"])
+            # Bind finished-cut frames to story timestamps and EDL identities.
+            # FrameStore timestamps are decoder metadata, not the segment ID.
+            for j, frame in enumerate(pack["frames"]):
+                mapped = story_time_to_media(timeline, float(ts[j]))
+                g_frames.append({
+                    **frame,
+                    "story_sec": round(float(ts[j]), 3),
+                    "segment_id": mapped.get("segment_id") if mapped else None,
+                    "sample_provenance": "global_finished_cut",
+                })
             if pack.get("error"):
                 g_errors.append(str(pack["error"]))
             if pack.get("frame_budget_exhausted"):
@@ -202,7 +211,17 @@ def observe_layers(
                     "story_time_range": [a, b],
                     "sample_times_story_sec": [round(t, 3) for t in ts],
                     "frame_count": pack["frame_count"],
-                    "frames": pack["frames"],
+                    "frames": [
+                        {
+                            **frame,
+                            "story_sec": round(float(ts[j]), 3),
+                            "segment_id": (
+                                story_time_to_media(timeline, float(ts[j])) or {}
+                            ).get("segment_id"),
+                            "sample_provenance": "paragraph_finished_cut",
+                        }
+                        for j, frame in enumerate(pack["frames"])
+                    ],
                     "frame_budget_exhausted": pack.get("frame_budget_exhausted"),
                     "error": pack.get("error"),
                     "observation_method": "ordered_multi_frame_paragraph",
