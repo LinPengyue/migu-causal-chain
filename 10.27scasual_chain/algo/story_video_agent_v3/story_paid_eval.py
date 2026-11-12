@@ -446,6 +446,7 @@ def run_llm_revision_planner(
     audit_dir: Path,
     feedback_context: Optional[Mapping[str, Any]] = None,
     search_results: Optional[Mapping[str, Any]] = None,
+    allow_exploratory_proposals: bool = False,
 ) -> Dict[str, Any]:
     fb = None
     if feedback_context:
@@ -499,7 +500,11 @@ def run_llm_revision_planner(
         "agent_inferred_narrative_graph": graph_for_planner,
         "issues": prioritized_issues[:12],
         "edl_segment_refs": [
-            {"segment_id": x.get("segment_id"), "role": x.get("role")}
+            {
+                "segment_id": x.get("segment_id"),
+                "role": x.get("role"),
+                "source_window": [x.get("media_in"), x.get("media_out")],
+            }
             for x in ((diagnosis.get("timeline") or {}).get("segments") or [])[:60]
             if isinstance(x, Mapping)
         ],
@@ -533,6 +538,7 @@ def run_llm_revision_planner(
             for c in ((search_results or {}).get("verified_candidates") or [])[:8]
             if isinstance(c, Mapping)
         ],
+        "phase10c_exploratory_opt_in": bool(allow_exploratory_proposals),
         "constraints": {
             "no_replay": True,
             "no_invented_timestamps": True,
@@ -574,7 +580,31 @@ def run_llm_revision_planner(
         "DIFFERENT evidence-backed edit or UNRESOLVED; never treat unverified REJECT "
         "as a permanent negative sample."
     )
-    mock = {"decision": "UNRESOLVED", "revision_intents": [], "rationale": "mock"}
+    if allow_exploratory_proposals:
+        user += (
+            "\\nPHASE10-C OPTIONAL EXPLORATION (SEPARATE, NON-RELEASE OUTPUT): "
+            "Even when the formal decision is KEEP/UNRESOLVED, you MAY give up to "
+            "ONE conditional idea in exploratory_intents, or [] when none is "
+            "worth testing. This is a story-quality HYPOTHESIS, not a confirmed "
+            "defect and NOT a normal revision_intent. Return "
+            "'exploratory_intents':[{'action':'drop|trim|reorder',"
+            "'target_segment_id':exact_existing_id,'hypothesis':meaningful_story_problem,"
+            "'expected_effect':expected_coherence_or_pacing_gain,"
+            "'risk':what_story_information_might_be_lost,"
+            "'media_in':number_if_trim,'media_out':number_if_trim,"
+            "'insert_before_segment_id':id_if_reorder}]. "
+            "Prefer a dispensable non-goal buildup/bridge segment. Never propose "
+            "protected goal action, scoreboard, opening/title or ending. "
+            "For trim, only use an EXISTING EDL source window and choose a "
+            "strictly contained sub-window; never invent extra source footage. "
+            "If evidence insufficient for any reasonable idea, return []. "
+            "Exploratory suggestions are merely independent render candidates "
+            "and never change formal KEEP/UNRESOLVED or best version."
+        )
+    mock = {
+        "decision": "UNRESOLVED", "revision_intents": [],
+        "exploratory_intents": [], "rationale": "mock",
+    }
     try:
         raw = api.revise_decision(
             system_prompt=SYSTEM_RP,
@@ -624,6 +654,12 @@ def run_llm_revision_planner(
         "provider_mode": mode,
         "decision": decision,
         "revision_intents": list((parsed or {}).get("revision_intents") or []),
+        "exploratory_intents": (
+            list((parsed or {}).get("exploratory_intents") or [])[:1]
+            if allow_exploratory_proposals
+            and isinstance((parsed or {}).get("exploratory_intents"), list)
+            else []
+        ),
         "rationale": (parsed or {}).get("rationale"),
         "est_cost_usd": raw.get("est_cost_usd"),
         "usage": raw.get("usage"),
