@@ -65,6 +65,7 @@ P14="/tmp/lpy1_p14_human_atom_dev_e2e_20261112/run/01_to_04_fresh_v3r"
 P12="/tmp/lpy1_p12_raw_only_20261112/run/01_to_04_fresh_v3r/04_phase5"
 A="/tmp/lpy1_v3a_blind_repair_A_controlled_20261112"
 B="/tmp/lpy1_v3a_blind_repair_B_historical_20261112"
+C="/tmp/lpy1_v3a_blind_repair_C_clean_control_20261112"
 
 # Preflight: no substitute outputs; if historical MP4 missing, report BLOCKED_INPUT.
 test -s "$SOURCE" && test -s "$RAW"
@@ -83,6 +84,16 @@ PYTHONPATH=algo python -m story_video_agent_v3.story_repair_challenge controlled
 PYTHONPATH=algo python -m story_video_agent_v3.story_repair_challenge run-offline --case-dir "$A"
 PYTHONPATH=algo python -m story_video_agent_v3.story_repair_challenge score --case-dir "$A"
 
+# C: unmodified P14 cut is the negative control — do NOT invent repairs.
+PYTHONPATH=algo python -m story_video_agent_v3.story_repair_challenge clean-control \
+  --complete-edl "$P14/04_phase5/candidate_edl.json" \
+  --story-plan "$P14/04_phase5/story_plan.json" \
+  --baseline-mp4 "$P14/04_phase5/story_clean.mp4" \
+  --events-json "$P14/01_enrich/events_enriched.json" \
+  --source-mp4 "$SOURCE" --case-dir "$C"
+PYTHONPATH=algo python -m story_video_agent_v3.story_repair_challenge run-offline --case-dir "$C"
+PYTHONPATH=algo python -m story_video_agent_v3.story_repair_challenge score --case-dir "$C"
+
 # B: replay actual P12 failure, without gold input.
 PYTHONPATH=algo python -m story_video_agent_v3.story_repair_challenge historical \
   --failed-phase5 "$P12" --raw-events-json "$RAW" \
@@ -95,7 +106,7 @@ PYTHONPATH=algo python -m story_video_agent_v3.story_repair_challenge score \
   --external-reference-edl "$P14/04_phase5/candidate_edl.json"
 ```
 
-Both runs are **zero HTTP, main-chain V3-A**. Run-offline must not sneak in
+All three runs are **zero HTTP, main-chain V3-A**. Run-offline must not sneak in
 `fixture_revision`, `confirm_issue_ids`, or `phase8_round_fixtures`.
 The mere presence of a missing 1:1 in a private score file does not supply
 an issue, time window or repair plan to the Agent.
