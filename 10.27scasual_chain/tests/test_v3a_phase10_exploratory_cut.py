@@ -167,6 +167,9 @@ class TestPhase10CExploration(unittest.TestCase):
                 story_plan={"title": "long story"},
                 out_dir=root / "trial",
                 renderer=_fake_renderer,
+                integrity_checker=lambda **kwargs: {
+                    "aligned": True, "method": "SYNTHETIC_TEST_STUB",
+                },
             )
             self.assertEqual(trial["status"], "EXPLORATORY_RENDERED_NOT_VERIFIED")
             self.assertEqual(trial["blind_pair_status"], "BLIND_PAIR_READY")
@@ -186,6 +189,26 @@ class TestPhase10CExploration(unittest.TestCase):
             key = json.loads((root / "trial" / "PRIVATE_unblinding.json").read_text())
             self.assertEqual({key["X"], key["Y"]}, {"baseline", "candidate"})
             self.assertNotIn("PRIVATE_unblinding.json", [p.name for p in blind.iterdir()])
+
+    def test_misaligned_fullcut_never_exposes_blind_pair(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            base, source = root / "baseline.mp4", root / "source.mp4"
+            base.write_bytes(b"fixture baseline")
+            source.write_bytes(b"fixture source")
+            def checker(*, edl, mp4):
+                return {"aligned": mp4.name == "baseline.mp4",
+                        "method": "SYNTHETIC_TEST_STUB"}
+            result = execute_exploratory_trial(
+                baseline_edl=_edl(), proposal=_proposal(), source="FIXTURE",
+                baseline_mp4=base, source_mp4=source,
+                story_plan={}, out_dir=root / "trial", renderer=_fake_renderer,
+                integrity_checker=checker,
+            )
+            self.assertEqual(result["status"], "RENDER_FAILED")
+            self.assertEqual(result["reason"], "baseline_or_candidate_fullcut_timeline_misaligned")
+            self.assertEqual(result["blind_pair_status"], "NO_CANDIDATE_PAIR")
+            self.assertFalse((root / "trial" / "blind_review").exists())
 
     def test_failed_renderer_must_not_produce_blind_pair(self):
         with tempfile.TemporaryDirectory() as d:
