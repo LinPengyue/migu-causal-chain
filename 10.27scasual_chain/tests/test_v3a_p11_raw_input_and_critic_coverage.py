@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 
 from story_video_agent_v3.atomic_event_enrich import enrich_files
+from story_video_agent_v3.goal_recovery import score_observations, recover_goal_candidates
+from story_video_agent_v3.v1_causal_adapter import score_transitions_from_events
 from story_video_agent_v3.story_editorial_redundancy import validate_editorial_irrelevance_claims
 from story_video_agent_v3.story_full_e2e_cli import build_parser, validate_inputs, evaluate_stages
 from story_video_agent_v3.story_paid_eval import (
@@ -216,3 +218,36 @@ def test_raw_only_rejects_malformed_event_file(tmp_path):
     raw.write_text(json.dumps({"causal_chains": []}), encoding="utf-8")
     with pytest.raises(ValueError, match="events input must"):
         enrich_files(events_path=raw, out_events_path=tmp_path / "out.json")
+
+
+def test_raw_only_score_recovery_reads_both_historical_score_locations():
+    events = [
+        {"event_id": "a", "event_type": "Shot",
+         "media_time": {"event_time_sec": 10.0},
+         "attributes": {"Score_Recognition": ["0:0"]}},
+        {"event_id": "b", "event_type": "Foul_Being_fouled",
+         "media_time": {"event_time_sec": 20.0},
+         "scores": {"score_recognition": "1-0"}},
+        {"event_id": "c", "event_type": "Shot",
+         "media_time": {"event_time_sec": 30.0},
+         "attributes": {"Score_Recognition": "1:1"}},
+    ]
+    seen = score_observations(events)
+    assert [x["score"] for x in seen] == [[0, 0], [1, 0], [1, 1]]
+    transitions = score_transitions_from_events(events)
+    assert len(transitions) == 2
+    assert all(x["single_goal_increment"] for x in transitions)
+    assert all(x["goal_action_sec"] is None for x in transitions)
+    candidates = recover_goal_candidates(events)
+    assert len(candidates) == 2
+    assert all(c["single_goal_increment"] for c in candidates)
+
+
+def test_score_schema_fallback_used_if_primary_field_is_unparseable():
+    events = [
+        {"event_id": "a", "event_type": "Shot",
+         "media_time": {"event_time_sec": 10.0},
+         "attributes": {"Score_Recognition": "INVALID"},
+         "scores": {"score_recognition": ["2:1"]}},
+    ]
+    assert score_observations(events)[0]["score"] == [2, 1]
