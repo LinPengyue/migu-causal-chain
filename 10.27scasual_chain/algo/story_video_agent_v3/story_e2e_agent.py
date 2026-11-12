@@ -1127,6 +1127,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         )
         write_json(round_dir / "planner_feedback_context.json", rev.get("feedback_context") or {})
         write_json(round_dir / "fullcut_edit_selection.json", rev.get("fullcut_edit_selection") or {})
+        paid_api_was_used_for_planner = False
         if paid_api is not None and fixture_intents is None:
             from .story_paid_eval import provider_usage, run_llm_revision_planner
 
@@ -1221,6 +1222,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     "llm_error": (llm_rev or {}).get("error"),
                     "search_revise_suppressed_by_llm": bool(search_backed),
                 }
+            paid_api_was_used_for_planner = True
             usage = provider_usage(paid_api)
             http_calls = int(usage.get("http_attempts") or http_calls)
             est_cost = float(usage.get("est_cost_usd_real") or est_cost)
@@ -1289,7 +1291,9 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 )
                 proposal_source = "FIXTURE"
             elif (
-                isinstance(llm_rev, dict) and llm_rev.get("ok")
+                paid_api_was_used_for_planner
+                and isinstance(llm_rev, dict)
+                and llm_rev.get("ok") is True
                 and str(llm_rev.get("provider_mode") or "") == "real"
             ):
                 raw_proposals = llm_rev.get("exploratory_intents") or []
@@ -1334,6 +1338,40 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     "promote_best": False,
                 }
                 write_json(exploratory_dir / "exploratory_trial.json", exp)
+            # Immutable per-run evidence that a candidate was selected by a
+            # REAL planner rather than a local fixture or heuristic. This is
+            # a provenance assertion, not a quality or autonomy success claim.
+            experiment_provenance = {
+                "schema": "v3a_phase10d_model_autonomy_provenance_v1",
+                "model_planner_called": bool(paid_api_was_used_for_planner),
+                "planner_ok": bool(isinstance(llm_rev, dict) and llm_rev.get("ok") is True),
+                "planner_provider_mode": (
+                    llm_rev.get("provider_mode") if isinstance(llm_rev, dict) else None
+                ),
+                "exploration_source": exp.get("source"),
+                "model_selected_target": (
+                    proposal.get("target_segment_id")
+                    if proposal_source == "REAL_LLM" and isinstance(proposal, dict)
+                    else None
+                ),
+                "model_selected_action": (
+                    proposal.get("action")
+                    if proposal_source == "REAL_LLM" and isinstance(proposal, dict)
+                    else None
+                ),
+                "real_model_proposal": bool(
+                    proposal_source == "REAL_LLM"
+                    and paid_api_was_used_for_planner
+                    and isinstance(llm_rev, dict) and llm_rev.get("ok") is True
+                ),
+                "fixture_used": bool(inp.phase10_explore_fixture is not None),
+                "candidate_rendered": bool(exp.get("candidate_rendered")),
+                "candidate_story_quality": "UNVERIFIED",
+                "formal_best": "UNCHANGED",
+                "http_attempts_so_far": http_calls,
+                "est_cost_usd_so_far": est_cost,
+            }
+            write_json(exploratory_dir / "phase10d_provenance.json", experiment_provenance)
             exp_summary = {
                 k: exp.get(k)
                 for k in (
