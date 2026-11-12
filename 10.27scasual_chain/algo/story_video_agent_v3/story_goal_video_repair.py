@@ -262,6 +262,47 @@ def observe_source_goal_video_with_shared_vlm(
     return result
 
 
+def _source_frames_match_decoded_video(
+    *,
+    source_mp4: Path,
+    source_sha: str,
+    binding: Mapping[str, Any],
+) -> bool:
+    """Re-decode original source PTS to reject self-hashed fabricated JPGs.
+
+    A manifest SHA matching arbitrary local JPG bytes is not sufficient to
+    prove those JPGs came from the named original football video.
+    """
+    from tempfile import TemporaryDirectory
+    from .first_live_localize import extract_frame_accurate
+
+    video = Path(source_mp4)
+    if not video.is_file():
+        return False
+    digest = hashlib.sha256()
+    with video.open("rb") as stream:
+        for block in iter(lambda: stream.read(8 * 1024 * 1024), b""):
+            digest.update(block)
+    if digest.hexdigest() != str(source_sha):
+        return False
+    frames = list(binding.get("frames") or [])
+    if len(frames) < 2:
+        return False
+    with TemporaryDirectory(prefix="v3a_goal_redecode_") as tmp:
+        for i, fr in enumerate(frames):
+            if not isinstance(fr, Mapping):
+                return False
+            t = fr.get("source_pts_sec")
+            if t is None:
+                return False
+            redecoded = extract_frame_accurate(
+                video, float(t), Path(tmp) / f"source_{i}.jpg"
+            )
+            if not redecoded.get("ok") or str(redecoded.get("sha256")) != str(fr.get("sha256")):
+                return False
+    return True
+
+
 def _valid_issue_binding(review: Mapping[str, Any], issue: Mapping[str, Any]) -> bool:
     return bool(
         str(review.get("issue_id") or "") == str(issue.get("issue_id") or "")
@@ -275,6 +316,7 @@ def validate_goal_video_review(
     review: Optional[Mapping[str, Any]],
     issue: Mapping[str, Any],
     source_sha: str,
+    source_mp4: Optional[Path] = None,
 ) -> Dict[str, Any]:
     """Independent action evidence AND first broadcast must pass.
 
@@ -319,6 +361,12 @@ def validate_goal_video_review(
     )
     if not first_live.get("ok"):
         return fail("no_bound_independent_first_broadcast_proof:" + str(first_live.get("reason")))
+    if source_mp4 is None or not _source_frames_match_decoded_video(
+        source_mp4=Path(source_mp4),
+        source_sha=source_sha,
+        binding=binding,
+    ):
+        return fail("source_frame_bytes_not_redecoded_from_original_mp4")
 
     observation = review.get("video_semantic_observation") or {}
     if not isinstance(observation, Mapping):
@@ -524,6 +572,7 @@ def repair_goal_coverage_from_video_reviews(
     diagnosis: Mapping[str, Any],
     source_sha: str,
     review_dir: Optional[Path],
+    source_mp4: Optional[Path] = None,
 ) -> Dict[str, Any]:
     """Produce at most one video-authorized edit; no other Agent action mutated."""
     working = [dict(r) for r in edl]
@@ -531,7 +580,8 @@ def repair_goal_coverage_from_video_reviews(
     for issue in goal_coverage_issues(diagnosis):
         review = load_goal_review_for_issue(review_dir, str(issue.get("issue_id") or ""))
         validated = validate_goal_video_review(
-            review=review, issue=issue, source_sha=source_sha
+            review=review, issue=issue, source_sha=source_sha,
+            source_mp4=source_mp4,
         )
         if not validated.get("ok"):
             decisions.append({
