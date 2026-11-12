@@ -120,7 +120,8 @@ def propose_exploratory_cut(
     orig = copy.deepcopy(list(baseline_edl))
     active = active_cut_rows(orig)
     ids = _ids(orig)
-    if not ids or len(set(ids)) != len(ids):
+    all_ids = [str(r.get("segment_id") or "") for r in orig if isinstance(r, Mapping)]
+    if not ids or len(set(all_ids)) != len(all_ids) or len(set(ids)) != len(ids):
         return blocked("ambiguous_baseline_edl_segment_ids")
     if target not in ids:
         return blocked("target_not_in_active_edl")
