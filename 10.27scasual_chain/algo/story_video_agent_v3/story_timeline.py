@@ -108,9 +108,14 @@ def story_time_to_media(
     story_sec: float,
 ) -> Optional[Dict[str, Any]]:
     """Locate source media PTS (or placeholder) for a story playback time."""
-    for seg in timeline.get("segments") or []:
+    segments = timeline.get("segments") or []
+    for index, seg in enumerate(segments):
         si, so = float(seg["story_in"]), float(seg["story_out"])
-        if not (si - 1e-6 <= story_sec <= so + 1e-6):
+        # Half-open intervals: the exact cut boundary belongs to the NEXT
+        # segment. Only the final story end is inclusive. The old two-sided
+        # <= check incorrectly attributed a cut boundary to the prior shot.
+        is_last = index == len(segments) - 1
+        if story_sec < si or (story_sec >= so and not (is_last and story_sec == so)):
             continue
         if seg.get("has_media_window"):
             frac = 0.0 if so <= si else (story_sec - si) / (so - si)
