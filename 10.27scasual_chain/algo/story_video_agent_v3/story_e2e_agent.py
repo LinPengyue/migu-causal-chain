@@ -1327,6 +1327,12 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 from .story_fullcut_learning import enforce_one_edit_per_round
 
                 rev = enforce_one_edit_per_round(rev)
+        # Dedicated score→goal coverage hypotheses may drive observation,
+        # but cannot authorize an EDL goal insertion from scoreboard timing.
+        # Gate AFTER the LLM overlay as well as the normal Planner safeguards.
+        from .story_revision_planner import gate_unverified_goal_coverage_mutations
+
+        rev = gate_unverified_goal_coverage_mutations(rev, diagnosis=diag)
         write_json(round_dir / "revision_plan.json", rev)
         final_decision = str(rev.get("decision") or "UNRESOLVED")
         round_rec["decision"] = final_decision
