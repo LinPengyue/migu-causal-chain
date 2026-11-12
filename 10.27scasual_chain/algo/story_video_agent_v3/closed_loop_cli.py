@@ -104,9 +104,12 @@ def _audit_goal_segments(predicted_causal: Dict[str, Any], enriched_events: Path
             is_replay = bool(vc.get("is_replay")) or str(vc.get("broadcast_phase") or "").upper() == "REPLAY"
             t = e.get("t_ms")
             t_sec = float(t) / 1000.0 if t is not None else None
-            status = "replay_detected" if is_replay else (
-                "live_candidate" if t_sec is not None else "unresolved"
-            )
+            phase = str(vc.get("broadcast_phase") or "UNKNOWN").upper()
+            # Unknown broadcast provenance must never silently become LIVE.
+            status = ("replay_detected" if is_replay else (
+                "live_candidate" if phase == "LIVE" and t_sec is not None
+                else "unresolved"
+            ))
             audits.append({
                 "event_id": eid,
                 "type": e.get("type"),
