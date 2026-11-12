@@ -8,13 +8,12 @@ contain or import any reference/Gold EDL or match-specific goal timestamp.
 """
 from __future__ import annotations
 
-import copy
 import hashlib
 import json
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Sequence
 
-from .first_live_window_evidence import validate_first_live_evidence_record, window_key
+from .first_live_window_evidence import validate_first_live_evidence_record
 from .remote_vlm_verify import cross_check_visible_evidence
 from .story_edl_safety import check_source_pts_monotonic
 
@@ -174,7 +173,9 @@ def observe_source_goal_video_with_shared_vlm(
             if not isinstance(c, Mapping):
                 continue
             p = Path(str(c.get("clip_path") or ""))
-            if not p.is_file():
+            if not p.is_file() or str(c.get("semantic_label") or "") in (
+                "replay", "wrong_attacking_side", "post_goal_celebration"
+            ):
                 continue
             try:
                 mi, mo = float(c["media_in"]), float(c["media_out"])
