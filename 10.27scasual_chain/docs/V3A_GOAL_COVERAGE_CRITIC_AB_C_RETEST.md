@@ -23,7 +23,10 @@ goal, first broadcast, or better finished story.
    single-score transitions without goal-action coverage produce
    `category=goal_coverage`, `HYPOTHESIS_NEEDS_VIDEO`, and a search bracket.
    `score_confirmation_sec` is NEVER `goal_action_sec`; no target row or
-   corrected EDL is imported.
+   corrected EDL is imported. Existing action coverage tolerates delayed
+   scoreboards, but source search can be narrowed using the last observed
+   older score plus a generic 30s buffer. The Critic's story-video
+   observation spans both sides of the gap cut seam rather than zero seconds.
 2. `story_e2e_agent.run_story_e2e`: the Critic and source Search read the same
    permitted original/enriched events. A's enriched Goal atoms are DEV-only,
    B's 749 raw events have zero Goal and can still produce score transitions.
