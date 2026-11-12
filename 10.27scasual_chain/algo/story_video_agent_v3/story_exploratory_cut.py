@@ -198,7 +198,16 @@ def propose_exploratory_cut(
     if len(active_media) < 3:
         return blocked("exploratory_cut_has_too_few_media_segments")
 
+    # A high structural risk does not prove the edit is bad and must not
+    # suppress a safe blind experiment. It makes the narrative tradeoff
+    # explicit and prevents a 'shorter == better' interpretation.
+    from .story_narrative_function import assess_narrative_function_loss
+    function_loss = assess_narrative_function_loss(
+        baseline_edl, orig, target_segment_id=target, action=action,
+    )
+
     out.update({
+        "narrative_function_loss": function_loss,
         "status": "PROPOSED_SAFETY_SCREENED",
         "reason": "bounded_existing_footage_edit_only",
         "action": action,
