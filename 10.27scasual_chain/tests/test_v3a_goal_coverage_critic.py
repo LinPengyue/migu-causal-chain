@@ -15,7 +15,9 @@ from story_video_agent_v3.story_evidence_search import (
     run_story_evidence_search, search_window_for_issue,
 )
 from story_video_agent_v3.global_story_critic import merge_observation_into_diagnosis
-from story_video_agent_v3.story_revision_planner import plan_from_diagnosis
+from story_video_agent_v3.story_revision_planner import (
+    plan_from_diagnosis, gate_unverified_goal_coverage_mutations,
+)
 
 
 def _event(eid, t, score=None, kind="Shot", replay=False):
@@ -206,3 +208,37 @@ def test_score_only_reference_window_cannot_be_used_as_action_time():
     assert lo <= 151 <= hi
     assert 164 > hi
     assert "goal_action_sec" not in issue
+
+
+def test_llm_cannot_turn_scoreboard_gap_into_unverified_goal_insertion():
+    issue = detect_goal_coverage_hypotheses(
+        edl=_broken(), raw_events=_events()
+    )[0]
+    forged = {
+        "decision": "REVISE",
+        "revision_intents": [{
+            "intent_id": "llm_invented_goal_cut",
+            "issue_id": issue["issue_id"],
+            "action": "search_add",
+            "role": "equalizer_goal_action",
+            "bound_source_window": {
+                "start": 164.0, "end": 172.0,
+            },
+        }],
+    }
+    blocked = gate_unverified_goal_coverage_mutations(
+        forged, diagnosis={"issues": [issue]},
+    )
+    assert blocked["decision"] == "UNRESOLVED"
+    assert blocked["revision_intents"][0]["action"] == "mark_unresolved"
+    assert blocked["goal_coverage_mutation_gate"]["n_blocked"] == 1
+    assert blocked["revision_intents"][0]["blocked_original_action"] == "search_add"
+    # The gate does not interfere with unrelated, already-verified structural
+    # actions when an issue ID does not belong to a score-gap hypothesis.
+    unrelated = gate_unverified_goal_coverage_mutations(
+        {"decision": "REVISE", "revision_intents": [
+            {"issue_id": "verified_duplicate", "action": "drop"}
+        ]},
+        diagnosis={"issues": [issue]},
+    )
+    assert unrelated["revision_intents"][0]["action"] == "drop"
