@@ -123,6 +123,9 @@ class StoryE2EInputs:
     first_live_evidence_dir: Optional[Path] = None
     # Optional independently reviewed BEFORE→CANDIDATE→AFTER video evidence.
     narrative_fit_evidence_dir: Optional[Path] = None
+    # Optional independent VIDEO review evidence. Absent by default: only
+    # local candidate clips are generated; no missing Goal is auto-inserted.
+    goal_repair_evidence_dir: Optional[Path] = None
     # When True, build local frame-pack evidence for new windows from source MP4 (zero HTTP).
     build_local_first_live_evidence: bool = False
     max_rounds: int = MAX_ROUNDS
@@ -454,6 +457,9 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             ),
             "narrative_fit_evidence_dir": (
                 str(inp.narrative_fit_evidence_dir) if inp.narrative_fit_evidence_dir else None
+            ),
+            "goal_repair_evidence_dir": (
+                str(inp.goal_repair_evidence_dir) if inp.goal_repair_evidence_dir else None
             ),
             "run_fresh_v3r": inp.run_fresh_v3r,
             "max_rounds": inp.max_rounds,
@@ -1133,6 +1139,26 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             },
         )
         write_json(round_dir / "evidence_search.json", search_report)
+        # Independent missing-goal source-footage observation. Reuse the P13
+        # localizer instead of treating event source PTS as a verified Goal.
+        # The output is a *review queue*; offline clips cannot certify
+        # first broadcast, shot/net, or repair authorization.
+        from .story_goal_video_repair import prepare_source_video_goal_queue
+
+        goal_video_queue = prepare_source_video_goal_queue(
+            diagnosis=diag,
+            source_mp4=inp.source_mp4,
+            events_path=events_path,
+            out_dir=round_dir / "source_goal_video_review",
+            max_issues=1, max_candidates_per_issue=3,
+            max_video_read_sec=75.0,
+        )
+        round_rec["goal_video_review_queue"] = {
+            "status": goal_video_queue.get("status"),
+            "issue_count": len(goal_video_queue.get("issues") or []),
+            "video_semantic_confirmed": False,
+            "first_live_verified": False,
+        }
         search_obs = search_candidates_to_observations(search_report)
         round_rec["search_success"] = bool(search_report.get("search_success"))
         round_rec["search_verified_count"] = len(search_report.get("verified_candidates") or [])
@@ -1478,6 +1504,84 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 round_rec["decision"] = final_decision
         else:
             gates["revision_applied"] = False
+
+        # The general Planner deliberately cannot insert a goal from scoreboard
+        # time. A SEPARATE exact-source-video-reviewed repair can be applied
+        # here when independent semantic + first-live evidence is available.
+        # No review => UNRESOLVED with candidate clip queue only. Do not mix
+        # it with other simultaneous edits or bypass downstream renderer/Verifier.
+        from .story_goal_video_repair import repair_goal_coverage_from_video_reviews
+        goal_repair = repair_goal_coverage_from_video_reviews(
+            edl=working_edl, diagnosis=diag, source_sha=str(source_sha or ""),
+            review_dir=inp.goal_repair_evidence_dir,
+        )
+        if final_decision != "REVISE" and candidate_edl == working_edl and goal_repair.get("changed"):
+            candidate_edl = list(goal_repair["edl"])
+            final_decision = "REVISE"
+            decisions = [
+                d for d in (goal_repair.get("decisions") or [])
+                if d.get("status") == "EDL_REPAIR_APPLIED"
+            ]
+            action = decisions[0]
+            segment = next(
+                (row for row in candidate_edl
+                 if str(row.get("segment_id")) == str(action.get("new_segment_id"))),
+                {},
+            )
+            # The existing first-live ledger checks source SHA/PTS and the
+            # authenticated timeline review again; inserting a row is never
+            # the same as approving its final delivery.
+            ev_record = segment.get("validated_evidence")
+            if isinstance(ev_record, dict) and source_sha:
+                ev_record = {**ev_record}
+                ev_record["broadcast_timeline_review"] = segment.get("broadcast_timeline_review")
+                first_live_evidence_store.setdefault("by_key", {})[
+                    first_live_window_key(
+                        str(source_sha), float(segment["media_in"]), float(segment["media_out"])
+                    )
+                ] = ev_record
+            intent = {
+                "intent_id": "video_goal_repair_" + str(action.get("issue_id")),
+                "action": "goal_video_insert",
+                "issue_id": action.get("issue_id"),
+                "new_segment_id": action.get("new_segment_id"),
+                "role": segment.get("role"),
+                "narrative_purpose": "restore_video_verified_missing_goal_action",
+                "reviewer_type": action.get("reviewer_type"),
+                "evidence_refs": [{
+                    "kind": "source_video_review",
+                    "ref": action.get("issue_id"),
+                    "first_live": "FIRST_LIVE_VERIFIED",
+                }],
+            }
+            rev = {
+                **rev, "decision": "REVISE",
+                "revision_intents": [intent],
+                "rationale": "dedicated_verified_source_video_goal_repair_not_scoreboard_guess",
+                "goal_video_repair": {
+                    "validated": True, "issue_id": action.get("issue_id"),
+                    "reviewer_type": action.get("reviewer_type"),
+                    "external_review_used": inp.goal_repair_evidence_dir is not None,
+                },
+            }
+            apply_report = {
+                "applied": [{
+                    "intent": intent["intent_id"],
+                    "action": "goal_video_insert",
+                    "segment_id": segment.get("segment_id"),
+                    "status": "applied_evidence_bound",
+                    "evidence_refs": intent["evidence_refs"],
+                }],
+                "rejected": [], "source": "independent_source_video_review",
+            }
+            gates["revision_applied"] = True
+            round_rec["decision"] = final_decision
+            write_json(round_dir / "revision_plan.json", rev)
+        elif goal_repair.get("decisions"):
+            round_rec["goal_video_repair_pending"] = goal_repair.get("decisions")
+        write_json(round_dir / "goal_video_repair_decisions.json", {
+            k: v for k, v in goal_repair.items() if k != "edl"
+        })
 
         # Candidate-stage duplicate audit (same safety rules as baseline intake).
         cand_dup = audit_edl_duplicates(
