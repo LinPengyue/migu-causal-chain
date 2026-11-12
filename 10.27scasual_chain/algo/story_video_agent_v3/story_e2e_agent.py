@@ -107,6 +107,9 @@ class StoryE2EInputs:
     i_approve_budget: bool = False
     force_render_initial: bool = False
     force_render_candidate: bool = False
+    # Phase10-C opt-in exploratory sandbox; no release/acceptance path changed.
+    phase10_explore: bool = False
+    phase10_explore_fixture: Optional[Mapping[str, Any]] = None
     smoke_render: bool = True
     fixture_revision: Optional[Mapping[str, Any]] = None
     fixture_verifier: Optional[Mapping[str, Any]] = None
@@ -423,6 +426,8 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             "enable_real_api": inp.enable_real_api,
             "i_approve_budget": inp.i_approve_budget,
             "phase8_paid_multi_round": bool(inp.phase8_paid_multi_round),
+            "phase10_explore": bool(inp.phase10_explore),
+            "phase10_explore_fixture": bool(inp.phase10_explore_fixture is not None),
             "first_live_evidence_dir": (
                 str(inp.first_live_evidence_dir) if inp.first_live_evidence_dir else None
             ),
@@ -1134,6 +1139,9 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     audit_dir=round_dir / "paid_api",
                     feedback_context=fb_ctx,
                     search_results=search_report,
+                    allow_exploratory_proposals=bool(
+                        inp.phase10_explore and round_idx == 1
+                    ),
                 )
             except Exception as exc:  # noqa: BLE001
                 llm_rev = {"ok": False, "error": f"{type(exc).__name__}:{exc}"}
@@ -1260,6 +1268,82 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         write_json(round_dir / "revision_plan.json", rev)
         final_decision = str(rev.get("decision") or "UNRESOLVED")
         round_rec["decision"] = final_decision
+
+        # Phase10-C is intentionally OUTSIDE the formal revision/Verifier/Best
+        # loop: one source-bound, hypothesis-only candidate may be rendered
+        # for blinded human feedback when the strict Planner cannot confirm a
+        # defect. The working parent, production EDL, and release status remain
+        # untouched. No new LLM/VLM call is made here.
+        if inp.phase10_explore and round_idx == 1:
+            exploratory_dir = round_dir / "phase10_exploratory"
+            proposal = None
+            proposal_source = None
+            no_proposal_reason = "NO_AUTHORIZED_EXPLORATORY_PROPOSAL"
+            if final_decision == "REVISE":
+                no_proposal_reason = "FORMAL_REVISION_TAKES_PRIORITY"
+            elif inp.phase10_explore_fixture is not None:
+                data = inp.phase10_explore_fixture
+                proposal = (
+                    data.get("proposal") if isinstance(data.get("proposal"), dict)
+                    else data
+                )
+                proposal_source = "FIXTURE"
+            elif (
+                isinstance(llm_rev, dict) and llm_rev.get("ok")
+                and str(llm_rev.get("provider_mode") or "") == "real"
+            ):
+                raw_proposals = llm_rev.get("exploratory_intents") or []
+                if raw_proposals and isinstance(raw_proposals[0], dict):
+                    proposal = raw_proposals[0]
+                    proposal_source = "REAL_LLM"
+                else:
+                    no_proposal_reason = "REAL_PLANNER_DECLINED_EXPLORATION"
+            if proposal is not None and proposal_source is not None:
+                from .story_exploratory_cut import execute_exploratory_trial
+
+                try:
+                    exp = execute_exploratory_trial(
+                        baseline_edl=working_edl,
+                        proposal=proposal,
+                        source=proposal_source,
+                        baseline_mp4=working_mp4,
+                        source_mp4=inp.source_mp4,
+                        story_plan=plan,
+                        out_dir=exploratory_dir,
+                        renderer=_render_edl,
+                    )
+                except Exception as exc:  # noqa: BLE001
+                    exp = {
+                        "schema": "v3a_phase10c_exploratory_candidate_v1",
+                        "status": "BLOCKED",
+                        "reason": f"exploratory_stage_exception:{type(exc).__name__}:{exc}",
+                        "release_authorized": False,
+                        "promote_best": False,
+                        "candidate_rendered": False,
+                        "blind_pair_status": "NO_CANDIDATE_PAIR",
+                    }
+                    write_json(exploratory_dir / "exploratory_trial.json", exp)
+            else:
+                exp = {
+                    "schema": "v3a_phase10c_exploratory_candidate_v1",
+                    "status": "SKIPPED",
+                    "reason": no_proposal_reason,
+                    "candidate_rendered": False,
+                    "blind_pair_status": "NO_CANDIDATE_PAIR",
+                    "release_authorized": False,
+                    "promote_best": False,
+                }
+                write_json(exploratory_dir / "exploratory_trial.json", exp)
+            exp_summary = {
+                k: exp.get(k)
+                for k in (
+                    "status", "reason", "source", "candidate_rendered",
+                    "blind_pair_status", "blind_review_dir", "candidate_mp4",
+                    "release_authorized", "promote_best",
+                )
+            }
+            audit["phase10c_exploratory"] = exp_summary
+            round_rec["phase10c_exploratory"] = exp_summary
 
         candidate_edl = [dict(r) for r in working_edl]
         apply_report: Dict[str, Any] = {"skipped": True}
