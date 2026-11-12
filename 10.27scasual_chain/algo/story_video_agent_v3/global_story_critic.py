@@ -77,12 +77,171 @@ def _probe_story_video_duration(path: Optional[Path]) -> Optional[float]:
     return None
 
 
+def detect_goal_coverage_hypotheses(
+    *,
+    edl: Sequence[Mapping[str, Any]],
+    raw_events: Sequence[Mapping[str, Any]],
+    timeline: Optional[Mapping[str, Any]] = None,
+) -> List[Dict[str, Any]]:
+    """Detect missing story goal-action *coverage* using board states, never gold.
+
+    A score transition is an observed state change, not a located goal video.
+    Even a missing action row is only a video-search hypothesis: the clock
+    can lag, replay score bugs exist, and the action's first-live footage is
+    unverified. No timestamps are injected into the EDL by this function.
+    """
+    from .goal_recovery import recover_goal_candidates
+
+    candidates = recover_goal_candidates([
+        dict(ev) for ev in raw_events if isinstance(ev, Mapping)
+    ])
+    timeline = timeline or build_story_timeline(edl)
+    active = list(timeline.get("segments") or [])
+    source_rows = [
+        r for r in active if r.get("has_media_window")
+    ]
+    action_rows = [
+        (r, original)
+        for r in source_rows
+        for original in edl
+        if (
+            original.get("include_in_cut", True)
+            and str(original.get("segment_id") or "") == str(r.get("segment_id") or "")
+            and "goal_action" in str(original.get("role") or "").lower()
+            and original.get("is_replay") not in (True, "true", "True", 1)
+        )
+    ]
+    seen_transitions: set[tuple[tuple[int, int], tuple[int, int]]] = set()
+    used_actions: set[str] = set()
+    issues: List[Dict[str, Any]] = []
+    for cand in candidates:
+        if not cand.get("single_goal_increment"):
+            continue
+        score_before = tuple(cand.get("score_before") or [])
+        score_after = tuple(cand.get("score_after") or [])
+        if len(score_before) != 2 or len(score_after) != 2:
+            continue
+        key = (score_before, score_after)
+        if key in seen_transitions:
+            continue
+        seen_transitions.add(key)
+        try:
+            confirm = float(cand["score_confirmation_sec"])
+        except (TypeError, ValueError, KeyError):
+            continue
+        # Existing Goal Recovery uses a 180s scoreboard-lag search prior.
+        # Avoid forcing an action after the board confirmation into coverage.
+        lo, hi = max(0.0, confirm - 180.0), confirm - 0.5
+        if hi <= lo:
+            continue
+
+        matches = []
+        for row, original in action_rows:
+            sid = str(row.get("segment_id") or "")
+            if sid in used_actions:
+                continue
+            action_t = original.get("goal_anchor_t_sec")
+            if action_t is None:
+                # The midpoint is a *coverage* proxy, not a recovered goal PTS.
+                action_t = (float(row["media_in"]) + float(row["media_out"])) / 2.0
+            try:
+                action_t = float(action_t)
+            except (TypeError, ValueError, OverflowError):
+                continue
+            if lo <= action_t <= hi:
+                matches.append((confirm - action_t, sid))
+        if matches:
+            matches.sort()
+            used_actions.add(matches[0][1])
+            continue
+
+        # Bind the observation to nearby cut structure (no oracle role/PTS).
+        before = None
+        after = None
+        for r in source_rows:
+            if float(r["media_out"]) <= lo:
+                before = r
+            if after is None and float(r["media_in"]) >= lo:
+                after = r
+        # Prefer a scoreboard close to the new observed state; its exact role
+        # is never taken as proof of the on-ball action.
+        boards = [
+            r for r in source_rows
+            if "scoreboard" in str(r.get("role") or "").lower()
+            and abs(float(r["media_in"]) - confirm) <= 30.0
+        ]
+        if boards:
+            after = min(boards, key=lambda r: abs(float(r["media_in"]) - confirm))
+        if after is not None:
+            earlier = [
+                r for r in source_rows
+                if float(r["story_out"]) <= float(after["story_in"])
+                and r.get("segment_id") != after.get("segment_id")
+            ]
+            if earlier:
+                before = earlier[-1]
+        segment_ids = []
+        for r in (before, after):
+            if r and r.get("segment_id") and r.get("segment_id") not in segment_ids:
+                segment_ids.append(str(r["segment_id"]))
+        story_start = float(before["story_out"]) if before is not None else 0.0
+        story_end = (
+            float(after["story_in"]) if after is not None
+            else float(timeline.get("story_duration_sec") or story_start)
+        )
+        story_range = [min(story_start, story_end), max(story_start, story_end)]
+        issue = _issue(
+            issue_id=(
+                f"goal_coverage_{score_before[0]}{score_before[1]}"
+                f"_to_{score_after[0]}{score_after[1]}"
+            ),
+            story_time_range=story_range,
+            segment_ids=segment_ids,
+            observation=(
+                f"Observed broadcast score transition {score_before} -> "
+                f"{score_after} at score-confirmation PTS {confirm:.3f}s, "
+                "but no distinct active non-replay goal_action cut covers "
+                "the bounded preceding scoreboard-lag interval."
+            ),
+            narrative_problem=(
+                "A game-state change may be missing its on-ball action in "
+                "the edited story. Locate and verify original first-live "
+                "source footage before proposing an EDL insertion."
+            ),
+            severity="major",
+            suggested_fix="source_goal_action_search_then_video_verify",
+            evidence_sufficiency="needs_video_verify",
+            category="goal_coverage",
+        )
+        issue.update({
+            "diagnosis_status": "HYPOTHESIS_NEEDS_VIDEO",
+            "story_defect_confirmed": False,
+            "score_before": list(score_before),
+            "score_after": list(score_after),
+            "score_confirmation_sec": round(confirm, 3),
+            "score_confirmation_carrier_event_id": cand.get("score_confirmation_event_id"),
+            "possible_action_interval": {
+                "media_in": round(lo, 3),
+                "media_out": round(hi, 3),
+                "source": "score_recognition_bounded_180s_not_goal_action",
+            },
+            "score_transition_source": "raw_or_permitted_enriched_event_scoreboard",
+            "action_timestamp_known": False,
+            "first_live_verified": False,
+            "auto_insert_authorized": False,
+            "board_confirmation_is_not_action": True,
+        })
+        issues.append(issue)
+    return issues
+
+
 def structural_diagnosis(
     *,
     edl: Sequence[Mapping[str, Any]],
     story_plan: Optional[Mapping[str, Any]] = None,
     initial_story_mp4: Optional[Path] = None,
     source_video: Optional[Path] = None,
+    raw_events: Optional[Sequence[Mapping[str, Any]]] = None,
 ) -> Dict[str, Any]:
     """Match-agnostic structural critic over timeline + plan + file existence.
 
@@ -164,6 +323,14 @@ def structural_diagnosis(
                 category="arc_coverage",
             )
         )
+
+    # Independent scoreboard states may reveal a missing major story action.
+    # This is a hypothesis only; action location, first-live and quality remain
+    # unknown until video observation. No benchmark Gold enters this path.
+    if raw_events is not None:
+        issues.extend(detect_goal_coverage_hypotheses(
+            edl=edl, raw_events=raw_events, timeline=timeline,
+        ))
 
     # Large source-time jumps are ordinary highlight editing. They are observations
     # for targeted video review, not evidence that a narrative bridge is missing.
