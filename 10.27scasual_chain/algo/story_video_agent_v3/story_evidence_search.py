@@ -754,12 +754,22 @@ def run_story_evidence_search(
                     "event_type": c.get("event_type"),
                 },
                 "visual_evidence": {
-                    "kind": "event_chain_live_context",
+                    "kind": (
+                        "score_transition_goal_action_probe"
+                        if iss.get("category") == "goal_coverage"
+                        else "event_chain_live_context"
+                    ),
                     "live": c.get("live"),
                     "note": "Event metadata candidate only; first broadcast needs source-video proof.",
                 },
             }
-            gate = verify_search_candidate(row, edl=edl)
+            # A score-gap probe is observation-only. Do not discard weak
+            # detector actions solely for having a lower heat score; this
+            # threshold does NOT grant first-live or semantic verification.
+            gate = verify_search_candidate(
+                row, edl=edl,
+                min_confidence=0.10 if row["goal_probe_only"] else 0.25,
+            )
             row["evidence_verification"] = gate
             enriched.append(row)
             all_candidates.append(row)
