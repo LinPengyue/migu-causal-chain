@@ -90,6 +90,8 @@ def audit_playback_observations(
     inventory = build_cut_relevance_inventory(edl, source_sha256=source_sha256)
     story_duration = float(inventory["story_duration_sec"])
     rendered = _finite(rendered_duration_sec)
+    if rendered_duration_sec is not None and rendered is None:
+        raise ValueError("rendered_duration_sec must be finite")
     radius = _finite(observation_radius_sec)
     if radius is None or radius < 0:
         raise ValueError("observation_radius_sec must be finite and nonnegative")
