@@ -176,6 +176,7 @@ def run_match(
     match_id: str,
     events_path: Path,
     causal_atoms_path: Optional[Path] = None,
+    independent_atoms_path: Optional[Path] = None,
     video: Path,
     out_dir: Path,
     algo_root: Path,
@@ -195,6 +196,7 @@ def run_match(
     enrich_report = enrich_files(
         events_path=events_path,
         causal_path=causal_atoms_path,
+        independent_atoms_path=independent_atoms_path,
         out_events_path=enriched_path,
         out_report_path=enrich_dir / "enrich_report.json",
     )
@@ -375,6 +377,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     p = argparse.ArgumentParser(description="V3 closed loop: enrich→8.31→V1 phase5")
     p.add_argument("--match-id", required=True)
     p.add_argument("--events", type=Path, required=True)
+    p.add_argument("--independent-atoms", type=Path, default=None,
+                   help="Independent event annotations (atomic_events list), no causal/story labels")
     p.add_argument("--causal-atoms", type=Path, default=None,
                    help="Optional historical DEV atom enrichment; never raw-only benchmark input")
     p.add_argument("--video", type=Path, required=True)
@@ -386,6 +390,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         match_id=args.match_id,
         events_path=args.events,
         causal_atoms_path=args.causal_atoms,
+        independent_atoms_path=args.independent_atoms,
         video=args.video,
         out_dir=args.out_dir,
         algo_root=args.algo_root,
