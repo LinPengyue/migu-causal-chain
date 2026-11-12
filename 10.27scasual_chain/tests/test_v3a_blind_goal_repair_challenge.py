@@ -218,6 +218,8 @@ def test_tagged_rerun_uses_existing_case_inputs_without_overwriting_baseline(tmp
     assert score_case(case, run_id="goal_coverage_v1")["status"] == (
         "EDL_WINDOW_RESTORED_NO_MP4"
     )
+    assert (case / "private_eval/score_goal_coverage_v1.json").is_file()
+    assert not (case / "private_eval/score.json").is_file()
     assert first.is_file()
     with pytest.raises(ValueError, match="invalid_run_id"):
         _run_dir(case, "../private_eval")
