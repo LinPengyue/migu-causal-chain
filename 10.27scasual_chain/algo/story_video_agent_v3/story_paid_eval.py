@@ -610,6 +610,118 @@ def run_vlm_story_critic(
     }
 
 
+def _planner_video_critic_context(
+    critic: Mapping[str, Any],
+    *,
+    max_items: int = 4,
+) -> Dict[str, Any]:
+    """Pass bounded *validated* visual observations to the text Planner.
+
+    Earlier handoff included overall-quality text but dropped issue-level
+    observations and explicit KEEP findings. Sampled stills remain advisory.
+    """
+    parsed = critic.get("parsed") or {}
+    if not isinstance(parsed, Mapping):
+        parsed = {}
+    coverage = critic.get("frame_coverage") or {}
+    if not isinstance(coverage, Mapping):
+        coverage = {}
+    real = (
+        critic.get("ok") is True
+        and str(critic.get("provider_mode") or "") == "real"
+    )
+    rows: List[Dict[str, Any]] = []
+    if real:
+        # Only citation-normalized observations, never raw model frame_ids.
+        for item in critic.get("semantic_evidence") or []:
+            if not isinstance(item, Mapping):
+                continue
+            cited = [str(x) for x in item.get("frame_refs") or [] if x]
+            if not cited:
+                continue
+            rows.append({
+                "issue_id": item.get("issue_id"),
+                "evidence_tier": item.get("evidence_tier"),
+                "frame_refs": cited[:6],
+                "observed_fact": str(item.get("observed_fact") or "")[:420],
+                "defect_hypothesis": str(item.get("defect_hypothesis") or "")[:420],
+                "missing_story_information": str(
+                    item.get("missing_story_information") or ""
+                )[:260],
+                "why_transition_breaks": str(
+                    item.get("why_transition_breaks") or ""
+                )[:260],
+                "supports_original_issue": item.get("supports_original_issue") is True,
+            })
+            if len(rows) >= max_items:
+                break
+    return {
+        "observation_status": "REAL_SAMPLED_FRAMES" if real else "UNAVAILABLE",
+        "keep_story_if_no_defect_in_observed_frames": (
+            parsed.get("keep_story_if_no_defect")
+            if real and isinstance(parsed.get("keep_story_if_no_defect"), bool)
+            else None
+        ),
+        "overall_narrative_quality_model_text": (
+            str(parsed.get("overall_narrative_quality") or "")[:240] if real else ""
+        ),
+        "visual_evidence_with_checkable_frame_ids": rows,
+        "covered_segment_ids": (
+            list(coverage.get("covered_segment_ids") or [])[:24] if real else []
+        ),
+        "unobserved_media_segment_ids": (
+            list(coverage.get("unobserved_media_segment_ids") or [])[:24]
+            if real else []
+        ),
+        "claims_full_video_watch": False,
+        "do_not_infer_unobserved_content_from_absence_of_claims": True,
+        "model_verdict_does_not_certify_video_quality": True,
+    }
+
+
+def _planner_edit_function_hints(
+    diagnosis: Mapping[str, Any],
+    protected_goal_ids: Sequence[str],
+    *,
+    max_items: int = 12,
+) -> List[Dict[str, Any]]:
+    """Describe editable clips and their neighbors; roles are hypotheses only."""
+    segments = [
+        x for x in ((diagnosis.get("timeline") or {}).get("segments") or [])
+        if isinstance(x, Mapping) and x.get("has_media_window")
+    ]
+    protected = {str(x) for x in protected_goal_ids}
+    result: List[Dict[str, Any]] = []
+    for i, seg in enumerate(segments):
+        sid = str(seg.get("segment_id") or "")
+        role = str(seg.get("role") or "")
+        if not sid or sid in protected or any(
+            x in role.lower()
+            for x in ("goal_action", "scoreboard", "title", "ending", "wrap")
+        ):
+            continue
+        before = segments[i - 1] if i > 0 else {}
+        after = segments[i + 1] if i + 1 < len(segments) else {}
+        result.append({
+            "target_segment_id": sid,
+            "target_role_hint": role,
+            "before_role_hint": before.get("role"),
+            "after_role_hint": after.get("role"),
+            "duration_sec": round(
+                float(seg.get("story_out") or 0.0)
+                - float(seg.get("story_in") or 0.0), 2
+            ),
+            "narrative_function_status": "UNVERIFIED_ROLE_HINT",
+            "question_before_drop_or_trim": (
+                "What setup, effort, tension, anticipation or causal state "
+                "would be lost, and is that information visible in adjacent clips?"
+            ),
+        })
+        if len(result) >= max_items:
+            break
+    return result
+
+
 def run_llm_revision_planner(
     api: ApiProvider,
     *,
@@ -689,6 +801,10 @@ def run_llm_revision_planner(
                 "overall_narrative_quality", "confidence",
             )
         },
+        "video_critic_observations": _planner_video_critic_context(vlm_critic),
+        "existing_clip_narrative_function_hints": _planner_edit_function_hints(
+            diagnosis, protected_goal_ids,
+        ),
         "protected_goal_segment_ids": list(protected_goal_ids),
         "phase8_feedback_context": fb,
         # The text Planner was previously blind to Search candidates. It must
@@ -766,7 +882,13 @@ def run_llm_revision_planner(
             "'risk':what_story_information_might_be_lost,"
             "'media_in':number_if_trim,'media_out':number_if_trim,"
             "'insert_before_segment_id':id_if_reorder}]. "
-            "Assess the narrative FUNCTION of each candidate in the FULL "
+            "Use video_critic_observations: a frame-cited KEEP/no-defect observation "
+        "is evidence against blindly dropping a clip, NOT proof that all unseen "
+        "footage is good. For each deletion or trim, explicitly weigh lost "
+        "narrative function against information gain. The clip role hints are "
+        "not video proof or authorization. Do not drop only to shorten runtime. "
+        "If visual comparison is missing, prefer [] to unsupported deletion. "
+        "Assess the narrative FUNCTION of each candidate in the FULL "
             "before-target-after sequence, not merely whether it adds a new "
             "score or factual event. A pursuit, pressure, effort or anticipation "
             "shot can be essential to understanding why a later turn feels "
