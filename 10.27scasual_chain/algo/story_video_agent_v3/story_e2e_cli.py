@@ -174,9 +174,14 @@ def main(argv: list[str] | None = None) -> int:
     fixture_verifier = None
     phase10_explore_fixture = None
     if args.phase10_explore_fixture:
-        phase10_explore_fixture = json.loads(
-            args.phase10_explore_fixture.read_text(encoding="utf-8")
-        )
+        try:
+            phase10_explore_fixture = json.loads(
+                args.phase10_explore_fixture.read_text(encoding="utf-8")
+            )
+        except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+            print(f"ERROR: invalid exploratory fixture: {type(exc).__name__}: {exc}",
+                  file=sys.stderr)
+            return 2
         if not isinstance(phase10_explore_fixture, dict):
             print("ERROR: exploratory fixture must be a JSON object", file=sys.stderr)
             return 2
