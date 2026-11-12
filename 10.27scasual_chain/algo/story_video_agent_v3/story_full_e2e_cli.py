@@ -335,11 +335,27 @@ def evaluate_stages(
             v1_detail = {
                 "n_recovery_candidates": n_cand,
                 "n_with_goal_action_sec": rec.get("n_with_goal_action_sec"),
+                "n_single_goal": rec.get("n_single_goal"),
+                "n_unresolved_single_goals": rec.get("n_unresolved_single_goals"),
+                "all_single_goal_actions_located": rec.get("all_single_goal_actions_located"),
                 "goal_recovery_used": adapter.get("goal_recovery_used"),
                 "entered_predicted_causal": entered,
                 "n_v3_outcome_chains": adapter.get("n_v3_outcome_chains"),
                 "n_goal_terminals": adapter.get("n_goal_terminals_in_adapted_chains"),
             }
+            # A completed software stage is not a complete story. In
+            # particular, scoreboard-only equalizers must not silently pass
+            # the release-oriented stage gate just because two other goals
+            # supplied action timestamps.
+            unresolved = [
+                c for c in (rec.get("candidates") or [])
+                if c.get("single_goal_increment") and c.get("goal_action_sec") is None
+            ]
+            v1_detail["unresolved_goal_candidate_ids"] = [
+                str(c.get("candidate_id")) for c in unresolved
+            ]
+            if unresolved:
+                blocking.append("03_score_confirmed_goal_action_missing")
             if n_cand <= 0:
                 blocking.append("03_goal_recovery_empty_candidates")
             if not adapter.get("goal_recovery_used"):
