@@ -11,7 +11,7 @@ from pathlib import Path
 import pytest
 
 from story_video_agent_v3.story_repair_challenge import (
-    prepare_controlled, prepare_historical, score_case,
+    prepare_controlled, prepare_historical, prepare_clean_control, score_case,
 )
 
 
@@ -172,3 +172,27 @@ def test_prepare_refuses_duplicate_goal_target_and_existing_output(tmp_path):
             events_json=raw, case_dir=case,
             omitted_role="equalizer_goal_action", renderer=_fake_renderer,
         )
+
+
+def test_clean_control_does_not_require_gold_and_detects_unnecessary_edit(tmp_path):
+    original, plan, raw, video = _base(tmp_path)
+    baseline_mp4 = tmp_path / "good.mp4"
+    baseline_mp4.write_bytes(b"whole_original_story")
+    case = tmp_path / "clean_case"
+    manifest = prepare_clean_control(
+        complete_edl=original, story_plan=plan, baseline_mp4=baseline_mp4,
+        source_mp4=video, events_json=raw, case_dir=case,
+    )
+    assert manifest["variant"] == "CLEAN_NO_DEFECT_CONTROL"
+    assert not (case / "private_eval/truth.json").exists()
+    assert score_case(case)["status"] == "NOT_RUN"
+    final = case / "agent_run/99_final/final_edl.json"
+    final.parent.mkdir(parents=True)
+    _write(final, _rows())
+    assert score_case(case)["status"] == "NO_UNNECESSARY_EDL_EDIT"
+    changed = _rows()
+    changed[1]["media_out"] = 23.0
+    _write(final, changed)
+    flagged = score_case(case)
+    assert flagged["status"] == "UNNECESSARY_EDL_EDIT"
+    assert flagged["story_quality_improved"] == "UNVERIFIED"
