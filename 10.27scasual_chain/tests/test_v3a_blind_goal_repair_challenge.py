@@ -12,6 +12,7 @@ import pytest
 
 from story_video_agent_v3.story_repair_challenge import (
     prepare_controlled, prepare_historical, prepare_clean_control, score_case,
+    _run_dir,
 )
 
 
@@ -200,3 +201,23 @@ def test_clean_control_does_not_require_gold_and_detects_unnecessary_edit(tmp_pa
     flagged = score_case(case)
     assert flagged["status"] == "UNNECESSARY_EDL_EDIT"
     assert flagged["story_quality_improved"] == "UNVERIFIED"
+
+
+def test_tagged_rerun_uses_existing_case_inputs_without_overwriting_baseline(tmp_path):
+    case, _ = _prepare(tmp_path)
+    first = case / "agent_run/99_final/final_edl.json"
+    first.parent.mkdir(parents=True)
+    _write(first, json.loads((case / "agent_input/04_phase5/candidate_edl.json").read_text()))
+    second = _run_dir(case, "goal_coverage_v1")
+    assert second == case / "agent_run_goal_coverage_v1"
+    assert second != first.parent.parent
+    assert score_case(case, run_id="goal_coverage_v1")["status"] == "NOT_RUN"
+    new_edl = second / "99_final/final_edl.json"
+    new_edl.parent.mkdir(parents=True)
+    _write(new_edl, _rows())
+    assert score_case(case, run_id="goal_coverage_v1")["status"] == (
+        "EDL_WINDOW_RESTORED_NO_MP4"
+    )
+    assert first.is_file()
+    with pytest.raises(ValueError, match="invalid_run_id"):
+        _run_dir(case, "../private_eval")
