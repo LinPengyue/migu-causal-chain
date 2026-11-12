@@ -582,7 +582,7 @@ def run_llm_revision_planner(
     )
     if allow_exploratory_proposals:
         user += (
-            "\\nPHASE10-C OPTIONAL EXPLORATION (SEPARATE, NON-RELEASE OUTPUT): "
+            "\nPHASE10-C OPTIONAL EXPLORATION (SEPARATE, NON-RELEASE OUTPUT): "
             "Even when the formal decision is KEEP/UNRESOLVED, you MAY give up to "
             "ONE conditional idea in exploratory_intents, or [] when none is "
             "worth testing. This is a story-quality HYPOTHESIS, not a confirmed "
