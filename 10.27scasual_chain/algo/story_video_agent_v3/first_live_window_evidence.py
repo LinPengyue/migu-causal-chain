@@ -452,7 +452,11 @@ def build_broadcast_timeline_review(
     end = float(pts_end)
     sha = str(source_sha)
     ctx_lo = max(0.0, start - float(context_pad_sec))
-    ctx_hi = end + float(context_pad_sec)
+    requested_ctx_hi = end + float(context_pad_sec)
+    # A clip must never claim temporal coverage it did not actually extract.
+    # Old Stage4 silently truncated 49 seconds of requested context to 40.
+    ctx_hi = min(requested_ctx_hi, ctx_lo + 60.0)
+    context_truncated = ctx_hi < requested_ctx_hi - 0.05
     rationale: List[str] = []
     outcome = FIRST_LIVE_UNKNOWN
     method = "insufficient_timeline_context"
@@ -587,7 +591,7 @@ def build_broadcast_timeline_review(
                 media_in=ctx_lo,
                 media_out=ctx_hi,
                 out_mp4=clip_path,
-                max_dur=min(40.0, ctx_hi - ctx_lo + 0.1),
+                max_dur=min(60.0, ctx_hi - ctx_lo + 0.1),
             )
             if clip_meta.get("ok") and clip_meta.get("sha256"):
                 evidence_refs.append(
@@ -608,6 +612,13 @@ def build_broadcast_timeline_review(
         "source_pts_start": start,
         "source_pts_end": end,
         "context_window": {"start": ctx_lo, "end": ctx_hi},
+        "requested_context_window": {"start": ctx_lo, "end": requested_ctx_hi},
+        "context_truncated": context_truncated,
+        "continuous_context_complete": bool(
+            not context_truncated
+            and clip_meta.get("ok")
+            and float(clip_meta.get("media_out") or 0.0) >= ctx_hi - 0.05
+        ),
         "outcome": outcome,
         "first_live_status": outcome if outcome != FIRST_LIVE_UNKNOWN else FIRST_LIVE_NOT_VERIFIED,
         "method": method,
