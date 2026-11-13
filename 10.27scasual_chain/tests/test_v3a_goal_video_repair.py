@@ -373,6 +373,52 @@ def test_source_video_review_external_mode_is_not_autonomous(tmp_path, monkeypat
     )["agent_auto_verified"]
 
 
+def test_confirmed_goal_defect_reaches_verified_mainchain_repair(
+    tmp_path, monkeypatch,
+):
+    """A confirmed defect must not disappear before the existing repair executor."""
+    gap, sha, review = _review(tmp_path)
+    gap = {**gap, "diagnosis_status": "CONFIRMED_STORY_DEFECT"}
+    monkeypatch.setattr(
+        "story_video_agent_v3.story_goal_video_repair._source_frames_match_decoded_video",
+        lambda **kwargs: True,
+    )
+    review_dir = tmp_path / "source_reviews"
+    review_dir.mkdir()
+    (review_dir / f"{gap['issue_id']}.json").write_text(
+        json.dumps(review), encoding="utf-8",
+    )
+    video = tmp_path / "unit_source.mp4"
+    video.write_bytes(b"fixture-only")
+    # Different story template: no equalizer_scoreboard_anchor.
+    old_edl = [x for x in _edl() if x["segment_id"] != "eq_board"]
+    out = repair_goal_coverage_from_video_reviews(
+        edl=old_edl, diagnosis={"issues": [gap]},
+        source_sha=sha, review_dir=review_dir, source_mp4=video,
+    )
+    assert out["changed"] is True
+    assert any(d["status"] == "EDL_REPAIR_APPLIED" for d in out["decisions"])
+    new_rows = [r for r in out["edl"] if r.get("goal_coverage_repair")]
+    assert len(new_rows) == 1
+    assert new_rows[0]["role"] == "score_change_goal_action"
+    assert new_rows[0]["agent_auto_verified"] is False
+    assert out["candidate_quality_improved"] == "UNVERIFIED"
+    assert out["release_authorized"] is False
+
+
+def test_confirmed_goal_defect_without_review_never_mutates_edl(tmp_path):
+    gap = {**_issue(), "diagnosis_status": "CONFIRMED_STORY_DEFECT"}
+    old_edl = [x for x in _edl() if x["segment_id"] != "eq_board"]
+    out = repair_goal_coverage_from_video_reviews(
+        edl=old_edl, diagnosis={"issues": [gap]},
+        source_sha="d" * 64, review_dir=None, source_mp4=tmp_path / "missing.mp4",
+    )
+    assert not out["changed"]
+    assert out["edl"] == old_edl
+    assert out["decisions"][0]["status"] == "UNRESOLVED"
+    assert out["release_authorized"] is False
+
+
 def test_provider_probe_does_not_call_api_when_budget_insufficient(tmp_path):
     from story_video_agent_v3.story_goal_video_repair import (
         observe_source_goal_video_with_shared_vlm,
