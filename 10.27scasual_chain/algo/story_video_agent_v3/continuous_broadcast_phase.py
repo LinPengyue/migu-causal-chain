@@ -13,6 +13,7 @@ broadcast reviewer, whose exact model/human provenance must be retained.
 from __future__ import annotations
 
 import hashlib
+import json
 import math
 from pathlib import Path
 from typing import Any, Dict, Mapping
@@ -107,6 +108,19 @@ def validate_continuous_broadcast_phase_proof(
             return fail("model_phase_review_sent_frame_ids_missing")
         if any(not isinstance(fid, str) or not fid for fid in sent):
             return fail("model_phase_review_sent_frame_ids_malformed")
+        # Prevent a post-hoc invented phase label from being attached to an
+        # unrelated, but properly hashed, REAL model response.
+        try:
+            parsed_response = json.loads(original_response.read_text(encoding="utf-8"))
+        except (ValueError, UnicodeError, OSError):
+            return fail("phase_model_response_not_auditable_json")
+        if not isinstance(parsed_response, Mapping):
+            return fail("phase_model_response_not_auditable_json")
+        original_phase_rows = parsed_response.get("phase_observations")
+        if not isinstance(original_phase_rows, list):
+            return fail("model_response_lacks_original_phase_observations")
+        if original_phase_rows != review.get("phase_observations"):
+            return fail("phase_observations_modified_after_model_response")
     elif kind == "HUMAN_CONTINUOUS_VIDEO_REVIEW":
         if not str(reviewer.get("review_record_id") or "").strip():
             return fail("human_review_missing_record_id")
