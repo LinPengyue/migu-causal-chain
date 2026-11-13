@@ -1,0 +1,59 @@
+{
+  "schema": "v3a_stage3_b_raw_only_preflight_v1",
+  "generated": "2026-11-13T00:54:57.215402+00:00",
+  "branch": "story-va-v3a-stage3-adaptive-video-verify",
+  "code_sha": "6c75a2964ba1d94f21658e810b3e9a52efa7db23",
+  "paid_http": 0,
+  "step": "0_zero_http_regression_and_config_audit",
+  "pytest": {
+    "stage3_and_related": "35 passed",
+    "stage3_evidence": "12 passed"
+  },
+  "frozen_inputs_preserved": true,
+  "selected_from_stage2_B_queue_only": {
+    "issue_id": "goal_coverage_01_to_11",
+    "score_before": [
+      0,
+      1
+    ],
+    "score_after": [
+      1,
+      1
+    ],
+    "candidate_id": "goal_gap_goal_coverage_01_to_11_uncovered_gap_tail_6440",
+    "media_in": 6440.62,
+    "media_out": 6465.62,
+    "clip_path": "/tmp/lpy1_v3a_blind_repair_B_historical_20261112/agent_run_goal_video_stage2_v1/02_round_01/source_goal_video_review/goal_coverage_01_to_11/roles/goal_gap_goal_coverage_01_to_11/clips/goal_gap_goal_coverage_01_to_11_uncovered_gap_tail_6440_continuous_accurate.mp4",
+    "source_video": "/mnt/data4/migu/10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语.mp4",
+    "note": "latest non-replay continuous candidate from Stage2 B queue; not Gold/P14 EDL"
+  },
+  "config_audit": {
+    "http_requests_sent": 0,
+    "models": {
+      "planner": "DeepSeek-V4-Pro-0813",
+      "vision": "Qwen3.6-Plus"
+    },
+    "api_key_set": {
+      "planner": true,
+      "vision": true
+    },
+    "vision_configured": true,
+    "effective_caps": {
+      "max_calls": 2,
+      "max_cost_usd": 0.1,
+      "max_completion_tokens": 2048
+    },
+    "ready_for_real_when_approved": false,
+    "ready_blocker": "audit raw TCP probe to llmapi.paratera.com fails DNS (no local resolver); HTTP clients reach host via local HTTPS_PROXY (urllib got HTTP 401 Unauthorized without using key in probe). Keys/models are set.",
+    "http_proxy_reachability": "urllib https://llmapi.paratera.com/v1/models -> 401 (endpoint reachable through proxy)"
+  },
+  "step1_paid_status": "NOT_RUN_AWAITING_EXPLICIT_BUDGET_AUTHORIZATION",
+  "claims": {
+    "source_video_semantic_confirmed": false,
+    "first_live_verified": false,
+    "edl_repaired": false,
+    "stage3_passed": false
+  },
+  "algo_edits_by_cursor": false,
+  "merged_to_main": false
+}

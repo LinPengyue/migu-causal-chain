@@ -1,0 +1,148 @@
+{
+  "schema": "v3_api_config_audit_zero_http_v1",
+  "http_requests_sent": 0,
+  "api_enabled_env": false,
+  "STORY_API_ENABLE": null,
+  "STORY_API_SMOKE": null,
+  "env_overrides": {
+    "before": {
+      "STORY_API_MAX_CALLS": "3",
+      "STORY_API_MAX_COST_USD": "0.10",
+      "STORY_API_MAX_COMPLETION_TOKENS": "256",
+      "STORY_VLM_MAX_COMPLETION_TOKENS": null,
+      "STORY_VLM_REQUEST_PROFILE": null,
+      "STORY_VLM_SEND_THINKING": null,
+      "STORY_VLM_ENABLE_THINKING": null,
+      "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+      "STORY_VLM_TOKEN_PARAM": null,
+      "STORY_API_TOKEN_PARAM": "max_tokens"
+    },
+    "after": {
+      "STORY_API_MAX_CALLS": "2",
+      "STORY_API_MAX_COST_USD": "0.1",
+      "STORY_API_MAX_COMPLETION_TOKENS": "2048",
+      "STORY_VLM_MAX_COMPLETION_TOKENS": "2048",
+      "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+      "STORY_VLM_SEND_THINKING": null,
+      "STORY_VLM_ENABLE_THINKING": null,
+      "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+      "STORY_VLM_TOKEN_PARAM": "max_tokens",
+      "STORY_API_TOKEN_PARAM": "max_tokens",
+      "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+      "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+      "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+    },
+    "disable_thinking": true
+  },
+  "models": {
+    "planner": "DeepSeek-V4-Pro-0813",
+    "vision": "Qwen3.6-Plus"
+  },
+  "base_urls": {
+    "planner": "https://llmapi.paratera.com/v1",
+    "vision": "https://llmapi.paratera.com/v1"
+  },
+  "api_key_set": {
+    "planner": true,
+    "vision": true
+  },
+  "vision": {
+    "request_profile": "video_rsi",
+    "token_param": "max_tokens",
+    "max_completion_tokens_role": 2048,
+    "send_thinking_params": false,
+    "thinking_object_disabled": true,
+    "default_temperature": 0.0,
+    "configured": true,
+    "effective_output_token_limit": 2048
+  },
+  "effective_caps": {
+    "max_calls": 2,
+    "max_cost_usd": 0.1,
+    "max_completion_tokens": 2048,
+    "sources": {
+      "max_calls": {
+        "env_name": "STORY_API_MAX_CALLS",
+        "env_value": "2",
+        "explicit_value": 2,
+        "effective": 2,
+        "policy": "min(explicit, env) when both set"
+      },
+      "max_cost_usd": {
+        "env_name": "STORY_API_MAX_COST_USD",
+        "env_value": "0.1",
+        "explicit_value": 0.1,
+        "effective": 0.1,
+        "policy": "min(explicit, env) when both set"
+      },
+      "max_completion_tokens": {
+        "env_name": "STORY_API_MAX_COMPLETION_TOKENS",
+        "env_value": "2048",
+        "explicit_value": 2048,
+        "effective": 2048,
+        "policy": "min(explicit, env) when both set"
+      }
+    },
+    "cost_disclaimer": "est_cost_usd is a local estimate from configured unit prices (STORY_LLM_PRICE_*); it is NOT a billing guarantee or absolute invoice cap.",
+    "token_param": "max_tokens"
+  },
+  "provider_global_caps": {
+    "max_calls": 2,
+    "max_cost_usd": 0.1,
+    "max_completion_tokens": 2048
+  },
+  "request_body_audit": {
+    "role": "vision",
+    "model": "Qwen3.6-Plus",
+    "request_profile": "video_rsi",
+    "token_param_configured": "max_tokens",
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 2048,
+    "temperature_sent": 0.0,
+    "stream_sent": false,
+    "thinking_params_sent": false,
+    "thinking_object_disabled_sent": true,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "sends_both_token_params": false,
+    "sends_both_thinking_formats": false,
+    "message_count": 1,
+    "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+    "paratera_thinking_object_documented": false
+  },
+  "compat_checks": {
+    "sends_both_token_params": false,
+    "sends_both_thinking_formats": false,
+    "thinking_disabled_object": true,
+    "flat_thinking_sent": false,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 2048,
+    "stream_false": true,
+    "paratera_thinking_object_documented": false,
+    "vendor_note": "video_rsi sends max_tokens + thinking={type:disabled} + stream=false; Paratera docs do not document thinking object — profile is opt-in offline-safe."
+  },
+  "network_tcp_probes": [
+    {
+      "host": "llmapi.paratera.com",
+      "tcp_443": "fail",
+      "error": "gaierror",
+      "detail": "[Errno -3] Temporary failure in name resolution",
+      "roles": "planner"
+    }
+  ],
+  "provider_status_mode": "mock",
+  "cost_disclaimer": "est_cost_usd is a local estimate from configured unit prices (STORY_LLM_PRICE_*); it is NOT a billing guarantee or absolute invoice cap.",
+  "ready_for_mock": true,
+  "ready_for_real_when_approved": false,
+  "recommendations": {
+    "max_http_calls_first_trial": 3,
+    "disable_thinking": true,
+    "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+    "STORY_API_MAX_COMPLETION_TOKENS": 2048,
+    "STORY_VLM_MAX_COMPLETION_TOKENS": 2048,
+    "STORY_API_MAX_CALLS": 3,
+    "STORY_API_MAX_COST_USD": 0.5,
+    "first_real_run_observation_only": true
+  },
+  "note": "Zero HTTP chat/completions. Keys never printed. Real billed vision requires --enable-real-api AND --i-approve-budget. First real trial keeps agent_auto_verified=false (observation_only)."
+}

@@ -1,6 +1,6 @@
 # V3-A Stage3: raw-only B source VIDEO semantic pilot
 
-**Status: pilot commands prepared, no server execution or paid API call yet.**
+Status: **STEP0 ZERO-HTTP PREFLIGHT COMPLETE ON **. Pytest pass; B Stage2 candidate selected =  [6440.62,6465.62]; config audit http=0, vision=Qwen3.6-Plus, caps max_calls=2 / --.10.  due to raw TCP DNS probe (HTTP via proxy still reaches Paratera). **Paid Step1 NOT run** — awaiting explicit budget authorization. See .
 Base evidence: Stage2 server report `5bcd840`; this branch fixes the reused
 P13 video's dense second-round trigger and complete-evidence ranking. A/B/C
 remain unchanged and their original source/score files MUST be preserved.
