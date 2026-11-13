@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
 
 from .first_live_window_evidence import build_broadcast_timeline_review
-from .story_e2e_agent import load_match_events
+from .story_evidence_search import load_match_events
 
 
 def _load(path: Path) -> Any:
