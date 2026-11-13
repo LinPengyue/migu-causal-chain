@@ -374,7 +374,7 @@ def test_archived_phase_requires_both_existing_files_and_explicit_native_opt_in(
         "--native-phase-archived-semantic-log", str(log),
     ])
     errs = validate_inputs(args)
-    assert "native_archived_inputs_require_native_phase_opt_in" in errs
+    assert "archived_stage3_evidence_forbidden_in_fresh_full_e2e" in errs
     args2 = build_full_parser().parse_args([
         "--source-mp4", str(tmp_path / "missing.mp4"),
         "--events-json", str(tmp_path / "missing.json"),
@@ -384,7 +384,34 @@ def test_archived_phase_requires_both_existing_files_and_explicit_native_opt_in(
         "--native-phase-archived-frame-manifest", str(manifest),
     ])
     errs2 = validate_inputs(args2)
-    assert "native_archived_input_pair_missing" in errs2
+    assert "archived_stage3_evidence_forbidden_in_fresh_full_e2e" in errs2
+
+
+def test_archive_mode_is_not_available_in_fresh_regression_or_unapproved_cli(
+    tmp_path,
+):
+    from story_video_agent_v3.story_e2e_cli import main
+
+    video = tmp_path / "source.mp4"
+    match = tmp_path / "events.json"
+    video.write_bytes(b"dummy source")
+    match.write_text("{}", encoding="utf-8")
+    manifest, log = _archived_goal_inputs(tmp_path)
+    args = [
+        "--match-json", str(match),
+        "--source-mp4", str(video),
+        "--out-dir", str(tmp_path / "out"),
+        "--native-phase-archived-frame-manifest", str(manifest),
+        "--native-phase-archived-semantic-log", str(log),
+    ]
+    assert main(args) == 2  # missing independent native consent
+    args += [
+        "--enable-real-api", "--i-approve-budget",
+        "--enable-native-broadcast-observation",
+    ]
+    assert main(args) == 2  # frozen Phase5 required, no upstream re-use
+    args += ["--run-fresh-v3r", "--phase5-dir", str(tmp_path / "frozen")]
+    assert main(args) == 2  # still refuses archival evidence in fresh runs
 
 
 def test_native_video_opt_in_is_separate_from_real_api_consent():
