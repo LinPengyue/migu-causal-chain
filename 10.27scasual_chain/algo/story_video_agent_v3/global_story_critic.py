@@ -662,6 +662,99 @@ def merge_observation_into_diagnosis(
     return out
 
 
+
+def merge_goal_video_observation_into_diagnosis(
+    diagnosis: Mapping[str, Any],
+    observation: Optional[Mapping[str, Any]],
+    *,
+    source_sha256: Optional[str],
+) -> Dict[str, Any]:
+    """Attach B2/P13 source-VLM findings to Critic issues, never to edit authority.
+
+    This is an evidence handoff, NOT a second diagnosis/planning loop. Only
+    source-bound REAL model frame citations can enrich a matching goal issue.
+    Even a cited shot+net remains HYPOTHESIS_NEEDS_VIDEO until the existing
+    independent broadcast / first-LIVE Verifier has approved it.
+    """
+    out = dict(diagnosis)
+    obs = observation if isinstance(observation, Mapping) else {}
+    cross = obs.get("source_video_crosscheck") or {}
+    audit = obs.get("model_response_audit") or {}
+    issue_id = str(obs.get("source_issue_id") or "")
+    frame_ids = [str(fid) for fid in obs.get("frame_ids_sent") or [] if fid]
+    cited = [str(fid) for fid in audit.get("cited_frame_ids") or [] if fid]
+    frame_ids_set = set(frame_ids)
+    try:
+        start, end = [float(t) for t in obs.get("source_window") or []]
+        valid_window = 0 <= start < end
+    except (ValueError, TypeError):
+        valid_window = False
+        start, end = 0.0, 0.0
+    source_bound = bool(
+        source_sha256 and len(str(source_sha256)) == 64
+        and obs.get("provider_mode") == "real"
+        and audit.get("provider_mode") == "real"
+        and str(audit.get("raw_response_excerpt") or "").strip()
+        and frame_ids_set and cited and set(cited) <= frame_ids_set
+        and valid_window
+    )
+    if not source_bound:
+        out["goal_video_critic_handoff"] = {
+            "status": "UNRESOLVED_UNBOUND_SOURCE_VLM_OBSERVATION",
+            "source_issue_id": issue_id or None,
+            "first_live_verified": False,
+            "auto_edit_authorized": False,
+        }
+        return out
+
+    matches = [
+        i for i in out.get("issues") or []
+        if isinstance(i, Mapping)
+        and i.get("category") == "goal_coverage"
+        and str(i.get("issue_id") or "") == issue_id
+    ]
+    if len(matches) != 1:
+        out["goal_video_critic_handoff"] = {
+            "status": "UNRESOLVED_GOAL_ISSUE_BINDING",
+            "source_issue_id": issue_id or None,
+            "first_live_verified": False,
+            "auto_edit_authorized": False,
+        }
+        return out
+
+    derived = cross.get("derived_times") or {}
+    evidence = {
+        "status": (
+            "CITED_SHOT_NET_CANDIDATE_FIRST_LIVE_UNVERIFIED"
+            if cross.get("structurally_ready_for_automated_verify")
+            else "INCOMPLETE_SOURCE_VIDEO_OBSERVATION"
+        ),
+        "source_sha256": str(source_sha256),
+        "issue_id": issue_id,
+        "candidate_id": obs.get("candidate_id"),
+        "source_window": [start, end],
+        "shot_sec": derived.get("shot_sec"),
+        "net_sec": derived.get("net_sec"),
+        "cited_frame_ids": cited,
+        "model_frame_ids": frame_ids,
+        "evidence_kind": "real_source_video_vlm_observation",
+        "first_live_verified": False,
+        "auto_edit_authorized": False,
+    }
+    out["issues"] = [
+        {**dict(issue), "critic_video_evidence": evidence}
+        if issue is matches[0] else dict(issue)
+        for issue in out.get("issues") or []
+    ]
+    out["goal_video_critic_handoff"] = {
+        "status": "BOUND_OBSERVATION_NOT_FIRST_LIVE_CERTIFICATION",
+        "source_issue_id": issue_id,
+        "first_live_verified": False,
+        "auto_edit_authorized": False,
+    }
+    return out
+
+
 def write_diagnosis(path: Path, diagnosis: Mapping[str, Any]) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(diagnosis, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
