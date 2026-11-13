@@ -7,6 +7,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import shutil
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -16,6 +18,7 @@ from story_video_agent_v3.story_goal_video_repair import (
     _source_frames_match_decoded_video,
     apply_video_verified_goal_repair,
     assemble_live_goal_review_from_observation,
+    audit_source_frame_redecode,
     goal_coverage_issues,
     prepare_source_video_goal_queue,
     repair_goal_coverage_from_video_reviews,
@@ -136,6 +139,105 @@ def _review(tmp_path):
         },
     }
     return issue, sha, review
+
+
+@pytest.fixture
+def real_stage3_framestore_binding(tmp_path):
+    """Tiny REAL FFmpeg/FrameStore extraction: q3 differs from q2 by design."""
+    if not shutil.which("ffmpeg") or not shutil.which("ffprobe"):
+        pytest.skip("actual_ffmpeg_and_ffprobe_required")
+    from story_video_agent.frames import FrameStore, FrameBudget
+    from story_video_agent.media import probe_video
+
+    video = tmp_path / "synthetic_live_source.mp4"
+    cmd = [
+        "ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
+        "-f", "lavfi", "-i", "testsrc2=size=320x180:rate=25",
+        "-t", "4.00", "-c:v", "libx264", "-pix_fmt", "yuv420p",
+        str(video),
+    ]
+    proc = subprocess.run(cmd, text=True, capture_output=True, timeout=30)
+    if proc.returncode != 0:
+        pytest.skip("local ffmpeg lacks libx264:" + proc.stderr[-300:])
+    store = FrameStore(
+        probe_video(video), out_dir=tmp_path / "stage3_original_model_frames",
+        budget=FrameBudget(max_frames=4),
+    )
+    records = [
+        store.extract_at(t, gap_id="goal", tool="stage3_vlm_model_input")
+        for t in (1.25, 2.25)
+    ]
+    if any(r.actual_media_sec is None or r.pts_status != "pts" for r in records):
+        pytest.skip("test media PTS not available from local ffmpeg")
+    sha = hashlib.sha256(video.read_bytes()).hexdigest()
+    frames = [
+        {
+            "frame_id": r.frame_id, "path": str(r.path),
+            "source_pts_sec": r.actual_media_sec,
+            "requested_media_sec": r.requested_media_sec,
+            "sha256": hashlib.sha256(Path(r.path).read_bytes()).hexdigest(),
+        }
+        for r in records
+    ]
+    return video, sha, {"frames": frames}
+
+
+def test_historical_stage3_q3_extractor_exact_reproduction(
+    real_stage3_framestore_binding,
+):
+    video, sha, binding = real_stage3_framestore_binding
+    result = audit_source_frame_redecode(
+        source_mp4=video, source_sha=sha, binding=binding,
+    )
+    assert result["ok"] is True, result
+    assert result["source_sha_match"] is True
+    assert result["first_live_verified"] is False
+    assert result["visual_similarity_fallback_allowed"] is False
+    assert all(x["matched"] for x in result["frames"])
+    assert all(
+        x["decoder_profile"] in (
+            "stage3_framestore_q3_exact_bytes",
+            "first_live_localize_q2_exact_bytes",
+        )
+        for x in result["frames"]
+    )
+
+
+def test_historical_stage3_frame_binding_rejects_wrong_source_sha(
+    real_stage3_framestore_binding,
+):
+    video, _, binding = real_stage3_framestore_binding
+    result = audit_source_frame_redecode(
+        source_mp4=video, source_sha="f" * 64, binding=binding,
+    )
+    assert result["ok"] is False
+    assert result["reason"] == "source_mp4_sha256_mismatch"
+
+
+def test_historical_stage3_frame_binding_rejects_tampered_image(
+    real_stage3_framestore_binding,
+):
+    video, sha, binding = real_stage3_framestore_binding
+    frames = binding["frames"]
+    Path(frames[0]["path"]).write_bytes(b"modified_after_model_call")
+    result = audit_source_frame_redecode(
+        source_mp4=video, source_sha=sha, binding=binding,
+    )
+    assert result["ok"] is False
+    assert result["frames"][0]["reason"] == "stored_model_frame_sha256_mismatch"
+
+
+def test_historical_stage3_frame_binding_rejects_wrong_pts(
+    real_stage3_framestore_binding,
+):
+    video, sha, binding = real_stage3_framestore_binding
+    frames = binding["frames"]
+    frames[0]["source_pts_sec"] += 0.8
+    result = audit_source_frame_redecode(
+        source_mp4=video, source_sha=sha, binding=binding,
+    )
+    assert result["ok"] is False
+    assert result["frames"][0]["matched"] is False
 
 
 def test_unreviewed_goal_gap_only_returns_unresolved():
