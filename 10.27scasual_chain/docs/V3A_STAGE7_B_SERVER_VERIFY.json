@@ -1,0 +1,96 @@
+{
+  "schema": "v3a_stage7_b_temporal_server_verify_v1",
+  "generated": "2026-11-13T03:49:36.974248+00:00",
+  "code_sha": "ad83e7f9f7ebf030a3bc1e1e3d9575e1584bb3ed",
+  "branch": "story-va-v3a-stage7-temporal-broadcast",
+  "paid_api": false,
+  "http_requests": 0,
+  "pytest": {
+    "files": [
+      "tests/test_v3a_stage6_broadcast_verifier.py",
+      "tests/test_v3a_stage5_broadcast_temporal_audit.py"
+    ],
+    "passed": 9
+  },
+  "diagnostics": {
+    "status": "BROADCAST_CUT_CANDIDATES_ONLY",
+    "source_window": [
+      6422.2,
+      6475.6
+    ],
+    "shot_net_pts": [
+      6447.2,
+      6450.6
+    ],
+    "sampling_step_sec": 0.5,
+    "attempted_frames": 107,
+    "decoded_frames": 107,
+    "coverage_fraction": 1.0,
+    "thresholds": {
+      "hist_distance_p90": 0.33753500000000003,
+      "pixel_change_p90": 0.190145
+    },
+    "cut_candidates_n": 4,
+    "cut_candidates_relative": [
+      {
+        "pts_from": 6451.7,
+        "pts_to": 6452.2,
+        "hist_distance": 0.59579,
+        "pixel_change": 0.20089,
+        "rel_to_shot_sec": 4.75,
+        "rel_to_net_sec": 1.35,
+        "after_net": true,
+        "before_shot": false,
+        "during_shot_net": false
+      },
+      {
+        "pts_from": 6454.2,
+        "pts_to": 6454.7,
+        "hist_distance": 0.62927,
+        "pixel_change": 0.21373,
+        "rel_to_shot_sec": 7.25,
+        "rel_to_net_sec": 3.85,
+        "after_net": true,
+        "before_shot": false,
+        "during_shot_net": false
+      },
+      {
+        "pts_from": 6456.7,
+        "pts_to": 6457.2,
+        "hist_distance": 0.38118,
+        "pixel_change": 0.22298,
+        "rel_to_shot_sec": 9.75,
+        "rel_to_net_sec": 6.35,
+        "after_net": true,
+        "before_shot": false,
+        "during_shot_net": false
+      },
+      {
+        "pts_from": 6461.7,
+        "pts_to": 6462.2,
+        "hist_distance": 0.69093,
+        "pixel_change": 0.25575,
+        "rel_to_shot_sec": 14.75,
+        "rel_to_net_sec": 11.35,
+        "after_net": true,
+        "before_shot": false,
+        "during_shot_net": false
+      }
+    ],
+    "ocr_required": false,
+    "limitations": [
+      "shot cuts alone cannot distinguish live from replay",
+      "camera change does not prove slow motion or a replay",
+      "no earlier same-action sequence verification in this module",
+      "percentile thresholds are diagnostic and uncalibrated"
+    ]
+  },
+  "gates": {
+    "FIRST_LIVE_VERIFIED": false,
+    "EDL_REPAIRED": false,
+    "interpretation": "Four cut candidates all occur after net (~6451.7–6462.2); none inside shot→net. This is diagnostic discontinuity only — not live/replay labels and not first-broadcast proof.",
+    "allow_auto_repair_now": false,
+    "next": "Segment-level same-action retrieval + broadcast-phase classifier + hard negatives across matches before any FIRST_LIVE / EDL unlock."
+  },
+  "out_dir": "/tmp/lpy1_v3a_stage7_B_temporal_20261113"
+}
