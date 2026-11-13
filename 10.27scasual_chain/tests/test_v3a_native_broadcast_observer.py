@@ -3,12 +3,15 @@ from __future__ import annotations
 
 import hashlib
 import json
+import shutil
+import subprocess
 from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
 
 from story_video_agent_v3.native_broadcast_observer import (
+    _source_context_video,
     observe_native_broadcast_phase,
 )
 
@@ -116,6 +119,38 @@ def _prepare(tmp_path, monkeypatch):
     monkeypatch.setattr(phase_mod, "_source_context_video", fake_clip)
     monkeypatch.setattr(phase_mod, "extract_phase_anchored_frames", fake_extract)
     return video, sha
+
+
+def test_native_video_context_is_one_original_source_interval(tmp_path):
+    """Real local ffmpeg smoke check; not a VLM call or first-live test."""
+    if not shutil.which("ffmpeg") or not shutil.which("ffprobe"):
+        pytest.skip("FFmpeg tools not installed")
+    source = tmp_path / "synthetic_match_source.mp4"
+    proc = subprocess.run([
+        "ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
+        "-f", "lavfi", "-i", "testsrc2=size=320x180:rate=25",
+        "-t", "3.50", "-c:v", "libx264", "-pix_fmt", "yuv420p",
+        str(source),
+    ], capture_output=True, text=True, timeout=40)
+    if proc.returncode != 0:
+        pytest.skip("local ffmpeg missing libx264:" + proc.stderr[-150:])
+    result = _source_context_video(
+        source_mp4=source, begin=0.5, end=3.0,
+        output=tmp_path / "native_transcoded.mp4",
+    )
+    assert result["ok"] is True, result
+    assert result["source_pts_start"] == 0.5
+    assert result["source_pts_end"] == 3.0
+    assert result["bytes"] > 4096
+    assert result["sha256"] == hashlib.sha256(
+        Path(result["path"]).read_bytes()
+    ).hexdigest()
+    probe = subprocess.run([
+        "ffprobe", "-v", "error", "-show_entries", "format=duration",
+        "-of", "default=noprint_wrappers=1:nokey=1", result["path"],
+    ], capture_output=True, text=True, timeout=20)
+    assert probe.returncode == 0
+    assert abs(float(probe.stdout.strip()) - 2.5) <= 0.5
 
 
 def test_default_no_authorization_is_exactly_zero_calls(tmp_path):
