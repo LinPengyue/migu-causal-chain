@@ -19,7 +19,7 @@ from typing import Any, Dict, List, Mapping, Optional, Sequence
 from .story_timeline import active_cut_rows, build_story_timeline
 
 SCHEMA = "v3a_additive_story_opportunity_v1"
-PREG0AL_CONTEXT_SEC = 150.0
+PREGOAL_CONTEXT_SEC = 150.0
 MAX_CANDIDATES = 4
 WINDOW_SEC = 12.0
 SOURCE_READ_BUDGET_SEC = 48.0
@@ -78,7 +78,7 @@ def discover_additive_opportunities(
     *,
     source_sha256: str,
     max_opportunities: int = 1,
-    lookback_sec: float = PREG0AL_CONTEXT_SEC,
+    lookback_sec: float = PREGOAL_CONTEXT_SEC,
     max_candidates: int = MAX_CANDIDATES,
     window_sec: float = WINDOW_SEC,
 ) -> Dict[str, Any]:
@@ -169,10 +169,10 @@ def discover_additive_opportunities(
         "source_sha256": source_sha256.lower(),
         "opportunities": opportunities,
         "source_window_count": sum(len(x["source_video_windows"]) for x in opportunities),
-        "max_total_source_read_sec": max_opportunities * max_candidates * window_sec,
+        "max_total_source_read_sec": SOURCE_READ_BUDGET_SEC,
         "event_metadata_used_for_video_ranking": False,
         "paid_http_calls": 0,
-        "edi_mutation_authorized": False,
+        "edl_mutation_authorized": False,
         "first_live_verified": False,
         "semantic_repair_confirmed": False,
         "note": (
