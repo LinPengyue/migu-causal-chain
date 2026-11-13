@@ -135,6 +135,8 @@ def _review(tmp_path):
             {"phase": "SAME_ACTION_REPLAY_AFTER", "frame_id": "frame_4",
              "source_pts_sec": 163.0, "visible_cue": "fictional later replay of same action"},
         ],
+        "later_replay_status": "SAME_ACTION_REPLAY_OBSERVED",
+        "post_action_reviewed_through_sec": 165.0,
         "same_action_identity_evidence": "fixture links same shot and later replay",
         "prior_occurrence_reviewed": True,
         "prior_occurrence_method": "HUMAN_FULL_SOURCE_TIMELINE_IDENTITY_REVIEW_FIXTURE",
