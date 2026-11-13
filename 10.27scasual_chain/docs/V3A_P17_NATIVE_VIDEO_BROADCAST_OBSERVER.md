@@ -95,3 +95,69 @@ as native-video model input.
 
 B today: semantic source frame provenance VERIFIED, first-live NOT_VERIFIED,
 Goal EDL repair NOT PERFORMED; BEST unchanged.
+
+## P17.1 — Reuse already authenticated B Stage3 instead of buying the same observation again
+
+P17 original wiring was checked after 71 server unit tests. The P17 native
+branch correctly reads `goal_semantic.source_video_crosscheck.derived_times`
+from a NEW VLM call; no field-name bug exists. However it previously did NOT
+accept the six original B Qwen3.6/3.7 Stage3 citations previously proved
+`ORIGINAL_SOURCE_FRAMES_EXACTLY_REPRODUCED` by P15.3. Merely switching
+on native mode would repeat the paid sparse-image VLM call.
+
+In the same `run_story_e2e` chain, P17.1 now accepts an **explicit DEV-only**
+pair of original archived evidence files:
+- `--native-phase-archived-frame-manifest`: read-only JSON
+  `{"frames":[...]}` wrapping the ACTUAL archived Stage3 round1/round2
+  frame records. Must contain the model-cited original paths, actual PTS,
+  requested times. Never invent IDs, paths or PTS.
+- `--native-phase-archived-semantic-log`: archived REAL Qwen
+  `automated_semantic_log.json` with original `vlm_inference`, cited shot/net
+  frame IDs, `provider_mode=real`, `observation_only=true`.
+
+Before using anchors, `resolve_reverified_archived_goal_anchors` invokes
+P15's `inspect_archived_real_goal_frames` and re-executes the *actual*
+original-source SHA+Stage3 q3 JPEG bytes+PTS verification, NOT a trust of
+an old `binding_valid=true` string. It then extracts shot/net from the
+original cited frame IDs; no source frame or timestamp is fabricated.
+
+It additionally requires exactly ONE matching current inferred missing
+goal-coverage issue with `0 <= score_confirmation_sec-net_sec <= 180`.
+This binds the old real goal observation to the correct story defect
+heuristically, never to human causal Gold. It is a diagnostic association,
+NOT first-live evidence or editing authorization. If ambiguous, fail-closed.
+
+**Critically, archival mode SKIPS the redundant paid Stage3 sparse-image
+observation** in the current E2E round. It does not claim the new native
+MP4 VLM call was already done. The separate native video input remains
+explicitly paid, opt-in and observation-only. The rest of the unified
+story Critic/Planner/Verifier may use its own authorized budget; never
+claim archival mode makes a full paid E2E run exactly one HTTP call.
+
+Archival reuse may only be invoked through `story_e2e_cli` with frozen
+`--phase5-dir`, no `--run-fresh-v3r`. It is blocked from the
+`story_full_e2e_cli` fresh pipeline **even without --strict-raw-only**.
+Therefore the formal raw-MP4+events-JSON benchmark is uncontaminated.
+
+### Zero-paid regression for archived reuse
+
+```bash
+git fetch origin story-va-v3a-p17-native-broadcast-observer
+git switch story-va-v3a-p17-native-broadcast-observer
+git pull --ff-only
+cd 10.27scasual_chain
+PYTHONPATH=algo python -m pytest -q \
+  tests/test_v3a_native_broadcast_observer.py \
+  tests/test_v3a_continuous_broadcast_phase.py \
+  tests/test_v3a_goal_video_repair.py \
+  tests/test_v3a_stage5_broadcast_temporal_audit.py \
+  tests/test_v3a_stage6_broadcast_verifier.py \
+  tests/test_v3a_phase8_run_story_e2e_loop.py
+git status --short
+git rev-parse --short HEAD
+```
+
+**No paid run requested or authorized by this document.** Do not start a
+real native MP4 VLM call without direct user approval. Do not rebuild Stage1–7,
+modify BEST, or substitute any Gold or post-hoc result for the original
+Stage3 manifest and log.
