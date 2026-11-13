@@ -76,7 +76,9 @@ def _review(tmp_path):
     sha = "d" * 64
     media_in, media_out = 145.0, 157.0
     frame_rows = []
-    for i, sec in enumerate((150.0, 153.0)):
+    # frame_0/1 are cited goal action; 2/3/4 are independent
+    # pre-goal, live reaction and later replay timeline witness frames.
+    for i, sec in enumerate((150.0, 153.0, 142.0, 155.0, 163.0)):
         path = tmp_path / f"frame{i}.jpg"
         path.write_bytes(f"synthetic_frame_{i}".encode())
         frame_rows.append({
@@ -108,6 +110,37 @@ def _review(tmp_path):
     }
     clip = tmp_path / "continuous.mp4"
     clip.write_bytes(b"synthetic_continuous_clip_for_unit_test")
+    timeline_review["phase_evidence"] = {
+        "schema": "v3a_continuous_broadcast_phase_evidence_v1",
+        "source_sha256": sha,
+        "source_pts_start": media_in, "source_pts_end": media_out,
+        "shot_sec": 150.0, "net_sec": 153.0,
+        "reviewer": {
+            "kind": "HUMAN_CONTINUOUS_VIDEO_REVIEW",
+            "review_record_id": "FAKE_UNIT_TEST_NOT_REAL_FOOTAGE",
+        },
+        "continuous_context_clip": {
+            "source_sha256": sha,
+            "source_pts_start": 140.0, "source_pts_end": 165.0,
+            "path": str(clip),
+            "sha256": hashlib.sha256(clip.read_bytes()).hexdigest(),
+        },
+        "phase_observations": [
+            {"phase": "CONTINUOUS_LIVE_PLAY", "frame_id": "frame_2",
+             "source_pts_sec": 142.0, "visible_cue": "fictional live buildup before shot"},
+            {"phase": "GOAL_SHOT_NET", "frame_id": "frame_0",
+             "source_pts_sec": 150.0, "visible_cue": "fictional uninterrupted original shot"},
+            {"phase": "IMMEDIATE_LIVE_REACTION", "frame_id": "frame_3",
+             "source_pts_sec": 155.0, "visible_cue": "fictional live immediate celebration"},
+            {"phase": "SAME_ACTION_REPLAY_AFTER", "frame_id": "frame_4",
+             "source_pts_sec": 163.0, "visible_cue": "fictional later replay of same action"},
+        ],
+        "same_action_identity_evidence": "fixture links same shot and later replay",
+        "prior_occurrence_reviewed": True,
+        "prior_occurrence_method": "HUMAN_FULL_SOURCE_TIMELINE_IDENTITY_REVIEW_FIXTURE",
+        "prior_occurrence_result": "NO_EARLIER_SAME_ACTION",
+        "timeline_context_complete": True,
+    }
     review = {
         "issue_id": issue["issue_id"],
         "score_before": [0, 1],
