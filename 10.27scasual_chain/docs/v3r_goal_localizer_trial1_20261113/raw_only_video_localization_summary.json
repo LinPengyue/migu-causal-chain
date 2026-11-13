@@ -1,0 +1,47 @@
+{
+  "schema": "v3a_raw_only_unresolved_goal_video_evidence_v1",
+  "inputs": {
+    "original_events_json": "/data2/lpy1/worktrees/migu-v3a-p16-verify/10.27scasual_chain/data/交付_out/10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语.json",
+    "events_sha256": "ddae99b21cbfcd1c75ddf620d957578e57c2c013d607ac893655c4d52b7e779e",
+    "original_source_mp4": "/mnt/data4/migu/10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语.mp4",
+    "source_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+    "goal_recovery_json": "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run/01_to_04_fresh_v3r/03_v1_adapt/goal_recovery.json",
+    "recovery_sha256": "da58fb65029600e1252282229ae850be558a0b9d9018ca63b36208f087fa0c32"
+  },
+  "n_unresolved_requested": 1,
+  "results": [
+    {
+      "candidate_id": "goalcand_03_01_to_11",
+      "score_before": [
+        0,
+        1
+      ],
+      "score_after": [
+        1,
+        1
+      ],
+      "score_confirmation_sec": 6535.62,
+      "previous_goal_action_sec": null,
+      "source_score_bracket": {
+        "media_in": 6410.07,
+        "media_out": 6535.62,
+        "note": "Board lag window from Score_Recognition; NOT the action time itself"
+      },
+      "ocr_score_bounds": {
+        "media_in": 6410.07,
+        "media_out": 6460.62
+      },
+      "n_continuous_clips_extracted": 3,
+      "candidate_evidence_path": "/tmp/lpy1_v3r_goal_localizer_trial1_20261113/goalcand_03_01_to_11/candidate_audits.json",
+      "evidence_pack_path": "/tmp/lpy1_v3r_goal_localizer_trial1_20261113/goalcand_03_01_to_11/evidence_pack.json",
+      "localization_verdict_bucket": "not_found_in_budget",
+      "action_timestamp_autofilled": false,
+      "edl_inserted": false
+    }
+  ],
+  "actual_visual_semantic_verification": false,
+  "no_automatic_goal_timestamp_or_edl": true,
+  "no_gold_or_historical_overlay": true,
+  "paid_http": 0,
+  "next_step": "Review continuous clips for shot/net, first broadcast LIVE and action boundaries before binding any revised goal evidence."
+}

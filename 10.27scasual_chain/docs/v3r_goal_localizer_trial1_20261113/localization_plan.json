@@ -1,0 +1,53 @@
+{
+  "role": "goalcand_03_01_to_11",
+  "search_in": 6395.07,
+  "search_out": 6465.62,
+  "covered_historical": [],
+  "uncovered_gaps": [
+    {
+      "media_in": 6395.07,
+      "media_out": 6465.62
+    }
+  ],
+  "n_replay_event_spans": 0,
+  "n_live_shots": 0,
+  "candidates": [
+    {
+      "media_in": 6402.07,
+      "media_out": 6437.07,
+      "origin": "score_unknown_core",
+      "priority": 1100,
+      "rejected_prefilter": false,
+      "bound_source": "score_bounds",
+      "candidate_id": "goalcand_03_01_to_11_score_unknown_core_6402"
+    },
+    {
+      "media_in": 6440.62,
+      "media_out": 6465.62,
+      "origin": "uncovered_gap_tail",
+      "priority": 1000,
+      "rejected_prefilter": false,
+      "gap_index": 0,
+      "candidate_id": "goalcand_03_01_to_11_uncovered_gap_tail_6440"
+    },
+    {
+      "media_in": 6395.07,
+      "media_out": 6415.07,
+      "origin": "uncovered_gap_head",
+      "priority": 900,
+      "rejected_prefilter": false,
+      "gap_index": 0,
+      "candidate_id": "goalcand_03_01_to_11_uncovered_gap_head_6395"
+    }
+  ],
+  "rejected_or_demoted": [],
+  "planned_video_read_sec": 80.0,
+  "constraints": {
+    "live_only": true,
+    "reject_replay": true,
+    "no_score_confirm_as_goal_action": true,
+    "prefer_uncovered_over_historical_recut": true,
+    "max_candidates": 4,
+    "max_video_read_sec": 90.0
+  }
+}
