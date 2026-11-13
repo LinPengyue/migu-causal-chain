@@ -74,6 +74,11 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--no-smoke-render", action="store_true", default=False)
     p.add_argument("--enable-real-api", action="store_true", default=False)
     p.add_argument("--i-approve-budget", action="store_true", default=False)
+    p.add_argument(
+        "--enable-native-broadcast-observation",
+        action="store_true", default=False,
+        help="Extra separately authorized REAL native MP4 phase observation only",
+    )
     p.add_argument("--max-calls", type=int, default=5)
     p.add_argument("--max-cost-usd", type=float, default=0.10)
     # Explicitly rejected if passed (catch misuse).
@@ -86,6 +91,10 @@ def build_parser() -> argparse.ArgumentParser:
 
 def validate_inputs(args: argparse.Namespace) -> list[str]:
     errs: list[str] = []
+    if args.enable_native_broadcast_observation and not (
+        args.enable_real_api and args.i_approve_budget
+    ):
+        errs.append("native_broadcast_observation_requires_real_api_and_budget_approval")
     if args.phase5_dir is not None or args.baseline_edl is not None:
         errs.append("phase5_dir/baseline_edl_forbidden_in_full_e2e")
     if args.independent_atoms_json is not None and args.causal_json is not None:
@@ -205,6 +214,9 @@ def main(argv: list[str] | None = None) -> int:
         skip_vlm=not bool(args.enable_real_api),
         enable_real_api=bool(args.enable_real_api),
         i_approve_budget=bool(args.i_approve_budget),
+        enable_native_broadcast_observation=bool(
+            args.enable_native_broadcast_observation
+        ),
         smoke_render=not bool(args.no_smoke_render),
         max_rounds=int(args.max_rounds),
         max_calls=int(args.max_calls),
