@@ -79,7 +79,7 @@ git switch story-va-v3a-critic-verifier-increment-20261113
 git pull --ff-only
 cd 10.27scasual_chain
 python -m compileall -q algo/story_video_agent_v3
-PYTHONPATH=. python -m pytest -q \
+PYTHONPATH=.:algo python -m pytest -q \
   tests/test_v3a_critic_verifier_increment.py \
   tests/test_v3a_goal_video_repair.py \
   tests/test_v3a_goal_coverage_critic.py \
