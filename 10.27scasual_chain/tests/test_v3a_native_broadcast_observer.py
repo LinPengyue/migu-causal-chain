@@ -29,12 +29,16 @@ class FakeUsage:
 class FakeRealVideoApi:
     def __init__(self, observations=None, mode="real"):
         self.stats = FakeUsage()
+        self._http_attempts = 0
+        self.max_calls = 5
+        self.max_cost_usd = 0.1
         self.mode = mode
         self.messages = []
         self.observations = observations
 
     def chat(self, **kwargs):
         self.stats.calls += 1
+        self._http_attempts += 1
         self.messages = kwargs["messages"]
         user_parts = self.messages[1]["content"]
         assert sum(1 for x in user_parts if x.get("type") == "video_url") == 1
@@ -224,6 +228,7 @@ def test_mock_video_provider_never_substitutes_real_video_review(
 def test_budget_exhausted_prevents_video_upload(tmp_path):
     api = FakeRealVideoApi()
     api.stats.calls = 5
+    api._http_attempts = 5
     result = observe_native_broadcast_phase(
         source_mp4=tmp_path / "missing_video.mp4", source_sha="a" * 64,
         shot_sec=100., net_sec=102.,
