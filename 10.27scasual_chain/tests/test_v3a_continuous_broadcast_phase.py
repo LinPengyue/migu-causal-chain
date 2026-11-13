@@ -203,6 +203,68 @@ def test_no_replay_requires_bounded_post_action_review(tmp_path, post_action_sec
     assert _phase_check(case)["reason"] == expected
 
 
+def test_no_replay_timeline_enters_independent_first_live_ledger_only_with_proof(
+    tmp_path,
+):
+    import json
+
+    case = _without_later_replay(_case(tmp_path))
+    sha, frames, phase = case
+    manifest = {"fixture_only": True, "source_sha256": sha}
+    binding = {
+        "source_sha256": sha, "source_pts_start": 45.0,
+        "source_pts_end": 53.0, "frames": frames, "manifest": manifest,
+        "manifest_digest": hashlib.sha256(
+            json.dumps(manifest, sort_keys=True, ensure_ascii=False).encode()
+        ).hexdigest(),
+    }
+    timeline = {
+        "schema": "v3a_broadcast_timeline_review_v1",
+        "source_sha256": sha, "source_pts_start": 45.0,
+        "source_pts_end": 53.0, "outcome": "FIRST_LIVE_VERIFIED",
+        "replay_hits": [], "phase_evidence": phase,
+    }
+    accepted = validate_first_live_evidence_record(
+        binding, source_sha=sha, pts_start=45., pts_end=53.,
+        timeline_review=timeline,
+    )
+    assert accepted["ok"] is True
+    assert accepted["first_live_verified"] is True
+    # This positive is entirely synthetic: it verifies only the software
+    # contract, not a factual classification of a football broadcast.
+    timeline["phase_evidence"]["prior_occurrence_result"] = "UNKNOWN"
+    refused = validate_first_live_evidence_record(
+        binding, source_sha=sha, pts_start=45., pts_end=53.,
+        timeline_review=timeline,
+    )
+    assert refused["ok"] is False
+    assert refused["first_live_verified"] is False
+
+
+def test_model_phase_frame_list_malformed_fails_without_crashing(tmp_path):
+    import json
+
+    case = _without_later_replay(_case(tmp_path))
+    proof = case[2]
+    raw = tmp_path / "model_response.json"
+    raw.write_text(json.dumps({
+        "phase_observations": proof["phase_observations"],
+        "later_replay_status": proof["later_replay_status"],
+        "post_action_reviewed_through_sec": proof["post_action_reviewed_through_sec"],
+    }), encoding="utf-8")
+    proof["reviewer"] = {
+        "kind": "REAL_VIDEO_MODEL_REVIEW",
+        "provider_mode": "real",
+        "model_id": "fixture_only",
+        "response_path": str(raw),
+        "response_sha256": hashlib.sha256(raw.read_bytes()).hexdigest(),
+        "frame_ids_sent": ["pre", "shot", {"not": "a frame ID"}],
+    }
+    result = _phase_check(case)
+    assert result["ok"] is False
+    assert result["reason"] == "model_phase_review_sent_frame_ids_malformed"
+
+
 def test_no_replay_real_model_three_sent_frames_and_authentic_response(tmp_path):
     import json
 
