@@ -114,8 +114,12 @@ def test_first_live_label_without_positive_phase_proof_cannot_unlock_ledger(tmp_
 def test_real_model_phase_review_requires_actual_response_and_sent_frame_ids(tmp_path):
     case = _case(tmp_path)
     proof = case[2]
+    import json
+
     raw = tmp_path / "phase_model_response.json"
-    raw.write_text('{"phase_observations": "UNIT_TEST_ONLY"}', encoding="utf-8")
+    raw.write_text(json.dumps({
+        "phase_observations": proof["phase_observations"],
+    }), encoding="utf-8")
     proof["reviewer"] = {
         "kind": "REAL_VIDEO_MODEL_REVIEW",
         "provider_mode": "real",
@@ -130,6 +134,12 @@ def test_real_model_phase_review_requires_actual_response_and_sent_frame_ids(tmp
     proof["reviewer"]["frame_ids_sent"].append("replay")
     raw.write_text("changed_model_response", encoding="utf-8")
     assert _phase_check(case)["reason"] == "model_phase_review_raw_response_hash_mismatch"
+    # Even a correctly hashed response must contain exactly the visual
+    # observations copied into the asserted FIRST_LIVE timeline.
+    altered = json.dumps({"phase_observations": []})
+    raw.write_text(altered, encoding="utf-8")
+    proof["reviewer"]["response_sha256"] = hashlib.sha256(raw.read_bytes()).hexdigest()
+    assert _phase_check(case)["reason"] == "phase_observations_modified_after_model_response"
 
 
 @pytest.mark.parametrize("mutator, expected", [
