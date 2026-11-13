@@ -131,6 +131,10 @@ class StoryE2EInputs:
     # Extra explicit opt-in: native MP4 broadcast semantics, one real VLM
     # call using the SAME capped provider; never signs first-live/edits EDL.
     enable_native_broadcast_observation: bool = False
+    # Reuse original archived Stage3 only after direct q3 source frame byte
+    # reproduction. Both paths required, never treated as FIRST_LIVE proof.
+    native_phase_archived_frame_manifest: Optional[Path] = None
+    native_phase_archived_semantic_log: Optional[Path] = None
     max_rounds: int = MAX_ROUNDS
     max_calls: int = 5
     max_cost_usd: float = 0.10
@@ -1163,7 +1167,19 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 "issues": [],
             }
         goal_semantic = None
-        if paid_api is not None and (goal_video_queue.get("issues") or []):
+        archival_enabled = (
+            inp.enable_native_broadcast_observation
+            and inp.native_phase_archived_frame_manifest is not None
+            and inp.native_phase_archived_semantic_log is not None
+        )
+        # In archival-native mode, explicitly SKIP the redundant paid sparse
+        # JPG model round. Historical Qwen goal observations are only source
+        # anchors after exact frame/source re-verification; never first-live.
+        if (
+            paid_api is not None
+            and (goal_video_queue.get("issues") or [])
+            and not archival_enabled
+        ):
             from .story_goal_video_repair import observe_source_goal_video_with_shared_vlm
             from .story_paid_eval import provider_usage as goal_provider_usage
 
@@ -1190,23 +1206,45 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             and paid_api is not None
             and inp.enable_real_api
             and inp.i_approve_budget
-            and goal_semantic is not None
             and round_idx == 1
         ):
-            cross = goal_semantic.get("source_video_crosscheck") or {}
-            derived = cross.get("derived_times") or {}
-            if cross.get("structurally_ready_for_automated_verify") and (
-                derived.get("shot_sec") is not None
-                and derived.get("net_sec") is not None
-            ):
-                from .native_broadcast_observer import observe_native_broadcast_phase
-                from .story_paid_eval import provider_usage as native_provider_usage
+            from .native_broadcast_observer import observe_native_broadcast_phase
+            from .story_paid_eval import provider_usage as native_provider_usage
 
+            selected_goal_anchors = None
+            if archival_enabled:
+                from .native_broadcast_observer import (
+                    resolve_reverified_archived_goal_anchors,
+                )
+
+                archived = resolve_reverified_archived_goal_anchors(
+                    source_mp4=inp.source_mp4, source_sha=str(source_sha or ""),
+                    original_frame_manifest=inp.native_phase_archived_frame_manifest,
+                    original_semantic_log=inp.native_phase_archived_semantic_log,
+                )
+                round_rec["native_archived_goal_source_binding"] = archived
+                if archived.get("ok"):
+                    selected_goal_anchors = archived
+            elif goal_semantic is not None:
+                cross = goal_semantic.get("source_video_crosscheck") or {}
+                derived = cross.get("derived_times") or {}
+                if (
+                    cross.get("structurally_ready_for_automated_verify")
+                    and derived.get("shot_sec") is not None
+                    and derived.get("net_sec") is not None
+                ):
+                    selected_goal_anchors = {
+                        "shot_sec": derived["shot_sec"],
+                        "net_sec": derived["net_sec"],
+                        "provenance": "THIS_RUN_REAL_VLM_JPG_SOURCE_OBSERVATION",
+                        "first_live_verified": False,
+                    }
+            if selected_goal_anchors is not None:
                 native_phase = observe_native_broadcast_phase(
                     source_mp4=inp.source_mp4,
                     source_sha=str(source_sha or ""),
-                    shot_sec=float(derived["shot_sec"]),
-                    net_sec=float(derived["net_sec"]),
+                    shot_sec=float(selected_goal_anchors["shot_sec"]),
+                    net_sec=float(selected_goal_anchors["net_sec"]),
                     api=paid_api,
                     out_dir=round_dir / "source_goal_video_review" / "native_broadcast",
                     approved=True,
