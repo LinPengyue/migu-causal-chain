@@ -702,9 +702,15 @@ def assemble_live_goal_review_from_observation(
 
     frames = []
     for fid, fr in frame_by_id.items():
+        # Bind the model's *cited shot/net evidence*; unreferenced context
+        # frames need not be part of a separate FIRST_LIVE frame pack.
+        if fid not in cited_ids:
+            continue
         if not fr.get("path") or fr.get("actual_media_sec") is None:
             return reject("original_model_input_frame_path_or_pts_missing")
         frames.append({"frame_id": fid, "path": str(fr["path"])})
+    if len(frames) < 2:
+        return reject("insufficient_distinct_source_cited_frames")
 
     clip_path = str(observation.get("continuous_source_clip_path") or "")
     clip_sha = str(observation.get("continuous_source_clip_sha256") or "")
