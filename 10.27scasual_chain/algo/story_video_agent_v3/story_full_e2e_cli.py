@@ -79,6 +79,8 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true", default=False,
         help="Extra separately authorized REAL native MP4 phase observation only",
     )
+    p.add_argument("--native-phase-archived-frame-manifest", type=Path, default=None)
+    p.add_argument("--native-phase-archived-semantic-log", type=Path, default=None)
     p.add_argument("--max-calls", type=int, default=5)
     p.add_argument("--max-cost-usd", type=float, default=0.10)
     # Explicitly rejected if passed (catch misuse).
@@ -95,6 +97,15 @@ def validate_inputs(args: argparse.Namespace) -> list[str]:
         args.enable_real_api and args.i_approve_budget
     ):
         errs.append("native_broadcast_observation_requires_real_api_and_budget_approval")
+    archival_inputs = (
+        getattr(args, "native_phase_archived_frame_manifest", None),
+        getattr(args, "native_phase_archived_semantic_log", None),
+    )
+    if any(v is not None for v in archival_inputs):
+        if not all(v is not None and Path(v).is_file() for v in archival_inputs):
+            errs.append("native_archived_input_pair_missing")
+        if not getattr(args, "enable_native_broadcast_observation", False):
+            errs.append("native_archived_inputs_require_native_phase_opt_in")
     if args.phase5_dir is not None or args.baseline_edl is not None:
         errs.append("phase5_dir/baseline_edl_forbidden_in_full_e2e")
     if args.independent_atoms_json is not None and args.causal_json is not None:
@@ -216,6 +227,14 @@ def main(argv: list[str] | None = None) -> int:
         i_approve_budget=bool(args.i_approve_budget),
         enable_native_broadcast_observation=bool(
             args.enable_native_broadcast_observation
+        ),
+        native_phase_archived_frame_manifest=(
+            args.native_phase_archived_frame_manifest.resolve()
+            if args.native_phase_archived_frame_manifest else None
+        ),
+        native_phase_archived_semantic_log=(
+            args.native_phase_archived_semantic_log.resolve()
+            if args.native_phase_archived_semantic_log else None
         ),
         smoke_render=not bool(args.no_smoke_render),
         max_rounds=int(args.max_rounds),
