@@ -100,3 +100,68 @@ keeping the B blocker explicit in the ACL ablation report.
 No paid API calls, real B review, EDL change or video rendering were performed
 by the P16 commit. Any actual video review must be described as HUMAN vs
 REAL-MODEL and report its true cost, inputs, and limitations.
+
+## P16.1 — Later replay is optional (after 53/53 P16 server regression)
+
+The P16 original draft incorrectly required a later same-action replay.
+That is **not a universal property of a real football broadcast**. A
+normal first-live goal may transition directly to sustained celebration,
+kick-off, other shots or the next live passage with NO replay.
+
+The verified-phase schema now models two disjoint situations:
+
+**A. SAME_ACTION_REPLAY_OBSERVED**
+- Positive ordered live play -> shot/net -> immediate reaction -> later
+  same-action replay. Require independently stated same-action identity.
+- Replay-after is supporting evidence; the mandatory independent earlier
+  occurrence review remains unchanged.
+
+**B. NO_REPLAY_OBSERVED_IN_REVIEWED_CONTEXT**
+- Positive ordered live play -> shot/net -> immediate reaction (three frames
+  minimally), with complete checked source context through a declared
+  `post_action_reviewed_through_sec`.
+- No replay observation in that context is explicitly **not** proof of
+  no earlier occurrence. The exact same independent earlier same-action
+  occurrence review remains mandatory.
+- No-replay annotation + actually cited replay frame is contradictory and
+  must FAIL.
+
+Real VLM response provenance also binds its raw original JSON
+`phase_observations`, `later_replay_status` and
+`post_action_reviewed_through_sec` to prevent post-hoc claims. Frame
+citation minimum is THREE distinct core phases for the no-replay path,
+FOUR including replay for the replay-observed path. Both remain subject
+to model actual-sent-frame citations, source SHA/PTS/frame-byte and clip
+hash checks. Human-review and VLM-review modes remain distinguished.
+
+This is **not** a new automatic video phase classifier. It removes a
+false-negative from the acceptance contract and adds negative tests.
+The current B still has Stage4 broadcast review UNKNOWN and must not
+auto-insert its shot/net sequence into EDL.
+
+A remaining scientific and safety limitation: structured `visible_cue`
+strings and an asserted earlier-occurrence method alone are not visual
+truth. Real first-airing classification still requires an independently
+auditable source video review (including alternative camera angles and
+normal-speed replays); a synthetic positive test must never be counted
+as real-video proof.
+
+### Cursor test (P16.1)
+
+```bash
+git fetch origin story-va-v3a-p16-broadcast-phase-evidence
+git switch story-va-v3a-p16-broadcast-phase-evidence
+git pull --ff-only
+cd 10.27scasual_chain
+PYTHONPATH=algo python -m pytest -q \
+  tests/test_v3a_continuous_broadcast_phase.py \
+  tests/test_v3a_goal_video_repair.py \
+  tests/test_v3a_stage5_broadcast_temporal_audit.py \
+  tests/test_v3a_stage6_broadcast_verifier.py \
+  tests/test_v3a_phase8_run_story_e2e_loop.py
+git status --short
+git rev-parse --short HEAD
+```
+
+Do NOT run additional video searches or pay for new API requests in this
+contract-only regression. Report failures verbatim; do not weaken gates.
