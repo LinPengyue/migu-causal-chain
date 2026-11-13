@@ -240,6 +240,71 @@ def test_historical_stage3_frame_binding_rejects_wrong_pts(
     assert result["frames"][0]["matched"] is False
 
 
+def test_archived_real_model_log_cli_binds_source_frames_without_first_live(
+    real_stage3_framestore_binding, tmp_path,
+):
+    from story_video_agent_v3.source_frame_provenance_cli import (
+        inspect_archived_real_goal_frames,
+    )
+    video, sha, binding = real_stage3_framestore_binding
+    frame_manifest = tmp_path / "historical_frame_manifest.json"
+    frame_manifest.write_text(json.dumps({"frames": [
+        {
+            "frame_id": fr["frame_id"],
+            "path": fr["path"],
+            "requested_media_sec": fr["requested_media_sec"],
+            "actual_media_sec": fr["source_pts_sec"],
+        }
+        for fr in binding["frames"]
+    ]}), encoding="utf-8")
+    semantic_log = tmp_path / "automated_semantic_log.json"
+    semantic_log.write_text(json.dumps({
+        "provider_mode": "real",
+        "observation_only": True,
+        "vlm_inference": {
+            "shot_frame_ids": [binding["frames"][0]["frame_id"]],
+            "net_frame_ids": [binding["frames"][1]["frame_id"]],
+        },
+    }), encoding="utf-8")
+    report = inspect_archived_real_goal_frames(
+        source_mp4=video,
+        source_sha256=sha,
+        frame_manifest_path=frame_manifest,
+        semantic_log_path=semantic_log,
+    )
+    assert report["stage3_source_frame_binding_valid"] is True, report
+    assert report["n_original_model_frames"] == 2
+    assert report["first_live_verified"] is False
+    assert report["edl_modified"] is False
+    assert report["api_calls"] == 0
+
+
+def test_archived_real_model_log_cli_rejects_forged_cited_frame_ids(
+    real_stage3_framestore_binding, tmp_path,
+):
+    from story_video_agent_v3.source_frame_provenance_cli import (
+        inspect_archived_real_goal_frames,
+    )
+    video, sha, binding = real_stage3_framestore_binding
+    frame_manifest = tmp_path / "historical_frame_manifest.json"
+    frame_manifest.write_text(json.dumps({"frames": binding["frames"]}), encoding="utf-8")
+    semantic_log = tmp_path / "fake_citation.json"
+    semantic_log.write_text(json.dumps({
+        "provider_mode": "real",
+        "observation_only": True,
+        "vlm_inference": {
+            "shot_frame_ids": ["not_an_original_model_input"],
+            "net_frame_ids": [binding["frames"][1]["frame_id"]],
+        },
+    }), encoding="utf-8")
+    with pytest.raises(ValueError, match="cited_model_frame_id_missing"):
+        inspect_archived_real_goal_frames(
+            source_mp4=video, source_sha256=sha,
+            frame_manifest_path=frame_manifest,
+            semantic_log_path=semantic_log,
+        )
+
+
 def test_unreviewed_goal_gap_only_returns_unresolved():
     gap = _issue()
     out = repair_goal_coverage_from_video_reviews(
