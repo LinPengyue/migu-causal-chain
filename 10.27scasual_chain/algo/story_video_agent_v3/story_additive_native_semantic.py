@@ -84,7 +84,7 @@ def review_additive_native_video(
     # already deployed broadcast observer; don't concatenate discrete scenes.
     out_dir.mkdir(parents=True, exist_ok=True)
     story_video = _source_context_video(
-        source_mp4=story_path, begin=0.0, end=16.0,
+        source_mp4=story_path, begin=0.0, end=30.0,
         output=out_dir / "story_seam_native_360p.mp4",
     )
     source_video = _source_context_video(
@@ -99,7 +99,7 @@ def review_additive_native_video(
     ]
     prompt = (
         "You are critiquing a football story edit. There are EXACTLY TWO "
-        "continuous videos, in order: VIDEO_1 is a 16-second segment across "
+        "continuous videos, in order: VIDEO_1 is a 30-second segment across "
         "the current finished-story edit seam (baseline); VIDEO_2 is an "
         "11-second candidate from the ORIGINAL match broadcast shortly before "
         "the following story action. They are separate source moments. "
@@ -114,7 +114,7 @@ def review_additive_native_video(
         "(SUPPORTS_ADDITION|REDUNDANT|UNCERTAIN), "
         "baseline_story_observation, candidate_video_observation, "
         "specific_new_information, concrete_baseline_comparison, "
-        "relative_second_in_baseline (0..16), "
+        "relative_second_in_baseline (0..30), "
         "relative_second_in_candidate (0..11), "
         "replay_or_slowmo_suspected (boolean|null), "
         "uncertainty. For SUPPORTS_ADDITION, all observation fields must "
@@ -176,7 +176,7 @@ def review_additive_native_video(
     try:
         t_base = float(parsed["relative_second_in_baseline"])
         t_cand = float(parsed["relative_second_in_candidate"])
-        citations_ok = 0 <= t_base <= 16 and 0 <= t_cand <= 11
+        citations_ok = 0 <= t_base <= 30 and 0 <= t_cand <= 11
     except (KeyError, TypeError, ValueError):
         citations_ok = False
     sufficiently_specific = all(
