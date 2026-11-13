@@ -103,3 +103,24 @@ def test_automatic_goal_repair_still_rejects_human_preview_level_evidence():
     )
     assert not auto["applied"]
     assert auto["edl"] == EDL
+
+
+def test_human_preview_main_chain_rejects_multiround_before_baseline(tmp_path):
+    from pathlib import Path
+    from algo.story_video_agent_v3.story_e2e_agent import StoryE2EInputs, run_story_e2e
+
+    att = make_attestation(tmp_path)
+    result = run_story_e2e(StoryE2EInputs(
+        match_json=tmp_path / "match.json",
+        source_mp4=tmp_path / "source.mp4",
+        out_dir=tmp_path / "refused_out",
+        human_assisted_first_live_attestation=att,
+        human_preview_media_in=554.0,
+        human_preview_media_out=567.0,
+        max_rounds=2,
+        enable_real_api=False,
+        skip_vlm=True,
+    ))
+    assert result["error"] == (
+        "human_preview_requires_single_round_offline_historical_baseline_without_fixtures"
+    )
