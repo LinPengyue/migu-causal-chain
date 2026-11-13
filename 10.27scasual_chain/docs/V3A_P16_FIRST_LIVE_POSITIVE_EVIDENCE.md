@@ -35,8 +35,10 @@ A FIRST_LIVE review now needs all of these, not simply four labels:
 1. Identical original source SHA and exact goal-action PTS window.
 2. Real, readable continuous context clip; exact file SHA and source-specific
    window; enough lead-in and after-action coverage.
-3. Independently attributable real model review with model ID/response digest,
-   or an explicitly attributed continuous-footage human review record.
+3. Independently attributable REAL model review with model ID,
+   original on-disk raw response whose bytes match its digest, AND the exact
+   frame IDs actually sent to that model; or an explicitly attributable
+   continuous-footage human review record.
 4. Four **distinct frame citations**, tied to the source frame evidence pack,
    with positive visible cues in chronological order: live play before shot,
    shot/net action, immediate live reaction, and later replay of the SAME action.
