@@ -1,0 +1,673 @@
+{
+  "schema": "v3a_cv_zero_http_raw_e2e_audit_v1",
+  "run_exit_code": 1,
+  "code_sha": "ec0cc5954a4e81644dcea01d55b8b264c6305eaf",
+  "raw_only_input_contract": {
+    "schema": "v3a_full_e2e_input_contract_v1",
+    "formal_inputs": {
+      "source_mp4": "/mnt/data4/migu/10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语.mp4",
+      "events_json": "/data2/lpy1/worktrees/migu-v3a-p11-verify/10.27scasual_chain/data/交付_out/10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语.json",
+      "causal_json": null,
+      "independent_atoms_json": null
+    },
+    "input_mode": "RAW_EVENTS_ONLY",
+    "eligible_for_raw_only_evaluation": true,
+    "human_annotation_atoms_used": false,
+    "eligible_for_event_annotated_evaluation": true,
+    "causal_roles": {
+      "user_causal_json": "Optional DEV-only annotated atoms for legacy reproduction; never a permitted raw-only evaluation input.",
+      "predicted_short_causal": "Algorithm strip→V1 adaptation under 03_v1_adapt; Phase5 input.",
+      "v3r_long_story_chain": "Produced inside Phase5 planner/graph from enriched events + predicted causal."
+    },
+    "forbidden": [
+      "phase5_dir reuse",
+      "baseline_edl",
+      "prebuilt story_clean.mp4",
+      "events_enriched as input",
+      "predicted_causal as input"
+    ],
+    "pipeline": "atomic_enrich → strip831 → v1_adapt → phase5(V3-R) → V3-A(critic/search/revise/render/verify) → delivery_status"
+  },
+  "full_e2e_summary": {
+    "ok": false,
+    "delivery_status": "BLOCKED",
+    "delivery_label": "BLOCKED",
+    "blocked_reasons": [
+      "unresolved_without_safe_candidate_preview"
+    ],
+    "out_dir": "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run",
+    "elapsed_sec": 553.097,
+    "decision": "UNRESOLVED",
+    "final_mp4": null,
+    "status_gates": {
+      "workflow_completed": true,
+      "story_diagnosis_valid": true,
+      "revision_applied": false,
+      "candidate_rendered": false,
+      "semantic_verification_passed": false,
+      "release_authorized": false,
+      "final_mp4_exists": true
+    },
+    "stages_present": {
+      "01_enrich": true,
+      "02_strip831": true,
+      "03_v1_adapt": true,
+      "04_phase5_edl": true,
+      "04_phase5_mp4": true,
+      "05_live_audit": true,
+      "v3a_final_delivery": true
+    },
+    "stages_valid": {
+      "01_enrich": true,
+      "02_strip831": true,
+      "03_v1_adapt": true,
+      "04_phase5_edl": true,
+      "04_phase5_mp4": true,
+      "05_live_audit": true,
+      "v3a_final_delivery": true
+    },
+    "stage_validity": {
+      "schema": "v3a_full_e2e_stage_validity_v1",
+      "stages": {
+        "01_enrich": {
+          "present": true,
+          "valid": true,
+          "n_events": 749,
+          "n_injected": 0,
+          "n_goal_injected": 0
+        },
+        "02_strip831": {
+          "present": true,
+          "valid": true,
+          "n_chains": 79
+        },
+        "03_v1_adapt": {
+          "present": true,
+          "valid": true,
+          "n_recovery_candidates": 5,
+          "n_with_goal_action_sec": 2,
+          "n_single_goal": 3,
+          "n_unresolved_single_goals": 1,
+          "all_single_goal_actions_located": false,
+          "goal_recovery_used": true,
+          "entered_predicted_causal": true,
+          "n_v3_outcome_chains": 2,
+          "n_goal_terminals": 2,
+          "unresolved_goal_candidate_ids": [
+            "goalcand_03_01_to_11"
+          ]
+        },
+        "04_phase5_edl": {
+          "present": true,
+          "valid": true,
+          "n_segments": 8,
+          "source_pts_monotonic": true,
+          "source_pts_breaks": []
+        },
+        "04_phase5_mp4": {
+          "present": true,
+          "valid": true,
+          "bytes": 21936278
+        },
+        "05_live_audit": {
+          "present": true,
+          "valid": true,
+          "n_meta_goal_terminals": 2,
+          "n_visual_anchors": 2,
+          "n_extracted": 2,
+          "status_counts": {
+            "FIRST_LIVE_VERIFIED": 0,
+            "POSSIBLE_FIRST_LIVE": 0,
+            "REPLAY_DETECTED": 0,
+            "UNRESOLVED": 2
+          },
+          "false_verified_claim": false
+        },
+        "v3a_final_delivery": {
+          "present": true,
+          "valid": true,
+          "delivery_status": "BLOCKED",
+          "release_authorized": false,
+          "final_mp4_ok": true,
+          "candidate_mp4_ok": null,
+          "aligned": true,
+          "n_final_goal_evidence": 2,
+          "final_first_live_counts": {
+            "FIRST_LIVE_VERIFIED": 0,
+            "POSSIBLE_FIRST_LIVE": 0,
+            "REPLAY_DETECTED": 0,
+            "UNRESOLVED": 2
+          },
+          "n_lineage_strict_complete": 2,
+          "n_lineage_inferred": 0,
+          "n_lineage_unresolved": 0,
+          "n_lineage_traced_strict": 2
+        }
+      },
+      "pipeline_stages_valid": true,
+      "story_goal_actions_present": false,
+      "all_required_valid": false,
+      "release_ready": false,
+      "blocking_errors": [
+        "03_score_confirmed_goal_action_missing"
+      ],
+      "goal_recovery_impact": {
+        "schema": "v3a_goal_recovery_impact_v1",
+        "goal_recovery_used": true,
+        "n_recovery_candidates": 5,
+        "n_single_goal": 3,
+        "n_with_goal_action_sec": 2,
+        "n_v3_outcome_chains": 2,
+        "n_goal_terminals_in_adapted_chains": 2,
+        "n_recovery_sourced_chains": 2,
+        "n_recovery_sourced_goal_events": 2,
+        "recovery_goal_events": [
+          {
+            "annotation_id": "v3_outcome_0079",
+            "event_id": "v3_goal_goalcand_00_00_to_01",
+            "t_ms": 1305710.0,
+            "t_sec": 1305.71,
+            "source": "v3_goal_recovery"
+          },
+          {
+            "annotation_id": "v3_outcome_0083",
+            "event_id": "v3_goal_goalcand_04_11_to_21",
+            "t_ms": 6813280.0,
+            "t_sec": 6813.28,
+            "source": "v3_goal_recovery"
+          }
+        ],
+        "entered_predicted_causal": true,
+        "candidates_with_action": [
+          {
+            "candidate_id": "goalcand_00_00_to_01",
+            "goal_action_sec": 1305.71,
+            "score_confirmation_sec": 1410.43,
+            "score_before": [
+              0,
+              0
+            ],
+            "score_after": [
+              0,
+              1
+            ],
+            "action_neq_confirm": true
+          },
+          {
+            "candidate_id": "goalcand_04_11_to_21",
+            "goal_action_sec": 6813.28,
+            "score_confirmation_sec": 6957.12,
+            "score_before": [
+              1,
+              1
+            ],
+            "score_after": [
+              2,
+              1
+            ],
+            "action_neq_confirm": true
+          }
+        ]
+      },
+      "first_live_visual": {
+        "status_counts": {
+          "FIRST_LIVE_VERIFIED": 0,
+          "POSSIBLE_FIRST_LIVE": 0,
+          "REPLAY_DETECTED": 0,
+          "UNRESOLVED": 2
+        },
+        "n_goal_anchors": 2,
+        "any_first_live_verified": false,
+        "any_replay_on_retained": false,
+        "goals": [
+          {
+            "segment_id": "seg_opponent_opening_goal_action",
+            "role": "opponent_opening_goal_action",
+            "first_live_status": "UNRESOLVED",
+            "media_in": 1293.71,
+            "media_out": 1315.71,
+            "score_confirmation_sec": 1410.43,
+            "goal_action_sec": 1305.71,
+            "score_confirm_collision": false,
+            "candidate_extracted_ok": true,
+            "clip_path": "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run/01_to_04_fresh_v3r/05_live_audit/first_live_visual/roles/opponent_opening_goal_action/clips/seg_opponent_opening_goal_action_1293_continuous_accurate.mp4",
+            "frame_paths": [
+              "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run/01_to_04_fresh_v3r/05_live_audit/first_live_visual/roles/opponent_opening_goal_action/frames/seg_opponent_opening_goal_action_1293_f0_1294710.jpg",
+              "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run/01_to_04_fresh_v3r/05_live_audit/first_live_visual/roles/opponent_opening_goal_action/frames/seg_opponent_opening_goal_action_1293_f1_1304710.jpg",
+              "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run/01_to_04_fresh_v3r/05_live_audit/first_live_visual/roles/opponent_opening_goal_action/frames/seg_opponent_opening_goal_action_1293_f2_1314210.jpg"
+            ]
+          },
+          {
+            "segment_id": "seg_go_ahead_goal_action",
+            "role": "go_ahead_goal_action",
+            "first_live_status": "UNRESOLVED",
+            "media_in": 6801.28,
+            "media_out": 6823.28,
+            "score_confirmation_sec": 6957.12,
+            "goal_action_sec": 6813.28,
+            "score_confirm_collision": false,
+            "candidate_extracted_ok": true,
+            "clip_path": "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run/01_to_04_fresh_v3r/05_live_audit/first_live_visual/roles/go_ahead_goal_action/clips/seg_go_ahead_goal_action_6801_continuous_accurate.mp4",
+            "frame_paths": [
+              "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run/01_to_04_fresh_v3r/05_live_audit/first_live_visual/roles/go_ahead_goal_action/frames/seg_go_ahead_goal_action_6801_f0_6802280.jpg",
+              "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run/01_to_04_fresh_v3r/05_live_audit/first_live_visual/roles/go_ahead_goal_action/frames/seg_go_ahead_goal_action_6801_f1_6812280.jpg",
+              "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run/01_to_04_fresh_v3r/05_live_audit/first_live_visual/roles/go_ahead_goal_action/frames/seg_go_ahead_goal_action_6801_f2_6821780.jpg"
+            ]
+          }
+        ]
+      },
+      "delivery_label": "BLOCKED"
+    },
+    "fresh_v3r": true,
+    "phase5_reuse": false,
+    "input_mode": "RAW_EVENTS_ONLY",
+    "eligible_for_raw_only_evaluation": true,
+    "human_annotation_atoms_used": false,
+    "http_calls": 0,
+    "est_cost_usd": 0.0,
+    "error": [
+      "03_score_confirmed_goal_action_missing"
+    ],
+    "baseline_duplicate_audit": {
+      "finding_count": 0,
+      "auto_drop_segment_ids": [],
+      "human_review_count": 0,
+      "applied": {
+        "changed": false,
+        "dropped": [],
+        "drop_ledger": [],
+        "refused_goal_drops": []
+      }
+    },
+    "goal_recovery_impact": {
+      "schema": "v3a_goal_recovery_impact_v1",
+      "goal_recovery_used": true,
+      "n_recovery_candidates": 5,
+      "n_single_goal": 3,
+      "n_with_goal_action_sec": 2,
+      "n_v3_outcome_chains": 2,
+      "n_goal_terminals_in_adapted_chains": 2,
+      "n_recovery_sourced_chains": 2,
+      "n_recovery_sourced_goal_events": 2,
+      "recovery_goal_events": [
+        {
+          "annotation_id": "v3_outcome_0079",
+          "event_id": "v3_goal_goalcand_00_00_to_01",
+          "t_ms": 1305710.0,
+          "t_sec": 1305.71,
+          "source": "v3_goal_recovery"
+        },
+        {
+          "annotation_id": "v3_outcome_0083",
+          "event_id": "v3_goal_goalcand_04_11_to_21",
+          "t_ms": 6813280.0,
+          "t_sec": 6813.28,
+          "source": "v3_goal_recovery"
+        }
+      ],
+      "entered_predicted_causal": true,
+      "candidates_with_action": [
+        {
+          "candidate_id": "goalcand_00_00_to_01",
+          "goal_action_sec": 1305.71,
+          "score_confirmation_sec": 1410.43,
+          "score_before": [
+            0,
+            0
+          ],
+          "score_after": [
+            0,
+            1
+          ],
+          "action_neq_confirm": true
+        },
+        {
+          "candidate_id": "goalcand_04_11_to_21",
+          "goal_action_sec": 6813.28,
+          "score_confirmation_sec": 6957.12,
+          "score_before": [
+            1,
+            1
+          ],
+          "score_after": [
+            2,
+            1
+          ],
+          "action_neq_confirm": true
+        }
+      ]
+    },
+    "first_live_visual": {
+      "status_counts": {
+        "FIRST_LIVE_VERIFIED": 0,
+        "POSSIBLE_FIRST_LIVE": 0,
+        "REPLAY_DETECTED": 0,
+        "UNRESOLVED": 2
+      },
+      "n_goal_anchors": 2,
+      "any_first_live_verified": false,
+      "any_replay_on_retained": false,
+      "goals": [
+        {
+          "segment_id": "seg_opponent_opening_goal_action",
+          "role": "opponent_opening_goal_action",
+          "first_live_status": "UNRESOLVED",
+          "media_in": 1293.71,
+          "media_out": 1315.71,
+          "score_confirmation_sec": 1410.43,
+          "goal_action_sec": 1305.71,
+          "score_confirm_collision": false,
+          "candidate_extracted_ok": true,
+          "clip_path": "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run/01_to_04_fresh_v3r/05_live_audit/first_live_visual/roles/opponent_opening_goal_action/clips/seg_opponent_opening_goal_action_1293_continuous_accurate.mp4",
+          "frame_paths": [
+            "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run/01_to_04_fresh_v3r/05_live_audit/first_live_visual/roles/opponent_opening_goal_action/frames/seg_opponent_opening_goal_action_1293_f0_1294710.jpg",
+            "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run/01_to_04_fresh_v3r/05_live_audit/first_live_visual/roles/opponent_opening_goal_action/frames/seg_opponent_opening_goal_action_1293_f1_1304710.jpg",
+            "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run/01_to_04_fresh_v3r/05_live_audit/first_live_visual/roles/opponent_opening_goal_action/frames/seg_opponent_opening_goal_action_1293_f2_1314210.jpg"
+          ]
+        },
+        {
+          "segment_id": "seg_go_ahead_goal_action",
+          "role": "go_ahead_goal_action",
+          "first_live_status": "UNRESOLVED",
+          "media_in": 6801.28,
+          "media_out": 6823.28,
+          "score_confirmation_sec": 6957.12,
+          "goal_action_sec": 6813.28,
+          "score_confirm_collision": false,
+          "candidate_extracted_ok": true,
+          "clip_path": "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run/01_to_04_fresh_v3r/05_live_audit/first_live_visual/roles/go_ahead_goal_action/clips/seg_go_ahead_goal_action_6801_continuous_accurate.mp4",
+          "frame_paths": [
+            "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run/01_to_04_fresh_v3r/05_live_audit/first_live_visual/roles/go_ahead_goal_action/frames/seg_go_ahead_goal_action_6801_f0_6802280.jpg",
+            "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run/01_to_04_fresh_v3r/05_live_audit/first_live_visual/roles/go_ahead_goal_action/frames/seg_go_ahead_goal_action_6801_f1_6812280.jpg",
+            "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run/01_to_04_fresh_v3r/05_live_audit/first_live_visual/roles/go_ahead_goal_action/frames/seg_go_ahead_goal_action_6801_f2_6821780.jpg"
+          ]
+        }
+      ]
+    },
+    "contract": "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run/00_full_e2e_contract.json"
+  },
+  "phase5_v3r_edl": {
+    "present": true,
+    "n_active": 8,
+    "goal_action_rows": [
+      {
+        "segment_id": "seg_opponent_opening_goal_action",
+        "role": "opponent_opening_goal_action",
+        "media_in": 1293.71,
+        "media_out": 1315.71,
+        "first_live_status": null,
+        "is_replay": false
+      },
+      {
+        "segment_id": "seg_go_ahead_goal_action",
+        "role": "go_ahead_goal_action",
+        "media_in": 6801.28,
+        "media_out": 6823.28,
+        "first_live_status": null,
+        "is_replay": false
+      }
+    ],
+    "n_explicit_replay_rows": 0
+  },
+  "initial_v3r_edl": {
+    "present": true,
+    "n_active": 8,
+    "goal_action_rows": [
+      {
+        "segment_id": "seg_opponent_opening_goal_action",
+        "role": "opponent_opening_goal_action",
+        "media_in": 1293.71,
+        "media_out": 1315.71,
+        "first_live_status": null,
+        "is_replay": false
+      },
+      {
+        "segment_id": "seg_go_ahead_goal_action",
+        "role": "go_ahead_goal_action",
+        "media_in": 6801.28,
+        "media_out": 6823.28,
+        "first_live_status": null,
+        "is_replay": false
+      }
+    ],
+    "n_explicit_replay_rows": 0
+  },
+  "initial_video": {
+    "phase5_present": true,
+    "phase5_sha256": "f07b971feccbefec4e43ee92f40620e941d7863246c39d25ab8c642f2b326d96",
+    "staged_present": true,
+    "staged_sha256": "f07b971feccbefec4e43ee92f40620e941d7863246c39d25ab8c642f2b326d96"
+  },
+  "critic": {
+    "issue_categories": [
+      {
+        "id": "goal_coverage_01_to_11",
+        "category": "goal_coverage",
+        "diagnosis_status": "HYPOTHESIS_NEEDS_VIDEO"
+      },
+      {
+        "id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000411",
+        "category": "transition",
+        "diagnosis_status": "HYPOTHESIS_NEEDS_VIDEO"
+      },
+      {
+        "id": "large_source_jump_seg_buildup_event_000411_to_seg_equalizer_scoreboard",
+        "category": "transition",
+        "diagnosis_status": "HYPOTHESIS_NEEDS_VIDEO"
+      },
+      {
+        "id": "thin_post_climax_tail",
+        "category": "ending",
+        "diagnosis_status": "HYPOTHESIS_NEEDS_VIDEO"
+      }
+    ],
+    "goal_video_critic_handoff": null,
+    "n_issues": 4
+  },
+  "verifier": {
+    "present": true,
+    "business_first_live_review": {
+      "schema": "v3a_light_first_live_business_v1",
+      "status": "NO_NEW_SOURCE_WINDOWS",
+      "windows": [],
+      "hard_vetoes": [],
+      "first_live_verified": false,
+      "edit_authorized": false,
+      "note": "Business checks are an independent negative/diagnostic layer. Only existing source-PTS/frame-bound broadcast evidence ledger can certify FIRST_LIVE; VLM claims and score timing cannot."
+    },
+    "candidate_accepted": false,
+    "hard_vetoes": [],
+    "phase8_verdict": {
+      "schema": "v3a_phase8_verdict_v1",
+      "safety": "PASS",
+      "hard_safety": {
+        "safety": "PASS",
+        "reasons": [],
+        "accept_candidate_ignored": true,
+        "first_live_status": "N_A_NO_NEW_FOOTAGE",
+        "first_live_ledger": {
+          "schema": "v3a_first_live_window_ledger_v1",
+          "source_sha": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+          "windows": [],
+          "n_windows": 0,
+          "all_windows_verified": false,
+          "any_window_unverified": false,
+          "any_replay_confirmed": false,
+          "any_frame_bound_pending_timeline": false,
+          "aggregate_status": "N_A_NO_NEW_WINDOWS",
+          "note": "FRAME_BOUND_VALID ≠ FIRST_LIVE_VERIFIED. Hard-safety PASS needs independent broadcast-timeline review on every new window; binding-only stays UNKNOWN; REPLAY_CONFIRMED ⇒ FAIL."
+        }
+      },
+      "quality": "UNCERTAIN",
+      "evidence": "INSUFFICIENT",
+      "issue_effect": "UNOBSERVED",
+      "global_regression": "UNKNOWN",
+      "focus_issue_id": null,
+      "evidence_refs": [],
+      "observed_changes": null,
+      "unresolved_questions": [],
+      "suggested_next_evidence": null,
+      "failure_class": "TECHNICAL_FAILURE",
+      "compared_parent_version_id": null,
+      "verdict_provenance": "OFFLINE_RULE",
+      "source_kind": "OFFLINE_RULE",
+      "accept_candidate_raw": false,
+      "accept_not_synthesized_from_promising": true,
+      "safety_independent_of_accept_candidate": true,
+      "note": "Hard safety is independent of narrative accept_candidate. FIXTURE/OFFLINE_RULE never establish real IMPROVED; REAL_VLM requires recorded successful provider call + frame bindings."
+    }
+  },
+  "candidate_video": {
+    "present": false,
+    "sha256": null
+  },
+  "http_calls": 0,
+  "delivery": {
+    "release_authorized": false,
+    "delivery_label": "BLOCKED",
+    "delivery_status": "BLOCKED",
+    "blocked_reasons": [
+      "unresolved_without_safe_candidate_preview"
+    ],
+    "human_review": {
+      "required": false
+    },
+    "final_mp4": null,
+    "final_edl": "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run/99_final/final_edl.json",
+    "decision": "UNRESOLVED",
+    "release_gate": {
+      "release_authorized": false,
+      "reasons": [
+        "edl_unchanged",
+        "candidate_not_rendered",
+        "candidate_not_accepted",
+        "semantic_verification_not_passed",
+        "decision_not_revise",
+        "fixture_or_offline_source_not_releasable"
+      ],
+      "final_mp4_duration_sec": 72.818,
+      "edl_hard_ok": true,
+      "blocking_issue_ids": [],
+      "note": "workflow_completed/final_mp4_exists/semantic_verification_passed alone never authorize formal release.",
+      "delivery_version_id": "v0",
+      "delivery_snapshot": {
+        "version_id": "v0",
+        "parent_version_id": null,
+        "safety": "UNKNOWN",
+        "quality": "BASELINE_UNVERIFIED",
+        "verdict_provenance": "OFFLINE_RULE",
+        "semantic_verification_passed": false,
+        "candidate_rendered": true,
+        "compared_against_best": null,
+        "mp4_path": "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run/01_initial_story/story_clean.mp4",
+        "edl_path": "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run/01_initial_story/candidate_edl.json"
+      },
+      "delivery_source": "OFFLINE_RULE",
+      "last_round_ignored_for_release": true,
+      "last_verifier_version_id": "v1",
+      "note_phase8": "Release authorization is version-specific from delivery snapshot; a later rejected/uncertain round does not revoke or grant release of selected best.",
+      "delivery_digest_check": {
+        "source_sha256_expected": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+        "edl_sha256_expected": "79226b015bb4a877506f07a07481a30fcbd9ee1110dae0dc4a5fc848c0bddcf2",
+        "mp4_sha256_expected": "f07b971feccbefec4e43ee92f40620e941d7863246c39d25ab8c642f2b326d96",
+        "edl_sha256_now": "79226b015bb4a877506f07a07481a30fcbd9ee1110dae0dc4a5fc848c0bddcf2",
+        "mp4_sha256_now": "f07b971feccbefec4e43ee92f40620e941d7863246c39d25ab8c642f2b326d96",
+        "ok": true,
+        "reasons": []
+      }
+    },
+    "metrics": {
+      "revise_proposed": 0,
+      "edl_changed_rounds": 0,
+      "candidate_rendered": 0,
+      "candidate_accepted": 0,
+      "search_success_rounds": 1,
+      "invalid_candidate": 0,
+      "goal_damage_flags": 0,
+      "false_or_unverified_improve_claims": 0
+    },
+    "timeline_mp4_alignment": {
+      "aligned": true,
+      "mp4_duration_sec": 72.818,
+      "story_duration_sec": 72.5,
+      "media_duration_sec": 66.5,
+      "placeholder_duration_sec": 6.0,
+      "delta_sec": 0.318,
+      "root_cause_hint": "placeholder_title_cards_included_in_story_duration"
+    },
+    "first_live_visual": {
+      "authority": "final_delivery_edl",
+      "path": "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run/99_final/final_goal_evidence_manifest.json",
+      "status_counts": {
+        "FIRST_LIVE_VERIFIED": 0,
+        "POSSIBLE_FIRST_LIVE": 0,
+        "REPLAY_DETECTED": 0,
+        "UNRESOLVED": 2
+      },
+      "n_goal_anchors": 2,
+      "any_first_live_verified": false,
+      "any_replay_on_retained": false,
+      "n_inherited": 2,
+      "n_reverified": 0,
+      "goals": [
+        {
+          "segment_id": "seg_opponent_opening_goal_action",
+          "role": "opponent_opening_goal_action",
+          "first_live_status": "UNRESOLVED",
+          "source_media_in": 1293.71,
+          "source_media_out": 1315.71,
+          "evidence_binding": "inherited_trusted_sha_and_observation_window",
+          "inherited": true
+        },
+        {
+          "segment_id": "seg_go_ahead_goal_action",
+          "role": "go_ahead_goal_action",
+          "first_live_status": "UNRESOLVED",
+          "source_media_in": 6801.28,
+          "source_media_out": 6823.28,
+          "evidence_binding": "inherited_trusted_sha_and_observation_window",
+          "inherited": true
+        }
+      ],
+      "candidate_separate": {
+        "path": null,
+        "status_counts": null,
+        "n_goal_anchors": null
+      },
+      "v3r_historical_ref": "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run/01_to_04_fresh_v3r/05_live_audit/first_live_visual_audit.json"
+    },
+    "final_goal_evidence_manifest": "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run/99_final/final_goal_evidence_manifest.json",
+    "goal_lineage_report": "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run/99_final/goal_lineage_report.json",
+    "goal_lineage": {
+      "path": "/tmp/lpy1_v3a_cv_raw_e2e_20261113_first_run/99_final/goal_lineage_report.json",
+      "n_final_goal_segments": 2,
+      "n_strict_complete": 2,
+      "n_inferred": 0,
+      "n_unresolved": 0,
+      "n_structurally_traced_to_mp4": 2,
+      "duplicate_segment_ids": [],
+      "prior_source_trust": {
+        "prior_provided": true,
+        "prior_has_trusted_sha": true,
+        "stamped_current_sha_onto_prior": false,
+        "prior_source_video_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c"
+      },
+      "candidate_delivery_binding": {
+        "schema": "v3a_candidate_delivery_video_binding_v1",
+        "same_source_video_sha256": true,
+        "delivery_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+        "candidate_sha256": null,
+        "shared_goal_segments": [],
+        "window_changed_segments": [],
+        "candidate_only_goal_segments": [],
+        "delivery_only_goal_segments": [
+          "seg_go_ahead_goal_action",
+          "seg_opponent_opening_goal_action"
+        ],
+        "note": "Candidate and delivery manifests must not share verification conclusions across changed windows; both must bind to the same source video SHA."
+      }
+    },
+    "note": "Formal delivery requires release_authorized=true under full conjunction gates. workflow_completed / final_mp4_exists / semantic_verification_passed alone never authorize. HUMAN_REVIEW_REQUIRED means a safe candidate preview exists for human judgment. RELEASE_READY requires FIRST_LIVE_VERIFIED on every final-delivery EDL goal (final_goal_evidence_manifest), not V3-R historical first-live stats."
+  },
+  "safety_disclaimer": "Offline run cannot test VLM semantic understanding or establish first-live or video quality."
+}
