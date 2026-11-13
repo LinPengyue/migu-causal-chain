@@ -21,7 +21,9 @@ from typing import Any, Dict, Mapping, Optional
 from story_video_agent.api_provider import _encode_image
 from story_video_agent.vision_provider import _extract_json_obj
 
-from .remote_vlm_verify import extract_dense_frames
+from story_video_agent.frames import FrameBudget, FrameStore
+from story_video_agent.media import probe_video
+
 from .story_paid_eval import provider_usage
 
 SCHEMA = "v3a_native_video_broadcast_phase_observation_v1"
@@ -80,6 +82,56 @@ def _source_context_video(
         "audio_included": False, "fps_transcoded": 5,
         "claims_frame_accurate_video_model_timestamps": False,
     }
+
+
+def extract_phase_anchored_frames(
+    *,
+    video: Path,
+    shot: float,
+    net: float,
+    begin: float,
+    end: float,
+    out_dir: Path,
+) -> list[Dict[str, Any]]:
+    """Source-PTS anchors dense at the actual action, sparse in distant context.
+
+    Uniform sampling across 40-55 seconds can entirely miss a 3-second goal.
+    Reuse the deployed q3 FrameStore with source-PTS and byte-hash provenance,
+    while a native VIDEO input provides the continuous temporal sequence.
+    """
+    offsets = (
+        shot - 16., shot - 9., shot - 5., shot - 2.5,
+        shot - 0.25, shot, shot + 0.65,
+        net - 0.5, net, net + 0.7,
+        net + 2.0, net + 4.5, net + 8.,
+        net + 13., net + 20.,
+    )
+    times: list[float] = []
+    for t in offsets:
+        if not begin <= t <= end or not 0 <= t:
+            continue
+        if any(abs(t - prev) < 0.2 for prev in times):
+            continue
+        times.append(t)
+    store = FrameStore(
+        probe_video(Path(video)),
+        out_dir=Path(out_dir),
+        budget=FrameBudget(max_frames=len(times) + 2),
+    )
+    rows: list[Dict[str, Any]] = []
+    for t in times:
+        r = store.extract_at(
+            t, gap_id="broadcast_phase_source_video",
+            tool="original_source_phase_pts_anchor",
+        )
+        rows.append({
+            "frame_id": r.frame_id,
+            "path": str(r.path),
+            "requested_media_sec": r.requested_media_sec,
+            "actual_media_sec": r.actual_media_sec,
+            "pts_status": r.pts_status,
+        })
+    return rows
 
 
 def _phase_prompt(
@@ -242,8 +294,6 @@ def observe_native_broadcast_phase(
             result["status"] = "INVALID_SHOT_NET_ANCHORS"
             _write(dest, result)
             return result
-        from story_video_agent.media import probe_video
-
         media = probe_video(video)
         begin = max(0., shot - 18.)
         end = min(float(media.duration_sec) - 0.15, net + 24.)
@@ -260,11 +310,9 @@ def observe_native_broadcast_phase(
             result.update(status="NATIVE_VIDEO_CLIP_PREPARATION_FAILED", clip=clip)
             _write(dest, result)
             return result
-        _, frames = extract_dense_frames(
-            video=video, media_in=begin, media_out=end,
+        frames = extract_phase_anchored_frames(
+            video=video, shot=shot, net=net, begin=begin, end=end,
             out_dir=Path(out_dir) / "native_phase_source_anchors",
-            count=14, gap_id="broadcast_phase_temporal",
-            tool="native_broadcast_phase_source_pts_anchor",
         )
         sent = [
             f for f in frames if f.get("actual_media_sec") is not None
