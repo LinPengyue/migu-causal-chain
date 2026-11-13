@@ -52,6 +52,8 @@ def _case(tmp_path: Path):
             "sha256": hashlib.sha256(context.read_bytes()).hexdigest(),
         },
         "phase_observations": obs,
+        "later_replay_status": "SAME_ACTION_REPLAY_OBSERVED",
+        "post_action_reviewed_through_sec": 65.0,
         "same_action_identity_evidence": "fake same action is shown later as replay",
         "prior_occurrence_reviewed": True,
         "prior_occurrence_method": "HUMAN_FULL_SOURCE_TIMELINE_REVIEW_FIXTURE",
@@ -119,6 +121,8 @@ def test_real_model_phase_review_requires_actual_response_and_sent_frame_ids(tmp
     raw = tmp_path / "phase_model_response.json"
     raw.write_text(json.dumps({
         "phase_observations": proof["phase_observations"],
+        "later_replay_status": proof["later_replay_status"],
+        "post_action_reviewed_through_sec": proof["post_action_reviewed_through_sec"],
     }), encoding="utf-8")
     proof["reviewer"] = {
         "kind": "REAL_VIDEO_MODEL_REVIEW",
@@ -130,14 +134,15 @@ def test_real_model_phase_review_requires_actual_response_and_sent_frame_ids(tmp
     }
     assert _phase_check(case)["ok"], _phase_check(case)
     proof["reviewer"]["frame_ids_sent"].remove("replay")
-    # Three sent frames fail the independent minimum-count check first.
+    proof["reviewer"]["frame_ids_sent"].remove("reaction")
+    # Only two sent frames fail the minimum three-core-phase gate.
     assert _phase_check(case)["reason"] == "model_phase_review_sent_frame_ids_missing"
-    # Keep the minimum count satisfied, but replace the cited replay image
-    # with an unrelated frame. This exercises the distinct citation-subset gate.
+    # Three frames satisfy the minimum, but substitute an unrelated image
+    # to exercise the actual sent-frame citation subset gate.
     proof["reviewer"]["frame_ids_sent"].append("unrelated_context_frame")
     assert _phase_check(case)["reason"] == "phase_citations_not_in_actual_model_inputs"
     proof["reviewer"]["frame_ids_sent"].remove("unrelated_context_frame")
-    proof["reviewer"]["frame_ids_sent"].append("replay")
+    proof["reviewer"]["frame_ids_sent"].extend(["reaction", "replay"])
     assert _phase_check(case)["ok"] is True
     raw.write_text("changed_model_response", encoding="utf-8")
     assert _phase_check(case)["reason"] == "model_phase_review_raw_response_hash_mismatch"
@@ -147,6 +152,79 @@ def test_real_model_phase_review_requires_actual_response_and_sent_frame_ids(tmp
     raw.write_text(altered, encoding="utf-8")
     proof["reviewer"]["response_sha256"] = hashlib.sha256(raw.read_bytes()).hexdigest()
     assert _phase_check(case)["reason"] == "phase_observations_modified_after_model_response"
+
+
+def _without_later_replay(case):
+    """Fixture for a legitimate first airing with no subsequent replay shown."""
+    phase = case[2]
+    phase["phase_observations"] = [
+        obs for obs in phase["phase_observations"]
+        if obs["phase"] != "SAME_ACTION_REPLAY_AFTER"
+    ]
+    phase["later_replay_status"] = "NO_REPLAY_OBSERVED_IN_REVIEWED_CONTEXT"
+    phase["post_action_reviewed_through_sec"] = 65.0
+    phase["same_action_identity_evidence"] = None
+    return case
+
+
+def test_first_live_positive_video_without_later_replay_is_supported(tmp_path):
+    case = _without_later_replay(_case(tmp_path))
+    result = _phase_check(case)
+    assert result["ok"] is True, result
+    assert result["first_live_verified"] is True
+    assert result["later_replay_status"] == "NO_REPLAY_OBSERVED_IN_REVIEWED_CONTEXT"
+    assert result["replay_corroboration_used"] is False
+    assert len(result["phase_frame_ids"]) == 3
+
+
+def test_no_later_replay_does_not_bypass_prior_occurrence_review(tmp_path):
+    case = _without_later_replay(_case(tmp_path))
+    case[2]["prior_occurrence_reviewed"] = False
+    result = _phase_check(case)
+    assert result["ok"] is False
+    assert result["reason"] == "earlier_same_action_broadcast_not_independently_reviewed"
+
+
+def test_no_replay_label_with_replay_cited_refused(tmp_path):
+    case = _case(tmp_path)
+    case[2]["later_replay_status"] = "NO_REPLAY_OBSERVED_IN_REVIEWED_CONTEXT"
+    assert _phase_check(case)["reason"] == "replay_status_contradicts_observed_replay_frame"
+
+
+@pytest.mark.parametrize("post_action_sec", [None, 50.0, 80.0])
+def test_no_replay_requires_bounded_post_action_review(tmp_path, post_action_sec):
+    case = _without_later_replay(_case(tmp_path))
+    if post_action_sec is None:
+        del case[2]["post_action_reviewed_through_sec"]
+        expected = "post_action_review_window_missing"
+    else:
+        case[2]["post_action_reviewed_through_sec"] = post_action_sec
+        expected = "post_action_review_window_invalid"
+    assert _phase_check(case)["reason"] == expected
+
+
+def test_no_replay_real_model_three_sent_frames_and_authentic_response(tmp_path):
+    import json
+
+    case = _without_later_replay(_case(tmp_path))
+    proof = case[2]
+    raw = tmp_path / "no_replay_model_response.json"
+    raw.write_text(json.dumps({
+        "phase_observations": proof["phase_observations"],
+        "later_replay_status": proof["later_replay_status"],
+        "post_action_reviewed_through_sec": proof["post_action_reviewed_through_sec"],
+    }), encoding="utf-8")
+    proof["reviewer"] = {
+        "kind": "REAL_VIDEO_MODEL_REVIEW",
+        "provider_mode": "real",
+        "model_id": "fixture_only_no_real_model_called",
+        "response_path": str(raw),
+        "response_sha256": hashlib.sha256(raw.read_bytes()).hexdigest(),
+        "frame_ids_sent": ["pre", "shot", "reaction"],
+    }
+    assert _phase_check(case)["ok"] is True, _phase_check(case)
+    proof["later_replay_status"] = "SAME_ACTION_REPLAY_OBSERVED"
+    assert _phase_check(case)["reason"] == "replay_status_modified_after_model_response"
 
 
 @pytest.mark.parametrize("mutator, expected", [
