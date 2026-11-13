@@ -15,6 +15,7 @@ from story_video_agent_v3.global_story_critic import detect_goal_coverage_hypoth
 from story_video_agent_v3.story_goal_video_repair import (
     _source_frames_match_decoded_video,
     apply_video_verified_goal_repair,
+    goal_coverage_issues,
     prepare_source_video_goal_queue,
     repair_goal_coverage_from_video_reviews,
     validate_goal_video_review,
@@ -246,7 +247,10 @@ def test_repaired_goal_rejected_if_any_source_window_overlap(tmp_path, monkeypat
     assert result["edl"] == old
 
 
-def test_no_matching_storyboard_score_anchor_refuses_invention(tmp_path, monkeypatch):
+def test_no_matching_scoreboard_allows_video_verified_generic_story_goal(
+    tmp_path, monkeypatch,
+):
+    """Different story templates can omit scoreboard beats altogether."""
     gap, sha, review = _review(tmp_path)
     monkeypatch.setattr(
         "story_video_agent_v3.story_goal_video_repair._source_frames_match_decoded_video",
@@ -261,8 +265,75 @@ def test_no_matching_storyboard_score_anchor_refuses_invention(tmp_path, monkeyp
     out = apply_video_verified_goal_repair(
         edl=edl, issue=gap, validated=authorized,
     )
-    assert not out["applied"]
-    assert out["reason"] == "no_storyboard_score_anchor_near_confirm"
+    assert out["applied"] is True
+    assert out["new_role"] == "score_change_goal_action"
+    assert out["placement_basis"] == "source_chronology_no_template_scoreboard"
+    assert [r["segment_id"] for r in out["edl"]][3] == out["new_segment_id"]
+    row = out["edl"][3]
+    assert row["narrative_fit_status"] == "UNVERIFIED_PENDING_RENDERED_VIDEO_REVIEW"
+    assert row["agent_auto_verified"] is False
+    assert out["does_not_claim_story_improvement"]
+
+
+def test_generic_scoreboard_role_does_not_require_template_prefix():
+    gap = _issue()
+    edl = [
+        {"segment_id": "opening", "role": "opening", "media_in": 100, "media_out": 110},
+        {"segment_id": "graphic", "role": "scoreboard", "media_in": 163, "media_out": 167},
+        {"segment_id": "ending", "role": "ending_title"},
+    ]
+    validated = {
+        "ok": True, "first_live_verified": True, "goal_video_semantic_verified": True,
+        "media_in": 145.0, "media_out": 157.0, "action_sec": 153.0,
+        "reviewer_type": "UNIT_TEST_ONLY",
+    }
+    out = apply_video_verified_goal_repair(edl=edl, issue=gap, validated=validated)
+    assert out["applied"] is True
+    assert out["placement_basis"] == "generic_scoreboard_beat"
+    assert out["new_role"] == "score_change_goal_action"
+    assert [r["segment_id"] for r in out["edl"]][-1] == "ending"
+
+
+def test_source_chronology_fallback_preserves_trailing_title():
+    gap = _issue()
+    edl = [
+        {"segment_id": "opening", "role": "opening", "media_in": 90, "media_out": 110},
+        {"segment_id": "title", "role": "ending_title", "placeholder_sec": 3},
+    ]
+    validated = {
+        "ok": True, "first_live_verified": True, "goal_video_semantic_verified": True,
+        "media_in": 145.0, "media_out": 157.0, "action_sec": 153.0,
+        "reviewer_type": "UNIT_TEST_ONLY",
+    }
+    out = apply_video_verified_goal_repair(edl=edl, issue=gap, validated=validated)
+    assert out["applied"] is True
+    assert [r["segment_id"] for r in out["edl"]] == [
+        "opening", out["new_segment_id"], "title",
+    ]
+
+
+def test_goal_coverage_confirmed_state_still_enters_video_repair():
+    gap = _issue()
+    confirmed = {**gap, "diagnosis_status": "CONFIRMED_STORY_DEFECT"}
+    assert [x["issue_id"] for x in goal_coverage_issues({"issues": [confirmed]})] == [
+        gap["issue_id"],
+    ]
+    assert goal_coverage_issues({"issues": []}) == []
+
+
+def test_generic_insertion_refuses_story_without_any_media_anchor():
+    gap = _issue()
+    validated = {
+        "ok": True, "first_live_verified": True, "goal_video_semantic_verified": True,
+        "media_in": 145.0, "media_out": 157.0, "action_sec": 153.0,
+        "reviewer_type": "UNIT_TEST_ONLY",
+    }
+    out = apply_video_verified_goal_repair(
+        edl=[{"segment_id": "title", "role": "opening_title"}],
+        issue=gap, validated=validated,
+    )
+    assert out["applied"] is False
+    assert out["reason"] == "no_source_chronology_anchor_in_story"
 
 
 def test_localization_queue_skips_if_no_gap(tmp_path):
