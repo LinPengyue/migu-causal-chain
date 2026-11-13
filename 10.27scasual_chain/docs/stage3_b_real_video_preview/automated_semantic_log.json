@@ -1,0 +1,66 @@
+{
+  "schema": "v3_automated_semantic_log_v1",
+  "role": "goal_coverage_01_to_11",
+  "provider_mode": "real",
+  "observation_only": true,
+  "best_round": null,
+  "vlm_inference": null,
+  "visible_crosscheck": {
+    "vlm_claims": {
+      "observed_shot": false,
+      "observed_net": false,
+      "live_or_replay": "unknown",
+      "attacking_team_match": false,
+      "confidence": null,
+      "claims_continuous_live": null
+    },
+    "derived_times": {
+      "shot_sec": null,
+      "net_sec": null
+    },
+    "visible_crosscheck": {
+      "frames_have_pts_or_requested": true,
+      "window_nonempty": true,
+      "continuous_clip_ok": true,
+      "continuous_clip_path": "/tmp/lpy1_v3a_blind_repair_B_historical_20261112/agent_run_goal_video_stage2_v1/02_round_01/source_goal_video_review/goal_coverage_01_to_11/roles/goal_gap_goal_coverage_01_to_11/clips/goal_gap_goal_coverage_01_to_11_uncovered_gap_tail_6440_continuous_accurate.mp4",
+      "shot_before_net_ok": null,
+      "cited_frames_exist": true,
+      "replay_excluded": false,
+      "score_order_ok": true
+    },
+    "evidence_gaps": [
+      "live_or_replay_unknown",
+      "observed_net_unconfirmed",
+      "observed_shot_unconfirmed",
+      "live_unconfirmed",
+      "attacking_team_unconfirmed",
+      "vlm_did_not_claim_continuous_live"
+    ],
+    "auto_upgrade_from_confidence_blocked": true,
+    "block_reasons": [
+      "vlm_booleans_alone_insufficient",
+      "require_shot_net_pts_order",
+      "require_continuous_clip",
+      "require_cited_frame_files_exist",
+      "require_replay_excluded_live_only",
+      "require_score_order_and_empty_uncertain",
+      "possible_first_live_cannot_auto_upgrade_from_vlm_confidence",
+      "first_real_trial_forces_observation_only"
+    ],
+    "structurally_ready_for_automated_verify": false,
+    "note": "VLM inference ≠ verified fact. Legal frame_ids + shot/net=true are NOT enough. Need shot→net PTS order, continuous clip, visible cited frames, LIVE (not replay), score-order, and empty uncertain. First real trial keeps observation_only."
+  },
+  "verified_first_live": false,
+  "observed_shot": false,
+  "observed_net": false,
+  "live": false,
+  "attacking_team_match": false,
+  "continuous": true,
+  "shot_sec": null,
+  "net_sec": null,
+  "continuous_clip_path": "/tmp/lpy1_v3a_blind_repair_B_historical_20261112/agent_run_goal_video_stage2_v1/02_round_01/source_goal_video_review/goal_coverage_01_to_11/roles/goal_gap_goal_coverage_01_to_11/clips/goal_gap_goal_coverage_01_to_11_uncovered_gap_tail_6440_continuous_accurate.mp4",
+  "gate_opened": false,
+  "note": "Fail-closed. First real trial uses observation_only=true → agent_auto_verified stays false; V2 Gate is never opened here.",
+  "semantic_verification_class": "NOT_VERIFIED",
+  "remain_unresolved_reason": "observation_only_first_trial;crosscheck_gaps:live_or_replay_unknown,observed_net_unconfirmed,observed_shot_unconfirmed,live_unconfirmed,attacking_team_unconfirmed,vlm_did_not_claim_continuous_live;structurally_not_ready"
+}

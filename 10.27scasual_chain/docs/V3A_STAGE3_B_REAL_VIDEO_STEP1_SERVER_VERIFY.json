@@ -1,0 +1,149 @@
+{
+  "schema": "v3a_stage3_b_raw_only_real_video_step1_v1",
+  "generated": "2026-11-13T00:59:05.685429+00:00",
+  "branch": "story-va-v3a-stage3-adaptive-video-verify",
+  "code_sha": "a8e29e7d165ca5ca9d19e8bb38b1a34a7c9f1e67",
+  "authorization": {
+    "user_authorized": true,
+    "model_requested": "Qwen3.6-Plus",
+    "max_calls": 2,
+    "max_cost_usd": 0.1,
+    "observation_only": true,
+    "no_edl_mutation": true,
+    "no_first_live_gate_unlock": true,
+    "no_p14_gold_or_human_goal": true
+  },
+  "target": {
+    "case": "B_historical_RAW_EVENTS_ONLY",
+    "candidate_id": "goal_gap_goal_coverage_01_to_11_uncovered_gap_tail_6440",
+    "media_in": 6440.62,
+    "media_out": 6465.62,
+    "issue_id": "goal_coverage_01_to_11",
+    "score_before": [
+      0,
+      1
+    ],
+    "score_after": [
+      1,
+      1
+    ],
+    "continuous_clip": {
+      "ok": true,
+      "path": "/tmp/lpy1_v3a_blind_repair_B_historical_20261112/agent_run_goal_video_stage2_v1/02_round_01/source_goal_video_review/goal_coverage_01_to_11/roles/goal_gap_goal_coverage_01_to_11/clips/goal_gap_goal_coverage_01_to_11_uncovered_gap_tail_6440_continuous_accurate.mp4",
+      "reused_existing": true,
+      "continuous_source": true,
+      "stitched": false
+    },
+    "selected_from": "Stage2 B source_goal_video_review_queue only"
+  },
+  "provider_outcome": {
+    "model_used": "Qwen3.6-Plus",
+    "http_attempts": 2,
+    "real_requests": 2,
+    "real_ok": 0,
+    "real_failures": 2,
+    "est_cost_usd_real": 0,
+    "failure_mode": "Paratera HTTP 500 Connection error on both Qwen3.6-Plus vision attempts; budget exhausted; no successful model JSON",
+    "console_errors_excerpt": [
+      "api role=vision error=HTTP 500: {\"error\":{\"message\":\"InternalServerError: OpenAIException - Connection error. Error happened to model=Qwen3.6-Plus. Received Model Group=Qwen3.6-Plus\\nAvailable Model Group Fallbacks=None\\nError doing",
+      "api role=vision error=HTTP 500: {\"error\":{\"message\":\"InternalServerError: OpenAIException - Connection error. Error happened to model=Qwen3.6-Plus. Received Model Group=Qwen3.6-Plus\\nAvailable Model Group Fallbacks=None\\nError doing",
+      "api role=vision error=API max_calls=2 exhausted (http_attempts=2; cache hits excluded)"
+    ],
+    "no_excess_retry_beyond_2": true
+  },
+  "round_observations": {
+    "n_rounds_completed_with_model_json": 0,
+    "round1": {
+      "round": "round1_dense",
+      "ok": false,
+      "error": "degraded",
+      "message": "API max_calls=2 exhausted (http_attempts=2; cache hits excluded)",
+      "failure_status": "budget_exhausted",
+      "provider_mode": "degraded",
+      "usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "est_cost_usd": 0.0,
+      "raw_response_excerpt": "",
+      "vlm_inference": null,
+      "normalized_evidence": null
+    },
+    "round2": null,
+    "round2_reason": "not reached — round1 consumed both authorized HTTP attempts via provider failures",
+    "local_round1_frames_extracted": [
+      {
+        "frame_id": "f_0000_6447170",
+        "actual_media_sec": 6447.2,
+        "path": "/tmp/lpy1_v3a_stage3_B_real_video_20261113_run/frames/round1/f_0000_6447170.jpg"
+      },
+      {
+        "frame_id": "f_0001_6448870",
+        "actual_media_sec": 6448.88,
+        "path": "/tmp/lpy1_v3a_stage3_B_real_video_20261113_run/frames/round1/f_0001_6448870.jpg"
+      },
+      {
+        "frame_id": "f_0002_6450570",
+        "actual_media_sec": 6450.6,
+        "path": "/tmp/lpy1_v3a_stage3_B_real_video_20261113_run/frames/round1/f_0002_6450570.jpg"
+      },
+      {
+        "frame_id": "f_0003_6452270",
+        "actual_media_sec": 6452.28,
+        "path": "/tmp/lpy1_v3a_stage3_B_real_video_20261113_run/frames/round1/f_0003_6452270.jpg"
+      },
+      {
+        "frame_id": "f_0004_6453970",
+        "actual_media_sec": 6454.0,
+        "path": "/tmp/lpy1_v3a_stage3_B_real_video_20261113_run/frames/round1/f_0004_6453970.jpg"
+      },
+      {
+        "frame_id": "f_0005_6455670",
+        "actual_media_sec": 6455.68,
+        "path": "/tmp/lpy1_v3a_stage3_B_real_video_20261113_run/frames/round1/f_0005_6455670.jpg"
+      },
+      {
+        "frame_id": "f_0006_6457370",
+        "actual_media_sec": 6457.4,
+        "path": "/tmp/lpy1_v3a_stage3_B_real_video_20261113_run/frames/round1/f_0006_6457370.jpg"
+      },
+      {
+        "frame_id": "f_0007_6459070",
+        "actual_media_sec": 6459.08,
+        "path": "/tmp/lpy1_v3a_stage3_B_real_video_20261113_run/frames/round1/f_0007_6459070.jpg"
+      }
+    ],
+    "model_cited_shot_frames": null,
+    "model_cited_net_frames": null,
+    "images_prepared_for_send": true,
+    "images_semantically_judged_by_model": false
+  },
+  "answers_to_user_questions": {
+    "was_real_goal_action_recognized": false,
+    "which_frames_constitute_evidence": "None from model. Local sampling prepared 8 frames ~6447.2–6459.08s inside the candidate window, but provider returned no usable observation/citations.",
+    "ready_for_first_live_verification": false,
+    "structurally_ready_for_automated_verify": false,
+    "evidence_gaps": [
+      "live_or_replay_unknown",
+      "observed_net_unconfirmed",
+      "observed_shot_unconfirmed",
+      "live_unconfirmed",
+      "attacking_team_unconfirmed",
+      "vlm_did_not_claim_continuous_live"
+    ],
+    "verdict": "UNCHECKABLE_PROVIDER_FAILURE"
+  },
+  "gates": {
+    "FIRST_LIVE_VERIFIED": false,
+    "EDL_REPAIRED": false,
+    "STORY_IMPROVED": "UNVERIFIED",
+    "gate_opened": false,
+    "agent_auto_verified": false,
+    "verification_status": "unresolved"
+  },
+  "note": "Authorized Step1 executed within 2-call/$0.10 caps. Failure is upstream model connection on Qwen3.6-Plus, not missing local frames/clip. No model switch performed without new authorization. Historical note only: prior Phase9 stack sometimes used Qwen3.7-Plus after 3.6 multimodal failures.",
+  "out_dir": "/tmp/lpy1_v3a_stage3_B_real_video_20261113_run",
+  "algo_edits_by_cursor": false,
+  "merged_to_main": false
+}

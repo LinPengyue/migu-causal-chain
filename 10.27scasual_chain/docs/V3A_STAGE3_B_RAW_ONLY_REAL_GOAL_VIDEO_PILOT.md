@@ -1,6 +1,6 @@
 # V3-A Stage3: raw-only B source VIDEO semantic pilot
 
-Status: **STEP0 ZERO-HTTP PREFLIGHT COMPLETE ON **. Pytest pass; B Stage2 candidate selected =  [6440.62,6465.62]; config audit http=0, vision=Qwen3.6-Plus, caps max_calls=2 / --.10.  due to raw TCP DNS probe (HTTP via proxy still reaches Paratera). **Paid Step1 NOT run** — awaiting explicit budget authorization. See .
+Status: **STEP1 AUTHORIZED REAL TRIAL EXECUTED — PROVIDER FAILURE**. Qwen3.6-Plus: 2/2 HTTP 500 Connection errors; no semantic JSON; local frames prepared only. Observation-only; EDL untouched; FIRST_LIVE not opened. See `docs/V3A_STAGE3_B_REAL_VIDEO_STEP1_SERVER_VERIFY.json`. New auth required to retry or switch vision model.
 Base evidence: Stage2 server report `5bcd840`; this branch fixes the reused
 P13 video's dense second-round trigger and complete-evidence ranking. A/B/C
 remain unchanged and their original source/score files MUST be preserved.
