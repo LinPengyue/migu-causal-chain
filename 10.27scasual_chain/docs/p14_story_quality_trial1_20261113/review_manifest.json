@@ -1,0 +1,160 @@
+{
+  "schema": "v3a_p14_story_quality_video_review_pack_v1",
+  "mode": "HUMAN_ATOM_ENRICHED_DEV",
+  "source_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+  "story_mp4_sha256": "7764010f0aa1f41282e22faeee295df88e5c0ec26b07d09f4f110c1d80e3553a",
+  "edl_sha256": "b38434b9f15ea550b878fee4c7a4537115ae85d5cd57bdb189f6ad8036a4c47a",
+  "paid_http": 0,
+  "edl_modified": false,
+  "semantic_story_defects_verified": false,
+  "first_live_verified": false,
+  "issues": [
+    {
+      "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472",
+      "category": "transition",
+      "diagnosis_status": "HYPOTHESIS_NEEDS_VIDEO",
+      "story_defect_confirmed": false,
+      "no_edit_authorized": true,
+      "finished_story_focus": {
+        "a": 21.5,
+        "b": 35.5,
+        "kind": "finished_story_cut_seam",
+        "seam": 28.5,
+        "before": "seg_setup_deficit",
+        "after": "seg_buildup_event_000472"
+      },
+      "source_candidates": [
+        {
+          "event_id": "event_000417",
+          "candidate_id": "cand_event_000417_3504",
+          "event_pts": [
+            3504.14,
+            3515.83
+          ],
+          "review_pts": [
+            3503.985,
+            3515.985
+          ],
+          "rank_score": 10.35,
+          "evidence_tier": "EVENT_PTS_CANDIDATE_ONLY",
+          "first_live_verified": false,
+          "narrative_fit_verified": false,
+          "source_clip": {
+            "ok": true,
+            "path": "/tmp/lpy1_v3a_p14_quality_review_20261113/01_event_candidate_01.mp4",
+            "error": null
+          }
+        },
+        {
+          "event_id": "event_000313",
+          "candidate_id": "cand_event_000313_2273",
+          "event_pts": [
+            2273.2,
+            2290.41
+          ],
+          "review_pts": [
+            2275.805,
+            2287.805
+          ],
+          "rank_score": 9.85,
+          "evidence_tier": "EVENT_PTS_CANDIDATE_ONLY",
+          "first_live_verified": false,
+          "narrative_fit_verified": false,
+          "source_clip": {
+            "ok": true,
+            "path": "/tmp/lpy1_v3a_p14_quality_review_20261113/01_event_candidate_02.mp4",
+            "error": null
+          }
+        }
+      ],
+      "finished_story_clip": {
+        "ok": true,
+        "path": "/tmp/lpy1_v3a_p14_quality_review_20261113/01_finished_story_context.mp4",
+        "error": null
+      }
+    },
+    {
+      "issue_id": "large_source_jump_seg_buildup_event_000472_to_seg_equalizer_goal_action",
+      "category": "transition",
+      "diagnosis_status": "HYPOTHESIS_NEEDS_VIDEO",
+      "story_defect_confirmed": false,
+      "no_edit_authorized": true,
+      "finished_story_focus": {
+        "a": 33.5,
+        "b": 47.5,
+        "kind": "finished_story_cut_seam",
+        "seam": 40.5,
+        "before": "seg_buildup_event_000472",
+        "after": "seg_equalizer_goal_action"
+      },
+      "source_candidates": [
+        {
+          "event_id": "event_000476",
+          "candidate_id": "cand_event_000476_4755",
+          "event_pts": [
+            4755.79,
+            4769.62
+          ],
+          "review_pts": [
+            4756.705,
+            4768.705
+          ],
+          "rank_score": 8.85,
+          "evidence_tier": "EVENT_PTS_CANDIDATE_ONLY",
+          "first_live_verified": false,
+          "narrative_fit_verified": false,
+          "source_clip": {
+            "ok": true,
+            "path": "/tmp/lpy1_v3a_p14_quality_review_20261113/02_event_candidate_01.mp4",
+            "error": null
+          }
+        },
+        {
+          "event_id": "event_000481",
+          "candidate_id": "cand_event_000481_4781",
+          "event_pts": [
+            4781.51,
+            4792.36
+          ],
+          "review_pts": [
+            4780.935,
+            4792.935
+          ],
+          "rank_score": 7.85,
+          "evidence_tier": "EVENT_PTS_CANDIDATE_ONLY",
+          "first_live_verified": false,
+          "narrative_fit_verified": false,
+          "source_clip": {
+            "ok": true,
+            "path": "/tmp/lpy1_v3a_p14_quality_review_20261113/02_event_candidate_02.mp4",
+            "error": null
+          }
+        }
+      ],
+      "finished_story_clip": {
+        "ok": true,
+        "path": "/tmp/lpy1_v3a_p14_quality_review_20261113/02_finished_story_context.mp4",
+        "error": null
+      }
+    },
+    {
+      "issue_id": "thin_post_climax_tail",
+      "category": "ending",
+      "diagnosis_status": "HYPOTHESIS_NEEDS_VIDEO",
+      "story_defect_confirmed": false,
+      "no_edit_authorized": true,
+      "finished_story_focus": {
+        "a": 74.5,
+        "b": 94.5,
+        "kind": "last_20_sec_finished_story"
+      },
+      "source_candidates": [],
+      "finished_story_clip": {
+        "ok": true,
+        "path": "/tmp/lpy1_v3a_p14_quality_review_20261113/03_finished_story_context.mp4",
+        "error": null
+      }
+    }
+  ],
+  "note": "Review clips only. No automatic edit, no first-live inference, no claim of story quality improvement. Event PTS is not visual-semantic proof."
+}
