@@ -161,3 +161,10 @@ git rev-parse --short HEAD
 real native MP4 VLM call without direct user approval. Do not rebuild Stage1–7,
 modify BEST, or substitute any Gold or post-hoc result for the original
 Stage3 manifest and log.
+
+## Server verifies (Cursor)
+
+- P17.1 regression @ `a513e70`: **80 passed**, 0 HTTP — see
+  `docs/V3A_P17_1_REGRESSION_SUMMARY.md`.
+- P17.2 B native preflight @ `a513e70`: **STOP_NO_PAID_CALL** (Critic-before-native
+  + unproven `video_url`) — see `docs/V3A_P17_2_B_NATIVE_PREFLIGHT_SUMMARY.md`.

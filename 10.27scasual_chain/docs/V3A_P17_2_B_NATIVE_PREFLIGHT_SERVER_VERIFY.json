@@ -1,0 +1,68 @@
+{
+  "schema": "v3a_p17_2_zero_http_preflight_v1",
+  "stage": "P17.2",
+  "branch": "story-va-v3a-p17-native-broadcast-observer",
+  "head": "a513e70213f14e3ccda73433bd80e9133433309c",
+  "head_short": "a513e70",
+  "worktree": "/data2/lpy1/worktrees/migu-v3a-p16-verify/10.27scasual_chain",
+  "verified_at": "2026-11-13T14:57:22+08:00",
+  "paid_http_executed": 0,
+  "decision": "STOP_NO_PAID_CALL",
+  "source": {
+    "path": "/mnt/data4/migu/10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语.mp4",
+    "exists": true,
+    "bytes": 6113318593,
+    "sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+    "sha_match_expected": true
+  },
+  "archived_anchors_qwen37": {
+    "ok": true,
+    "status": "ARCHIVED_REAL_GOAL_SOURCE_ANCHORS_REVALIDATED",
+    "shot_sec": 6447.88,
+    "net_sec": 6450.6,
+    "cited_shot_frame_ids": ["f_0008_6447870"],
+    "cited_net_frame_ids": ["f_0010_6449670", "f_0011_6450570"],
+    "original_video_frame_redecode": "EXACT_BYTES_AND_PTS_MATCH",
+    "first_live_verified": false,
+    "paid_calls": 0
+  },
+  "archived_anchors_qwen36": {
+    "ok": true,
+    "status": "ARCHIVED_REAL_GOAL_SOURCE_ANCHORS_REVALIDATED",
+    "shot_sec": 6447.2,
+    "net_sec": 6450.6
+  },
+  "issue_binding": {
+    "ok": true,
+    "issue_id": "goal_coverage_01_to_11",
+    "matched_issue_ids": ["goal_coverage_01_to_11"],
+    "first_live_verified": false
+  },
+  "native_clip": {
+    "ok": true,
+    "local_path_not_committed": "/tmp/lpy1_v3a_p17_2_preflight_20261113/original_context_native_360p.mp4",
+    "sha256": "ce18dd9af508fc4214ea9197a481be0138917544caf5a5e49be5ee87408cdb45",
+    "bytes": 2361736,
+    "source_pts_start": 6429.88,
+    "source_pts_end": 6474.6,
+    "fps_transcoded": 5,
+    "under_12mb_cap": true
+  },
+  "api_provider_video_url": {
+    "messages_forwarded_verbatim": true,
+    "endpoint_video_url_compatibility_proven": false
+  },
+  "main_chain_blocker": {
+    "single_http_guaranteed_in_story_e2e_with_max_calls_1": false,
+    "reason": "enable-real-api always runs run_vlm_story_critic before observe_native_broadcast_phase; max-calls 1 is consumed by Critic so native is skipped; raising max_calls allows Critic+native(+Planner). Archival mode does not make full paid E2E exactly one HTTP."
+  },
+  "model_request": null,
+  "model_name": null,
+  "est_cost_usd": null,
+  "raw_model_response": null,
+  "phase_citations": null,
+  "first_live_verified": false,
+  "edl_modified": false,
+  "best_modified": false,
+  "local_preflight_dir": "/tmp/lpy1_v3a_p17_2_preflight_20261113"
+}
