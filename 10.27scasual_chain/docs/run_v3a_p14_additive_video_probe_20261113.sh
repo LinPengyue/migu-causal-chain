@@ -21,7 +21,7 @@ for path in "$SRC" "$EVENTS" "$ENRICH" "$PHASE5/story_plan.json" \
 done
 [[ ! -e "$OUT" ]] || { echo "Refuse overwrite: $OUT"; exit 2; }
 
-python -m pytest -q tests/test_v3a_additive_story_opportunity.py
+python -m pytest -q tests/test_v3a_additive_story_opportunity.py tests/test_v3a_additive_native_semantic.py
 mkdir -p "$OUT"
 git rev-parse HEAD > "$OUT/code_sha.txt"
 
