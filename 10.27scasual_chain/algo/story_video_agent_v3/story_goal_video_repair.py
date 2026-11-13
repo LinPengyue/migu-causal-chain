@@ -234,6 +234,20 @@ def observe_source_goal_video_with_shared_vlm(
                 continuous_clip_path=str(clip),
             )
             result.update({
+                # Preserve the exact REAL model-input frame references for
+                # subsequent source-video provenance checks. These fields do
+                # not attest first broadcast or authorize any edit.
+                "frame_records": [dict(f) for f in goal_frames],
+                "continuous_source_clip_path": str(clip),
+                "continuous_source_clip_sha256": (
+                    hashlib.sha256(clip.read_bytes()).hexdigest()
+                    if clip.is_file() else None
+                ),
+                "model_response_audit": {
+                    "provider_mode": "real",
+                    "raw_response_excerpt": visual.get("raw_response_excerpt"),
+                    "round": "v3a_goal_gap_source_semantic_probe",
+                },
                 "status": (
                     "GOAL_SEMANTIC_CANDIDATE_OBSERVED_FIRST_LIVE_UNVERIFIED"
                     if cross.get("structurally_ready_for_automated_verify")
@@ -614,6 +628,114 @@ def load_goal_review_for_issue(
     return obj if isinstance(obj, dict) else None
 
 
+def assemble_live_goal_review_from_observation(
+    *,
+    issue: Mapping[str, Any],
+    source_sha: str,
+    observation: Optional[Mapping[str, Any]],
+    evidence_store: Optional[Mapping[str, Any]],
+) -> Dict[str, Any]:
+    """Bridge an agent's REAL model observation to the existing repair contract.
+
+    This DOES NOT create first-broadcast proof. It only reuses an independently
+    provided source-window binding and timeline review, with exact model-input
+    frame IDs and paths. Validation/redecode still happens in the unmodified
+    validate_goal_video_review path. No external/gold data are searched.
+    """
+    def reject(reason: str) -> Dict[str, Any]:
+        return {"status": "UNRESOLVED", "reason": reason, "review": None}
+
+    if not isinstance(observation, Mapping):
+        return reject("no_agent_goal_video_observation")
+    if str(observation.get("provider_mode") or "") != "real":
+        return reject("goal_video_observation_not_real_model")
+    if str(observation.get("source_issue_id") or "") != str(issue.get("issue_id") or ""):
+        return reject("goal_video_observation_issue_mismatch")
+    try:
+        mi, mo = [float(t) for t in observation["source_window"]]
+    except (KeyError, ValueError, TypeError):
+        return reject("goal_video_observation_window_missing")
+    if not (0 <= mi < mo <= mi + 45):
+        return reject("goal_video_observation_window_invalid")
+    inf = observation.get("vlm_inference")
+    if not isinstance(inf, Mapping):
+        return reject("goal_video_observation_inference_missing")
+    audit = observation.get("model_response_audit")
+    if not isinstance(audit, Mapping) or (
+        str(audit.get("provider_mode") or "") != "real"
+        or not str(audit.get("raw_response_excerpt") or "").strip()
+    ):
+        return reject("real_video_model_response_audit_missing")
+
+    frame_records = observation.get("frame_records")
+    if not isinstance(frame_records, list) or not frame_records:
+        return reject("original_model_input_frame_records_missing")
+
+    # A locally generated frame pack is merely a source binding. Its presence
+    # does not assert FIRST_LIVE; that is independently verified downstream.
+    from .first_live_window_evidence import window_key
+
+    key = window_key(source_sha, mi, mo)
+    by_key = (
+        evidence_store.get("by_key")
+        if isinstance(evidence_store, Mapping) else None
+    )
+    bound = by_key.get(key) if isinstance(by_key, Mapping) else None
+    if not isinstance(bound, Mapping):
+        return reject("independent_first_live_evidence_missing_for_window")
+    timeline = bound.get("broadcast_timeline_review")
+    if not isinstance(timeline, Mapping):
+        return reject("independent_broadcast_timeline_review_missing")
+
+    frame_by_id = {
+        str(f.get("frame_id")): f for f in frame_records
+        if isinstance(f, Mapping) and f.get("frame_id")
+    }
+    cited_ids = {
+        str(i) for i in list(inf.get("shot_frame_ids") or [])
+        + list(inf.get("net_frame_ids") or [])
+    }
+    if not cited_ids or not cited_ids <= set(frame_by_id):
+        return reject("source_model_frame_citations_missing_or_mismatched")
+
+    frames = []
+    for fid, fr in frame_by_id.items():
+        if not fr.get("path") or fr.get("actual_media_sec") is None:
+            return reject("original_model_input_frame_path_or_pts_missing")
+        frames.append({"frame_id": fid, "path": str(fr["path"])})
+
+    clip_path = str(observation.get("continuous_source_clip_path") or "")
+    clip_sha = str(observation.get("continuous_source_clip_sha256") or "")
+    if not clip_path or not clip_sha:
+        return reject("continuous_source_clip_hash_missing")
+
+    # Do not copy model assertions into first-live status. Keep the timeline
+    # object exactly as independently recorded; validator must cross-check it.
+    review = {
+        "issue_id": issue["issue_id"],
+        "score_before": issue.get("score_before"),
+        "score_after": issue.get("score_after"),
+        "source_sha256": source_sha,
+        "media_in": mi,
+        "media_out": mo,
+        "first_live_evidence": dict(bound),
+        "broadcast_timeline_review": dict(timeline),
+        "video_semantic_observation": {
+            "reviewer_type": "REAL_VIDEO_MODEL_REVIEW",
+            "model_response_audit": dict(audit),
+            "frames": frames,
+            "vlm_inference": dict(inf),
+            "continuous_source_clip_path": clip_path,
+            "continuous_source_clip_sha256": clip_sha,
+        },
+    }
+    return {
+        "status": "ASSEMBLED_FOR_INDEPENDENT_VALIDATION",
+        "reason": None,
+        "review": review,
+    }
+
+
 def repair_goal_coverage_from_video_reviews(
     *,
     edl: Sequence[Mapping[str, Any]],
@@ -621,12 +743,22 @@ def repair_goal_coverage_from_video_reviews(
     source_sha: str,
     review_dir: Optional[Path],
     source_mp4: Optional[Path] = None,
+    video_observation: Optional[Mapping[str, Any]] = None,
+    first_live_evidence_store: Optional[Mapping[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Produce at most one video-authorized edit; no other Agent action mutated."""
     working = [dict(r) for r in edl]
     decisions = []
     for issue in goal_coverage_issues(diagnosis):
         review = load_goal_review_for_issue(review_dir, str(issue.get("issue_id") or ""))
+        bridge = None
+        if review is None and video_observation is not None:
+            bridge = assemble_live_goal_review_from_observation(
+                issue=issue, source_sha=source_sha,
+                observation=video_observation,
+                evidence_store=first_live_evidence_store,
+            )
+            review = bridge.get("review")
         validated = validate_goal_video_review(
             review=review, issue=issue, source_sha=source_sha,
             source_mp4=source_mp4,
@@ -635,8 +767,13 @@ def repair_goal_coverage_from_video_reviews(
             decisions.append({
                 "issue_id": issue.get("issue_id"),
                 "status": "UNRESOLVED",
-                "reason": validated.get("reason"),
+                "reason": (
+                    (bridge or {}).get("reason")
+                    if review is None and bridge is not None
+                    else validated.get("reason")
+                ),
                 "review_provided": review is not None,
+                "observation_bridge_status": (bridge or {}).get("status"),
             })
             continue
         proposal = apply_video_verified_goal_repair(
@@ -662,6 +799,10 @@ def repair_goal_coverage_from_video_reviews(
         "candidate_quality_improved": "UNVERIFIED",
         "input_review_mode": (
             "EXTERNALLY_SUPPLIED_VIDEO_REVIEW" if review_dir is not None
-            else "NO_EXTERNAL_REVIEW"
+            else (
+                "IN_PROCESS_REAL_VLM_OBSERVATION"
+                if video_observation is not None
+                else "NO_EXTERNAL_REVIEW"
+            )
         ),
     }
