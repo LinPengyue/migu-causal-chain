@@ -33,7 +33,7 @@ New: `story_additive_opportunity.py`.
   The prior is video-first, not proof that these clips are appropriate.
 - `build_opportunity_video_pack` reads the ORIGINAL source MP4,
   checks SHA-256, exports original sequential 12s clips and one
-  17s finished-story seam for joint viewing; all claims default to
+  up-to-32s finished-story seam including the following goal action; all claims default to
   UNVERIFIED. Maximum original-video clip request is 48s.
 - `story_e2e_agent.run_story_e2e`: opt-in at round 1 after actual
   Critic diagnosis; writes separate `additive_opportunities.json`
@@ -41,16 +41,19 @@ New: `story_additive_opportunity.py`.
   confirmed issues, Planner intents, Verifier passes or BEST changes.
 - Both V3-A CLIs accept `--enable-additive-story-probe`.
   Without flag, existing behavior is unchanged.
+- Separately guarded `--enable-additive-native-semantic-review` requires
+  `--enable-additive-story-probe`, `--enable-real-api`, and
+  `--i-approve-budget`. It uses the shared capped provider for one real
+  continuous-video baseline-vs-source comparison. Its verdict is only
+  a story-fit prior, not first-LIVE proof or permission to modify EDL.
 - `tests/test_v3a_additive_story_opportunity.py`: source lookback,
   occupied-window exclusion, rejection of generic gaps, bounds,
   source SHA, no overwrite, no quality/first-live assertions.
 
-This stage is intentionally model-independent and zero paid. It is
-**not yet a video-semantic classifier** and is not a new autonomous
-Agent repair. After actual source clips exist, the existing source-bound
-`story_narrative_fit_vlm` and FIRST_LIVE evidence machinery can
-be used for semantic judgment and independent safety, but not until
-the review/paid model is explicitly authorized.
+The default video search is zero-paid and not itself a semantic classifier.
+An additional native-video semantic review is implemented, but **disabled**
+in this experiment; paid calls require separate explicit authorization.
+Neither mode automatically adds footage, claims FIRST_LIVE or promotes BEST.
 
 ## Run on the private video server
 
@@ -88,7 +91,7 @@ instead; an export pass is not a release pass.
 
 ## Next evidence-driven decision
 
-Evaluate the 17s finished cut seam and four 12s source clips.
+Evaluate the up-to-32s finished cut seam (which includes the following goal action) and four 12s source clips.
 For each candidate, distinguish:
 
 1. Video-observed **new information** that changes understanding of
