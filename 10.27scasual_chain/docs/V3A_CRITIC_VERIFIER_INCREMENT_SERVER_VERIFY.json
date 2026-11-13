@@ -1,0 +1,28 @@
+{
+  "schema": "v3a_critic_verifier_increment_server_verify_v1",
+  "git_head": "ec0de76834973ffd4e38b4c541461ce70f7ee203",
+  "branch": "story-va-v3a-critic-verifier-increment-20261113",
+  "base_note": "code-only regression; no paid HTTP; no full-match e2e; no BEST mutation",
+  "worktree": "/data2/lpy1/worktrees/migu-v3a-p16-verify/10.27scasual_chain",
+  "python": "3.9.7",
+  "platform": "Linux-5.15.0-105-generic-x86_64-with-glibc2.31",
+  "compileall": {
+    "target": "algo/story_video_agent_v3",
+    "ok": true
+  },
+  "pytest": {
+    "command": "PYTHONPATH=.:algo python -m pytest -q tests/test_v3a_critic_verifier_increment.py tests/test_v3a_goal_video_repair.py tests/test_v3a_goal_coverage_critic.py tests/test_v3a_b1_human_assisted_e2e.py",
+    "passed": 54,
+    "failed": 0,
+    "skipped": 0,
+    "ok": true,
+    "elapsed_sec_approx": 4.53,
+    "log": "docs/V3A_CRITIC_VERIFIER_INCREMENT_PYTEST_20261113.txt"
+  },
+  "paid_http": false,
+  "full_match_e2e": false,
+  "historical_best_modified": false,
+  "verdict": "CODE_REGRESSION_PASS",
+  "next": "real V3-R product e2e once authorized; focus missing-goal repair via existing loop and replay detection",
+  "generated_at_local": "2026-11-13T21:40:03+08:00"
+}
