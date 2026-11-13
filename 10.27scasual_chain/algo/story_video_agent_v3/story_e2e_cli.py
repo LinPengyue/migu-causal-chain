@@ -116,6 +116,8 @@ def build_parser() -> argparse.ArgumentParser:
         "--phase10-explore-fixture", type=Path, default=None,
         help="Offline development-only hypothesis JSON; incompatible with real API",
     )
+    p.add_argument("--enable-additive-story-probe", action="store_true", default=False,
+                   help="Zero-HTTP original-video additive story search; review only")
     p.add_argument("--no-smoke-render", action="store_true", default=False)
     p.add_argument("--max-rounds", type=int, default=3)
     p.add_argument("--max-calls", type=int, default=5)
@@ -303,6 +305,7 @@ def main(argv: list[str] | None = None) -> int:
             args.goal_repair_evidence_dir.resolve() if args.goal_repair_evidence_dir else None
         ),
         build_local_first_live_evidence=bool(args.build_local_first_live_evidence),
+        enable_additive_story_probe=bool(args.enable_additive_story_probe),
         max_rounds=int(args.max_rounds),
         max_calls=int(args.max_calls),
         max_cost_usd=float(args.max_cost_usd),
