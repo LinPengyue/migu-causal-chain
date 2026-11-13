@@ -1164,6 +1164,19 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 ),
             },
         )
+        # Observation-only turn-adjacent search supplements broad event candidates.
+        # No candidate is first-live verified, semantic-confirmed, or applied.
+        from .story_turn_context_search import propose_turning_point_context
+
+        proactive_turn_search = propose_turning_point_context(
+            edl=working_edl,
+            events=permitted_events,
+            issue_ids=[str(i.get("issue_id") or "") for i in (diag.get("issues") or [])],
+        )
+        write_json(round_dir / "proactive_turn_context_search.json", proactive_turn_search)
+        round_rec["proactive_turn_context_targets"] = len(
+            proactive_turn_search.get("targets") or []
+        )
         write_json(round_dir / "evidence_search.json", search_report)
         # Independent missing-goal source-footage observation. Reuse the P13
         # localizer instead of treating event source PTS as a verified Goal.
