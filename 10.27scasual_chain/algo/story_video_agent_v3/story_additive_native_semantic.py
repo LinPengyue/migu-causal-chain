@@ -142,6 +142,11 @@ def review_additive_native_video(
         )
     except Exception as exc:  # noqa: BLE001
         out["provider_error"] = f"{type(exc).__name__}:{exc}"
+        usage_after = provider_usage(api)
+        out["n_http_calls"] = max(
+            0, int(usage_after.get("http_attempts") or 0)-initial_calls
+        )
+        out["shared_provider_usage"] = usage_after
         return finish("NATIVE_VIDEO_PROVIDER_FAILED")
     usage_after = provider_usage(api)
     out["n_http_calls"] = max(
@@ -155,7 +160,11 @@ def review_additive_native_video(
     (out_dir/"original_native_semantic_response.txt").write_text(raw, encoding="utf-8")
     out["native_video_model_input"] = True
     out["model_raw_response_path"] = str(out_dir/"original_native_semantic_response.txt")
-    parsed = _parse_model_json_lenient(raw)
+    try:
+        parsed = _parse_model_json_lenient(raw)
+    except (ValueError, TypeError) as exc:
+        out["parse_error"] = f"{type(exc).__name__}:{exc}"
+        return finish("NATIVE_SEMANTIC_JSON_INVALID")
     if not isinstance(parsed, Mapping):
         return finish("NATIVE_SEMANTIC_JSON_INVALID")
     verdict = str(parsed.get("verdict") or "UNCERTAIN").upper()
