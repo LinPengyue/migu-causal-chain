@@ -62,6 +62,14 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--enable-real-api", action="store_true", default=False)
     p.add_argument("--i-approve-budget", action="store_true", default=False)
     p.add_argument(
+        "--enable-native-broadcast-observation",
+        action="store_true", default=False,
+        help=(
+            "Extra explicit paid opt-in: send one native source MP4 context plus "
+            "source-PTS anchors to shared real VLM; observation ONLY, not FIRST_LIVE"
+        ),
+    )
+    p.add_argument(
         "--phase8-paid-multi-round",
         action="store_true",
         default=False,
@@ -151,6 +159,15 @@ def main(argv: list[str] | None = None) -> int:
     if not args.source_mp4.is_file():
         print(f"ERROR: source mp4 not found: {args.source_mp4}", file=sys.stderr)
         return 2
+    if args.enable_native_broadcast_observation and not (
+        args.enable_real_api and args.i_approve_budget
+    ):
+        print(
+            "ERROR: native broadcast observation needs --enable-real-api "
+            "AND --i-approve-budget",
+            file=sys.stderr,
+        )
+        return 2
     if args.phase10_explore_fixture is not None:
         if not args.phase10_explore:
             print("ERROR: --phase10-explore-fixture requires --phase10-explore", file=sys.stderr)
@@ -231,6 +248,9 @@ def main(argv: list[str] | None = None) -> int:
         skip_vlm=bool(skip_vlm),
         enable_real_api=bool(enable_real),
         i_approve_budget=bool(args.i_approve_budget),
+        enable_native_broadcast_observation=bool(
+            args.enable_native_broadcast_observation
+        ),
         force_render_initial=bool(args.force_render_initial),
         force_render_candidate=bool(args.force_render_candidate),
         phase10_explore=bool(args.phase10_explore),
