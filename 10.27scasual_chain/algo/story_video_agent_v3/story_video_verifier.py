@@ -75,6 +75,151 @@ def probe_video_pair(
     }
 
 
+
+def assess_first_live_business_context(
+    *,
+    candidate_edl: Sequence[Mapping[str, Any]],
+    new_source_windows: Sequence[Mapping[str, Any]],
+    critic_diagnosis: Optional[Mapping[str, Any]] = None,
+    source_events: Optional[Sequence[Mapping[str, Any]]] = None,
+) -> Dict[str, Any]:
+    """Lightweight, fail-closed business checks within the EXISTING Verifier.
+
+    Consume Critic's VLM observation, source-event broadcast markers, and EDL
+    diff. Never re-search video, create edits, or certify FIRST_LIVE from
+    scoreboard proximity / VLM assertions / absence of replay markers.
+    Explicit replay footage is a veto; consistent cues remain UNRESOLVED.
+    """
+    from .story_evidence_search import event_media_span
+
+    def flag(v: Any) -> bool:
+        return v is True or v == 1 or (isinstance(v, str) and v.lower() == "true")
+
+    edl_by_id = {
+        str(r.get("segment_id")): r for r in candidate_edl
+        if isinstance(r, Mapping) and r.get("segment_id") is not None
+    }
+    diag = critic_diagnosis if isinstance(critic_diagnosis, Mapping) else {}
+    issue_evidence = [
+        (issue, issue.get("critic_video_evidence"))
+        for issue in diag.get("issues") or []
+        if isinstance(issue, Mapping)
+        and issue.get("category") == "goal_coverage"
+        and isinstance(issue.get("critic_video_evidence"), Mapping)
+    ]
+    replay_spans = []
+    for event in source_events or []:
+        if not isinstance(event, Mapping):
+            continue
+        mt = event.get("media_time") or {}
+        vc = event.get("video_context") or {}
+        if not isinstance(mt, Mapping) or not isinstance(vc, Mapping):
+            continue
+        if not (
+            flag(vc.get("is_replay")) or flag(vc.get("is_slow_motion"))
+            or str(vc.get("broadcast_phase") or "").upper() == "REPLAY"
+        ):
+            continue
+        # Require an explicit source interval: fabricated default event spans
+        # are not sufficient evidence for a hard replay veto.
+        if mt.get("start_time_sec") is None or mt.get("end_time_sec") is None:
+            continue
+        span = event_media_span(event)
+        if span:
+            replay_spans.append({
+                "start": span[0], "end": span[2],
+                "event_id": event.get("event_id"),
+            })
+
+    rows = []
+    hard_vetoes = []
+    for window in new_source_windows or []:
+        if not isinstance(window, Mapping):
+            continue
+        try:
+            start = float(window.get("source_pts_start", window.get("media_in")))
+            end = float(window.get("source_pts_end", window.get("media_out")))
+        except (TypeError, ValueError):
+            continue
+        if not 0 <= start < end:
+            continue
+        sid = str(window.get("segment_id") or window.get("new_segment_id") or "")
+        edl_row = edl_by_id.get(sid) or {}
+        role = str(edl_row.get("role") or "").lower()
+        goal_row = "goal_action" in role or "goal_video_repair" in sid
+        reasons = []
+        status = "UNRESOLVED"
+        if flag(edl_row.get("is_replay")) or flag(edl_row.get("is_slow_motion")):
+            reasons.append("candidate_edl_explicit_replay_or_slow_motion")
+        fully_replayed = [
+            x for x in replay_spans
+            if x["start"] <= start + 0.25 and x["end"] >= end - 0.25
+        ]
+        if fully_replayed:
+            reasons.append("entire_new_window_inside_explicit_replay_event")
+        # Only unequivocal flags/whole-window replay metadata veto. Partial
+        # overlaps and source-video score hints are diagnostic, not proof.
+        if reasons:
+            status = "REJECT_REPLAY_BUSINESS_CONFLICT"
+            hard_vetoes.append({
+                "kind": "first_live_business_replay_conflict",
+                "segment_id": sid,
+                "reasons": list(reasons),
+            })
+        elif goal_row:
+            matched = []
+            for issue, evidence in issue_evidence:
+                if evidence.get("status") != "CITED_SHOT_NET_CANDIDATE_FIRST_LIVE_UNVERIFIED":
+                    continue
+                try:
+                    shot = float(evidence["shot_sec"])
+                    net = float(evidence["net_sec"])
+                    before = [int(x) for x in issue["score_before"]]
+                    after = [int(x) for x in issue["score_after"]]
+                    confirm = float(issue["score_confirmation_sec"])
+                except (KeyError, TypeError, ValueError):
+                    continue
+                step = [a-b for a, b in zip(after, before)]
+                if (
+                    len(before) == len(after) == 2
+                    and sorted(step) == [0, 1]
+                    and start <= shot < net <= end
+                    and net <= confirm + 1.0
+                ):
+                    matched.append(str(issue.get("issue_id") or ""))
+            if len(matched) == 1:
+                status = "GOAL_VIDEO_BUSINESS_CUES_CONSISTENT_UNVERIFIED"
+                reasons.append("shot_net_and_score_order_consistent_not_first_live_proof")
+            else:
+                reasons.append("no_unique_cited_goal_score_binding")
+        else:
+            reasons.append("no_goal_specific_business_assessment")
+        rows.append({
+            "segment_id": sid,
+            "source_window": [start, end],
+            "status": status,
+            "reasons": reasons,
+            "first_live_verified": False,
+            "replay_event_ids": [x.get("event_id") for x in fully_replayed],
+        })
+    return {
+        "schema": "v3a_light_first_live_business_v1",
+        "status": (
+            "REJECT_REPLAY_BUSINESS_CONFLICT" if hard_vetoes
+            else ("UNRESOLVED" if rows else "NO_NEW_SOURCE_WINDOWS")
+        ),
+        "windows": rows,
+        "hard_vetoes": hard_vetoes,
+        "first_live_verified": False,
+        "edit_authorized": False,
+        "note": (
+            "Business checks are an independent negative/diagnostic layer. "
+            "Only existing source-PTS/frame-bound broadcast evidence ledger "
+            "can certify FIRST_LIVE; VLM claims and score timing cannot."
+        ),
+    }
+
+
 def verify_story_revision(
     *,
     story: Mapping[str, Any],
@@ -90,6 +235,9 @@ def verify_story_revision(
     vision_backed: Optional[bool] = None,
     verdict_provenance: Optional[str] = None,
     hard_safety_extra: Optional[Mapping[str, Any]] = None,
+    critic_diagnosis: Optional[Mapping[str, Any]] = None,
+    source_events: Optional[Sequence[Mapping[str, Any]]] = None,
+    new_source_windows: Optional[Sequence[Mapping[str, Any]]] = None,
 ) -> Dict[str, Any]:
     """Gate revision accept/reject with hard protections + optional dual verifier.
 
@@ -101,6 +249,14 @@ def verify_story_revision(
 
     hard_vetoes: List[Dict[str, Any]] = []
     warnings: List[str] = []
+
+    business_first_live = assess_first_live_business_context(
+        candidate_edl=candidate_edl,
+        new_source_windows=list(new_source_windows or []),
+        critic_diagnosis=critic_diagnosis,
+        source_events=source_events,
+    )
+    hard_vetoes.extend(business_first_live["hard_vetoes"])
 
     # Replay / render-row validation on candidate
     try:
@@ -311,6 +467,7 @@ def verify_story_revision(
         "schema": "v3a_story_video_verifier_v1",
         "decision_input": decision,
         "hard_vetoes": hard_vetoes,
+        "business_first_live_review": business_first_live,
         "warnings": warnings,
         "render_rows_ok": render_rows_ok,
         "goal_protection": {
