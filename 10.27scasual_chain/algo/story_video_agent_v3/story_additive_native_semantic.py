@@ -80,15 +80,31 @@ def review_additive_native_video(
         chosen.get("media_in"), chosen.get("media_out")
     ]
     out["opportunity_id"] = item.get("opportunity_id")
+    # Keep exact lengths source-bound. Shorter actions on other matches
+    # must not be mislabeled as 30-second observations.
+    def clip_length(export: Mapping[str, Any], fallback: float) -> float:
+        pts = export.get("requested_source_pts")
+        if not isinstance(pts, list) or len(pts) != 2:
+            return fallback
+        try:
+            return float(pts[1]) - float(pts[0])
+        except (TypeError, ValueError):
+            return fallback
+
+    story_len = min(30.0, clip_length(context, 30.0) - 0.2)
+    source_len = min(11.0, clip_length(chosen.get("export") or {}, 11.2) - 0.2)
+    if story_len < 6.0 or source_len < 4.0:
+        return finish("INSUFFICIENT_VIDEO_CONTEXT_DURATION")
+    out["model_video_durations"] = [story_len, source_len]
     # Compress each continuous input to the same small native format as the
     # already deployed broadcast observer; don't concatenate discrete scenes.
     out_dir.mkdir(parents=True, exist_ok=True)
     story_video = _source_context_video(
-        source_mp4=story_path, begin=0.0, end=30.0,
+        source_mp4=story_path, begin=0.0, end=story_len,
         output=out_dir / "story_seam_native_360p.mp4",
     )
     source_video = _source_context_video(
-        source_mp4=source_path, begin=0.0, end=11.0,
+        source_mp4=source_path, begin=0.0, end=source_len,
         output=out_dir / "candidate_source_native_360p.mp4",
     )
     if not (story_video.get("ok") and source_video.get("ok")):
@@ -99,9 +115,9 @@ def review_additive_native_video(
     ]
     prompt = (
         "You are critiquing a football story edit. There are EXACTLY TWO "
-        "continuous videos, in order: VIDEO_1 is a 30-second segment across "
+        f"continuous videos, in order: VIDEO_1 is a {story_len:.2f}-second segment across "
         "the current finished-story edit seam (baseline); VIDEO_2 is an "
-        "11-second candidate from the ORIGINAL match broadcast shortly before "
+        f"{source_len:.2f}-second candidate from the ORIGINAL match broadcast shortly before "
         "the following story action. They are separate source moments. "
         "Watch motion and temporal game state, not just key frames. "
         "Question: does VIDEO_2 provide a SPECIFIC genuinely new story state "
@@ -114,8 +130,8 @@ def review_additive_native_video(
         "(SUPPORTS_ADDITION|REDUNDANT|UNCERTAIN), "
         "baseline_story_observation, candidate_video_observation, "
         "specific_new_information, concrete_baseline_comparison, "
-        "relative_second_in_baseline (0..30), "
-        "relative_second_in_candidate (0..11), "
+        f"relative_second_in_baseline (0..{story_len:.2f}), "
+        f"relative_second_in_candidate (0..{source_len:.2f}), "
         "replay_or_slowmo_suspected (boolean|null), "
         "uncertainty. For SUPPORTS_ADDITION, all observation fields must "
         "describe identifiable video facts and include relative-second "
@@ -176,7 +192,7 @@ def review_additive_native_video(
     try:
         t_base = float(parsed["relative_second_in_baseline"])
         t_cand = float(parsed["relative_second_in_candidate"])
-        citations_ok = 0 <= t_base <= 30 and 0 <= t_cand <= 11
+        citations_ok = 0 <= t_base <= story_len and 0 <= t_cand <= source_len
     except (KeyError, TypeError, ValueError):
         citations_ok = False
     sufficiently_specific = all(
