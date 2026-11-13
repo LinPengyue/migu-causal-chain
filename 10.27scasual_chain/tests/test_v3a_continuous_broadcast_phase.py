@@ -111,6 +111,27 @@ def test_first_live_label_without_positive_phase_proof_cannot_unlock_ledger(tmp_
     )
 
 
+def test_real_model_phase_review_requires_actual_response_and_sent_frame_ids(tmp_path):
+    case = _case(tmp_path)
+    proof = case[2]
+    raw = tmp_path / "phase_model_response.json"
+    raw.write_text('{"phase_observations": "UNIT_TEST_ONLY"}', encoding="utf-8")
+    proof["reviewer"] = {
+        "kind": "REAL_VIDEO_MODEL_REVIEW",
+        "provider_mode": "real",
+        "model_id": "test-model-no-actual-call",
+        "response_path": str(raw),
+        "response_sha256": hashlib.sha256(raw.read_bytes()).hexdigest(),
+        "frame_ids_sent": [x["frame_id"] for x in case[1]],
+    }
+    assert _phase_check(case)["ok"], _phase_check(case)
+    proof["reviewer"]["frame_ids_sent"].remove("replay")
+    assert _phase_check(case)["reason"] == "phase_citations_not_in_actual_model_inputs"
+    proof["reviewer"]["frame_ids_sent"].append("replay")
+    raw.write_text("changed_model_response", encoding="utf-8")
+    assert _phase_check(case)["reason"] == "model_phase_review_raw_response_hash_mismatch"
+
+
 @pytest.mark.parametrize("mutator, expected", [
     (lambda p: p.update(prior_occurrence_method="phash_only"),
      "prior_occurrence_method_not_sufficient"),
