@@ -148,3 +148,81 @@ new API call or FIRST_LIVE claim; no paid tests, no re-render of protected BEST.
    does not eliminate the need for trustworthy FIRST_LIVE evidence.
 5. Continue in the single `run_story_e2e` main chain. A/B/C remain the
    original blind-repair tests, not hand-authored success cases.
+
+## P15.3: historical Stage3 exact producer replay (after P15.2 32 passed)
+
+Cursor confirmed B Qwen3.6/Qwen3.7 original referenced JPG SHA bytes differ
+from `first_live_localize.extract_frame_accurate` at the same time.
+A fresh code audit identified the concrete extractor mismatch:
+
+- `story_video_agent.frames.FrameStore._ffmpeg_extract`: fast
+  `-ss <requested_media_sec> -i source -copyts -vf showinfo -q:v 3`,
+  fallback `select='gte(t\\,<requested>)' ... -q:v 3`.
+- `first_live_localize.extract_frame_accurate`: two-stage seek,
+  `-frames:v 1 -q:v 2`.
+
+This difference alone explains **why JPEG bytes can differ**, but it is not
+yet a B match result. The fix replays the ORIGINAL FrameStore profile and
+requires exact JPEG SHA equality plus original requested/actual PTS agreement
+within 50 ms and whole-source SHA equality. It **does not** accept pHash,
+SSIM, HSV/color histogram, loose image similarity or model LIVE labels.
+
+Changes:
+- `story_goal_video_repair.audit_source_frame_redecode`: explicit per-frame
+  result, first try canonical q2, then reuse the actual historical
+  `FrameStore` q3 producer; strict fail-close; source-frame identity only.
+- `_source_frames_match_decoded_video` uses the audit's Boolean result,
+  preserving existing caller and current frame/source safety checks.
+- `source_frame_provenance_cli.py` is a zero-HTTP, read-only one-time
+  provenance checker for original Stage3 `automated_semantic_log.json` and
+  original `frame_manifest.json`. It refuses fabricated model frame IDs
+  and never writes an evidence-store FIRST_LIVE record.
+- Six new tests cover actual FFmpeg q3 reproduction, tampered JPG,
+  wrong MP4 SHA, PTS mismatch, log+manifest join, invented cited IDs.
+  Test fixture uses synthesized VIDEO, not B frames.
+
+### Cursor: run P15.3 without any new model experiment
+
+```bash
+git fetch origin story-va-v3a-p15-goal-repair-mainchain
+git switch story-va-v3a-p15-goal-repair-mainchain
+git pull --ff-only
+cd 10.27scasual_chain
+PYTHONPATH=algo python -m pytest -q \
+  tests/test_v3a_goal_video_repair.py \
+  tests/test_v3a_stage5_broadcast_temporal_audit.py \
+  tests/test_v3a_stage6_broadcast_verifier.py
+git rev-parse --short HEAD
+git status --short
+```
+
+To inspect B's *existing* model-cited images, use the source path and
+**original** matching manifest/log paths already on the server. Run once for
+Qwen3.6 and once for Qwen3.7, with different NEW report destinations:
+
+```bash
+# Resolve these to the exact EXISTING source/artifacts; do not regenerate them.
+export SRC_MP4=/path/to/original_match.mp4
+export SOURCE_SHA=a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c
+export ORIGINAL_FRAME_MANIFEST=/path/to/original/frame_manifest.json
+export ORIGINAL_SEMANTIC_LOG=/path/to/original/automated_semantic_log.json
+export FRESH_PROVENANCE_REPORT=/path/to/new/p15_stage3_qwen36_source_frame_audit.json
+
+PYTHONPATH=algo python -m story_video_agent_v3.source_frame_provenance_cli \
+  --source-mp4 "$SRC_MP4" \
+  --source-sha256 "$SOURCE_SHA" \
+  --frame-manifest "$ORIGINAL_FRAME_MANIFEST" \
+  --semantic-log "$ORIGINAL_SEMANTIC_LOG" \
+  --out "$FRESH_PROVENANCE_REPORT"
+```
+
+Replace all three artifact paths with actual correct source/manifest/log values
+for EACH model. Do not use the Qwen3.6 manifest for the Qwen3.7 observation.
+
+If legacy q3 bytes match with PTS, **only** source-frame provenance is proved.
+If they do not match, report per-frame `decoder_profile`, PTS and
+`reason` from JSON, rather than relaxing identity thresholds.
+
+Either way:
+`FIRST_LIVE=NOT_VERIFIED`; `B_EDL_REPAIRED=false`. No paid API, no new
+source scanning, no new cut/OCR experiment, no BEST changes, no release.
