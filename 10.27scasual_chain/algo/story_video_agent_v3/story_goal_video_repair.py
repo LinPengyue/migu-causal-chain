@@ -590,8 +590,11 @@ def apply_video_verified_goal_repair(
     edl: Sequence[Mapping[str, Any]],
     issue: Mapping[str, Any],
     validated: Mapping[str, Any],
+    human_assisted_preview: bool = False,
 ) -> Dict[str, Any]:
-    """Insert one previously absent goal action at chronological story position.
+    """Insert a goal with shared chronology/overlap safety checks.
+
+    Preview mode does NOT verify FIRST_LIVE, authorize BEST, or certify quality.
 
     This is a guarded *apply* stage, never a search heuristic. Existing goals,
     scoreboard rows and their order must be preserved. Final story-level video
@@ -602,7 +605,13 @@ def apply_video_verified_goal_repair(
         "edl": [dict(x) for x in edl],
         "new_segment_id": None,
     }
-    if not validated.get("ok") or not (
+    if not validated.get("ok"):
+        return result
+    if human_assisted_preview:
+        if str(validated.get("reviewer_type")) != "HUMAN_ATTESTATION_DEV_ONLY":
+            result["reason"] = "preview_requires_human_attestation_review_provenance"
+            return result
+    elif not (
         validated.get("first_live_verified")
         and validated.get("goal_video_semantic_verified")
     ):
@@ -691,10 +700,14 @@ def apply_video_verified_goal_repair(
         "role": role,
         "media_in": round(a, 3), "media_out": round(b, 3),
         "goal_anchor_t_sec": round(float(validated["action_sec"]), 3),
-        "include_in_cut": True, "is_replay": False,
-        "shot_kind": "live",
-        "goal_action_complete": True,
-        "first_live_status": "FIRST_LIVE_VERIFIED",
+        "include_in_cut": True,
+        "is_replay": None if human_assisted_preview else False,
+        "shot_kind": "human_preview_unverified" if human_assisted_preview else "live",
+        "goal_action_complete": not human_assisted_preview,
+        "first_live_status": (
+            "HUMAN_ATTESTED_PREVIEW_ONLY" if human_assisted_preview
+            else "FIRST_LIVE_VERIFIED"
+        ),
         # External reviewed files, even when originating from a real model,
         # are not independently authenticated as an active Agent VLM call.
         "agent_auto_verified": False,
@@ -702,10 +715,22 @@ def apply_video_verified_goal_repair(
         "repair_issue_id": issue.get("issue_id"),
         "placement_basis": placement_basis,
         "narrative_fit_status": "UNVERIFIED_PENDING_RENDERED_VIDEO_REVIEW",
-        "evidence_status": "SOURCE_VIDEO_GOAL_SEMANTIC_AND_FIRST_LIVE_BOUND",
+        "evidence_status": (
+            "HUMAN_ATTESTED_CANDIDATE_UNVERIFIED_WINDOW"
+            if human_assisted_preview
+            else "SOURCE_VIDEO_GOAL_SEMANTIC_AND_FIRST_LIVE_BOUND"
+        ),
         "reviewer_type": validated.get("reviewer_type"),
-        "validated_evidence": validated.get("first_live_evidence"),
-        "broadcast_timeline_review": validated.get("broadcast_timeline_review"),
+        "validated_evidence": (
+            None if human_assisted_preview else validated.get("first_live_evidence")
+        ),
+        "broadcast_timeline_review": (
+            None if human_assisted_preview else validated.get("broadcast_timeline_review")
+        ),
+        "human_assisted_preview_only": bool(human_assisted_preview),
+        "cut_boundaries_human_verified": (
+            False if human_assisted_preview else None
+        ),
     }
     rows.insert(insert_idx, row)
     pts = check_source_pts_monotonic(rows)
@@ -715,7 +740,10 @@ def apply_video_verified_goal_repair(
         return result
     result.update({
         "applied": True,
-        "reason": "video_evidence_bound_goal_edl_insert",
+        "reason": (
+            "human_attested_goal_preview_requires_human_clip_review"
+            if human_assisted_preview else "video_evidence_bound_goal_edl_insert"
+        ),
         "edl": rows,
         "new_segment_id": sid,
         "new_role": role,
@@ -724,6 +752,8 @@ def apply_video_verified_goal_repair(
         "action_sec": float(validated["action_sec"]),
         "reviewer_type": validated.get("reviewer_type"),
         "does_not_claim_story_improvement": True,
+        "human_assisted_preview_only": bool(human_assisted_preview),
+        "release_authorized": False,
     })
     return result
 
