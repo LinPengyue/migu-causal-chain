@@ -97,6 +97,16 @@ def validate_continuous_broadcast_phase_proof(
             return fail("model_phase_review_missing_model_id")
         if not _valid_hash(reviewer.get("response_sha256")):
             return fail("model_phase_review_missing_response_digest")
+        original_response = Path(str(reviewer.get("response_path") or ""))
+        if not original_response.is_file() or _sha_file(original_response) != str(
+            reviewer["response_sha256"]
+        ):
+            return fail("model_phase_review_raw_response_hash_mismatch")
+        sent = reviewer.get("frame_ids_sent")
+        if not isinstance(sent, list) or len(sent) < 4:
+            return fail("model_phase_review_sent_frame_ids_missing")
+        if any(not isinstance(fid, str) or not fid for fid in sent):
+            return fail("model_phase_review_sent_frame_ids_malformed")
     elif kind == "HUMAN_CONTINUOUS_VIDEO_REVIEW":
         if not str(reviewer.get("review_record_id") or "").strip():
             return fail("human_review_missing_record_id")
@@ -156,6 +166,11 @@ def validate_continuous_broadcast_phase_proof(
             return fail("missing_positive_visual_phase_cue")
         seen[phase] = {"pts": pt, "frame_id": fid}
 
+    if kind == "REAL_VIDEO_MODEL_REVIEW":
+        # These are the ONLY images the independent phase reviewer actually saw.
+        # Do not accept citations invented after the VLM call.
+        if not used_frame_ids <= set(reviewer["frame_ids_sent"]):
+            return fail("phase_citations_not_in_actual_model_inputs")
     if set(seen) != set(REQUIRED_PHASES):
         return fail("incomplete_pre_goal_reaction_replay_sequence")
     pre = seen["CONTINUOUS_LIVE_PLAY"]["pts"]
