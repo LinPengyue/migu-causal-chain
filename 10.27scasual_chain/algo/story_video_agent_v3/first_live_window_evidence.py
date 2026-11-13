@@ -722,7 +722,7 @@ def validate_first_live_evidence_record(
                     pts_end=pts_end,
                     bound_frames=bound_frames,
                 )
-                if phase_gate.get("ok"):
+                if phase_gate.get("ok") and binding.get("binding_valid"):
                     first_live_status = FIRST_LIVE_VERIFIED
                     first_live_verified = True
                 else:
