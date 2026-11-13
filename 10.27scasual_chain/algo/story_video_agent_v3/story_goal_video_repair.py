@@ -30,7 +30,9 @@ def goal_coverage_issues(diagnosis: Mapping[str, Any]) -> List[Dict[str, Any]]:
         dict(x) for x in diagnosis.get("issues") or []
         if isinstance(x, Mapping)
         and str(x.get("category") or "") == "goal_coverage"
-        and str(x.get("diagnosis_status") or "") == "HYPOTHESIS_NEEDS_VIDEO"
+        and str(x.get("diagnosis_status") or "") in (
+            "HYPOTHESIS_NEEDS_VIDEO", "CONFIRMED_STORY_DEFECT"
+        )
     ]
 
 
@@ -486,28 +488,67 @@ def apply_video_verified_goal_repair(
             result["reason"] = "new_window_overlaps_existing_footage"
             return result
 
-    # Locate target by existing storyboard score confirmation, never by
-    # target reference/Gold. Require a concrete later role anchor to avoid
-    # inventing which protagonist's story this goal belongs to.
+    # Prefer an existing score-confirmation beat if it can be placed in
+    # chronological source order. Different story templates may not contain a
+    # "*_scoreboard_anchor" role at all: in that case place the VIDEO-VERIFIED
+    # goal in the unique chronological source gap, with a neutral goal role.
+    # Story fit remains UNVERIFIED until the post-render video Verifier.
     score_confirm = float(issue.get("score_confirmation_sec") or 0)
-    board_indices = [
-        (idx, r) for idx, r in enumerate(rows)
-        if r.get("include_in_cut", True)
-        and "scoreboard" in str(r.get("role") or "").lower()
-        and r.get("media_in") is not None
-        and abs(float(r["media_in"]) - score_confirm) <= 35.0
-    ]
-    if not board_indices:
-        result["reason"] = "no_storyboard_score_anchor_near_confirm"
-        return result
-    insert_idx, board = min(
-        board_indices, key=lambda p: abs(float(p[1]["media_in"]) - score_confirm)
-    )
-    stem = str(board.get("role") or "").replace("_scoreboard_anchor", "").replace("_scoreboard", "")
-    if not stem or stem == str(board.get("role") or ""):
-        result["reason"] = "cannot_infer_story_role_from_scoreboard_anchor"
-        return result
-    role = stem + "_goal_action"
+    board_indices = []
+    for idx, r in enumerate(rows):
+        if r.get("include_in_cut", True) is False:
+            continue
+        if "scoreboard" not in str(r.get("role") or "").lower():
+            continue
+        try:
+            board_start = float(r["media_in"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        if board_start >= b and abs(board_start - score_confirm) <= 35.0:
+            board_indices.append((idx, r, board_start))
+
+    insert_idx = None
+    role = "score_change_goal_action"
+    placement_basis = "source_chronology_no_template_scoreboard"
+    if board_indices:
+        idx, board, _ = min(
+            board_indices, key=lambda item: abs(item[2] - score_confirm)
+        )
+        insert_idx = idx
+        stem = str(board.get("role") or "")
+        for suffix in ("_scoreboard_anchor", "_scoreboard"):
+            if stem.endswith(suffix):
+                stem = stem[:-len(suffix)]
+                break
+        if stem and stem != str(board.get("role") or ""):
+            role = stem + "_goal_action"
+            placement_basis = "paired_existing_scoreboard_beat"
+        else:
+            placement_basis = "generic_scoreboard_beat"
+
+    if insert_idx is None:
+        # A generic story may have a scoreboard-free climax, a tactical
+        # turning point or an ending. Insert before the first later source
+        # media cut, retaining non-media titles and the existing cut order.
+        active_media = []
+        for idx, r in enumerate(rows):
+            if r.get("include_in_cut", True) is False:
+                continue
+            try:
+                ri, ro = float(r["media_in"]), float(r["media_out"])
+            except (KeyError, TypeError, ValueError):
+                continue
+            if ro > ri:
+                active_media.append((idx, ri, ro))
+        if not active_media:
+            result["reason"] = "no_source_chronology_anchor_in_story"
+            return result
+        following = next(
+            (idx for idx, ri, _ in active_media if ri >= b), None
+        )
+        insert_idx = (
+            following if following is not None else active_media[-1][0] + 1
+        )
     sid = "seg_goal_video_repair_" + str(issue["issue_id"])[:80]
     if any(str(r.get("segment_id")) == sid for r in rows):
         result["reason"] = "duplicate_goal_video_repair_id"
@@ -526,6 +567,8 @@ def apply_video_verified_goal_repair(
         "agent_auto_verified": False,
         "goal_coverage_repair": True,
         "repair_issue_id": issue.get("issue_id"),
+        "placement_basis": placement_basis,
+        "narrative_fit_status": "UNVERIFIED_PENDING_RENDERED_VIDEO_REVIEW",
         "evidence_status": "SOURCE_VIDEO_GOAL_SEMANTIC_AND_FIRST_LIVE_BOUND",
         "reviewer_type": validated.get("reviewer_type"),
         "validated_evidence": validated.get("first_live_evidence"),
@@ -543,6 +586,7 @@ def apply_video_verified_goal_repair(
         "edl": rows,
         "new_segment_id": sid,
         "new_role": role,
+        "placement_basis": placement_basis,
         "source_pts": [a, b],
         "action_sec": float(validated["action_sec"]),
         "reviewer_type": validated.get("reviewer_type"),
