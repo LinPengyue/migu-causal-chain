@@ -185,6 +185,15 @@ def main(argv: list[str] | None = None) -> int:
             print("ERROR: archived source frames require native broadcast observation opt-in",
                   file=sys.stderr)
             return 2
+        # Pre-existing REAL observations are diagnostics, not a blind/raw-only
+        # end-to-end benchmark input. Require frozen V3-R Phase5 regression.
+        if args.run_fresh_v3r or args.phase5_dir is None:
+            print(
+                "ERROR: archived Stage3 evidence is DEV-only and requires "
+                "--phase5-dir without --run-fresh-v3r",
+                file=sys.stderr,
+            )
+            return 2
     if args.phase10_explore_fixture is not None:
         if not args.phase10_explore:
             print("ERROR: --phase10-explore-fixture requires --phase10-explore", file=sys.stderr)
