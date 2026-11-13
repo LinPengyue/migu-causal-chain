@@ -69,6 +69,10 @@ def build_parser() -> argparse.ArgumentParser:
             "source-PTS anchors to shared real VLM; observation ONLY, not FIRST_LIVE"
         ),
     )
+    p.add_argument("--native-phase-archived-frame-manifest", type=Path, default=None,
+                   help="Original Stage3 model-input frames JSON; only used after source re-decode")
+    p.add_argument("--native-phase-archived-semantic-log", type=Path, default=None,
+                   help="Original REAL Qwen Stage3 observation JSON; not FIRST_LIVE evidence")
     p.add_argument(
         "--phase8-paid-multi-round",
         action="store_true",
@@ -168,6 +172,19 @@ def main(argv: list[str] | None = None) -> int:
             file=sys.stderr,
         )
         return 2
+    archived_paths = (
+        args.native_phase_archived_frame_manifest,
+        args.native_phase_archived_semantic_log,
+    )
+    if any(p is not None for p in archived_paths):
+        if not all(p is not None and p.is_file() for p in archived_paths):
+            print("ERROR: both existing original Stage3 manifest and semantic log required",
+                  file=sys.stderr)
+            return 2
+        if not args.enable_native_broadcast_observation:
+            print("ERROR: archived source frames require native broadcast observation opt-in",
+                  file=sys.stderr)
+            return 2
     if args.phase10_explore_fixture is not None:
         if not args.phase10_explore:
             print("ERROR: --phase10-explore-fixture requires --phase10-explore", file=sys.stderr)
@@ -250,6 +267,14 @@ def main(argv: list[str] | None = None) -> int:
         i_approve_budget=bool(args.i_approve_budget),
         enable_native_broadcast_observation=bool(
             args.enable_native_broadcast_observation
+        ),
+        native_phase_archived_frame_manifest=(
+            args.native_phase_archived_frame_manifest.resolve()
+            if args.native_phase_archived_frame_manifest else None
+        ),
+        native_phase_archived_semantic_log=(
+            args.native_phase_archived_semantic_log.resolve()
+            if args.native_phase_archived_semantic_log else None
         ),
         force_render_initial=bool(args.force_render_initial),
         force_render_candidate=bool(args.force_render_candidate),
