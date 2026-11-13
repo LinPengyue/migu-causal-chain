@@ -130,8 +130,15 @@ def test_real_model_phase_review_requires_actual_response_and_sent_frame_ids(tmp
     }
     assert _phase_check(case)["ok"], _phase_check(case)
     proof["reviewer"]["frame_ids_sent"].remove("replay")
+    # Three sent frames fail the independent minimum-count check first.
+    assert _phase_check(case)["reason"] == "model_phase_review_sent_frame_ids_missing"
+    # Keep the minimum count satisfied, but replace the cited replay image
+    # with an unrelated frame. This exercises the distinct citation-subset gate.
+    proof["reviewer"]["frame_ids_sent"].append("unrelated_context_frame")
     assert _phase_check(case)["reason"] == "phase_citations_not_in_actual_model_inputs"
+    proof["reviewer"]["frame_ids_sent"].remove("unrelated_context_frame")
     proof["reviewer"]["frame_ids_sent"].append("replay")
+    assert _phase_check(case)["ok"] is True
     raw.write_text("changed_model_response", encoding="utf-8")
     assert _phase_check(case)["reason"] == "model_phase_review_raw_response_hash_mismatch"
     # Even a correctly hashed response must contain exactly the visual
