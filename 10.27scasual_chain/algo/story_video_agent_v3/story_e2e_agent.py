@@ -1551,6 +1551,12 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             edl=working_edl, diagnosis=diag, source_sha=str(source_sha or ""),
             review_dir=inp.goal_repair_evidence_dir,
             source_mp4=inp.source_mp4,
+            # Real in-process VLM observations may be consumed when their
+            # EXACT input frame bindings and independently reviewed broadcast
+            # phase are already available. Stage3 labels alone never certify
+            # FIRST_LIVE or trigger an EDL mutation.
+            video_observation=goal_semantic,
+            first_live_evidence_store=first_live_evidence_store,
         )
         if final_decision != "REVISE" and candidate_edl == working_edl and goal_repair.get("changed"):
             candidate_edl = list(goal_repair["edl"])
