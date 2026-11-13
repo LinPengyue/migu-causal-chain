@@ -1,0 +1,188 @@
+{
+  "schema": "v3a_b1_human_assisted_run_summary_v1",
+  "git_head": "558d8a56eddba56fa35337b6e150ed5d99dafa2b",
+  "branch": "story-va-v3a-p17-native-broadcast-observer",
+  "out_dir": "/tmp/lpy1_v3a_b1_human_assisted_20261113/agent_run",
+  "http_calls": 0,
+  "est_cost_usd": 0.0,
+  "edl_changed_any": false,
+  "ok": true,
+  "status_gates": {
+    "workflow_completed": true,
+    "story_diagnosis_valid": true,
+    "revision_applied": false,
+    "candidate_rendered": false,
+    "semantic_verification_passed": false,
+    "release_authorized": false,
+    "final_mp4_exists": true
+  },
+  "delivery": {
+    "release_authorized": false,
+    "delivery_label": "BLOCKED",
+    "delivery_status": "BLOCKED",
+    "blocked_reasons": [
+      "unresolved_without_safe_candidate_preview"
+    ],
+    "human_review": {
+      "required": false
+    },
+    "final_mp4": null,
+    "final_edl": "/tmp/lpy1_v3a_b1_human_assisted_20261113/agent_run/99_final/final_edl.json",
+    "decision": "UNRESOLVED",
+    "release_gate": {
+      "release_authorized": false,
+      "reasons": [
+        "edl_unchanged",
+        "candidate_not_rendered",
+        "candidate_not_accepted",
+        "semantic_verification_not_passed",
+        "decision_not_revise",
+        "fixture_or_offline_source_not_releasable"
+      ],
+      "final_mp4_duration_sec": 72.818,
+      "edl_hard_ok": true,
+      "blocking_issue_ids": [],
+      "note": "workflow_completed/final_mp4_exists/semantic_verification_passed alone never authorize formal release.",
+      "delivery_version_id": "v0",
+      "delivery_snapshot": {
+        "version_id": "v0",
+        "parent_version_id": null,
+        "safety": "UNKNOWN",
+        "quality": "BASELINE_UNVERIFIED",
+        "verdict_provenance": "OFFLINE_RULE",
+        "semantic_verification_passed": false,
+        "candidate_rendered": true,
+        "compared_against_best": null,
+        "mp4_path": "/tmp/lpy1_v3a_b1_human_assisted_20261113/agent_run/01_initial_story/story_clean.mp4",
+        "edl_path": "/tmp/lpy1_v3a_b1_human_assisted_20261113/agent_run/01_initial_story/candidate_edl.json"
+      },
+      "delivery_source": "OFFLINE_RULE",
+      "last_round_ignored_for_release": true,
+      "last_verifier_version_id": "v1",
+      "note_phase8": "Release authorization is version-specific from delivery snapshot; a later rejected/uncertain round does not revoke or grant release of selected best.",
+      "delivery_digest_check": {
+        "source_sha256_expected": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+        "edl_sha256_expected": "79226b015bb4a877506f07a07481a30fcbd9ee1110dae0dc4a5fc848c0bddcf2",
+        "mp4_sha256_expected": "f07b971feccbefec4e43ee92f40620e941d7863246c39d25ab8c642f2b326d96",
+        "edl_sha256_now": "79226b015bb4a877506f07a07481a30fcbd9ee1110dae0dc4a5fc848c0bddcf2",
+        "mp4_sha256_now": "f07b971feccbefec4e43ee92f40620e941d7863246c39d25ab8c642f2b326d96",
+        "ok": true,
+        "reasons": []
+      }
+    },
+    "metrics": {
+      "revise_proposed": 0,
+      "edl_changed_rounds": 0,
+      "candidate_rendered": 0,
+      "candidate_accepted": 0,
+      "search_success_rounds": 1,
+      "invalid_candidate": 0,
+      "goal_damage_flags": 0,
+      "false_or_unverified_improve_claims": 0
+    },
+    "timeline_mp4_alignment": {
+      "aligned": true,
+      "mp4_duration_sec": 72.818,
+      "story_duration_sec": 72.5,
+      "media_duration_sec": 66.5,
+      "placeholder_duration_sec": 6.0,
+      "delta_sec": 0.318,
+      "root_cause_hint": "placeholder_title_cards_included_in_story_duration"
+    },
+    "first_live_visual": {
+      "authority": "final_delivery_edl",
+      "path": "/tmp/lpy1_v3a_b1_human_assisted_20261113/agent_run/99_final/final_goal_evidence_manifest.json",
+      "status_counts": {
+        "FIRST_LIVE_VERIFIED": 0,
+        "POSSIBLE_FIRST_LIVE": 0,
+        "REPLAY_DETECTED": 0,
+        "UNRESOLVED": 2
+      },
+      "n_goal_anchors": 2,
+      "any_first_live_verified": false,
+      "any_replay_on_retained": false,
+      "n_inherited": 0,
+      "n_reverified": 2,
+      "goals": [
+        {
+          "segment_id": "seg_opponent_opening_goal_action",
+          "role": "opponent_opening_goal_action",
+          "first_live_status": "UNRESOLVED",
+          "source_media_in": 1293.71,
+          "source_media_out": 1315.71,
+          "evidence_binding": "reverified_after_window_or_subject_change",
+          "inherited": false
+        },
+        {
+          "segment_id": "seg_go_ahead_goal_action",
+          "role": "go_ahead_goal_action",
+          "first_live_status": "UNRESOLVED",
+          "source_media_in": 6801.28,
+          "source_media_out": 6823.28,
+          "evidence_binding": "reverified_after_window_or_subject_change",
+          "inherited": false
+        }
+      ],
+      "candidate_separate": {
+        "path": null,
+        "status_counts": null,
+        "n_goal_anchors": null
+      },
+      "v3r_historical_ref": null
+    },
+    "final_goal_evidence_manifest": "/tmp/lpy1_v3a_b1_human_assisted_20261113/agent_run/99_final/final_goal_evidence_manifest.json",
+    "goal_lineage_report": "/tmp/lpy1_v3a_b1_human_assisted_20261113/agent_run/99_final/goal_lineage_report.json",
+    "goal_lineage": {
+      "path": "/tmp/lpy1_v3a_b1_human_assisted_20261113/agent_run/99_final/goal_lineage_report.json",
+      "n_final_goal_segments": 2,
+      "n_strict_complete": 0,
+      "n_inferred": 0,
+      "n_unresolved": 2,
+      "n_structurally_traced_to_mp4": 0,
+      "duplicate_segment_ids": [],
+      "prior_source_trust": {
+        "prior_provided": false,
+        "prior_has_trusted_sha": false,
+        "stamped_current_sha_onto_prior": false
+      },
+      "candidate_delivery_binding": {
+        "schema": "v3a_candidate_delivery_video_binding_v1",
+        "same_source_video_sha256": true,
+        "delivery_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+        "candidate_sha256": null,
+        "shared_goal_segments": [],
+        "window_changed_segments": [],
+        "candidate_only_goal_segments": [],
+        "delivery_only_goal_segments": [
+          "seg_go_ahead_goal_action",
+          "seg_opponent_opening_goal_action"
+        ],
+        "note": "Candidate and delivery manifests must not share verification conclusions across changed windows; both must bind to the same source video SHA."
+      }
+    },
+    "note": "Formal delivery requires release_authorized=true under full conjunction gates. workflow_completed / final_mp4_exists / semantic_verification_passed alone never authorize. HUMAN_REVIEW_REQUIRED means a safe candidate preview exists for human judgment. RELEASE_READY requires FIRST_LIVE_VERIFIED on every final-delivery EDL goal (final_goal_evidence_manifest), not V3-R historical first-live stats."
+  },
+  "phase8_loop_best": {
+    "initial": "v0",
+    "best_verified": "v0",
+    "delivery_version": "v0"
+  },
+  "revision_decision": "UNRESOLVED",
+  "revision_rationale": "hypothesis_needs_video_no_auto_search_add_on_gap_alone;search_candidates_deferred_pending_semantic_confirmation",
+  "verifier": {
+    "candidate_accepted": false,
+    "retain_baseline": true,
+    "evidence": "INSUFFICIENT",
+    "quality": "UNCERTAIN",
+    "edl_delta": {
+      "baseline_count": 8,
+      "candidate_count": 8,
+      "added_segment_ids": [],
+      "removed_segment_ids": [],
+      "changed_segments": [],
+      "exactly_equal": true
+    }
+  },
+  "candidate_edl_sha256": "4afc619b6a961e9d5fa6ade37af0218a3654ba6e3a6687510c04726b87489075",
+  "baseline_edl_sha256": "4afc619b6a961e9d5fa6ade37af0218a3654ba6e3a6687510c04726b87489075"
+}

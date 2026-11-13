@@ -1,0 +1,47 @@
+{
+  "schema": "v3a_b1_incomplete_goal_review_inventory_v1",
+  "issue_id": "goal_coverage_01_to_11",
+  "source_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+  "human_attestation_ref": "/data2/lpy1/worktrees/migu-v3a-p16-verify/10.27scasual_chain/docs/V3A_EXPB_HUMAN_FIRST_LIVE_ATTESTATION.json",
+  "human_attestation_sha256": "36bd7eaf98e9b757a4f0ed63e1f7a60c84fcaea9005843430318c7e498b7883d",
+  "status": "INCOMPLETE_NOT_A_LEGAL_REPAIR_PACK",
+  "first_live_verified": false,
+  "claims_to_satisfy_validate_goal_video_review": false,
+  "available_supporting_artifacts": {
+    "human_attestation_file": "/data2/lpy1/worktrees/migu-v3a-p16-verify/10.27scasual_chain/docs/V3A_EXPB_HUMAN_FIRST_LIVE_ATTESTATION.json",
+    "human_confirmed_first_live_claim": true,
+    "precise_cut_boundaries_confirmed": false,
+    "stage3_qwen37_log": "/tmp/lpy1_v3a_stage3_B_real_video_qwen37_newkey_20261113_newkey/automated_semantic_log.json",
+    "stage3_frame_manifest": "/tmp/lpy1_v3a_p15_3_provenance_20261113/qwen37/frame_manifest_from_archived_rounds.json",
+    "stage4_timeline_review": "/tmp/lpy1_v3a_stage4_B_first_live_review_fullctx_20261113/broadcast_context/broadcast_timeline_review.json",
+    "stage4_queue": "/tmp/lpy1_v3a_stage4_B_first_live_review_fullctx_20261113/first_live_review_queue.json",
+    "expb_schemeA_window_hypothesis": [
+      6441.88,
+      6459.6
+    ],
+    "note": "Stage3/4 artifacts exist but Stage4 timeline_review_status=UNKNOWN; attestation is not a source-bound first-live pack"
+  },
+  "missing_fields_for_legal_repair": [
+    "legal first_live_evidence pack with binding_valid frames + manifest_digest for the repair window",
+    "broadcast_timeline_review.outcome=FIRST_LIVE_VERIFIED with continuous phase_evidence ok",
+    "independent earlier same-action occurrence exclusion in phase proof",
+    "validated continuous_source_clip_sha256 bound into a goal-review JSON accepted by validate_goal_video_review",
+    "HUMAN_CONTINUOUS_VIDEO_REVIEW or REAL_VIDEO_MODEL_REVIEW observation package with bound frame paths matching first_live_evidence",
+    "precise media_in/out human-locked cut boundaries (attestation sets precise_cut_boundaries_confirmed=false)"
+  ],
+  "required_contract_checklist": [
+    "issue_id / score_before / score_after binding to diagnosis issue",
+    "source_sha256 matching original MP4",
+    "media_in/media_out clip window (finite, <45s, inside score bracket)",
+    "first_live_evidence: source-bound frame pack (paths, sha256 per frame, manifest_digest, pts window)",
+    "broadcast_timeline_review with schema TIMELINE_REVIEW + outcome FIRST_LIVE_VERIFIED",
+    "continuous_broadcast_phase_proof (phase_evidence) passing validate_continuous_broadcast_phase_proof",
+    "source frame bytes redecoded from original MP4 matching binding",
+    "video_semantic_observation.reviewer_type in {REAL_VIDEO_MODEL_REVIEW, HUMAN_CONTINUOUS_VIDEO_REVIEW}",
+    "vlm_inference shot/net structured + frames>=2 bound to first_live_evidence frames",
+    "continuous_source_clip_path + continuous_source_clip_sha256 byte match",
+    "cross_check_visible_evidence structurally_ready_for_automated_verify",
+    "net_action_pts bounded by pre-confirmation score state"
+  ],
+  "do_not_treat_human_attestation_as_first_live_evidence_pack": true
+}

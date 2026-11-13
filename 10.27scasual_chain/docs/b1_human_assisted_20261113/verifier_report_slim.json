@@ -1,0 +1,53 @@
+{
+  "candidate_accepted": false,
+  "retain_baseline": true,
+  "phase8_verdict": {
+    "schema": "v3a_phase8_verdict_v1",
+    "safety": "PASS",
+    "hard_safety": {
+      "safety": "PASS",
+      "reasons": [],
+      "accept_candidate_ignored": true,
+      "first_live_status": "N_A_NO_NEW_FOOTAGE",
+      "first_live_ledger": {
+        "schema": "v3a_first_live_window_ledger_v1",
+        "source_sha": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+        "windows": [],
+        "n_windows": 0,
+        "all_windows_verified": false,
+        "any_window_unverified": false,
+        "any_replay_confirmed": false,
+        "any_frame_bound_pending_timeline": false,
+        "aggregate_status": "N_A_NO_NEW_WINDOWS",
+        "note": "FRAME_BOUND_VALID ≠ FIRST_LIVE_VERIFIED. Hard-safety PASS needs independent broadcast-timeline review on every new window; binding-only stays UNKNOWN; REPLAY_CONFIRMED ⇒ FAIL."
+      }
+    },
+    "quality": "UNCERTAIN",
+    "evidence": "INSUFFICIENT",
+    "issue_effect": "UNOBSERVED",
+    "global_regression": "UNKNOWN",
+    "focus_issue_id": null,
+    "evidence_refs": [],
+    "observed_changes": null,
+    "unresolved_questions": [],
+    "suggested_next_evidence": null,
+    "failure_class": "TECHNICAL_FAILURE",
+    "compared_parent_version_id": null,
+    "verdict_provenance": "OFFLINE_RULE",
+    "source_kind": "OFFLINE_RULE",
+    "accept_candidate_raw": false,
+    "accept_not_synthesized_from_promising": true,
+    "safety_independent_of_accept_candidate": true,
+    "note": "Hard safety is independent of narrative accept_candidate. FIXTURE/OFFLINE_RULE never establish real IMPROVED; REAL_VLM requires recorded successful provider call + frame bindings."
+  },
+  "edl_delta": {
+    "baseline_count": 8,
+    "candidate_count": 8,
+    "added_segment_ids": [],
+    "removed_segment_ids": [],
+    "changed_segments": [],
+    "exactly_equal": true
+  },
+  "hard_vetoes": [],
+  "vision_backed": false
+}
