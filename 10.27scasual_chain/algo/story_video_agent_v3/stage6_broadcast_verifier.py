@@ -46,7 +46,9 @@ def _read_at(cap: cv2.VideoCapture, sec: float) -> Optional[np.ndarray]:
 
 
 def _distance(a: int, b: int) -> int:
-    return (a ^ b).bit_count()
+    # int.bit_count() is 3.10+; server verify often runs 3.9.
+    x = a ^ b
+    return x.bit_count() if hasattr(int, "bit_count") else bin(x).count("1")
 
 
 def audit(
