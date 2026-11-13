@@ -206,6 +206,10 @@ def review_additive_native_video(
     )
     out["temporal_citations_valid"] = citations_ok
     out["specific_comparison_present"] = sufficiently_specific
+    if parsed.get("replay_or_slowmo_suspected") is True:
+        # A model warning is not broadcast phase proof, but should never
+        # count as a positive candidate narrative prior.
+        return finish("MODEL_SUSPECTS_FORBIDDEN_REPLAY_OBSERVATION_ONLY")
     if verdict == "SUPPORTS_ADDITION" and citations_ok and sufficiently_specific:
         # Narrative PRIOR only. Cannot authorize insertion or upgrade safety.
         return finish("MODEL_SUGGESTS_ADDITIVE_NARRATIVE_PRIOR_ONLY")
