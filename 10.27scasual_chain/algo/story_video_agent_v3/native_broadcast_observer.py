@@ -26,7 +26,7 @@ from .story_paid_eval import provider_usage
 
 SCHEMA = "v3a_native_video_broadcast_phase_observation_v1"
 MAX_VIDEO_BYTES = 12 * 1024 * 1024
-MAX_CONTEXT_SEC = 55.0
+MAX_CONTEXT_SEC = 60.0
 
 
 def _hash_file(path: Path) -> str:
@@ -119,6 +119,80 @@ def _phase_prompt(
         f"available exact source-JPG anchors: {ids}. "
         "This is observation ONLY, not a FIRST_LIVE verdict."
     )
+
+
+def _validate_model_temporal_observation(
+    parsed: Mapping[str, Any],
+    *,
+    sent: list[Dict[str, Any]],
+    shot: float,
+    net: float,
+    clip_end: float,
+) -> Dict[str, Any]:
+    """Check actual cited source frames before recording any phase hypothesis.
+
+    This is NOT the P16 FIRST_LIVE validator. It only checks temporal
+    grounding of the model's proposed phases; no earlier occurrence review
+    is performed or assumed. Lack of phase evidence remains UNRESOLVED.
+    """
+    ids = {str(f["frame_id"]): f for f in sent}
+    rows = parsed.get("phase_observations")
+    if not isinstance(rows, list) or not rows:
+        return {"ok": False, "reason": "no_observed_temporal_phases"}
+    core = {"CONTINUOUS_LIVE_PLAY", "GOAL_SHOT_NET", "IMMEDIATE_LIVE_REACTION"}
+    allowed = core | {"SAME_ACTION_REPLAY_AFTER"}
+    seen: Dict[str, float] = {}
+    used_ids = set()
+    for row in rows:
+        if not isinstance(row, Mapping):
+            return {"ok": False, "reason": "malformed_phase_observation"}
+        phase = str(row.get("phase") or "")
+        fid = str(row.get("frame_id") or "")
+        if phase not in allowed or phase in seen:
+            return {"ok": False, "reason": "unknown_or_duplicate_phase"}
+        if fid not in ids or fid in used_ids:
+            return {"ok": False, "reason": "uncited_or_reused_model_input_frame"}
+        used_ids.add(fid)
+        try:
+            pts = float(row["source_pts_sec"])
+        except (TypeError, ValueError, KeyError):
+            return {"ok": False, "reason": "missing_model_phase_pts"}
+        if not math.isfinite(pts) or abs(
+            pts - float(ids[fid]["actual_media_sec"])
+        ) > 0.05:
+            return {"ok": False, "reason": "model_frame_pts_mismatch"}
+        if len(str(row.get("visible_cue") or "").strip()) < 12:
+            return {"ok": False, "reason": "insufficient_visible_phase_cue"}
+        seen[phase] = pts
+    if not core <= set(seen):
+        return {"ok": False, "reason": "incomplete_live_goal_reaction"}
+    pre, during, reaction = (
+        seen["CONTINUOUS_LIVE_PLAY"], seen["GOAL_SHOT_NET"],
+        seen["IMMEDIATE_LIVE_REACTION"],
+    )
+    if not (
+        pre <= shot - 2.
+        and shot - 0.5 <= during <= net + 0.5
+        and net < reaction <= clip_end
+    ):
+        return {"ok": False, "reason": "phase_timing_inconsistent"}
+    replay = seen.get("SAME_ACTION_REPLAY_AFTER")
+    status = str(parsed.get("later_replay_status") or "UNKNOWN")
+    if replay is not None:
+        if (status != "SAME_ACTION_REPLAY_OBSERVED"
+            or replay <= reaction or replay < net + 3.):
+            return {"ok": False, "reason": "replay_phase_contradiction"}
+    elif status == "SAME_ACTION_REPLAY_OBSERVED":
+        return {"ok": False, "reason": "replay_claim_without_cited_frame"}
+    if parsed.get("replay_or_slowmo_inside_action") is True:
+        return {"ok": False, "reason": "replay_inside_goal_action"}
+    return {
+        "ok": True,
+        "reason": None,
+        "phase_types": sorted(seen),
+        "later_replay_status": status,
+        "first_live_verified": False,
+    }
 
 
 def observe_native_broadcast_phase(
@@ -242,21 +316,16 @@ def observe_native_broadcast_phase(
         raw_path.write_text(raw_text, encoding="utf-8")
         parsed = _extract_json_obj(raw_text)
         original_rows = parsed.get("phase_observations")
-        by_id = {str(f["frame_id"]): f for f in sent}
-        valid_rows = isinstance(original_rows, list) and all(
-            isinstance(x, Mapping)
-            and str(x.get("frame_id") or "") in by_id
-            and x.get("source_pts_sec") is not None
-            and abs(float(x["source_pts_sec"]) - float(
-                by_id[str(x["frame_id"])]["actual_media_sec"]
-            )) <= 0.05
-            for x in original_rows
+        temporal = _validate_model_temporal_observation(
+            parsed, sent=sent, shot=shot, net=net, clip_end=end,
         )
+        valid_rows = bool(temporal.get("ok"))
         result.update({
             "status": (
                 "REAL_NATIVE_VIDEO_PHASE_OBSERVATION_ONLY"
-                if valid_rows else "NATIVE_VIDEO_MODEL_PTS_OR_CITATION_MISMATCH"
+                if valid_rows else "NATIVE_VIDEO_PHASE_CITATION_OR_TIMELINE_UNRESOLVED"
             ),
+            "temporal_observation_validation": temporal,
             "model": response.get("model"),
             "provider_mode": "real",
             "source_sha256": source_sha,
