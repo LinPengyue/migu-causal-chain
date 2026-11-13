@@ -102,10 +102,9 @@ def validate_inputs(args: argparse.Namespace) -> list[str]:
         getattr(args, "native_phase_archived_semantic_log", None),
     )
     if any(v is not None for v in archival_inputs):
-        if not all(v is not None and Path(v).is_file() for v in archival_inputs):
-            errs.append("native_archived_input_pair_missing")
-        if not getattr(args, "enable_native_broadcast_observation", False):
-            errs.append("native_archived_inputs_require_native_phase_opt_in")
+        # Formal raw-only E2E never reuses prior experiment model evidence.
+        # Archival reuse is a DEV diagnostic against frozen Phase5 only.
+        errs.append("archived_stage3_evidence_forbidden_in_fresh_full_e2e")
     if args.phase5_dir is not None or args.baseline_edl is not None:
         errs.append("phase5_dir/baseline_edl_forbidden_in_full_e2e")
     if args.independent_atoms_json is not None and args.causal_json is not None:
