@@ -1222,9 +1222,35 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     original_frame_manifest=inp.native_phase_archived_frame_manifest,
                     original_semantic_log=inp.native_phase_archived_semantic_log,
                 )
-                round_rec["native_archived_goal_source_binding"] = archived
-                if archived.get("ok"):
+                # This may still be the wrong goal in the SAME source.
+                # Do not send archived anchors to the phase observer unless
+                # a unique missing-goal hypothesis puts them before its
+                # confirmed score change. No Gold or human match mapping.
+                from .story_goal_video_repair import goal_coverage_issues
+
+                missing_goals = goal_coverage_issues(diag)
+                matched = []
+                for issue in missing_goals:
+                    try:
+                        lag = (
+                            float(issue["score_confirmation_sec"])
+                            - float(archived["net_sec"])
+                        )
+                    except (KeyError, ValueError, TypeError):
+                        continue
+                    if 0 <= lag <= 180.:
+                        matched.append(str(issue.get("issue_id") or ""))
+                if archived.get("ok") and len(matched) == 1:
+                    archived["bound_current_issue_id"] = matched[0]
                     selected_goal_anchors = archived
+                else:
+                    archived["ok"] = False
+                    archived["reason"] = (
+                        archived.get("reason")
+                        or "archived_goal_not_uniquely_bound_to_current_coverage_issue"
+                    )
+                    archived["matched_issue_ids"] = matched
+                round_rec["native_archived_goal_source_binding"] = archived
             elif goal_semantic is not None:
                 cross = goal_semantic.get("source_video_crosscheck") or {}
                 derived = cross.get("derived_times") or {}
