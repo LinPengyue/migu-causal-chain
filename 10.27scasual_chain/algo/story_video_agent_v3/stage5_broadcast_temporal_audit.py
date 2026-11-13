@@ -123,7 +123,16 @@ def _semantic_consensus(observations: Sequence[Mapping[str, Any]]) -> Dict[str, 
         return {"status": "NO_CITED_SHOT_NET_OBSERVATION", "agreed": False}
     shots = [x["shot_sec"] for x in rows]
     nets = [x["net_sec"] for x in rows]
-    agreed = len(rows) >= 2 and max(shots) - min(shots) <= 3.0 and max(nets) - min(nets) <= 3.0
+    unique_logs = {
+        str(x.get("log_sha256")) for x in rows
+        if isinstance(x.get("log_sha256"), str) and len(x["log_sha256"]) == 64
+    }
+    agreed = (
+        len(rows) >= 2
+        and len(unique_logs) >= 2
+        and max(shots) - min(shots) <= 3.0
+        and max(nets) - min(nets) <= 3.0
+    )
     return {
         "status": "TWO_MODEL_TEMPORAL_AGREEMENT" if agreed else "INSUFFICIENT_INDEPENDENT_AGREEMENT",
         "agreed": agreed,
