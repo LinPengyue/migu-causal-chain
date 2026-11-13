@@ -15,6 +15,7 @@ from story_video_agent_v3.global_story_critic import detect_goal_coverage_hypoth
 from story_video_agent_v3.story_goal_video_repair import (
     _source_frames_match_decoded_video,
     apply_video_verified_goal_repair,
+    assemble_live_goal_review_from_observation,
     goal_coverage_issues,
     prepare_source_video_goal_queue,
     repair_goal_coverage_from_video_reviews,
@@ -417,6 +418,139 @@ def test_confirmed_goal_defect_without_review_never_mutates_edl(tmp_path):
     assert out["edl"] == old_edl
     assert out["decisions"][0]["status"] == "UNRESOLVED"
     assert out["release_authorized"] is False
+
+
+
+def _real_inprocess_observation(review, *, issue_id):
+    semantic = review["video_semantic_observation"]
+    return {
+        "provider_mode": "real",
+        "source_issue_id": issue_id,
+        "source_window": [review["media_in"], review["media_out"]],
+        "vlm_inference": semantic["vlm_inference"],
+        "frame_records": [
+            {
+                "frame_id": f["frame_id"],
+                "path": f["path"],
+                "actual_media_sec": next(
+                    b["source_pts_sec"] for b in review["first_live_evidence"]["frames"]
+                    if b["frame_id"] == f["frame_id"]
+                ),
+            }
+            for f in semantic["frames"]
+        ],
+        "model_response_audit": {
+            "provider_mode": "real",
+            "raw_response_excerpt": '{"observed_shot": true, "observed_net": true}',
+        },
+        "continuous_source_clip_path": semantic["continuous_source_clip_path"],
+        "continuous_source_clip_sha256": semantic["continuous_source_clip_sha256"],
+    }
+
+
+def _evidence_store_for_review(review, sha):
+    from story_video_agent_v3.first_live_window_evidence import window_key
+
+    rec = {
+        **review["first_live_evidence"],
+        "broadcast_timeline_review": review["broadcast_timeline_review"],
+    }
+    return {"by_key": {window_key(sha, review["media_in"], review["media_out"]): rec}}
+
+
+def test_inprocess_real_observation_can_reach_existing_goal_repair_executor(
+    tmp_path, monkeypatch,
+):
+    """Control-flow fixture, not REAL model output or real first-broadcast proof."""
+    gap, sha, review = _review(tmp_path)
+    obs = _real_inprocess_observation(review, issue_id=gap["issue_id"])
+    store = _evidence_store_for_review(review, sha)
+    monkeypatch.setattr(
+        "story_video_agent_v3.story_goal_video_repair._source_frames_match_decoded_video",
+        lambda **kwargs: True,
+    )
+    vid = tmp_path / "fake_source.mp4"
+    vid.write_bytes(b"synthetic")
+    edl = [r for r in _edl() if r["segment_id"] != "eq_board"]
+    result = repair_goal_coverage_from_video_reviews(
+        edl=edl, diagnosis={"issues": [gap]}, source_sha=sha,
+        review_dir=None, source_mp4=vid,
+        video_observation=obs, first_live_evidence_store=store,
+    )
+    assert result["changed"] is True
+    assert result["input_review_mode"] == "IN_PROCESS_REAL_VLM_OBSERVATION"
+    assert result["decisions"][0]["status"] == "EDL_REPAIR_APPLIED"
+    assert next(r for r in result["edl"] if r.get("goal_coverage_repair"))["agent_auto_verified"] is False
+    assert result["candidate_quality_improved"] == "UNVERIFIED"
+    assert result["release_authorized"] is False
+
+
+def test_inprocess_observation_with_unknown_broadcast_phase_never_repairs(
+    tmp_path, monkeypatch,
+):
+    gap, sha, review = _review(tmp_path)
+    obs = _real_inprocess_observation(review, issue_id=gap["issue_id"])
+    store = _evidence_store_for_review(review, sha)
+    from story_video_agent_v3.first_live_window_evidence import window_key
+
+    key = window_key(sha, review["media_in"], review["media_out"])
+    store["by_key"][key]["broadcast_timeline_review"] = {
+        **review["broadcast_timeline_review"], "outcome": "UNKNOWN"
+    }
+    monkeypatch.setattr(
+        "story_video_agent_v3.story_goal_video_repair._source_frames_match_decoded_video",
+        lambda **kwargs: True,
+    )
+    vid = tmp_path / "source.mp4"
+    vid.write_bytes(b"synthetic")
+    edl = _edl()
+    result = repair_goal_coverage_from_video_reviews(
+        edl=edl, diagnosis={"issues": [gap]}, source_sha=sha,
+        review_dir=None, source_mp4=vid,
+        video_observation=obs, first_live_evidence_store=store,
+    )
+    assert result["changed"] is False
+    assert result["edl"] == edl
+    assert result["decisions"][0]["status"] == "UNRESOLVED"
+    assert result["release_authorized"] is False
+
+
+def test_inprocess_model_observation_without_first_live_bundle_is_not_a_repair(
+    tmp_path,
+):
+    gap, sha, review = _review(tmp_path)
+    obs = _real_inprocess_observation(review, issue_id=gap["issue_id"])
+    result = assemble_live_goal_review_from_observation(
+        issue=gap, source_sha=sha, observation=obs, evidence_store={"by_key": {}},
+    )
+    assert result["review"] is None
+    assert result["reason"] == "independent_first_live_evidence_missing_for_window"
+
+
+def test_inprocess_model_frame_ids_must_match_actual_model_inputs(tmp_path):
+    gap, sha, review = _review(tmp_path)
+    obs = _real_inprocess_observation(review, issue_id=gap["issue_id"])
+    obs["vlm_inference"] = {**obs["vlm_inference"], "shot_frame_ids": ["invented"]}
+    result = assemble_live_goal_review_from_observation(
+        issue=gap, source_sha=sha, observation=obs,
+        evidence_store=_evidence_store_for_review(review, sha),
+    )
+    assert result["review"] is None
+    assert result["reason"] == "source_model_frame_citations_missing_or_mismatched"
+
+
+def test_inprocess_observation_rejects_mock_provider_and_missing_model_audit(tmp_path):
+    gap, sha, review = _review(tmp_path)
+    obs = _real_inprocess_observation(review, issue_id=gap["issue_id"])
+    store = _evidence_store_for_review(review, sha)
+    fake = {**obs, "provider_mode": "mock"}
+    assert assemble_live_goal_review_from_observation(
+        issue=gap, source_sha=sha, observation=fake, evidence_store=store,
+    )["reason"] == "goal_video_observation_not_real_model"
+    missing = {**obs, "model_response_audit": {}}
+    assert assemble_live_goal_review_from_observation(
+        issue=gap, source_sha=sha, observation=missing, evidence_store=store,
+    )["reason"] == "real_video_model_response_audit_missing"
 
 
 def test_provider_probe_does_not_call_api_when_budget_insufficient(tmp_path):
