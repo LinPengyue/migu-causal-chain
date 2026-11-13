@@ -2751,6 +2751,8 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     "semantic_verification_status"
                 ),
                 "candidate_accepted": bool(vfix.get("candidate_accepted")),
+                "human_assisted_preview_only": bool(human_preview_active),
+                "pts_ok": bool(pts_gate.get("ok")),
                 "phase8_verdict": phase8_verdict,
                 "phase8_transition": transition,
                 "revision_status": rev_status,
@@ -2962,6 +2964,13 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
     if delivery_snap.get("best_comparison_status") == "PENDING_OR_SKIPPED":
         release.setdefault("reasons", []).append("working_variant_not_compared_against_best")
         release["review_pending_vs_best"] = True
+    if inp.human_assisted_first_live_attestation is not None:
+        # Explicitly keep this entire run out of production delivery, even if
+        # future quality verification behavior changes.
+        release["release_authorized"] = False
+        release.setdefault("reasons", []).append(
+            "B1_human_attestation_preview_mode_never_releases"
+        )
     gates["release_authorized"] = bool(release.get("release_authorized"))
     write_json(final_dir / "release_gate.json", release)
     write_json(out / "phase8_version_snapshots.json", version_snapshots)
@@ -2994,10 +3003,17 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         write_json(hr_dir / "modified_source_pts.json", last_candidate_bundle.get("modified_source_pts") or [])
         write_json(hr_dir / "baseline_edl.json", edl_rows(_read_json(Path(last_candidate_bundle["baseline_edl"]))) if Path(last_candidate_bundle["baseline_edl"]).is_file() else [])
 
+        review_only = bool(last_candidate_bundle.get("human_assisted_preview_only"))
+        # Missing autonomous FIRST_LIVE is a *release* veto but must not hide
+        # the human-review MP4. An offline preview is viewable if the source-PTS
+        # and protected-goal structural checks passed and it actually rendered.
         safe_preview = (
             cand_dst.is_file()
             and bool(last_candidate_bundle.get("goal_anchors_intact"))
-            and not last_candidate_bundle.get("hard_vetoes")
+            and (
+                not last_candidate_bundle.get("hard_vetoes")
+                or (review_only and bool(last_candidate_bundle.get("pts_ok")))
+            )
         )
         semantic = str(last_candidate_bundle.get("semantic_status") or "")
         accepted = bool(last_candidate_bundle.get("candidate_accepted"))
@@ -3012,6 +3028,9 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 "CANDIDATE_AUTO_ACCEPTED" if accepted else "CANDIDATE_BLOCKED"
             ),
             "safe_playable_preview": bool(safe_preview),
+            "human_assisted_preview_only": bool(review_only),
+            "cut_boundaries_human_verified": False if review_only else None,
+            "automatic_first_live_verified": False if review_only else None,
             "auto_release_forbidden": True,
             "dir": str(hr_dir),
             "v3r_baseline_mp4": str(base_dst) if base_dst.is_file() else None,
@@ -3019,7 +3038,9 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             "bundle": last_candidate_bundle,
             "note": (
                 "Candidate is for human story judgment only. "
-                "Uncertainty must not be auto-labeled success or failure for formal release."
+                "For B1 the proposed clip boundaries and replay-free content "
+                "still require direct human viewing; no formal release. "
+                "Uncertainty must not be auto-labeled success or failure."
             ),
         }
         write_json(hr_dir / "human_review_status.json", human_review)
