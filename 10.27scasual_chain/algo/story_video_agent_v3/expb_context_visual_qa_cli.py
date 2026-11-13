@@ -226,8 +226,7 @@ def run_context_qa(
             out_dir=out_dir / "source_pts_context_frames",
         )
         prompt = context_prompt(shot=shot, net=net, frames=frames)
-        result.update(
-            "context_preflight_ready" and {
+        result.update({
                 "status": "READY_ZERO_HTTP_PREFLIGHT",
                 "issue_id": issue["issue_id"],
                 "shot_sec": shot, "net_sec": net,
@@ -238,8 +237,7 @@ def run_context_qa(
                 "image_frames": frames,
                 "prompt_sha256": hashlib.sha256(prompt.encode("utf-8")).hexdigest(),
                 "first_live_verified": False,
-            }
-        )
+        })
         if not execute_real:
             return result
         if api is None:
