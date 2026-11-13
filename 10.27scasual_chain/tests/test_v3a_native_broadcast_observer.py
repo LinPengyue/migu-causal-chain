@@ -14,6 +14,7 @@ from story_video_agent_v3.native_broadcast_observer import (
     _source_context_video,
     observe_native_broadcast_phase,
     resolve_reverified_archived_goal_anchors,
+    match_archived_anchors_to_current_goal_issue,
 )
 
 
@@ -385,6 +386,52 @@ def test_archived_phase_requires_both_existing_files_and_explicit_native_opt_in(
     ])
     errs2 = validate_inputs(args2)
     assert "archived_stage3_evidence_forbidden_in_fresh_full_e2e" in errs2
+
+
+@pytest.mark.parametrize("confirmations, expected", [
+    ([6535.62], True),        # B's confirmed score occurs after the goal
+    ([6300.0], False),        # score change before the archived candidate
+    ([6535.62, 6540.0], False),  # two compatible goal gaps, ambiguous
+    ([6700.0], False),        # beyond bounded confirmation lag
+])
+def test_archived_native_goal_requires_unique_current_score_gap(
+    confirmations, expected,
+):
+    archived = {
+        "ok": True, "shot_sec": 6447.20, "net_sec": 6450.60,
+        "first_live_verified": False,
+    }
+    diagnosis = {"issues": [
+        {
+            "issue_id": f"goal_coverage_{i}",
+            "category": "goal_coverage",
+            "diagnosis_status": "HYPOTHESIS_NEEDS_VIDEO",
+            "score_confirmation_sec": t,
+        } for i, t in enumerate(confirmations)
+    ]}
+    result = match_archived_anchors_to_current_goal_issue(
+        archived=archived, diagnosis=diagnosis,
+    )
+    assert result["ok"] is expected
+    assert result.get("first_live_verified") is not True
+    if expected:
+        assert result["issue_id"] == "goal_coverage_0"
+    else:
+        assert result["issue_id"] is None
+
+
+def test_archived_native_goal_rejects_missing_exact_source_provenance():
+    result = match_archived_anchors_to_current_goal_issue(
+        archived={"ok": False, "shot_sec": 6447.2, "net_sec": 6450.6},
+        diagnosis={"issues": [{
+            "issue_id": "same_match",
+            "category": "goal_coverage",
+            "diagnosis_status": "HYPOTHESIS_NEEDS_VIDEO",
+            "score_confirmation_sec": 6535.62,
+        }]},
+    )
+    assert result["ok"] is False
+    assert result["reason"] == "archived_source_provenance_not_verified"
 
 
 def test_archive_mode_is_not_available_in_fresh_regression_or_unapproved_cli(
