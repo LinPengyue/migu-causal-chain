@@ -126,6 +126,11 @@ class StoryE2EInputs:
     # Optional independent VIDEO review evidence. Absent by default: only
     # local candidate clips are generated; no missing Goal is auto-inserted.
     goal_repair_evidence_dir: Optional[Path] = None
+    # DEV-only: human-confirmed goal, NOT certified cut/window or autonomous LIVE.
+    # Generates a safely checked render candidate in the SAME E2E loop; never BEST.
+    human_assisted_first_live_attestation: Optional[Path] = None
+    human_preview_media_in: Optional[float] = None
+    human_preview_media_out: Optional[float] = None
     # When True, build local frame-pack evidence for new windows from source MP4 (zero HTTP).
     build_local_first_live_evidence: bool = False
     # Extra explicit opt-in: native MP4 broadcast semantics, one real VLM
@@ -468,6 +473,9 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             "goal_repair_evidence_dir": (
                 str(inp.goal_repair_evidence_dir) if inp.goal_repair_evidence_dir else None
             ),
+            "human_assisted_preview_requested": bool(
+                inp.human_assisted_first_live_attestation
+            ),
             "run_fresh_v3r": inp.run_fresh_v3r,
             "max_rounds": inp.max_rounds,
             "max_calls": inp.max_calls,
@@ -484,6 +492,16 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             "APPLIED ≠ VERIFIED ≠ IMPROVED."
         ),
     }
+
+    if inp.human_assisted_first_live_attestation is not None and (
+        inp.enable_real_api or inp.run_fresh_v3r or int(inp.max_rounds) != 1
+        or inp.fixture_revision is not None or inp.fixture_verifier is not None
+        or inp.phase8_round_fixtures is not None or inp.confirm_issue_ids
+        or inp.phase10_explore
+    ):
+        audit["error"] = "human_preview_requires_single_round_offline_historical_baseline_without_fixtures"
+        write_json(out / "story_e2e_audit.json", audit)
+        return audit
 
     if inp.enable_real_api and not inp.i_approve_budget:
         audit["error"] = "real_api_requested_without_budget_approval"
@@ -1740,6 +1758,63 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             k: v for k, v in goal_repair.items() if k != "edl"
         })
 
+        # B1 DEVELOPMENT MODE: allow an explicitly human-attested GOAL to become
+        # a candidate edit inside the normal duplicate/PTS/render/Verifier loop.
+        # The attestation does NOT certify clip boundaries or FIRST_LIVE by Agent.
+        # Keep this completely separate from the strict automatic repair gate.
+        human_preview_active = False
+        if (
+            inp.human_assisted_first_live_attestation is not None
+            and candidate_edl == working_edl
+            and not goal_repair.get("changed")
+        ):
+            from .story_human_goal_preview import propose_human_assisted_goal_preview
+
+            human_preview = propose_human_assisted_goal_preview(
+                edl=working_edl,
+                diagnosis=diag,
+                source_sha=str(source_sha or ""),
+                attestation_path=inp.human_assisted_first_live_attestation,
+                proposed_media_in=inp.human_preview_media_in,
+                proposed_media_out=inp.human_preview_media_out,
+            )
+            write_json(round_dir / "human_assisted_preview_decision.json", {
+                k: v for k, v in human_preview.items() if k != "edl"
+            })
+            if human_preview.get("changed"):
+                human_preview_active = True
+                candidate_edl = list(human_preview["edl"])
+                final_decision = "REVISE"
+                intent = {
+                    "intent_id": "human_preview_" + str(human_preview["issue_id"]),
+                    "issue_id": human_preview["issue_id"],
+                    "action": "human_assisted_goal_preview",
+                    "new_segment_id": human_preview["new_segment_id"],
+                    "human_attested": True,
+                    "automated_first_live_verified": False,
+                    "release_authorized": False,
+                }
+                rev = {
+                    **rev, "decision": "REVISE",
+                    "revision_intents": [intent],
+                    "rationale": "human_attested_dev_preview_not_autonomous_or_eligible_for_release",
+                }
+                apply_report = {
+                    "applied": [{
+                        "status": "applied",
+                        "action": "human_assisted_goal_preview",
+                        "intent": intent["intent_id"],
+                        "segment_id": human_preview["new_segment_id"],
+                    }],
+                    "rejected": [],
+                    "source": "human_attestation_preview_only",
+                    "release_authorized": False,
+                }
+                gates["revision_applied"] = True
+                round_rec["decision"] = final_decision
+                round_rec["human_assisted_preview_only"] = True
+                write_json(round_dir / "revision_plan.json", rev)
+
         # Candidate-stage duplicate audit (same safety rules as baseline intake).
         cand_dup = audit_edl_duplicates(
             candidate_edl,
@@ -2117,6 +2192,29 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             verdict_provenance=verdict_provenance,
             hard_safety_extra=hard_safety_extra,
         )
+        if human_preview_active:
+            # A preview must never become accepted, even if future Verifier logic
+            # changes or a soft judgment appears favorable. It may be rendered
+            # for human review, but is ineligible for BEST or formal delivery.
+            vfix["candidate_accepted"] = False
+            vfix["hard_vetoes"] = list(vfix.get("hard_vetoes") or []) + [
+                "HUMAN_ASSISTED_PREVIEW_NOT_RELEASE_ELIGIBLE"
+            ]
+            phase_preview = dict(vfix.get("phase8_verdict") or {})
+            phase_preview.update({
+                "safety": "UNVERIFIED",
+                "evidence": "INSUFFICIENT",
+                "quality": "UNVERIFIED",
+                "candidate_accepted": False,
+                "preview_only": True,
+            })
+            vfix["phase8_verdict"] = phase_preview
+            vfix["human_assisted_preview"] = {
+                "cut_boundaries_human_verified": False,
+                "automated_first_live_verified": False,
+                "requires_human_video_review": True,
+                "release_authorized": False,
+            }
         # Full-cut comparison: measured duration/EDL cost, no invented quality.
         # Keep separate from the existing safety and semantic verifier.
         from .story_fullcut_delta import compare_fullcut_edls
@@ -2443,6 +2541,15 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 "specific_reobserve_target": specific_reobserve,
             },
         )
+        if human_preview_active:
+            # Keep the rendered candidate as a review artifact but prohibit both
+            # promotion and carrying an uncertified preview to another round.
+            transition = {
+                **transition,
+                "promote": False,
+                "next_action": "STOP_NO_ACTION",
+                "reason": "human_assisted_preview_requires_video_review_not_best",
+            }
         write_json(round_dir / "phase8_transition.json", transition)
         loop_state = apply_transition(
             loop_state,
