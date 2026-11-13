@@ -236,6 +236,18 @@ def _validate_model_temporal_observation(
             return {"ok": False, "reason": "replay_phase_contradiction"}
     elif status == "SAME_ACTION_REPLAY_OBSERVED":
         return {"ok": False, "reason": "replay_claim_without_cited_frame"}
+    if status == "NO_REPLAY_OBSERVED_IN_REVIEWED_CONTEXT":
+        # Absence of a replay is bounded to what the model actually received.
+        try:
+            reviewed_to = float(parsed["post_action_reviewed_through_sec"])
+        except (ValueError, TypeError, KeyError):
+            return {"ok": False, "reason": "post_action_coverage_not_grounded"}
+        if not (
+            math.isfinite(reviewed_to)
+            and net + 3. <= reviewed_to <= clip_end + 0.05
+            and reviewed_to >= reaction
+        ):
+            return {"ok": False, "reason": "post_action_coverage_outside_video"}
     if parsed.get("replay_or_slowmo_inside_action") is True:
         return {"ok": False, "reason": "replay_inside_goal_action"}
     return {
