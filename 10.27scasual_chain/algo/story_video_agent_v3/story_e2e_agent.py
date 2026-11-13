@@ -1222,34 +1222,25 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     original_frame_manifest=inp.native_phase_archived_frame_manifest,
                     original_semantic_log=inp.native_phase_archived_semantic_log,
                 )
-                # This may still be the wrong goal in the SAME source.
-                # Do not send archived anchors to the phase observer unless
-                # a unique missing-goal hypothesis puts them before its
-                # confirmed score change. No Gold or human match mapping.
-                from .story_goal_video_repair import goal_coverage_issues
+                # Exact source bytes do not alone bind an archived goal to
+                # THIS current story defect. Require a unique raw-event
+                # score-coverage hypothesis before viewing the native video.
+                from .native_broadcast_observer import (
+                    match_archived_anchors_to_current_goal_issue,
+                )
 
-                missing_goals = goal_coverage_issues(diag)
-                matched = []
-                for issue in missing_goals:
-                    try:
-                        lag = (
-                            float(issue["score_confirmation_sec"])
-                            - float(archived["net_sec"])
-                        )
-                    except (KeyError, ValueError, TypeError):
-                        continue
-                    if 0 <= lag <= 180.:
-                        matched.append(str(issue.get("issue_id") or ""))
-                if archived.get("ok") and len(matched) == 1:
-                    archived["bound_current_issue_id"] = matched[0]
+                issue_binding = match_archived_anchors_to_current_goal_issue(
+                    archived=archived, diagnosis=diag,
+                )
+                archived["current_issue_binding"] = issue_binding
+                if issue_binding.get("ok"):
+                    archived["bound_current_issue_id"] = issue_binding["issue_id"]
                     selected_goal_anchors = archived
                 else:
                     archived["ok"] = False
                     archived["reason"] = (
-                        archived.get("reason")
-                        or "archived_goal_not_uniquely_bound_to_current_coverage_issue"
+                        archived.get("reason") or issue_binding.get("reason")
                     )
-                    archived["matched_issue_ids"] = matched
                 round_rec["native_archived_goal_source_binding"] = archived
             elif goal_semantic is not None:
                 cross = goal_semantic.get("source_video_crosscheck") or {}
