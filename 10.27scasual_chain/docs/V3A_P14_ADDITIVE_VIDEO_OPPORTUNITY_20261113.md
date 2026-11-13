@@ -69,7 +69,7 @@ bash docs/run_v3a_p14_additive_video_probe_20261113.sh
 
 This runner reuses the actual existing P14 Phase5 files from the
 successful `/tmp/lpy1_v3a_p14_cv_integration_20261113/run`,
-asserts original MP4+event SHA, executes seven focused unit tests,
+asserts original MP4+event SHA, executes ten focused unit/mock tests,
 runs one current V3-A round with ZERO paid HTTP, confirms frozen P14
 MP4/EDL hashes, and checks that the probe exported non-empty clips.
 
