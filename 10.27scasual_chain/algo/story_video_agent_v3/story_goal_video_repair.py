@@ -284,45 +284,162 @@ def observe_source_goal_video_with_shared_vlm(
     return result
 
 
+def audit_source_frame_redecode(
+    *,
+    source_mp4: Path,
+    source_sha: str,
+    binding: Mapping[str, Any],
+) -> Dict[str, Any]:
+    """Strict image-byte provenance against both ACTUAL deployed decoders.
+
+    The Stage3 VLM uses FrameStore's q:v=3/copyts FFmpeg path, while P13's
+    extract_frame_accurate uses q:v=2/two-stage seek. JPEG output from the
+    same source picture can have different hashes across these exact profiles.
+    We *replay the existing FrameStore producer*, not an approximate pHash,
+    SSIM or arbitrary tolerance. Require exact bytes, source SHA, and, for
+    FrameStore, original requested/actual media PTS agreement.
+
+    This checks frame SOURCE IDENTITY only; it is never a FIRST_LIVE verifier.
+    """
+    from tempfile import TemporaryDirectory
+    from .first_live_localize import extract_frame_accurate
+
+    result: Dict[str, Any] = {
+        "ok": False,
+        "status": "SOURCE_FRAME_BINDING_UNRESOLVED",
+        "source_sha256": source_sha,
+        "source_sha_match": False,
+        "frames": [],
+        "first_live_verified": False,
+        "visual_similarity_fallback_allowed": False,
+        "note": "Exact historical extraction reproduction, not broadcast-phase proof.",
+    }
+    video = Path(source_mp4)
+    if not video.is_file():
+        result["reason"] = "source_mp4_missing"
+        return result
+    digest = hashlib.sha256()
+    with video.open("rb") as stream:
+        for block in iter(lambda: stream.read(8 * 1024 * 1024), b""):
+            digest.update(block)
+    if digest.hexdigest() != str(source_sha):
+        result["reason"] = "source_mp4_sha256_mismatch"
+        return result
+    result["source_sha_match"] = True
+    frames = list(binding.get("frames") or [])
+    if len(frames) < 2:
+        result["reason"] = "insufficient_bound_frames"
+        return result
+
+    with TemporaryDirectory(prefix="v3a_goal_redecode_") as tmp:
+        store = None
+        for i, fr in enumerate(frames):
+            row: Dict[str, Any] = {"index": i, "matched": False, "decoder_profile": None}
+            result["frames"].append(row)
+            if not isinstance(fr, Mapping):
+                row["reason"] = "malformed_frame_binding"
+                continue
+            try:
+                actual_t = float(fr["source_pts_sec"])
+                request_t = float(fr.get("requested_media_sec", actual_t))
+            except (ValueError, TypeError, KeyError):
+                row["reason"] = "missing_original_pts_or_request"
+                continue
+            old_path = Path(str(fr.get("path") or ""))
+            expected_sha = str(fr.get("sha256") or "")
+            row.update({
+                "frame_id": fr.get("frame_id"),
+                "source_pts_sec": actual_t,
+                "requested_media_sec": request_t,
+            })
+            if not old_path.is_file():
+                row["reason"] = "original_model_frame_file_missing"
+                continue
+            original_sha = hashlib.sha256(old_path.read_bytes()).hexdigest()
+            if original_sha != expected_sha:
+                row["reason"] = "stored_model_frame_sha256_mismatch"
+                continue
+            # Profile 1: current canonical P13 extractor (q:v=2).
+            decoded = extract_frame_accurate(
+                video, actual_t, Path(tmp) / f"canonical_{i}.jpg"
+            )
+            row["canonical_sha256"] = decoded.get("sha256")
+            if decoded.get("ok") and decoded.get("sha256") == original_sha:
+                row.update({
+                    "matched": True,
+                    "decoder_profile": "first_live_localize_q2_exact_bytes",
+                    "reason": None,
+                })
+                continue
+
+            # Profile 2: the original producer used for Qwen Stage3
+            # FrameStore/FrameBudget. Do not duplicate or relax FFmpeg semantics.
+            try:
+                if store is None:
+                    from story_video_agent.media import probe_video
+                    from story_video_agent.frames import FrameStore, FrameBudget
+
+                    store = FrameStore(
+                        probe_video(video),
+                        out_dir=Path(tmp) / "legacy_frame_store",
+                        budget=FrameBudget(max_frames=len(frames) + 2),
+                    )
+                recreated = store.extract_at(
+                    request_t, gap_id="goal_source_provenance",
+                    tool="historical_stage3_exact_redecode",
+                )
+                recreated_path = Path(recreated.path)
+                legacy_sha = hashlib.sha256(recreated_path.read_bytes()).hexdigest()
+                row["legacy_sha256"] = legacy_sha
+                row["legacy_actual_media_sec"] = recreated.actual_media_sec
+                row["legacy_pts_status"] = recreated.pts_status
+                # Original actual PTS is authoritative. Never silently
+                # substitute requested time for an absent decoder timestamp.
+                pts_agree = (
+                    recreated.pts_status == "pts"
+                    and recreated.actual_media_sec is not None
+                    and abs(float(recreated.actual_media_sec) - actual_t) <= 0.050
+                )
+                if legacy_sha == original_sha and pts_agree:
+                    row.update({
+                        "matched": True,
+                        "decoder_profile": "stage3_framestore_q3_exact_bytes",
+                        "reason": None,
+                    })
+                else:
+                    row["reason"] = (
+                        "legacy_exact_bytes_but_pts_mismatch"
+                        if legacy_sha == original_sha
+                        else "neither_deployed_decoder_matches_exact_bytes"
+                    )
+            except Exception as exc:  # noqa: BLE001
+                row["reason"] = "historical_producer_redecode_failed:" + type(exc).__name__
+
+    result["ok"] = bool(result["frames"]) and all(
+        row["matched"] for row in result["frames"]
+    )
+    result["status"] = (
+        "ORIGINAL_SOURCE_FRAMES_EXACTLY_REPRODUCED"
+        if result["ok"] else "SOURCE_FRAME_BINDING_UNRESOLVED"
+    )
+    result["reason"] = (
+        None if result["ok"] else "one_or_more_model_frames_not_source_reproduced"
+    )
+    return result
+
+
 def _source_frames_match_decoded_video(
     *,
     source_mp4: Path,
     source_sha: str,
     binding: Mapping[str, Any],
 ) -> bool:
-    """Re-decode original source PTS to reject self-hashed fabricated JPGs.
-
-    A manifest SHA matching arbitrary local JPG bytes is not sufficient to
-    prove those JPGs came from the named original football video.
-    """
-    from tempfile import TemporaryDirectory
-    from .first_live_localize import extract_frame_accurate
-
-    video = Path(source_mp4)
-    if not video.is_file():
-        return False
-    digest = hashlib.sha256()
-    with video.open("rb") as stream:
-        for block in iter(lambda: stream.read(8 * 1024 * 1024), b""):
-            digest.update(block)
-    if digest.hexdigest() != str(source_sha):
-        return False
-    frames = list(binding.get("frames") or [])
-    if len(frames) < 2:
-        return False
-    with TemporaryDirectory(prefix="v3a_goal_redecode_") as tmp:
-        for i, fr in enumerate(frames):
-            if not isinstance(fr, Mapping):
-                return False
-            t = fr.get("source_pts_sec")
-            if t is None:
-                return False
-            redecoded = extract_frame_accurate(
-                video, float(t), Path(tmp) / f"source_{i}.jpg"
-            )
-            if not redecoded.get("ok") or str(redecoded.get("sha256")) != str(fr.get("sha256")):
-                return False
-    return True
+    """Compatibility Boolean for the existing strict Goal Repair gate."""
+    return bool(audit_source_frame_redecode(
+        source_mp4=source_mp4,
+        source_sha=source_sha,
+        binding=binding,
+    ).get("ok"))
 
 
 def _valid_issue_binding(review: Mapping[str, Any], issue: Mapping[str, Any]) -> bool:
