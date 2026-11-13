@@ -252,7 +252,9 @@ def build_opportunity_video_pack(
         if seam is not None:
             tl = build_story_timeline(edl)
             story_end = float(tl["story_duration_sec"])
-            lo, hi = max(0.0, seam - 8.0), min(story_end, seam + 9.0)
+            # Include the FULL following goal action (often ~22s): an 8s
+            # after-seam snippet can miss shot/net and falsely assess semantics.
+            lo, hi = max(0.0, seam - 8.0), min(story_end, seam + 24.0)
             if hi - lo >= .5:
                 item["finished_story_context"] = _export_clip(
                     story_mp4, lo, hi, out_dir / f"{i:02d}_story_seam.mp4",
