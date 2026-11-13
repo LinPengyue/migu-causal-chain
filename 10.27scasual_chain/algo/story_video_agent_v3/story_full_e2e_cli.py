@@ -91,7 +91,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def validate_inputs(args: argparse.Namespace) -> list[str]:
     errs: list[str] = []
-    if args.enable_native_broadcast_observation and not (
+    if getattr(args, "enable_native_broadcast_observation", False) and not (
         args.enable_real_api and args.i_approve_budget
     ):
         errs.append("native_broadcast_observation_requires_real_api_and_budget_approval")
