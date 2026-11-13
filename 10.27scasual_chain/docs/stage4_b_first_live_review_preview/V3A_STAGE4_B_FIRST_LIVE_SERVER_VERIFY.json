@@ -1,0 +1,129 @@
+{
+  "schema": "v3a_stage4_b_first_live_server_verify_v1",
+  "generated": "2026-11-13T02:57:52.005334+00:00",
+  "code_sha": "b07d09671c607ca9e783fb34245ac3eff5020581",
+  "branch": "story-va-v3a-stage4-first-live-review",
+  "http_requests": 0,
+  "paid_api": false,
+  "inputs": {
+    "case_B": "/tmp/lpy1_v3a_blind_repair_B_historical_20261112",
+    "stage2_queue": "/tmp/lpy1_v3a_blind_repair_B_historical_20261112/agent_run_goal_video_stage2_v1/02_round_01/source_goal_video_review/source_goal_video_review_queue.json",
+    "semantic_logs": [
+      "/tmp/lpy1_v3a_stage3_B_real_video_qwen36_newkey_20261113_newkey/automated_semantic_log.json",
+      "/tmp/lpy1_v3a_stage3_B_real_video_qwen37_newkey_20261113_newkey/automated_semantic_log.json"
+    ],
+    "candidate_id": "goal_gap_goal_coverage_01_to_11_uncovered_gap_tail_6440",
+    "source_pts": [
+      6440.62,
+      6465.62
+    ]
+  },
+  "automated_stage4": {
+    "timeline_review_status": "UNKNOWN",
+    "timeline_review_method": "insufficient_timeline_context",
+    "first_live_verified": false,
+    "edl_repaired": false,
+    "replay_hits": [],
+    "context_clip": {
+      "ok": true,
+      "path": "/tmp/lpy1_v3a_stage4_B_first_live_review_20261113/broadcast_context/context_clip.mp4",
+      "media_in": 6428.62,
+      "media_out": 6468.62,
+      "duration_sec": 40.0,
+      "sha256": "3bb647d7e5550dfc0be30e14d13969b054ca60f499c48bb61f51d7ed58b2b6fb",
+      "bytes": 56430520,
+      "continuous_source": true,
+      "stitched": false,
+      "accurate_decode": true,
+      "stream_copy": false,
+      "elapsed_sec": 8.431,
+      "stderr_tail": "",
+      "reason": null
+    },
+    "reason": "source_video_semantic_observation_and_replay_hints_are_not_first_broadcast_proof"
+  },
+  "independent_server_check": {
+    "label": "SERVER_ASSISTED_VISUAL_CONTEXT_CHECK",
+    "not_a_gate_unlock": true,
+    "context_frames": [
+      {
+        "path": "/tmp/lpy1_v3a_stage4_B_first_live_review_20261113/independent_check_frames/t_cand_in_6440.62.jpg",
+        "name": "t_cand_in_6440.62.jpg",
+        "sha256": "16fe28cba2dd5b4f371915d31b5d1e4a8f240c3ab2ae158592387d45f07e2b72",
+        "bytes": 260003
+      },
+      {
+        "path": "/tmp/lpy1_v3a_stage4_B_first_live_review_20261113/independent_check_frames/t_cand_out_6465.62.jpg",
+        "name": "t_cand_out_6465.62.jpg",
+        "sha256": "2cee9f57562883af9463ff03b3880b86156499f423a7ee3c2e8554d51b265cbd",
+        "bytes": 221764
+      },
+      {
+        "path": "/tmp/lpy1_v3a_stage4_B_first_live_review_20261113/independent_check_frames/t_net36_6450.60.jpg",
+        "name": "t_net36_6450.60.jpg",
+        "sha256": "663c6ab30ca12ac8f6a763dfdbd61ca39f9c122224cca8e82290679ae489ce32",
+        "bytes": 279987
+      },
+      {
+        "path": "/tmp/lpy1_v3a_stage4_B_first_live_review_20261113/independent_check_frames/t_net37_6449.68.jpg",
+        "name": "t_net37_6449.68.jpg",
+        "sha256": "8bae9a7850c67cebd638b932538b81667c80f083142dc5bbe6a5b9fd4c1dd32e",
+        "bytes": 251274
+      },
+      {
+        "path": "/tmp/lpy1_v3a_stage4_B_first_live_review_20261113/independent_check_frames/t_scoreboard_6459.08.jpg",
+        "name": "t_scoreboard_6459.08.jpg",
+        "sha256": "a86192c31010aecdcd6887671045333a20157e5e9705fa655ee8ec8f70d5f170",
+        "bytes": 388581
+      },
+      {
+        "path": "/tmp/lpy1_v3a_stage4_B_first_live_review_20261113/independent_check_frames/t_shot36_6447.20.jpg",
+        "name": "t_shot36_6447.20.jpg",
+        "sha256": "6e95b8b32a0f74d3049de3f373356e79916ee70ece6afd2af89d81567e7ff761",
+        "bytes": 311805
+      }
+    ],
+    "visual_notes": [
+      "6440.62 (~75:47): main wide LIVE build-up; scoreboard UAE 0-1 OMA",
+      "6447.20 (~75:54): white (UAE) shot toward goal; scoreboard still 0-1",
+      "6449.68–6450.60 (~75:56–57): ball to/in net + keeper reaction/celebration start; scoreboard lag still 0-1",
+      "6459.08 (~76:06): crowd celebration; scoreboard updated UAE 1-1 OMA",
+      "No replay wipe/slow-mo graphic observed in these sampled context frames"
+    ],
+    "raw_events_nearby": {
+      "note": "No raw events inside candidate [6440.62,6465.62]; gap between event_000636@6410.07 (0:1 LIVE) and event_000637@6535.62 (1:1 LIVE)",
+      "later_replay_of_different_shot": [
+        {
+          "t": 6566.81,
+          "event": "event_000642",
+          "phase": "REPLAY",
+          "type": "Shot"
+        },
+        {
+          "t": 6567.9,
+          "event": "event_000643",
+          "phase": "REPLAY",
+          "type": "Defensive_action"
+        }
+      ],
+      "later_replay_outside_stage4_pad_window": true,
+      "pad_window_used_by_module": {
+        "start": 6428.62,
+        "end": 6477.62
+      }
+    },
+    "conclusion_for_gate": "UNKNOWN_KEEP_FIRST_LIVE_FALSE",
+    "why_not_auto_promote": [
+      "Stage4 code requires authenticated explicit timeline review (SHA+PTS bound) to set FIRST_LIVE_VERIFIED",
+      "VLM live claims and absence of in-window raw replay labels are insufficient by design",
+      "This server visual check is assistive evidence only; not HUMAN_ASSISTED signed review artifact"
+    ]
+  },
+  "gates": {
+    "FIRST_LIVE_VERIFIED": false,
+    "EDL_REPAIRED": false,
+    "allow_auto_repair_now": false,
+    "next": "If human/authenticated review confirms first broadcast of this equalizer, attach explicit_review then separately authorize repair_goal_coverage_from_video_reviews"
+  },
+  "out_dir": "/tmp/lpy1_v3a_stage4_B_first_live_review_20261113"
+}

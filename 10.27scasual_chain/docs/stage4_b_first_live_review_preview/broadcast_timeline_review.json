@@ -1,0 +1,46 @@
+{
+  "schema": "v3a_broadcast_timeline_review_v1",
+  "source_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+  "source_pts_start": 6440.62,
+  "source_pts_end": 6465.62,
+  "context_window": {
+    "start": 6428.62,
+    "end": 6477.62
+  },
+  "outcome": "UNKNOWN",
+  "first_live_status": "NOT_VERIFIED",
+  "method": "insufficient_timeline_context",
+  "rationale": [
+    "no_continuous_timeline_or_authenticated_review"
+  ],
+  "evidence_refs": [
+    {
+      "kind": "continuous_context_clip",
+      "path": "/tmp/lpy1_v3a_stage4_B_first_live_review_20261113/broadcast_context/context_clip.mp4",
+      "sha256": "3bb647d7e5550dfc0be30e14d13969b054ca60f499c48bb61f51d7ed58b2b6fb",
+      "media_in": 6428.62,
+      "media_out": 6468.62
+    }
+  ],
+  "replay_hits": [],
+  "live_hits_in_window": [],
+  "clip": {
+    "ok": true,
+    "path": "/tmp/lpy1_v3a_stage4_B_first_live_review_20261113/broadcast_context/context_clip.mp4",
+    "media_in": 6428.62,
+    "media_out": 6468.62,
+    "duration_sec": 40.0,
+    "sha256": "3bb647d7e5550dfc0be30e14d13969b054ca60f499c48bb61f51d7ed58b2b6fb",
+    "bytes": 56430520,
+    "continuous_source": true,
+    "stitched": false,
+    "accurate_decode": true,
+    "stream_copy": false,
+    "elapsed_sec": 8.431,
+    "stderr_tail": "",
+    "reason": null
+  },
+  "provenance": "ZERO_HTTP_BROADCAST_TIMELINE_REVIEW",
+  "frame_pack_insufficient_alone": true,
+  "note": "FIRST_LIVE_VERIFIED only via authenticated timeline review bound to source SHA+PTS with continuous context evidence. Otherwise UNKNOWN; replay overlap ⇒ REPLAY_CONFIRMED."
+}
