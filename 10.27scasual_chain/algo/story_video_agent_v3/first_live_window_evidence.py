@@ -540,10 +540,14 @@ def build_broadcast_timeline_review(
                 outcome = REPLAY_CONFIRMED
                 method = "continuous_context_event_replay_overlap"
                 rationale.append("explicit_review_cannot_override_replay_hits")
-            elif label == FIRST_LIVE_VERIFIED and cites_only_pack:
+            elif label == FIRST_LIVE_VERIFIED and (
+                cites_only_pack or not isinstance(explicit_review.get("phase_evidence"), Mapping)
+            ):
                 outcome = FIRST_LIVE_UNKNOWN
-                method = "explicit_review_rejected_frame_pack_self_certify"
-                rationale.append("first_live_claim_based_only_on_frame_pack_rejected")
+                method = "explicit_review_rejected_no_positive_phase_evidence"
+                rationale.append(
+                    "first_live_label_or_frame_pack_without_continuous_phase_proof_rejected"
+                )
             else:
                 outcome = label
                 method = str(
@@ -628,6 +632,14 @@ def build_broadcast_timeline_review(
         "live_hits_in_window": live_hits,
         "clip": clip_meta,
         "provenance": "ZERO_HTTP_BROADCAST_TIMELINE_REVIEW",
+        # Preserve independent positive-phase evidence verbatim for the
+        # release validator; no producer may self-certify with a bare label.
+        "phase_evidence": (
+            dict(explicit_review["phase_evidence"])
+            if isinstance(explicit_review, Mapping)
+            and isinstance(explicit_review.get("phase_evidence"), Mapping)
+            else None
+        ),
         "frame_pack_insufficient_alone": True,
         "note": (
             "FIRST_LIVE_VERIFIED only via authenticated timeline review bound to "
@@ -671,6 +683,11 @@ def validate_first_live_evidence_record(
     first_live_verified = False
     replay_confirmed = False
     review_method = None
+    phase_gate: Dict[str, Any] = {
+        "ok": False,
+        "reason": "no_structured_positive_phase_evidence",
+        "first_live_verified": False,
+    }
     if isinstance(review, Mapping) and str(review.get("schema") or "") == TIMELINE_REVIEW_SCHEMA:
         # Review must bind same SHA + PTS.
         if (
@@ -685,8 +702,32 @@ def validate_first_live_evidence_record(
                 first_live_status = REPLAY_CONFIRMED
                 replay_confirmed = True
             elif outcome == FIRST_LIVE_VERIFIED:
-                first_live_status = FIRST_LIVE_VERIFIED
-                first_live_verified = True
+                # SHA+PTS + a review's own asserted outcome are NOT sufficient.
+                # Check original-context source clip, distinct temporal cues,
+                # exact frame citations, independent reviewer provenance and
+                # earlier SAME-action occurrence review.
+                from .continuous_broadcast_phase import (
+                    validate_continuous_broadcast_phase_proof,
+                )
+
+                bound_frames = {
+                    str(f.get("frame_id")): f
+                    for f in (record.get("frames") or [])
+                    if isinstance(f, Mapping) and f.get("frame_id")
+                } if isinstance(record, Mapping) else {}
+                phase_gate = validate_continuous_broadcast_phase_proof(
+                    review.get("phase_evidence"),
+                    source_sha=source_sha,
+                    pts_start=pts_start,
+                    pts_end=pts_end,
+                    bound_frames=bound_frames,
+                )
+                if phase_gate.get("ok"):
+                    first_live_status = FIRST_LIVE_VERIFIED
+                    first_live_verified = True
+                else:
+                    first_live_status = FIRST_LIVE_NOT_VERIFIED
+                    review_method = "positive_phase_evidence_rejected"
             else:
                 first_live_status = FIRST_LIVE_NOT_VERIFIED
         else:
@@ -713,7 +754,17 @@ def validate_first_live_evidence_record(
                 else (binding.get("binding_status") or BINDING_INVALID)
             )
         ),
-        "reason": binding.get("reason"),
+        "reason": (
+            binding.get("reason")
+            or (phase_gate.get("reason") if not first_live_verified and
+                isinstance(review, Mapping) and
+                str(review.get("outcome") or "").upper() == FIRST_LIVE_VERIFIED
+                else None)
+        ),
+        "positive_phase_evidence_status": (
+            "VERIFIED" if phase_gate.get("ok") else "NOT_VERIFIED"
+        ),
+        "positive_phase_evidence_reason": phase_gate.get("reason"),
         "source_sha256": binding.get("source_sha256"),
         "source_pts_start": binding.get("source_pts_start"),
         "source_pts_end": binding.get("source_pts_end"),
