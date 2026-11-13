@@ -21,6 +21,7 @@ for path in "$SRC" "$EVENTS" "$ENRICH" "$PHASE5/story_plan.json" \
 done
 [[ ! -e "$OUT" ]] || { echo "Refuse overwrite: $OUT"; exit 2; }
 
+python -m py_compile algo/story_video_agent_v3/story_additive_opportunity.py algo/story_video_agent_v3/story_additive_native_semantic.py algo/story_video_agent_v3/story_e2e_agent.py algo/story_video_agent_v3/story_e2e_cli.py algo/story_video_agent_v3/story_full_e2e_cli.py
 python -m pytest -q tests/test_v3a_additive_story_opportunity.py tests/test_v3a_additive_native_semantic.py
 mkdir -p "$OUT"
 git rev-parse HEAD > "$OUT/code_sha.txt"
