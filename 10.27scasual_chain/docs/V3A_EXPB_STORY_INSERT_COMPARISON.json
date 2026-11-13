@@ -1,0 +1,861 @@
+{
+  "schema": "v3a_expb_story_insert_audit_v1",
+  "head_ref": "68d58c2",
+  "api_calls": 0,
+  "baseline_edl_path": "/tmp/lpy1_v3a_blind_repair_B_historical_20261112/agent_input/04_phase5/candidate_edl.json",
+  "baseline_edl_sha256": "4afc619b6a961e9d5fa6ade37af0218a3654ba6e3a6687510c04726b87489075",
+  "full_active_edl_export": [
+    {
+      "index": 0,
+      "segment_id": "seg_title_open",
+      "role": "story_title",
+      "beat": "铺垫",
+      "media_in": null,
+      "media_out": null,
+      "event_ids": [],
+      "first_live_status": null,
+      "is_replay": false,
+      "shot_kind": "title_card",
+      "include_in_cut": true,
+      "linked_live_event_id": null
+    },
+    {
+      "index": 1,
+      "segment_id": "seg_opponent_opening_goal_action",
+      "role": "opponent_opening_goal_action",
+      "beat": "铺垫",
+      "media_in": 1293.71,
+      "media_out": 1315.71,
+      "event_ids": [
+        "v3_goal_goalcand_00_00_to_01"
+      ],
+      "first_live_status": null,
+      "is_replay": false,
+      "shot_kind": "live",
+      "include_in_cut": true,
+      "linked_live_event_id": null
+    },
+    {
+      "index": 2,
+      "segment_id": "seg_setup_deficit",
+      "role": "deficit_scoreboard_anchor",
+      "beat": "铺垫",
+      "media_in": 1409.43,
+      "media_out": 1412.93,
+      "event_ids": [],
+      "first_live_status": null,
+      "is_replay": false,
+      "shot_kind": "scoreboard_anchor",
+      "include_in_cut": true,
+      "linked_live_event_id": null
+    },
+    {
+      "index": 3,
+      "segment_id": "seg_buildup_event_000411",
+      "role": "buildup_action",
+      "beat": "蓄力",
+      "media_in": 3442.75,
+      "media_out": 3454.75,
+      "event_ids": [
+        "event_000411"
+      ],
+      "first_live_status": null,
+      "is_replay": false,
+      "shot_kind": "live",
+      "include_in_cut": true,
+      "linked_live_event_id": null
+    },
+    {
+      "index": 4,
+      "segment_id": "seg_equalizer_scoreboard",
+      "role": "equalizer_scoreboard_anchor",
+      "beat": "转折",
+      "media_in": 6534.62,
+      "media_out": 6538.12,
+      "event_ids": [],
+      "first_live_status": null,
+      "is_replay": false,
+      "shot_kind": "scoreboard_anchor",
+      "include_in_cut": true,
+      "linked_live_event_id": null
+    },
+    {
+      "index": 5,
+      "segment_id": "seg_go_ahead_goal_action",
+      "role": "go_ahead_goal_action",
+      "beat": "高潮",
+      "media_in": 6801.28,
+      "media_out": 6823.28,
+      "event_ids": [
+        "v3_goal_goalcand_04_11_to_21"
+      ],
+      "first_live_status": null,
+      "is_replay": false,
+      "shot_kind": "live",
+      "include_in_cut": true,
+      "linked_live_event_id": null
+    },
+    {
+      "index": 6,
+      "segment_id": "seg_go_ahead_scoreboard",
+      "role": "go_ahead_scoreboard_anchor",
+      "beat": "高潮",
+      "media_in": 6956.12,
+      "media_out": 6959.62,
+      "event_ids": [],
+      "first_live_status": null,
+      "is_replay": false,
+      "shot_kind": "scoreboard_anchor",
+      "include_in_cut": true,
+      "linked_live_event_id": null
+    },
+    {
+      "index": 7,
+      "segment_id": "seg_title_close",
+      "role": "story_wrap_title",
+      "beat": "收尾",
+      "media_in": null,
+      "media_out": null,
+      "event_ids": [],
+      "first_live_status": null,
+      "is_replay": false,
+      "shot_kind": "title_card",
+      "include_in_cut": true,
+      "linked_live_event_id": null
+    }
+  ],
+  "classification": {
+    "goal_action_segments": [
+      {
+        "index": 1,
+        "segment_id": "seg_opponent_opening_goal_action",
+        "role": "opponent_opening_goal_action",
+        "beat": "铺垫",
+        "media_in": 1293.71,
+        "media_out": 1315.71,
+        "event_ids": [
+          "v3_goal_goalcand_00_00_to_01"
+        ],
+        "first_live_status": null,
+        "is_replay": false,
+        "shot_kind": "live",
+        "include_in_cut": true,
+        "linked_live_event_id": null
+      },
+      {
+        "index": 5,
+        "segment_id": "seg_go_ahead_goal_action",
+        "role": "go_ahead_goal_action",
+        "beat": "高潮",
+        "media_in": 6801.28,
+        "media_out": 6823.28,
+        "event_ids": [
+          "v3_goal_goalcand_04_11_to_21"
+        ],
+        "first_live_status": null,
+        "is_replay": false,
+        "shot_kind": "live",
+        "include_in_cut": true,
+        "linked_live_event_id": null
+      }
+    ],
+    "scoreboard_segments": [
+      {
+        "index": 2,
+        "segment_id": "seg_setup_deficit",
+        "role": "deficit_scoreboard_anchor",
+        "beat": "铺垫",
+        "media_in": 1409.43,
+        "media_out": 1412.93,
+        "event_ids": [],
+        "first_live_status": null,
+        "is_replay": false,
+        "shot_kind": "scoreboard_anchor",
+        "include_in_cut": true,
+        "linked_live_event_id": null
+      },
+      {
+        "index": 4,
+        "segment_id": "seg_equalizer_scoreboard",
+        "role": "equalizer_scoreboard_anchor",
+        "beat": "转折",
+        "media_in": 6534.62,
+        "media_out": 6538.12,
+        "event_ids": [],
+        "first_live_status": null,
+        "is_replay": false,
+        "shot_kind": "scoreboard_anchor",
+        "include_in_cut": true,
+        "linked_live_event_id": null
+      },
+      {
+        "index": 6,
+        "segment_id": "seg_go_ahead_scoreboard",
+        "role": "go_ahead_scoreboard_anchor",
+        "beat": "高潮",
+        "media_in": 6956.12,
+        "media_out": 6959.62,
+        "event_ids": [],
+        "first_live_status": null,
+        "is_replay": false,
+        "shot_kind": "scoreboard_anchor",
+        "include_in_cut": true,
+        "linked_live_event_id": null
+      }
+    ],
+    "setup_segments": [
+      {
+        "index": 0,
+        "segment_id": "seg_title_open",
+        "role": "story_title",
+        "beat": "铺垫",
+        "media_in": null,
+        "media_out": null,
+        "event_ids": [],
+        "first_live_status": null,
+        "is_replay": false,
+        "shot_kind": "title_card",
+        "include_in_cut": true,
+        "linked_live_event_id": null
+      }
+    ],
+    "buildup_or_turn_segments": [
+      {
+        "index": 3,
+        "segment_id": "seg_buildup_event_000411",
+        "role": "buildup_action",
+        "beat": "蓄力",
+        "media_in": 3442.75,
+        "media_out": 3454.75,
+        "event_ids": [
+          "event_000411"
+        ],
+        "first_live_status": null,
+        "is_replay": false,
+        "shot_kind": "live",
+        "include_in_cut": true,
+        "linked_live_event_id": null
+      }
+    ],
+    "climax_segments": [],
+    "ending_segments": [
+      {
+        "index": 7,
+        "segment_id": "seg_title_close",
+        "role": "story_wrap_title",
+        "beat": "收尾",
+        "media_in": null,
+        "media_out": null,
+        "event_ids": [],
+        "first_live_status": null,
+        "is_replay": false,
+        "shot_kind": "title_card",
+        "include_in_cut": true,
+        "linked_live_event_id": null
+      }
+    ],
+    "other_segments": []
+  },
+  "b_equalizer_duplicate_check": {
+    "has_equalizer_goal_action": false,
+    "has_equalizer_scoreboard": true,
+    "equalizer_scoreboard": [
+      {
+        "index": 4,
+        "segment_id": "seg_equalizer_scoreboard",
+        "role": "equalizer_scoreboard_anchor",
+        "beat": "转折",
+        "media_in": 6534.62,
+        "media_out": 6538.12,
+        "event_ids": [],
+        "first_live_status": null,
+        "is_replay": false,
+        "shot_kind": "scoreboard_anchor",
+        "include_in_cut": true,
+        "linked_live_event_id": null
+      }
+    ],
+    "other_goals": [
+      {
+        "index": 1,
+        "segment_id": "seg_opponent_opening_goal_action",
+        "role": "opponent_opening_goal_action",
+        "beat": "铺垫",
+        "media_in": 1293.71,
+        "media_out": 1315.71,
+        "event_ids": [
+          "v3_goal_goalcand_00_00_to_01"
+        ],
+        "first_live_status": null,
+        "is_replay": false,
+        "shot_kind": "live",
+        "include_in_cut": true,
+        "linked_live_event_id": null
+      },
+      {
+        "index": 5,
+        "segment_id": "seg_go_ahead_goal_action",
+        "role": "go_ahead_goal_action",
+        "beat": "高潮",
+        "media_in": 6801.28,
+        "media_out": 6823.28,
+        "event_ids": [
+          "v3_goal_goalcand_04_11_to_21"
+        ],
+        "first_live_status": null,
+        "is_replay": false,
+        "shot_kind": "live",
+        "include_in_cut": true,
+        "linked_live_event_id": null
+      }
+    ],
+    "proposed_would_add_equalizer_goal_action": true,
+    "duplicate_equalizer_goal_action_risk": false,
+    "scoreboard_plus_goal_action_is_complementary_not_duplicate_action": true
+  },
+  "protected_goal_anchors": [
+    {
+      "index": 1,
+      "segment_id": "seg_opponent_opening_goal_action",
+      "role": "opponent_opening_goal_action",
+      "beat": "铺垫",
+      "media_in": 1293.71,
+      "media_out": 1315.71,
+      "event_ids": [
+        "v3_goal_goalcand_00_00_to_01"
+      ],
+      "first_live_status": null,
+      "is_replay": false,
+      "shot_kind": "live",
+      "include_in_cut": true,
+      "linked_live_event_id": null
+    },
+    {
+      "index": 5,
+      "segment_id": "seg_go_ahead_goal_action",
+      "role": "go_ahead_goal_action",
+      "beat": "高潮",
+      "media_in": 6801.28,
+      "media_out": 6823.28,
+      "event_ids": [
+        "v3_goal_goalcand_04_11_to_21"
+      ],
+      "first_live_status": null,
+      "is_replay": false,
+      "shot_kind": "live",
+      "include_in_cut": true,
+      "linked_live_event_id": null
+    }
+  ],
+  "proposed_insert_window": [
+    6441.88,
+    6459.6
+  ],
+  "schemes": {
+    "A": {
+      "scheme": "A",
+      "notes": "Insert equalizer goal action; keep equalizer scoreboard",
+      "n_segments": 9,
+      "n_included_timed": 7,
+      "fact_order_source_pts_ok": true,
+      "protected_goal_anchors_preserved": true,
+      "overlap_with_existing_timed": [],
+      "roles_include_equalizer_goal": true,
+      "roles_include_equalizer_scoreboard": true,
+      "source_jumps": [
+        {
+          "from": "seg_opponent_opening_goal_action",
+          "to": "seg_setup_deficit",
+          "source_gap_sec": 93.72
+        },
+        {
+          "from": "seg_setup_deficit",
+          "to": "seg_buildup_event_000411",
+          "source_gap_sec": 2029.82
+        },
+        {
+          "from": "seg_buildup_event_000411",
+          "to": "expb_human_goal_candidate_goal_coverage_01_to_11",
+          "source_gap_sec": 2987.13
+        },
+        {
+          "from": "expb_human_goal_candidate_goal_coverage_01_to_11",
+          "to": "seg_equalizer_scoreboard",
+          "source_gap_sec": 75.02
+        },
+        {
+          "from": "seg_equalizer_scoreboard",
+          "to": "seg_go_ahead_goal_action",
+          "source_gap_sec": 263.16
+        },
+        {
+          "from": "seg_go_ahead_goal_action",
+          "to": "seg_go_ahead_scoreboard",
+          "source_gap_sec": 132.84
+        }
+      ],
+      "large_source_gaps_gt_60s": [
+        {
+          "from": "seg_opponent_opening_goal_action",
+          "to": "seg_setup_deficit",
+          "source_gap_sec": 93.72
+        },
+        {
+          "from": "seg_setup_deficit",
+          "to": "seg_buildup_event_000411",
+          "source_gap_sec": 2029.82
+        },
+        {
+          "from": "seg_buildup_event_000411",
+          "to": "expb_human_goal_candidate_goal_coverage_01_to_11",
+          "source_gap_sec": 2987.13
+        },
+        {
+          "from": "expb_human_goal_candidate_goal_coverage_01_to_11",
+          "to": "seg_equalizer_scoreboard",
+          "source_gap_sec": 75.02
+        },
+        {
+          "from": "seg_equalizer_scoreboard",
+          "to": "seg_go_ahead_goal_action",
+          "source_gap_sec": 263.16
+        },
+        {
+          "from": "seg_go_ahead_goal_action",
+          "to": "seg_go_ahead_scoreboard",
+          "source_gap_sec": 132.84
+        }
+      ],
+      "score_logic": {
+        "opening_goal_present": true,
+        "equalizer_goal_present": true,
+        "equalizer_scoreboard_present_in_cut": true,
+        "go_ahead_after_equalizer_in_source": true,
+        "note": "Scoreboard@6534 after goal@6441-6459 is consistent; excluding board (B) relies on in-clip board update ~6459 which may be weak"
+      },
+      "replay_risk": {
+        "window": [
+          6441.88,
+          6459.6
+        ],
+        "in_window_replay_proven": false,
+        "in_window_replay_ruled_out": false,
+        "outside_window_6488_suspect": "outside candidate window; not part of insert segment",
+        "stage7_cuts_in_window": [
+          [
+            6451.7,
+            6452.2
+          ],
+          [
+            6454.2,
+            6454.7
+          ],
+          [
+            6456.7,
+            6457.2
+          ]
+        ]
+      },
+      "story_timeline_summary": {
+        "story_duration_sec": 90.22,
+        "media_duration_sec": 84.22,
+        "segment_ids_in_order": [
+          "seg_title_open",
+          "seg_opponent_opening_goal_action",
+          "seg_setup_deficit",
+          "seg_buildup_event_000411",
+          "expb_human_goal_candidate_goal_coverage_01_to_11",
+          "seg_equalizer_scoreboard",
+          "seg_go_ahead_goal_action",
+          "seg_go_ahead_scoreboard",
+          "seg_title_close"
+        ]
+      },
+      "recommendation_flags": [
+        "RISK_LARGE_GAP_AFTER_BUILDUP",
+        "RISK_REPLAY_NOT_FULLY_RULED_OUT",
+        "COVERS_MISSING_EQUALIZER_GOAL_ACTION"
+      ]
+    },
+    "B": {
+      "scheme": "B",
+      "notes": "Insert equalizer goal action; exclude equalizer scoreboard from cut (not delete file identity of protected goal actions)",
+      "n_segments": 9,
+      "n_included_timed": 6,
+      "fact_order_source_pts_ok": true,
+      "protected_goal_anchors_preserved": true,
+      "overlap_with_existing_timed": [],
+      "roles_include_equalizer_goal": true,
+      "roles_include_equalizer_scoreboard": false,
+      "source_jumps": [
+        {
+          "from": "seg_opponent_opening_goal_action",
+          "to": "seg_setup_deficit",
+          "source_gap_sec": 93.72
+        },
+        {
+          "from": "seg_setup_deficit",
+          "to": "seg_buildup_event_000411",
+          "source_gap_sec": 2029.82
+        },
+        {
+          "from": "seg_buildup_event_000411",
+          "to": "expb_human_goal_candidate_goal_coverage_01_to_11",
+          "source_gap_sec": 2987.13
+        },
+        {
+          "from": "expb_human_goal_candidate_goal_coverage_01_to_11",
+          "to": "seg_go_ahead_goal_action",
+          "source_gap_sec": 341.68
+        },
+        {
+          "from": "seg_go_ahead_goal_action",
+          "to": "seg_go_ahead_scoreboard",
+          "source_gap_sec": 132.84
+        }
+      ],
+      "large_source_gaps_gt_60s": [
+        {
+          "from": "seg_opponent_opening_goal_action",
+          "to": "seg_setup_deficit",
+          "source_gap_sec": 93.72
+        },
+        {
+          "from": "seg_setup_deficit",
+          "to": "seg_buildup_event_000411",
+          "source_gap_sec": 2029.82
+        },
+        {
+          "from": "seg_buildup_event_000411",
+          "to": "expb_human_goal_candidate_goal_coverage_01_to_11",
+          "source_gap_sec": 2987.13
+        },
+        {
+          "from": "expb_human_goal_candidate_goal_coverage_01_to_11",
+          "to": "seg_go_ahead_goal_action",
+          "source_gap_sec": 341.68
+        },
+        {
+          "from": "seg_go_ahead_goal_action",
+          "to": "seg_go_ahead_scoreboard",
+          "source_gap_sec": 132.84
+        }
+      ],
+      "score_logic": {
+        "opening_goal_present": true,
+        "equalizer_goal_present": true,
+        "equalizer_scoreboard_present_in_cut": false,
+        "go_ahead_after_equalizer_in_source": true,
+        "note": "Scoreboard@6534 after goal@6441-6459 is consistent; excluding board (B) relies on in-clip board update ~6459 which may be weak"
+      },
+      "replay_risk": {
+        "window": [
+          6441.88,
+          6459.6
+        ],
+        "in_window_replay_proven": false,
+        "in_window_replay_ruled_out": false,
+        "outside_window_6488_suspect": "outside candidate window; not part of insert segment",
+        "stage7_cuts_in_window": [
+          [
+            6451.7,
+            6452.2
+          ],
+          [
+            6454.2,
+            6454.7
+          ],
+          [
+            6456.7,
+            6457.2
+          ]
+        ]
+      },
+      "story_timeline_summary": {
+        "story_duration_sec": 86.72,
+        "media_duration_sec": 80.72,
+        "segment_ids_in_order": [
+          "seg_title_open",
+          "seg_opponent_opening_goal_action",
+          "seg_setup_deficit",
+          "seg_buildup_event_000411",
+          "expb_human_goal_candidate_goal_coverage_01_to_11",
+          "seg_go_ahead_goal_action",
+          "seg_go_ahead_scoreboard",
+          "seg_title_close"
+        ]
+      },
+      "recommendation_flags": [
+        "RISK_LARGE_GAP_AFTER_BUILDUP",
+        "RISK_SCORE_CONFIRM_RELIANCE_ON_IN_CLIP_BOARD",
+        "RISK_REPLAY_NOT_FULLY_RULED_OUT",
+        "COVERS_MISSING_EQUALIZER_GOAL_ACTION"
+      ]
+    },
+    "B_shorten_scoreboard": {
+      "scheme": "B_shorten_scoreboard",
+      "notes": "Insert goal; shorten equalizer scoreboard to 1.5s",
+      "n_segments": 9,
+      "n_included_timed": 7,
+      "fact_order_source_pts_ok": true,
+      "protected_goal_anchors_preserved": true,
+      "overlap_with_existing_timed": [],
+      "roles_include_equalizer_goal": true,
+      "roles_include_equalizer_scoreboard": true,
+      "source_jumps": [
+        {
+          "from": "seg_opponent_opening_goal_action",
+          "to": "seg_setup_deficit",
+          "source_gap_sec": 93.72
+        },
+        {
+          "from": "seg_setup_deficit",
+          "to": "seg_buildup_event_000411",
+          "source_gap_sec": 2029.82
+        },
+        {
+          "from": "seg_buildup_event_000411",
+          "to": "expb_human_goal_candidate_goal_coverage_01_to_11",
+          "source_gap_sec": 2987.13
+        },
+        {
+          "from": "expb_human_goal_candidate_goal_coverage_01_to_11",
+          "to": "seg_equalizer_scoreboard",
+          "source_gap_sec": 75.02
+        },
+        {
+          "from": "seg_equalizer_scoreboard",
+          "to": "seg_go_ahead_goal_action",
+          "source_gap_sec": 265.16
+        },
+        {
+          "from": "seg_go_ahead_goal_action",
+          "to": "seg_go_ahead_scoreboard",
+          "source_gap_sec": 132.84
+        }
+      ],
+      "large_source_gaps_gt_60s": [
+        {
+          "from": "seg_opponent_opening_goal_action",
+          "to": "seg_setup_deficit",
+          "source_gap_sec": 93.72
+        },
+        {
+          "from": "seg_setup_deficit",
+          "to": "seg_buildup_event_000411",
+          "source_gap_sec": 2029.82
+        },
+        {
+          "from": "seg_buildup_event_000411",
+          "to": "expb_human_goal_candidate_goal_coverage_01_to_11",
+          "source_gap_sec": 2987.13
+        },
+        {
+          "from": "expb_human_goal_candidate_goal_coverage_01_to_11",
+          "to": "seg_equalizer_scoreboard",
+          "source_gap_sec": 75.02
+        },
+        {
+          "from": "seg_equalizer_scoreboard",
+          "to": "seg_go_ahead_goal_action",
+          "source_gap_sec": 265.16
+        },
+        {
+          "from": "seg_go_ahead_goal_action",
+          "to": "seg_go_ahead_scoreboard",
+          "source_gap_sec": 132.84
+        }
+      ],
+      "score_logic": {
+        "opening_goal_present": true,
+        "equalizer_goal_present": true,
+        "equalizer_scoreboard_present_in_cut": true,
+        "go_ahead_after_equalizer_in_source": true,
+        "note": "Scoreboard@6534 after goal@6441-6459 is consistent; excluding board (B) relies on in-clip board update ~6459 which may be weak"
+      },
+      "replay_risk": {
+        "window": [
+          6441.88,
+          6459.6
+        ],
+        "in_window_replay_proven": false,
+        "in_window_replay_ruled_out": false,
+        "outside_window_6488_suspect": "outside candidate window; not part of insert segment",
+        "stage7_cuts_in_window": [
+          [
+            6451.7,
+            6452.2
+          ],
+          [
+            6454.2,
+            6454.7
+          ],
+          [
+            6456.7,
+            6457.2
+          ]
+        ]
+      },
+      "story_timeline_summary": {
+        "story_duration_sec": 88.22,
+        "media_duration_sec": 82.22,
+        "segment_ids_in_order": [
+          "seg_title_open",
+          "seg_opponent_opening_goal_action",
+          "seg_setup_deficit",
+          "seg_buildup_event_000411",
+          "expb_human_goal_candidate_goal_coverage_01_to_11",
+          "seg_equalizer_scoreboard",
+          "seg_go_ahead_goal_action",
+          "seg_go_ahead_scoreboard",
+          "seg_title_close"
+        ]
+      },
+      "recommendation_flags": [
+        "RISK_LARGE_GAP_AFTER_BUILDUP",
+        "RISK_REPLAY_NOT_FULLY_RULED_OUT",
+        "COVERS_MISSING_EQUALIZER_GOAL_ACTION"
+      ]
+    },
+    "C": {
+      "scheme": "C",
+      "notes": "Among current baseline segments, the only insertion slot that preserves match fact order for the equalizer goal is after buildup and before equalizer scoreboard (same as A). Placing after the scoreboard or before buildup would break source chronology. Scheme C therefore = positional confirmation of A, not a different illegal slot.",
+      "n_segments": 9,
+      "n_included_timed": 7,
+      "fact_order_source_pts_ok": true,
+      "protected_goal_anchors_preserved": true,
+      "overlap_with_existing_timed": [],
+      "roles_include_equalizer_goal": true,
+      "roles_include_equalizer_scoreboard": true,
+      "source_jumps": [
+        {
+          "from": "seg_opponent_opening_goal_action",
+          "to": "seg_setup_deficit",
+          "source_gap_sec": 93.72
+        },
+        {
+          "from": "seg_setup_deficit",
+          "to": "seg_buildup_event_000411",
+          "source_gap_sec": 2029.82
+        },
+        {
+          "from": "seg_buildup_event_000411",
+          "to": "expb_human_goal_candidate_goal_coverage_01_to_11",
+          "source_gap_sec": 2987.13
+        },
+        {
+          "from": "expb_human_goal_candidate_goal_coverage_01_to_11",
+          "to": "seg_equalizer_scoreboard",
+          "source_gap_sec": 75.02
+        },
+        {
+          "from": "seg_equalizer_scoreboard",
+          "to": "seg_go_ahead_goal_action",
+          "source_gap_sec": 263.16
+        },
+        {
+          "from": "seg_go_ahead_goal_action",
+          "to": "seg_go_ahead_scoreboard",
+          "source_gap_sec": 132.84
+        }
+      ],
+      "large_source_gaps_gt_60s": [
+        {
+          "from": "seg_opponent_opening_goal_action",
+          "to": "seg_setup_deficit",
+          "source_gap_sec": 93.72
+        },
+        {
+          "from": "seg_setup_deficit",
+          "to": "seg_buildup_event_000411",
+          "source_gap_sec": 2029.82
+        },
+        {
+          "from": "seg_buildup_event_000411",
+          "to": "expb_human_goal_candidate_goal_coverage_01_to_11",
+          "source_gap_sec": 2987.13
+        },
+        {
+          "from": "expb_human_goal_candidate_goal_coverage_01_to_11",
+          "to": "seg_equalizer_scoreboard",
+          "source_gap_sec": 75.02
+        },
+        {
+          "from": "seg_equalizer_scoreboard",
+          "to": "seg_go_ahead_goal_action",
+          "source_gap_sec": 263.16
+        },
+        {
+          "from": "seg_go_ahead_goal_action",
+          "to": "seg_go_ahead_scoreboard",
+          "source_gap_sec": 132.84
+        }
+      ],
+      "score_logic": {
+        "opening_goal_present": true,
+        "equalizer_goal_present": true,
+        "equalizer_scoreboard_present_in_cut": true,
+        "go_ahead_after_equalizer_in_source": true,
+        "note": "Scoreboard@6534 after goal@6441-6459 is consistent; excluding board (B) relies on in-clip board update ~6459 which may be weak"
+      },
+      "replay_risk": {
+        "window": [
+          6441.88,
+          6459.6
+        ],
+        "in_window_replay_proven": false,
+        "in_window_replay_ruled_out": false,
+        "outside_window_6488_suspect": "outside candidate window; not part of insert segment",
+        "stage7_cuts_in_window": [
+          [
+            6451.7,
+            6452.2
+          ],
+          [
+            6454.2,
+            6454.7
+          ],
+          [
+            6456.7,
+            6457.2
+          ]
+        ]
+      },
+      "story_timeline_summary": {
+        "story_duration_sec": 90.22,
+        "media_duration_sec": 84.22,
+        "segment_ids_in_order": [
+          "seg_title_open",
+          "seg_opponent_opening_goal_action",
+          "seg_setup_deficit",
+          "seg_buildup_event_000411",
+          "expb_human_goal_candidate_goal_coverage_01_to_11",
+          "seg_equalizer_scoreboard",
+          "seg_go_ahead_goal_action",
+          "seg_go_ahead_scoreboard",
+          "seg_title_close"
+        ]
+      },
+      "recommendation_flags": [
+        "RISK_LARGE_GAP_AFTER_BUILDUP",
+        "RISK_REPLAY_NOT_FULLY_RULED_OUT",
+        "COVERS_MISSING_EQUALIZER_GOAL_ACTION"
+      ],
+      "notes_extra": "No alternate valid story index without adding new bridge segments or reordering protected goals."
+    }
+  },
+  "recommendation": {
+    "preferred": "A",
+    "why": "Adds missing equalizer_goal_action without removing score confirmation; preserves protected opening/go-ahead goal anchors; fact order OK; scoreboard@6534 remains explicit 1-1 confirmation. Large buildup→goal gap and unlocked boundaries remain review items, not reasons to delete anchors.",
+    "avoid": [
+      "Do not delete/replace seg_opponent_opening_goal_action or seg_go_ahead_goal_action",
+      "Do not place equalizer goal after go-ahead or after equalizer scoreboard (fact-order break)",
+      "Do not auto-apply or render"
+    ],
+    "B_when": "Only if continuous-video review shows in-clip board already clearly 1-1 and scoreboard segment feels redundant; still prefer shorten over hard semantic delete of turning-beat confirmation.",
+    "C_when": "No alternate legal slot in current EDL; C collapses to A unless new bridge segments are authored."
+  },
+  "first_live_verified": false,
+  "edl_modified": false,
+  "best_modified": false
+}
