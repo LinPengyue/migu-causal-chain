@@ -24,6 +24,7 @@ from typing import Any, Dict, List, Mapping, Optional, Sequence
 from .fresh_e2e_cli import edl_diff, edl_rows, file_record, validate_render_rows, write_json
 from .global_story_critic import (
     merge_observation_into_diagnosis,
+    merge_goal_video_observation_into_diagnosis,
     structural_diagnosis,
     write_diagnosis,
 )
@@ -1310,6 +1311,9 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             ),
         }
         if goal_semantic:
+            diag = merge_goal_video_observation_into_diagnosis(
+                diag, goal_semantic, source_sha256=source_sha,
+            )
             # Source VLM observation is distinct from autonomous first-LIVE
             # certification. It cannot confirm the missing-goal diagnosis
             # or authorize a goal-action segment by itself.
@@ -2191,6 +2195,9 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             vision_backed=vision_backed if sent_frame_ids else False,
             verdict_provenance=verdict_provenance,
             hard_safety_extra=hard_safety_extra,
+            critic_diagnosis=diag,
+            source_events=permitted_events,
+            new_source_windows=new_windows,
         )
         if human_preview_active:
             # A preview must never become accepted, even if future Verifier logic
