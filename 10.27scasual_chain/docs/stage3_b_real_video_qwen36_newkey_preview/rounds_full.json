@@ -1,0 +1,148 @@
+[
+  {
+    "round": "round1_dense",
+    "ok": true,
+    "provider_mode": "real",
+    "usage": {
+      "prompt_tokens": 17093,
+      "completion_tokens": 528,
+      "total_tokens": 17621,
+      "completion_tokens_details": {
+        "text_tokens": 528
+      }
+    },
+    "est_cost_usd": 0.00288075,
+    "cost_disclaimer": "est_cost_usd is a local estimate from configured unit prices (STORY_LLM_PRICE_*); it is NOT a billing guarantee or absolute invoice cap.",
+    "raw_response_excerpt": "{\n  \"observed_shot\": true,\n  \"observed_net\": true,\n  \"attacking_team_match\": true,\n  \"attacking_side_notes\": \"The team in white jerseys (UAE) is attacking. The scoreboard shows UAE score increasing from 0 to 1, confirming they are the attacking team whose score increases.\",\n  \"live_or_replay\": \"live\",\n  \"claims_continuous_live\": true,\n  \"shot_frame_ids\": [\n    \"f_0000_6447170\",\n    \"f_0001_6448870\"\n  ],\n  \"net_frame_ids\": [\n    \"f_0002_6450570\"\n  ],\n  \"live_frame_ids\": [\n    \"f_0000_6447170\",\n    \"f_0001_6448870\",\n    \"f_0002_6450570\",\n    \"f_0003_6452270\",\n    \"f_0004_6453970\",\n    \"f_0005_6455670\",\n    \"f_0006_6457370\",\n    \"f_0007_6459070\"\n  ],\n  \"uncertain\": [],\n  \"confidence\": \"0.98\",\n  \"frame_ids\": [\n    \"f_0000_6447170\",\n    \"f_0001_6448870\",\n    \"f_0002_6450570\",\n    \"f_0007_6459070\"\n  ],\n  \"notes\": \"Frame f_0000 shows a player in white striking the ball towards the goal. Frame f_0001 shows the ball in the air near the goalmouth with players reacting. Frame f_0002 clearly shows the ball inside the net behind the goalkeeper, confirming the goal. Frame f_0007 shows the scoreboard updated to UAE 1 - 1 OMA, confirming the goal was awarded and the score changed as expected.\"\n}",
+    "vlm_inference": {
+      "observed_shot": true,
+      "observed_net": true,
+      "attacking_team_match": true,
+      "claims_continuous_live": true,
+      "live_or_replay": "live",
+      "shot_frame_ids": [
+        "f_0000_6447170",
+        "f_0001_6448870"
+      ],
+      "net_frame_ids": [
+        "f_0002_6450570"
+      ],
+      "live_frame_ids": [
+        "f_0000_6447170",
+        "f_0001_6448870",
+        "f_0002_6450570",
+        "f_0003_6452270",
+        "f_0004_6453970",
+        "f_0005_6455670",
+        "f_0006_6457370",
+        "f_0007_6459070"
+      ],
+      "uncertain": [],
+      "confidence": null,
+      "attacking_side_notes": "The team in white jerseys (UAE) is attacking. The scoreboard shows UAE score increasing from 0 to 1, confirming they are the attacking team whose score increases.",
+      "notes": "Frame f_0000 shows a player in white striking the ball towards the goal. Frame f_0001 shows the ball in the air near the goalmouth with players reacting. Frame f_0002 clearly shows the ball inside the net behind the goalkeeper, confirming the goal. Frame f_0007 shows the scoreboard updated to UAE 1 - 1 OMA, confirming the goal was awarded and the score changed as expected.",
+      "raw_keys": [
+        "attacking_side_notes",
+        "attacking_team_match",
+        "claims_continuous_live",
+        "confidence",
+        "frame_ids",
+        "live_frame_ids",
+        "live_or_replay",
+        "net_frame_ids",
+        "notes",
+        "observed_net",
+        "observed_shot",
+        "shot_frame_ids",
+        "uncertain"
+      ],
+      "observation_only": true,
+      "fact_verified": false
+    },
+    "normalized_evidence": {
+      "gap_id": "v3_p3_goal_coverage_01_to_11_goal_verify",
+      "observed_actions": [
+        "shot",
+        "ball_in_net",
+        "broadcast_live"
+      ],
+      "possible_teams": [],
+      "story_relation": "Frame f_0000 shows a player in white striking the ball towards the goal. Frame f_0001 shows the ball in the air near the goalmouth with players reacting. Frame f_0002 clearly shows the ball inside the net behind the goalkeeper, confirming the goal. Frame f_0007 shows the scoreboard updated to UAE 1 - 1 OMA, confirming the goal was awarded and the score changed as expected.",
+      "confidence": 0.0,
+      "frame_ids": [
+        "f_0000_6447170",
+        "f_0001_6448870",
+        "f_0002_6450570",
+        "f_0007_6459070"
+      ],
+      "notes": "Frame f_0000 shows a player in white striking the ball towards the goal. Frame f_0001 shows the ball in the air near the goalmouth with players reacting. Frame f_0002 clearly shows the ball inside the net behind the goalkeeper, confirming the goal. Frame f_0007 shows the scoreboard updated to UAE 1 - 1 OMA, confirming the goal was awarded and the score changed as expected.",
+      "goal_fields": {
+        "observed_shot": true,
+        "observed_net": true,
+        "attacking_team_match": true,
+        "claims_continuous_live": true,
+        "live_or_replay": "live",
+        "shot_frame_ids": [
+          "f_0000_6447170",
+          "f_0001_6448870"
+        ],
+        "net_frame_ids": [
+          "f_0002_6450570"
+        ],
+        "live_frame_ids": [
+          "f_0000_6447170",
+          "f_0001_6448870",
+          "f_0002_6450570",
+          "f_0003_6452270",
+          "f_0004_6453970",
+          "f_0005_6455670",
+          "f_0006_6457370",
+          "f_0007_6459070"
+        ],
+        "uncertain": [],
+        "confidence": null,
+        "attacking_side_notes": "The team in white jerseys (UAE) is attacking. The scoreboard shows UAE score increasing from 0 to 1, confirming they are the attacking team whose score increases.",
+        "notes": "Frame f_0000 shows a player in white striking the ball towards the goal. Frame f_0001 shows the ball in the air near the goalmouth with players reacting. Frame f_0002 clearly shows the ball inside the net behind the goalkeeper, confirming the goal. Frame f_0007 shows the scoreboard updated to UAE 1 - 1 OMA, confirming the goal was awarded and the score changed as expected."
+      },
+      "frame_time_bindings": [
+        {
+          "frame_id": "f_0000_6447170",
+          "requested_media_sec": 6447.17,
+          "actual_media_sec": 6447.2,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0001_6448870",
+          "requested_media_sec": 6448.87,
+          "actual_media_sec": 6448.88,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0002_6450570",
+          "requested_media_sec": 6450.57,
+          "actual_media_sec": 6450.6,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0007_6459070",
+          "requested_media_sec": 6459.07,
+          "actual_media_sec": 6459.08,
+          "pts_status": "pts"
+        }
+      ],
+      "provider_mode": "real",
+      "model": "Qwen3.6-Plus",
+      "raw_response_excerpt": "{\n  \"observed_shot\": true,\n  \"observed_net\": true,\n  \"attacking_team_match\": true,\n  \"attacking_side_notes\": \"The team in white jerseys (UAE) is attacking. The scoreboard shows UAE score increasing from 0 to 1, confirming they are the attacking team whose score increases.\",\n  \"live_or_replay\": \"live\",\n  \"claims_continuous_live\": true,\n  \"shot_frame_ids\": [\n    \"f_0000_6447170\",\n    \"f_0001_6448870\"\n  ],\n  \"net_frame_ids\": [\n    \"f_0002_6450570\"\n  ],\n  \"live_frame_ids\": [\n    \"f_0000_6447170\",\n    \"f_0001_6448870\",\n    \"f_0002_6450570\",\n    \"f_0003_6452270\",\n    \"f_0004_6453970\",\n    \"f_0005_6455670\",\n    \"f_0006_6457370\",\n    \"f_0007_6459070\"\n  ],\n  \"uncertain\": [],\n  \"confidence\": \"0.98\",\n  \"frame_ids\": [\n    \"f_0000_6447170\",\n    \"f_0001_6448870\",\n    \"f_0002_6450570\",\n    \"f_0007_6459070\"\n  ],\n  \"notes\": \"Frame f_0000 shows a player in white striking the ball towards the goal. Frame f_0001 shows the ball in the air near the goalmouth with players reacting. Frame f_0002 clearly shows the ball inside the net behind the goalkeeper, confirming the goal. Frame f_0007 shows the scoreboard updated to UAE 1 - 1 OMA, confirming the goal was awarded and the score changed as expected.\"\n}",
+      "normalized_ok": true,
+      "observation_only": true,
+      "fact_verified": false,
+      "schema": "v3_goal_verify_normalized_v1"
+    },
+    "cited_frame_ids": [
+      "f_0000_6447170",
+      "f_0001_6448870",
+      "f_0002_6450570",
+      "f_0007_6459070"
+    ]
+  }
+]

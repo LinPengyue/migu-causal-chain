@@ -1,0 +1,107 @@
+{
+  "schema": "v3_automated_semantic_log_v1",
+  "role": "goal_coverage_01_to_11",
+  "provider_mode": "real",
+  "observation_only": true,
+  "best_round": "round2_adaptive_densify",
+  "vlm_inference": {
+    "observed_shot": true,
+    "observed_net": true,
+    "attacking_team_match": true,
+    "claims_continuous_live": true,
+    "live_or_replay": "live",
+    "shot_frame_ids": [
+      "f_0008_6447870"
+    ],
+    "net_frame_ids": [
+      "f_0010_6449670",
+      "f_0011_6450570"
+    ],
+    "live_frame_ids": [
+      "f_0000_6440670",
+      "f_0001_6441570",
+      "f_0002_6442470",
+      "f_0003_6443370",
+      "f_0004_6444270",
+      "f_0005_6445170",
+      "f_0006_6446070",
+      "f_0007_6446970",
+      "f_0008_6447870",
+      "f_0009_6448770",
+      "f_0010_6449670",
+      "f_0011_6450570"
+    ],
+    "uncertain": [],
+    "confidence": null,
+    "attacking_side_notes": "The team in white jerseys (UAE) is attacking the goal on the left side of the screen. The scoreboard indicates UAE's score increases from 0 to 1, confirming they are the attacking team scoring the goal.",
+    "notes": "The sequence shows a continuous live play where a player in white shoots from outside the box (f_0008), the ball travels towards the goal (f_0009), and enters the net (f_0010). Players in white celebrate immediately after (f_0010-f_0011). The scoreboard overlay remains at 0-1 throughout the clip despite the goal occurring, but the visual evidence of the ball entering the net and the subsequent celebration confirms the goal action.",
+    "raw_keys": [
+      "attacking_side_notes",
+      "attacking_team_match",
+      "claims_continuous_live",
+      "confidence",
+      "frame_ids",
+      "live_frame_ids",
+      "live_or_replay",
+      "net_frame_ids",
+      "notes",
+      "observed_net",
+      "observed_shot",
+      "shot_frame_ids",
+      "uncertain"
+    ],
+    "observation_only": true,
+    "fact_verified": false
+  },
+  "visible_crosscheck": {
+    "vlm_claims": {
+      "observed_shot": true,
+      "observed_net": true,
+      "live_or_replay": "live",
+      "attacking_team_match": true,
+      "confidence": null,
+      "claims_continuous_live": true
+    },
+    "derived_times": {
+      "shot_sec": 6447.88,
+      "net_sec": 6449.68
+    },
+    "visible_crosscheck": {
+      "frames_have_pts_or_requested": true,
+      "window_nonempty": true,
+      "continuous_clip_ok": true,
+      "continuous_clip_path": "/tmp/lpy1_v3a_blind_repair_B_historical_20261112/agent_run_goal_video_stage2_v1/02_round_01/source_goal_video_review/goal_coverage_01_to_11/roles/goal_gap_goal_coverage_01_to_11/clips/goal_gap_goal_coverage_01_to_11_uncovered_gap_tail_6440_continuous_accurate.mp4",
+      "shot_before_net_ok": true,
+      "cited_frames_exist": true,
+      "replay_excluded": true,
+      "score_order_ok": true
+    },
+    "evidence_gaps": [],
+    "auto_upgrade_from_confidence_blocked": true,
+    "block_reasons": [
+      "vlm_booleans_alone_insufficient",
+      "require_shot_net_pts_order",
+      "require_continuous_clip",
+      "require_cited_frame_files_exist",
+      "require_replay_excluded_live_only",
+      "require_score_order_and_empty_uncertain",
+      "possible_first_live_cannot_auto_upgrade_from_vlm_confidence",
+      "first_real_trial_forces_observation_only"
+    ],
+    "structurally_ready_for_automated_verify": true,
+    "note": "VLM inference ≠ verified fact. Legal frame_ids + shot/net=true are NOT enough. Need shot→net PTS order, continuous clip, visible cited frames, LIVE (not replay), score-order, and empty uncertain. First real trial keeps observation_only."
+  },
+  "verified_first_live": false,
+  "observed_shot": false,
+  "observed_net": false,
+  "live": false,
+  "attacking_team_match": false,
+  "continuous": true,
+  "shot_sec": 6447.88,
+  "net_sec": 6449.68,
+  "continuous_clip_path": "/tmp/lpy1_v3a_blind_repair_B_historical_20261112/agent_run_goal_video_stage2_v1/02_round_01/source_goal_video_review/goal_coverage_01_to_11/roles/goal_gap_goal_coverage_01_to_11/clips/goal_gap_goal_coverage_01_to_11_uncovered_gap_tail_6440_continuous_accurate.mp4",
+  "gate_opened": false,
+  "note": "Fail-closed. First real trial uses observation_only=true → agent_auto_verified stays false; V2 Gate is never opened here.",
+  "semantic_verification_class": "NOT_VERIFIED",
+  "remain_unresolved_reason": "observation_only_first_trial"
+}

@@ -1,0 +1,253 @@
+{
+  "schema": "v3_remote_vlm_verify_summary_v1",
+  "role": "goal_coverage_01_to_11",
+  "media_in": 6440.62,
+  "media_out": 6465.62,
+  "enable_real_api": true,
+  "i_approve_budget": true,
+  "observation_only": true,
+  "provider_mode": "real",
+  "n_rounds": 2,
+  "rounds": [
+    {
+      "round": "round1_dense",
+      "ok": true,
+      "provider_mode": "real",
+      "failure_status": null,
+      "message": null,
+      "observed_shot": true,
+      "observed_net": false,
+      "live_or_replay": "live",
+      "attacking_team_match": null,
+      "shot_frame_ids": [
+        "f_0000_6447170",
+        "f_0001_6448870"
+      ],
+      "net_frame_ids": [],
+      "cited_frame_ids": [
+        "f_0000_6447170",
+        "f_0001_6448870",
+        "f_0002_6450570",
+        "f_0007_6459070"
+      ],
+      "uncertain": [
+        "observed_net"
+      ],
+      "confidence": 0.85,
+      "notes": "Clear shot observed at f_0000 and follow-through/impact area at f_0001. Ball enters net vicinity at f_0002 but is obscured by player movement and camera angle; no frame definitively shows the ball fully crossing the line or resting in the net mesh without ambiguity. Celebration and crowd reaction (f_0003-f_0006) and scoreboard update (f_0007: UAE 1-1 OMA) strongly imply a goal, but visual confirmation of 'net' status per strict rules is missing. Sequence appears continuous live action.",
+      "usage": {
+        "prompt_tokens": 17093,
+        "completion_tokens": 559,
+        "total_tokens": 17652,
+        "completion_tokens_details": {
+          "text_tokens": 559
+        }
+      },
+      "est_cost_usd": 0.00289935
+    },
+    {
+      "round": "round2_adaptive_densify",
+      "ok": true,
+      "provider_mode": "real",
+      "failure_status": null,
+      "message": null,
+      "observed_shot": true,
+      "observed_net": true,
+      "live_or_replay": "live",
+      "attacking_team_match": true,
+      "shot_frame_ids": [
+        "f_0008_6447870"
+      ],
+      "net_frame_ids": [
+        "f_0010_6449670",
+        "f_0011_6450570"
+      ],
+      "cited_frame_ids": [
+        "f_0000_6440670",
+        "f_0001_6441570",
+        "f_0002_6442470",
+        "f_0003_6443370",
+        "f_0004_6444270",
+        "f_0005_6445170",
+        "f_0006_6446070",
+        "f_0007_6446970",
+        "f_0008_6447870",
+        "f_0009_6448770",
+        "f_0010_6449670",
+        "f_0011_6450570"
+      ],
+      "uncertain": [],
+      "confidence": null,
+      "notes": "The sequence shows a continuous live play where a player in white shoots from outside the box (f_0008), the ball travels towards the goal (f_0009), and enters the net (f_0010). Players in white celebrate immediately after (f_0010-f_0011). The scoreboard overlay remains at 0-1 throughout the clip despite the goal occurring, but the visual evidence of the ball entering the net and the subsequent celebration confirms the goal action.",
+      "usage": {
+        "prompt_tokens": 25475,
+        "completion_tokens": 763,
+        "total_tokens": 26238,
+        "completion_tokens_details": {
+          "text_tokens": 763
+        }
+      },
+      "est_cost_usd": 0.0042790499999999995
+    }
+  ],
+  "crosscheck": {
+    "vlm_claims": {
+      "observed_shot": true,
+      "observed_net": true,
+      "live_or_replay": "live",
+      "attacking_team_match": true,
+      "confidence": null,
+      "claims_continuous_live": true
+    },
+    "derived_times": {
+      "shot_sec": 6447.88,
+      "net_sec": 6449.68
+    },
+    "visible_crosscheck": {
+      "frames_have_pts_or_requested": true,
+      "window_nonempty": true,
+      "continuous_clip_ok": true,
+      "continuous_clip_path": "/tmp/lpy1_v3a_blind_repair_B_historical_20261112/agent_run_goal_video_stage2_v1/02_round_01/source_goal_video_review/goal_coverage_01_to_11/roles/goal_gap_goal_coverage_01_to_11/clips/goal_gap_goal_coverage_01_to_11_uncovered_gap_tail_6440_continuous_accurate.mp4",
+      "shot_before_net_ok": true,
+      "cited_frames_exist": true,
+      "replay_excluded": true,
+      "score_order_ok": true
+    },
+    "evidence_gaps": [],
+    "auto_upgrade_from_confidence_blocked": true,
+    "block_reasons": [
+      "vlm_booleans_alone_insufficient",
+      "require_shot_net_pts_order",
+      "require_continuous_clip",
+      "require_cited_frame_files_exist",
+      "require_replay_excluded_live_only",
+      "require_score_order_and_empty_uncertain",
+      "possible_first_live_cannot_auto_upgrade_from_vlm_confidence",
+      "first_real_trial_forces_observation_only"
+    ],
+    "structurally_ready_for_automated_verify": true,
+    "note": "VLM inference ≠ verified fact. Legal frame_ids + shot/net=true are NOT enough. Need shot→net PTS order, continuous clip, visible cited frames, LIVE (not replay), score-order, and empty uncertain. First real trial keeps observation_only."
+  },
+  "derived_times": {
+    "shot_sec": 6447.88,
+    "net_sec": 6449.68
+  },
+  "net_clear_after_crosscheck": true,
+  "continuous_clip": {
+    "ok": true,
+    "path": "/tmp/lpy1_v3a_blind_repair_B_historical_20261112/agent_run_goal_video_stage2_v1/02_round_01/source_goal_video_review/goal_coverage_01_to_11/roles/goal_gap_goal_coverage_01_to_11/clips/goal_gap_goal_coverage_01_to_11_uncovered_gap_tail_6440_continuous_accurate.mp4",
+    "reused_existing": true,
+    "continuous_source": true,
+    "stitched": false
+  },
+  "automated_semantic_log_path": "/tmp/lpy1_v3a_stage3_B_real_video_qwen37_newkey_20261113_newkey/automated_semantic_log.json",
+  "agent_auto_verified": false,
+  "verification_status": "unresolved",
+  "semantic_label": "possible_first_live",
+  "structurally_ready_for_automated_verify": true,
+  "gate_opened": false,
+  "api_usage": {
+    "calls": 2,
+    "http_attempts": 2,
+    "real_requests": 2,
+    "real_ok": 2,
+    "real_failures": 0,
+    "cached_hits": 0,
+    "mock_calls": 0,
+    "degraded_calls": 0,
+    "ok": 2,
+    "failures": 0,
+    "prompt_tokens": 42568,
+    "completion_tokens": 1322,
+    "total_tokens": 43890,
+    "cached_tokens_reported": 0,
+    "est_cost_usd_real": 0.007178,
+    "est_cost_usd_cached_replay": 0,
+    "cost_disclaimer": "est_cost_usd is a local estimate from configured unit prices (STORY_LLM_PRICE_*); it is NOT a billing guarantee or absolute invoice cap.",
+    "elapsed_sec_real": 34.7115,
+    "output_budget_exceeded_count": 0,
+    "by_role": {
+      "vision": {
+        "http_attempts": 2,
+        "tokens": 43890,
+        "est_cost_usd": 0.007178,
+        "output_budget_exceeded": false
+      }
+    },
+    "records": [
+      {
+        "role": "vision",
+        "model": "Qwen3.7-Plus",
+        "ok": true,
+        "mode": "real",
+        "elapsed_sec": 13.420681505929679,
+        "prompt_tokens": 17093,
+        "completion_tokens": 559,
+        "total_tokens": 17652,
+        "est_cost_usd": 0.00289935,
+        "cached": false,
+        "error": "",
+        "http_status": 200,
+        "retryable": false,
+        "http_attempt": true,
+        "attempt_index": 0,
+        "failure_status": "",
+        "request_token_param": "max_tokens",
+        "request_token_limit": 2048,
+        "request_thinking_sent": true,
+        "finish_reason": "stop",
+        "reasoning_tokens": null,
+        "visible_output_chars": 1361,
+        "output_budget_exceeded": false
+      },
+      {
+        "role": "vision",
+        "model": "Qwen3.7-Plus",
+        "ok": true,
+        "mode": "real",
+        "elapsed_sec": 21.290812448598444,
+        "prompt_tokens": 25475,
+        "completion_tokens": 763,
+        "total_tokens": 26238,
+        "est_cost_usd": 0.0042790499999999995,
+        "cached": false,
+        "error": "",
+        "http_status": 200,
+        "retryable": false,
+        "http_attempt": true,
+        "attempt_index": 0,
+        "failure_status": "",
+        "request_token_param": "max_tokens",
+        "request_token_limit": 2048,
+        "request_thinking_sent": true,
+        "finish_reason": "stop",
+        "reasoning_tokens": null,
+        "visible_output_chars": 1558,
+        "output_budget_exceeded": false
+      }
+    ]
+  },
+  "http_attempts": 2,
+  "output_budget_exceeded": false,
+  "cost_disclaimer": "est_cost_usd is a local estimate from configured unit prices (STORY_LLM_PRICE_*); it is NOT a billing guarantee or absolute invoice cap.",
+  "render_ready": false,
+  "vision_stats": {
+    "calls": 2,
+    "real_requests": 2,
+    "failures": 0,
+    "elapsed_sec": 34.7115,
+    "tokens": 43890,
+    "est_cost_usd": 0.007178,
+    "cost_disclaimer": "est_cost_usd is a local estimate from configured unit prices (STORY_LLM_PRICE_*); it is NOT a billing guarantee or absolute invoice cap."
+  },
+  "config_audit_path": "/tmp/lpy1_v3a_stage3_B_real_video_qwen37_newkey_20261113_newkey/api_config_audit_zero_http.json",
+  "effective_caps": {
+    "max_calls": 2,
+    "max_cost_usd": 0.1,
+    "max_completion_tokens": 2048,
+    "vision_effective_output_token_limit": 2048,
+    "vision_request_profile": "video_rsi",
+    "vision_token_param": "max_tokens",
+    "vision_thinking_object_disabled": true
+  }
+}

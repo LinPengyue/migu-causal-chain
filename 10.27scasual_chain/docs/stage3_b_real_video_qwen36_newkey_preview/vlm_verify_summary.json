@@ -1,0 +1,184 @@
+{
+  "schema": "v3_remote_vlm_verify_summary_v1",
+  "role": "goal_coverage_01_to_11",
+  "media_in": 6440.62,
+  "media_out": 6465.62,
+  "enable_real_api": true,
+  "i_approve_budget": true,
+  "observation_only": true,
+  "provider_mode": "real",
+  "n_rounds": 1,
+  "rounds": [
+    {
+      "round": "round1_dense",
+      "ok": true,
+      "provider_mode": "real",
+      "failure_status": null,
+      "message": null,
+      "observed_shot": true,
+      "observed_net": true,
+      "live_or_replay": "live",
+      "attacking_team_match": true,
+      "shot_frame_ids": [
+        "f_0000_6447170",
+        "f_0001_6448870"
+      ],
+      "net_frame_ids": [
+        "f_0002_6450570"
+      ],
+      "cited_frame_ids": [
+        "f_0000_6447170",
+        "f_0001_6448870",
+        "f_0002_6450570",
+        "f_0007_6459070"
+      ],
+      "uncertain": [],
+      "confidence": null,
+      "notes": "Frame f_0000 shows a player in white striking the ball towards the goal. Frame f_0001 shows the ball in the air near the goalmouth with players reacting. Frame f_0002 clearly shows the ball inside the net behind the goalkeeper, confirming the goal. Frame f_0007 shows the scoreboard updated to UAE 1 - 1 OMA, confirming the goal was awarded and the score changed as expected.",
+      "usage": {
+        "prompt_tokens": 17093,
+        "completion_tokens": 528,
+        "total_tokens": 17621,
+        "completion_tokens_details": {
+          "text_tokens": 528
+        }
+      },
+      "est_cost_usd": 0.00288075
+    }
+  ],
+  "crosscheck": {
+    "vlm_claims": {
+      "observed_shot": true,
+      "observed_net": true,
+      "live_or_replay": "live",
+      "attacking_team_match": true,
+      "confidence": null,
+      "claims_continuous_live": true
+    },
+    "derived_times": {
+      "shot_sec": 6447.2,
+      "net_sec": 6450.6
+    },
+    "visible_crosscheck": {
+      "frames_have_pts_or_requested": true,
+      "window_nonempty": true,
+      "continuous_clip_ok": true,
+      "continuous_clip_path": "/tmp/lpy1_v3a_blind_repair_B_historical_20261112/agent_run_goal_video_stage2_v1/02_round_01/source_goal_video_review/goal_coverage_01_to_11/roles/goal_gap_goal_coverage_01_to_11/clips/goal_gap_goal_coverage_01_to_11_uncovered_gap_tail_6440_continuous_accurate.mp4",
+      "shot_before_net_ok": true,
+      "cited_frames_exist": true,
+      "replay_excluded": true,
+      "score_order_ok": true
+    },
+    "evidence_gaps": [],
+    "auto_upgrade_from_confidence_blocked": true,
+    "block_reasons": [
+      "vlm_booleans_alone_insufficient",
+      "require_shot_net_pts_order",
+      "require_continuous_clip",
+      "require_cited_frame_files_exist",
+      "require_replay_excluded_live_only",
+      "require_score_order_and_empty_uncertain",
+      "possible_first_live_cannot_auto_upgrade_from_vlm_confidence",
+      "first_real_trial_forces_observation_only"
+    ],
+    "structurally_ready_for_automated_verify": true,
+    "note": "VLM inference ≠ verified fact. Legal frame_ids + shot/net=true are NOT enough. Need shot→net PTS order, continuous clip, visible cited frames, LIVE (not replay), score-order, and empty uncertain. First real trial keeps observation_only."
+  },
+  "derived_times": {
+    "shot_sec": 6447.2,
+    "net_sec": 6450.6
+  },
+  "net_clear_after_crosscheck": true,
+  "continuous_clip": {
+    "ok": true,
+    "path": "/tmp/lpy1_v3a_blind_repair_B_historical_20261112/agent_run_goal_video_stage2_v1/02_round_01/source_goal_video_review/goal_coverage_01_to_11/roles/goal_gap_goal_coverage_01_to_11/clips/goal_gap_goal_coverage_01_to_11_uncovered_gap_tail_6440_continuous_accurate.mp4",
+    "reused_existing": true,
+    "continuous_source": true,
+    "stitched": false
+  },
+  "automated_semantic_log_path": "/tmp/lpy1_v3a_stage3_B_real_video_qwen36_newkey_20261113_newkey/automated_semantic_log.json",
+  "agent_auto_verified": false,
+  "verification_status": "unresolved",
+  "semantic_label": "possible_first_live",
+  "structurally_ready_for_automated_verify": true,
+  "gate_opened": false,
+  "api_usage": {
+    "calls": 1,
+    "http_attempts": 1,
+    "real_requests": 1,
+    "real_ok": 1,
+    "real_failures": 0,
+    "cached_hits": 0,
+    "mock_calls": 0,
+    "degraded_calls": 0,
+    "ok": 1,
+    "failures": 0,
+    "prompt_tokens": 17093,
+    "completion_tokens": 528,
+    "total_tokens": 17621,
+    "cached_tokens_reported": 0,
+    "est_cost_usd_real": 0.002881,
+    "est_cost_usd_cached_replay": 0,
+    "cost_disclaimer": "est_cost_usd is a local estimate from configured unit prices (STORY_LLM_PRICE_*); it is NOT a billing guarantee or absolute invoice cap.",
+    "elapsed_sec_real": 11.0469,
+    "output_budget_exceeded_count": 0,
+    "by_role": {
+      "vision": {
+        "http_attempts": 1,
+        "tokens": 17621,
+        "est_cost_usd": 0.002881,
+        "output_budget_exceeded": false
+      }
+    },
+    "records": [
+      {
+        "role": "vision",
+        "model": "Qwen3.6-Plus",
+        "ok": true,
+        "mode": "real",
+        "elapsed_sec": 11.046877562068403,
+        "prompt_tokens": 17093,
+        "completion_tokens": 528,
+        "total_tokens": 17621,
+        "est_cost_usd": 0.00288075,
+        "cached": false,
+        "error": "",
+        "http_status": 200,
+        "retryable": false,
+        "http_attempt": true,
+        "attempt_index": 0,
+        "failure_status": "",
+        "request_token_param": "max_tokens",
+        "request_token_limit": 2048,
+        "request_thinking_sent": true,
+        "finish_reason": "stop",
+        "reasoning_tokens": null,
+        "visible_output_chars": 1198,
+        "output_budget_exceeded": false
+      }
+    ]
+  },
+  "http_attempts": 1,
+  "output_budget_exceeded": false,
+  "cost_disclaimer": "est_cost_usd is a local estimate from configured unit prices (STORY_LLM_PRICE_*); it is NOT a billing guarantee or absolute invoice cap.",
+  "render_ready": false,
+  "vision_stats": {
+    "calls": 1,
+    "real_requests": 1,
+    "failures": 0,
+    "elapsed_sec": 11.0469,
+    "tokens": 17621,
+    "est_cost_usd": 0.002881,
+    "cost_disclaimer": "est_cost_usd is a local estimate from configured unit prices (STORY_LLM_PRICE_*); it is NOT a billing guarantee or absolute invoice cap."
+  },
+  "config_audit_path": "/tmp/lpy1_v3a_stage3_B_real_video_qwen36_newkey_20261113_newkey/api_config_audit_zero_http.json",
+  "effective_caps": {
+    "max_calls": 2,
+    "max_cost_usd": 0.1,
+    "max_completion_tokens": 2048,
+    "vision_effective_output_token_limit": 2048,
+    "vision_request_profile": "video_rsi",
+    "vision_token_param": "max_tokens",
+    "vision_thinking_object_disabled": true
+  }
+}

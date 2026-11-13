@@ -1,0 +1,217 @@
+{
+  "schema": "v3a_stage3_b_qwen37_newkey_real_video_step1_v1",
+  "generated": "2026-11-13T01:21:53.491681+00:00",
+  "authorization": {
+    "model": "Qwen3.7-Plus",
+    "key_source": "~/.config/migu-secrets/paratera.env",
+    "max_calls": 2,
+    "max_cost_usd": 0.1,
+    "observation_only": true,
+    "egress": "direct_no_proxy",
+    "thinking": "disabled (video_rsi / thinking object disabled)"
+  },
+  "target": {
+    "candidate": "uncovered_gap_tail",
+    "media_in": 6440.62,
+    "media_out": 6465.62
+  },
+  "provider_outcome": {
+    "http_attempts": 2,
+    "real_ok": 2,
+    "real_failures": 0,
+    "est_cost_usd_real": 0.007178,
+    "tokens": 43890,
+    "failure_mode": null,
+    "no_excess_retry": true
+  },
+  "answers": {
+    "was_real_goal_action_recognized": true,
+    "vlm_claims": {
+      "observed_shot": true,
+      "observed_net": true,
+      "live_or_replay": "live",
+      "attacking_team_match": true,
+      "confidence": null,
+      "claims_continuous_live": true
+    },
+    "rounds": [
+      {
+        "meta": {
+          "round": "round1_dense",
+          "ok": true
+        },
+        "claim": {
+          "cited_frame_ids": [
+            "f_0000_6447170",
+            "f_0001_6448870",
+            "f_0002_6450570",
+            "f_0007_6459070"
+          ]
+        }
+      },
+      {
+        "meta": {
+          "round": "round2_adaptive_densify",
+          "ok": true
+        },
+        "claim": {
+          "cited_frame_ids": [
+            "f_0000_6440670",
+            "f_0001_6441570",
+            "f_0002_6442470",
+            "f_0003_6443370",
+            "f_0004_6444270",
+            "f_0005_6445170",
+            "f_0006_6446070",
+            "f_0007_6446970",
+            "f_0008_6447870",
+            "f_0009_6448770",
+            "f_0010_6449670",
+            "f_0011_6450570"
+          ]
+        }
+      }
+    ],
+    "which_frames_constitute_evidence": {
+      "round1": [
+        {
+          "frame_id": "f_0000_6447170",
+          "actual_media_sec": 6447.2,
+          "requested_media_sec": 6447.17,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0001_6448870",
+          "actual_media_sec": 6448.88,
+          "requested_media_sec": 6448.87,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0002_6450570",
+          "actual_media_sec": 6450.6,
+          "requested_media_sec": 6450.57,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0003_6452270",
+          "actual_media_sec": 6452.28,
+          "requested_media_sec": 6452.27,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0004_6453970",
+          "actual_media_sec": 6454.0,
+          "requested_media_sec": 6453.97,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0005_6455670",
+          "actual_media_sec": 6455.68,
+          "requested_media_sec": 6455.67,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0006_6457370",
+          "actual_media_sec": 6457.4,
+          "requested_media_sec": 6457.37,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0007_6459070",
+          "actual_media_sec": 6459.08,
+          "requested_media_sec": 6459.07,
+          "pts_status": "pts"
+        }
+      ],
+      "round2": [
+        {
+          "frame_id": "f_0000_6440670",
+          "actual_media_sec": 6440.68,
+          "requested_media_sec": 6440.67,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0001_6441570",
+          "actual_media_sec": 6441.6,
+          "requested_media_sec": 6441.57,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0002_6442470",
+          "actual_media_sec": 6442.48,
+          "requested_media_sec": 6442.47,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0003_6443370",
+          "actual_media_sec": 6443.4,
+          "requested_media_sec": 6443.37,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0004_6444270",
+          "actual_media_sec": 6444.28,
+          "requested_media_sec": 6444.27,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0005_6445170",
+          "actual_media_sec": 6445.2,
+          "requested_media_sec": 6445.17,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0006_6446070",
+          "actual_media_sec": 6446.08,
+          "requested_media_sec": 6446.07,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0007_6446970",
+          "actual_media_sec": 6447.0,
+          "requested_media_sec": 6446.97,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0008_6447870",
+          "actual_media_sec": 6447.88,
+          "requested_media_sec": 6447.87,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0009_6448770",
+          "actual_media_sec": 6448.8,
+          "requested_media_sec": 6448.77,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0010_6449670",
+          "actual_media_sec": 6449.68,
+          "requested_media_sec": 6449.67,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0011_6450570",
+          "actual_media_sec": 6450.6,
+          "requested_media_sec": 6450.57,
+          "pts_status": "pts"
+        }
+      ]
+    },
+    "structurally_ready_for_automated_verify": true,
+    "evidence_gaps": [],
+    "ready_for_first_live_verification": false,
+    "verdict": "SOURCE_VIDEO_SEMANTIC_CONFIRMED_OBS",
+    "note": "observation_only; gate_opened must remain false; EDL untouched"
+  },
+  "gates": {
+    "FIRST_LIVE_VERIFIED": false,
+    "EDL_REPAIRED": false,
+    "STORY_IMPROVED": "UNVERIFIED",
+    "gate_opened": false,
+    "agent_auto_verified": false,
+    "verification_status": "unresolved",
+    "semantic_label": "possible_first_live"
+  },
+  "out_dir": "/tmp/lpy1_v3a_stage3_B_real_video_qwen37_newkey_20261113_newkey"
+}

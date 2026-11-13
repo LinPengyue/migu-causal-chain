@@ -1,0 +1,365 @@
+[
+  {
+    "round": "round1_dense",
+    "ok": true,
+    "provider_mode": "real",
+    "usage": {
+      "prompt_tokens": 17093,
+      "completion_tokens": 559,
+      "total_tokens": 17652,
+      "completion_tokens_details": {
+        "text_tokens": 559
+      }
+    },
+    "est_cost_usd": 0.00289935,
+    "cost_disclaimer": "est_cost_usd is a local estimate from configured unit prices (STORY_LLM_PRICE_*); it is NOT a billing guarantee or absolute invoice cap.",
+    "raw_response_excerpt": "{\n  \"observed_shot\": true,\n  \"observed_net\": false,\n  \"attacking_team_match\": null,\n  \"attacking_side_notes\": \"White-jerseyed team attacks from left to right; score update at f_0007 confirms UAE (white) scored, but team identity is inferred from scoreboard context rather than explicit jersey text verification in this clip.\",\n  \"live_or_replay\": \"live\",\n  \"claims_continuous_live\": true,\n  \"shot_frame_ids\": [\n    \"f_0000_6447170\",\n    \"f_0001_6448870\"\n  ],\n  \"net_frame_ids\": [],\n  \"live_frame_ids\": [\n    \"f_0000_6447170\",\n    \"f_0001_6448870\",\n    \"f_0002_6450570\",\n    \"f_0003_6452270\",\n    \"f_0004_6453970\",\n    \"f_0005_6455670\",\n    \"f_0006_6457370\",\n    \"f_0007_6459070\"\n  ],\n  \"uncertain\": [\n    \"observed_net\"\n  ],\n  \"confidence\": 0.85,\n  \"frame_ids\": [\n    \"f_0000_6447170\",\n    \"f_0001_6448870\",\n    \"f_0002_6450570\",\n    \"f_0007_6459070\"\n  ],\n  \"notes\": \"Clear shot observed at f_0000 and follow-through/impact area at f_0001. Ball enters net vicinity at f_0002 but is obscured by player movement and camera angle; no frame definitively shows the ball fully crossing the line or resting in the net mesh without ambiguity. Celebration and crowd reaction (f_0003-f_0006) and scoreboard update (f_0007: UAE 1-1 OMA) strongly imply a goal, but visual confirmation of 'net' status per strict rules is missing. Sequence appears continuous live action.\"\n}",
+    "vlm_inference": {
+      "observed_shot": true,
+      "observed_net": false,
+      "attacking_team_match": null,
+      "claims_continuous_live": true,
+      "live_or_replay": "live",
+      "shot_frame_ids": [
+        "f_0000_6447170",
+        "f_0001_6448870"
+      ],
+      "net_frame_ids": [],
+      "live_frame_ids": [
+        "f_0000_6447170",
+        "f_0001_6448870",
+        "f_0002_6450570",
+        "f_0003_6452270",
+        "f_0004_6453970",
+        "f_0005_6455670",
+        "f_0006_6457370",
+        "f_0007_6459070"
+      ],
+      "uncertain": [
+        "observed_net"
+      ],
+      "confidence": 0.85,
+      "attacking_side_notes": "White-jerseyed team attacks from left to right; score update at f_0007 confirms UAE (white) scored, but team identity is inferred from scoreboard context rather than explicit jersey text verification in this clip.",
+      "notes": "Clear shot observed at f_0000 and follow-through/impact area at f_0001. Ball enters net vicinity at f_0002 but is obscured by player movement and camera angle; no frame definitively shows the ball fully crossing the line or resting in the net mesh without ambiguity. Celebration and crowd reaction (f_0003-f_0006) and scoreboard update (f_0007: UAE 1-1 OMA) strongly imply a goal, but visual confirmation of 'net' status per strict rules is missing. Sequence appears continuous live action.",
+      "raw_keys": [
+        "attacking_side_notes",
+        "attacking_team_match",
+        "claims_continuous_live",
+        "confidence",
+        "frame_ids",
+        "live_frame_ids",
+        "live_or_replay",
+        "net_frame_ids",
+        "notes",
+        "observed_net",
+        "observed_shot",
+        "shot_frame_ids",
+        "uncertain"
+      ],
+      "observation_only": true,
+      "fact_verified": false
+    },
+    "normalized_evidence": {
+      "gap_id": "v3_p3_goal_coverage_01_to_11_goal_verify",
+      "observed_actions": [
+        "shot",
+        "broadcast_live"
+      ],
+      "possible_teams": [],
+      "story_relation": "Clear shot observed at f_0000 and follow-through/impact area at f_0001. Ball enters net vicinity at f_0002 but is obscured by player movement and camera angle; no frame definitively shows the ball fully crossing the line or resting in the net mesh without ambiguity. Celebration and crowd reaction (f_0003-f_0006) and scoreboard update (f_0007: UAE 1-1 OMA) strongly imply a goal, but visual confirmation of 'net' status per strict rules is missing. Sequence appears continuous live action.",
+      "confidence": 0.85,
+      "frame_ids": [
+        "f_0000_6447170",
+        "f_0001_6448870",
+        "f_0002_6450570",
+        "f_0007_6459070"
+      ],
+      "notes": "Clear shot observed at f_0000 and follow-through/impact area at f_0001. Ball enters net vicinity at f_0002 but is obscured by player movement and camera angle; no frame definitively shows the ball fully crossing the line or resting in the net mesh without ambiguity. Celebration and crowd reaction (f_0003-f_0006) and scoreboard update (f_0007: UAE 1-1 OMA) strongly imply a goal, but visual confirmation of 'net' status per strict rules is missing. Sequence appears continuous live action.",
+      "goal_fields": {
+        "observed_shot": true,
+        "observed_net": false,
+        "attacking_team_match": null,
+        "claims_continuous_live": true,
+        "live_or_replay": "live",
+        "shot_frame_ids": [
+          "f_0000_6447170",
+          "f_0001_6448870"
+        ],
+        "net_frame_ids": [],
+        "live_frame_ids": [
+          "f_0000_6447170",
+          "f_0001_6448870",
+          "f_0002_6450570",
+          "f_0003_6452270",
+          "f_0004_6453970",
+          "f_0005_6455670",
+          "f_0006_6457370",
+          "f_0007_6459070"
+        ],
+        "uncertain": [
+          "observed_net"
+        ],
+        "confidence": 0.85,
+        "attacking_side_notes": "White-jerseyed team attacks from left to right; score update at f_0007 confirms UAE (white) scored, but team identity is inferred from scoreboard context rather than explicit jersey text verification in this clip.",
+        "notes": "Clear shot observed at f_0000 and follow-through/impact area at f_0001. Ball enters net vicinity at f_0002 but is obscured by player movement and camera angle; no frame definitively shows the ball fully crossing the line or resting in the net mesh without ambiguity. Celebration and crowd reaction (f_0003-f_0006) and scoreboard update (f_0007: UAE 1-1 OMA) strongly imply a goal, but visual confirmation of 'net' status per strict rules is missing. Sequence appears continuous live action."
+      },
+      "frame_time_bindings": [
+        {
+          "frame_id": "f_0000_6447170",
+          "requested_media_sec": 6447.17,
+          "actual_media_sec": 6447.2,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0001_6448870",
+          "requested_media_sec": 6448.87,
+          "actual_media_sec": 6448.88,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0002_6450570",
+          "requested_media_sec": 6450.57,
+          "actual_media_sec": 6450.6,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0007_6459070",
+          "requested_media_sec": 6459.07,
+          "actual_media_sec": 6459.08,
+          "pts_status": "pts"
+        }
+      ],
+      "provider_mode": "real",
+      "model": "Qwen3.7-Plus",
+      "raw_response_excerpt": "{\n  \"observed_shot\": true,\n  \"observed_net\": false,\n  \"attacking_team_match\": null,\n  \"attacking_side_notes\": \"White-jerseyed team attacks from left to right; score update at f_0007 confirms UAE (white) scored, but team identity is inferred from scoreboard context rather than explicit jersey text verification in this clip.\",\n  \"live_or_replay\": \"live\",\n  \"claims_continuous_live\": true,\n  \"shot_frame_ids\": [\n    \"f_0000_6447170\",\n    \"f_0001_6448870\"\n  ],\n  \"net_frame_ids\": [],\n  \"live_frame_ids\": [\n    \"f_0000_6447170\",\n    \"f_0001_6448870\",\n    \"f_0002_6450570\",\n    \"f_0003_6452270\",\n    \"f_0004_6453970\",\n    \"f_0005_6455670\",\n    \"f_0006_6457370\",\n    \"f_0007_6459070\"\n  ],\n  \"uncertain\": [\n    \"observed_net\"\n  ],\n  \"confidence\": 0.85,\n  \"frame_ids\": [\n    \"f_0000_6447170\",\n    \"f_0001_6448870\",\n    \"f_0002_6450570\",\n    \"f_0007_6459070\"\n  ],\n  \"notes\": \"Clear shot observed at f_0000 and follow-through/impact area at f_0001. Ball enters net vicinity at f_0002 but is obscured by player movement and camera angle; no frame definitively shows the ball fully crossing the line or resting in the net mesh without ambiguity. Celebration and crowd reaction (f_0003-f_0006) and scoreboard update (f_0007: UAE 1-1 OMA) strongly imply a goal, but visual confirmation of 'net' status per strict rules is missing. Sequence appears continuous live action.\"\n}",
+      "normalized_ok": true,
+      "observation_only": true,
+      "fact_verified": false,
+      "schema": "v3_goal_verify_normalized_v1"
+    },
+    "cited_frame_ids": [
+      "f_0000_6447170",
+      "f_0001_6448870",
+      "f_0002_6450570",
+      "f_0007_6459070"
+    ]
+  },
+  {
+    "round": "round2_adaptive_densify",
+    "ok": true,
+    "provider_mode": "real",
+    "usage": {
+      "prompt_tokens": 25475,
+      "completion_tokens": 763,
+      "total_tokens": 26238,
+      "completion_tokens_details": {
+        "text_tokens": 763
+      }
+    },
+    "est_cost_usd": 0.0042790499999999995,
+    "cost_disclaimer": "est_cost_usd is a local estimate from configured unit prices (STORY_LLM_PRICE_*); it is NOT a billing guarantee or absolute invoice cap.",
+    "raw_response_excerpt": "{\n  \"observed_shot\": true,\n  \"observed_net\": true,\n  \"attacking_team_match\": true,\n  \"attacking_side_notes\": \"The team in white jerseys (UAE) is attacking the goal on the left side of the screen. The scoreboard indicates UAE's score increases from 0 to 1, confirming they are the attacking team scoring the goal.\",\n  \"live_or_replay\": \"live\",\n  \"claims_continuous_live\": true,\n  \"shot_frame_ids\": [\n    \"f_0008_6447870\"\n  ],\n  \"net_frame_ids\": [\n    \"f_0010_6449670\",\n    \"f_0011_6450570\"\n  ],\n  \"live_frame_ids\": [\n    \"f_0000_6440670\",\n    \"f_0001_6441570\",\n    \"f_0002_6442470\",\n    \"f_0003_6443370\",\n    \"f_0004_6444270\",\n    \"f_0005_6445170\",\n    \"f_0006_6446070\",\n    \"f_0007_6446970\",\n    \"f_0008_6447870\",\n    \"f_0009_6448770\",\n    \"f_0010_6449670\",\n    \"f_0011_6450570\"\n  ],\n  \"uncertain\": [],\n  \"confidence\": \"1\",\n  \"frame_ids\": [\n    \"f_0000_6440670\",\n    \"f_0001_6441570\",\n    \"f_0002_6442470\",\n    \"f_0003_6443370\",\n    \"f_0004_6444270\",\n    \"f_0005_6445170\",\n    \"f_0006_6446070\",\n    \"f_0007_6446970\",\n    \"f_0008_6447870\",\n    \"f_0009_6448770\",\n    \"f_0010_6449670\",\n    \"f_0011_6450570\"\n  ],\n  \"notes\": \"The sequence shows a continuous live play where a player in white shoots from outside the box (f_0008), the ball travels towards the goal (f_0009), and enters the net (f_0010). Players in white celebrate immediately after (f_0010-f_0011). The scoreboard overlay remains at 0-1 throughout the clip despite the goal occurring, but the visual evidence of the ball entering the net and the subsequent celebration confirms the goal action.\"\n}",
+    "vlm_inference": {
+      "observed_shot": true,
+      "observed_net": true,
+      "attacking_team_match": true,
+      "claims_continuous_live": true,
+      "live_or_replay": "live",
+      "shot_frame_ids": [
+        "f_0008_6447870"
+      ],
+      "net_frame_ids": [
+        "f_0010_6449670",
+        "f_0011_6450570"
+      ],
+      "live_frame_ids": [
+        "f_0000_6440670",
+        "f_0001_6441570",
+        "f_0002_6442470",
+        "f_0003_6443370",
+        "f_0004_6444270",
+        "f_0005_6445170",
+        "f_0006_6446070",
+        "f_0007_6446970",
+        "f_0008_6447870",
+        "f_0009_6448770",
+        "f_0010_6449670",
+        "f_0011_6450570"
+      ],
+      "uncertain": [],
+      "confidence": null,
+      "attacking_side_notes": "The team in white jerseys (UAE) is attacking the goal on the left side of the screen. The scoreboard indicates UAE's score increases from 0 to 1, confirming they are the attacking team scoring the goal.",
+      "notes": "The sequence shows a continuous live play where a player in white shoots from outside the box (f_0008), the ball travels towards the goal (f_0009), and enters the net (f_0010). Players in white celebrate immediately after (f_0010-f_0011). The scoreboard overlay remains at 0-1 throughout the clip despite the goal occurring, but the visual evidence of the ball entering the net and the subsequent celebration confirms the goal action.",
+      "raw_keys": [
+        "attacking_side_notes",
+        "attacking_team_match",
+        "claims_continuous_live",
+        "confidence",
+        "frame_ids",
+        "live_frame_ids",
+        "live_or_replay",
+        "net_frame_ids",
+        "notes",
+        "observed_net",
+        "observed_shot",
+        "shot_frame_ids",
+        "uncertain"
+      ],
+      "observation_only": true,
+      "fact_verified": false
+    },
+    "normalized_evidence": {
+      "gap_id": "v3_p3_goal_coverage_01_to_11_goal_verify_dense2",
+      "observed_actions": [
+        "shot",
+        "ball_in_net",
+        "broadcast_live"
+      ],
+      "possible_teams": [],
+      "story_relation": "The sequence shows a continuous live play where a player in white shoots from outside the box (f_0008), the ball travels towards the goal (f_0009), and enters the net (f_0010). Players in white celebrate immediately after (f_0010-f_0011). The scoreboard overlay remains at 0-1 throughout the clip despite the goal occurring, but the visual evidence of the ball entering the net and the subsequent celebration confirms the goal action.",
+      "confidence": 0.0,
+      "frame_ids": [
+        "f_0000_6440670",
+        "f_0001_6441570",
+        "f_0002_6442470",
+        "f_0003_6443370",
+        "f_0004_6444270",
+        "f_0005_6445170",
+        "f_0006_6446070",
+        "f_0007_6446970",
+        "f_0008_6447870",
+        "f_0009_6448770",
+        "f_0010_6449670",
+        "f_0011_6450570"
+      ],
+      "notes": "The sequence shows a continuous live play where a player in white shoots from outside the box (f_0008), the ball travels towards the goal (f_0009), and enters the net (f_0010). Players in white celebrate immediately after (f_0010-f_0011). The scoreboard overlay remains at 0-1 throughout the clip despite the goal occurring, but the visual evidence of the ball entering the net and the subsequent celebration confirms the goal action.",
+      "goal_fields": {
+        "observed_shot": true,
+        "observed_net": true,
+        "attacking_team_match": true,
+        "claims_continuous_live": true,
+        "live_or_replay": "live",
+        "shot_frame_ids": [
+          "f_0008_6447870"
+        ],
+        "net_frame_ids": [
+          "f_0010_6449670",
+          "f_0011_6450570"
+        ],
+        "live_frame_ids": [
+          "f_0000_6440670",
+          "f_0001_6441570",
+          "f_0002_6442470",
+          "f_0003_6443370",
+          "f_0004_6444270",
+          "f_0005_6445170",
+          "f_0006_6446070",
+          "f_0007_6446970",
+          "f_0008_6447870",
+          "f_0009_6448770",
+          "f_0010_6449670",
+          "f_0011_6450570"
+        ],
+        "uncertain": [],
+        "confidence": null,
+        "attacking_side_notes": "The team in white jerseys (UAE) is attacking the goal on the left side of the screen. The scoreboard indicates UAE's score increases from 0 to 1, confirming they are the attacking team scoring the goal.",
+        "notes": "The sequence shows a continuous live play where a player in white shoots from outside the box (f_0008), the ball travels towards the goal (f_0009), and enters the net (f_0010). Players in white celebrate immediately after (f_0010-f_0011). The scoreboard overlay remains at 0-1 throughout the clip despite the goal occurring, but the visual evidence of the ball entering the net and the subsequent celebration confirms the goal action."
+      },
+      "frame_time_bindings": [
+        {
+          "frame_id": "f_0000_6440670",
+          "requested_media_sec": 6440.67,
+          "actual_media_sec": 6440.68,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0001_6441570",
+          "requested_media_sec": 6441.57,
+          "actual_media_sec": 6441.6,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0002_6442470",
+          "requested_media_sec": 6442.47,
+          "actual_media_sec": 6442.48,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0003_6443370",
+          "requested_media_sec": 6443.37,
+          "actual_media_sec": 6443.4,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0004_6444270",
+          "requested_media_sec": 6444.27,
+          "actual_media_sec": 6444.28,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0005_6445170",
+          "requested_media_sec": 6445.17,
+          "actual_media_sec": 6445.2,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0006_6446070",
+          "requested_media_sec": 6446.07,
+          "actual_media_sec": 6446.08,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0007_6446970",
+          "requested_media_sec": 6446.97,
+          "actual_media_sec": 6447.0,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0008_6447870",
+          "requested_media_sec": 6447.87,
+          "actual_media_sec": 6447.88,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0009_6448770",
+          "requested_media_sec": 6448.77,
+          "actual_media_sec": 6448.8,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0010_6449670",
+          "requested_media_sec": 6449.67,
+          "actual_media_sec": 6449.68,
+          "pts_status": "pts"
+        },
+        {
+          "frame_id": "f_0011_6450570",
+          "requested_media_sec": 6450.57,
+          "actual_media_sec": 6450.6,
+          "pts_status": "pts"
+        }
+      ],
+      "provider_mode": "real",
+      "model": "Qwen3.7-Plus",
+      "raw_response_excerpt": "{\n  \"observed_shot\": true,\n  \"observed_net\": true,\n  \"attacking_team_match\": true,\n  \"attacking_side_notes\": \"The team in white jerseys (UAE) is attacking the goal on the left side of the screen. The scoreboard indicates UAE's score increases from 0 to 1, confirming they are the attacking team scoring the goal.\",\n  \"live_or_replay\": \"live\",\n  \"claims_continuous_live\": true,\n  \"shot_frame_ids\": [\n    \"f_0008_6447870\"\n  ],\n  \"net_frame_ids\": [\n    \"f_0010_6449670\",\n    \"f_0011_6450570\"\n  ],\n  \"live_frame_ids\": [\n    \"f_0000_6440670\",\n    \"f_0001_6441570\",\n    \"f_0002_6442470\",\n    \"f_0003_6443370\",\n    \"f_0004_6444270\",\n    \"f_0005_6445170\",\n    \"f_0006_6446070\",\n    \"f_0007_6446970\",\n    \"f_0008_6447870\",\n    \"f_0009_6448770\",\n    \"f_0010_6449670\",\n    \"f_0011_6450570\"\n  ],\n  \"uncertain\": [],\n  \"confidence\": \"1\",\n  \"frame_ids\": [\n    \"f_0000_6440670\",\n    \"f_0001_6441570\",\n    \"f_0002_6442470\",\n    \"f_0003_6443370\",\n    \"f_0004_6444270\",\n    \"f_0005_6445170\",\n    \"f_0006_6446070\",\n    \"f_0007_6446970\",\n    \"f_0008_6447870\",\n    \"f_0009_6448770\",\n    \"f_0010_6449670\",\n    \"f_0011_6450570\"\n  ],\n  \"notes\": \"The sequence shows a continuous live play where a player in white shoots from outside the box (f_0008), the ball travels towards the goal (f_0009), and enters the net (f_0010). Players in white celebrate immediately after (f_0010-f_0011). The scoreboard overlay remains at 0-1 throughout the clip despite the goal occurring, but the visual evidence of the ball entering the net and the subsequent celebration confirms the goal action.\"\n}",
+      "normalized_ok": true,
+      "observation_only": true,
+      "fact_verified": false,
+      "schema": "v3_goal_verify_normalized_v1"
+    },
+    "cited_frame_ids": [
+      "f_0000_6440670",
+      "f_0001_6441570",
+      "f_0002_6442470",
+      "f_0003_6443370",
+      "f_0004_6444270",
+      "f_0005_6445170",
+      "f_0006_6446070",
+      "f_0007_6446970",
+      "f_0008_6447870",
+      "f_0009_6448770",
+      "f_0010_6449670",
+      "f_0011_6450570"
+    ]
+  }
+]
