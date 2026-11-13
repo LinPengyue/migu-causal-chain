@@ -109,12 +109,14 @@ def validate_continuous_broadcast_phase_proof(
         ):
             return fail("model_phase_review_raw_response_hash_mismatch")
         sent = reviewer.get("frame_ids_sent")
-        # Minimum is three distinct, cited core phases. A later replay is
-        # optional and may add a fourth frame.
-        if not isinstance(sent, list) or len(set(sent)) < len(CORE_PHASES):
+        # Minimum is three distinct, cited core phases. Validate scalar
+        # strings before set() so a malformed list cannot raise TypeError.
+        if not isinstance(sent, list) or len(sent) < len(CORE_PHASES):
             return fail("model_phase_review_sent_frame_ids_missing")
         if any(not isinstance(fid, str) or not fid for fid in sent):
             return fail("model_phase_review_sent_frame_ids_malformed")
+        if len(set(sent)) < len(CORE_PHASES):
+            return fail("model_phase_review_sent_frame_ids_missing")
         # Prevent a post-hoc invented phase label from being attached to an
         # unrelated, but properly hashed, REAL model response.
         try:
