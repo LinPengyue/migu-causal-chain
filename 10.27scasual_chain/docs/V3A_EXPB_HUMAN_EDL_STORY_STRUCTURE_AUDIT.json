@@ -1,0 +1,129 @@
+{
+  "schema": "v3a_expb_human_goal_edl_story_structure_audit_v1",
+  "api_calls": 0,
+  "first_live_verified": false,
+  "edl_modified": false,
+  "best_modified": false,
+  "candidate_window": [
+    6441.88,
+    6459.6
+  ],
+  "overlap_with_existing_edl_segments": false,
+  "neighbors": {
+    "after_segment_id": "seg_buildup_event_000411",
+    "after_media": [
+      3442.75,
+      3454.75
+    ],
+    "after_role": "buildup_action",
+    "before_segment_id": "seg_equalizer_scoreboard",
+    "before_media": [
+      6534.62,
+      6538.12
+    ],
+    "before_role": "equalizer_scoreboard_anchor",
+    "placement_status": "CHRONOLOGICAL_NEIGHBORS",
+    "source_gap_pred_to_goal_sec": 2987.13,
+    "source_gap_goal_to_succ_sec": 75.02
+  },
+  "frames_in_window_from_prior_expb": [
+    {
+      "frame_id": "f_0003_6444880",
+      "actual_media_sec": 6444.88,
+      "sha256": "9d5ebfe604b6b65fa1ea3fcba27ce236d6fcd06e37e91e08fe7528fa2d8280ee",
+      "notes_from_prior_offline_review": "wide live attack; board 0-1; no replay chrome observed on still"
+    },
+    {
+      "frame_id": "f_0004_6447580",
+      "actual_media_sec": 6447.6,
+      "sha256": "68691d3792531f63fa83d2804bae664f1c1955eaff3fac7ab9b164a889a2eeee",
+      "notes_from_prior_offline_review": "pre-shot/strike approach; live wide"
+    },
+    {
+      "frame_id": "f_0005_6447880",
+      "actual_media_sec": 6447.88,
+      "sha256": "1a0223bc7b453859d34d7bb21f4b6303e16bd7b7f20f14f5458f47d7b193876d",
+      "notes_from_prior_offline_review": "ball in flight toward goal; board still 0-1; live wide"
+    },
+    {
+      "frame_id": "f_0006_6450600",
+      "actual_media_sec": 6450.6,
+      "sha256": "ae9d2faae20a4348ffd90ed71055f2d8f43e4d108e74703e3289dfaef1b707ef",
+      "notes_from_prior_offline_review": "ball in net + celebration start; board lag 0-1; camera nearer goal"
+    },
+    {
+      "frame_id": "f_0007_6451600",
+      "actual_media_sec": 6451.6,
+      "sha256": "87f2e3595f00d5ecc5431c346798975846ad0ea1b2ab44f2d535e779a508c474",
+      "notes_from_prior_offline_review": "post-net; crowd/net reaction; live"
+    },
+    {
+      "frame_id": "f_0008_6454100",
+      "actual_media_sec": 6454.12,
+      "sha256": "89c567a0f3dc95e79cc6c0742b79a7a13b125fe00bf379463caee483cc0955c6",
+      "notes_from_prior_offline_review": "celebration run to sideline; closer camera"
+    },
+    {
+      "frame_id": "f_0009_6457600",
+      "actual_media_sec": 6457.6,
+      "sha256": "4c662dbd35c879fb1b0e71c4b9b9492e372b52a876466b06fd1843b167d2eadf",
+      "notes_from_prior_offline_review": "crowd celebration; live"
+    }
+  ],
+  "stage7_cuts_intersecting_window": [
+    {
+      "pts_from": 6451.7,
+      "pts_to": 6452.2,
+      "hist_distance": 0.59579,
+      "pixel_change": 0.20089
+    },
+    {
+      "pts_from": 6454.2,
+      "pts_to": 6454.7,
+      "hist_distance": 0.62927,
+      "pixel_change": 0.21373
+    },
+    {
+      "pts_from": 6456.7,
+      "pts_to": 6457.2,
+      "hist_distance": 0.38118,
+      "pixel_change": 0.22298
+    }
+  ],
+  "raw_events_overlapping_window": [],
+  "replay_or_slowmo_clearly_proven_inside_window": false,
+  "replay_or_slowmo_ruled_out_for_full_window": false,
+  "risks": [
+    {
+      "id": "STORY_GAP_BEFORE_INSERT",
+      "severity": "HIGH",
+      "detail": "Predecessor seg_buildup_event_000411 ends at 3454.75s; proposed goal starts 6441.88s (~2987s / ~50min source gap). Chronological neighbors OK, but narrative continuity from buildup to equalizer may feel abrupt without bridging material."
+    },
+    {
+      "id": "BOUNDARIES_NOT_HUMAN_LOCKED",
+      "severity": "HIGH",
+      "detail": "Default window [6441.88, 6459.60]=shot-6 / net+9 is a hypothesis only; attestation explicitly sets precise_cut_boundaries_confirmed=false."
+    },
+    {
+      "id": "POST_NET_CAMERA_CUTS_IN_WINDOW",
+      "severity": "MEDIUM",
+      "detail": "Stage7 cut candidates intersecting window: [{'pts_from': 6451.7, 'pts_to': 6452.2, 'hist_distance': 0.59579, 'pixel_change': 0.20089}, {'pts_from': 6454.2, 'pts_to': 6454.7, 'hist_distance': 0.62927, 'pixel_change': 0.21373}, {'pts_from': 6456.7, 'pts_to': 6457.2, 'hist_distance': 0.38118, 'pixel_change': 0.22298}]. These are post-net camera-change diagnostics, not a replay classifier. Continuous-video review still required for slow-mo/replay packages."
+    },
+    {
+      "id": "WINDOW_ENDS_BEFORE_SCOREBOARD_1_1",
+      "severity": "MEDIUM",
+      "detail": "Window ends 6459.60; strong OCR/board 1-1 appears ~6459.2–6463.6 in prior Stage5/ExpB stills. Ending before clear 1-1 board may weaken score confirmation inside the clip; successor seg_equalizer_scoreboard@6534.62 provides later board but leaves ~75s gap."
+    },
+    {
+      "id": "SUSPECT_SAME_ACTION_WIDE_OUTSIDE_WINDOW",
+      "severity": "INFO",
+      "detail": "ExpB still @6488.60 (outside candidate window) shows another wide #7 strike-like beat; truncated model LATER_SAME_ACTION_REPLAY was excluded offline. Not inside [6441.88,6459.60]."
+    },
+    {
+      "id": "STILL_AUDIT_IN_WINDOW_NO_CLEAR_REPLAY_CHROME",
+      "severity": "INFO",
+      "detail": "Existing ExpB stills inside window (prior offline contact sheet) show live attack→shot→net→celebration without obvious replay border/slow-mo badge on those frames. Sparse stills cannot prove absence of a brief replay insert between samples."
+    }
+  ],
+  "gate_stance": "Do not relax FIRST_LIVE automated gate; do not mark executable_safe_revision; proposal-only until continuous-boundary + full-window replay review + story bridging decision."
+}
