@@ -259,6 +259,80 @@ def _validate_model_temporal_observation(
     }
 
 
+def resolve_reverified_archived_goal_anchors(
+    *,
+    source_mp4: Path,
+    source_sha: str,
+    original_frame_manifest: Path,
+    original_semantic_log: Path,
+) -> Dict[str, Any]:
+    """Reuse archived REAL Stage3 *only* after exact source redecoding.
+
+    The original Qwen frame IDs, original JPEG bytes, requested/actual PTS,
+    and entire source MP4 hash are revalidated. A prior report string alone
+    has no authority. This returns shot/net source locations, NOT first-live
+    evidence and cannot certify an editor candidate.
+    """
+    from .source_frame_provenance_cli import inspect_archived_real_goal_frames
+
+    result: Dict[str, Any] = {
+        "ok": False, "status": "ARCHIVED_REAL_GOAL_ANCHORS_UNRESOLVED",
+        "first_live_verified": False, "paid_calls": 0,
+    }
+    try:
+        audit = inspect_archived_real_goal_frames(
+            source_mp4=Path(source_mp4),
+            source_sha256=str(source_sha),
+            frame_manifest_path=Path(original_frame_manifest),
+            semantic_log_path=Path(original_semantic_log),
+        )
+        if not audit.get("stage3_source_frame_binding_valid"):
+            result["reason"] = "archived_original_source_frames_not_reproduced"
+            result["source_binding_audit"] = audit.get("source_frame_redecode")
+            return result
+        log = json.loads(Path(original_semantic_log).read_text(encoding="utf-8"))
+        original = json.loads(Path(original_frame_manifest).read_text(encoding="utf-8"))
+        inf = log.get("vlm_inference") or {}
+        if not (
+            log.get("provider_mode") == "real"
+            and log.get("observation_only") is True
+            and inf.get("observed_shot") is True
+            and inf.get("observed_net") is True
+        ):
+            result["reason"] = "archived_real_goal_model_semantics_not_confirmed"
+            return result
+        by_id = {
+            str(fr["frame_id"]): fr for fr in original.get("frames") or []
+            if isinstance(fr, Mapping) and fr.get("frame_id")
+        }
+        shots = [str(i) for i in inf.get("shot_frame_ids") or []]
+        nets = [str(i) for i in inf.get("net_frame_ids") or []]
+        if not shots or not nets or any(i not in by_id for i in shots + nets):
+            result["reason"] = "archived_model_source_frame_ids_mismatch"
+            return result
+        shot = min(float(by_id[i]["actual_media_sec"]) for i in shots)
+        net = max(float(by_id[i]["actual_media_sec"]) for i in nets)
+        if not (
+            math.isfinite(shot) and math.isfinite(net)
+            and 0 <= shot < net and net-shot <= 15.
+        ):
+            result["reason"] = "archived_goal_shot_net_time_inconsistent"
+            return result
+        result.update({
+            "ok": True, "status": "ARCHIVED_REAL_GOAL_SOURCE_ANCHORS_REVALIDATED",
+            "shot_sec": shot, "net_sec": net,
+            "cited_shot_frame_ids": shots, "cited_net_frame_ids": nets,
+            "source_sha256": source_sha,
+            "source_manifest_sha256": audit.get("frame_manifest_sha256"),
+            "original_semantic_log_sha256": audit.get("semantic_log_sha256"),
+            "original_video_frame_redecode": "EXACT_BYTES_AND_PTS_MATCH",
+            "first_live_verified": False, "paid_calls": 0,
+        })
+    except (OSError, ValueError, TypeError, KeyError) as exc:
+        result["reason"] = type(exc).__name__ + ":" + str(exc)
+    return result
+
+
 def observe_native_broadcast_phase(
     *,
     source_mp4: Path,
