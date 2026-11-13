@@ -259,6 +259,54 @@ def _validate_model_temporal_observation(
     }
 
 
+def match_archived_anchors_to_current_goal_issue(
+    *,
+    archived: Mapping[str, Any],
+    diagnosis: Mapping[str, Any],
+    maximum_score_confirmation_lag_sec: float = 180.0,
+) -> Dict[str, Any]:
+    """Refuse to treat any previously observed goal in this match as THIS gap.
+
+    Raw scored events may have more than one goal; source SHA and two
+    authentic goal frames do not establish which story-coverage defect is
+    being repaired. A unique inferred score-change window is essential
+    even for video observation. It still never authorizes EDL edits.
+    """
+    from .story_goal_video_repair import goal_coverage_issues
+
+    if not archived.get("ok"):
+        return {
+            "ok": False, "reason": "archived_source_provenance_not_verified",
+            "issue_id": None,
+        }
+    matched = []
+    for issue in goal_coverage_issues(diagnosis):
+        try:
+            confirmation = float(issue["score_confirmation_sec"])
+            shot = float(archived["shot_sec"])
+            net = float(archived["net_sec"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        if (
+            math.isfinite(confirmation) and math.isfinite(shot)
+            and math.isfinite(net) and 0 <= shot < net
+            and 0 <= confirmation - net <= maximum_score_confirmation_lag_sec
+        ):
+            matched.append(str(issue.get("issue_id") or ""))
+    if len(matched) != 1 or not matched[0]:
+        return {
+            "ok": False,
+            "reason": "archived_goal_not_uniquely_bound_to_current_coverage_issue",
+            "issue_id": None,
+            "matched_issue_ids": matched,
+        }
+    return {
+        "ok": True, "issue_id": matched[0],
+        "matched_issue_ids": matched,
+        "first_live_verified": False,
+    }
+
+
 def resolve_reverified_archived_goal_anchors(
     *,
     source_mp4: Path,
