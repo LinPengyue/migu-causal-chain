@@ -81,7 +81,7 @@ def _prepare(tmp_path, monkeypatch):
     video.write_bytes(b"source-identity-unique-video-bytes")
     sha = hashlib.sha256(video.read_bytes()).hexdigest()
     monkeypatch.setattr(
-        media_mod, "probe_video",
+        phase_mod, "probe_video",
         lambda v: SimpleNamespace(duration_sec=240.0),
     )
 
@@ -107,10 +107,10 @@ def _prepare(tmp_path, monkeypatch):
                 "actual_media_sec": sec, "requested_media_sec": sec,
                 "pts_status": "pts",
             })
-        return None, frames
+        return frames
 
     monkeypatch.setattr(phase_mod, "_source_context_video", fake_clip)
-    monkeypatch.setattr(phase_mod, "extract_dense_frames", fake_extract)
+    monkeypatch.setattr(phase_mod, "extract_phase_anchored_frames", fake_extract)
     return video, sha
 
 
