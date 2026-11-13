@@ -178,8 +178,32 @@ def test_untrusted_video_model_frame_id_never_becomes_semantic_evidence(
         api=api, out_dir=tmp_path / "forged_id",
         approved=True, max_calls=5, max_cost_usd=0.1,
     )
-    assert result["status"] == "NATIVE_VIDEO_MODEL_PTS_OR_CITATION_MISMATCH"
+    assert result["status"] == "NATIVE_VIDEO_PHASE_CITATION_OR_TIMELINE_UNRESOLVED"
+    assert result["temporal_observation_validation"]["reason"] == (
+        "uncited_or_reused_model_input_frame"
+    )
     assert result["phase_observations"] is None
+    assert result["first_live_verified"] is False
+
+
+def test_incomplete_video_phase_observation_is_not_a_positive_result(
+    tmp_path, monkeypatch,
+):
+    video, sha = _prepare(tmp_path, monkeypatch)
+    api = FakeRealVideoApi(observations=[{
+        "phase": "GOAL_SHOT_NET", "frame_id": "shot",
+        "source_pts_sec": 100.0,
+        "visible_cue": "one goal image but no live temporal sequence",
+    }])
+    result = observe_native_broadcast_phase(
+        source_mp4=video, source_sha=sha, shot_sec=100., net_sec=102.,
+        api=api, out_dir=tmp_path / "incomplete_phase",
+        approved=True, max_calls=5, max_cost_usd=0.1,
+    )
+    assert result["status"] == "NATIVE_VIDEO_PHASE_CITATION_OR_TIMELINE_UNRESOLVED"
+    assert result["temporal_observation_validation"]["reason"] == (
+        "incomplete_live_goal_reaction"
+    )
     assert result["first_live_verified"] is False
 
 
