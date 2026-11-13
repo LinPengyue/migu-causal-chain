@@ -86,3 +86,65 @@ re-runs, extra pHash/OCR/cut scans, or edit historical BEST videos.
 - STORY_IMPROVED = dual-video evidence/human blind assessment, not duration.
 - ACL benchmark fairness = only original video + raw event JSON as formal
   prediction inputs; development-only human atomic enrichment is separately named.
+
+## P15.2 main-chain REAL observation bridge (after 27-pass Cursor regression)
+
+The previous 27-pass regression applies only to commit `2620cad`, **not**
+to the following P15.2 changes. Check the new branch HEAD before running.
+
+- `observe_source_goal_video_with_shared_vlm` now records the exact model
+  input frame paths/IDs/PTS, model response excerpt, and the candidate source
+  clip SHA. It does NOT claim these frames were first broadcast.
+- `assemble_live_goal_review_from_observation` maps REAL in-process goal
+  observation to the existing goal review *only when* an independently
+  provisioned `first_live_evidence_store.by_key[SHA|start:end]` contains a
+  matching window's frame binding AND a broadcast timeline review.
+  Missing evidence, mock provider, missing model audit, stale IDs or absent
+  source clip SHA fail CLOSED.
+- `run_story_e2e` passes the REAL observation and first-live evidence store
+  to the already existing Goal Repair executor. Existing external-review
+  mode remains supported. No second Agent or duplicated revision loop.
+- Critically, Stage3 B logs already on server are **not automatically**
+  self-attested as first-live, and an UNKNOWN Stage4 timeline cannot unlock
+  insertion. The current B remains `EDL_REPAIRED=false`.
+- P15.2 tests assert an in-process evidence-to-edit path with explicit synthetic
+  video fixture, plus negative tests for UNKNOWN phase, absent evidence, bad
+  model frame IDs, mock provider and absent audited model output.
+  The synthetic positive uses a monkeypatched source re-decoder; it is
+  ONLY a control-flow regression, NOT proof for actual match frames.
+
+### Cursor instructions — run only new tests and evidence checks
+
+```bash
+git fetch origin story-va-v3a-p15-goal-repair-mainchain
+git switch story-va-v3a-p15-goal-repair-mainchain
+git pull --ff-only
+cd 10.27scasual_chain
+PYTHONPATH=algo python -m pytest -q tests/test_v3a_goal_video_repair.py \
+  tests/test_v3a_stage5_broadcast_temporal_audit.py \
+  tests/test_v3a_stage6_broadcast_verifier.py
+git status --short
+git rev-parse --short HEAD
+```
+
+Report the exact number of tests, errors and real source-input issues. No
+new API call or FIRST_LIVE claim; no paid tests, no re-render of protected BEST.
+
+### Evidence-to-edit blockers still to resolve
+
+1. There is **no independently established B FIRST_LIVE broadcast timeline
+   verdict**. Stage4's UNKNOWN is authoritative until real phase evidence exists.
+2. The current in-process VLM frame outputs and locally generated first-live
+   frame packs use potentially different frame IDs/JPEG encoders. The
+   validator deliberately requires cited model-input frames to match the
+   original source at the exact PTS, not similar-looking replacement frames.
+   Check this exact binding gap before any future live-positive test.
+3. Historical Stage3 Qwen3.6/Qwen3.7 logs predate the new
+   `frame_records/model_response_audit` structure. Do not fabricate these
+   fields or rewrite them as native active-Agent observations. Preserve
+   separate `REUSED_PRIOR_EVIDENCE` vs in-process provenance.
+4. The current adapter is for new REAL in-process goal observations; it is
+   not yet a historical Stage3 replay adapter. Therefore this change alone
+   does not eliminate the need for trustworthy FIRST_LIVE evidence.
+5. Continue in the single `run_story_e2e` main chain. A/B/C remain the
+   original blind-repair tests, not hand-authored success cases.
