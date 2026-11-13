@@ -118,6 +118,8 @@ def build_parser() -> argparse.ArgumentParser:
     )
     p.add_argument("--enable-additive-story-probe", action="store_true", default=False,
                    help="Zero-HTTP original-video additive story search; review only")
+    p.add_argument("--enable-additive-native-semantic-review", action="store_true", default=False,
+                   help="Explicit paid opt-in: one native-video candidate-vs-story semantic request, NEVER first-live proof")
     p.add_argument("--no-smoke-render", action="store_true", default=False)
     p.add_argument("--max-rounds", type=int, default=3)
     p.add_argument("--max-calls", type=int, default=5)
@@ -164,6 +166,12 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     if not args.source_mp4.is_file():
         print(f"ERROR: source mp4 not found: {args.source_mp4}", file=sys.stderr)
+        return 2
+    if args.enable_additive_native_semantic_review and not (
+        args.enable_additive_story_probe and args.enable_real_api and args.i_approve_budget
+    ):
+        print("ERROR: additive native semantic review requires --enable-additive-story-probe, "
+              "--enable-real-api and --i-approve-budget", file=sys.stderr)
         return 2
     if args.enable_native_broadcast_observation and not (
         args.enable_real_api and args.i_approve_budget
@@ -306,6 +314,7 @@ def main(argv: list[str] | None = None) -> int:
         ),
         build_local_first_live_evidence=bool(args.build_local_first_live_evidence),
         enable_additive_story_probe=bool(args.enable_additive_story_probe),
+        enable_additive_native_semantic_review=bool(args.enable_additive_native_semantic_review),
         max_rounds=int(args.max_rounds),
         max_calls=int(args.max_calls),
         max_cost_usd=float(args.max_cost_usd),
