@@ -73,6 +73,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--max-rounds", type=int, default=1)
     p.add_argument("--enable-additive-story-probe", action="store_true", default=False,
                    help="Zero-HTTP original-video additive story search; review only")
+    p.add_argument("--enable-additive-native-semantic-review", action="store_true", default=False,
+                   help="Explicit paid opt-in for one native video story fit request; no edit authorization")
     p.add_argument("--no-smoke-render", action="store_true", default=False)
     p.add_argument("--enable-real-api", action="store_true", default=False)
     p.add_argument("--i-approve-budget", action="store_true", default=False)
@@ -95,6 +97,10 @@ def build_parser() -> argparse.ArgumentParser:
 
 def validate_inputs(args: argparse.Namespace) -> list[str]:
     errs: list[str] = []
+    if getattr(args, "enable_additive_native_semantic_review", False) and not (
+        args.enable_additive_story_probe and args.enable_real_api and args.i_approve_budget
+    ):
+        errs.append("additive_native_semantic_review_requires_probe_real_api_and_budget_approval")
     if getattr(args, "enable_native_broadcast_observation", False) and not (
         args.enable_real_api and args.i_approve_budget
     ):
@@ -239,6 +245,7 @@ def main(argv: list[str] | None = None) -> int:
         ),
         smoke_render=not bool(args.no_smoke_render),
         enable_additive_story_probe=bool(args.enable_additive_story_probe),
+        enable_additive_native_semantic_review=bool(args.enable_additive_native_semantic_review),
         max_rounds=int(args.max_rounds),
         max_calls=int(args.max_calls),
         max_cost_usd=float(args.max_cost_usd),
