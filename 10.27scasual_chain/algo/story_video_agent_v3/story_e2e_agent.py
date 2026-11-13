@@ -136,6 +136,8 @@ class StoryE2EInputs:
     build_local_first_live_evidence: bool = False
     # Opt-in original-video semantic search prior; never directly changes EDL.
     enable_additive_story_probe: bool = False
+    # Requires separate real-API + explicit budget opt-in; no edit authority.
+    enable_additive_native_semantic_review: bool = False
     # Extra explicit opt-in: native MP4 broadcast semantics, one real VLM
     # call using the SAME capped provider; never signs first-live/edits EDL.
     enable_native_broadcast_observation: bool = False
@@ -481,6 +483,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             ),
             "run_fresh_v3r": inp.run_fresh_v3r,
             "enable_additive_story_probe": bool(inp.enable_additive_story_probe),
+            "enable_additive_native_semantic_review": bool(inp.enable_additive_native_semantic_review),
             "max_rounds": inp.max_rounds,
             "max_calls": inp.max_calls,
             "max_cost_usd": inp.max_cost_usd,
@@ -1035,6 +1038,46 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     )
                 else:
                     probe_status = "NO_NARRATIVE_OPPORTUNITY_FOUND"
+                # One native continuous-video comparison is optional and
+                # explicitly paid-opt-in. Its result is a narrative prior,
+                # NOT a confirmed defect, an EDL insert, or first-LIVE proof.
+                if inp.enable_additive_native_semantic_review:
+                    if paid_api is None or not additive.get("opportunities"):
+                        native_review = {
+                            "status": "SKIPPED_NO_BUDGETED_PROVIDER_OR_OPPORTUNITY",
+                            "n_http_calls": 0,
+                            "first_live_verified": False,
+                            "edl_modified": False,
+                        }
+                    else:
+                        from .story_additive_native_semantic import (
+                            review_additive_native_video,
+                        )
+                        native_review = review_additive_native_video(
+                            api=paid_api, pack=pack,
+                            out_dir=round_dir / "additive_native_semantic_review",
+                            approved=bool(
+                                inp.enable_real_api and inp.i_approve_budget
+                                and inp.enable_additive_story_probe
+                            ),
+                            max_calls=int(inp.max_calls),
+                            max_cost_usd=float(inp.max_cost_usd),
+                        )
+                        from .story_paid_eval import provider_usage as additive_provider_usage
+                        usage = additive_provider_usage(paid_api)
+                        http_calls = int(usage.get("http_attempts") or http_calls)
+                        est_cost = float(usage.get("est_cost_usd_real") or est_cost)
+                        if (http_calls >= int(inp.max_calls)
+                                or est_cost >= float(inp.max_cost_usd)):
+                            paid_api = None
+                    write_json(round_dir / "additive_native_semantic_review.json",
+                               native_review)
+                    round_rec["additive_native_semantic_review"] = {
+                        "status": native_review.get("status"),
+                        "n_http_calls": native_review.get("n_http_calls", 0),
+                        "first_live_verified": False,
+                        "edl_modified": False,
+                    }
                 audit["additive_story_probe"] = {
                     "status": probe_status,
                     "opportunity_count": len(additive.get("opportunities") or []),
