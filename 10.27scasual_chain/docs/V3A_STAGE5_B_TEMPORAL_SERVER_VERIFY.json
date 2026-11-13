@@ -1,0 +1,265 @@
+{
+  "schema": "v3a_stage5_b_temporal_server_verify_v1",
+  "generated": "2026-11-13T03:28:01.532343+00:00",
+  "code_sha": "06f32fe07954cb90b2a47128646e26032ce13b27",
+  "branch": "story-va-v3a-stage5-broadcast-temporal-audit",
+  "paid_api": false,
+  "http_requests": 0,
+  "pytest": {
+    "files": [
+      "tests/test_v3a_stage5_broadcast_temporal_audit.py",
+      "tests/test_v3a_goal_video_repair.py",
+      "tests/test_v3a_stage3_goal_video_rounds.py"
+    ],
+    "passed": 23
+  },
+  "stage5": {
+    "out_dir": "/tmp/lpy1_v3a_stage5_B_temporal_audit_20261113",
+    "semantic_consensus": {
+      "status": "TWO_MODEL_TEMPORAL_AGREEMENT",
+      "agreed": true,
+      "n_observations": 2,
+      "shot_spread_sec": 0.68,
+      "net_spread_sec": 0.92,
+      "shot_sec": 6447.2,
+      "net_sec": 6450.6,
+      "source_log_hashes": [
+        "6f31e77d8f962ef93ed581a1ab7670266bde449fd23c4fc30a07625a7f5f4278",
+        "065a95c1e11d9426c9840358e48b266ba86e650fd8c98cf1f3dee6f340be48b6"
+      ]
+    },
+    "score_video_ocr": {
+      "status": "SCORE_TRANSITION_INSUFFICIENT_OCR",
+      "score_before": [
+        0,
+        1
+      ],
+      "score_after": [
+        1,
+        1
+      ],
+      "strong_before_count": 0,
+      "strong_after_count": 5,
+      "first_strong_after_sec": 6459.2,
+      "last_strong_before_sec": null,
+      "early_after_conflicts": [],
+      "late_before_conflicts": [],
+      "replay_event_overlap": false,
+      "ready_for_broadcast_review": false,
+      "first_live_verified": false,
+      "note": "Independent OCR score transition is corroboration, NOT proof that the observed goal was broadcast live for the first time."
+    },
+    "replay_event_hits": [],
+    "next_decision": "EVIDENCE_INSUFFICIENT_OR_CONFLICTING",
+    "first_live_verified": false,
+    "edl_repaired": false,
+    "ocr_status_counts": {
+      "unknown": 15,
+      "ok": 7,
+      "conflict": 1
+    },
+    "ocr_timeline": [
+      {
+        "media_sec": 6431.2,
+        "status": "unknown",
+        "score_tuple": null,
+        "frame": "ocr_000_6431200.jpg"
+      },
+      {
+        "media_sec": 6433.2,
+        "status": "unknown",
+        "score_tuple": null,
+        "frame": "ocr_001_6433200.jpg"
+      },
+      {
+        "media_sec": 6435.2,
+        "status": "unknown",
+        "score_tuple": null,
+        "frame": "ocr_002_6435200.jpg"
+      },
+      {
+        "media_sec": 6437.2,
+        "status": "unknown",
+        "score_tuple": null,
+        "frame": "ocr_003_6437200.jpg"
+      },
+      {
+        "media_sec": 6439.2,
+        "status": "unknown",
+        "score_tuple": null,
+        "frame": "ocr_004_6439200.jpg"
+      },
+      {
+        "media_sec": 6441.2,
+        "status": "ok",
+        "score_tuple": [
+          3,
+          1
+        ],
+        "frame": "ocr_005_6441200.jpg"
+      },
+      {
+        "media_sec": 6443.2,
+        "status": "unknown",
+        "score_tuple": null,
+        "frame": "ocr_006_6443200.jpg"
+      },
+      {
+        "media_sec": 6445.2,
+        "status": "unknown",
+        "score_tuple": null,
+        "frame": "ocr_007_6445200.jpg"
+      },
+      {
+        "media_sec": 6447.2,
+        "status": "unknown",
+        "score_tuple": null,
+        "frame": "ocr_008_6447200.jpg"
+      },
+      {
+        "media_sec": 6449.2,
+        "status": "ok",
+        "score_tuple": [
+          0,
+          1
+        ],
+        "frame": "ocr_009_6449200.jpg"
+      },
+      {
+        "media_sec": 6451.2,
+        "status": "unknown",
+        "score_tuple": null,
+        "frame": "ocr_010_6451200.jpg"
+      },
+      {
+        "media_sec": 6453.2,
+        "status": "unknown",
+        "score_tuple": null,
+        "frame": "ocr_011_6453200.jpg"
+      },
+      {
+        "media_sec": 6455.2,
+        "status": "unknown",
+        "score_tuple": null,
+        "frame": "ocr_012_6455200.jpg"
+      },
+      {
+        "media_sec": 6457.2,
+        "status": "unknown",
+        "score_tuple": null,
+        "frame": "ocr_013_6457200.jpg"
+      },
+      {
+        "media_sec": 6459.2,
+        "status": "ok",
+        "score_tuple": [
+          1,
+          1
+        ],
+        "frame": "ocr_014_6459200.jpg"
+      },
+      {
+        "media_sec": 6461.2,
+        "status": "ok",
+        "score_tuple": [
+          1,
+          1
+        ],
+        "frame": "ocr_015_6461200.jpg"
+      },
+      {
+        "media_sec": 6463.2,
+        "status": "ok",
+        "score_tuple": [
+          1,
+          1
+        ],
+        "frame": "ocr_016_6463200.jpg"
+      },
+      {
+        "media_sec": 6465.2,
+        "status": "unknown",
+        "score_tuple": null,
+        "frame": "ocr_017_6465200.jpg"
+      },
+      {
+        "media_sec": 6467.2,
+        "status": "conflict",
+        "score_tuple": null,
+        "frame": "ocr_018_6467200.jpg"
+      },
+      {
+        "media_sec": 6469.2,
+        "status": "ok",
+        "score_tuple": [
+          1,
+          1
+        ],
+        "frame": "ocr_019_6469200.jpg"
+      },
+      {
+        "media_sec": 6471.2,
+        "status": "ok",
+        "score_tuple": [
+          1,
+          1
+        ],
+        "frame": "ocr_020_6471200.jpg"
+      },
+      {
+        "media_sec": 6473.2,
+        "status": "unknown",
+        "score_tuple": null,
+        "frame": "ocr_021_6473200.jpg"
+      },
+      {
+        "media_sec": 6475.2,
+        "status": "unknown",
+        "score_tuple": null,
+        "frame": "ocr_022_6475200.jpg"
+      }
+    ],
+    "assistive_visual_note": [
+      "Human-readable scoreboard on pre-shot frames shows UAE 0-1 (e.g. ~6439s / 75:46), but Tesseract returned mostly unknown and one false [3,1].",
+      "Only strong ok [0,1] in densify grid was at 6449.20 (between shot and net), so it does not count as pre-shot evidence under Stage5 rule (<= shot-0.5).",
+      "Post-net strong [1,1] readings: 5 starting 6459.20 — OCR after transition is stable.",
+      "Do NOT manufacture pre-shot OCR from VLM claims or human visual reading into the automated gate."
+    ]
+  },
+  "stage4_fullctx_regeneration": {
+    "out_dir": "/tmp/lpy1_v3a_stage4_B_first_live_review_fullctx_20261113",
+    "context_window": {
+      "start": 6428.62,
+      "end": 6477.62
+    },
+    "clip": {
+      "media_in": 6428.62,
+      "media_out": 6477.62,
+      "duration_sec": 49.0,
+      "sha256": "19d580ad3fde2c3432047ba1f1e92c9bada816c376569de7c7cc0b665dc73580",
+      "bytes": 68931962,
+      "ok": true,
+      "continuous_source": true,
+      "accurate_decode": true
+    },
+    "context_truncated": false,
+    "continuous_context_complete": true,
+    "timeline_review_status": "UNKNOWN",
+    "first_live_verified": false,
+    "assert": {
+      "context_truncated_false": true,
+      "continuous_context_complete_true": true,
+      "media_out_covers_window_end": true,
+      "duration_sec": 49.0
+    },
+    "note": "Old 40s Stage4 clip must not be reused; this 49s clip satisfies coverage asserts."
+  },
+  "gates": {
+    "FIRST_LIVE_VERIFIED": false,
+    "EDL_REPAIRED": false,
+    "ready_for_broadcast_review": false,
+    "allow_auto_repair_now": false,
+    "blocker": "SCORE_TRANSITION_INSUFFICIENT_OCR (strong_before_count=0; need >=2 pre-shot 0:1 ok readings)",
+    "next": "Improve independent pre-shot score OCR / denser sampling without relaxing first-live gate; then broadcast-phase check; only then SHA+PTS authenticated first-live review before EDL repair."
+  }
+}
