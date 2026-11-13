@@ -128,6 +128,9 @@ class StoryE2EInputs:
     goal_repair_evidence_dir: Optional[Path] = None
     # When True, build local frame-pack evidence for new windows from source MP4 (zero HTTP).
     build_local_first_live_evidence: bool = False
+    # Extra explicit opt-in: native MP4 broadcast semantics, one real VLM
+    # call using the SAME capped provider; never signs first-live/edits EDL.
+    enable_native_broadcast_observation: bool = False
     max_rounds: int = MAX_ROUNDS
     max_calls: int = 5
     max_cost_usd: float = 0.10
@@ -1177,6 +1180,62 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             round_rec["api_usage_after_goal_video_observation"] = usage
             if http_calls >= int(inp.max_calls) or est_cost >= float(inp.max_cost_usd):
                 paid_api = None
+        # P17: Observing the native *continuous video* is different from
+        # claiming FIRST_LIVE. Only a separate user opt-in, authorized real
+        # API, and remaining shared budget may execute one additional request.
+        # Without these conditions the existing run makes ZERO new calls.
+        native_phase = None
+        if (
+            inp.enable_native_broadcast_observation
+            and paid_api is not None
+            and inp.enable_real_api
+            and inp.i_approve_budget
+            and goal_semantic is not None
+            and round_idx == 1
+        ):
+            cross = goal_semantic.get("source_video_crosscheck") or {}
+            derived = cross.get("derived_times") or {}
+            if cross.get("structurally_ready_for_automated_verify") and (
+                derived.get("shot_sec") is not None
+                and derived.get("net_sec") is not None
+            ):
+                from .native_broadcast_observer import observe_native_broadcast_phase
+                from .story_paid_eval import provider_usage as native_provider_usage
+
+                native_phase = observe_native_broadcast_phase(
+                    source_mp4=inp.source_mp4,
+                    source_sha=str(source_sha or ""),
+                    shot_sec=float(derived["shot_sec"]),
+                    net_sec=float(derived["net_sec"]),
+                    api=paid_api,
+                    out_dir=round_dir / "source_goal_video_review" / "native_broadcast",
+                    approved=True,
+                    max_calls=int(inp.max_calls),
+                    max_cost_usd=float(inp.max_cost_usd),
+                )
+                usage = native_provider_usage(paid_api)
+                http_calls = int(usage.get("http_attempts") or http_calls)
+                est_cost = float(usage.get("est_cost_usd_real") or est_cost)
+                round_rec["api_usage_after_native_phase"] = usage
+                if (
+                    http_calls >= int(inp.max_calls)
+                    or est_cost >= float(inp.max_cost_usd)
+                ):
+                    paid_api = None
+        round_rec["native_broadcast_phase_observation"] = {
+            "enabled": bool(inp.enable_native_broadcast_observation),
+            "status": (native_phase or {}).get(
+                "status", "NOT_EXECUTED_NO_APPROVED_REAL_SEMANTIC_SOURCE"
+            ),
+            "native_video_input": bool((native_phase or {}).get(
+                "native_video_model_input", False
+            )),
+            "first_live_verified": False,
+            "edl_modified": False,
+            "additional_real_http_calls": int((native_phase or {}).get(
+                "n_real_http_calls") or 0
+            ),
+        }
         if goal_semantic:
             # Source VLM observation is distinct from autonomous first-LIVE
             # certification. It cannot confirm the missing-goal diagnosis
