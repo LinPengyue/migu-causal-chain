@@ -71,6 +71,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--match-id", type=str, default=None)
     p.add_argument("--algo-root", type=Path, default=None)
     p.add_argument("--max-rounds", type=int, default=1)
+    p.add_argument("--enable-additive-story-probe", action="store_true", default=False,
+                   help="Zero-HTTP original-video additive story search; review only")
     p.add_argument("--no-smoke-render", action="store_true", default=False)
     p.add_argument("--enable-real-api", action="store_true", default=False)
     p.add_argument("--i-approve-budget", action="store_true", default=False)
@@ -236,6 +238,7 @@ def main(argv: list[str] | None = None) -> int:
             if args.native_phase_archived_semantic_log else None
         ),
         smoke_render=not bool(args.no_smoke_render),
+        enable_additive_story_probe=bool(args.enable_additive_story_probe),
         max_rounds=int(args.max_rounds),
         max_calls=int(args.max_calls),
         max_cost_usd=float(args.max_cost_usd),
