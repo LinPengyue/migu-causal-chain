@@ -134,6 +134,8 @@ class StoryE2EInputs:
     human_preview_media_out: Optional[float] = None
     # When True, build local frame-pack evidence for new windows from source MP4 (zero HTTP).
     build_local_first_live_evidence: bool = False
+    # Opt-in original-video semantic search prior; never directly changes EDL.
+    enable_additive_story_probe: bool = False
     # Extra explicit opt-in: native MP4 broadcast semantics, one real VLM
     # call using the SAME capped provider; never signs first-live/edits EDL.
     enable_native_broadcast_observation: bool = False
@@ -478,6 +480,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 inp.human_assisted_first_live_attestation
             ),
             "run_fresh_v3r": inp.run_fresh_v3r,
+            "enable_additive_story_probe": bool(inp.enable_additive_story_probe),
             "max_rounds": inp.max_rounds,
             "max_calls": inp.max_calls,
             "max_cost_usd": inp.max_cost_usd,
@@ -999,6 +1002,59 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                         "phase8_offline_confirm_issue_ids"
                     ]
         write_diagnosis(round_dir / "story_diagnosis.json", diag)
+        # Optional, bounded original-video search for meaningful missing story
+        # information. A candidate is not an insert recommendation; full-cut
+        # semantics and first-live evidence still require separate review.
+        if inp.enable_additive_story_probe and round_idx == 1:
+            from .story_additive_opportunity import (
+                discover_additive_opportunities,
+                build_opportunity_video_pack,
+            )
+            try:
+                additive = discover_additive_opportunities(
+                    working_edl, source_sha256=str(source_sha or ""),
+                )
+                write_json(round_dir / "additive_opportunities.json", additive)
+                if additive.get("opportunities"):
+                    pack = build_opportunity_video_pack(
+                        opportunities=additive,
+                        source_mp4=inp.source_mp4,
+                        story_mp4=working_mp4,
+                        edl=working_edl,
+                        out_dir=round_dir / "additive_opportunity_video_pack",
+                    )
+                    ok_clips = sum(
+                        1
+                        for item in pack.get("review_items") or []
+                        for clip in item.get("source_context_clips") or []
+                        if (clip.get("export") or {}).get("ok")
+                    )
+                    probe_status = (
+                        "VIDEO_PACK_EXPORTED_NOT_SEMANTICALLY_REVIEWED"
+                        if ok_clips > 0 else "VIDEO_PACK_EXPORT_FAILED"
+                    )
+                else:
+                    probe_status = "NO_NARRATIVE_OPPORTUNITY_FOUND"
+                audit["additive_story_probe"] = {
+                    "status": probe_status,
+                    "opportunity_count": len(additive.get("opportunities") or []),
+                    "source_window_count": additive.get("source_window_count"),
+                    "review_pack": str(round_dir / "additive_opportunity_video_pack")
+                    if additive.get("opportunities") else None,
+                    "no_autonomous_edl_edit": True,
+                    "no_quality_improvement_claim": True,
+                    "no_first_live_claim": True,
+                }
+            except Exception as exc:  # noqa: BLE001 - diagnostic soft-fail
+                audit["additive_story_probe"] = {
+                    "status": "PROBE_FAILED",
+                    "error": f"{type(exc).__name__}:{exc}",
+                    "no_autonomous_edl_edit": True,
+                    "no_quality_improvement_claim": True,
+                    "no_first_live_claim": True,
+                }
+            write_json(round_dir / "additive_story_probe.json",
+                       audit["additive_story_probe"])
         gates["story_diagnosis_valid"] = bool(diag.get("story_diagnosis_valid"))
         round_rec["diagnosis_issue_count"] = len(diag.get("issues") or [])
         round_rec["semantic_observation_claimed"] = diag.get("semantic_observation_claimed")
