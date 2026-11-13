@@ -13,6 +13,7 @@ import pytest
 from story_video_agent_v3.native_broadcast_observer import (
     _source_context_video,
     observe_native_broadcast_phase,
+    resolve_reverified_archived_goal_anchors,
 )
 
 
@@ -272,6 +273,118 @@ def test_budget_exhausted_prevents_video_upload(tmp_path):
     )
     assert result["status"] == "SKIPPED_SHARED_PROVIDER_BUDGET_EXHAUSTED"
     assert api.stats.calls == 5
+
+
+def _archived_goal_inputs(tmp_path):
+    log = tmp_path / "automated_semantic_log.json"
+    manifest = tmp_path / "original_frame_manifest.json"
+    frame_rows = [
+        {"frame_id": "f000", "path": str(tmp_path / "f0.jpg"),
+         "actual_media_sec": 6447.20, "requested_media_sec": 6447.17},
+        {"frame_id": "f002", "path": str(tmp_path / "f2.jpg"),
+         "actual_media_sec": 6450.60, "requested_media_sec": 6450.57},
+    ]
+    manifest.write_text(json.dumps({"frames": frame_rows}), encoding="utf-8")
+    log.write_text(json.dumps({
+        "provider_mode": "real", "observation_only": True,
+        "vlm_inference": {
+            "observed_shot": True, "observed_net": True,
+            "shot_frame_ids": ["f000"], "net_frame_ids": ["f002"],
+            "live_or_replay": "live",
+        },
+    }), encoding="utf-8")
+    return manifest, log
+
+
+def test_archived_goal_anchors_reuse_requires_exact_source_binding(
+    tmp_path, monkeypatch,
+):
+    """Mocked P15 provenance PASS; no claim that fixture frames came from MP4."""
+    import story_video_agent_v3.source_frame_provenance_cli as provenance
+
+    manifest, log = _archived_goal_inputs(tmp_path)
+    monkeypatch.setattr(
+        provenance, "inspect_archived_real_goal_frames",
+        lambda **kw: {
+            "stage3_source_frame_binding_valid": True,
+            "frame_manifest_sha256": "a" * 64,
+            "semantic_log_sha256": "b" * 64,
+        },
+    )
+    result = resolve_reverified_archived_goal_anchors(
+        source_mp4=tmp_path / "synthetic.mp4",
+        source_sha="c" * 64,
+        original_frame_manifest=manifest,
+        original_semantic_log=log,
+    )
+    assert result["ok"] is True, result
+    assert result["shot_sec"] == 6447.20
+    assert result["net_sec"] == 6450.60
+    assert result["first_live_verified"] is False
+    assert result["paid_calls"] == 0
+    assert result["original_video_frame_redecode"] == "EXACT_BYTES_AND_PTS_MATCH"
+
+
+def test_archived_goal_anchors_refuse_unverified_source_and_forged_model(
+    tmp_path, monkeypatch,
+):
+    import story_video_agent_v3.source_frame_provenance_cli as provenance
+
+    manifest, log = _archived_goal_inputs(tmp_path)
+    monkeypatch.setattr(
+        provenance, "inspect_archived_real_goal_frames",
+        lambda **kw: {"stage3_source_frame_binding_valid": False},
+    )
+    params = {
+        "source_mp4": tmp_path / "synthetic.mp4", "source_sha": "c" * 64,
+        "original_frame_manifest": manifest, "original_semantic_log": log,
+    }
+    rejected = resolve_reverified_archived_goal_anchors(**params)
+    assert rejected["ok"] is False
+    assert rejected["reason"] == "archived_original_source_frames_not_reproduced"
+    monkeypatch.setattr(
+        provenance, "inspect_archived_real_goal_frames",
+        lambda **kw: {
+            "stage3_source_frame_binding_valid": True,
+            "frame_manifest_sha256": "a" * 64,
+            "semantic_log_sha256": "b" * 64,
+        },
+    )
+    mutated = json.loads(log.read_text(encoding="utf-8"))
+    mutated["provider_mode"] = "mock"
+    log.write_text(json.dumps(mutated), encoding="utf-8")
+    mocked = resolve_reverified_archived_goal_anchors(**params)
+    assert mocked["ok"] is False
+    assert mocked["reason"] == "archived_real_goal_model_semantics_not_confirmed"
+
+
+def test_archived_phase_requires_both_existing_files_and_explicit_native_opt_in(
+    tmp_path,
+):
+    from story_video_agent_v3.story_full_e2e_cli import (
+        build_parser as build_full_parser, validate_inputs,
+    )
+
+    manifest, log = _archived_goal_inputs(tmp_path)
+    args = build_full_parser().parse_args([
+        "--source-mp4", str(tmp_path / "missing.mp4"),
+        "--events-json", str(tmp_path / "missing.json"),
+        "--out-dir", str(tmp_path / "new_output"),
+        "--native-phase-archived-frame-manifest", str(manifest),
+        "--native-phase-archived-semantic-log", str(log),
+    ])
+    errs = validate_inputs(args)
+    assert "native_archived_inputs_require_native_phase_opt_in" in errs
+    args2 = build_full_parser().parse_args([
+        "--source-mp4", str(tmp_path / "missing.mp4"),
+        "--events-json", str(tmp_path / "missing.json"),
+        "--out-dir", str(tmp_path / "new_output"),
+        "--enable-native-broadcast-observation",
+        "--enable-real-api", "--i-approve-budget",
+        "--native-phase-archived-frame-manifest", str(manifest),
+    ])
+    errs2 = validate_inputs(args2)
+    assert "native_archived_input_pair_missing" in errs2
 
 
 def test_native_video_opt_in_is_separate_from_real_api_consent():
