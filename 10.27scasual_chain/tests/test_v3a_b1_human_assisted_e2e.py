@@ -42,3 +42,27 @@ def test_missing_baseline_fails(tmp_path):
     args.baseline_edl.unlink()
     with pytest.raises(ValueError, match="Missing inputs"):
         preflight(args)
+
+
+def test_preview_runner_accepts_human_attestation_without_strict_review_pack(tmp_path):
+    args = _args(tmp_path)
+    args.goal_repair_evidence_dir = None
+    human = tmp_path / "human.json"
+    human.write_text(json.dumps({"human_confirmed_first_live": True}), encoding="utf-8")
+    args.human_first_live_attestation = human
+    args.preview_media_in = 554.0
+    args.preview_media_out = 567.0
+    result = preflight(args)
+    assert result["human_attestation_sha256"]
+    assert result["preview_window_proposed_not_human_approved"] == [554.0, 567.0]
+    assert result["release_authorized"] is False
+
+
+def test_preview_runner_refuses_missing_cut_window(tmp_path):
+    args = _args(tmp_path)
+    args.goal_repair_evidence_dir = None
+    human = tmp_path / "human.json"
+    human.write_text("{}", encoding="utf-8")
+    args.human_first_live_attestation = human
+    with pytest.raises(ValueError, match="explicit candidate window"):
+        preflight(args)
