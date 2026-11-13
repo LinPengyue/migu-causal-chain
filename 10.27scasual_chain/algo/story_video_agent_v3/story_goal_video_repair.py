@@ -246,6 +246,8 @@ def observe_source_goal_video_with_shared_vlm(
                 "model_response_audit": {
                     "provider_mode": "real",
                     "raw_response_excerpt": visual.get("raw_response_excerpt"),
+                    "normalized_evidence": visual.get("normalized_evidence"),
+                    "cited_frame_ids": visual.get("cited_frame_ids"),
                     "round": "v3a_goal_gap_source_semantic_probe",
                 },
                 "status": (
@@ -749,8 +751,12 @@ def repair_goal_coverage_from_video_reviews(
     """Produce at most one video-authorized edit; no other Agent action mutated."""
     working = [dict(r) for r in edl]
     decisions = []
+    used_external_review = False
+    used_inprocess_observation = False
     for issue in goal_coverage_issues(diagnosis):
         review = load_goal_review_for_issue(review_dir, str(issue.get("issue_id") or ""))
+        if review is not None:
+            used_external_review = True
         bridge = None
         if review is None and video_observation is not None:
             bridge = assemble_live_goal_review_from_observation(
@@ -759,6 +765,8 @@ def repair_goal_coverage_from_video_reviews(
                 evidence_store=first_live_evidence_store,
             )
             review = bridge.get("review")
+            if review is not None:
+                used_inprocess_observation = True
         validated = validate_goal_video_review(
             review=review, issue=issue, source_sha=source_sha,
             source_mp4=source_mp4,
@@ -798,11 +806,15 @@ def repair_goal_coverage_from_video_reviews(
         "release_authorized": False,
         "candidate_quality_improved": "UNVERIFIED",
         "input_review_mode": (
-            "EXTERNALLY_SUPPLIED_VIDEO_REVIEW" if review_dir is not None
+            "EXTERNALLY_SUPPLIED_VIDEO_REVIEW" if used_external_review
             else (
                 "IN_PROCESS_REAL_VLM_OBSERVATION"
-                if video_observation is not None
-                else "NO_EXTERNAL_REVIEW"
+                if used_inprocess_observation
+                else (
+                    "IN_PROCESS_OBSERVATION_INCOMPLETE"
+                    if video_observation is not None
+                    else "NO_EXTERNAL_REVIEW"
+                )
             )
         ),
     }
