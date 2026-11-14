@@ -278,3 +278,76 @@ def test_shared_gateway_nonthinking_config_check_does_zero_http(
     assert audit["status"] == "SHARED_GATEWAY_PREFLIGHT_ONLY_ZERO_HTTP"
     assert audit["api_preflight"]["model"] == "DeepSeek-V4.1-Flash"
     assert audit["api_preflight"]["request_thinking"] == {"type": "disabled"}
+
+
+
+def test_complete_compact_inventory_even_when_rich_detail_cap_is_low():
+    edl, _ = fixtures()
+    events = [event("standard-%03d" % i, 118 + 8*i, "shot")
+              for i in range(80)]
+    events.append(event("rare-foul", 750, "foul"))
+    p = prepare_story_input(edl, events, max_events=12)
+    assert p["counts"]["distinct_events_inside_scope"] == 81
+    assert p["counts"]["events_in_full_inventory"] == 81
+    assert p["counts"]["events_in_llm_context"] == 12
+    assert p["counts"]["events_not_in_rich_detail_context"] == 69
+    assert p["counts"]["events_omitted_entirely_from_prompt"] == 0
+    assert "rare-foul" in {e["event_id"] for e in p["events"]}
+    inventory_ids = {e["event_id"] for e in p["event_inventory"]}
+    assert inventory_ids == {e["event_id"] for e in events}
+    assert {x["event_id"] for x in p["events"]}.issubset(inventory_ids)
+    assert len(p["probes"]) >= 81
+    msgs = model_messages(p, 3)
+    assert "rare-foul" in msgs[1]["content"]
+    assert '"full_event_inventory"' in msgs[1]["content"]
+    assert '"rich_detail_events"' in msgs[1]["content"]
+
+
+def test_hypothesis_can_cite_real_compact_only_event_but_not_fabricated():
+    edl, _ = fixtures()
+    events = [event("id-%d" % i, 120 + 10*i, "shot") for i in range(45)]
+    p = prepare_story_input(edl, events, max_events=6)
+    detailed = {e["event_id"] for e in p["events"]}
+    compact_only = next(
+        e["event_id"] for e in p["event_inventory"]
+        if e["event_id"] not in detailed
+    )
+    obj = model_result(
+        event_id=compact_only, probe_id="event:" + compact_only
+    )
+    obj["hypotheses"][0]["proposed_long_range_relations"][0][
+        "target_event_id"
+    ] = "id-15"
+    res = parse_hypotheses(obj, p)
+    assert res["status"] == "UNVERIFIED_HYPOTHESES"
+    assert res["hypotheses"][0]["supporting_event_ids"] == [compact_only]
+    plan = build_observation_plan(p, res)
+    assert plan["targets"][0]["probe_id"] == "event:" + compact_only
+    assert plan["targets"][0]["video_caption_status"] == "NOT_OBSERVED"
+
+
+def test_gap_probes_use_full_event_series_not_sample_artifacts():
+    edl, _ = fixtures()
+    # Every 10 sec there is a true annotation; a rich cap of 3 must
+    # NOT manufacture 120-second source gaps among sampled events.
+    events = [event("e-%03d" % i, 120 + 10*i) for i in range(72)]
+    p = prepare_story_input(
+        edl, events, max_events=3, gap_threshold_sec=120
+    )
+    assert p["counts"]["events_in_llm_context"] == 3
+    assert p["counts"]["gap_probes"] == 0
+
+
+def test_explicit_replays_not_promoted_to_observation_candidates():
+    edl, _ = fixtures()
+    events = [
+        event("replay-1", 180, "goal", "REPLAY"),
+        event("live-1", 190, "foul", "LIVE"),
+    ]
+    p = prepare_story_input(edl, events)
+    assert {e["event_id"] for e in p["event_inventory"]} == {
+        "replay-1", "live-1"
+    }
+    ids = {x["probe_id"] for x in p["probes"]}
+    assert "event:replay-1" not in ids
+    assert "event:live-1" in ids
