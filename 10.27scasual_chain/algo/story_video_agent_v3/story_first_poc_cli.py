@@ -308,9 +308,20 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             audit["returned_model"] = response.get("model")
             audit["finish_reason"] = response.get("finish_reason")
             audit["provider_usage_reported"] = response.get("usage")
+            content = str(response.get("content") or "")
+            # Persist the actual paid response BEFORE any completion/JSON checks.
+            # This is diagnostic evidence, never an approved story on failure.
+            (args.out_dir / "llm_raw_response.txt").write_text(
+                content, encoding="utf-8"
+            )
+            audit["raw_response_saved"] = True
+            audit["raw_response_chars"] = len(content)
+            audit["raw_response_sha256"] = hashlib.sha256(
+                content.encode("utf-8")
+            ).hexdigest()
+            audit["response_audit"] = response.get("response_audit")
             if str(response.get("finish_reason") or "").lower() in ("length", "content_filter"):
                 raise ValueError("model_output_not_complete_or_filtered")
-            content = str(response.get("content") or "")
             mode = "SHARED_GATEWAY_FLASH_REAL_API_UNVERIFIED"
         elif args.check_provider_config_only:
             api, preflight = build_shared_story_first_provider(
@@ -362,6 +373,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         return 0
     except Exception as exc:
         audit["status"] = "FAILED_NO_PROMOTION"
+        audit["hypotheses_promoted"] = False
+        audit["edl_modified"] = False
         audit["error_type"] = type(exc).__name__
         audit["error"] = str(exc)[:500]
         write_json(args.out_dir / "hypothesis_generation_audit.json", audit)
