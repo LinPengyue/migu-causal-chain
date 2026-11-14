@@ -4,8 +4,8 @@
 
 **共同冻结点**: `fe4c618e85786cc6197adfa886e1bad75a87d97e`，原开发分支 `story-va-v3a-p14-story-quality-20261113`。
 
-- **端到端 v1（冻结）**：分支 `story-va-e2e-v1-frozen-20261114`；补充原子事件 + V3-R 完成原始故事 + **在本轮 Story-First 改造前的 V3-A**（原 Critic / Search / Planner / Verifier 链）。禁止把 v2 实验改动回写此分支。
-- **端到端 v2（开发）**：分支 `story-va-e2e-v2-story-first-20261114`；复用同一上游补充原子事件、V3-R 故事骨架，V3-A 增加 **Story-First 假设生成 → 主动视觉证据发现 → 长程关系分析 → 故事修订**。当前先实现隔离 POC，未达到端到端验收前不替换正式主链。
+- **端到端 v1（冻结）**：分支 `story-va-e2e-v1-frozen-20261114`；补充原子事件 + V3-R 完成原始故事 + **增强版 V3-A**（保留完整 Critic / Search / Planner / Render / Verifier 自修订闭环，并包含 Critic 的视频进球证据发现及 Verifier 的视频业务上下文增强）。禁止把 v2 实验改动回写此分支。
+- **端到端 v2（开发）**：分支 `story-va-e2e-v2-story-first-20261114`；复用同一上游补充原子事件、V3-R 故事骨架，在增强版 V3-A **Evidence Search 内**增加 Story-driven 分支：**既定故事条件下的增量假设 → 主动视频证据发现 → 长程关系核验 → 经原 Planner/Verifier 受控修订**。当前先实现隔离 POC，未达到端到端验收前不替换正式主链。
 
 Git 快照只保护已跟踪代码；服务器媒体、人工标注、独立运行产物不包含在 Git 中，须由执行方做 SHA256 校验及只读备份。仅凭备份分支不能声称外部产物已经备份成功。
 
@@ -24,17 +24,17 @@ Git 快照只保护已跟踪代码；服务器媒体、人工标注、独立运�
 ## 端到端 v2（目标流程，分阶段落地）
 
 补充原子事件 + 冻结 V3-R Story Plan / EDL →
-**Story Hypothesis Generation（LLM）**：围绕多个故事锚点，从真实事件提出相互可区分、可证伪的多个候选故事 →
+**Story-Conditioned Hypothesis Generation（LLM）**：以 V3-R 已确定的故事主线为不可重选的条件，提出零至若干条可能被遗漏、可证伪的长程因果关系或关键故事情节；**不生成第二条主故事** →
 **Targeted Observation Planning**：标记罕见或有歧义的事件、长间隔、状态变化解释缺口；源 PTS 与时间区间必须由代码确定，不能由 LLM 编造 →
 **Active VLM Caption & Evidence Check**：仅在必要区间采样真实视频帧，记录 source SHA、PTS、frame ID 和观察事实 →
 **Long-range Relation Reasoning**：维护直接动作链、状态变化、因果假设、叙事关联、未知五种证据等级；允许反驳假设 →
-**Story Incremental Revision**：只提出可验证的新增片段，不默认 trim/drop 现有良好骨架 →
+**Story Incremental Revision**：仅在验证通过后，将候选交给原 V3-A Planner，保留拒绝、保持不变的选项；不默认 trim/drop 现有良好骨架 →
 **原 V3-A 安全与视频核验**：回放/慢动作禁入；FIRST_LIVE 不可由文本、事件元数据、负 pHash 搜索或比分推定；正式 EDL 仅在可核验后应用 →
 Candidate Video / Quality Verification / Comparison / Release Gate。
 
 ## 当前 POC 的工程验收边界
 
-- 第一阶段只做 **LLM 候选故事 + 观察计划**，主 CLI 的当前 V3-A 不改、正式 EDL 不改、零渲染。
+- 第一阶段 POC 已具备 **LLM 候选长程关系假设 + 观察计划**；现增设 `story_first_evidence_adapter.py` 并接入增强版 V3-A Evidence Search：显式 opt-in 读入 POC，核对 Story Plan / 事件 / PTS，只向独立审计报告输出 **observation-only** 队列，**不送 Planner，不修改正式 EDL，不重新渲染**。
 - 真实文本模型为 **DeepSeek-V4.1-Flash**，复用原有 DeepSeek V4 Pro / Qwen VL 的共享服务和 `STORY_LLM_BASE_URL` / `STORY_LLM_API_KEY` 鉴权；准确模型 ID 必须从该服务核实后设置 `STORY_FIRST_LLM_MODEL`，不能自行假设是官方直接 API 的 `deepseek-flash`，也不能回退到 V4 Pro。
 - 必须显式关闭 thinking（服务支持的 `thinking: {type: disabled}` 或 `enable_thinking=false` 格式二选一）。默认零 HTTP，可用 `--check-provider-config-only` 进行真实共享配置的本地预检；仍不能由此推断远程模型调用已经成功。
 - 默认离线零 HTTP；真实调用需要双重显式授权 + 环境开关 + 独立限额。本次开发阶段不付费。
@@ -46,4 +46,4 @@ Candidate Video / Quality Verification / Comparison / Release Gate。
 
 - v1: checkout `story-va-e2e-v1-frozen-20261114`，不执行 v2 模块。
 - v2: checkout `story-va-e2e-v2-story-first-20261114`，Story-First 默认 opt-in 隔离，不触碰 v1/V3-R/BEST。
-- v2 尚未正式端到端放量，任何 POC 输出只标记为探索结果，不能替代正式视频证据与交付结论。
+- v2 尚未正式端到端放量，任何 POC 输出只标记为探索结果，不能替代正式视频证据与交付结论。最新接线规范见 `END_TO_END_V2_EVIDENCE_SEARCH_INTEGRATION_20261114.md`。
