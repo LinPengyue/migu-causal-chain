@@ -7,16 +7,18 @@
 - 代码由 ChatGPT 直接提交到 v2 分支；Cursor 只负责服务器路径确认、拉取代码、pytest、零 HTTP 执行及返回真实结果。
 - v2 此时是 **P0 实验性实现**，不是已验证的端到端新版，更不是已验证的叙事质量改进。
 
-## 模型合同
+## 模型合同（以已经交给 Cursor 的同一服务为准）
 
-DeepSeek-V4.1-Flash，官方 Chat Completions API model ID 为 deepseek-flash。
-请求体必须显式携带 thinking={type:disabled}；官方默认为思考模式，不可因模型名称误认为默认 non-thinking。
-一轮真实实验最多 1 次 HTTP、0 重试、最高 3200 completion tokens（CLI 可调，不超过 6000）、本地估算费用守卫最高 0.10 USD。估算上限不是供应商账单保证。
-默认无真实 API 调用；真实调用必须同时满足 enable-real-api、i-approve-budget、STORY_API_ENABLE=1、DEEPSEEK_API_KEY 已设置。当前 **禁止**实际执行付费模式。
+- 模型目标：**DeepSeek-V4.1-Flash**，文本故事生成，不开启 thinking。
+- **复用旧 DeepSeek V4 Pro / Qwen VL 的共享服务和鉴权**，由项目原有 `story_video_agent.api_provider.load_endpoint_configs()["planner"]` 读取 `STORY_LLM_BASE_URL` / `STORY_LLM_API_KEY`（或原本已支持的 `OPENAI_*` 回退）。`STORY_VLM_*` 保持不变。
+- 不另开 `api.deepseek.com`，也不要求 `DEEPSEEK_API_KEY`。此前固定官方模型 ID `deepseek-flash` 的假设已撤销。
+- **模型 ID 和请求体由共享服务的实际兼容协议决定**。将共享服务中 **DeepSeek-V4.1-Flash 对应的准确模型标识** 放在环境变量 `STORY_FIRST_LLM_MODEL`；绝不回退到旧 V4 Pro 或 Qwen。这个 ID 不是密钥。第一次使用前请 Cursor 从已有服务的模型配置核实，不猜测名称。
+- 显式关闭 thinking：默认 `--disable-thinking-style thinking_object` 发 `"thinking":{"type":"disabled"}`，若该服务为 Flash 提供的是 flat 参数，则选择 `--disable-thinking-style enable_thinking_false` 发 `"enable_thinking":false`。二选一，由共享服务的真实要求选择，**不得改成不发送参数、默许思考**。
+- token 参数默认继承项目已有 `STORY_PLANNER_TOKEN_PARAM`，必要时通过 `STORY_FIRST_TOKEN_PARAM` 指定为 `max_tokens` 或 `max_completion_tokens`。每轮最多 1 次 HTTP、0 重试，本地估算费用守卫 ≤0.10 USD（不是账单硬上限）。
+- 默认 **零 HTTP**。真实调用必须同时指定 `--enable-real-api`、`--i-approve-budget`、`STORY_API_ENABLE=1`、共享鉴权配置和 Flash 模型 ID；当前用户只说明了配置来源，尚未授权付费实验。
+- 为避免真实付费前误调用，使用 `--check-provider-config-only` 执行本地请求体预检（**0 HTTP**）。此检查只验证代码组装与本地配置，不能证明远端服务确实接受该模型名或 thinking 格式。
 
-API 官方依据：
-https://api-docs.deepseek.com/quick_start/pricing/
-https://api-docs.deepseek.com/guides/thinking_mode/
+不应混淆：模型提供商的官方直接 API 文档 != 当前第三方/代理共享服务的模型路由定义。
 
 ## 先做服务器非 Git 数据备份
 
@@ -62,6 +64,20 @@ https://api-docs.deepseek.com/guides/thinking_mode/
 
 禁止复用旧 180s 固定窗口脚本声称它代表 Story-First 方案。
 禁止将 HUMAN_ATOM_ENRICHED_DEV 用作 raw-only benchmark 结果。
+
+### 可选：沿用共享服务做零 HTTP 的 Flash 模型预检
+
+请先在 Cursor 的服务器执行环境中沿用之前的安全密钥加载方式，只设置非机密的 Flash 模型 ID（实际服务模型目录须核实）：
+
+    export STORY_FIRST_LLM_MODEL='在现有共享服务核实到的Flash模型ID'
+    export PYTHONPATH="$PWD/algo"
+    export STORY_API_ENABLE=0
+    python -m story_video_agent_v3.story_first_poc_cli \
+      --edl "$P14_EDL" --events "$P14_EVENTS" \
+      --out-dir /tmp/lpy1_story_first_gateway_preflight_20261114 \
+      --check-provider-config-only
+
+如果当前服务使用 `enable_thinking=false` 而不是 `thinking:{type:disabled}`，再加 `--disable-thinking-style enable_thinking_false`，不能同时发送两个格式。验证请求体配置是否为目标 Flash 模型、thinking 显式关闭、没有回退到 V4 Pro、没有输出密钥、HTTP=0。**不得在不确认 Flash 模型 ID / 关闭思考格式的情况下发起真实模型请求。**
 
 ## 下一阶段（目前只设计，不执行）
 
