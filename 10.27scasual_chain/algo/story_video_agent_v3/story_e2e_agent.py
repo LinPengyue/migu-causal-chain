@@ -1189,8 +1189,9 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             )
             write_json(round_dir / "story_first_evidence_search.json", story_first_branch)
             story_first_summary = planner_safe_story_first_summary(story_first_branch)
-            # Metadata only: not executable/verified/first-LIVE candidates.
-            search_report["story_first_branch"] = story_first_summary
+            # Keep the old Search result passed into Planner byte-for-byte
+            # unchanged. The v2 branch is visible only in its own audit and
+            # round metadata until its evidence contract is developed.
             round_rec["story_first_branch"] = story_first_summary
         # Observation-only turn-adjacent search supplements broad event candidates.
         # No candidate is first-live verified, semantic-confirmed, or applied.
