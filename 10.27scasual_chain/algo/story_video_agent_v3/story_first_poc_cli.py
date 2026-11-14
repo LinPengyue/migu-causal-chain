@@ -5,8 +5,10 @@ PYTHONPATH=algo python -m story_video_agent_v3.story_first_poc_cli \
  --edl /path/candidate_edl.json --events /path/events_enriched.json \
  --out-dir /tmp/story_first_prepared
 
-Real API: --enable-real-api --i-approve-budget AND STORY_API_ENABLE=1
-AND DEEPSEEK_API_KEY. Exact official model ID: deepseek-flash.
+Real API: --enable-real-api --i-approve-budget AND STORY_API_ENABLE=1.
+Reuse the existing Story API credentials/server (as V4 Pro and Qwen VL do).
+Provider-specific Flash model ID is supplied by STORY_FIRST_LLM_MODEL;
+never silently default to the older V4 Pro model. No thinking.
 """
 from __future__ import annotations
 
@@ -15,6 +17,7 @@ import hashlib
 import json
 import os
 import sys
+from dataclasses import replace
 from pathlib import Path
 from typing import Any, Dict, Mapping, Optional, Sequence
 
@@ -24,8 +27,19 @@ from .story_first_hypotheses import (
     model_messages, parse_hypotheses, prepare_story_input,
 )
 
-MODEL_ID = "deepseek-flash"
-DEFAULT_BASE_URL = "https://api.deepseek.com"
+MODEL_LABEL = "DeepSeek-V4.1-Flash"
+DEFAULT_MODEL_AUDIT = "UNCONFIGURED_FLASH_PROVIDER_MODEL_ID"
+
+
+def configured_flash_model_id() -> str:
+    """Provider-specific model alias; never reuse V4 Pro/Qwen by accident."""
+    model_id = (os.environ.get("STORY_FIRST_LLM_MODEL") or "").strip()
+    if not model_id:
+        raise ValueError("STORY_FIRST_LLM_MODEL_required_for_shared_gateway")
+    lowered = model_id.lower()
+    if "deepseek" not in lowered or "flash" not in lowered:
+        raise ValueError("expected_deepseek_flash_provider_model_id")
+    return model_id
 
 
 def write_json(path: Path, obj: Any) -> None:
@@ -52,25 +66,41 @@ def parse_model_json(text: str) -> Mapping[str, Any]:
     return raw
 
 
-def build_deepseek_provider(*, max_cost_usd: float, max_completion_tokens: int):
-    """One text planner; separate explicit DeepSeek credentials; no fallback."""
-    from story_video_agent.api_provider import ApiProvider, EndpointConfig
+def build_shared_story_first_provider(
+    *, max_cost_usd: float, max_completion_tokens: int,
+    disable_thinking_style: str = "thinking_object",
+):
+    """Reuse existing Story planner gateway, credentials, retry controls.
 
-    key = (os.environ.get("DEEPSEEK_API_KEY") or "").strip()
-    if not key:
-        raise ValueError("DEEPSEEK_API_KEY_missing")
-    base = (os.environ.get("DEEPSEEK_BASE_URL") or DEFAULT_BASE_URL).rstrip("/")
-    if not (base.startswith("https://") or (
-        os.environ.get("STORY_FIRST_ALLOW_LOCAL_HTTP") == "1"
-        and base.startswith("http://127.0.0.1"))):
-        raise ValueError("provider_base_url_must_be_https")
-    cfg = EndpointConfig(
-        role="planner", base_url=base, api_key=key, model=MODEL_ID,
-        timeout_sec=90.0, max_retries=0, rpm=20.0, token_param="max_tokens",
+    The model ID is an explicit provider-side alias. Never assume that the
+    official direct-API model name works on the existing shared gateway.
+    Both supported request styles explicitly DISABLE thinking.
+    """
+    from story_video_agent.api_provider import ApiProvider, load_endpoint_configs
+
+    model_id = configured_flash_model_id()
+    original = load_endpoint_configs()["planner"]
+    if not original.configured():
+        raise ValueError("existing_STORY_LLM_gateway_configuration_missing")
+    if disable_thinking_style not in ("thinking_object", "enable_thinking_false"):
+        raise ValueError("unsupported_non_thinking_format")
+    token_param = (
+        os.environ.get("STORY_FIRST_TOKEN_PARAM") or original.token_param
+    ).strip()
+    if token_param not in ("max_tokens", "max_completion_tokens"):
+        raise ValueError("invalid_or_uncapped_story_first_token_parameter")
+    cfg = replace(
+        original,
+        model=model_id, max_retries=0,
         max_completion_tokens=max_completion_tokens,
-        send_thinking_params=False, enable_thinking=None, thinking_budget=None,
-        request_profile="default", default_temperature=0.0,
-        thinking_object_disabled=True, stream=False,
+        token_param=token_param, request_profile="default",
+        default_temperature=0.0, stream=False,
+        thinking_object_disabled=(disable_thinking_style == "thinking_object"),
+        send_thinking_params=(disable_thinking_style == "enable_thinking_false"),
+        enable_thinking=(
+            False if disable_thinking_style == "enable_thinking_false" else None
+        ),
+        thinking_budget=None,
     )
     api = ApiProvider(
         configs={"planner": cfg}, required_roles=("planner",),
@@ -82,15 +112,31 @@ def build_deepseek_provider(*, max_cost_usd: float, max_completion_tokens: int):
         cfg, messages=[{"role": "user", "content": "preflight"}],
         temperature=0.0,
     )
-    if (req.get("model") != MODEL_ID or
-        req.get("thinking") != {"type": "disabled"} or
-        req.get("stream") is not False or
-        any(k in req for k in
-            ("enable_thinking", "thinking_budget", "max_completion_tokens"))):
-        raise ValueError("deepseek_non_thinking_request_preflight_failed")
+    expected_thinking = (
+        req.get("thinking") == {"type": "disabled"}
+        and "enable_thinking" not in req
+        and "thinking_budget" not in req
+        if disable_thinking_style == "thinking_object"
+        else req.get("enable_thinking") is False
+        and "thinking" not in req
+        and "thinking_budget" not in req
+    )
+    if (req.get("model") != model_id or not expected_thinking
+        or req.get("stream") is not False
+        or sum(k in req for k in ("max_tokens", "max_completion_tokens")) != 1
+        or req.get(token_param) != max_completion_tokens):
+        raise ValueError("shared_flash_non_thinking_request_preflight_failed")
     return api, {
-        "model": MODEL_ID, "base_url": base,
-        "request_thinking": req["thinking"], "request_audit": request_audit,
+        "model": model_id,
+        "model_label": MODEL_LABEL,
+        "gateway": "existing_story_planner_service",
+        "gateway_configured": True,
+        "request_thinking": (
+            req.get("thinking") if disable_thinking_style == "thinking_object"
+            else {"enable_thinking": req.get("enable_thinking")}
+        ),
+        "thinking_disable_style": disable_thinking_style,
+        "token_param": token_param, "request_audit": request_audit,
         "api_key_logged": False, "http_attempt_cap": 1, "retry_cap": 0,
         "cost_cap_is_estimate_not_invoice_guarantee": True,
     }
@@ -108,6 +154,12 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--max-hypotheses", type=int, default=5)
     p.add_argument("--gap-threshold-sec", type=float, default=120)
     p.add_argument("--fixture-model-json", type=Path)
+    p.add_argument("--check-provider-config-only", action="store_true",
+                   help="Offline-only request preflight against existing Story gateway; no HTTP")
+    p.add_argument("--disable-thinking-style",
+                   choices=("thinking_object", "enable_thinking_false"),
+                   default="thinking_object",
+                   help="Use only the explicit nonthinking format supported by the gateway")
     p.add_argument("--enable-real-api", action="store_true")
     p.add_argument("--i-approve-budget", action="store_true")
     p.add_argument("--max-cost-usd", type=float, default=0.10)
@@ -121,6 +173,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         args.i_approve_budget and os.environ.get("STORY_API_ENABLE") == "1"
     ):
         print("REFUSED: paid mode requires --i-approve-budget and STORY_API_ENABLE=1",
+              file=sys.stderr)
+        return 2
+    if args.check_provider_config_only and (args.enable_real_api or args.fixture_model_json):
+        print("REFUSED: offline preflight cannot be combined with paid API or fixture",
               file=sys.stderr)
         return 2
     if args.fixture_model_json is not None and args.enable_real_api:
@@ -144,8 +200,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     args.out_dir.mkdir(parents=True, exist_ok=True)
     audit: Dict[str, Any] = {
         "schema": SCHEMA, "data_tier": "HUMAN_ATOM_ENRICHED_DEV",
-        "model": MODEL_ID, "model_label": "DeepSeek-V4.1-Flash",
-        "thinking": {"type": "disabled"}, "http_attempts": 0,
+        "model": os.environ.get("STORY_FIRST_LLM_MODEL") or DEFAULT_MODEL_AUDIT,
+        "model_label": MODEL_LABEL,
+        "thinking_required_disabled": True,
+        "thinking_disable_style": args.disable_thinking_style, "http_attempts": 0,
         "paid_http_authorized": bool(args.enable_real_api),
         "edl_modified": False, "candidate_rendered": False,
         "first_live_certified": False, "story_quality_improved_verified": False,
@@ -171,7 +229,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         write_json(args.out_dir / "prepared_story_input.json", prepared)
         messages = model_messages(prepared, args.max_hypotheses)
         write_json(args.out_dir / "llm_input.json", {
-            "model": MODEL_ID, "thinking": {"type": "disabled"},
+            "model": audit["model"],
+            "thinking_disable_style": args.disable_thinking_style,
+            "thinking_must_be_disabled": True,
             "messages": messages, "data_tier": "HUMAN_ATOM_ENRICHED_DEV",
         })
         write_json(args.out_dir / "event_only_baseline.json",
@@ -180,9 +240,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             content = args.fixture_model_json.read_text(encoding="utf-8")
             mode = "OFFLINE_FIXTURE_NOT_REAL_MODEL_RESULT"
         elif args.enable_real_api:
-            api, preflight = build_deepseek_provider(
+            api, preflight = build_shared_story_first_provider(
                 max_cost_usd=args.max_cost_usd,
                 max_completion_tokens=args.max_completion_tokens,
+                disable_thinking_style=args.disable_thinking_style,
             )
             audit["api_preflight"] = preflight
             try:
@@ -207,7 +268,18 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             if str(response.get("finish_reason") or "").lower() in ("length", "content_filter"):
                 raise ValueError("model_output_not_complete_or_filtered")
             content = str(response.get("content") or "")
-            mode = "DEEPSEEK_REAL_API_UNVERIFIED"
+            mode = "SHARED_GATEWAY_FLASH_REAL_API_UNVERIFIED"
+        elif args.check_provider_config_only:
+            api, preflight = build_shared_story_first_provider(
+                max_cost_usd=args.max_cost_usd,
+                max_completion_tokens=args.max_completion_tokens,
+                disable_thinking_style=args.disable_thinking_style,
+            )
+            audit["api_preflight"] = preflight
+            audit["model"] = preflight["model"]
+            audit["http_attempts"] = api.stats.summary()["http_attempts"]
+            content = ""
+            mode = "SHARED_GATEWAY_PREFLIGHT_ONLY_ZERO_HTTP"
         else:
             content = ""
             mode = "PREPARED_ONLY_ZERO_HTTP"
