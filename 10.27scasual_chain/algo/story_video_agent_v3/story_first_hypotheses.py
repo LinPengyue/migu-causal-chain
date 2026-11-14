@@ -37,14 +37,17 @@ Use ONLY these fields per hypothesis; do not add explanations or optional lists:
   mechanism_key: unique short snake_case string
   narrative_summary: one Chinese speculative sentence, MAX 55 Chinese characters
   supporting_event_ids: 2-4 real event IDs, distinct and temporally separated
-  proposed_long_range_relations: EXACTLY one object with
+  proposed_long_range_relations: ARRAY of length 1; its only object has
     source_event_id, target_event_id (both real IDs), relation_type
     ("causal_hypothesis" or "state_transition" or "narrative_association"),
     claim (MAX 35 Chinese characters; must state uncertainty)
-  falsification_conditions: EXACTLY one specific observable test, MAX 45 chars
-  observation_queries: EXACTLY one object with
+  falsification_conditions: ARRAY of length 1 containing a specific
+    observable test string (MAX 45 chars)
+  observation_queries: ARRAY of length 1; its only object has
     target_id ("event:<real_id>" for a non-replay candidate OR a supplied gap ID),
     question (MAX 40 chars), discriminating_signal (MAX 35 chars)
+For all three plural fields above, use JSON arrays (square brackets), never
+bare object/string values. Example: "falsification_conditions":["..."].
 No possible_intermediate_states, uncertain_claims or expected_story_contribution
 in this STAGE 1 response: evidence expansion happens only AFTER model output.
 Do not write source times; CODE binds actual source PTS after validation.
