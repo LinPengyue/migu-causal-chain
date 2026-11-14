@@ -23,6 +23,10 @@ Return ONE JSON object and nothing else. Use ONLY the supplied observed events a
 real event IDs. The provided V3-R story is a frozen baseline, not an answer key.
 Generate up to K mutually distinguishable and FALSIFIABLE possible stories between
 the two story anchors. You may return zero hypotheses if evidence is insufficient.
+The full_event_inventory contains ALL events between anchors in compact form.
+rich_detail_events contains a DETAIL SUBSET; never mistake it for the whole match.
+For compact-only events, you may cite only provided labels and must explicitly
+request video verification; do not invent extra action descriptions.
 A story is a conjecture, not a fact. Do not infer player emotion, coach intention,
 game tactics, possession, causal effect, replay status, or first-LIVE from mere event
 ordering or labels. Do not invent video observations, times, scores, event IDs,
@@ -206,6 +210,7 @@ def prepare_story_input(
             "source_pts_sec": e["source_pts_sec"],
             "event_type": e["event_type"],
             "comment_label": _text(e["comment_label"], 65),
+            "scores_metadata": e["scores_metadata"],
             "is_rich_context": e["event_id"] in selected_ids,
             "known_replay_or_slowmo": (
                 str(e.get("broadcast_phase_metadata") or "").upper() == "REPLAY"
@@ -492,13 +497,9 @@ def baseline_candidates(prepared: Mapping[str, Any]) -> Dict[str, Any]:
         sc = e.get("scores_metadata") or {}
         return sum((_finite(sc.get(x)) or 0.0) for x in
                    ("overall_score", "emotional_heat_score", "criticality_score"))
-    detailed_scores = {
-        e["event_id"]: score(e) for e in prepared["events"]
-    }
     ranked = sorted(
         events,
-        key=lambda e: (-detailed_scores.get(e["event_id"], 0.0),
-                       e["source_pts_sec"], e["event_id"]),
+        key=lambda e: (-score(e), e["source_pts_sec"], e["event_id"]),
     )
     return {
         "schema": SCHEMA,
