@@ -1,0 +1,37 @@
+{
+  "model_id_on_gateway": "DeepSeek-V4.1-Flash",
+  "gateway_models_list_contains_id": true,
+  "verified_context_window_tokens": 1000000,
+  "context_evidence": [
+    "ai.360.com Paratera provider card for deepseek/deepseek-v4.1-flash: Context 1,000,000",
+    "llmapi.paratera.com/v1/models includes id DeepSeek-V4.1-Flash (OpenAI schema has no context field)"
+  ],
+  "tokenizer_source": "hf-mirror.com/deepseek-ai/DeepSeek-V4.1-Flash/tokenizer.json + encoding/encoding.py",
+  "tokenizer_sha256": "c90dfa01249db1be4245780a052ede752e1361c612ac6d08e2bdada7d599476b",
+  "encoding_method": "encode_messages(thinking_mode=chat) then tokenizers.Tokenizer.encode",
+  "measured_input_tokens": 64108,
+  "prompt_chars_rendered": 203302,
+  "prompt_utf8_bytes_rendered": 203639,
+  "plain_join_chars": 203243,
+  "max_completion_tokens": 3200,
+  "input_plus_output_budget": 67308,
+  "fits_1m_context": true,
+  "cost_estimates_worst_case_full_output": [
+    {
+      "label": "project_default_usd_0.15_0.60",
+      "est_usd": 0.011536,
+      "within_0_10": true
+    },
+    {
+      "label": "paratera_360_cny2_8_fx7",
+      "est_usd": 0.021974,
+      "within_0_10": true
+    },
+    {
+      "label": "paratera_360_cny2_8_fx7.2",
+      "est_usd": 0.021363,
+      "within_0_10": true
+    }
+  ],
+  "budget_gate_pass": true
+}
