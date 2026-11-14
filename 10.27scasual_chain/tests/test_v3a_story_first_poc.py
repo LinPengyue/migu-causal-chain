@@ -411,3 +411,45 @@ def test_paid_length_response_saved_before_rejection(tmp_path, monkeypatch):
     assert audit["hypotheses_promoted"] is False
     assert not (out/"story_hypotheses.json").exists()
     assert not (out/"observation_plan.json").exists()
+
+
+
+def test_compact_stage_one_prompt_and_minimal_hypothesis_fixture():
+    p = prepare_story_input(*fixtures())
+    messages = model_messages(p, max_hypotheses=2)
+    assert "STAGE 1 ONLY" in messages[0]["content"]
+    assert "EXACTLY one object" in messages[0]["content"]
+    assert "full_event_inventory" in messages[1]["content"]
+    assert "rich_detail_events" in messages[1]["content"]
+    assert json.loads(messages[1]["content"])["K"] == 2
+
+    # Stage one must not need the old wordy optional fields.
+    compact = model_result()
+    hyp = compact["hypotheses"][0]
+    del hyp["possible_intermediate_states"]
+    del hyp["uncertain_claims"]
+    del hyp["expected_story_contribution"]
+    hyp["supporting_event_ids"] = ["foul-1", "shot-1"]
+    parsed = parse_hypotheses(compact, p, max_hypotheses=2)
+    assert parsed["status"] == "UNVERIFIED_HYPOTHESES"
+    assert parsed["hypotheses"][0]["possible_intermediate_states"] == []
+    assert parsed["hypotheses"][0]["uncertain_claims"] == []
+    assert parsed["hypotheses"][0]["expected_story_contribution"] == ""
+    obs = build_observation_plan(p, parsed)
+    assert len(obs["targets"]) == 1
+    assert obs["first_live_certified"] is False
+    assert obs["edl_modified"] is False
+    assert obs["targets"][0]["automatic_edl_insert"] is False
+
+
+@pytest.mark.parametrize("missing_key", [
+    "proposed_long_range_relations", "observation_queries",
+    "falsification_conditions", "narrative_summary",
+])
+def test_compact_stage_one_requires_nonempty_mechanism_and_test(missing_key):
+    p = prepare_story_input(*fixtures())
+    hyp = model_result()["hypotheses"][0]
+    hyp[missing_key] = [] if missing_key != "narrative_summary" else ""
+    parsed = parse_hypotheses({"hypotheses": [hyp]}, p)
+    assert not parsed["hypotheses"]
+    assert parsed["rejected"][0]["reason"] == "missing_evidence_or_test"
