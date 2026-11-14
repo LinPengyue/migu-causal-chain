@@ -180,6 +180,12 @@ def prepare_story_input(
         selected = [selected[j] for j in idxs]
     probes: List[Dict[str, Any]] = []
     for ev in selected:
+        # Replays may inform what an annotation refers to, but are NOT legal
+        # candidate SOURCE observations under the first-broadcast constraint.
+        if (str(ev.get("broadcast_phase_metadata") or "").upper() == "REPLAY"
+                or ev.get("is_replay_metadata") in (True, "true", "True", 1)
+                or ev.get("is_slow_motion_metadata") in (True, "true", "True", 1)):
+            continue
         t = ev["source_pts_sec"]
         a, b = max(lo, t - 8), min(hi, t + 8)
         if b - a < 1:
