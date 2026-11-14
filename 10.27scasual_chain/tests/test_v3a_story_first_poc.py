@@ -11,7 +11,7 @@ from story_video_agent_v3.story_first_hypotheses import (
     select_story_interval,
 )
 from story_video_agent_v3.story_first_poc_cli import (
-    build_deepseek_provider, main,
+    build_shared_story_first_provider, main,
 )
 
 
@@ -205,13 +205,76 @@ def test_fixture_only_does_not_claim_real_llm(tmp_path):
     assert len(json.loads((out/"observation_plan.json").read_text())["targets"]) == 1
 
 
-def test_non_thinking_deepseek_request_preflight_has_no_http(monkeypatch):
-    monkeypatch.setenv("DEEPSEEK_API_KEY", "unit-test-dummy-key")
+def _set_shared_gateway_env(monkeypatch):
+    # Existing V4 Pro / Qwen VL provider convention; never use new secrets.
+    monkeypatch.setenv("STORY_LLM_BASE_URL", "https://provider.example.test/v1")
+    monkeypatch.setenv("STORY_LLM_API_KEY", "unit-test-shared-credential")
+    monkeypatch.setenv("STORY_LLM_MODEL", "deepseek-v4-pro")
+    monkeypatch.setenv("STORY_FIRST_LLM_MODEL", "DeepSeek-V4.1-Flash")
     monkeypatch.setenv("STORY_API_ENABLE", "0")
-    api, preflight = build_deepseek_provider(
-        max_cost_usd=0.01, max_completion_tokens=1000
+    monkeypatch.delenv("STORY_API_MAX_COMPLETION_TOKENS", raising=False)
+    monkeypatch.delenv("STORY_PLANNER_MAX_COMPLETION_TOKENS", raising=False)
+    monkeypatch.delenv("STORY_PLANNER_REQUEST_PROFILE", raising=False)
+    monkeypatch.delenv("STORY_PLANNER_TOKEN_PARAM", raising=False)
+
+
+@pytest.mark.parametrize("disable_style", ["thinking_object", "enable_thinking_false"])
+def test_reuses_shared_gateway_and_explicitly_disables_thinking(
+    monkeypatch, disable_style
+):
+    _set_shared_gateway_env(monkeypatch)
+    api, preflight = build_shared_story_first_provider(
+        max_cost_usd=0.01, max_completion_tokens=1000,
+        disable_thinking_style=disable_style,
     )
-    assert preflight["model"] == "deepseek-flash"
-    assert preflight["request_thinking"] == {"type": "disabled"}
-    assert preflight["http_attempt_cap"] == 1
+    assert preflight["model"] == "DeepSeek-V4.1-Flash"
+    assert preflight["gateway"] == "existing_story_planner_service"
+    assert api.configs["planner"].base_url == "https://provider.example.test/v1"
+    assert api.configs["planner"].api_key == "unit-test-shared-credential"
+    assert api.configs["planner"].model != "deepseek-v4-pro"
     assert api.stats.summary()["http_attempts"] == 0
+    assert "unit-test-shared-credential" not in json.dumps(preflight)
+    cfg = api.configs["planner"]
+    body, _ = api.build_chat_request_body(
+        cfg, messages=[{"role": "user", "content": "test"}], temperature=0.0
+    )
+    if disable_style == "thinking_object":
+        assert body["thinking"] == {"type": "disabled"}
+        assert "enable_thinking" not in body
+    else:
+        assert body["enable_thinking"] is False
+        assert "thinking" not in body
+    assert "thinking_budget" not in body
+    assert body["model"] == "DeepSeek-V4.1-Flash"
+    assert body["stream"] is False
+
+
+def test_provider_model_id_not_guessed_or_falls_back_to_v4_pro(monkeypatch):
+    _set_shared_gateway_env(monkeypatch)
+    monkeypatch.delenv("STORY_FIRST_LLM_MODEL")
+    with pytest.raises(ValueError, match="STORY_FIRST_LLM_MODEL_required"):
+        build_shared_story_first_provider(max_cost_usd=0.01, max_completion_tokens=1000)
+    monkeypatch.setenv("STORY_FIRST_LLM_MODEL", "deepseek-v4-pro")
+    with pytest.raises(ValueError, match="expected_deepseek_flash"):
+        build_shared_story_first_provider(max_cost_usd=0.01, max_completion_tokens=1000)
+
+
+def test_shared_gateway_nonthinking_config_check_does_zero_http(
+    monkeypatch, tmp_path
+):
+    _set_shared_gateway_env(monkeypatch)
+    edl, events = fixtures()
+    edl_file, ev_file = tmp_path/"edl.json", tmp_path/"events.json"
+    edl_file.write_text(json.dumps(edl))
+    ev_file.write_text(json.dumps(events))
+    out = tmp_path/"preflight_only"
+    result = main([
+        "--edl", str(edl_file), "--events", str(ev_file),
+        "--out-dir", str(out), "--check-provider-config-only",
+    ])
+    assert result == 0
+    audit = json.loads((out/"hypothesis_generation_audit.json").read_text())
+    assert audit["http_attempts"] == 0
+    assert audit["status"] == "SHARED_GATEWAY_PREFLIGHT_ONLY_ZERO_HTTP"
+    assert audit["api_preflight"]["model"] == "DeepSeek-V4.1-Flash"
+    assert audit["api_preflight"]["request_thinking"] == {"type": "disabled"}
