@@ -35,7 +35,8 @@ Candidate Video / Quality Verification / Comparison / Release Gate。
 ## 当前 POC 的工程验收边界
 
 - 第一阶段只做 **LLM 候选故事 + 观察计划**，主 CLI 的当前 V3-A 不改、正式 EDL 不改、零渲染。
-- 真实模型配置为 DeepSeek-V4.1-Flash，官方 API model ID 为 **deepseek-flash**；必须显式发送 `thinking: {type: disabled}`，不能省略，因为默认可能启用 thinking。
+- 真实文本模型为 **DeepSeek-V4.1-Flash**，复用原有 DeepSeek V4 Pro / Qwen VL 的共享服务和 `STORY_LLM_BASE_URL` / `STORY_LLM_API_KEY` 鉴权；准确模型 ID 必须从该服务核实后设置 `STORY_FIRST_LLM_MODEL`，不能自行假设是官方直接 API 的 `deepseek-flash`，也不能回退到 V4 Pro。
+- 必须显式关闭 thinking（服务支持的 `thinking: {type: disabled}` 或 `enable_thinking=false` 格式二选一）。默认零 HTTP，可用 `--check-provider-config-only` 进行真实共享配置的本地预检；仍不能由此推断远程模型调用已经成功。
 - 默认离线零 HTTP；真实调用需要双重显式授权 + 环境开关 + 独立限额。本次开发阶段不付费。
 - 离线 fixture 用于结构测试，不等于真实 LLM 测试；VLM 和剪辑效果要等后续独立实验核验。
 - 需保存 source 文件 SHA、输入事件计数、引用的 event ID、时间窗来源、输出 JSON、模型请求审计与失败原因。
