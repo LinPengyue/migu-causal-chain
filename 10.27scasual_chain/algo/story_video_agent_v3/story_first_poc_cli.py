@@ -201,6 +201,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                 }
             if response.get("provider_mode") != "real":
                 raise ValueError("not_real_api_response")
+            audit["returned_model"] = response.get("model")
+            audit["finish_reason"] = response.get("finish_reason")
+            audit["provider_usage_reported"] = response.get("usage")
+            if str(response.get("finish_reason") or "").lower() in ("length", "content_filter"):
+                raise ValueError("model_output_not_complete_or_filtered")
             content = str(response.get("content") or "")
             mode = "DEEPSEEK_REAL_API_UNVERIFIED"
         else:
