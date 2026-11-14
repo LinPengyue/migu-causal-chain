@@ -229,6 +229,18 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         audit["input_counts"] = prepared["counts"]
         write_json(args.out_dir / "prepared_story_input.json", prepared)
         messages = model_messages(prepared, args.max_hypotheses)
+        prompt_text = "\n".join(str(m.get("content") or "") for m in messages)
+        audit["prompt_coverage"] = {
+            "full_inventory_events": len(prepared.get("event_inventory") or []),
+            "rich_detail_events": len(prepared["events"]),
+            "events_entirely_omitted": prepared["counts"].get(
+                "events_omitted_entirely_from_prompt"
+            ),
+            "prompt_characters": len(prompt_text),
+            "prompt_utf8_bytes": len(prompt_text.encode("utf-8")),
+            "model_input_token_count_measured": False,
+            "contains_unverified_hypotheses_only": True,
+        }
         write_json(args.out_dir / "llm_input.json", {
             "model": audit["model"],
             "thinking_disable_style": args.disable_thinking_style,
