@@ -368,3 +368,46 @@ def test_paid_mode_blocks_unmeasured_input_token_budget(tmp_path, monkeypatch):
     assert main(base + ["--verified-context-window-tokens", "8192",
                         "--measured-input-tokens", "6000"]) == 2
     assert not (tmp_path/"paid").exists()
+
+
+
+def test_paid_length_response_saved_before_rejection(tmp_path, monkeypatch):
+    import story_video_agent_v3.story_first_poc_cli as cli
+
+    edl, events = fixtures()
+    edl_file, ev_file = tmp_path/"edl.json", tmp_path/"events.json"
+    edl_file.write_text(json.dumps(edl))
+    ev_file.write_text(json.dumps(events))
+    monkeypatch.setenv("STORY_API_ENABLE", "1")
+    monkeypatch.setenv("STORY_FIRST_LLM_MODEL", "DeepSeek-V4.1-Flash")
+    partial = '{"hypotheses":[{"hypothesis_id":"H1"'
+    class FakeStats:
+        def summary(self):
+            return {"http_attempts": 1, "prompt_tokens": 500,
+                    "completion_tokens": 3200, "est_cost_usd_real": 0.01}
+    class FakeApi:
+        stats = FakeStats()
+        def chat(self, **kwargs):
+            return {
+                "provider_mode": "real", "model": "DeepSeek-V4.1-Flash",
+                "finish_reason": "length", "content": partial,
+                "usage": {"prompt_tokens": 500, "completion_tokens": 3200},
+                "response_audit": {"reasoning_tokens": 0},
+            }
+    monkeypatch.setattr(cli, "build_shared_story_first_provider",
+                        lambda **kwargs: (FakeApi(), {"gateway_configured": True}))
+    out = tmp_path/"failed"
+    assert cli.main([
+        "--edl", str(edl_file), "--events", str(ev_file),
+        "--out-dir", str(out), "--enable-real-api", "--i-approve-budget",
+        "--verified-context-window-tokens", "1000000",
+        "--measured-input-tokens", "500",
+    ]) == 3
+    assert (out/"llm_raw_response.txt").read_text() == partial
+    audit = json.loads((out/"hypothesis_generation_audit.json").read_text())
+    assert audit["status"] == "FAILED_NO_PROMOTION"
+    assert audit["finish_reason"] == "length"
+    assert audit["raw_response_saved"] is True
+    assert audit["hypotheses_promoted"] is False
+    assert not (out/"story_hypotheses.json").exists()
+    assert not (out/"observation_plan.json").exists()
