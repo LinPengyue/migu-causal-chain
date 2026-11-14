@@ -121,7 +121,8 @@ def read_story_first_observation_branch(
         # exact probe windows from current event PTS through the source code.
         observation = build_observation_plan(fresh, validated)
         supplied_targets = saved["observation_plan.json"].get("targets")
-        if not isinstance(supplied_targets, list):
+        if (not isinstance(supplied_targets, list)
+                or any(not isinstance(x, Mapping) for x in supplied_targets)):
             raise ValueError("invalid_saved_observation_plan")
         def _target_key(x: Mapping[str, Any]) -> tuple:
             return (
