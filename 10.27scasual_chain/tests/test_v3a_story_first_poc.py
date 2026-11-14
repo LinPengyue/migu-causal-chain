@@ -453,3 +453,87 @@ def test_compact_stage_one_requires_nonempty_mechanism_and_test(missing_key):
     parsed = parse_hypotheses({"hypotheses": [hyp]}, p)
     assert not parsed["hypotheses"]
     assert parsed["rejected"][0]["reason"] == "missing_evidence_or_test"
+
+
+
+def test_stage1_prompt_and_parser_agree_on_three_array_fields():
+    p = prepare_story_input(*fixtures())
+    prompt = model_messages(p, 2)[0]["content"]
+    assert "proposed_long_range_relations: ARRAY of length 1" in prompt
+    assert "falsification_conditions: ARRAY of length 1" in prompt
+    assert "observation_queries: ARRAY of length 1" in prompt
+    assert "bare object/string values" in prompt
+
+
+def test_run02_offline_singleton_recovery_is_shape_only_and_audited():
+    from story_video_agent_v3.story_first_schema_recovery_cli import (
+        recover_singleton_array_shapes,
+    )
+    p = prepare_story_input(*fixtures())
+    result = model_result()
+    h = result["hypotheses"][0]
+    h["proposed_long_range_relations"] = h["proposed_long_range_relations"][0]
+    h["falsification_conditions"] = h["falsification_conditions"][0]
+    h["observation_queries"] = h["observation_queries"][0]
+    untouched = json.dumps(result, ensure_ascii=False, sort_keys=True)
+    shape, audit = recover_singleton_array_shapes(result)
+    assert json.dumps(result, ensure_ascii=False, sort_keys=True) == untouched
+    assert audit["converted_count"] == 3
+    assert {a["field"] for a in audit["converted_fields"]} == {
+        "proposed_long_range_relations",
+        "falsification_conditions",
+        "observation_queries",
+    }
+    validated = parse_hypotheses(shape, p)
+    assert len(validated["hypotheses"]) == 1
+    assert validated["hypotheses"][0]["eligible_for_edl"] is False
+    assert validated["hypotheses"][0]["video_observed"] is False
+    assert build_observation_plan(p, validated)["first_live_certified"] is False
+
+
+def test_run02_offline_recovery_does_not_accept_fabricated_event_ids():
+    from story_video_agent_v3.story_first_schema_recovery_cli import (
+        recover_singleton_array_shapes,
+    )
+    p = prepare_story_input(*fixtures())
+    result = model_result(event_id="nonexistent_fake")
+    h = result["hypotheses"][0]
+    h["proposed_long_range_relations"] = h["proposed_long_range_relations"][0]
+    h["falsification_conditions"] = h["falsification_conditions"][0]
+    h["observation_queries"] = h["observation_queries"][0]
+    recovered, audit = recover_singleton_array_shapes(result)
+    assert audit["converted_count"] == 3
+    parsed = parse_hypotheses(recovered, p)
+    assert parsed["hypotheses"] == []
+    assert parsed["rejected"][0]["reason"] == "unrecognized_event_id"
+
+
+def test_run02_offline_cli_does_not_touch_history_or_network(tmp_path):
+    from story_video_agent_v3.story_first_schema_recovery_cli import main as offline
+    p = prepare_story_input(*fixtures())
+    event_file = tmp_path / "prepared.json"
+    raw_file = tmp_path / "raw.txt"
+    event_file.write_text(json.dumps(p, ensure_ascii=False), encoding="utf-8")
+    original = model_result()
+    original["hypotheses"][0]["falsification_conditions"] = (
+        original["hypotheses"][0]["falsification_conditions"][0]
+    )
+    raw_file.write_text(json.dumps(original, ensure_ascii=False), encoding="utf-8")
+    out = tmp_path / "recovery"
+    assert offline([
+        "--prepared-story-input", str(event_file),
+        "--raw-response", str(raw_file), "--out-dir", str(out),
+    ]) == 0
+    audit = json.loads((out / "schema_recovery_audit.json").read_text())
+    assert audit["http_attempts"] == 0
+    assert audit["source_run"] == "RUN02_EXISTING_RAW_NOT_NEW_MODEL_RESULT"
+    assert audit["story_stage1_passed"] is False
+    assert audit["structurally_accepted"] == 1
+    assert (out / "schema_recovery_observation_plan.json").is_file()
+    assert raw_file.read_text(encoding="utf-8") == json.dumps(
+        original, ensure_ascii=False
+    )
+    assert offline([
+        "--prepared-story-input", str(event_file),
+        "--raw-response", str(raw_file), "--out-dir", str(out),
+    ]) != 0
