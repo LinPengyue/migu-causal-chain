@@ -124,7 +124,8 @@ def build_shared_story_first_provider(
     if (req.get("model") != model_id or not expected_thinking
         or req.get("stream") is not False
         or sum(k in req for k in ("max_tokens", "max_completion_tokens")) != 1
-        or req.get(token_param) != max_completion_tokens):
+        or req.get(token_param) != api.effective_output_token_limit(cfg)
+        or req.get(token_param) > max_completion_tokens):
         raise ValueError("shared_flash_non_thinking_request_preflight_failed")
     return api, {
         "model": model_id,
