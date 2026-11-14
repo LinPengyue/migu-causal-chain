@@ -219,6 +219,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "model_label": MODEL_LABEL,
         "thinking_required_disabled": True,
         "thinking_disable_style": args.disable_thinking_style, "http_attempts": 0,
+        "generation_protocol": "STAGE1_COMPACT_SKELETON_V1",
+        "max_hypotheses_requested": args.max_hypotheses,
         "paid_http_authorized": bool(args.enable_real_api),
         "edl_modified": False, "candidate_rendered": False,
         "first_live_certified": False, "story_quality_improved_verified": False,
@@ -275,6 +277,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             "model": audit["model"],
             "thinking_disable_style": args.disable_thinking_style,
             "thinking_must_be_disabled": True,
+            "generation_protocol": "STAGE1_COMPACT_SKELETON_V1",
             "messages": messages, "data_tier": "HUMAN_ATOM_ENRICHED_DEV",
         })
         write_json(args.out_dir / "event_only_baseline.json",
