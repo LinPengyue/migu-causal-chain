@@ -107,3 +107,29 @@ v2 已调整为：
 - P14_EDL、P14_EVENTS、P14_STORY 的真实路径以及各自 SHA256；
 - backup_manifest.json、prepared_story_input.json、hypothesis_generation_audit.json、observation_plan.json；
 - 如有错误，原始 Traceback 与最小复现，不在 Cursor 侧自行“调整启发式修复”。
+
+## 2026-11-14 Run01 失败诊断后的 Stage-1 Compact Skeleton 协议
+
+已证实 Run01：DeepSeek-V4.1-Flash non-thinking，一次 HTTP，prompt=64108 tokens，
+completion=3200 tokens，reasoning=0，finish_reason=length，
+估算支出 $0.011536，`FAILED_NO_PROMOTION`。旧代码没有落盘模型原文，
+诊断结果 `RAW_RESPONSE_UNAVAILABLE`；不能断言模型究竟输出了几条故事。
+
+修复策略（代码直接提交 v2）：
+1. **只修改 Stage-1 输出形态，不改变事件输入覆盖和当前 source interval**。保留 530 条紧凑事件全索引和最多 240 条详细信息。
+2. 模型首次只返回短故事假设骨架：H-ID、mechanism_key、简短假设描述、2–4 个事件 ID、一条长程关系、一条可证伪条件、一个视频观察 query。禁止额外的中间状态列表、长篇解释与 EDL 修改建议。
+3. 不强迫凑满候选数：证据不够返回空列表。推荐下一次仅请求 `--max-hypotheses 2`，保持输出上限 `--max-completion-tokens 3200`，不要未经审计增加上限。
+4. 解析仍接受旧版含扩展字段 JSON（兼容离线基线），但不接受空关系、空观察问题、空证伪条件或空故事描述。
+5. 响应在检查 `finish_reason` **之前**先落盘 `llm_raw_response.txt`，即使因长度截断也保存诊断原文；该内容仍为 `FAILED_NO_PROMOTION`，不得作为有效假设。
+6. `generation_protocol=STAGE1_COMPACT_SKELETON_V1` 写入 audit 和 llm_input，方便与 Run01 区分。
+7. Stage-2 继续采用真实事件/视频证据交叉核验；未提供 FIRST_LIVE 证明时 observation plan 不具备 EDL 合法剪辑资格。
+
+**下一个执行合同仅为零 HTTP**：拉取代码、跑完整测试、用上次已核验的
+P14 资产、`--max-hypotheses 2`、独立新输出目录
+`/tmp/lpy1_story_first_v2_compact_preflight_20261114`
+运行 prepared-only，重新使用官方兼容 tokenizer 测量新 `llm_input.json`
+内两条 messages 的实际 tokens 并记录 SHA/字节数。即使改变了系统提示，
+**绝对不能**沿用 Run01 的 64108 作为这次实测值。
+确认请求体与先前的共享 API 配置一致；不得调用真实 LLM/VLM。
+真实下一次付费 Run02 必须另行获得用户批准，不能自行触发。
+
