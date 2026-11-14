@@ -1,0 +1,51 @@
+{
+  "hypotheses": [
+    {
+      "hypothesis_id": "H1",
+      "mechanism_key": "penalty_var_denial_precedes_equalizer",
+      "narrative_summary": "点球被VAR取消后，主队情绪与攻势可能延续，最终促成扳平进球。",
+      "supporting_event_ids": [
+        "event_000617",
+        "event_000622",
+        "event_000635",
+        "event_000636"
+      ],
+      "proposed_long_range_relations": {
+        "source_event_id": "event_000617",
+        "target_event_id": "event_000635",
+        "relation_type": "causal_hypothesis",
+        "claim": "点球判罚被取消或与后续扳平攻势相关，尚未验证"
+      },
+      "falsification_conditions": "检查VAR取消后至扳平前是否出现持续主队进攻画面",
+      "observation_queries": {
+        "target_id": "event:event_000635",
+        "question": "此拦截是否处于扳平前的连续进攻中？",
+        "discriminating_signal": "连续主队控球与射门"
+      }
+    },
+    {
+      "hypothesis_id": "H2",
+      "mechanism_key": "substitution_then_sustained_pressure",
+      "narrative_summary": "换人调整后主队进攻组织可能改变，为扳平进球积累压力。",
+      "supporting_event_ids": [
+        "event_000563",
+        "event_000564",
+        "event_000598",
+        "event_000605"
+      ],
+      "proposed_long_range_relations": {
+        "source_event_id": "event_000563",
+        "target_event_id": "event_000605",
+        "relation_type": "state_transition",
+        "claim": "换人后主队进攻方式或发生变化，尚不确定"
+      },
+      "falsification_conditions": "对比换人前后主队进攻事件密度与方向是否变化",
+      "observation_queries": {
+        "target_id": "event:event_000598",
+        "question": "此长传是否体现换人后的进攻组织变化？",
+        "discriminating_signal": "进攻方向与推进方式改变"
+      }
+    }
+  ],
+  "insufficient_evidence_reason": ""
+}

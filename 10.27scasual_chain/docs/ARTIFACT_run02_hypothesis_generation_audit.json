@@ -1,0 +1,126 @@
+{
+  "accepted_hypotheses": 0,
+  "api_preflight": {
+    "api_key_logged": false,
+    "cost_cap_is_estimate_not_invoice_guarantee": true,
+    "gateway": "existing_story_planner_service",
+    "gateway_configured": true,
+    "http_attempt_cap": 1,
+    "model": "DeepSeek-V4.1-Flash",
+    "model_label": "DeepSeek-V4.1-Flash",
+    "request_audit": {
+      "enable_thinking_sent": null,
+      "message_count": 1,
+      "model": "DeepSeek-V4.1-Flash",
+      "paratera_thinking_object_documented": false,
+      "request_profile": "default",
+      "role": "planner",
+      "sends_both_thinking_formats": false,
+      "sends_both_token_params": false,
+      "stream_sent": false,
+      "temperature_sent": 0.0,
+      "thinking_budget_sent": null,
+      "thinking_object_disabled_sent": true,
+      "thinking_params_sent": false,
+      "token_limit_sent": 3200,
+      "token_param_configured": "max_tokens",
+      "token_param_sent": "max_tokens",
+      "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply."
+    },
+    "request_thinking": {
+      "type": "disabled"
+    },
+    "retry_cap": 0,
+    "thinking_disable_style": "thinking_object",
+    "token_param": "max_tokens"
+  },
+  "api_usage": {
+    "completion_tokens": 398,
+    "est_cost_usd_real": 0.00987,
+    "http_attempts": 1,
+    "prompt_tokens": 64206
+  },
+  "candidate_rendered": false,
+  "context_budget": {
+    "fits_context_window": true,
+    "provider_confirmed_context_window_tokens": 1000000,
+    "provider_tokenizer_measured_input_tokens": 64206,
+    "requested_max_completion_tokens": 3200
+  },
+  "cost_guard_is_estimate_not_invoice_cap": true,
+  "data_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "edl_modified": false,
+  "finish_reason": "stop",
+  "first_live_certified": false,
+  "generation_protocol": "STAGE1_COMPACT_SKELETON_V1",
+  "http_attempts": 1,
+  "input_counts": {
+    "distinct_events_inside_scope": 530,
+    "events_dropped_by_context_cap": 290,
+    "events_in_full_inventory": 530,
+    "events_in_llm_context": 240,
+    "events_not_in_rich_detail_context": 290,
+    "events_omitted_entirely_from_prompt": 0,
+    "events_with_missing_ids": 0,
+    "gap_probes": 3,
+    "observation_probes": 381,
+    "supplied_event_rows": 879,
+    "timed_events_inside_scope": 530
+  },
+  "input_sha256": {
+    "/tmp/lpy1_v3a_p14_cv_integration_20261113/run/01_initial_story/candidate_edl.json": "b38434b9f15ea550b878fee4c7a4537115ae85d5cd57bdb189f6ad8036a4c47a",
+    "/tmp/lpy1_v3a_p14_cv_integration_20261113/run/01_initial_story/story_plan.json": "ba64c2158291cd352d0f8c590488a88db32b7a4d2aa4ff48c3e7b5c42a97fb96",
+    "/tmp/lpy1_v3a_p14_cv_integration_20261113/run/01_to_04_fresh_v3r/01_enrich/events_enriched.json": "33958b106f3daddd8830e8735f7583527b3aa3f39ca4b6a805b6b3cfe0fb0299"
+  },
+  "max_cost_usd": 0.1,
+  "max_hypotheses_requested": 2,
+  "model": "DeepSeek-V4.1-Flash",
+  "model_label": "DeepSeek-V4.1-Flash",
+  "paid_http_authorized": true,
+  "prompt_coverage": {
+    "contains_unverified_hypotheses_only": true,
+    "events_entirely_omitted": 0,
+    "full_inventory_events": 530,
+    "input_token_count_provided": 64206,
+    "model_input_token_count_measured": true,
+    "prompt_characters": 203541,
+    "prompt_utf8_bytes": 203858,
+    "rich_detail_events": 240
+  },
+  "provider_usage_reported": {
+    "completion_tokens": 398,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 64206,
+    "total_tokens": 64604
+  },
+  "raw_response_chars": 1170,
+  "raw_response_saved": true,
+  "raw_response_sha256": "3fc46fe576018528fe15cedd9ba19bb48fc4e23b43591c437432d13d29197e05",
+  "rejected_hypotheses": 2,
+  "response_audit": {
+    "completion_tokens_reported": 398,
+    "finish_reason": "stop",
+    "has_completion_tokens_details": true,
+    "output_budget_exceeded": false,
+    "output_token_limit": 3200,
+    "reasoning_content_present": false,
+    "reasoning_tokens": 0,
+    "usage_keys_present": [
+      "completion_tokens",
+      "completion_tokens_details",
+      "prompt_tokens",
+      "prompt_tokens_details",
+      "total_tokens"
+    ],
+    "visible_output_chars": 1170
+  },
+  "returned_model": "DeepSeek-V4.1-Flash",
+  "schema": "story_first_hypotheses_poc_v1",
+  "source_mode": "SHARED_GATEWAY_FLASH_REAL_API_UNVERIFIED",
+  "status": "NO_VALID_HYPOTHESES",
+  "story_quality_improved_verified": false,
+  "thinking_disable_style": "thinking_object",
+  "thinking_required_disabled": true
+}

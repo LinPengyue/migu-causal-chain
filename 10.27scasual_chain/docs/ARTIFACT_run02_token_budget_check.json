@@ -1,0 +1,53 @@
+{
+  "prep_status": "PREPARED_ONLY_ZERO_HTTP",
+  "prep_http": 0,
+  "generation_protocol_audit": "STAGE1_COMPACT_SKELETON_V1",
+  "generation_protocol_llm_input": "STAGE1_COMPACT_SKELETON_V1",
+  "protocol_ok": true,
+  "inventory_n": 530,
+  "detail_n": 240,
+  "counts": {
+    "distinct_events_inside_scope": 530,
+    "events_dropped_by_context_cap": 290,
+    "events_in_full_inventory": 530,
+    "events_in_llm_context": 240,
+    "events_not_in_rich_detail_context": 290,
+    "events_omitted_entirely_from_prompt": 0,
+    "events_with_missing_ids": 0,
+    "gap_probes": 3,
+    "observation_probes": 381,
+    "supplied_event_rows": 879,
+    "timed_events_inside_scope": 530
+  },
+  "inventory_detail_ok": true,
+  "measured_input_tokens_run02": 64206,
+  "not_reusing_run01_64108": true,
+  "prompt_utf8_bytes": 203937,
+  "max_completion_tokens": 3200,
+  "input_plus_output": 67406,
+  "verified_context_window_tokens": 1000000,
+  "fits_context": true,
+  "cost_estimates": [
+    {
+      "label": "project_default_0.15_0.60",
+      "est_usd": 0.011551,
+      "within_0_10": true
+    },
+    {
+      "label": "paratera_cny2_8_fx7",
+      "est_usd": 0.022002,
+      "within_0_10": true
+    }
+  ],
+  "budget_ok": true,
+  "gateway_flash_present": true,
+  "preflight_model": "DeepSeek-V4.1-Flash",
+  "preflight_thinking": {
+    "type": "disabled"
+  },
+  "preflight_http": 0,
+  "preflight_status": "SHARED_GATEWAY_PREFLIGHT_ONLY_ZERO_HTTP",
+  "tokenizer_sha256": "c90dfa01249db1be4245780a052ede752e1361c612ac6d08e2bdada7d599476b",
+  "messages_preview_chars": 203540,
+  "all_preflight_pass": true
+}
