@@ -99,6 +99,9 @@ class StoryE2EInputs:
     t01_story: Optional[Path] = None
     # Fresh V3-R can run from raw events + MP4; human atoms are DEV-only.
     events_json: Optional[Path] = None
+    # V2 opt-in only: import existing Story-First POC as unverified search queue.
+    # Never sends paid HTTP, changes EDL, or bypasses legacy Planner/Verifier.
+    story_first_artifacts_dir: Optional[Path] = None
     causal_atoms_json: Optional[Path] = None
     independent_atoms_json: Optional[Path] = None
     match_id: Optional[str] = None
@@ -465,6 +468,10 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             "phase8_paid_multi_round": bool(inp.phase8_paid_multi_round),
             "phase10_explore": bool(inp.phase10_explore),
             "phase10_explore_fixture": bool(inp.phase10_explore_fixture is not None),
+            "story_first_artifacts_dir": (
+                str(inp.story_first_artifacts_dir)
+                if inp.story_first_artifacts_dir else None
+            ),
             "first_live_evidence_dir": (
                 str(inp.first_live_evidence_dir) if inp.first_live_evidence_dir else None
             ),
@@ -1164,6 +1171,27 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 ),
             },
         )
+        # V2 Story-First is a SECOND Evidence Search branch, not a new Agent or
+        # Planner. Import only an independently produced POC observation queue.
+        # Never hand unverified narrative hypotheses to the legacy Planner.
+        if inp.story_first_artifacts_dir is not None:
+            from .story_first_evidence_adapter import (
+                planner_safe_story_first_summary,
+                read_story_first_observation_branch,
+            )
+
+            story_first_branch = read_story_first_observation_branch(
+                artifacts_dir=inp.story_first_artifacts_dir,
+                current_edl=working_edl,
+                current_story_plan=plan,
+                permitted_events=permitted_events,
+                current_source_sha256=source_sha,
+            )
+            write_json(round_dir / "story_first_evidence_search.json", story_first_branch)
+            story_first_summary = planner_safe_story_first_summary(story_first_branch)
+            # Metadata only: not executable/verified/first-LIVE candidates.
+            search_report["story_first_branch"] = story_first_summary
+            round_rec["story_first_branch"] = story_first_summary
         # Observation-only turn-adjacent search supplements broad event candidates.
         # No candidate is first-live verified, semantic-confirmed, or applied.
         from .story_turn_context_search import propose_turning_point_context
