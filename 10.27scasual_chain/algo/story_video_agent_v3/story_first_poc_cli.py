@@ -165,6 +165,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--i-approve-budget", action="store_true")
     p.add_argument("--max-cost-usd", type=float, default=0.10)
     p.add_argument("--max-completion-tokens", type=int, default=3200)
+    p.add_argument("--verified-context-window-tokens", type=int,
+                   help="Provider-confirmed context capacity for the selected Flash model")
+    p.add_argument("--measured-input-tokens", type=int,
+                   help="Actual token count measured with provider-compatible tokenizer")
     return p
 
 
@@ -179,6 +183,16 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     if args.check_provider_config_only and (args.enable_real_api or args.fixture_model_json):
         print("REFUSED: offline preflight cannot be combined with paid API or fixture",
               file=sys.stderr)
+        return 2
+    if args.enable_real_api and not (
+        args.verified_context_window_tokens and args.measured_input_tokens
+        and args.measured_input_tokens > 0
+        and args.verified_context_window_tokens > 0
+        and args.measured_input_tokens + args.max_completion_tokens
+            <= args.verified_context_window_tokens
+    ):
+        print("REFUSED: paid request needs provider-confirmed context window and "
+              "measured input tokens with output headroom", file=sys.stderr)
         return 2
     if args.fixture_model_json is not None and args.enable_real_api:
         print("REFUSED: fixture and real API cannot be combined", file=sys.stderr)
@@ -211,6 +225,19 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "input_sha256": {str(path): sha256_file(path) for path in sources},
         "max_cost_usd": args.max_cost_usd,
         "cost_guard_is_estimate_not_invoice_cap": True,
+        "context_budget": {
+            "provider_confirmed_context_window_tokens":
+                args.verified_context_window_tokens,
+            "provider_tokenizer_measured_input_tokens":
+                args.measured_input_tokens,
+            "requested_max_completion_tokens": args.max_completion_tokens,
+            "fits_context_window": bool(
+                args.verified_context_window_tokens
+                and args.measured_input_tokens
+                and args.measured_input_tokens + args.max_completion_tokens
+                    <= args.verified_context_window_tokens
+            ),
+        },
     }
     try:
         edl = json.loads(args.edl.read_text(encoding="utf-8"))
@@ -238,7 +265,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             ),
             "prompt_characters": len(prompt_text),
             "prompt_utf8_bytes": len(prompt_text.encode("utf-8")),
-            "model_input_token_count_measured": False,
+            "model_input_token_count_measured": bool(
+                args.enable_real_api and args.measured_input_tokens
+            ),
+            "input_token_count_provided": args.measured_input_tokens,
             "contains_unverified_hypotheses_only": True,
         }
         write_json(args.out_dir / "llm_input.json", {
