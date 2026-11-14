@@ -351,3 +351,20 @@ def test_explicit_replays_not_promoted_to_observation_candidates():
     ids = {x["probe_id"] for x in p["probes"]}
     assert "event:replay-1" not in ids
     assert "event:live-1" in ids
+
+
+
+def test_paid_mode_blocks_unmeasured_input_token_budget(tmp_path, monkeypatch):
+    edl, events = fixtures()
+    edl_path, events_path = tmp_path/"edl.json", tmp_path/"events.json"
+    edl_path.write_text(json.dumps(edl))
+    events_path.write_text(json.dumps(events))
+    monkeypatch.setenv("STORY_API_ENABLE", "1")
+    # Must refuse BEFORE opening any output directory or loading a key.
+    base = ["--edl", str(edl_path), "--events", str(events_path),
+            "--out-dir", str(tmp_path/"paid"), "--enable-real-api",
+            "--i-approve-budget", "--max-completion-tokens", "3200"]
+    assert main(base) == 2
+    assert main(base + ["--verified-context-window-tokens", "8192",
+                        "--measured-input-tokens", "6000"]) == 2
+    assert not (tmp_path/"paid").exists()
