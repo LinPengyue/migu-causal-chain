@@ -172,14 +172,51 @@ def prepare_story_input(
         selected.append(item)
     selected.sort(key=lambda x: (x["source_pts_sec"], x["event_id"]))
     event_total = len(selected)
+    # Preserve the FULL event index, including labels of events not chosen for
+    # the rich-detail context. A story hypothesis must not mistake the
+    # 240-event rich subset for all events in the anchor interval.
+    full_events = list(selected)
+    selected_ids = set()
     if len(selected) > max_events:
-        # Temporal stratification; do not silently claim full event coverage.
-        n = len(selected)
-        idxs = sorted(set(min(n - 1, int((j + .5) * n / max_events))
-                          for j in range(max_events)))
-        selected = [selected[j] for j in idxs]
+        from collections import Counter
+        freq = Counter(str(e["event_type"]).lower() for e in full_events)
+        n = len(full_events)
+        # First protect full timeline coverage, then prioritize unusual event
+        # categories and high metadata scores. These are SEARCH priors only.
+        base_k = min(n, max(1, (max_events * 3) // 5))
+        positions = sorted(set(min(n-1, int((j+.5)*n/base_k))
+                               for j in range(base_k)))
+        chosen = set(positions)
+        rarity_order = sorted(range(n), key=lambda i: (
+            freq[str(full_events[i]["event_type"]).lower()],
+            -sum(_finite(v) or 0.0 for v in
+                 full_events[i]["scores_metadata"].values()),
+            full_events[i]["source_pts_sec"],
+            full_events[i]["event_id"],
+        ))
+        for i in rarity_order:
+            if len(chosen) >= max_events:
+                break
+            chosen.add(i)
+        selected = [full_events[i] for i in sorted(chosen)]
+    selected_ids = {e["event_id"] for e in selected}
+    event_inventory = [
+        {
+            "event_id": e["event_id"],
+            "source_pts_sec": e["source_pts_sec"],
+            "event_type": e["event_type"],
+            "comment_label": _text(e["comment_label"], 65),
+            "is_rich_context": e["event_id"] in selected_ids,
+            "known_replay_or_slowmo": (
+                str(e.get("broadcast_phase_metadata") or "").upper() == "REPLAY"
+                or e.get("is_replay_metadata") in (True, "true", "True", 1)
+                or e.get("is_slow_motion_metadata") in (True, "true", "True", 1)
+            ),
+        }
+        for e in full_events
+    ]
     probes: List[Dict[str, Any]] = []
-    for ev in selected:
+    for ev in full_events:
         # Replays may inform what an annotation refers to, but are NOT legal
         # candidate SOURCE observations under the first-broadcast constraint.
         if (str(ev.get("broadcast_phase_metadata") or "").upper() == "REPLAY"
@@ -199,7 +236,9 @@ def prepare_story_input(
             "requires_video_caption": True, "first_live_status": "UNRESOLVED",
             "not_a_verified_event_action": True,
         })
-    pts = sorted(set([lo, hi] + [x["source_pts_sec"] for x in selected]))
+    # Compute actual annotation gaps using FULL event coverage, not artifacts
+    # introduced by rich-context sampling.
+    pts = sorted(set([lo, hi] + [x["source_pts_sec"] for x in full_events]))
     gaps = sorted(
         [(pts[i+1] - pts[i], pts[i], pts[i+1]) for i in range(len(pts)-1)
          if pts[i+1] - pts[i] >= gap_threshold_sec],
@@ -223,8 +262,13 @@ def prepare_story_input(
     # Include the whole plan as context only up to a bounded serialization size.
     plan_summary = _text(story_plan, 9000) if story_plan is not None else ""
     return {
-        "schema": SCHEMA, "scope": scope, "events": selected, "probes": probes,
-        "story_plan_reference": plan_summary,
+        "schema": SCHEMA, "scope": scope, "events": selected,
+        "event_inventory": event_inventory,
+        "probes": probes, "story_plan_reference": plan_summary,
+        "rich_context_selection": (
+            "all_events" if event_total <= max_events
+            else "temporal_coverage_plus_type_rarity_metadata_priors_v1"
+        ),
         "data_tier": "HUMAN_ATOM_ENRICHED_DEV",
         "counts": {
             "supplied_event_rows": len(events),
@@ -232,7 +276,10 @@ def prepare_story_input(
             "timed_events_inside_scope": timed,
             "distinct_events_inside_scope": event_total,
             "events_in_llm_context": len(selected),
+            "events_in_full_inventory": len(event_inventory),
             "events_dropped_by_context_cap": event_total - len(selected),
+            "events_not_in_rich_detail_context": event_total - len(selected),
+            "events_omitted_entirely_from_prompt": 0,
             "observation_probes": len(probes),
             "gap_probes": min(len(gaps), max_gap_probes),
         },
@@ -247,14 +294,33 @@ def model_messages(prepared: Mapping[str, Any], max_hypotheses: int = 5) -> List
     data = {
         "K": max_hypotheses, "story_scope": prepared["scope"],
         "frozen_story_plan": prepared["story_plan_reference"],
-        "events": prepared["events"],
-        "allowed_observation_probes": [
-            {"probe_id": p["probe_id"],
-             "source_interval_sec": p["source_interval_sec"],
-             "origin": p["origin"],
-             "overlaps_existing_edl": p["overlaps_existing_edl"]}
-            for p in prepared["probes"]
+        # Full coverage: all real IDs and their labels. Rich context is a
+        # documented subset, never the only universe of potential explanations.
+        "full_event_inventory": prepared["event_inventory"],
+        "rich_detail_events": [
+            {
+                "event_id": e["event_id"],
+                "source_pts_sec": e["source_pts_sec"],
+                "event_type": e["event_type"],
+                "comment_label": e["comment_label"],
+                "description": e["description"],
+                "broadcast_phase_metadata": e["broadcast_phase_metadata"],
+                "scores_metadata": e["scores_metadata"],
+            }
+            for e in prepared["events"]
         ],
+        "observation_probe_contract": {
+            "event_probe_format": "event:<event_id>",
+            "event_id_must_be_in_full_inventory": True,
+            "event_probes_must_not_be_known_replay_or_slowmo": True,
+            "event_probe_time_bounds_computed_by_code": True,
+            "gap_probes": [
+                {"probe_id": p["probe_id"],
+                 "source_interval_sec": p["source_interval_sec"]}
+                for p in prepared["probes"]
+                if str(p["probe_id"]).startswith("gap:")
+            ],
+        },
     }
     return [
         {"role": "system", "content": _SYSTEM},
@@ -274,7 +340,9 @@ def parse_hypotheses(
     rows = model_json.get("hypotheses")
     if not isinstance(rows, list) or len(rows) > max_hypotheses:
         raise ValueError("invalid_hypothesis_count")
-    allowed_events = {x["event_id"] for x in prepared["events"]}
+    allowed_events = {
+        x["event_id"] for x in prepared.get("event_inventory", prepared["events"])
+    }
     allowed_probes = {x["probe_id"] for x in prepared["probes"]}
     forbidden_time_fields = {
         "source_pts_start", "source_pts_end", "source_pts_sec",
@@ -397,7 +465,11 @@ def build_observation_plan(
 
 
 def evidence_matrix(prepared: Mapping[str, Any], validated: Mapping[str, Any]) -> Dict[str, Any]:
-    ev = {x["event_id"]: x for x in prepared["events"]}
+    ev = {
+        x["event_id"]: x
+        for x in prepared.get("event_inventory", prepared["events"])
+    }
+    ev.update({x["event_id"]: x for x in prepared["events"]})
     out = []
     for h in validated.get("hypotheses") or []:
         out.append({
@@ -412,13 +484,22 @@ def evidence_matrix(prepared: Mapping[str, Any], validated: Mapping[str, Any]) -
 
 
 def baseline_candidates(prepared: Mapping[str, Any]) -> Dict[str, Any]:
-    events = list(prepared["events"])
+    # Keep the event-only control complete; the story prompt receives full
+    # coverage too, even when rich details are capped.
+    events = list(prepared.get("event_inventory", prepared["events"]))
     chronology = [e["event_id"] for e in events]
     def score(e: Mapping[str, Any]) -> float:
         sc = e.get("scores_metadata") or {}
         return sum((_finite(sc.get(x)) or 0.0) for x in
                    ("overall_score", "emotional_heat_score", "criticality_score"))
-    ranked = sorted(events, key=lambda e: (-score(e), e["source_pts_sec"]))
+    detailed_scores = {
+        e["event_id"]: score(e) for e in prepared["events"]
+    }
+    ranked = sorted(
+        events,
+        key=lambda e: (-detailed_scores.get(e["event_id"], 0.0),
+                       e["source_pts_sec"], e["event_id"]),
+    )
     return {
         "schema": SCHEMA,
         "chronological_event_ids": chronology,
