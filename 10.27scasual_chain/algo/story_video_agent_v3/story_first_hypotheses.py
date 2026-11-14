@@ -18,35 +18,39 @@ from .story_timeline import _num, active_cut_rows, edl_rows
 SCHEMA = "story_first_hypotheses_poc_v1"
 _RELATIONS = {"direct_action", "state_transition", "causal_hypothesis",
               "narrative_association", "unknown"}
-_SYSTEM = """You are a long-horizon sports STORY HYPOTHESIS generator, not a commentator.
-Return ONE JSON object and nothing else. Use ONLY the supplied observed events and
-real event IDs. The provided V3-R story is a frozen baseline, not an answer key.
-Generate up to K mutually distinguishable and FALSIFIABLE possible stories between
-the two story anchors. You may return zero hypotheses if evidence is insufficient.
-The full_event_inventory contains ALL events between anchors in compact form.
-rich_detail_events contains a DETAIL SUBSET; never mistake it for the whole match.
-For compact-only events, you may cite only provided labels and must explicitly
-request video verification; do not invent extra action descriptions.
-A story is a conjecture, not a fact. Do not infer player emotion, coach intention,
-game tactics, possession, causal effect, replay status, or first-LIVE from mere event
-ordering or labels. Do not invent video observations, times, scores, event IDs,
-player names, or event relations. Long-range causal edges are UNVERIFIED hypotheses
-unless source evidence proves an immediate mechanical sequence.
-For EACH hypothesis include:
-hypothesis_id (short string), mechanism_key (short distinct mechanism),
-narrative_summary (conjectural, Chinese),
-supporting_event_ids (subset of supplied event IDs),
-proposed_long_range_relations (list of {source_event_id,target_event_id,
-relation_type,claim}; relation_type is direct_action|state_transition|
-causal_hypothesis|narrative_association|unknown),
-possible_intermediate_states (list of tentative state descriptions),
-uncertain_claims (list), falsification_conditions (list of specific observable tests),
-observation_queries (list of {target_id,question,discriminating_signal};
-target_id must belong to allowed probe IDs),
-expected_story_contribution (brief text).
-Do not provide source timestamps. Observation windows will be bound by CODE.
-Reply JSON: {"hypotheses":[...],"insufficient_evidence_reason":"..."}.
-All model statements must be treated as UNVERIFIED until source video review.
+_SYSTEM = """You generate FALSIFIABLE long-range football story HYPOTHESES.
+STAGE 1 ONLY: compact story skeletons for later video tests; NOT a full story.
+Return exactly one compact JSON object and no markdown, commentary or examples.
+Use ONLY real event IDs in the supplied full_event_inventory (all events between
+the V3-R anchors). rich_detail_events is only a detailed subset. Existing V3-R
+story_plan is frozen context, not proof of causality.
+Suggest 0..K DISTINCT mechanisms. It is better to return 0 or 1 than invent
+a second mechanism. Each must connect events from separated phases AND propose
+one observable discriminating test that might refute the hypothesis.
+Do not infer intention, emotion, tactical shifts, causal effects, player names,
+scores, FIRST_LIVE, or replay state from labels or order alone.
+A compact-only event is only a label: any richer claim requires video verification.
+All relationships are UNVERIFIED. Do not generate timings, segment edits, or EDL.
+Never cite an event flagged known_replay_or_slowmo as a candidate video probe.
+Use ONLY these fields per hypothesis; do not add explanations or optional lists:
+  hypothesis_id: "H1" etc
+  mechanism_key: unique short snake_case string
+  narrative_summary: one Chinese speculative sentence, MAX 55 Chinese characters
+  supporting_event_ids: 2-4 real event IDs, distinct and temporally separated
+  proposed_long_range_relations: EXACTLY one object with
+    source_event_id, target_event_id (both real IDs), relation_type
+    ("causal_hypothesis" or "state_transition" or "narrative_association"),
+    claim (MAX 35 Chinese characters; must state uncertainty)
+  falsification_conditions: EXACTLY one specific observable test, MAX 45 chars
+  observation_queries: EXACTLY one object with
+    target_id ("event:<real_id>" for a non-replay candidate OR a supplied gap ID),
+    question (MAX 40 chars), discriminating_signal (MAX 35 chars)
+No possible_intermediate_states, uncertain_claims or expected_story_contribution
+in this STAGE 1 response: evidence expansion happens only AFTER model output.
+Do not write source times; CODE binds actual source PTS after validation.
+Return {"hypotheses":[...],"insufficient_evidence_reason":""}.
+If no grounded cross-phase hypothesis is possible, use [] and briefly explain.
+Do not invent evidence, video observations or direct causal proof.
 """
 
 
@@ -368,8 +372,10 @@ def parse_hypotheses(
         queries = item.get("observation_queries")
         falsifiers = item.get("falsification_conditions")
         if (not isinstance(ids, list) or not ids or
-                not isinstance(relations, list) or not isinstance(queries, list) or
-                not isinstance(falsifiers, list) or not falsifiers):
+                not isinstance(relations, list) or not relations or
+                not isinstance(queries, list) or not queries or
+                not isinstance(falsifiers, list) or not falsifiers or
+                not _text(item.get("narrative_summary"), 600).strip()):
             rejected.append({"index": idx, "reason": "missing_evidence_or_test"})
             continue
         ids = [str(v) for v in ids]
