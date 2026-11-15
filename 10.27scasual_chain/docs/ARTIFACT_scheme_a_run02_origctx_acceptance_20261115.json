@@ -1,0 +1,315 @@
+{
+  "head": "be97ad01fef2bad1897714374c12d0e331273a9a",
+  "http_attempts": 0,
+  "ranker_status": "PREPARED_ONLY_ZERO_HTTP",
+  "scope_anchors": {
+    "from_segment_id": "seg_opponent_opening_goal_action",
+    "to_segment_id": "seg_equalizer_goal_action",
+    "from_role": "opponent_opening_goal_action",
+    "to_role": "equalizer_goal_action",
+    "source_interval_sec": [
+      1347.123,
+      6436.924
+    ],
+    "anchor_source": "existing_v3r_edl"
+  },
+  "scope_matches_run02": true,
+  "frozen_story_plan_is_dict": true,
+  "frozen_story_plan_top_keys": [
+    "algorithm",
+    "beats",
+    "blocking_reasons",
+    "candidate_edl",
+    "diagnostics",
+    "edl",
+    "event_ids",
+    "event_mappings",
+    "evidence_refs",
+    "gates",
+    "match_id",
+    "missing_evidence",
+    "narration",
+    "protagonist",
+    "render_ready",
+    "render_ready_edl",
+    "schema_version",
+    "segments",
+    "story_scope",
+    "story_tier",
+    "structure_ok",
+    "template_id",
+    "verification_status"
+  ],
+  "current_edl_n": 9,
+  "current_edl_playback_order_ok": false,
+  "current_edl_slim": [
+    {
+      "segment_id": "seg_title_open",
+      "role": "story_title",
+      "event_ids": [],
+      "media_in": null,
+      "media_out": null,
+      "narration": "开场标题（不剧透终场比分）",
+      "include_in_cut": null,
+      "narrative_order": null
+    },
+    {
+      "segment_id": "seg_opponent_opening_goal_action",
+      "role": "opponent_opening_goal_action",
+      "event_ids": [
+        "causal:pred_0007:atom_fill_0004_Goal_1337123"
+      ],
+      "media_in": 1325.123,
+      "media_out": 1347.123,
+      "narration": "率先失球动作 causal:pred_0007:atom_fill_0004_Goal_1337123 @ 1337.123s（相对 0:1 记分牌 Δ=-73.307s；非记分牌时间）。",
+      "include_in_cut": null,
+      "narrative_order": null
+    },
+    {
+      "segment_id": "seg_setup_deficit",
+      "role": "deficit_scoreboard_anchor",
+      "event_ids": [],
+      "media_in": 1409.43,
+      "media_out": 1412.93,
+      "narration": "比分确认落后 0:1 @ 1410.43s（非进球动作时间）。",
+      "include_in_cut": null,
+      "narrative_order": null
+    },
+    {
+      "segment_id": "seg_buildup_event_000472",
+      "role": "buildup_action",
+      "event_ids": [
+        "event_000472"
+      ],
+      "media_in": 4706.45,
+      "media_out": 4718.45,
+      "narration": "蓄力动作 射门（live，event_ms 未校准成片）。",
+      "include_in_cut": null,
+      "narrative_order": null
+    },
+    {
+      "segment_id": "seg_equalizer_goal_action",
+      "role": "equalizer_goal_action",
+      "event_ids": [
+        "v3_goal_goalcand_03_01_to_11"
+      ],
+      "media_in": 6436.924,
+      "media_out": 6458.924,
+      "narration": "equalizer 进球动作候选 v3_goal_goalcand_03_01_to_11 @ 6448.924s（相对记分牌 Δ=-86.696s）。",
+      "include_in_cut": null,
+      "narrative_order": null
+    },
+    {
+      "segment_id": "seg_equalizer_scoreboard",
+      "role": "equalizer_scoreboard_anchor",
+      "event_ids": [],
+      "media_in": 6534.62,
+      "media_out": 6538.12,
+      "narration": "equalizer 比分确认 1:1 @ 6535.62s（非进球剪辑点）。",
+      "include_in_cut": null,
+      "narrative_order": null
+    },
+    {
+      "segment_id": "seg_go_ahead_goal_action",
+      "role": "go_ahead_goal_action",
+      "event_ids": [
+        "v3_goal_goalcand_04_11_to_21"
+      ],
+      "media_in": 6829.456,
+      "media_out": 6851.456,
+      "narration": "go_ahead 进球动作候选 v3_goal_goalcand_04_11_to_21 @ 6841.456s（相对记分牌 Δ=-115.664s）。",
+      "include_in_cut": null,
+      "narrative_order": null
+    },
+    {
+      "segment_id": "seg_go_ahead_scoreboard",
+      "role": "go_ahead_scoreboard_anchor",
+      "event_ids": [],
+      "media_in": 6956.12,
+      "media_out": 6959.62,
+      "narration": "go_ahead 比分确认 2:1 @ 6957.12s（非进球剪辑点）。",
+      "include_in_cut": null,
+      "narrative_order": null
+    },
+    {
+      "segment_id": "seg_title_close",
+      "role": "story_wrap_title",
+      "event_ids": [],
+      "media_in": null,
+      "media_out": null,
+      "narration": "最终比分/故事收束包装（非已核实 FULL TIME 直播）",
+      "include_in_cut": null,
+      "narrative_order": null
+    }
+  ],
+  "event_context_n": 8,
+  "event_notes": [
+    {
+      "event_id": "event_000563",
+      "type": "Substitution",
+      "label": "Substitution",
+      "pts": 5557.6,
+      "description": null,
+      "annotation_notes": "2队9号换下2队7号",
+      "known_replay_or_slowmo": false
+    },
+    {
+      "event_id": "event_000564",
+      "type": "Substitution",
+      "label": "Substitution",
+      "pts": 5561.0,
+      "description": null,
+      "annotation_notes": "2队9号换下2队7号",
+      "known_replay_or_slowmo": false
+    },
+    {
+      "event_id": "event_000598",
+      "type": "Pass",
+      "label": "Long_Pass",
+      "pts": 5841.34,
+      "description": null,
+      "annotation_notes": "2队守门员长传",
+      "known_replay_or_slowmo": false
+    },
+    {
+      "event_id": "event_000605",
+      "type": "Win_an_aerial_duel",
+      "label": "Win_an_aerial_duel",
+      "pts": 5919.2,
+      "description": null,
+      "annotation_notes": "2队球员争顶成功",
+      "known_replay_or_slowmo": false
+    },
+    {
+      "event_id": "event_000617",
+      "type": "Foul_Being_fouled",
+      "label": "Penalty_Foul",
+      "pts": 6020.63,
+      "description": null,
+      "annotation_notes": "2队3号踢到1队7号，造成犯规",
+      "known_replay_or_slowmo": false
+    },
+    {
+      "event_id": "event_000622",
+      "type": "Video_Assistant_Referee",
+      "label": "Penalty_Disallowed_(VAR)",
+      "pts": 6196.82,
+      "description": null,
+      "annotation_notes": "2队3号踢到1队7号，造成犯规",
+      "known_replay_or_slowmo": true
+    },
+    {
+      "event_id": "event_000635",
+      "type": "Defensive_action",
+      "label": "Interception",
+      "pts": 6405.03,
+      "description": null,
+      "annotation_notes": "2队球员截获1队球员传球",
+      "known_replay_or_slowmo": false
+    },
+    {
+      "event_id": "event_000636",
+      "type": "Defensive_action",
+      "label": "Interception",
+      "pts": 6410.07,
+      "description": null,
+      "annotation_notes": "1队球员截获2队球员传球",
+      "known_replay_or_slowmo": false
+    }
+  ],
+  "h1_var_replay_flag": [
+    {
+      "event_id": "event_000622",
+      "source_pts_sec": 6196.82,
+      "type": "Video_Assistant_Referee",
+      "label": "Penalty_Disallowed_(VAR)",
+      "description": null,
+      "annotation_notes": "2队3号踢到1队7号，造成犯规",
+      "known_replay_or_slowmo": true
+    }
+  ],
+  "candidate_ids": [
+    "H1",
+    "H2"
+  ],
+  "recovery": {
+    "content_added_or_removed": false,
+    "converted_count": 6,
+    "converted_fields": [
+      {
+        "field": "proposed_long_range_relations",
+        "index": 0,
+        "new_type": "list",
+        "operation": "wrap_existing_value_in_single_element_array",
+        "original_type": "dict"
+      },
+      {
+        "field": "falsification_conditions",
+        "index": 0,
+        "new_type": "list",
+        "operation": "wrap_existing_value_in_single_element_array",
+        "original_type": "str"
+      },
+      {
+        "field": "observation_queries",
+        "index": 0,
+        "new_type": "list",
+        "operation": "wrap_existing_value_in_single_element_array",
+        "original_type": "dict"
+      },
+      {
+        "field": "proposed_long_range_relations",
+        "index": 1,
+        "new_type": "list",
+        "operation": "wrap_existing_value_in_single_element_array",
+        "original_type": "dict"
+      },
+      {
+        "field": "falsification_conditions",
+        "index": 1,
+        "new_type": "list",
+        "operation": "wrap_existing_value_in_single_element_array",
+        "original_type": "str"
+      },
+      {
+        "field": "observation_queries",
+        "index": 1,
+        "new_type": "list",
+        "operation": "wrap_existing_value_in_single_element_array",
+        "original_type": "dict"
+      }
+    ],
+    "edl_modified": false,
+    "first_live_certified": false,
+    "http_attempts": 0,
+    "paid_http_authorized": false,
+    "schema_recovery": "SINGLETON_ARRAY_SHAPE_ONLY_V1",
+    "semantic_quality_re_evaluated": false,
+    "source_prepared_sha256": "63d08e7c9e3cf153c0b4d536154e8c15baecfdd88d335169bde16a28d93e7b1d",
+    "source_raw_path": "/tmp/lpy1_story_first_v2_deepseek_run02_20261114/llm_raw_response.txt",
+    "source_raw_sha256": "3fc46fe576018528fe15cedd9ba19bb48fc4e23b43591c437432d13d29197e05",
+    "source_run": "RUN02_EXISTING_RAW_NOT_NEW_MODEL_RESULT",
+    "status": "OFFLINE_SCHEMA_RECOVERY_UNVERIFIED",
+    "story_stage1_passed": false,
+    "structurally_accepted": 2,
+    "structurally_rejected": 0,
+    "video_observed": false
+  },
+  "current_edl_timed_playback_order_ok": true,
+  "current_edl_null_media_segments": [
+    "seg_title_open",
+    "seg_title_close"
+  ],
+  "acceptance_gates": {
+    "http_attempts_0": true,
+    "frozen_story_plan_dict": true,
+    "current_edl_list": true,
+    "event_context_8": true,
+    "notes_present_all_8": true,
+    "h1_622_replay_true": true,
+    "timed_edl_monotonic": true,
+    "scope_matches_run02": true,
+    "candidates_H1_H2": true
+  },
+  "acceptance_all_pass": true
+}
