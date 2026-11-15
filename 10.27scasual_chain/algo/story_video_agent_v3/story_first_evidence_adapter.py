@@ -8,10 +8,12 @@ This adapter makes ZERO API calls and does not read benchmark gold.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 from typing import Any, Dict, Mapping, Optional, Sequence
 
+from .story_first_a_ranker import rank_model_evaluations
 from .story_first_hypotheses import (
     build_observation_plan,
     parse_hypotheses,
@@ -71,6 +73,8 @@ def read_story_first_observation_branch(
         "observation_target_count": 0,
         "hypotheses": [],
         "observation_targets": [],
+        "scheme_a_ranking_status": "NOT_PROVIDED",
+        "scheme_a_selected_for_observation": [],
         "verified_long_range_causal_links": 0,
         "planner_candidates": [],
         "planner_candidate_count": 0,
@@ -143,6 +147,70 @@ def read_story_first_observation_branch(
         result["hypothesis_count"] = len(validated["hypotheses"])
         result["observation_targets"] = observation["targets"]
         result["observation_target_count"] = len(observation["targets"])
+        # Optional Scheme-A evaluation pass, produced in an isolated child
+        # directory by story_first_a_ranker.py. Scores are ONLY a queue prior.
+        # Verify both source artifact byte hashes AND ranker output equations.
+        score_dir = artifact_dir / "scheme_a_ranking"
+        if score_dir.exists():
+            provenance = _read_artifact(score_dir, "score_model_input.json")
+            ranking = _read_artifact(score_dir, "scheme_a_story_ranking.json")
+            rank_audit = _read_artifact(score_dir, "scheme_a_audit.json")
+            if (provenance.get("source_prepared_sha256")
+                != hashlib.sha256(
+                    (artifact_dir / "prepared_story_input.json").read_bytes()
+                ).hexdigest() or provenance.get("source_hypotheses_sha256")
+                != hashlib.sha256(
+                    (artifact_dir / "story_hypotheses.json").read_bytes()
+                ).hexdigest()):
+                raise ValueError("scheme_a_source_artifacts_changed")
+            audit_status = str(rank_audit.get("status") or "")
+            if audit_status not in (
+                "REAL_MODEL_PRIOR_NOT_VIDEO_VERIFIED",
+                "OFFLINE_FIXTURE_NOT_REAL_LLM",
+            ):
+                raise ValueError("scheme_a_not_scored_or_untrusted_mode")
+            rows = ranking.get("ranked_hypotheses")
+            if not isinstance(rows, list):
+                raise ValueError("scheme_a_missing_rank_rows")
+            evaluations = []
+            for item in rows:
+                if not isinstance(item, Mapping):
+                    raise ValueError("scheme_a_nonobject_row")
+                entry = {
+                    "hypothesis_id": item.get("hypothesis_id"),
+                    "cited_event_ids": item.get("cited_event_ids"),
+                    "new_story_information": item.get("new_story_information"),
+                    "comparison_to_existing_story": item.get(
+                        "comparison_to_existing_story"),
+                    "major_uncertainty": item.get("major_uncertainty"),
+                }
+                scores = item.get("scores")
+                if not isinstance(scores, Mapping):
+                    raise ValueError("scheme_a_missing_scores")
+                entry.update(scores)
+                evaluations.append(entry)
+            recomputed = rank_model_evaluations(
+                {"evaluations": evaluations}, validated,
+                top_k=int(ranking.get("top_k") or 2),
+            )
+            if (recomputed["ranked_hypotheses"] != rows
+                    or recomputed["selected_for_video_observation"]
+                    != ranking.get("selected_for_video_observation")
+                    or ranking.get("status") != recomputed["status"]):
+                raise ValueError("scheme_a_ranking_not_reproducible")
+            preferred = recomputed["selected_for_video_observation"]
+            # Reprioritize the *observation* queue, NEVER the legacy Planner.
+            order = {hid: i for i, hid in enumerate(preferred)}
+            result["observation_targets"] = sorted(
+                observation["targets"],
+                key=lambda t: (
+                    order.get(str(t["hypothesis_id"]), len(preferred)),
+                    str(t["hypothesis_id"]), str(t["probe_id"])),
+            )
+            result["scheme_a_ranking_status"] = audit_status
+            result["scheme_a_selected_for_observation"] = preferred
+            result["scheme_a_ranking"] = recomputed["ranked_hypotheses"]
+            result["scheme_a_model_prior_not_factual_proof"] = True
         result["rejected_hypotheses"] = validated.get("rejected") or []
         result["scope"] = new_scope
         result["data_tier"] = old.get("data_tier")
