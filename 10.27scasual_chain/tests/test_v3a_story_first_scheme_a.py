@@ -5,6 +5,7 @@ a generated football story is factual or improves the edited video.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 
 import pytest
@@ -13,7 +14,10 @@ from story_video_agent_v3.story_first_a_ranker import (
     build_score_messages, main, rank_model_evaluations,
 )
 from story_video_agent_v3.story_first_hypotheses import (
-    parse_hypotheses, prepare_story_input,
+    build_observation_plan, parse_hypotheses, prepare_story_input,
+)
+from story_video_agent_v3.story_first_evidence_adapter import (
+    read_story_first_observation_branch,
 )
 
 
@@ -157,3 +161,74 @@ def test_cli_real_mode_requires_explicit_budget(tmp_path):
               "--out-dir", str(tmp_path / "paid"),
               "--enable-real-api"])
     assert not (tmp_path / "paid").exists()
+
+
+def test_scheme_a_ranking_integrates_to_observation_queue_only(tmp_path):
+    prepared, valid = _fixture()
+    poc = tmp_path / "stage1"
+    poc.mkdir()
+    ranking_dir = poc / "scheme_a_ranking"
+    ranking_dir.mkdir()
+    output = rank_model_evaluations({
+        "evaluations": [_score("H1", ["a", "b"], 1),
+                        _score("H2", ["c", "d"], 4)],
+    }, valid, top_k=1)
+    docs = {
+        "prepared_story_input.json": prepared,
+        "story_hypotheses.json": valid,
+        "observation_plan.json": build_observation_plan(prepared, valid),
+    }
+    for filename, doc in docs.items():
+        (poc / filename).write_text(
+            json.dumps(doc, ensure_ascii=False), encoding="utf-8")
+    (ranking_dir / "scheme_a_story_ranking.json").write_text(
+        json.dumps(output, ensure_ascii=False), encoding="utf-8")
+    (ranking_dir / "scheme_a_audit.json").write_text(
+        json.dumps({"status": "OFFLINE_FIXTURE_NOT_REAL_LLM"}),
+        encoding="utf-8")
+    (ranking_dir / "score_model_input.json").write_text(json.dumps({
+        "source_prepared_sha256": hashlib.sha256(
+            (poc / "prepared_story_input.json").read_bytes()).hexdigest(),
+        "source_hypotheses_sha256": hashlib.sha256(
+            (poc / "story_hypotheses.json").read_bytes()).hexdigest(),
+    }), encoding="utf-8")
+    edl = [
+        {"segment_id": "behind", "role": "opening_goal_action",
+         "media_in": 100, "media_out": 110, "include_in_cut": True},
+        {"segment_id": "pressure", "role": "pressure_shift",
+         "media_in": 600, "media_out": 615, "include_in_cut": True},
+    ]
+    events = [
+        {"event_id": e["event_id"], "event_type": e["event_type"],
+         "media_time": {
+             "start_time_sec": e["media_span_sec"][0],
+             "event_time_sec": e["source_pts_sec"],
+             "end_time_sec": e["media_span_sec"][1],
+         }, "video_context": {
+             "broadcast_phase": e["broadcast_phase_metadata"]}}
+        for e in prepared["events"]
+    ]
+    def run():
+        return read_story_first_observation_branch(
+            artifacts_dir=poc,
+            current_edl=edl,
+            current_story_plan={"plot": "behind_to_pressure"},
+            permitted_events=events,
+            current_source_sha256="a" * 64,
+        )
+    result = run()
+    assert result["status"] == "OBSERVATION_QUEUE_ONLY"
+    assert result["scheme_a_selected_for_observation"] == ["H2"]
+    assert result["observation_targets"][0]["hypothesis_id"] == "H2"
+    assert result["planner_candidates"] == []
+    assert result["first_live_certified"] is False
+    # A changed score file cannot silently change the search queue.
+    changed = dict(output)
+    changed["ranked_hypotheses"] = [
+        dict(x) for x in output["ranked_hypotheses"]]
+    changed["ranked_hypotheses"][0]["model_priority_0_to_1"] = 1.0
+    (ranking_dir / "scheme_a_story_ranking.json").write_text(
+        json.dumps(changed), encoding="utf-8")
+    rejected = run()
+    assert rejected["status"] == "REJECTED_NO_PROMOTION"
+    assert "scheme_a_ranking_not_reproducible" in rejected["reason"]
