@@ -26,6 +26,11 @@ _REQUIRED = (
     "story_hypotheses.json",
     "observation_plan.json",
 )
+_SCORED_MODES = ("REAL_MODEL_PRIOR_NOT_VIDEO_VERIFIED", "OFFLINE_FIXTURE_NOT_REAL_LLM")
+_UNSCORED_MODES = {
+    "PREPARED_ONLY_ZERO_HTTP": "AWAITING_SCORING_MODEL",
+    "NO_STAGE1_CANDIDATES": "NO_CANDIDATES",
+}
 
 
 def _read_artifact(directory: Path, name: str) -> Mapping[str, Any]:
@@ -112,7 +117,9 @@ def read_story_first_observation_branch(
                 or new_scope["from_segment_id"] != sid_from
                 or new_scope["to_segment_id"] != sid_to):
             raise ValueError("story_anchors_or_source_pts_changed")
-        if fresh["story_plan_reference"] != old.get("story_plan_reference"):
+        plan_key = ("frozen_story_plan" if "frozen_story_plan" in old
+                    else "story_plan_reference")
+        if fresh[plan_key] != old.get(plan_key):
             raise ValueError("story_plan_changed_since_poc")
         if _event_fingerprint(fresh) != _event_fingerprint(old):
             raise ValueError("event_ids_or_pts_changed_since_poc")
@@ -138,19 +145,12 @@ def read_story_first_observation_branch(
                 or [_target_key(x) for x in supplied_targets]
                 != [_target_key(x) for x in observation["targets"]]):
             raise ValueError("stored_observation_plan_not_reproducible")
-        result["status"] = (
-            "OBSERVATION_QUEUE_ONLY"
-            if validated["hypotheses"] else "NO_VALID_HYPOTHESES"
-        )
-        result["reason"] = "poc_has_no_independent_source_video_binding_or_verified_causality"
-        result["hypotheses"] = validated["hypotheses"]
-        result["hypothesis_count"] = len(validated["hypotheses"])
-        result["observation_targets"] = observation["targets"]
-        result["observation_target_count"] = len(observation["targets"])
+        targets = observation["targets"]
         # Optional Scheme-A evaluation pass, produced in an isolated child
         # directory by story_first_a_ranker.py. Scores are ONLY a queue prior.
         # Verify both source artifact byte hashes AND ranker output equations.
         score_dir = artifact_dir / "scheme_a_ranking"
+        audit_status = "NOT_PROVIDED"
         if score_dir.exists():
             provenance = _read_artifact(score_dir, "score_model_input.json")
             ranking = _read_artifact(score_dir, "scheme_a_story_ranking.json")
@@ -164,11 +164,17 @@ def read_story_first_observation_branch(
                 ).hexdigest()):
                 raise ValueError("scheme_a_source_artifacts_changed")
             audit_status = str(rank_audit.get("status") or "")
-            if audit_status not in (
-                "REAL_MODEL_PRIOR_NOT_VIDEO_VERIFIED",
-                "OFFLINE_FIXTURE_NOT_REAL_LLM",
-            ):
-                raise ValueError("scheme_a_not_scored_or_untrusted_mode")
+            if audit_status not in _SCORED_MODES:
+                if (audit_status not in _UNSCORED_MODES
+                        or ranking.get("status") != _UNSCORED_MODES[audit_status]
+                        or ranking.get("ranked_hypotheses") != []
+                        or ranking.get("selected_for_video_observation") != []
+                        or (audit_status == "NO_STAGE1_CANDIDATES"
+                            and validated["hypotheses"])):
+                    raise ValueError("scheme_a_not_scored_or_untrusted_mode")
+        if audit_status in _SCORED_MODES:
+            if "current_edl" in old and old["current_edl"] != fresh["current_edl"]:
+                raise ValueError("current_edl_changed_since_scheme_a_input")
             rows = ranking.get("ranked_hypotheses")
             if not isinstance(rows, list):
                 raise ValueError("scheme_a_missing_rank_rows")
@@ -201,16 +207,25 @@ def read_story_first_observation_branch(
             preferred = recomputed["selected_for_video_observation"]
             # Reprioritize the *observation* queue, NEVER the legacy Planner.
             order = {hid: i for i, hid in enumerate(preferred)}
-            result["observation_targets"] = sorted(
-                observation["targets"],
+            targets = sorted(
+                targets,
                 key=lambda t: (
                     order.get(str(t["hypothesis_id"]), len(preferred)),
                     str(t["hypothesis_id"]), str(t["probe_id"])),
             )
-            result["scheme_a_ranking_status"] = audit_status
             result["scheme_a_selected_for_observation"] = preferred
             result["scheme_a_ranking"] = recomputed["ranked_hypotheses"]
             result["scheme_a_model_prior_not_factual_proof"] = True
+        result["scheme_a_ranking_status"] = audit_status
+        result["status"] = (
+            "OBSERVATION_QUEUE_ONLY"
+            if validated["hypotheses"] else "NO_VALID_HYPOTHESES"
+        )
+        result["reason"] = "poc_has_no_independent_source_video_binding_or_verified_causality"
+        result["hypotheses"] = validated["hypotheses"]
+        result["hypothesis_count"] = len(validated["hypotheses"])
+        result["observation_targets"] = targets
+        result["observation_target_count"] = len(targets)
         result["rejected_hypotheses"] = validated.get("rejected") or []
         result["scope"] = new_scope
         result["data_tier"] = old.get("data_tier")

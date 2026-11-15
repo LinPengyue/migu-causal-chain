@@ -18,6 +18,11 @@ from .story_timeline import _num, active_cut_rows, edl_rows
 SCHEMA = "story_first_hypotheses_poc_v1"
 _RELATIONS = {"direct_action", "state_transition", "causal_hypothesis",
               "narrative_association", "unknown"}
+_EDL_CONTEXT_FIELDS = (
+    "segment_id", "beat", "role", "shot_kind", "media_in", "media_out",
+    "event_ids", "linked_live_event_id", "narration", "is_replay",
+    "placeholder_sec", "placeholder_lines",
+)
 _SYSTEM = """You generate FALSIFIABLE long-range football story HYPOTHESES.
 STAGE 1 ONLY: compact story skeletons for later video tests; NOT a full story.
 Return exactly one compact JSON object and no markdown, commentary or examples.
@@ -137,13 +142,15 @@ def prepare_story_input(
         edl_document, from_segment_id=from_segment_id, to_segment_id=to_segment_id
     )
     lo, hi = scope["source_interval_sec"]
+    cut_rows = active_cut_rows(edl_rows(edl_document))
     occupied: List[Tuple[float, float]] = []
-    for row in active_cut_rows(edl_rows(edl_document)):
+    for row in cut_rows:
         x, y = _finite(row.get("media_in")), _finite(row.get("media_out"))
         if x is not None and y is not None and y > x:
             occupied.append((x, y))
 
     selected: List[Dict[str, Any]] = []
+    event_annotations: Dict[str, Dict[str, str]] = {}
     seen = set()
     unavailable_ids = 0
     timed = 0
@@ -181,6 +188,13 @@ def prepare_story_input(
             ) if sc.get(k) is not None},
         }
         selected.append(item)
+        # Keep source descriptions and notes even for compact-only candidate events.
+        annotation = {
+            "description": item["description"],
+            "notes": _text(ev.get("notes"), 180),
+        }
+        if any(annotation.values()):
+            event_annotations[eid] = annotation
     selected.sort(key=lambda x: (x["source_pts_sec"], x["event_id"]))
     event_total = len(selected)
     # Preserve the FULL event index, including labels of events not chosen for
@@ -271,12 +285,16 @@ def prepare_story_input(
             "requires_video_caption": True, "first_live_status": "UNRESOLVED",
             "not_a_verified_event_action": True,
         })
-    # Include the whole plan as context only up to a bounded serialization size.
+    # Legacy Stage-1 generation context. Scheme A scores against structured inputs.
     plan_summary = _text(story_plan, 9000) if story_plan is not None else ""
     return {
         "schema": SCHEMA, "scope": scope, "events": selected,
         "event_inventory": event_inventory,
         "probes": probes, "story_plan_reference": plan_summary,
+        "frozen_story_plan": story_plan,
+        "current_edl": [{key: row[key] for key in _EDL_CONTEXT_FIELDS if key in row}
+                        for row in cut_rows],
+        "event_annotations": event_annotations,
         "rich_context_selection": (
             "all_events" if event_total <= max_events
             else "temporal_coverage_plus_type_rarity_metadata_priors_v1"

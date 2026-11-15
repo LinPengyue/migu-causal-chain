@@ -45,6 +45,7 @@ def build_score_messages(prepared: Mapping[str, Any],
     inventory = {str(x["event_id"]): x
                  for x in prepared.get("event_inventory") or []}
     rich = {str(x["event_id"]): x for x in prepared.get("events") or []}
+    annotations = prepared.get("event_annotations") or {}
     target_ids = {str(eid) for h in candidates
                   for eid in h.get("supporting_event_ids") or []}
     for h in candidates:
@@ -52,17 +53,20 @@ def build_score_messages(prepared: Mapping[str, Any],
             target_ids.add(str(rel["source_event_id"]))
             target_ids.add(str(rel["target_event_id"]))
     event_context = []
-    for eid in sorted(target_ids):
-        if eid not in inventory:
-            raise ValueError("candidate_event_id_not_in_inventory:" + eid)
+    missing_ids = target_ids - inventory.keys()
+    if missing_ids:
+        raise ValueError("candidate_event_id_not_in_inventory:" + min(missing_ids))
+    for eid in sorted(target_ids, key=lambda eid: (inventory[eid]["source_pts_sec"], eid)):
         item = inventory[eid]
         detail = rich.get(eid) or {}
+        annotation = annotations.get(eid) or {}
         event_context.append({
             "event_id": eid,
             "source_pts_sec": item["source_pts_sec"],
             "type": item.get("event_type"),
             "label": item.get("comment_label"),
-            "description": detail.get("description"),
+            "description": annotation.get("description") or detail.get("description") or None,
+            "annotation_notes": annotation.get("notes") or None,
             "known_replay_or_slowmo": item.get("known_replay_or_slowmo"),
         })
     compact = []
@@ -86,7 +90,12 @@ def build_score_messages(prepared: Mapping[str, Any],
         "Assess anchor_fit, internal_coherence, joint_composition "
         "(whole more useful than isolated events), marginal_narrative_gain "
         "(nonredundant information compared with existing story), event_grounding. "
-        "In scoring marginal gain, prefer 0 if the current story already covers the point. "
+        "Use frozen_story_plan for the intended narrative and current_edl for the "
+        "segments already selected, in playback order. Compare the proposed new information "
+        "to those segments for marginal gain: prefer 0 if it is already covered. "
+        "EDL times and labels describe the cut plan; they are not video observations. "
+        "If an event has only an ID, time and label, those do not establish team or player "
+        "identity, continuous possession, or a link between distinct events. "
         "Never invent event IDs, source times, frames, or observations. "
         "Return ONE JSON object exactly {evaluations:[{hypothesis_id,anchor_fit,"
         "internal_coherence,joint_composition,marginal_narrative_gain,event_grounding,"
@@ -98,7 +107,8 @@ def build_score_messages(prepared: Mapping[str, Any],
     )
     user = {
         "story_scope": prepared["scope"],
-        "frozen_story_plan": prepared.get("story_plan_reference"),
+        "frozen_story_plan": prepared.get("frozen_story_plan"),
+        "current_edl": prepared.get("current_edl"),
         "event_context": event_context,
         "candidate_stories": compact,
         "evaluation_is_unverified_prior": True,
@@ -242,6 +252,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         if validated.get("rejected"):
             raise ValueError("stage1_hypotheses_failed_revalidation")
         messages = build_score_messages(prepared, validated)
+        plan, cut = prepared.get("frozen_story_plan"), prepared.get("current_edl")
+        has_story_context = isinstance(plan, Mapping) and bool(plan) and (
+            isinstance(cut, list) and bool(cut)
+        )
+        audit["scoring_context_complete"] = has_story_context
         args.out_dir.mkdir(parents=True, exist_ok=True)
         write_json(args.out_dir / "score_model_input.json", {
             "messages": messages, "source_prepared_sha256": hashlib.sha256(
@@ -259,6 +274,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                 _read(args.fixture_score_json), validated, top_k=args.top_k)
             audit["status"] = "OFFLINE_FIXTURE_NOT_REAL_LLM"
         elif args.enable_real_api:
+            if not has_story_context:
+                raise ValueError("reprepare_stage1_from_original_story_plan_and_edl")
             from .story_paid_eval import provider_usage
             api, preflight = build_shared_story_first_provider(
                 max_cost_usd=args.max_cost_usd,

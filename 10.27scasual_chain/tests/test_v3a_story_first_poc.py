@@ -418,7 +418,7 @@ def test_compact_stage_one_prompt_and_minimal_hypothesis_fixture():
     p = prepare_story_input(*fixtures())
     messages = model_messages(p, max_hypotheses=2)
     assert "STAGE 1 ONLY" in messages[0]["content"]
-    assert "EXACTLY one object" in messages[0]["content"]
+    assert "Return exactly one compact JSON object" in messages[0]["content"]
     assert "full_event_inventory" in messages[1]["content"]
     assert "rich_detail_events" in messages[1]["content"]
     assert json.loads(messages[1]["content"])["K"] == 2
@@ -533,7 +533,11 @@ def test_run02_offline_cli_does_not_touch_history_or_network(tmp_path):
     assert raw_file.read_text(encoding="utf-8") == json.dumps(
         original, ensure_ascii=False
     )
-    assert offline([
-        "--prepared-story-input", str(event_file),
-        "--raw-response", str(raw_file), "--out-dir", str(out),
-    ]) != 0
+    recovered_files = {p.name: p.read_bytes() for p in out.iterdir()}
+    with pytest.raises(SystemExit) as error:
+        offline([
+            "--prepared-story-input", str(event_file),
+            "--raw-response", str(raw_file), "--out-dir", str(out),
+        ])
+    assert error.value.code == 2
+    assert {p.name: p.read_bytes() for p in out.iterdir()} == recovered_files

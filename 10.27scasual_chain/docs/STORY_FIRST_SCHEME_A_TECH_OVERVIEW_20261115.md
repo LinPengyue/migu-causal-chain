@@ -38,6 +38,8 @@ V3-R fixed Story / EDL → Story-First Generate → Scheme-A Rank
 
 现阶段只实现至 **Top-K 未核验观察队列**。现有 `story_first_evidence_adapter.py` 可读取 `<Stage1目录>/scheme_a_ranking` 的评分产物，校验 Stage-1 文件 SHA 与排名可重算性，然后调整观察队列顺序；**绝不把模型分数作为已验证因果、视频证据或 Planner 候选**。模型分数未知时沿用原观察队列。
 
+评分请求使用结构化的 `frozen_story_plan` 和按播放顺序排列的 `current_edl`。后者保留有效片段的角色、叙事注释、事件 ID 和媒体时间。候选引用的原始事件描述和标注备注单独提供，包括仅出现在紧凑索引中的事件。旧版 prepared 文件可用于离线检查，真实评分需要从原始 Story Plan、EDL 和事件 JSON 在新目录重新执行 POC 的默认离线准备，再复用历史恢复的假设 JSON。准备阶段无需重新生成候选。
+
 ## 代码与实验边界
 
 - `story_first_hypotheses.py`：沿用 Stage-1 事件约束候选生成（尚未实现通用 Story Graph 自动锚点选择）。

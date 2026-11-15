@@ -5,7 +5,6 @@ a generated football story is factual or improves the edited video.
 """
 from __future__ import annotations
 
-import hashlib
 import json
 
 import pytest
@@ -99,6 +98,35 @@ def test_whole_story_rank_and_no_edl_promotion():
     assert "existing-V3R" not in build_score_messages(prepared, valid)[0]["content"]
 
 
+def test_score_request_uses_active_edl_full_plan_and_compact_event_notes():
+    plan = {"plot": "behind_to_pressure", "details": "长" * 10000, "tail": "retained"}
+    edl = [
+        {"segment_id": "title", "role": "title_card", "placeholder_lines": ["Comeback"]},
+        {"segment_id": "before", "role": "goal_action", "media_in": 100, "media_out": 110},
+        {"segment_id": "already_shown", "role": "buildup", "media_in": 140, "media_out": 170,
+         "event_ids": ["a"], "narration": "已经呈现的换人"},
+        {"segment_id": "excluded", "include_in_cut": False},
+        {"segment_id": "after", "role": "goal_action", "media_in": 600, "media_out": 615},
+    ]
+    events = [
+        {"event_id": "a", "pts_sec": 150, "event_type": "substitution",
+         "notes": "2队9号换下2队7号"},
+        {"event_id": "b", "pts_sec": 220, "event_type": "foul",
+         "description": "对抗后犯规"},
+    ]
+    prepared = prepare_story_input(edl, events, story_plan=plan, max_events=1)
+    assert [e["event_id"] for e in prepared["events"]] == ["b"]
+    _, both = _fixture()
+    validated = parse_hypotheses({"hypotheses": both["hypotheses"][:1]}, prepared)
+    request = json.loads(build_score_messages(prepared, validated)[1]["content"])
+    assert request["frozen_story_plan"] == plan
+    assert request["current_edl"] == [edl[i] for i in (0, 1, 2, 4)]
+    assert request["current_edl"][2]["event_ids"] == ["a"]
+    assert request["event_context"][0]["annotation_notes"] == events[0]["notes"]
+    assert request["event_context"][0]["description"] is None
+    assert request["event_context"][1]["description"] == events[1]["description"]
+
+
 @pytest.mark.parametrize("change", ["hallucinated_id", "bool_score",
                                     "missing_candidate", "invalid_reason"])
 def test_score_fails_closed(change):
@@ -163,12 +191,45 @@ def test_cli_real_mode_requires_explicit_budget(tmp_path):
     assert not (tmp_path / "paid").exists()
 
 
+def test_legacy_artifacts_can_be_inspected_but_cannot_start_paid_scoring(
+        tmp_path, monkeypatch):
+    prepared, valid = _fixture()
+    prepared.pop("frozen_story_plan")
+    prepared.pop("current_edl")
+    p = tmp_path / "prepared.json"
+    h = tmp_path / "hypotheses.json"
+    p.write_text(json.dumps(prepared), encoding="utf-8")
+    h.write_text(json.dumps(valid), encoding="utf-8")
+    monkeypatch.setenv("STORY_API_ENABLE", "1")
+
+    def network_disallowed(**kwargs):
+        pytest.fail("provider must not be built for a legacy prepared file")
+
+    monkeypatch.setattr(
+        "story_video_agent_v3.story_first_a_ranker.build_shared_story_first_provider",
+        network_disallowed,
+    )
+    command = ["--prepared-story-input", str(p), "--story-hypotheses", str(h)]
+    dry = tmp_path / "dry"
+    assert main(command + ["--out-dir", str(dry)]) == 0
+    dry_audit = json.loads((dry / "scheme_a_audit.json").read_text())
+    assert dry_audit["scoring_context_complete"] is False
+    paid = tmp_path / "paid"
+    assert main(command + [
+        "--out-dir", str(paid), "--enable-real-api", "--i-approve-budget",
+        "--measured-input-tokens", "10000", "--verified-context-window-tokens", "20000",
+    ]) == 3
+    audit = json.loads((paid / "scheme_a_audit.json").read_text())
+    assert audit["status"] == "FAILED_NO_PROMOTION"
+    assert audit["http_attempts"] == 0
+    assert "reprepare_stage1_from_original_story_plan_and_edl" in audit["error"]
+
+
 def test_scheme_a_ranking_integrates_to_observation_queue_only(tmp_path):
     prepared, valid = _fixture()
     poc = tmp_path / "stage1"
     poc.mkdir()
     ranking_dir = poc / "scheme_a_ranking"
-    ranking_dir.mkdir()
     output = rank_model_evaluations({
         "evaluations": [_score("H1", ["a", "b"], 1),
                         _score("H2", ["c", "d"], 4)],
@@ -181,17 +242,6 @@ def test_scheme_a_ranking_integrates_to_observation_queue_only(tmp_path):
     for filename, doc in docs.items():
         (poc / filename).write_text(
             json.dumps(doc, ensure_ascii=False), encoding="utf-8")
-    (ranking_dir / "scheme_a_story_ranking.json").write_text(
-        json.dumps(output, ensure_ascii=False), encoding="utf-8")
-    (ranking_dir / "scheme_a_audit.json").write_text(
-        json.dumps({"status": "OFFLINE_FIXTURE_NOT_REAL_LLM"}),
-        encoding="utf-8")
-    (ranking_dir / "score_model_input.json").write_text(json.dumps({
-        "source_prepared_sha256": hashlib.sha256(
-            (poc / "prepared_story_input.json").read_bytes()).hexdigest(),
-        "source_hypotheses_sha256": hashlib.sha256(
-            (poc / "story_hypotheses.json").read_bytes()).hexdigest(),
-    }), encoding="utf-8")
     edl = [
         {"segment_id": "behind", "role": "opening_goal_action",
          "media_in": 100, "media_out": 110, "include_in_cut": True},
@@ -216,12 +266,32 @@ def test_scheme_a_ranking_integrates_to_observation_queue_only(tmp_path):
             permitted_events=events,
             current_source_sha256="a" * 64,
         )
+    assert main(["--prepared-story-input", str(poc / "prepared_story_input.json"),
+                 "--story-hypotheses", str(poc / "story_hypotheses.json"),
+                 "--out-dir", str(ranking_dir)]) == 0
+    awaiting = run()
+    assert awaiting["status"] == "OBSERVATION_QUEUE_ONLY"
+    assert awaiting["scheme_a_ranking_status"] == "PREPARED_ONLY_ZERO_HTTP"
+    assert awaiting["scheme_a_selected_for_observation"] == []
+    assert awaiting["observation_targets"][0]["hypothesis_id"] == "H1"
+    (ranking_dir / "scheme_a_story_ranking.json").write_text(
+        json.dumps(output, ensure_ascii=False), encoding="utf-8")
+    (ranking_dir / "scheme_a_audit.json").write_text(
+        json.dumps({"status": "OFFLINE_FIXTURE_NOT_REAL_LLM"}),
+        encoding="utf-8")
     result = run()
     assert result["status"] == "OBSERVATION_QUEUE_ONLY"
     assert result["scheme_a_selected_for_observation"] == ["H2"]
     assert result["observation_targets"][0]["hypothesis_id"] == "H2"
     assert result["planner_candidates"] == []
     assert result["first_live_certified"] is False
+    edl.insert(1, {"segment_id": "new_buildup", "role": "buildup",
+                   "media_in": 215, "media_out": 225})
+    stale = run()
+    assert stale["status"] == "REJECTED_NO_PROMOTION"
+    assert "current_edl_changed_since_scheme_a_input" in stale["reason"]
+    assert stale["observation_targets"] == []
+    edl.pop(1)
     # A changed score file cannot silently change the search queue.
     changed = dict(output)
     changed["ranked_hypotheses"] = [
@@ -232,3 +302,5 @@ def test_scheme_a_ranking_integrates_to_observation_queue_only(tmp_path):
     rejected = run()
     assert rejected["status"] == "REJECTED_NO_PROMOTION"
     assert "scheme_a_ranking_not_reproducible" in rejected["reason"]
+    assert rejected["observation_targets"] == []
+    assert rejected["hypotheses"] == []
