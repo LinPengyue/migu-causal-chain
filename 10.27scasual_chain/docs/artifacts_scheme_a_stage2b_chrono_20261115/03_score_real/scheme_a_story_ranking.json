@@ -1,0 +1,127 @@
+{
+  "causal_claims_verified": 0,
+  "edl_modified": false,
+  "first_live_certified": false,
+  "narrative_gain_verified": false,
+  "planner_candidates": [],
+  "ranked_hypotheses": [
+    {
+      "causal_link_verified": false,
+      "cited_event_ids": [
+        "event_000495",
+        "event_000497",
+        "event_000533",
+        "event_000635"
+      ],
+      "comparison_to_existing_story": "The current EDL already has a buildup shot (event_000472 at 4710.45s) and the equalizer goal action. H2's events are temporally interleaved with the existing buildup but add a corner and possession sequence. The claimed association between increased shots/corners and the equalizer is a narrative association, not a causal link. The interception at 6405.03s is by team 2 (opponent) per annotation, which contradicts a protagonist-pressure narrative.",
+      "event_grounding_prior": 0.25,
+      "first_live_certified": false,
+      "hypothesis_id": "H2",
+      "major_uncertainty": "Event order and type do not prove sustained attacking momentum or that these events contributed to the equalizer. The interception (event_000635) is annotated as team 2 (opponent) intercepting team 1 (protagonist), which undercuts the claimed protagonist pressure narrative. No continuous possession or tactical change is established.",
+      "marginal_gain_prior": 0.25,
+      "model_priority_0_to_1": 0.2875,
+      "multi_event_combination": true,
+      "narrative_gain_verified": false,
+      "new_story_information": "Adds a shot (event_000495), corner (event_000497), possession (event_000533), and interception (event_000635) in the 4562–6405s window, which are not in the current EDL.",
+      "planner_eligible": false,
+      "requires_video_evidence": true,
+      "scores": {
+        "anchor_fit": 2,
+        "event_grounding": 1,
+        "internal_coherence": 1,
+        "joint_composition": 1,
+        "marginal_narrative_gain": 1
+      },
+      "story_summary": "下半场射门与角球增多，可能为扳平进球积累进攻势头。",
+      "structural_prior": 0.3333,
+      "supporting_event_ids": [
+        "event_000495",
+        "event_000497",
+        "event_000533",
+        "event_000635"
+      ]
+    },
+    {
+      "causal_link_verified": false,
+      "cited_event_ids": [
+        "event_000617",
+        "event_000622",
+        "event_000627",
+        "event_000635"
+      ],
+      "comparison_to_existing_story": "The current EDL transitions from the buildup shot (4710.45s) directly to the equalizer goal action (6448.924s). H3 inserts a penalty/VAR sequence and an aerial duel before the equalizer. The VAR event is replay-labelled and cannot be promoted to source footage. The aerial duel is won by team 2 (opponent) per annotation, and the interception is also by team 2, which contradicts a protagonist-sustained-pressure narrative.",
+      "event_grounding_prior": 0.25,
+      "first_live_certified": false,
+      "hypothesis_id": "H3",
+      "major_uncertainty": "The penalty was disallowed, so it did not directly produce the equalizer. The VAR event is replay-labelled. The aerial duel and interception are attributed to team 2 (opponent), not the protagonist, so they do not support a protagonist-pressure narrative. No causal link between the VAR decision and the equalizer is established by event facts alone.",
+      "marginal_gain_prior": 0.25,
+      "model_priority_0_to_1": 0.2875,
+      "multi_event_combination": true,
+      "narrative_gain_verified": false,
+      "new_story_information": "Adds a penalty-foul (event_000617), VAR disallowance (event_000622), aerial duel win (event_000627), and interception (event_000635) in the 6020–6405s window, none of which are in the current EDL.",
+      "planner_eligible": false,
+      "requires_video_evidence": true,
+      "scores": {
+        "anchor_fit": 2,
+        "event_grounding": 1,
+        "internal_coherence": 1,
+        "joint_composition": 1,
+        "marginal_narrative_gain": 1
+      },
+      "story_summary": "点球被VAR取消后，球队可能借势继续施压并最终扳平。",
+      "structural_prior": 0.3333,
+      "supporting_event_ids": [
+        "event_000617",
+        "event_000622",
+        "event_000627",
+        "event_000635"
+      ]
+    },
+    {
+      "causal_link_verified": false,
+      "cited_event_ids": [
+        "event_000458",
+        "event_000563",
+        "event_000617",
+        "event_000622"
+      ],
+      "comparison_to_existing_story": "The current EDL's buildup beat uses only event_000472 (a shot at 4710.45s). H1 introduces substitutions at 4562.65s and 5557.6s plus a penalty incident at 6020.63s and VAR disallowance at 6196.82s, which are temporally between the buildup and equalizer but are not in the EDL. However, the claimed causal link (substitution → penalty) is an unverified model hypothesis, and the VAR event is replay-labelled, so it cannot be promoted to source footage.",
+      "event_grounding_prior": 0.25,
+      "first_live_certified": false,
+      "hypothesis_id": "H1",
+      "major_uncertainty": "No event-level evidence establishes that substitutions caused increased attacking pressure or that the penalty incident resulted from post-substitution tactics. The VAR event is replay-labelled and cannot support causal claims. The penalty was disallowed, so it did not directly produce the equalizer. Team identity of the fouled/fouling players is not confirmed as protagonist vs opponent in the supplied facts.",
+      "marginal_gain_prior": 0.25,
+      "model_priority_0_to_1": 0.25,
+      "multi_event_combination": true,
+      "narrative_gain_verified": false,
+      "new_story_information": "Adds two substitution events (event_000458, event_000563) and a penalty-foul/VAR-disallowed sequence (event_000617, event_000622) that are not present in the current EDL, which only covers the opponent opening goal, deficit board, one buildup shot, equalizer, and go-ahead goal.",
+      "planner_eligible": false,
+      "requires_video_evidence": true,
+      "scores": {
+        "anchor_fit": 1,
+        "event_grounding": 1,
+        "internal_coherence": 1,
+        "joint_composition": 1,
+        "marginal_narrative_gain": 1
+      },
+      "story_summary": "换人调整后球队持续进攻，最终在禁区内制造点球争议。",
+      "structural_prior": 0.25,
+      "supporting_event_ids": [
+        "event_000458",
+        "event_000563",
+        "event_000617",
+        "event_000622"
+      ]
+    }
+  ],
+  "ranking_is_model_prior_not_calibrated": true,
+  "schema": "v2_story_first_scheme_a_whole_story_prior_v1",
+  "selected_for_video_observation": [
+    "H2",
+    "H3",
+    "H1"
+  ],
+  "status": "RANKED_FOR_OBSERVATION_ONLY",
+  "top_k": 5,
+  "video_observed": false
+}

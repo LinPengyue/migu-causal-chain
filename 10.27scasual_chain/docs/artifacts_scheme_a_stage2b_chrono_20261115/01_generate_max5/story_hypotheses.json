@@ -1,0 +1,119 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若换人后至点球前无射门或传中事件则假设不成立"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "substitution_to_late_penalty_pressure",
+      "narrative_summary": "换人调整后球队持续进攻，最终在禁区内制造点球争议。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "禁区内身体接触",
+          "question": "该犯规是否发生在禁区内？",
+          "target_id": "event:event_000617"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "换人后进攻增强或导致禁区犯规，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000563",
+          "target_event_id": "event_000617"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000458",
+        "event_000563",
+        "event_000617",
+        "event_000622"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若扳平前无连续进攻事件则假设不成立"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "late_shot_volume_to_equalizer",
+      "narrative_summary": "下半场射门与角球增多，可能为扳平进球积累进攻势头。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "高位拦截位置",
+          "question": "该拦截是否发生在进攻三区？",
+          "target_id": "event:event_000635"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "射门与角球增多或与扳平前压迫相关，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000495",
+          "target_event_id": "event_000635"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000495",
+        "event_000497",
+        "event_000533",
+        "event_000635"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若VAR后至扳平前无进攻事件则假设不成立"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "var_penalty_denial_to_equalizer_momentum",
+      "narrative_summary": "点球被VAR取消后，球队可能借势继续施压并最终扳平。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "前场争顶位置",
+          "question": "该争顶是否发生在对方半场？",
+          "target_id": "event:event_000627"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "VAR取消点球后进攻延续或促成扳平，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000622",
+          "target_event_id": "event_000635"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000617",
+        "event_000622",
+        "event_000627",
+        "event_000635"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}
