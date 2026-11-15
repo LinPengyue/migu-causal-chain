@@ -34,6 +34,16 @@ a second mechanism. Each must connect events from separated phases AND propose
 one observable discriminating test that might refute the hypothesis.
 Do not infer intention, emotion, tactical shifts, causal effects, player names,
 scores, FIRST_LIVE, or replay state from labels or order alone.
+Ground each proposed relationship in CHRONOLOGICAL source events: a claimed
+cause or buildup must precede its claimed consequence. An earlier shot cannot
+be evidence of an attack caused by a later substitution or dribble.
+Respect explicit team identity in event labels and descriptions: opponent-team
+events cannot be presented as actions by the protagonist. Opponent actions may
+still contribute to a cross-team narrative if the connection is hypothetical.
+Do not assert continuous pressure or tactical improvement without supporting
+events; otherwise describe an uncertain narrative association.
+Known replay/slow-motion metadata may provide event context but never a FIRST_LIVE
+observation target or proof of the depicted action's original broadcast.
 A compact-only event is only a label: any richer claim requires video verification.
 All relationships are UNVERIFIED. Do not generate timings, segment edits, or EDL.
 Never cite an event flagged known_replay_or_slowmo as a candidate video probe.
@@ -378,6 +388,10 @@ def parse_hypotheses(
         "source_pts_start", "source_pts_end", "source_pts_sec",
         "media_in", "media_out", "media_pts", "timestamp", "start_sec", "end_sec"
     }
+    # Source PTS is authoritative for the direction of a proposed relation.
+    # Narrative associations can be non-causal and are not forced into an arrow.
+    timeline = {str(x["event_id"]): _finite(x.get("source_pts_sec"))
+                for x in prepared.get("event_inventory", prepared["events"])}
     accepted, rejected, mechanisms, hids = [], [], set(), set()
     for idx, item in enumerate(rows):
         if not isinstance(item, Mapping):
@@ -414,6 +428,15 @@ def parse_hypotheses(
                 break
         if not valid:
             rejected.append({"index": idx, "reason": "unverifiable_relation"})
+            continue
+        if any(
+            rel["relation_type"] in ("causal_hypothesis", "state_transition", "direct_action")
+            and (timeline.get(str(rel["source_event_id"])) is None
+                 or timeline.get(str(rel["target_event_id"])) is None
+                 or timeline[str(rel["source_event_id"])] >= timeline[str(rel["target_event_id"])])
+            for rel in relations
+        ):
+            rejected.append({"index": idx, "reason": "causal_relation_reverse_or_missing_pts"})
             continue
         for q in queries:
             if (not isinstance(q, Mapping) or
