@@ -1,0 +1,40 @@
+{
+  "evaluations": [
+    {
+      "hypothesis_id": "H1",
+      "anchor_fit": 2,
+      "internal_coherence": 2,
+      "joint_composition": 2,
+      "marginal_narrative_gain": 2,
+      "event_grounding": 2,
+      "cited_event_ids": ["event_000617", "event_000622", "event_000635", "event_000472"],
+      "new_story_information": "Adds a VAR-disallowed penalty (event_000622, replay-labelled) and a foul (event_000617) plus an interception (event_000635) as a pressure sequence between the deficit and the equalizer; the existing EDL only carries a single buildup shot (event_000472) in that window.",
+      "comparison_to_existing_story": "The frozen plan and current EDL cover the deficit, one buildup shot, the equalizer action and scoreboard anchors. H1 introduces the disallowed-penalty beat, which is not present in the current cut, so it is nonredundant; however the causal claim linking the VAR decision to the equalizer is not supported by the supplied facts.",
+      "major_uncertainty": "event_000622 is replay-labelled and cannot be promoted to source footage; the causal link from the disallowed penalty to the equalizer is an unverified model hypothesis; no possession or team identity is established by IDs alone."
+    },
+    {
+      "hypothesis_id": "H2",
+      "anchor_fit": 1,
+      "internal_coherence": 1,
+      "joint_composition": 1,
+      "marginal_narrative_gain": 1,
+      "event_grounding": 1,
+      "cited_event_ids": ["event_000563", "event_000564", "event_000598", "event_000472"],
+      "new_story_information": "Adds two substitution events (event_000563, event_000564) and a goalkeeper long pass (event_000598) as a tactical-change beat before the equalizer.",
+      "comparison_to_existing_story": "The current EDL has no substitution or long-pass segment, so the events are technically new; but the claim that substitutions changed attacking organization is a state-transition hypothesis with no supporting event-level evidence, and the two substitution events are near-duplicates at 5557.6s and 5561.0s.",
+      "major_uncertainty": "Substitution events do not establish tactical change or attacking improvement; event_000598 is a single long pass with no possession chain; no link to the equalizer is evidenced."
+    },
+    {
+      "hypothesis_id": "H3",
+      "anchor_fit": 1,
+      "internal_coherence": 1,
+      "joint_composition": 1,
+      "marginal_narrative_gain": 1,
+      "event_grounding": 1,
+      "cited_event_ids": ["event_000575", "event_000580", "event_000590", "event_000472"],
+      "new_story_information": "Adds three dribble-past events (event_000575, event_000580, event_000590) as an accumulating-momentum beat before the equalizer.",
+      "comparison_to_existing_story": "The current EDL does not include these dribbles, so they are new; but the narrative association between consecutive dribbles and the equalizer is an unverified hypothesis, and the events are isolated with no possession continuity or shot outcome shown.",
+      "major_uncertainty": "Dribble events do not establish sustained pressure or a path to the equalizer; no event-level link to event_000472 or the equalizer is provided."
+    }
+  ]
+}

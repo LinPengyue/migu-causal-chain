@@ -1,0 +1,119 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "检查VAR取消后至扳平前是否无主队射门或禁区内触球"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "var_penalty_denial_precedes_equalizer",
+      "narrative_summary": "点球被VAR取消后，主队持续施压并在随后阶段扳平比分。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "拦截位置与进攻方向",
+          "question": "此拦截是否发生在主队进攻三区？",
+          "target_id": "event:event_000635"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "点球判罚被取消或与后续持续进攻相关，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000617",
+          "target_event_id": "event_000635"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000617",
+        "event_000622",
+        "event_000635",
+        "event_000472"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "对比换人前后主队长传与射门频率是否无差异"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "substitution_shift_enables_late_pressure",
+      "narrative_summary": "下半场换人调整后，主队进攻组织增强并最终形成扳平进球。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "传球者身份与换人记录",
+          "question": "此长传是否由替补球员发起？",
+          "target_id": "event:event_000598"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "换人后长传比例或进攻方式可能变化，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "state_transition",
+          "source_event_id": "event_000563",
+          "target_event_id": "event_000598"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000563",
+        "event_000564",
+        "event_000598",
+        "event_000472"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "检查这些突破后是否均未形成射门或禁区内机会"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "repeated_dribble_breaks_build_momentum",
+      "narrative_summary": "主队多次带球突破成功累积进攻势头，最终促成扳平进球。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "突破终点位置",
+          "question": "此突破是否进入进攻三区？",
+          "target_id": "event:event_000590"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "连续突破成功可能提升进攻推进，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000575",
+          "target_event_id": "event_000590"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000575",
+        "event_000580",
+        "event_000590",
+        "event_000472"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

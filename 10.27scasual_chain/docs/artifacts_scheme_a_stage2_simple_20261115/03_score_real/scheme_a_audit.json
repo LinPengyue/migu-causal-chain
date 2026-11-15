@@ -1,0 +1,56 @@
+{
+  "api_preflight": {
+    "api_key_logged": false,
+    "cost_cap_is_estimate_not_invoice_guarantee": true,
+    "gateway": "existing_story_planner_service",
+    "gateway_configured": true,
+    "http_attempt_cap": 1,
+    "model": "DeepSeek-V4.1-Flash",
+    "model_label": "DeepSeek-V4.1-Flash",
+    "request_audit": {
+      "enable_thinking_sent": null,
+      "message_count": 1,
+      "model": "DeepSeek-V4.1-Flash",
+      "paratera_thinking_object_documented": false,
+      "request_profile": "default",
+      "role": "planner",
+      "sends_both_thinking_formats": false,
+      "sends_both_token_params": false,
+      "stream_sent": false,
+      "temperature_sent": 0.0,
+      "thinking_budget_sent": null,
+      "thinking_object_disabled_sent": true,
+      "thinking_params_sent": false,
+      "token_limit_sent": 2200,
+      "token_param_configured": "max_tokens",
+      "token_param_sent": "max_tokens",
+      "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply."
+    },
+    "request_thinking": {
+      "type": "disabled"
+    },
+    "retry_cap": 0,
+    "thinking_disable_style": "thinking_object",
+    "token_param": "max_tokens"
+  },
+  "candidate_count": 3,
+  "edl_modified": false,
+  "finish_reason": "stop",
+  "first_live_certified": false,
+  "http_attempts": 1,
+  "planner_candidates": 0,
+  "schema": "v2_story_first_scheme_a_whole_story_prior_v1",
+  "scoring_context_complete": true,
+  "selected_for_video_observation": [
+    "H1",
+    "H2",
+    "H3"
+  ],
+  "status": "REAL_MODEL_PRIOR_NOT_VIDEO_VERIFIED",
+  "usage": {
+    "completion_tokens": null,
+    "est_cost_usd_real": 0.002576,
+    "http_attempts": 1,
+    "prompt_tokens": null
+  }
+}

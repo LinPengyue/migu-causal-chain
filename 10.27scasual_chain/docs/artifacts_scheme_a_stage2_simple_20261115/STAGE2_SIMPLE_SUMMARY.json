@@ -1,0 +1,268 @@
+{
+  "code_sha": "69cd16287715b1ee3f37f8a70c1ca31a7bac2d87",
+  "costs": {
+    "gen_est_usd": 0.009994,
+    "gen_prompt_tokens": 64258,
+    "gen_completion_tokens": 593,
+    "score_est_usd": 0.002576,
+    "score_prompt_tokens": null,
+    "score_completion_tokens": null,
+    "total_est_usd_real": 0.01257
+  },
+  "generation": {
+    "status": "UNVERIFIED_HYPOTHESES",
+    "http_attempts": 1,
+    "finish_reason": "stop",
+    "accepted": 3,
+    "rejected": 0,
+    "requested_max": 5
+  },
+  "scoring": {
+    "status": "REAL_MODEL_PRIOR_NOT_VIDEO_VERIFIED",
+    "http_attempts": 1,
+    "finish_reason": "stop",
+    "selected": [
+      "H1",
+      "H2",
+      "H3"
+    ]
+  },
+  "candidates": [
+    {
+      "hypothesis_id": "H1",
+      "mechanism_key": "var_penalty_denial_precedes_equalizer",
+      "narrative_summary": "点球被VAR取消后，主队持续施压并在随后阶段扳平比分。",
+      "relations": [
+        {
+          "claim": "点球判罚被取消或与后续持续进攻相关，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000617",
+          "target_event_id": "event_000635"
+        }
+      ],
+      "falsification_conditions": [
+        "检查VAR取消后至扳平前是否无主队射门或禁区内触球"
+      ],
+      "events": [
+        {
+          "event_id": "event_000617",
+          "type": "Foul_Being_fouled",
+          "label": "Penalty_Foul",
+          "pts": 6020.63,
+          "notes": "2队3号踢到1队7号，造成犯规",
+          "replay": false
+        },
+        {
+          "event_id": "event_000622",
+          "type": "Video_Assistant_Referee",
+          "label": "Penalty_Disallowed_(VAR)",
+          "pts": 6196.82,
+          "notes": "2队3号踢到1队7号，造成犯规",
+          "replay": true
+        },
+        {
+          "event_id": "event_000635",
+          "type": "Defensive_action",
+          "label": "Interception",
+          "pts": 6405.03,
+          "notes": "2队球员截获1队球员传球",
+          "replay": false
+        },
+        {
+          "event_id": "event_000472",
+          "type": "Shot",
+          "label": "Volley_Shot",
+          "pts": 4710.45,
+          "notes": "1队9号接球后打门",
+          "replay": false
+        }
+      ]
+    },
+    {
+      "hypothesis_id": "H2",
+      "mechanism_key": "substitution_shift_enables_late_pressure",
+      "narrative_summary": "下半场换人调整后，主队进攻组织增强并最终形成扳平进球。",
+      "relations": [
+        {
+          "claim": "换人后长传比例或进攻方式可能变化，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "state_transition",
+          "source_event_id": "event_000563",
+          "target_event_id": "event_000598"
+        }
+      ],
+      "falsification_conditions": [
+        "对比换人前后主队长传与射门频率是否无差异"
+      ],
+      "events": [
+        {
+          "event_id": "event_000563",
+          "type": "Substitution",
+          "label": "Substitution",
+          "pts": 5557.6,
+          "notes": "2队9号换下2队7号",
+          "replay": false
+        },
+        {
+          "event_id": "event_000564",
+          "type": "Substitution",
+          "label": "Substitution",
+          "pts": 5561.0,
+          "notes": "2队9号换下2队7号",
+          "replay": false
+        },
+        {
+          "event_id": "event_000598",
+          "type": "Pass",
+          "label": "Long_Pass",
+          "pts": 5841.34,
+          "notes": "2队守门员长传",
+          "replay": false
+        },
+        {
+          "event_id": "event_000472",
+          "type": "Shot",
+          "label": "Volley_Shot",
+          "pts": 4710.45,
+          "notes": "1队9号接球后打门",
+          "replay": false
+        }
+      ]
+    },
+    {
+      "hypothesis_id": "H3",
+      "mechanism_key": "repeated_dribble_breaks_build_momentum",
+      "narrative_summary": "主队多次带球突破成功累积进攻势头，最终促成扳平进球。",
+      "relations": [
+        {
+          "claim": "连续突破成功可能提升进攻推进，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000575",
+          "target_event_id": "event_000590"
+        }
+      ],
+      "falsification_conditions": [
+        "检查这些突破后是否均未形成射门或禁区内机会"
+      ],
+      "events": [
+        {
+          "event_id": "event_000575",
+          "type": "Dribble_past",
+          "label": "Dribble_Break",
+          "pts": 5671.58,
+          "notes": "1队球员带球过人",
+          "replay": false
+        },
+        {
+          "event_id": "event_000580",
+          "type": "Dribble_past",
+          "label": "Dribble_past",
+          "pts": 5684.22,
+          "notes": "1队球员接球过人",
+          "replay": false
+        },
+        {
+          "event_id": "event_000590",
+          "type": "Dribble_past",
+          "label": "Dribble_Break",
+          "pts": 5788.08,
+          "notes": "1队球员带球过人",
+          "replay": false
+        },
+        {
+          "event_id": "event_000472",
+          "type": "Shot",
+          "label": "Volley_Shot",
+          "pts": 4710.45,
+          "notes": "1队9号接球后打门",
+          "replay": false
+        }
+      ]
+    }
+  ],
+  "ranking": [
+    {
+      "hypothesis_id": "H1",
+      "priority": 0.5,
+      "scores": {
+        "anchor_fit": 2,
+        "event_grounding": 2,
+        "internal_coherence": 2,
+        "joint_composition": 2,
+        "marginal_narrative_gain": 2
+      },
+      "cited_event_ids": [
+        "event_000617",
+        "event_000622",
+        "event_000635",
+        "event_000472"
+      ],
+      "new_story_information": "Adds a VAR-disallowed penalty (event_000622, replay-labelled) and a foul (event_000617) plus an interception (event_000635) as a pressure sequence between the deficit and the equalizer; the existing EDL only carries a single buildup shot (event_000472) in that window.",
+      "comparison_to_existing_story": "The frozen plan and current EDL cover the deficit, one buildup shot, the equalizer action and scoreboard anchors. H1 introduces the disallowed-penalty beat, which is not present in the current cut, so it is nonredundant; however the causal claim linking the VAR decision to the equalizer is not supported by the supplied facts.",
+      "major_uncertainty": "event_000622 is replay-labelled and cannot be promoted to source footage; the causal link from the disallowed penalty to the equalizer is an unverified model hypothesis; no possession or team identity is established by IDs alone.",
+      "planner_eligible": false,
+      "first_live_certified": false
+    },
+    {
+      "hypothesis_id": "H2",
+      "priority": 0.25,
+      "scores": {
+        "anchor_fit": 1,
+        "event_grounding": 1,
+        "internal_coherence": 1,
+        "joint_composition": 1,
+        "marginal_narrative_gain": 1
+      },
+      "cited_event_ids": [
+        "event_000563",
+        "event_000564",
+        "event_000598",
+        "event_000472"
+      ],
+      "new_story_information": "Adds two substitution events (event_000563, event_000564) and a goalkeeper long pass (event_000598) as a tactical-change beat before the equalizer.",
+      "comparison_to_existing_story": "The current EDL has no substitution or long-pass segment, so the events are technically new; but the claim that substitutions changed attacking organization is a state-transition hypothesis with no supporting event-level evidence, and the two substitution events are near-duplicates at 5557.6s and 5561.0s.",
+      "major_uncertainty": "Substitution events do not establish tactical change or attacking improvement; event_000598 is a single long pass with no possession chain; no link to the equalizer is evidenced.",
+      "planner_eligible": false,
+      "first_live_certified": false
+    },
+    {
+      "hypothesis_id": "H3",
+      "priority": 0.25,
+      "scores": {
+        "anchor_fit": 1,
+        "event_grounding": 1,
+        "internal_coherence": 1,
+        "joint_composition": 1,
+        "marginal_narrative_gain": 1
+      },
+      "cited_event_ids": [
+        "event_000575",
+        "event_000580",
+        "event_000590",
+        "event_000472"
+      ],
+      "new_story_information": "Adds three dribble-past events (event_000575, event_000580, event_000590) as an accumulating-momentum beat before the equalizer.",
+      "comparison_to_existing_story": "The current EDL does not include these dribbles, so they are new; but the narrative association between consecutive dribbles and the equalizer is an unverified hypothesis, and the events are isolated with no possession continuity or shot outcome shown.",
+      "major_uncertainty": "Dribble events do not establish sustained pressure or a path to the equalizer; no event-level link to event_000472 or the equalizer is provided.",
+      "planner_eligible": false,
+      "first_live_certified": false
+    }
+  ],
+  "historical_run02_H1_H2_reference_only": [
+    {
+      "hypothesis_id": "H1",
+      "mechanism_key": "penalty_var_denial_precedes_equalizer",
+      "narrative_summary": "点球被VAR取消后，主队情绪与攻势可能延续，最终促成扳平进球。"
+    },
+    {
+      "hypothesis_id": "H2",
+      "mechanism_key": "substitution_then_sustained_pressure",
+      "narrative_summary": "换人调整后主队进攻组织可能改变，为扳平进球积累压力。"
+    }
+  ],
+  "edl_modified": false,
+  "vlm_called": false,
+  "planner_entered": false
+}

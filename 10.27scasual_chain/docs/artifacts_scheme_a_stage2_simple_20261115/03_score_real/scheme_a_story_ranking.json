@@ -1,0 +1,127 @@
+{
+  "causal_claims_verified": 0,
+  "edl_modified": false,
+  "first_live_certified": false,
+  "narrative_gain_verified": false,
+  "planner_candidates": [],
+  "ranked_hypotheses": [
+    {
+      "causal_link_verified": false,
+      "cited_event_ids": [
+        "event_000617",
+        "event_000622",
+        "event_000635",
+        "event_000472"
+      ],
+      "comparison_to_existing_story": "The frozen plan and current EDL cover the deficit, one buildup shot, the equalizer action and scoreboard anchors. H1 introduces the disallowed-penalty beat, which is not present in the current cut, so it is nonredundant; however the causal claim linking the VAR decision to the equalizer is not supported by the supplied facts.",
+      "event_grounding_prior": 0.5,
+      "first_live_certified": false,
+      "hypothesis_id": "H1",
+      "major_uncertainty": "event_000622 is replay-labelled and cannot be promoted to source footage; the causal link from the disallowed penalty to the equalizer is an unverified model hypothesis; no possession or team identity is established by IDs alone.",
+      "marginal_gain_prior": 0.5,
+      "model_priority_0_to_1": 0.5,
+      "multi_event_combination": true,
+      "narrative_gain_verified": false,
+      "new_story_information": "Adds a VAR-disallowed penalty (event_000622, replay-labelled) and a foul (event_000617) plus an interception (event_000635) as a pressure sequence between the deficit and the equalizer; the existing EDL only carries a single buildup shot (event_000472) in that window.",
+      "planner_eligible": false,
+      "requires_video_evidence": true,
+      "scores": {
+        "anchor_fit": 2,
+        "event_grounding": 2,
+        "internal_coherence": 2,
+        "joint_composition": 2,
+        "marginal_narrative_gain": 2
+      },
+      "story_summary": "点球被VAR取消后，主队持续施压并在随后阶段扳平比分。",
+      "structural_prior": 0.5,
+      "supporting_event_ids": [
+        "event_000617",
+        "event_000622",
+        "event_000635",
+        "event_000472"
+      ]
+    },
+    {
+      "causal_link_verified": false,
+      "cited_event_ids": [
+        "event_000563",
+        "event_000564",
+        "event_000598",
+        "event_000472"
+      ],
+      "comparison_to_existing_story": "The current EDL has no substitution or long-pass segment, so the events are technically new; but the claim that substitutions changed attacking organization is a state-transition hypothesis with no supporting event-level evidence, and the two substitution events are near-duplicates at 5557.6s and 5561.0s.",
+      "event_grounding_prior": 0.25,
+      "first_live_certified": false,
+      "hypothesis_id": "H2",
+      "major_uncertainty": "Substitution events do not establish tactical change or attacking improvement; event_000598 is a single long pass with no possession chain; no link to the equalizer is evidenced.",
+      "marginal_gain_prior": 0.25,
+      "model_priority_0_to_1": 0.25,
+      "multi_event_combination": true,
+      "narrative_gain_verified": false,
+      "new_story_information": "Adds two substitution events (event_000563, event_000564) and a goalkeeper long pass (event_000598) as a tactical-change beat before the equalizer.",
+      "planner_eligible": false,
+      "requires_video_evidence": true,
+      "scores": {
+        "anchor_fit": 1,
+        "event_grounding": 1,
+        "internal_coherence": 1,
+        "joint_composition": 1,
+        "marginal_narrative_gain": 1
+      },
+      "story_summary": "下半场换人调整后，主队进攻组织增强并最终形成扳平进球。",
+      "structural_prior": 0.25,
+      "supporting_event_ids": [
+        "event_000563",
+        "event_000564",
+        "event_000598",
+        "event_000472"
+      ]
+    },
+    {
+      "causal_link_verified": false,
+      "cited_event_ids": [
+        "event_000575",
+        "event_000580",
+        "event_000590",
+        "event_000472"
+      ],
+      "comparison_to_existing_story": "The current EDL does not include these dribbles, so they are new; but the narrative association between consecutive dribbles and the equalizer is an unverified hypothesis, and the events are isolated with no possession continuity or shot outcome shown.",
+      "event_grounding_prior": 0.25,
+      "first_live_certified": false,
+      "hypothesis_id": "H3",
+      "major_uncertainty": "Dribble events do not establish sustained pressure or a path to the equalizer; no event-level link to event_000472 or the equalizer is provided.",
+      "marginal_gain_prior": 0.25,
+      "model_priority_0_to_1": 0.25,
+      "multi_event_combination": true,
+      "narrative_gain_verified": false,
+      "new_story_information": "Adds three dribble-past events (event_000575, event_000580, event_000590) as an accumulating-momentum beat before the equalizer.",
+      "planner_eligible": false,
+      "requires_video_evidence": true,
+      "scores": {
+        "anchor_fit": 1,
+        "event_grounding": 1,
+        "internal_coherence": 1,
+        "joint_composition": 1,
+        "marginal_narrative_gain": 1
+      },
+      "story_summary": "主队多次带球突破成功累积进攻势头，最终促成扳平进球。",
+      "structural_prior": 0.25,
+      "supporting_event_ids": [
+        "event_000575",
+        "event_000580",
+        "event_000590",
+        "event_000472"
+      ]
+    }
+  ],
+  "ranking_is_model_prior_not_calibrated": true,
+  "schema": "v2_story_first_scheme_a_whole_story_prior_v1",
+  "selected_for_video_observation": [
+    "H1",
+    "H2",
+    "H3"
+  ],
+  "status": "RANKED_FOR_OBSERVATION_ONLY",
+  "top_k": 5,
+  "video_observed": false
+}
