@@ -149,8 +149,10 @@ def rank_model_evaluations(score_json: Mapping[str, Any],
                       + item["joint_composition"]) / 12.0
         gain = item["marginal_narrative_gain"] / 4.0
         grounding = item["event_grounding"] / 4.0
+        multi_event = len(support) >= 2
         priority = round(0.45 * structural + 0.40 * gain + 0.15 * grounding, 4)
         ranked.append({
+            "multi_event_combination": multi_event,
             "hypothesis_id": hid,
             "story_summary": candidates[hid]["narrative_summary"],
             "supporting_event_ids": candidates[hid]["supporting_event_ids"],
@@ -170,7 +172,10 @@ def rank_model_evaluations(score_json: Mapping[str, Any],
             "planner_eligible": False,
         })
     ranked.sort(key=lambda x: (-x["model_priority_0_to_1"], x["hypothesis_id"]))
-    selected = [x["hypothesis_id"] for x in ranked[:top_k]]
+    # Scheme A ranks EVENT COMBINATIONS. Legacy single-event hypotheses stay
+    # auditable but are not a whole-story observation candidate.
+    selected = [x["hypothesis_id"] for x in ranked
+                if x["multi_event_combination"]][:top_k]
     return {
         "schema": SCHEMA,
         "status": "RANKED_FOR_OBSERVATION_ONLY" if ranked else "NO_CANDIDATES",
@@ -260,17 +265,19 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                 max_completion_tokens=args.max_completion_tokens,
             )
             audit["api_preflight"] = preflight
-            raw = api.chat(
-                role="planner", messages=messages, temperature=0.0,
-                allow_degraded_fallback=False,
-            )
-            usage = provider_usage(api)
-            audit["http_attempts"] = int(usage.get("http_attempts") or 0)
-            audit["usage"] = {
-                k: usage.get(k) for k in (
-                    "http_attempts", "prompt_tokens", "completion_tokens",
-                    "est_cost_usd_real")
-            }
+            try:
+                raw = api.chat(
+                    role="planner", messages=messages, temperature=0.0,
+                    allow_degraded_fallback=False,
+                )
+            finally:
+                usage = provider_usage(api)
+                audit["http_attempts"] = int(usage.get("http_attempts") or 0)
+                audit["usage"] = {
+                    k: usage.get(k) for k in (
+                        "http_attempts", "prompt_tokens", "completion_tokens",
+                        "est_cost_usd_real")
+                }
             content = str(raw.get("content") or "")
             (args.out_dir / "llm_raw_response.txt").write_text(
                 content, encoding="utf-8")
