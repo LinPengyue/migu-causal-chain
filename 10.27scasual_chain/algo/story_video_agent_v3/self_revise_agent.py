@@ -2653,6 +2653,10 @@ def apply_candidate_revision(
                         mid_b = 0.5 * (mi_b + mo_b)
                         mi_b, mo_b = mid_b - MAX_BOUND_SPAN / 2.0, mid_b + MAX_BOUND_SPAN / 2.0
                     new_sid_pref = str(it.get("new_segment_id") or f"seg_{role_req}_{int(mi_b)}")
+                    evidence_status = (
+                        "NO_ANNOTATED_REPLAY_OVERLAP" if it.get("story_first_preview_only") is True
+                        else "SEARCH_EVENT_CHAIN_LIVE_VERIFIED"
+                    )
                     search_bound_seg = {
                         "segment_id": new_sid_pref,
                         "role": role_req,
@@ -2665,7 +2669,7 @@ def apply_candidate_revision(
                         "event_ids": list(it.get("event_ids") or []),
                         "agent_bound": True,
                         "agent_search_bound": True,
-                        "evidence_status": "SEARCH_EVENT_CHAIN_LIVE_VERIFIED",
+                        "evidence_status": evidence_status,
                         "first_live_status": "NOT_VERIFIED",
                         "agent_auto_verified": False,
                         "anchor_id": aid or None,
@@ -2681,7 +2685,7 @@ def apply_candidate_revision(
                     "authorization": {
                         "allow": True,
                         "denies": [],
-                        "evidence_status": "SEARCH_EVENT_CHAIN_LIVE_VERIFIED",
+                        "evidence_status": search_bound_seg["evidence_status"],
                         "method": "bound_source_window",
                     },
                     "observation_ref": aid or it.get("intent_id"),

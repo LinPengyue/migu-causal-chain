@@ -799,7 +799,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
     story_first_pool: Optional[Dict[str, Any]] = None
     story_first_feedback: List[Dict[str, Any]] = []
     story_first_tried: set[str] = set()
-    story_first_verified_windows: set[tuple] = set()
+    story_first_windows: set[tuple] = set()
     if inp.enable_story_first:
         from .story_first_revision import bind_story_first_trial, review_story_first_trial
         from .story_first_search import discover_story_first, story_first_calls_left
@@ -1438,6 +1438,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         story_first_review = None
         story_first_trial = None
         story_first_intents = []
+        story_first_preview_only = False
 
         # Revision plan
         fixture_intents = None
@@ -1633,12 +1634,19 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 if story_first_trial is not None:
                     # One source review and one finished-cut Verifier request.
                     review_api = paid_api if story_first_calls_left(paid_api) >= 2 else None
+                    # Team identities come from the same delivery/enriched
+                    # document as the source annotations, when supplied.
+                    events_document = (
+                        _read_json(events_path or inp.match_json)
+                        if (events_path or inp.match_json).is_file() else {}
+                    )
+                    teams = events_document.get("teams") if isinstance(events_document, Mapping) else None
                     story_first_review = review_story_first_trial(
                         story_first_trial, api=review_api,
                         source_mp4=inp.source_mp4, source_sha=source_sha,
                         out_dir=round_dir / "story_first_source_review",
                         first_live_store=first_live_evidence_store, source_events=permitted_events,
-                        make_live_packs=inp.build_local_first_live_evidence,
+                        teams=teams,
                     )
                     story_first_tried.add(story_first_trial["trial_id"])
                     if review_api is not None:
@@ -1648,8 +1656,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                         round_rec["api_usage_after_story_first_review"] = usage
                     story_first_intents = story_first_review["intents"]
                     if story_first_intents:
-                        # A set of verified windows is one story edit. The whole
-                        # proposal stays together through render and dual verification.
+                        # Keep the source-bound windows together as one story edit.
                         rev = {
                             **rev, "decision": "REVISE",
                             "rationale": story_first_trial["narrative_purpose"],
@@ -1663,6 +1670,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     "stage": "SOURCE_REVIEW",
                     "status": story_first_review["status"],
                     "findings": story_first_review["feedback"],
+                    "advisory": story_first_review.get("advisory", []),
                 })
         # Dedicated score→goal coverage hypotheses may drive observation,
         # but cannot authorize an EDL goal insertion from scoreboard timing.
@@ -1808,8 +1816,9 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     "status": "TRIAL_APPLY_FAILED", "findings": apply_report.get("rejected") or [],
                 })
             applied_rows = list(apply_report.get("applied") or [])
-            if story_first_intents:
-                story_first_verified_windows.update(
+            if story_first_intents and applied_rows:
+                story_first_preview_only = any(i.get("story_first_preview_only") for i in story_first_intents)
+                story_first_windows.update(
                     (row["segment_id"], row["media_in"], row["media_out"])
                     for row in applied_rows if row.get("status") == "applied_evidence_bound"
                 )
@@ -2318,7 +2327,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             non_goal_story_segment_ids=[
                 w["segment_id"] for w in new_windows
                 if (w.get("segment_id"), w.get("source_pts_start"), w.get("source_pts_end"))
-                in story_first_verified_windows and "goal_action" not in str(w.get("role") or "")
+                in story_first_windows and "goal_action" not in str(w.get("role") or "")
             ],
         )
         write_json(round_dir / "first_live_window_ledger.json", first_live_ledger)
@@ -2375,6 +2384,14 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             source_events=permitted_events,
             new_source_windows=new_windows,
         )
+        if story_first_preview_only:
+            vfix["candidate_accepted"] = False
+            vfix["retain_baseline"] = True
+            vfix["story_first_preview_only"] = True
+            vfix["phase8_verdict"] = {
+                **vfix["phase8_verdict"], "candidate_accepted": False, "preview_only": True,
+            }
+            round_rec["story_first_preview_only"] = True
         if human_preview_active:
             # A preview must never become accepted, even if future Verifier logic
             # changes or a soft judgment appears favorable. It may be rendered
@@ -2554,6 +2571,10 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         else:
             phase8_verdict["verdict_provenance"] = verdict_provenance
             phase8_verdict["source_kind"] = verdict_provenance
+        if story_first_preview_only and phase8_verdict.get("safety") != "FAIL":
+            # Retain the editorial feedback and keep previews out of both
+            # working and best, even when a fixture supplies safety=PASS.
+            phase8_verdict["safety"] = "UNKNOWN"
         # Independent of LLM quality labels: sampled stills cannot establish
         # no global regression or certify complete audio/tempo continuity.
         # Explicit loop policy gate prevents unreviewed PROMOTE_BEST even if a
@@ -2722,7 +2743,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 "max_cost_usd": inp.max_cost_usd if paid_api is not None else None,
                 "has_executable_revision": final_decision == "REVISE" and bool(edl_changed),
                 "has_distinct_alternative": has_distinct or has_alt,
-                "has_new_visual_target": bool(specific_reobserve),
+                "has_new_visual_target": bool(specific_reobserve) and not story_first_preview_only,
                 "specific_reobserve_target": specific_reobserve,
             },
         )
@@ -2968,6 +2989,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 ),
                 "candidate_accepted": bool(vfix.get("candidate_accepted")),
                 "human_assisted_preview_only": bool(human_preview_active),
+                "story_first_preview_only": story_first_preview_only,
                 "pts_ok": bool(pts_gate.get("ok")),
                 "phase8_verdict": phase8_verdict,
                 "phase8_transition": transition,
@@ -3247,6 +3269,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             ),
             "safe_playable_preview": bool(safe_preview),
             "human_assisted_preview_only": bool(review_only),
+            "story_first_preview_only": bool(last_candidate_bundle.get("story_first_preview_only")),
             "cut_boundaries_human_verified": False if review_only else None,
             "automatic_first_live_verified": False if review_only else None,
             "auto_release_forbidden": True,

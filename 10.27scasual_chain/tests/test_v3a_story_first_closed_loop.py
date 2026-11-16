@@ -2,6 +2,8 @@
 import hashlib
 import json
 
+import pytest
+
 from story_video_agent.api_provider import EndpointConfig
 
 from story_video_agent_v3 import story_e2e_agent as agent
@@ -183,18 +185,25 @@ def test_non_goal_first_live_does_not_certify_goals(tmp_path):
     assert not validate_first_live_evidence_record(pack, **kwargs, allow_non_goal_action=True)["ok"]
 
 
-def test_main_loop_removes_contradicted_event_and_renders_bound_trial(tmp_path, monkeypatch):
+@pytest.mark.parametrize("strict_first_live", [True, False])
+def test_main_loop_removes_contradicted_event_and_renders_bound_trial(
+    tmp_path, monkeypatch, strict_first_live,
+):
     _generate(tmp_path / "cache", monkeypatch)
     source = tmp_path / "match.mp4"
     source.write_bytes(b"offline source fixture")
     sha = hashlib.sha256(source.read_bytes()).hexdigest()
     first_live = _first_live_pack(tmp_path / "pack", sha)
-    live_store = _write(tmp_path / "first_live.json", first_live)
+    live_store = _write(tmp_path / "first_live.json", first_live) if strict_first_live else None
     phase5 = tmp_path / "phase5"
     _write(phase5 / "candidate_edl.json", EDL)
     _write(phase5 / "story_plan.json", PLAN)
     (phase5 / "story_clean.mp4").write_bytes(b"offline baseline fixture")
-    match = _write(tmp_path / "events.json", {"events": EVENTS})
+    match = _write(tmp_path / "events.json", {
+        "events": [{**e, "annotation_quality": {"annotator_confidence": 1.0},
+                    "notes": "human annotation"} for e in EVENTS],
+        "teams": {"team_1": {"name": "A", "color": "red"}},
+    })
     monkeypatch.setattr(agent, "observe_layers", lambda **kw: {})
     render_calls = []
 
@@ -205,15 +214,22 @@ def test_main_loop_removes_contradicted_event_and_renders_bound_trial(tmp_path, 
         path.write_bytes(b"offline candidate fixture")
         return {"ok": True, "story_clean": str(path)}
 
-    def review(api, *, trial, source_mp4, source_sha, out_dir):
+    def review(api, *, trial, source_mp4, source_sha, out_dir, source_event_context, teams):
         assert api is None
+        assert teams["team_1"]["color"] == "red"
+        assert [e["event_id"] for e in source_event_context][:3] == ["x", "y", "z"]
+        assert source_event_context[0]["annotation_source"] == "annotated_delivery_event"
         if any(e["event_id"] == "z" for e in trial["events"]):
             return {"feedback": [{"event_id": "z", "status": "CONTRADICTED",
                                   "reason": "wrong possession"}], "event_observations": []}
         return {
-            "feedback": [], "event_observations": [
+            "feedback": [] if strict_first_live else [
+                {"event_id": "x", "status": "UNCERTAIN", "reason": "contact not visible"},
+            ],
+            "event_observations": [
                 {"event_id": event["event_id"], "reason": "visible action",
-                 "status": "SUPPORTED", "frame_ids": [f"f{i}"]}
+                 "status": "UNCERTAIN" if event["event_id"] == "x" and not strict_first_live else "SUPPORTED",
+                 "frame_ids": [f"f{i}"]}
                 for i, event in enumerate(trial["events"], 1)
             ],
         }
@@ -223,7 +239,10 @@ def test_main_loop_removes_contradicted_event_and_renders_bound_trial(tmp_path, 
     round_fixtures = [
         {"story_first_trial": {"selections": [
             {"proposal_id": "interval_01:H1", "event_ids": ids, "relation_ids": rels},
-        ], "rationale": "Candidate explains the transition"}}
+        ], "rationale": "Candidate explains the transition"},
+         **({"phase8_safety": "PASS", "phase8_quality": "BETTER",
+             "phase8_evidence": "SUFFICIENT", "issue_effect": "RESOLVED",
+             "global_regression": "NO"} if not strict_first_live else {})}
         for ids, rels in ((["x", "y", "z"], ["r1", "r2"]), (["x", "y"], ["r1"]))
     ]
     audit = agent.run_story_e2e(agent.StoryE2EInputs(
@@ -251,16 +270,26 @@ def test_main_loop_removes_contradicted_event_and_renders_bound_trial(tmp_path, 
     assert "Candidate explains the transition" in focus["focus_lines"][0]
     assert "proposed editorial gain" in focus["focus_lines"][0]
     ledger = json.loads((paths / "first_live_window_ledger.json").read_text())
-    assert ledger["windows"][0]["status"] == "FIRST_LIVE_VERIFIED"
+    if strict_first_live:
+        assert ledger["windows"][0]["status"] == "FIRST_LIVE_VERIFIED"
+    else:
+        assert ledger["windows"][0]["status"] == "NOT_VERIFIED"
+        assert added[0]["evidence_status"] == "NO_ANNOTATED_REPLAY_OVERLAP"
+        assert added[0]["first_live_status"] == "NOT_VERIFIED"
+        assert audit["phase8_delivery_version_id"] == "v0"
+        transition = json.loads((paths / "phase8_transition.json").read_text())
+        assert not transition["promote"] and transition["working_ref"] == "v0"
+        preview = json.loads((tmp_path / "run/99_final/human_review_candidate/human_review_status.json").read_text())
+        assert preview["story_first_preview_only"] and preview["safe_playable_preview"]
     feedback = json.loads((paths / "story_first_feedback.json").read_text())
     assert feedback[0]["findings"][0]["event_id"] == "z"
+    if not strict_first_live:
+        assert feedback[1]["advisory"][0]["status"] == "UNCERTAIN"
 
 
 def test_source_observation_binds_event_frames_without_relation_or_fit_gate(tmp_path):
     import shutil
     import subprocess
-
-    import pytest
 
     if not shutil.which("ffmpeg"):
         pytest.skip("ffmpeg unavailable")
@@ -289,6 +318,7 @@ def test_source_observation_binds_event_frames_without_relation_or_fit_gate(tmp_
             assert len(refs) == 4
             assert "relation_id" not in kw["prompt"]
             assert "before_to_candidate" not in kw["prompt"]
+            assert "source_event_context" in kw["prompt"]
             result = {
                 "events": [{"event_id": eid, "status": "SUPPORTED", "frame_ids": [fid],
                             "reason": "Fixture observation at the referenced event frame"}
@@ -323,7 +353,14 @@ def test_source_observation_binds_event_frames_without_relation_or_fit_gate(tmp_
     assert wrong["feedback"][0]["status"] == "UNCERTAIN"
 
 
-def test_event_support_alone_does_not_open_a_trial(tmp_path, monkeypatch):
+@pytest.mark.parametrize("phase, start, end, blocked", [
+    ("REPLAY", 42, 46, True), ("SLOW_MOTION", 20, 23, True),
+    ("REPLAY", 43, 46, False), ("LIVE", 42, 46, False),
+    ("REPLAY", None, None, True),
+])
+def test_story_first_trial_respects_annotated_media_windows(
+    tmp_path, monkeypatch, phase, start, end, blocked,
+):
     from story_video_agent_v3 import story_first_revision as revision
 
     monkeypatch.setattr(video, "observe_story_first_trial", lambda *a, **kw: {
@@ -334,17 +371,56 @@ def test_event_support_alone_does_not_open_a_trial(tmp_path, monkeypatch):
     })
     trial = {
         "trial_id": "s", "narrative_purpose": "Show the buildup",
+        "events": [{"event_id": "x", "source_pts_sec": 30.0, "event_type": "event_x"}],
         "windows": [{"candidate_id": "w", "event_ids": ["x"], "source_pts_start": 22.0,
-                     "source_pts_end": 43.0, "issue_id": "s"}],
+                     "source_pts_end": 43.0, "issue_id": "s",
+                     "insert_after_segment_id": "a", "before_segment_id": "b"}],
     }
     reviewed = revision.review_story_first_trial(
         trial, api=None, source_mp4=None, source_sha="a" * 64,
-        out_dir=tmp_path, first_live_store={},
+        out_dir=tmp_path, first_live_store={}, source_events=[EVENTS[0], {
+            "event_id": "overlap", "event_type": "segment",
+            "media_time": {"event_time_sec": 41 if start is None else start,
+                           "start_time_sec": start, "end_time_sec": end},
+            "video_context": {"broadcast_phase": phase},
+        }],
     )
-    assert reviewed["status"] == "NEEDS_REVISION"
-    assert reviewed["intents"] == []
-    assert reviewed["feedback"][0]["status"] == "NOT_VERIFIED"
-    assert reviewed["event_observations"][0]["status"] == "SUPPORTED"
+    if blocked:
+        assert reviewed["status"] == "NEEDS_REVISION"
+        assert reviewed["intents"] == []
+        assert reviewed["feedback"][0]["status"] == "REPLAY_CONFIRMED"
+    else:
+        assert reviewed["status"] == "READY_FOR_TRIAL"
+        assert reviewed["intents"][0]["story_first_preview_only"]
+        assert reviewed["candidates"][0]["replay_overlap_status"] == "NO_ANNOTATED_REPLAY_OVERLAP"
+        assert reviewed["candidates"][0]["first_live_status"] == "NOT_VERIFIED"
+
+
+@pytest.mark.parametrize("annotated, expected_status", [(True, "READY_FOR_TRIAL"), (False, "NEEDS_REVISION")])
+def test_annotations_are_required_to_trial_without_visual_review(tmp_path, annotated, expected_status):
+    from story_video_agent_v3.story_first_revision import review_story_first_trial
+
+    trial = {
+        "trial_id": "s", "narrative_purpose": "Show the buildup",
+        "events": [{"event_id": "x", "source_pts_sec": 30.0, "event_type": "event_x"}],
+        "windows": [{"candidate_id": "w", "event_ids": ["x"], "source_pts_start": 22.0,
+                     "source_pts_end": 43.0, "issue_id": "s",
+                     "insert_after_segment_id": "a", "before_segment_id": "b"}],
+    }
+    event = dict(EVENTS[0])
+    if annotated:
+        event["enrichment"] = {"provenance": "independent_atomic_annotation"}
+    reviewed = review_story_first_trial(
+        trial, api=None, source_mp4=None, source_sha="a" * 64, out_dir=tmp_path,
+        first_live_store={}, source_events=[event],
+    )
+    assert reviewed["status"] == expected_status
+    if annotated:
+        assert reviewed["intents"][0]["story_first_preview_only"]
+        assert reviewed["advisory"][0]["status"] == "AWAITING_VIDEO_REVIEW"
+    else:
+        assert reviewed["intents"] == []
+        assert reviewed["feedback"][0]["status"] == "AWAITING_VIDEO_REVIEW"
 
 
 def test_multi_clip_story_in_one_gap_preserves_source_order(tmp_path, monkeypatch):
@@ -355,7 +431,7 @@ def test_multi_clip_story_in_one_gap_preserves_source_order(tmp_path, monkeypatc
         "feedback": [], "event_observations": [],
     })
     monkeypatch.setattr(revision, "_annotate_first_live_tier", lambda window, **kw: {
-        **window, "executable_safe_revision": True,
+        **window, "executable_safe_revision": True, "first_live_status": "FIRST_LIVE_VERIFIED",
     })
     windows = [
         {
@@ -365,7 +441,8 @@ def test_multi_clip_story_in_one_gap_preserves_source_order(tmp_path, monkeypatc
         } for i, t in enumerate((21, 40))
     ]
     review = revision.review_story_first_trial(
-        {"trial_id": "s", "windows": windows, "narrative_purpose": "Show the buildup"},
+        {"trial_id": "s", "windows": windows, "events": [],
+         "narrative_purpose": "Show the buildup"},
         api=None, source_mp4=None, source_sha=None, out_dir=tmp_path, first_live_store={},
     )
     candidate, _ = apply_candidate_revision(EDL, review["intents"], [])

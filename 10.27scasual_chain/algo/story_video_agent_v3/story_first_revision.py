@@ -3,9 +3,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from typing import Mapping
 
-from .first_live_window_evidence import build_broadcast_timeline_review
 from .story_evidence_search import _annotate_first_live_tier, _live_credibility, event_media_span
 from .self_revise_agent import MAX_BOUND_SPAN, MIN_BOUND_SPAN
 from .story_timeline import _num, active_cut_rows
@@ -157,31 +157,40 @@ def bind_story_first_trial(selection, proposals, edl, tried):
     }
 
 
-def review_story_first_trial(trial, *, api, source_mp4, source_sha, out_dir,
-                             first_live_store, source_events=(), make_live_packs=False):
-    """Require source-bound events and independent first-live evidence for a trial."""
-    from .story_first_video_review import observe_story_first_trial
+NO_ANNOTATED_REPLAY_OVERLAP = "NO_ANNOTATED_REPLAY_OVERLAP"
 
-    observed = observe_story_first_trial(
-        api, trial=trial, source_mp4=source_mp4,
-        source_sha=source_sha, out_dir=out_dir,
-    )
-    feedback = list(observed["feedback"])
-    observations = observed["event_observations"]
-    replay_events = [
-        (event.get("event_id"), span)
-        for event in source_events
-        if ((live := _live_credibility(event))["is_replay"] or live["is_slow_motion"]
-            or live["broadcast_phase"] in ("REPLAY", "SLOWMO", "SLOW_MOTION"))
-        and (span := event_media_span(event)) is not None
-    ]
+
+def review_story_first_trial(trial, *, api, source_mp4, source_sha, out_dir,
+                             first_live_store, source_events=(), teams=None):
+    """Screen story footage for an isolated trial; record release evidence separately."""
+    from .story_first_video_review import observe_story_first_trial, story_first_event_context
+
+    feedback = []
+    replay_events = []
+    for event in source_events:
+        live = _live_credibility(event)
+        if not (live["is_replay"] or live["is_slow_motion"]
+                or live["broadcast_phase"] in ("REPLAY", "SLOWMO", "SLOW_MOTION")):
+            continue
+        span = event_media_span(event)
+        mt = event.get("media_time")
+        mt = mt if isinstance(mt, Mapping) else {}
+        start, end = _num(mt.get("start_time_sec")), _num(mt.get("end_time_sec"))
+        if start is not None and end is not None and math.isfinite(start) and math.isfinite(end) and start < end:
+            replay_events.append((event.get("event_id"), start, end))
+        elif span is not None and math.isfinite(span[1]):
+            # A replay-labelled point can block a window containing that point.
+            # Default event padding is not an explicitly annotated replay span.
+            replay_events.append((event.get("event_id"), span[1], span[1]))
+
     candidates = []
     for w in trial["windows"]:
         if w.get("existing_segment_id"):
             continue
+        lo, hi = w["source_pts_start"], w["source_pts_end"]
         replay_ids = [
-            eid for eid, (start, _, end) in replay_events
-            if start < w["source_pts_end"] and end > w["source_pts_start"]
+            eid for eid, start, end in replay_events
+            if (lo <= start < hi if start == end else start < hi and end > lo)
         ]
         if replay_ids:
             feedback.append({
@@ -193,46 +202,64 @@ def review_story_first_trial(trial, *, api, source_mp4, source_sha, out_dir,
         c = _annotate_first_live_tier(
             w, evidence_store=first_live_store, source_sha=source_sha, allow_non_goal_action=True,
         )
-        if not c["executable_safe_revision"]:
+        if c["first_live_status"] == "REPLAY_CONFIRMED":
             feedback.append({
                 "window_id": w["candidate_id"], "event_ids": w["event_ids"],
                 "status": c["first_live_status"], "reason": c["reject_or_defer_reason"],
             })
-            if make_live_packs and source_sha:
-                from .first_live_window_evidence import build_local_first_live_evidence_pack
-                pack = build_local_first_live_evidence_pack(
-                    source_mp4=source_mp4, source_sha=source_sha,
-                    pts_start=w["source_pts_start"], pts_end=w["source_pts_end"],
-                    out_dir=out_dir / w["candidate_id"], segment_id=w["candidate_id"],
-                )
-                if pack.get("ok"):
-                    directory = out_dir / w["candidate_id"]
-                    timeline = build_broadcast_timeline_review(
-                        source_sha=source_sha, source_mp4=source_mp4, events=source_events,
-                        pts_start=w["source_pts_start"], pts_end=w["source_pts_end"],
-                        out_dir=directory, binding_record=pack,
-                    )
-                    feedback[-1]["local_frame_pack_dir"] = str(directory)
-                    feedback[-1]["timeline_status"] = timeline["outcome"]
-        # Pre-render triplet fit is paused for Story-First. Its previous gate
-        # was validate_narrative_fit_review (ba38ef7). The rendered edit is
-        # evaluated by the existing finished-cut Verifier.
-        # fit = validate_narrative_fit_review(
-        #     observed["fit_records"].get(w["candidate_id"]), candidate=c,
-        #     source_sha=source_sha, edl=edl, require_files_exist=True,
-        # )
-        candidates.append({**c, "story_first_trial_id": trial["trial_id"]})
+            continue
+        # Previous trial gate required c["executable_safe_revision"] here.
+        # Retain the strict result for the existing post-render release checks.
+        # Pre-render triplet fit also remains paused (see ba38ef7 for that path).
+        candidates.append({
+            **c, "story_first_trial_id": trial["trial_id"],
+            "replay_overlap_status": NO_ANNOTATED_REPLAY_OVERLAP,
+            "preview_only": not c["executable_safe_revision"],
+        })
     if feedback:
         return {
-            "status": "NEEDS_REVISION", "feedback": feedback,
+            "status": "NEEDS_REVISION", "feedback": feedback, "advisory": [],
+            "annotation_supported_event_ids": [], "event_observations": [],
+            "candidates": candidates, "intents": [],
+        }
+
+    context, annotated_ids = story_first_event_context(trial, source_events)
+    observed = observe_story_first_trial(
+        api, trial=trial, source_mp4=source_mp4, source_sha=source_sha,
+        out_dir=out_dir, source_event_context=context, teams=teams,
+    )
+    observations = observed["event_observations"]
+    all_annotated = bool(trial["events"]) and len(annotated_ids) == len(trial["events"])
+    advisory = []
+    for finding in observed["feedback"]:
+        status = finding["status"]
+        annotation_supports_trial = (
+            (status == "UNCERTAIN" and finding.get("event_id") in annotated_ids)
+            or (status == "AWAITING_VIDEO_REVIEW" and all_annotated)
+        )
+        if annotation_supports_trial:
+            advisory.append(finding)
+        else:
+            feedback.append(finding)
+
+    if feedback:
+        return {
+            "status": "NEEDS_REVISION", "feedback": feedback, "advisory": advisory,
+            "annotation_supported_event_ids": sorted(annotated_ids),
             "event_observations": observations, "candidates": candidates, "intents": [],
         }
+    if advisory:
+        # An annotation-backed trial may proceed even without visual support,
+        # but the prior formal path still requires visual support.
+        for candidate in candidates:
+            candidate["preview_only"] = True
     purpose = trial["narrative_purpose"] or "Show the selected events in their story context."
     intents = [
         {
             "intent_id": c["candidate_id"], "action": "search_add",
             "role": "buildup_bridge_action", "issue_id": c["issue_id"],
             "story_first_trial_id": trial["trial_id"],
+            "story_first_preview_only": c["preview_only"],
             "anchor_id": "search:" + c["candidate_id"],
             "new_segment_id": "seg_" + c["candidate_id"],
             "insert_after_segment_id": c["insert_after_segment_id"],
@@ -254,6 +281,7 @@ def review_story_first_trial(trial, *, api, source_mp4, source_sha, out_dir,
         for c in reversed(candidates)
     ]
     return {
-        "status": "READY_FOR_TRIAL", "feedback": [],
+        "status": "READY_FOR_TRIAL", "feedback": [], "advisory": advisory,
+        "annotation_supported_event_ids": sorted(annotated_ids),
         "event_observations": observations, "candidates": candidates, "intents": intents,
     }

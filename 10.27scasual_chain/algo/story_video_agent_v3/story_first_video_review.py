@@ -2,13 +2,16 @@
 from __future__ import annotations
 
 import json
+import math
 from pathlib import Path
 from typing import Mapping
 
 from story_video_agent.frames import FrameBudget, FrameStore
 from story_video_agent.media import probe_video
 
+from .story_evidence_search import _live_credibility, event_media_span
 from .story_narrative_fit import _sha_file
+from .story_timeline import _num
 from .story_first_poc_cli import parse_model_json, write_json
 from .story_paid_eval import _call_audit_from_raw
 
@@ -16,6 +19,70 @@ from .story_paid_eval import _call_audit_from_raw
 # The previous relation and before/candidate/after review is archived at
 # ba38ef7 (this file). The shared narrative-fit implementation remains available
 # in story_narrative_fit.py and story_narrative_fit_vlm.py.
+
+
+def story_first_event_context(trial, source_events):
+    """Build a compact source timeline and identify independently annotated events."""
+    windows = trial["windows"]
+    selected = {event["event_id"]: event for event in trial["events"]}
+    # Keep all events in the candidate windows and the nearest two on either
+    # side of each window, even where the event timeline is sparse.
+    timed = []
+    for event in source_events:
+        eid = str(event.get("event_id") or "")
+        span = event_media_span(event)
+        if eid and span and all(math.isfinite(t) for t in span):
+            timed.append((span[1], eid, event))
+    timed.sort(key=lambda row: (row[0], row[1]))
+    nearby = set()
+    for w in windows:
+        start, end = w["source_pts_start"], w["source_pts_end"]
+        nearby.update(eid for pts, eid, _ in timed if start <= pts <= end)
+        nearby.update(eid for _, eid, _ in [row for row in timed if row[0] < start][-2:])
+        nearby.update(eid for _, eid, _ in [row for row in timed if row[0] > end][:2])
+    occurrences = {}
+    for pts, eid, _ in timed:
+        if eid in selected:
+            occurrences.setdefault(eid, []).append(pts)
+
+    rows, annotated_ids = [], set()
+    for pts, eid, event in timed:
+        if eid not in nearby and eid not in selected:
+            continue
+        enrichment = event.get("enrichment")
+        provenance = enrichment.get("provenance") if isinstance(enrichment, Mapping) else None
+        quality = event.get("annotation_quality")
+        confidence = quality.get("annotator_confidence") if isinstance(quality, Mapping) else None
+        if provenance == "independent_atomic_annotation":
+            annotation_source = provenance
+        elif provenance == "causal_atom_fill":
+            annotation_source = provenance
+        elif isinstance(quality, Mapping) and (conf := _num(confidence)) is not None and 0 < conf <= 1:
+            annotation_source = "annotated_delivery_event"
+        else:
+            annotation_source = "source_event"
+        candidate = selected.get(eid)
+        if (candidate and annotation_source != "source_event" and len(occurrences[eid]) == 1
+                and abs(pts - candidate["source_pts_sec"]) <= 0.05
+                and str(event.get("event_type") or event.get("event_type_zh") or "").casefold()
+                == str(candidate.get("event_type") or "").casefold()):
+            annotated_ids.add(eid)
+        attrs = event.get("attributes")
+        rows.append({
+            "event_id": eid,
+            "source_pts_sec": pts,
+            "event_type": event.get("event_type") or event.get("event_type_zh"),
+            "label": event.get("comment_label"),
+            "notes": str(event.get("notes") or "")[:240],
+            "attributes": {
+                key: attrs[key] for key in ("Attacker", "Defender", "Defensive_Action", "Team")
+                if isinstance(attrs, Mapping) and key in attrs
+            },
+            "broadcast_phase": _live_credibility(event)["broadcast_phase"],
+            "annotation_source": annotation_source,
+            "annotator_confidence": confidence,
+        })
+    return rows, annotated_ids
 
 
 def _story_review_frames(trial, source_mp4, out_dir):
@@ -74,7 +141,8 @@ def _assess_observations(trial, parsed, refs):
     return observations, feedback
 
 
-def observe_story_first_trial(api, *, trial, source_mp4, source_sha, out_dir):
+def observe_story_first_trial(api, *, trial, source_mp4, source_sha, out_dir,
+                              source_event_context=(), teams=None):
     out_dir.mkdir(parents=True, exist_ok=True)
     if api is None:
         return {"feedback": [{"status": "AWAITING_VIDEO_REVIEW",
@@ -82,8 +150,15 @@ def observe_story_first_trial(api, *, trial, source_mp4, source_sha, out_dir):
                 "event_observations": []}
     try:
         refs = _story_review_frames(trial, source_mp4, out_dir)
+    except (OSError, ValueError, RuntimeError) as exc:
+        return {"feedback": [{"status": "SOURCE_FOOTAGE_UNAVAILABLE",
+                              "reason": f"{type(exc).__name__}:{exc}"}],
+                "event_observations": []}
+    try:
         context = {
             "events": trial["events"],
+            "source_event_context": list(source_event_context),
+            "teams": teams or {},
             "windows": [
                 {k: w.get(k) for k in ("candidate_id", "source_pts_start", "source_pts_end",
                                       "event_ids", "existing_segment_id")}
@@ -96,9 +171,12 @@ def observe_story_first_trial(api, *, trial, source_mp4, source_sha, out_dir):
         }
         prompt = (
             "Verify the listed events from source-bound stills in original time order. "
-            "Cite the candidate frames bound to each event. Check the visible action and "
-            "actor/team attribution when specified. Use UNCERTAIN if frames do not show "
-            "the action or attribution clearly. If an event is visible only as a replay "
+            "Use the surrounding source event timeline, including human annotations, "
+            "for event facts and timing. Report what the sampled frames support or "
+            "clearly contradict. Cite candidate frames bound to each selected event. "
+            "Use UNCERTAIN if the sampled frames do not show the action or attribution "
+            "clearly. Do not infer team numbers from kit color without a supplied mapping. "
+            "If an event is visible only as a replay "
             "or slow-motion shot, mark it CONTRADICTED. First-live certification requires "
             "separate evidence. Return one compact JSON object with one row per event. "
             "Use short frame IDs and one brief, factual reason. "
