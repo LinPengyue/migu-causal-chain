@@ -126,8 +126,14 @@ def select_story_interval(
         a = next((r for r in rows if str(r.get("segment_id")) == from_segment_id), None)
         b = next((r for r in rows if str(r.get("segment_id")) == to_segment_id), None)
     else:
-        anchors = [r for r in rows if ("goal_action" in str(r.get("role") or "").lower()
-                    or r.get("story_anchor") is True)]
+        # Prefer explicit V3-R semantic story nodes; legacy goal-action anchors
+        # are retained only when no marked semantic pair exists.
+        semantic = [r for r in rows if r.get("story_anchor") is True]
+        if len(semantic) >= 2:
+            anchors = semantic
+        else:
+            anchors = [r for r in rows if ("goal_action" in str(r.get("role") or "").lower()
+                        or r.get("story_anchor") is True)]
         a, b = (anchors[0], anchors[1]) if len(anchors) >= 2 else (None, None)
     if a is None or b is None:
         raise ValueError("story_anchor_pair_not_found")
