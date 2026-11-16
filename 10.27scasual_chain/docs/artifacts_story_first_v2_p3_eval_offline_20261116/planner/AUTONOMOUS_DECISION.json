@@ -1,0 +1,145 @@
+{
+  "decision": "REJECT",
+  "decision_scope": "H5_isolated_trial_candidate_vs_baseline",
+  "reasons": [
+    "decide_accept_refused_without_vision_semantic_pass",
+    "story_first_preview_only=true",
+    "first_live_status=NOT_VERIFIED",
+    "semantic_status=NOT_EVALUATED",
+    "positive_value_requires_paid_dual_vision"
+  ],
+  "human_approval_used_as_model_input": false,
+  "decide_accept": {
+    "accept": false,
+    "loop_retain": false,
+    "path": null,
+    "reasons": [
+      "api_verifier_degraded_rule_track_active",
+      "verifier_unevaluated_refuse_best_update",
+      "pending_proposal_only_not_accepted_edl",
+      "not_release_ready_until_semantic_verification"
+    ],
+    "baseline_p0": 0,
+    "candidate_p0": 0,
+    "coverage_baseline": null,
+    "coverage_candidate": null,
+    "coherence_baseline": null,
+    "coherence_candidate": null,
+    "model_quality_delta": "NOT_EVALUATED",
+    "pending_only": false,
+    "pending_verification": false,
+    "pending_proposal_only": true,
+    "release_eligible": false,
+    "meets_quality_threshold": false,
+    "quality_threshold": 75.0,
+    "composite_scores": {
+      "composite": null,
+      "dimensions": {
+        "story_element_coverage": {
+          "score": null,
+          "source": null,
+          "status": "UNKNOWN"
+        },
+        "narrative_coherence": {
+          "score": null,
+          "source": null,
+          "status": "UNKNOWN"
+        },
+        "image_content_quality": {
+          "score": null,
+          "source": null,
+          "status": "UNKNOWN"
+        },
+        "live_authenticity": {
+          "score": null,
+          "source": null,
+          "status": "UNKNOWN"
+        }
+      },
+      "unknown_dimensions": [
+        "story_element_coverage",
+        "narrative_coherence",
+        "image_content_quality",
+        "live_authenticity"
+      ],
+      "evaluated_count": 0,
+      "equal_weight": true,
+      "note": "Equal-weight mean over EVALUATED dims only; UNKNOWN excluded (never coerced to 0 or 100). Cross-round compare shared dims."
+    },
+    "feedback_findings": [],
+    "severe_findings": [],
+    "evidence_bound_edits": 1,
+    "regressions": [],
+    "semantic_verification_status": "NOT_EVALUATED",
+    "api_verifier_ok": false,
+    "gate": "loop",
+    "verifier_self_score_alone_insufficient": true,
+    "note": "Loop retain != final release. Unverified goals stay pending. Verifier unevaluated → pending_proposal_only, never best EDL. Threshold 75.0 is experimental, not calibrated."
+  },
+  "planner_trial_decision": "UNRESOLVED",
+  "planner_trial_rationale": "hypothesis_needs_video_no_auto_search_add_on_gap_alone",
+  "planner_baseline_decision": "UNRESOLVED",
+  "semantic_verification_status": "NOT_EVALUATED",
+  "candidate_accepted": false,
+  "formal_edl_modified": false,
+  "paid_http_calls": 0,
+  "structural_facts": {
+    "goal_segments_intact": true,
+    "goal_notes": [],
+    "added_segment": "seg_story_first_ab22f01929b5cb4f59e6badd_01",
+    "added_window": {
+      "start": 6395.81,
+      "end": 6418.07
+    },
+    "insert_after": "seg_buildup_event_000472",
+    "before": "seg_equalizer_goal_action",
+    "duration_delta_sec": 22.26,
+    "source_gap_buildup_to_h5_sec": 1677.36,
+    "source_gap_h5_to_equalizer_sec": 18.854,
+    "large_jump_still_present": true,
+    "h5_does_not_remove_early_buildup_jump": true,
+    "h5_creates_near_equalizer_adjacency": true,
+    "cannot_claim_direct_causality_from_structure": true,
+    "p2_vlm_event_status_reuse_only": [
+      {
+        "event_id": "event_000634",
+        "frame_ids": [
+          "f2"
+        ],
+        "reason": "Frame shows players in proximity but no clear interception action or ball contact is visible at this timestamp.",
+        "status": "UNCERTAIN"
+      },
+      {
+        "event_id": "event_000635",
+        "frame_ids": [
+          "f3"
+        ],
+        "reason": "Red player (Team 2) is visibly challenging and intercepting the ball from White player (Team 1).",
+        "status": "SUPPORTED"
+      },
+      {
+        "event_id": "event_000636",
+        "frame_ids": [
+          "f4"
+        ],
+        "reason": "Players are separated and moving; no active pass interception is occurring in this frame.",
+        "status": "UNCERTAIN"
+      }
+    ]
+  },
+  "evaluation_limits": {
+    "zero_paid_can_assess": [
+      "goal/mainline integrity",
+      "EDL insert position and PTS order",
+      "duration/pacing delta magnitude",
+      "presence/absence of large source jumps as hypotheses needing video",
+      "refusal of text-only semantic ACCEPT"
+    ],
+    "zero_paid_cannot_assess": [
+      "whether H5 adds valuable story information on screen",
+      "whether deficit→buildup→equalizer feels more coherent to a viewer",
+      "visual redundancy / unnatural jump-cut feel",
+      "direct on-field causality (explicitly forbidden to invent)"
+    ]
+  }
+}

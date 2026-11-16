@@ -1,0 +1,274 @@
+{
+  "schema": "v3a_story_diagnosis_v1",
+  "critic_mode": "structural_plus_file_probes",
+  "inputs": {
+    "initial_story_mp4": "/tmp/lpy1_story_first_v2_p3_isolated_trial_20261116/baseline/story_clean_original.mp4",
+    "source_video": "/mnt/data4/migu/10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语.mp4",
+    "story_mp4_duration_sec": 94.877,
+    "plan_role_hints": [
+      "opponent_opening_goal_action",
+      "deficit_scoreboard_anchor",
+      "buildup_action",
+      "equalizer_goal_action",
+      "equalizer_scoreboard_anchor",
+      "go_ahead_goal_action",
+      "go_ahead_scoreboard_anchor",
+      "铺垫",
+      "蓄力",
+      "转折",
+      "高潮",
+      "收尾"
+    ]
+  },
+  "timeline": {
+    "schema": "v3a_story_timeline_v1",
+    "story_duration_sec": 94.5,
+    "media_duration_sec": 88.5,
+    "placeholder_duration_sec": 6.0,
+    "segment_count": 9,
+    "media_segment_count": 7,
+    "placeholder_segment_count": 2,
+    "segments": [
+      {
+        "index": 0,
+        "segment_id": "seg_title_open",
+        "role": "story_title",
+        "beat": "铺垫",
+        "story_in": 0.0,
+        "story_out": 3.0,
+        "duration_sec": 3.0,
+        "media_in": null,
+        "media_out": null,
+        "has_media_window": false,
+        "is_placeholder": true,
+        "placeholder_sec": 3.0,
+        "is_replay": false,
+        "first_live_status": null,
+        "shot_kind": "title_card"
+      },
+      {
+        "index": 1,
+        "segment_id": "seg_opponent_opening_goal_action",
+        "role": "opponent_opening_goal_action",
+        "beat": "铺垫",
+        "story_in": 3.0,
+        "story_out": 25.0,
+        "duration_sec": 22.0,
+        "media_in": 1325.123,
+        "media_out": 1347.123,
+        "has_media_window": true,
+        "is_placeholder": false,
+        "placeholder_sec": null,
+        "is_replay": false,
+        "first_live_status": null,
+        "shot_kind": "live"
+      },
+      {
+        "index": 2,
+        "segment_id": "seg_setup_deficit",
+        "role": "deficit_scoreboard_anchor",
+        "beat": "铺垫",
+        "story_in": 25.0,
+        "story_out": 28.5,
+        "duration_sec": 3.5,
+        "media_in": 1409.43,
+        "media_out": 1412.93,
+        "has_media_window": true,
+        "is_placeholder": false,
+        "placeholder_sec": null,
+        "is_replay": false,
+        "first_live_status": null,
+        "shot_kind": "scoreboard_anchor"
+      },
+      {
+        "index": 3,
+        "segment_id": "seg_buildup_event_000472",
+        "role": "buildup_action",
+        "beat": "蓄力",
+        "story_in": 28.5,
+        "story_out": 40.5,
+        "duration_sec": 12.0,
+        "media_in": 4706.45,
+        "media_out": 4718.45,
+        "has_media_window": true,
+        "is_placeholder": false,
+        "placeholder_sec": null,
+        "is_replay": false,
+        "first_live_status": null,
+        "shot_kind": "live"
+      },
+      {
+        "index": 4,
+        "segment_id": "seg_equalizer_goal_action",
+        "role": "equalizer_goal_action",
+        "beat": "转折",
+        "story_in": 40.5,
+        "story_out": 62.5,
+        "duration_sec": 22.0,
+        "media_in": 6436.924,
+        "media_out": 6458.924,
+        "has_media_window": true,
+        "is_placeholder": false,
+        "placeholder_sec": null,
+        "is_replay": false,
+        "first_live_status": null,
+        "shot_kind": "live"
+      },
+      {
+        "index": 5,
+        "segment_id": "seg_equalizer_scoreboard",
+        "role": "equalizer_scoreboard_anchor",
+        "beat": "转折",
+        "story_in": 62.5,
+        "story_out": 66.0,
+        "duration_sec": 3.5,
+        "media_in": 6534.62,
+        "media_out": 6538.12,
+        "has_media_window": true,
+        "is_placeholder": false,
+        "placeholder_sec": null,
+        "is_replay": false,
+        "first_live_status": null,
+        "shot_kind": "scoreboard_anchor"
+      },
+      {
+        "index": 6,
+        "segment_id": "seg_go_ahead_goal_action",
+        "role": "go_ahead_goal_action",
+        "beat": "高潮",
+        "story_in": 66.0,
+        "story_out": 88.0,
+        "duration_sec": 22.0,
+        "media_in": 6829.456,
+        "media_out": 6851.456,
+        "has_media_window": true,
+        "is_placeholder": false,
+        "placeholder_sec": null,
+        "is_replay": false,
+        "first_live_status": null,
+        "shot_kind": "live"
+      },
+      {
+        "index": 7,
+        "segment_id": "seg_go_ahead_scoreboard",
+        "role": "go_ahead_scoreboard_anchor",
+        "beat": "高潮",
+        "story_in": 88.0,
+        "story_out": 91.5,
+        "duration_sec": 3.5,
+        "media_in": 6956.12,
+        "media_out": 6959.62,
+        "has_media_window": true,
+        "is_placeholder": false,
+        "placeholder_sec": null,
+        "is_replay": false,
+        "first_live_status": null,
+        "shot_kind": "scoreboard_anchor"
+      },
+      {
+        "index": 8,
+        "segment_id": "seg_title_close",
+        "role": "story_wrap_title",
+        "beat": "收尾",
+        "story_in": 91.5,
+        "story_out": 94.5,
+        "duration_sec": 3.0,
+        "media_in": null,
+        "media_out": null,
+        "has_media_window": false,
+        "is_placeholder": true,
+        "placeholder_sec": 3.0,
+        "is_replay": false,
+        "first_live_status": null,
+        "shot_kind": "title_card"
+      }
+    ],
+    "note": "story_duration_sec includes placeholder title cards using placeholder_sec (or renderer default 2.5s). Compare MP4 duration to story_duration_sec, not media_duration_sec alone."
+  },
+  "coverage": {
+    "has_title_open": true,
+    "has_opponent_opening": true,
+    "has_deficit_or_setup": true,
+    "has_equalizer": true,
+    "has_go_ahead": true,
+    "has_wrap_or_close": true,
+    "roles": [
+      "story_title",
+      "opponent_opening_goal_action",
+      "deficit_scoreboard_anchor",
+      "buildup_action",
+      "equalizer_goal_action",
+      "equalizer_scoreboard_anchor",
+      "go_ahead_goal_action",
+      "go_ahead_scoreboard_anchor",
+      "story_wrap_title"
+    ]
+  },
+  "protected_goal_segment_ids": [
+    "seg_opponent_opening_goal_action",
+    "seg_equalizer_goal_action",
+    "seg_go_ahead_goal_action"
+  ],
+  "issues": [
+    {
+      "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472",
+      "story_time_range": [
+        28.0,
+        29.0
+      ],
+      "segment_ids": [
+        "seg_setup_deficit",
+        "seg_buildup_event_000472"
+      ],
+      "observation": "Adjacent cuts jump 3293.5s in source PTS (1412.93 → 4706.45) while contiguous on story timeline.",
+      "narrative_problem": "Source-time compression alone is not a story defect. Only propose an insert if video shows specific omitted causal, emotional, or game-state information necessary to understand the next beat.",
+      "severity": "info",
+      "suggested_fix": "verify_story_state_before_and_after;keep_if_coherent",
+      "evidence_sufficiency": "needs_video_verify",
+      "category": "transition",
+      "temporal_discontinuity_only": true,
+      "source_gap_sec": 3293.52,
+      "required_missing_information_evidence": "specific_unexplained_story_state_change_observed_in_both_adjacent_cuts"
+    },
+    {
+      "issue_id": "large_source_jump_seg_buildup_event_000472_to_seg_equalizer_goal_action",
+      "story_time_range": [
+        40.0,
+        41.0
+      ],
+      "segment_ids": [
+        "seg_buildup_event_000472",
+        "seg_equalizer_goal_action"
+      ],
+      "observation": "Adjacent cuts jump 1718.5s in source PTS (4718.45 → 6436.924) while contiguous on story timeline.",
+      "narrative_problem": "Source-time compression alone is not a story defect. Only propose an insert if video shows specific omitted causal, emotional, or game-state information necessary to understand the next beat.",
+      "severity": "info",
+      "suggested_fix": "verify_story_state_before_and_after;keep_if_coherent",
+      "evidence_sufficiency": "needs_video_verify",
+      "category": "transition",
+      "temporal_discontinuity_only": true,
+      "source_gap_sec": 1718.474,
+      "required_missing_information_evidence": "specific_unexplained_story_state_change_observed_in_both_adjacent_cuts"
+    },
+    {
+      "issue_id": "thin_post_climax_tail",
+      "story_time_range": [
+        88.0,
+        94.5
+      ],
+      "segment_ids": [
+        "seg_go_ahead_scoreboard"
+      ],
+      "observation": "After the final goal_action, remaining media cuts are short scoreboard/wrap material totaling 3.5s.",
+      "narrative_problem": "Ending may feel abrupt; whether emotional closure is adequate requires watching the cut (not assumed from structure alone).",
+      "severity": "minor",
+      "suggested_fix": "verify_ending_or_extend_aftermath",
+      "evidence_sufficiency": "needs_video_verify",
+      "category": "ending"
+    }
+  ],
+  "notes": [
+    "story_mp4_duration=94.877s timeline_media=94.500s delta=0.377s"
+  ],
+  "disclaimer": "Structural/file probes are not multimodal story understanding. Issues marked needs_video_verify require layered video observation before revision."
+}

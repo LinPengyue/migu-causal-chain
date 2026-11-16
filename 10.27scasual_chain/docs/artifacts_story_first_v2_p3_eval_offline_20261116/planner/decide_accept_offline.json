@@ -1,0 +1,67 @@
+{
+  "accept": false,
+  "loop_retain": false,
+  "path": null,
+  "reasons": [
+    "api_verifier_degraded_rule_track_active",
+    "verifier_unevaluated_refuse_best_update",
+    "pending_proposal_only_not_accepted_edl",
+    "not_release_ready_until_semantic_verification"
+  ],
+  "baseline_p0": 0,
+  "candidate_p0": 0,
+  "coverage_baseline": null,
+  "coverage_candidate": null,
+  "coherence_baseline": null,
+  "coherence_candidate": null,
+  "model_quality_delta": "NOT_EVALUATED",
+  "pending_only": false,
+  "pending_verification": false,
+  "pending_proposal_only": true,
+  "release_eligible": false,
+  "meets_quality_threshold": false,
+  "quality_threshold": 75.0,
+  "composite_scores": {
+    "composite": null,
+    "dimensions": {
+      "story_element_coverage": {
+        "score": null,
+        "source": null,
+        "status": "UNKNOWN"
+      },
+      "narrative_coherence": {
+        "score": null,
+        "source": null,
+        "status": "UNKNOWN"
+      },
+      "image_content_quality": {
+        "score": null,
+        "source": null,
+        "status": "UNKNOWN"
+      },
+      "live_authenticity": {
+        "score": null,
+        "source": null,
+        "status": "UNKNOWN"
+      }
+    },
+    "unknown_dimensions": [
+      "story_element_coverage",
+      "narrative_coherence",
+      "image_content_quality",
+      "live_authenticity"
+    ],
+    "evaluated_count": 0,
+    "equal_weight": true,
+    "note": "Equal-weight mean over EVALUATED dims only; UNKNOWN excluded (never coerced to 0 or 100). Cross-round compare shared dims."
+  },
+  "feedback_findings": [],
+  "severe_findings": [],
+  "evidence_bound_edits": 1,
+  "regressions": [],
+  "semantic_verification_status": "NOT_EVALUATED",
+  "api_verifier_ok": false,
+  "gate": "loop",
+  "verifier_self_score_alone_insufficient": true,
+  "note": "Loop retain != final release. Unverified goals stay pending. Verifier unevaluated → pending_proposal_only, never best EDL. Threshold 75.0 is experimental, not calibrated."
+}

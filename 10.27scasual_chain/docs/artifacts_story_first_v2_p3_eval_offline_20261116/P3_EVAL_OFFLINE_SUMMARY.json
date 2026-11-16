@@ -1,0 +1,182 @@
+{
+  "code_sha": "b98d22d840ef512396d14736c09d29ed92afe188",
+  "paid_http_calls": 0,
+  "modules_reused": [
+    "global_story_critic.structural_diagnosis",
+    "story_video_verifier.verify_story_revision",
+    "dual_video_vision_verifier.extract_aligned_dual_frames",
+    "story_revision_planner.plan_from_diagnosis",
+    "self_revise_agent.decide_accept"
+  ],
+  "new_duplicate_modules_created": false,
+  "videos_reused": {
+    "baseline": "/tmp/lpy1_story_first_v2_p3_isolated_trial_20261116/baseline/story_clean_original.mp4",
+    "trial": "/tmp/lpy1_story_first_v2_p3_isolated_trial_20261116/trial/story_clean_trial_h5.mp4"
+  },
+  "videos_overwritten": false,
+  "formal_edl_unchanged": true,
+  "formal_edl_sha256": "b38434b9f15ea550b878fee4c7a4537115ae85d5cd57bdb189f6ad8036a4c47a",
+  "critic_compare_brief": {
+    "baseline_n": 3,
+    "trial_n": 3,
+    "new_in_trial": [
+      {
+        "issue_id": "large_source_jump_seg_buildup_event_000472_to_seg_story_first_ab22f01929b5cb4f59e6badd_01",
+        "severity": "info",
+        "category": "transition",
+        "evidence_sufficiency": "needs_video_verify",
+        "observation": "Adjacent cuts jump 1677.4s in source PTS (4718.45 → 6395.81) while contiguous on story timeline.",
+        "needs_video": true,
+        "source_gap_sec": 1677.36,
+        "segment_ids": [
+          "seg_buildup_event_000472",
+          "seg_story_first_ab22f01929b5cb4f59e6badd_01"
+        ]
+      }
+    ],
+    "resolved_vs_baseline": [
+      {
+        "issue_id": "large_source_jump_seg_buildup_event_000472_to_seg_equalizer_goal_action",
+        "severity": "info",
+        "category": "transition",
+        "evidence_sufficiency": "needs_video_verify",
+        "observation": "Adjacent cuts jump 1718.5s in source PTS (4718.45 → 6436.924) while contiguous on story timeline.",
+        "needs_video": true,
+        "source_gap_sec": 1718.474,
+        "segment_ids": [
+          "seg_buildup_event_000472",
+          "seg_equalizer_goal_action"
+        ]
+      }
+    ]
+  },
+  "offline_verifier": {
+    "semantic_verification_status": "NOT_EVALUATED",
+    "hard_vetoes_n": 0,
+    "phase8_keys": [
+      "schema",
+      "safety",
+      "hard_safety",
+      "quality",
+      "evidence",
+      "issue_effect",
+      "global_regression",
+      "focus_issue_id",
+      "evidence_refs",
+      "observed_changes",
+      "unresolved_questions",
+      "suggested_next_evidence",
+      "failure_class",
+      "compared_parent_version_id",
+      "verdict_provenance",
+      "source_kind",
+      "accept_candidate_raw",
+      "accept_not_synthesized_from_promising",
+      "safety_independent_of_accept_candidate",
+      "note"
+    ],
+    "candidate_accepted": false
+  },
+  "autonomous_decision": {
+    "decision": "REJECT",
+    "reasons": [
+      "decide_accept_refused_without_vision_semantic_pass",
+      "story_first_preview_only=true",
+      "first_live_status=NOT_VERIFIED",
+      "semantic_status=NOT_EVALUATED",
+      "positive_value_requires_paid_dual_vision"
+    ],
+    "human_approval_used_as_model_input": false
+  },
+  "paid_call_preflight": {
+    "required_for_semantic_positive_value": true,
+    "reason": "verify_story_revision + dual_video_vision_verifier refuse text/EDL-only semantic ACCEPT; claiming H5 positive narrative value needs vision-backed dual-frame comparison with citations.",
+    "module": "dual_video_vision_verifier.run_dual_video_vision_verifier",
+    "authorized_this_round": false,
+    "called_this_round": false,
+    "estimated_http_calls": 1,
+    "max_pairs": 4,
+    "max_frames_total": 8,
+    "preflight_frames_ready": true,
+    "preflight_frame_ids": [
+      "baseline_pre_edit_0",
+      "candidate_pre_edit_0",
+      "baseline_edit_impact_1",
+      "candidate_edit_impact_1",
+      "baseline_post_edit_2",
+      "candidate_post_edit_2",
+      "baseline_global_ending_3",
+      "candidate_global_ending_3"
+    ],
+    "preflight_n_frames": 8,
+    "estimated_model": "Qwen3.7-Plus",
+    "estimated_prompt_tokens": 23891,
+    "estimated_completion_tokens": 800,
+    "estimated_cost_usd": 0.003933,
+    "estimate_basis": {
+      "prior_vision1_audit": {
+        "model": "Qwen3.7-Plus",
+        "frames": 5,
+        "prompt_tokens": 11061,
+        "completion_tokens": 233,
+        "est_cost_usd": 0.00179895
+      },
+      "scaling": "prompt≈prior*(n_frames/5)*1.35; completion≈800; unit_cost from vision1"
+    },
+    "inputs_that_would_be_sent": {
+      "baseline_mp4": "/tmp/lpy1_story_first_v2_p3_isolated_trial_20261116/baseline/story_clean_original.mp4",
+      "candidate_mp4": "/tmp/lpy1_story_first_v2_p3_isolated_trial_20261116/trial/story_clean_trial_h5.mp4",
+      "sampling_slots": [
+        "pre_edit",
+        "edit_impact",
+        "post_edit",
+        "global_ending"
+      ],
+      "sample_plan": [
+        {
+          "narrative_slot": "pre_edit",
+          "reason": "same_edl_segment_context",
+          "baseline_story_sec": 34.5,
+          "candidate_story_sec": 34.5,
+          "baseline_segment_id": "seg_buildup_event_000472",
+          "candidate_segment_id": "seg_buildup_event_000472",
+          "sampling_purpose": "pre_edit"
+        },
+        {
+          "narrative_slot": "edit_impact",
+          "reason": "counterfactual_cut_boundary_not_same_event",
+          "baseline_story_sec": 40.3,
+          "candidate_story_sec": 51.63,
+          "baseline_segment_id": "seg_buildup_event_000472",
+          "candidate_segment_id": "seg_story_first_ab22f01929b5cb4f59e6badd_01",
+          "changed_segment_id": "seg_story_first_ab22f01929b5cb4f59e6badd_01",
+          "sampling_purpose": "edit_impact"
+        },
+        {
+          "narrative_slot": "post_edit",
+          "reason": "same_edl_segment_context",
+          "baseline_story_sec": 51.5,
+          "candidate_story_sec": 73.76,
+          "baseline_segment_id": "seg_equalizer_goal_action",
+          "candidate_segment_id": "seg_equalizer_goal_action",
+          "sampling_purpose": "post_edit"
+        },
+        {
+          "narrative_slot": "global_ending",
+          "reason": "same_edl_segment_context",
+          "baseline_story_sec": 93.0,
+          "candidate_story_sec": 115.26,
+          "baseline_segment_id": "seg_title_close",
+          "candidate_segment_id": "seg_title_close",
+          "sampling_purpose": "global_ending"
+        }
+      ]
+    }
+  },
+  "acceptance_focus": {
+    "can_agent_independently_affirm_positive_narrative_value_this_round": false,
+    "why": "Requires vision-backed dual-video Verifier with cited frames; zero-paid path correctly refuses.",
+    "verifiable_video_evidence_available_without_paid_call": false,
+    "structural_verifiable_facts_available": true
+  }
+}

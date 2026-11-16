@@ -1,0 +1,62 @@
+{
+  "top_keys": [
+    "schema",
+    "decision_input",
+    "hard_vetoes",
+    "business_first_live_review",
+    "warnings",
+    "render_rows_ok",
+    "goal_protection",
+    "video_probe",
+    "edl_delta",
+    "sent_frame_ids",
+    "vision_backed",
+    "dual_verifier",
+    "dual_verifier_full",
+    "candidate_accepted",
+    "retain_baseline",
+    "phase8_verdict",
+    "evidence_basis",
+    "note"
+  ],
+  "phase8_verdict": {
+    "schema": "v3a_phase8_verdict_v1",
+    "safety": "UNKNOWN",
+    "hard_safety": {
+      "safety": "UNKNOWN",
+      "reasons": [
+        "first_live_proof_missing_or_unverified"
+      ],
+      "accept_candidate_ignored": true,
+      "first_live_status": "UNKNOWN",
+      "first_live_ledger": null,
+      "note": "Absent replay flags are NOT first-LIVE proof."
+    },
+    "quality": "UNCERTAIN",
+    "evidence": "INSUFFICIENT",
+    "issue_effect": "UNOBSERVED",
+    "global_regression": "UNKNOWN",
+    "focus_issue_id": null,
+    "evidence_refs": [],
+    "observed_changes": null,
+    "unresolved_questions": [],
+    "suggested_next_evidence": null,
+    "failure_class": "TECHNICAL_FAILURE",
+    "compared_parent_version_id": null,
+    "verdict_provenance": "OFFLINE_RULE",
+    "source_kind": "OFFLINE_RULE",
+    "accept_candidate_raw": false,
+    "accept_not_synthesized_from_promising": true,
+    "safety_independent_of_accept_candidate": true,
+    "note": "Hard safety is independent of narrative accept_candidate. FIXTURE/OFFLINE_RULE never establish real IMPROVED; REAL_VLM requires recorded successful provider call + frame bindings."
+  },
+  "hard_vetoes": [],
+  "hard_safety": null,
+  "warnings": [
+    "vision_backed_explicitly_false",
+    "refuse_accept_without_semantic_verification",
+    "refuse_accept_without_dual_video_frames"
+  ],
+  "semantic_verification_status": null,
+  "verdict_provenance": null
+}

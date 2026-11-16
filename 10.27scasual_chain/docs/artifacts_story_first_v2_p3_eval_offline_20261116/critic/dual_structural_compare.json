@@ -1,0 +1,115 @@
+{
+  "baseline_issues": [
+    {
+      "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472",
+      "severity": "info",
+      "category": "transition",
+      "evidence_sufficiency": "needs_video_verify",
+      "observation": "Adjacent cuts jump 3293.5s in source PTS (1412.93 → 4706.45) while contiguous on story timeline.",
+      "needs_video": true,
+      "source_gap_sec": 3293.52,
+      "segment_ids": [
+        "seg_setup_deficit",
+        "seg_buildup_event_000472"
+      ]
+    },
+    {
+      "issue_id": "large_source_jump_seg_buildup_event_000472_to_seg_equalizer_goal_action",
+      "severity": "info",
+      "category": "transition",
+      "evidence_sufficiency": "needs_video_verify",
+      "observation": "Adjacent cuts jump 1718.5s in source PTS (4718.45 → 6436.924) while contiguous on story timeline.",
+      "needs_video": true,
+      "source_gap_sec": 1718.474,
+      "segment_ids": [
+        "seg_buildup_event_000472",
+        "seg_equalizer_goal_action"
+      ]
+    },
+    {
+      "issue_id": "thin_post_climax_tail",
+      "severity": "minor",
+      "category": "ending",
+      "evidence_sufficiency": "needs_video_verify",
+      "observation": "After the final goal_action, remaining media cuts are short scoreboard/wrap material totaling 3.5s.",
+      "needs_video": true,
+      "source_gap_sec": null,
+      "segment_ids": [
+        "seg_go_ahead_scoreboard"
+      ]
+    }
+  ],
+  "trial_issues": [
+    {
+      "issue_id": "large_source_jump_seg_setup_deficit_to_seg_buildup_event_000472",
+      "severity": "info",
+      "category": "transition",
+      "evidence_sufficiency": "needs_video_verify",
+      "observation": "Adjacent cuts jump 3293.5s in source PTS (1412.93 → 4706.45) while contiguous on story timeline.",
+      "needs_video": true,
+      "source_gap_sec": 3293.52,
+      "segment_ids": [
+        "seg_setup_deficit",
+        "seg_buildup_event_000472"
+      ]
+    },
+    {
+      "issue_id": "large_source_jump_seg_buildup_event_000472_to_seg_story_first_ab22f01929b5cb4f59e6badd_01",
+      "severity": "info",
+      "category": "transition",
+      "evidence_sufficiency": "needs_video_verify",
+      "observation": "Adjacent cuts jump 1677.4s in source PTS (4718.45 → 6395.81) while contiguous on story timeline.",
+      "needs_video": true,
+      "source_gap_sec": 1677.36,
+      "segment_ids": [
+        "seg_buildup_event_000472",
+        "seg_story_first_ab22f01929b5cb4f59e6badd_01"
+      ]
+    },
+    {
+      "issue_id": "thin_post_climax_tail",
+      "severity": "minor",
+      "category": "ending",
+      "evidence_sufficiency": "needs_video_verify",
+      "observation": "After the final goal_action, remaining media cuts are short scoreboard/wrap material totaling 3.5s.",
+      "needs_video": true,
+      "source_gap_sec": null,
+      "segment_ids": [
+        "seg_go_ahead_scoreboard"
+      ]
+    }
+  ],
+  "baseline_n": 3,
+  "trial_n": 3,
+  "new_in_trial": [
+    {
+      "issue_id": "large_source_jump_seg_buildup_event_000472_to_seg_story_first_ab22f01929b5cb4f59e6badd_01",
+      "severity": "info",
+      "category": "transition",
+      "evidence_sufficiency": "needs_video_verify",
+      "observation": "Adjacent cuts jump 1677.4s in source PTS (4718.45 → 6395.81) while contiguous on story timeline.",
+      "needs_video": true,
+      "source_gap_sec": 1677.36,
+      "segment_ids": [
+        "seg_buildup_event_000472",
+        "seg_story_first_ab22f01929b5cb4f59e6badd_01"
+      ]
+    }
+  ],
+  "resolved_vs_baseline": [
+    {
+      "issue_id": "large_source_jump_seg_buildup_event_000472_to_seg_equalizer_goal_action",
+      "severity": "info",
+      "category": "transition",
+      "evidence_sufficiency": "needs_video_verify",
+      "observation": "Adjacent cuts jump 1718.5s in source PTS (4718.45 → 6436.924) while contiguous on story timeline.",
+      "needs_video": true,
+      "source_gap_sec": 1718.474,
+      "segment_ids": [
+        "seg_buildup_event_000472",
+        "seg_equalizer_goal_action"
+      ]
+    }
+  ],
+  "note": "structural_diagnosis marks large PTS jumps as info/needs_video_verify and does NOT treat them as confirmed missing-bridge defects. Positive narrative value of H5 is NOT decidable from structure alone."
+}
