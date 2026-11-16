@@ -1,0 +1,32 @@
+{
+  "event_verification_gaps": [
+    {
+      "event_id": "event_000634",
+      "frame_ids": [
+        "f2"
+      ],
+      "reason": "Frame shows players in proximity but no clear interception action or ball contact is visible at this timestamp.",
+      "status": "UNCERTAIN"
+    },
+    {
+      "event_id": "event_000636",
+      "frame_ids": [
+        "f4"
+      ],
+      "reason": "Players are separated and moving; no active pass interception is occurring in this frame.",
+      "status": "UNCERTAIN"
+    }
+  ],
+  "first_live_verified": false,
+  "minimal_next_evidence_actions": [
+    "Provide an independent continuous-broadcast timeline review for source_sha a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c window [6395.81,6418.07] with outcome FIRST_LIVE_VERIFIED, bound context clip, and distinct temporal cues (not frame-pack-only)",
+    "Or run authenticated human/continuous-video FIRST_LIVE review into --first-live-evidence-dir that validates under validate_first_live_evidence_record(allow_non_goal_action=True)",
+    "Do NOT flip first_live_verified by editing JSON or relaxing gates"
+  ],
+  "why_insufficient": [
+    "Reused local packs are FRAME_BOUND_VALID only",
+    "broadcast_timeline_review method=binding_only_no_timeline_proof / outcome=UNKNOWN",
+    "No authenticated continuous-timeline review asserting FIRST_LIVE_VERIFIED for key a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c|6395.810:6418.070",
+    "Atom LIVE flags and shared coarse window [6400.9,6412.5] are not first-occurrence certification"
+  ]
+}

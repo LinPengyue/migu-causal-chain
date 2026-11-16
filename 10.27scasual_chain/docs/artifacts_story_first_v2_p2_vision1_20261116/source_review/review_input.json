@@ -1,0 +1,72 @@
+{
+  "frame_refs": [
+    {
+      "actual_media_sec": 6402.52,
+      "event_ids": [],
+      "frame_id": "f1",
+      "path": "/tmp/lpy1_story_first_v2_p2_vision1_20261116/source_review/source_frames/f_0000_6402488.jpg",
+      "pts_status": "pts",
+      "requested_media_sec": 6402.488,
+      "role": "candidate",
+      "sha256": "acae70083f89e56761511e1398e331dafaff7147b45848fd75ee758dd67624c3",
+      "source_pts_sec": 6402.52,
+      "window_id": "story_first_ab22f01929b5cb4f59e6badd_01"
+    },
+    {
+      "actual_media_sec": 6403.84,
+      "event_ids": [
+        "event_000634"
+      ],
+      "frame_id": "f2",
+      "path": "/tmp/lpy1_story_first_v2_p2_vision1_20261116/source_review/source_frames/f_0001_6403810.jpg",
+      "pts_status": "pts",
+      "requested_media_sec": 6403.81,
+      "role": "candidate",
+      "sha256": "54deab70e7aae3e48c5b6be7827db00a930529b1406e5e41bf1c2d64e3a63081",
+      "source_pts_sec": 6403.84,
+      "window_id": "story_first_ab22f01929b5cb4f59e6badd_01"
+    },
+    {
+      "actual_media_sec": 6405.04,
+      "event_ids": [
+        "event_000635"
+      ],
+      "frame_id": "f3",
+      "path": "/tmp/lpy1_story_first_v2_p2_vision1_20261116/source_review/source_frames/f_0002_6405030.jpg",
+      "pts_status": "pts",
+      "requested_media_sec": 6405.03,
+      "role": "candidate",
+      "sha256": "2a035fd225cd24e3c04abc51f129ab45674a072af333d05a9f736977c469a64d",
+      "source_pts_sec": 6405.04,
+      "window_id": "story_first_ab22f01929b5cb4f59e6badd_01"
+    },
+    {
+      "actual_media_sec": 6410.08,
+      "event_ids": [
+        "event_000636"
+      ],
+      "frame_id": "f4",
+      "path": "/tmp/lpy1_story_first_v2_p2_vision1_20261116/source_review/source_frames/f_0003_6410070.jpg",
+      "pts_status": "pts",
+      "requested_media_sec": 6410.07,
+      "role": "candidate",
+      "sha256": "eeb6ec76669b4120653ee28c20681583dc19b09a3308bb42ba8296e6e3089e96",
+      "source_pts_sec": 6410.08,
+      "window_id": "story_first_ab22f01929b5cb4f59e6badd_01"
+    },
+    {
+      "actual_media_sec": 6411.4,
+      "event_ids": [],
+      "frame_id": "f5",
+      "path": "/tmp/lpy1_story_first_v2_p2_vision1_20261116/source_review/source_frames/f_0004_6411392.jpg",
+      "pts_status": "pts",
+      "requested_media_sec": 6411.392,
+      "role": "candidate",
+      "sha256": "ae43cd0fbc9fc217be1d22d5e5216732f7fe029881f0153363d4a49b31c160dc",
+      "source_pts_sec": 6411.4,
+      "window_id": "story_first_ab22f01929b5cb4f59e6badd_01"
+    }
+  ],
+  "prompt": "Verify the listed events from source-bound stills in original time order. Cite the candidate frames bound to each event. Check the visible action and actor/team attribution when specified. Use UNCERTAIN if frames do not show the action or attribution clearly. If an event is visible only as a replay or slow-motion shot, mark it CONTRADICTED. First-live certification requires separate evidence. Return one compact JSON object with one row per event. Use short frame IDs and one brief, factual reason. {events:[{event_id,status:SUPPORTED|CONTRADICTED|UNCERTAIN,reason,frame_ids}]}\n{\"events\":[{\"annotation\":{\"description\":\"\",\"notes\":\"1队球员截获2队传球\"},\"event_id\":\"event_000634\",\"event_type\":\"Defensive_action\",\"known_replay_or_slowmo\":false,\"source_pts_sec\":6403.81},{\"annotation\":{\"description\":\"\",\"notes\":\"2队球员截获1队球员传球\"},\"event_id\":\"event_000635\",\"event_type\":\"Defensive_action\",\"known_replay_or_slowmo\":false,\"source_pts_sec\":6405.03},{\"annotation\":{\"description\":\"\",\"notes\":\"1队球员截获2队球员传球\"},\"event_id\":\"event_000636\",\"event_type\":\"Defensive_action\",\"known_replay_or_slowmo\":false,\"source_pts_sec\":6410.07}],\"windows\":[{\"candidate_id\":\"story_first_ab22f01929b5cb4f59e6badd_01\",\"source_pts_start\":6395.81,\"source_pts_end\":6418.07,\"event_ids\":[\"event_000634\",\"event_000635\",\"event_000636\"],\"existing_segment_id\":null}],\"frame_refs\":[{\"frame_id\":\"f1\",\"role\":\"candidate\",\"window_id\":\"story_first_ab22f01929b5cb4f59e6badd_01\",\"event_ids\":[],\"source_pts_sec\":6402.52},{\"frame_id\":\"f2\",\"role\":\"candidate\",\"window_id\":\"story_first_ab22f01929b5cb4f59e6badd_01\",\"event_ids\":[\"event_000634\"],\"source_pts_sec\":6403.84},{\"frame_id\":\"f3\",\"role\":\"candidate\",\"window_id\":\"story_first_ab22f01929b5cb4f59e6badd_01\",\"event_ids\":[\"event_000635\"],\"source_pts_sec\":6405.04},{\"frame_id\":\"f4\",\"role\":\"candidate\",\"window_id\":\"story_first_ab22f01929b5cb4f59e6badd_01\",\"event_ids\":[\"event_000636\"],\"source_pts_sec\":6410.08},{\"frame_id\":\"f5\",\"role\":\"candidate\",\"window_id\":\"story_first_ab22f01929b5cb4f59e6badd_01\",\"event_ids\":[],\"source_pts_sec\":6411.4}]}",
+  "source_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c"
+}

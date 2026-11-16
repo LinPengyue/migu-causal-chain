@@ -1,0 +1,85 @@
+{
+  "candidates": [
+    {
+      "before_segment_id": "seg_equalizer_goal_action",
+      "candidate_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+      "event_ids": [
+        "event_000634",
+        "event_000635",
+        "event_000636"
+      ],
+      "evidence_tier": "EVENT_PTS_CANDIDATE",
+      "executable_safe_revision": false,
+      "first_live_available": false,
+      "first_live_status": "NOT_VERIFIED",
+      "insert_after_segment_id": "seg_buildup_event_000472",
+      "issue_id": "story_first:ab22f01929b5cb4f59e6badd",
+      "reject_or_defer_reason": "event_pts_only_pending_first_live_attestation",
+      "source_pts_end": 6418.07,
+      "source_pts_start": 6395.81,
+      "story_first_trial_id": "ab22f01929b5cb4f59e6badd"
+    }
+  ],
+  "event_observations": [
+    {
+      "event_id": "event_000634",
+      "frame_ids": [
+        "f2"
+      ],
+      "reason": "Frame shows players in proximity but no clear interception action or ball contact is visible at this timestamp.",
+      "status": "UNCERTAIN"
+    },
+    {
+      "event_id": "event_000635",
+      "frame_ids": [
+        "f3"
+      ],
+      "reason": "Red player (Team 2) is visibly challenging and intercepting the ball from White player (Team 1).",
+      "status": "SUPPORTED"
+    },
+    {
+      "event_id": "event_000636",
+      "frame_ids": [
+        "f4"
+      ],
+      "reason": "Players are separated and moving; no active pass interception is occurring in this frame.",
+      "status": "UNCERTAIN"
+    }
+  ],
+  "feedback": [
+    {
+      "event_id": "event_000634",
+      "event_ids": [
+        "event_000634"
+      ],
+      "frame_ids": [
+        "f2"
+      ],
+      "reason": "Frame shows players in proximity but no clear interception action or ball contact is visible at this timestamp.",
+      "status": "UNCERTAIN"
+    },
+    {
+      "event_id": "event_000636",
+      "event_ids": [
+        "event_000636"
+      ],
+      "frame_ids": [
+        "f4"
+      ],
+      "reason": "Players are separated and moving; no active pass interception is occurring in this frame.",
+      "status": "UNCERTAIN"
+    },
+    {
+      "event_ids": [
+        "event_000634",
+        "event_000635",
+        "event_000636"
+      ],
+      "reason": "event_pts_only_pending_first_live_attestation",
+      "status": "NOT_VERIFIED",
+      "window_id": "story_first_ab22f01929b5cb4f59e6badd_01"
+    }
+  ],
+  "intents": [],
+  "status": "NEEDS_REVISION"
+}
