@@ -1,0 +1,111 @@
+{
+  "events": {
+    "event_000634": {
+      "atom_authenticity": "PRESENT_IN_ENRICHED",
+      "pts": 6403.81,
+      "broadcast_phase": "LIVE",
+      "is_replay": false,
+      "is_slow_motion": false,
+      "notes": "1队球员截获2队传球",
+      "attributes_attacker": [
+        "2队球员"
+      ],
+      "attributes_defender": [
+        "1队球员"
+      ],
+      "pitch": [
+        "Midfield_Third"
+      ],
+      "scoreboard_on_frame": "UAE 0-1 OMA @75:11",
+      "visual_kits": "UAE red / OMA white; no REPLAY overlay",
+      "team_attribution_internal_consistency": "notes and attributes agree: 1队 intercepts 2队",
+      "offline_verdict": "EVENT_PLAUSIBLE_LIVE"
+    },
+    "event_000635": {
+      "atom_authenticity": "PRESENT_IN_ENRICHED",
+      "pts": 6405.03,
+      "broadcast_phase": "LIVE",
+      "is_replay": false,
+      "is_slow_motion": false,
+      "notes": "2队球员截获1队球员传球",
+      "attributes_attacker": [
+        "1队球员"
+      ],
+      "attributes_defender": [
+        "2队球员"
+      ],
+      "pitch": [
+        "Defensive_Third"
+      ],
+      "scoreboard_on_frame": "UAE 0-1 OMA @75:12",
+      "visual_note": "white (OMA) appears to have ball soon after",
+      "team_attribution_internal_consistency": "notes and attributes agree: 2队 intercepts 1队",
+      "offline_verdict": "EVENT_PLAUSIBLE_LIVE_OPPOSING_TURNOVER"
+    },
+    "event_000636": {
+      "atom_authenticity": "PRESENT_IN_ENRICHED",
+      "pts": 6410.07,
+      "broadcast_phase": "LIVE",
+      "is_replay": false,
+      "is_slow_motion": false,
+      "notes": "1队球员截获2队球员传球",
+      "attributes_attacker": [
+        "2队球员"
+      ],
+      "attributes_defender": [
+        "1队球员"
+      ],
+      "pitch": [
+        "Midfield_Third"
+      ],
+      "scoreboard_on_frame": "UAE 0-1 OMA @75:17",
+      "team_attribution_internal_consistency": "notes and attributes agree: 1队 intercepts 2队",
+      "offline_verdict": "EVENT_PLAUSIBLE_LIVE"
+    }
+  },
+  "relation": {
+    "relation_id": "interval_01:H5:r1",
+    "claim": "连续拦截后球权转换或导向扳平进攻",
+    "offline_verdict": "NOT_ESTABLISHED_AS_EQUALIZER_INITIATION",
+    "why": [
+      "Three interceptions alternate 1队→2队→1队; not continuous protagonist regain",
+      "event_000635 pitch=Defensive_Third vs others Midfield_Third — location not uniform",
+      "No human atom between 6410.07 and 6436.924; ~32s gap before equalizer action",
+      "Next catalogued actions are atom_fill Pass/Assist/Shot/Goal from 6442.874 — not cited in H5",
+      "source_followthrough frame ~6423.76 shows white (OMA) still in possession attacking UAE half — contradicts sustained 1队 attack start"
+    ],
+    "better_story_explanation": "0-1 落后阶段中场连续球权转换/拉锯快照（含一次对方反抢），不是扳平进攻的组织起点；若要服务扳平叙事，需另选能覆盖 6410→6443 连续推进或明确放弃因果、只保留局部态势。"
+  },
+  "first_live": {
+    "prior_pack_binding": "FRAME_BOUND_VALID",
+    "first_live_verified": false,
+    "frame_pack_cannot_certify_first_live": true,
+    "event_chain_insufficient": true,
+    "broadcast_atom_flags": "all three LIVE, is_replay=false, is_slow_motion=false",
+    "gap": [
+      "No independent continuous-timeline FIRST_LIVE evidence pack accepted into ledger",
+      "Shared coarse live window 6400.9–6412.5 for all three events is not per-action first-occurrence proof",
+      "Source review still cannot certify first-live by design"
+    ],
+    "offline_verdict": "INSUFFICIENT_FOR_FIRST_LIVE_CERTIFICATION"
+  },
+  "narrative_fit": {
+    "edit_before": "seg_buildup_event_000472 [4706.45,4718.45]",
+    "edit_after": "seg_equalizer_goal_action [6436.924,6458.924]",
+    "large_pts_jump_expected": true,
+    "revised_roles_separate_source_play": true,
+    "source_leadin": "[6375.81,6395.81]",
+    "source_followthrough": "[6418.07,6436.924] covers empty gap toward equalizer action",
+    "offline_verdict": "EDIT_CONTEXT_CORRECT_BUT_INSERT_GAIN_UNCERTAIN_WITHOUT_PAID_REVIEW"
+  },
+  "ready_for_one_paid_source_review": {
+    "ready": true,
+    "conditions": [
+      "Reuse bound trial interval_01:H5; do not regenerate/score/replan",
+      "Use ba38ef7 observe_story_first_trial with leadin/followthrough",
+      "Keep completion cap >=1200 (compact schema ~274 tokens in fixture)",
+      "Expect relation likely UNCERTAIN; do not treat SUPPORTED events as FIRST_LIVE",
+      "Still need separate FIRST_LIVE pack before P3 trial cut"
+    ]
+  }
+}

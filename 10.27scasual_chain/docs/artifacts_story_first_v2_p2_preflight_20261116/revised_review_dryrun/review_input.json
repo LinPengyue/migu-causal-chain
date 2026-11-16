@@ -1,0 +1,168 @@
+{
+  "source_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+  "prompt": "Review the selected story from source-bound stills. For event and relation checks, use candidate frames and the optional source_leadin/source_followthrough frames in original broadcast order. Cite the candidate frames for each event or both relation endpoints. Describe only visible facts. Use UNCERTAIN when the sequence or causal mechanism is missing; team attribution must match. Flag replay or slow motion in the candidate as CONTRADICTED. For edit fit, BEFORE and AFTER are the adjacent clips in the actual cut. A large PTS jump does not by itself imply a bad edit. Use the before/candidate/after frames to assess the added information and cut continuity. Source-only context is not in the cut. Return one compact JSON object, no markdown or restating event descriptions. One row per event, relation and new window. Use short frame IDs. Limit each reason or explanation to 4–12 words; explain the most important uncertainty. {events:[{event_id,status:SUPPORTED|CONTRADICTED|UNCERTAIN,reason,frame_ids}],relations:[{relation_id,status,reason,frame_ids}],fit:[{window_id,verdict:SUPPORTS_INSERT|REJECT_INSERT|UNCERTAIN,before_to_candidate,candidate_to_after,new_story_information,baseline_comparison,missing_information_addressed,falsifiable_gain,evidence_frame_ids}]}. For fit, cite at least one frame from each edit role. First-live certification requires separate evidence.\n{\"purpose\":\"This proposal is the most compact and temporally adjacent to the equalizer window (6403.81s–6410.07s vs equalizer buildup at ~6442s). The three interceptions are all non-replay footage events and the observation query targets whether the final interception (event_000636) initiates forward progression toward the equalizer. This directly addresses the unresolved question of whether the buildup-to-equalizer transition has omitted causal state. Other proposals either rely on replay-flagged VAR footage (interval_01:H1), misattribute team sides (interval_01:H2, H4), or lack interleaved opponent even\",\"events\":[{\"event_id\":\"event_000634\",\"source_pts_sec\":6403.81,\"event_type\":\"Defensive_action\",\"known_replay_or_slowmo\":false,\"annotation\":{\"description\":\"\",\"notes\":\"1队球员截获2队传球\"}},{\"event_id\":\"event_000635\",\"source_pts_sec\":6405.03,\"event_type\":\"Defensive_action\",\"known_replay_or_slowmo\":false,\"annotation\":{\"description\":\"\",\"notes\":\"2队球员截获1队球员传球\"}},{\"event_id\":\"event_000636\",\"source_pts_sec\":6410.07,\"event_type\":\"Defensive_action\",\"known_replay_or_slowmo\":false,\"annotation\":{\"description\":\"\",\"notes\":\"1队球员截获2队球员传球\"}}],\"relations\":[{\"relation_id\":\"interval_01:H5:r1\",\"source_event_id\":\"event_000634\",\"target_event_id\":\"event_000636\",\"relation_type\":\"state_transition\",\"claim\":\"连续拦截后球权转换或导向扳平进攻\",\"evidence_status\":\"UNVERIFIED_MODEL_HYPOTHESIS\"}],\"windows\":[{\"candidate_id\":\"story_first_ab22f01929b5cb4f59e6badd_01\",\"source_pts_start\":6395.81,\"source_pts_end\":6418.07,\"event_ids\":[\"event_000634\",\"event_000635\",\"event_000636\"],\"existing_segment_id\":null}],\"frame_refs\":[{\"frame_id\":\"f1\",\"role\":\"before\",\"window_id\":\"story_first_ab22f01929b5cb4f59e6badd_01\",\"event_ids\":[],\"source_pts_sec\":4710.08},{\"frame_id\":\"f2\",\"role\":\"before\",\"window_id\":\"story_first_ab22f01929b5cb4f59e6badd_01\",\"event_ids\":[],\"source_pts_sec\":4714.88},{\"frame_id\":\"f3\",\"role\":\"candidate\",\"window_id\":\"story_first_ab22f01929b5cb4f59e6badd_01\",\"event_ids\":[],\"source_pts_sec\":6402.52},{\"frame_id\":\"f4\",\"role\":\"candidate\",\"window_id\":\"story_first_ab22f01929b5cb4f59e6badd_01\",\"event_ids\":[\"event_000634\"],\"source_pts_sec\":6403.84},{\"frame_id\":\"f5\",\"role\":\"candidate\",\"window_id\":\"story_first_ab22f01929b5cb4f59e6badd_01\",\"event_ids\":[\"event_000635\"],\"source_pts_sec\":6405.04},{\"frame_id\":\"f6\",\"role\":\"candidate\",\"window_id\":\"story_first_ab22f01929b5cb4f59e6badd_01\",\"event_ids\":[\"event_000636\"],\"source_pts_sec\":6410.08},{\"frame_id\":\"f7\",\"role\":\"candidate\",\"window_id\":\"story_first_ab22f01929b5cb4f59e6badd_01\",\"event_ids\":[],\"source_pts_sec\":6411.4},{\"frame_id\":\"f8\",\"role\":\"after\",\"window_id\":\"story_first_ab22f01929b5cb4f59e6badd_01\",\"event_ids\":[],\"source_pts_sec\":6443.56},{\"frame_id\":\"f9\",\"role\":\"after\",\"window_id\":\"story_first_ab22f01929b5cb4f59e6badd_01\",\"event_ids\":[],\"source_pts_sec\":6452.36},{\"frame_id\":\"f10\",\"role\":\"source_leadin\",\"window_id\":\"story_first_ab22f01929b5cb4f59e6badd_01\",\"event_ids\":[],\"source_pts_sec\":6381.84},{\"frame_id\":\"f11\",\"role\":\"source_leadin\",\"window_id\":\"story_first_ab22f01929b5cb4f59e6badd_01\",\"event_ids\":[],\"source_pts_sec\":6389.84},{\"frame_id\":\"f12\",\"role\":\"source_followthrough\",\"window_id\":\"story_first_ab22f01929b5cb4f59e6badd_01\",\"event_ids\":[],\"source_pts_sec\":6423.76},{\"frame_id\":\"f13\",\"role\":\"source_followthrough\",\"window_id\":\"story_first_ab22f01929b5cb4f59e6badd_01\",\"event_ids\":[],\"source_pts_sec\":6431.28}]}",
+  "frame_refs": [
+    {
+      "role": "before",
+      "frame_id": "f1",
+      "window_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+      "event_ids": [],
+      "source_pts_sec": 4710.08,
+      "sha256": "a9919153cd6d406ff3854ecca4828e8793e50d888f480e0cb4f7ea6de9f078d8",
+      "requested_media_sec": 4710.05,
+      "actual_media_sec": 4710.08,
+      "pts_status": "pts",
+      "path": "/tmp/lpy1_story_first_v2_p2_preflight_20261116/revised_review_dryrun/source_frames/f_0000_4710050.jpg"
+    },
+    {
+      "role": "before",
+      "frame_id": "f2",
+      "window_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+      "event_ids": [],
+      "source_pts_sec": 4714.88,
+      "sha256": "e199620127914c43a0c862910d0c1bcd294a4e2432e333b013e9e1b217422bf0",
+      "requested_media_sec": 4714.849999999999,
+      "actual_media_sec": 4714.88,
+      "pts_status": "pts",
+      "path": "/tmp/lpy1_story_first_v2_p2_preflight_20261116/revised_review_dryrun/source_frames/f_0001_4714850.jpg"
+    },
+    {
+      "role": "candidate",
+      "frame_id": "f3",
+      "window_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+      "event_ids": [],
+      "source_pts_sec": 6402.52,
+      "sha256": "acae70083f89e56761511e1398e331dafaff7147b45848fd75ee758dd67624c3",
+      "requested_media_sec": 6402.488,
+      "actual_media_sec": 6402.52,
+      "pts_status": "pts",
+      "path": "/tmp/lpy1_story_first_v2_p2_preflight_20261116/revised_review_dryrun/source_frames/f_0002_6402488.jpg"
+    },
+    {
+      "role": "candidate",
+      "frame_id": "f4",
+      "window_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+      "event_ids": [
+        "event_000634"
+      ],
+      "source_pts_sec": 6403.84,
+      "sha256": "54deab70e7aae3e48c5b6be7827db00a930529b1406e5e41bf1c2d64e3a63081",
+      "requested_media_sec": 6403.81,
+      "actual_media_sec": 6403.84,
+      "pts_status": "pts",
+      "path": "/tmp/lpy1_story_first_v2_p2_preflight_20261116/revised_review_dryrun/source_frames/f_0003_6403810.jpg"
+    },
+    {
+      "role": "candidate",
+      "frame_id": "f5",
+      "window_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+      "event_ids": [
+        "event_000635"
+      ],
+      "source_pts_sec": 6405.04,
+      "sha256": "2a035fd225cd24e3c04abc51f129ab45674a072af333d05a9f736977c469a64d",
+      "requested_media_sec": 6405.03,
+      "actual_media_sec": 6405.04,
+      "pts_status": "pts",
+      "path": "/tmp/lpy1_story_first_v2_p2_preflight_20261116/revised_review_dryrun/source_frames/f_0004_6405030.jpg"
+    },
+    {
+      "role": "candidate",
+      "frame_id": "f6",
+      "window_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+      "event_ids": [
+        "event_000636"
+      ],
+      "source_pts_sec": 6410.08,
+      "sha256": "eeb6ec76669b4120653ee28c20681583dc19b09a3308bb42ba8296e6e3089e96",
+      "requested_media_sec": 6410.07,
+      "actual_media_sec": 6410.08,
+      "pts_status": "pts",
+      "path": "/tmp/lpy1_story_first_v2_p2_preflight_20261116/revised_review_dryrun/source_frames/f_0005_6410070.jpg"
+    },
+    {
+      "role": "candidate",
+      "frame_id": "f7",
+      "window_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+      "event_ids": [],
+      "source_pts_sec": 6411.4,
+      "sha256": "ae43cd0fbc9fc217be1d22d5e5216732f7fe029881f0153363d4a49b31c160dc",
+      "requested_media_sec": 6411.392,
+      "actual_media_sec": 6411.4,
+      "pts_status": "pts",
+      "path": "/tmp/lpy1_story_first_v2_p2_preflight_20261116/revised_review_dryrun/source_frames/f_0006_6411392.jpg"
+    },
+    {
+      "role": "after",
+      "frame_id": "f8",
+      "window_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+      "event_ids": [],
+      "source_pts_sec": 6443.56,
+      "sha256": "8fa0924085f5bdc832fac77b7641d78ccd2089918a0772a6b8e540dea361e318",
+      "requested_media_sec": 6443.524,
+      "actual_media_sec": 6443.56,
+      "pts_status": "pts",
+      "path": "/tmp/lpy1_story_first_v2_p2_preflight_20261116/revised_review_dryrun/source_frames/f_0007_6443524.jpg"
+    },
+    {
+      "role": "after",
+      "frame_id": "f9",
+      "window_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+      "event_ids": [],
+      "source_pts_sec": 6452.36,
+      "sha256": "f88103afb0c6a005c42ec53df67a9fa7e793a66ab4d004149467650325d92702",
+      "requested_media_sec": 6452.324,
+      "actual_media_sec": 6452.36,
+      "pts_status": "pts",
+      "path": "/tmp/lpy1_story_first_v2_p2_preflight_20261116/revised_review_dryrun/source_frames/f_0008_6452324.jpg"
+    },
+    {
+      "role": "source_leadin",
+      "frame_id": "f10",
+      "window_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+      "event_ids": [],
+      "source_pts_sec": 6381.84,
+      "sha256": "86fd56792376372c06fece06315025fed2587938620bd98e213af62accd2d98d",
+      "requested_media_sec": 6381.81,
+      "actual_media_sec": 6381.84,
+      "pts_status": "pts",
+      "path": "/tmp/lpy1_story_first_v2_p2_preflight_20261116/revised_review_dryrun/source_frames/f_0009_6381810.jpg"
+    },
+    {
+      "role": "source_leadin",
+      "frame_id": "f11",
+      "window_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+      "event_ids": [],
+      "source_pts_sec": 6389.84,
+      "sha256": "c285e405df0c38b36fb03536e8ed94bd51ab23e1a0e200a6f517f6818f4783bb",
+      "requested_media_sec": 6389.81,
+      "actual_media_sec": 6389.84,
+      "pts_status": "pts",
+      "path": "/tmp/lpy1_story_first_v2_p2_preflight_20261116/revised_review_dryrun/source_frames/f_0010_6389810.jpg"
+    },
+    {
+      "role": "source_followthrough",
+      "frame_id": "f12",
+      "window_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+      "event_ids": [],
+      "source_pts_sec": 6423.76,
+      "sha256": "fd6e5afab4171ed373363e0c0c611970f975ea4eb16b84cef388bc69013ab6b6",
+      "requested_media_sec": 6423.7262,
+      "actual_media_sec": 6423.76,
+      "pts_status": "pts",
+      "path": "/tmp/lpy1_story_first_v2_p2_preflight_20261116/revised_review_dryrun/source_frames/f_0011_6423726.jpg"
+    },
+    {
+      "role": "source_followthrough",
+      "frame_id": "f13",
+      "window_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+      "event_ids": [],
+      "source_pts_sec": 6431.28,
+      "sha256": "a85f08862668b56f9bd5731548e598de883c118b1e0f8c380629730b6f058fbf",
+      "requested_media_sec": 6431.2678,
+      "actual_media_sec": 6431.28,
+      "pts_status": "pts",
+      "path": "/tmp/lpy1_story_first_v2_p2_preflight_20261116/revised_review_dryrun/source_frames/f_0012_6431268.jpg"
+    }
+  ]
+}
