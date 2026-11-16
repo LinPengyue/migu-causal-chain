@@ -374,11 +374,21 @@ def build_verifier_focus_from_revision_cases(
                 "ORIGINAL defect was resolved; BETTER aesthetics alone is insufficient."
             ),
         }
+        is_story_first = bool(case.get("story_first_trial_id"))
+        if is_story_first:
+            target["story_first_trial_id"] = case["story_first_trial_id"]
+            target["evidence_requirement"] = (
+                "Cite baseline_* and candidate_* frames for the proposed editorial gain "
+                "and check whether insertion introduces a new defect."
+            )
+        focus_question = ("  assessment=Story-First editorial hypothesis\n"
+                          if is_story_first
+                          else f"  original_defect={target['original_defect']}\n")
         targets.append(target)
         focus_lines.append(
             f"CASE[{i}] issue_id={target['issue_id']} intent={target['revision_intent_id']} "
             f"action={target['target_action']}\n"
-            f"  original_defect={target['original_defect']}\n"
+            f"{focus_question}"
             f"  expected_improvement={target['expected_improvement']}\n"
             f"  edit_location={json.dumps(target['edit_location'], ensure_ascii=False)}\n"
             f"  falsify_if={target['falsification_evidence']}\n"
@@ -481,6 +491,25 @@ def run_dual_video_vision_verifier(
         json.dumps(focus, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
     focus_block = "\n".join(focus.get("focus_lines") or [])
+    case_guidance = (
+        "For each case, judge whether the ORIGINAL defect was resolved and whether "
+        "new defects appeared. BETTER aesthetics alone is insufficient.\n"
+        "Top-level: hard_vetoes, quality_delta_vs_baseline, accept_candidate "
+        "(true only if original issues resolved AND no new defects AND citations).\n"
+    )
+    if any(target.get("story_first_trial_id") for target in focus.get("targets", [])):
+        case_guidance = (
+            "For a Story-First editorial hypothesis, use issue_effect to report whether "
+            "the proposed observable improvement is shown by the comparison. "
+            "Check whether the inserted footage improves the story and flows into the "
+            "surrounding edit. Judge supported observations and the edit; do not infer "
+            "an on-field causal link or assume a baseline defect.\n"
+            "For any diagnosed defect, judge whether it was resolved. "
+            "BETTER aesthetics alone is insufficient.\n"
+            "Top-level: hard_vetoes, quality_delta_vs_baseline, accept_candidate "
+            "(true only if all targeted improvements are evidenced, diagnosed defects "
+            "are resolved, and no new defects appear).\n"
+        )
     prompt = (
         f"{SYSTEM_VERIFIER}\n"
         "Compare BASELINE vs CANDIDATE using ONLY provided frames (NOT full-video watch).\n"
@@ -497,10 +526,7 @@ def run_dual_video_vision_verifier(
         "Verification targets come ONLY from revision_case records below "
         "(match-agnostic; do not assume any specific match or story template).\n"
         f"REVISION_CASES:\n{focus_block}\n"
-        "For each case, judge whether the ORIGINAL defect was resolved and whether "
-        "new defects appeared. BETTER aesthetics alone is insufficient.\n"
-        "Top-level: hard_vetoes, quality_delta_vs_baseline, accept_candidate "
-        "(true only if original issues resolved AND no new defects AND citations).\n"
+        f"{case_guidance}"
         "Also include Phase8 SOFT fields (independent of accept_candidate):\n"
         "  soft_quality: BETTER|PROMISING|SAME|WORSE|UNCERTAIN\n"
         "  issue_effect: RESOLVED|PARTIAL|UNRESOLVED|UNOBSERVED\n"

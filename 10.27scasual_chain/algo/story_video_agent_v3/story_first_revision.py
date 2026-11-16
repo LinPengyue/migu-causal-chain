@@ -8,7 +8,6 @@ from typing import Mapping
 from .first_live_window_evidence import build_broadcast_timeline_review
 from .story_evidence_search import _annotate_first_live_tier, _live_credibility, event_media_span
 from .self_revise_agent import MAX_BOUND_SPAN, MIN_BOUND_SPAN
-from .story_narrative_fit import SUPPORTED, validate_narrative_fit_review
 from .story_timeline import _num, active_cut_rows
 from .story_first_hypotheses import _RELATIONS
 
@@ -38,8 +37,6 @@ def bind_story_first_trial(selection, proposals, edl, tried):
             "proposal_id": pid, "summary": p["summary"],
             "expected_story_contribution": p["expected_story_contribution"],
             "falsification_conditions": p["falsification_conditions"],
-            "causal_mechanism": p["causal_mechanism"],
-            "major_uncertainty": p["major_uncertainty"],
         })
         ids, relation_ids = entry.get("event_ids"), entry.get("relation_ids", [])
         if (not isinstance(ids, list) or not ids or not all(isinstance(x, str) for x in ids)
@@ -160,16 +157,17 @@ def bind_story_first_trial(selection, proposals, edl, tried):
     }
 
 
-def review_story_first_trial(trial, *, api, edl, source_mp4, source_sha, out_dir,
+def review_story_first_trial(trial, *, api, source_mp4, source_sha, out_dir,
                              first_live_store, source_events=(), make_live_packs=False):
-    """Use one visual call for selected events, relations and contextual clip fit."""
+    """Require source-bound events and independent first-live evidence for a trial."""
     from .story_first_video_review import observe_story_first_trial
 
     observed = observe_story_first_trial(
-        api, trial=trial, edl=edl, source_mp4=source_mp4,
+        api, trial=trial, source_mp4=source_mp4,
         source_sha=source_sha, out_dir=out_dir,
     )
     feedback = list(observed["feedback"])
+    observations = observed["event_observations"]
     replay_events = [
         (event.get("event_id"), span)
         for event in source_events
@@ -216,29 +214,20 @@ def review_story_first_trial(trial, *, api, edl, source_mp4, source_sha, out_dir
                     )
                     feedback[-1]["local_frame_pack_dir"] = str(directory)
                     feedback[-1]["timeline_status"] = timeline["outcome"]
-        fit = validate_narrative_fit_review(
-            observed["fit_records"].get(w["candidate_id"]),
-            candidate=c, source_sha=source_sha, edl=edl, require_files_exist=True,
-        )
-        if fit["status"] != SUPPORTED:
-            feedback.append({
-                "window_id": w["candidate_id"], "event_ids": w["event_ids"],
-                "status": fit["status"], "reason": fit["reason"],
-                "edit_context": {
-                    k: value for k, value in (
-                        ("before_to_candidate", fit.get("before_to_candidate")),
-                        ("candidate_to_after", fit.get("candidate_to_after")),
-                    ) if value
-                },
-            })
-        candidates.append({
-            **c, "story_first_trial_id": trial["trial_id"],
-            "narrative_fit_supports_insert": fit["status"] == SUPPORTED,
-            "narrative_fit_status": fit["status"], "narrative_fit": fit,
-        })
+        # Pre-render triplet fit is paused for Story-First. Its previous gate
+        # was validate_narrative_fit_review (ba38ef7). The rendered edit is
+        # evaluated by the existing finished-cut Verifier.
+        # fit = validate_narrative_fit_review(
+        #     observed["fit_records"].get(w["candidate_id"]), candidate=c,
+        #     source_sha=source_sha, edl=edl, require_files_exist=True,
+        # )
+        candidates.append({**c, "story_first_trial_id": trial["trial_id"]})
     if feedback:
-        return {"status": "NEEDS_REVISION", "feedback": feedback, "candidates": candidates,
-                "intents": []}
+        return {
+            "status": "NEEDS_REVISION", "feedback": feedback,
+            "event_observations": observations, "candidates": candidates, "intents": [],
+        }
+    purpose = trial["narrative_purpose"] or "Show the selected events in their story context."
     intents = [
         {
             "intent_id": c["candidate_id"], "action": "search_add",
@@ -249,10 +238,11 @@ def review_story_first_trial(trial, *, api, edl, source_mp4, source_sha, out_dir
             "insert_after_segment_id": c["insert_after_segment_id"],
             "before_segment_id": c["before_segment_id"],
             "bound_source_window": {"start": c["source_pts_start"], "end": c["source_pts_end"]},
-            "event_ids": c["event_ids"], "narrative_purpose": trial["narrative_purpose"],
-            "video_observation_evidence": c["narrative_fit"]["new_story_information"],
-            "expected_improvement": c["narrative_fit"]["new_story_information"],
-            "expected_observable_improvement": c["narrative_fit"]["falsifiable_gain"],
+            "event_ids": c["event_ids"], "narrative_purpose": purpose,
+            "source_event_observations": [
+                row for row in observations if row["event_id"] in c["event_ids"]
+            ],
+            "expected_observable_improvement": purpose,
             "falsification_evidence": (
                 "Added footage does not convey the expected story information, "
                 "duplicates an existing beat, or breaks the continuity of the full cut."
@@ -263,5 +253,7 @@ def review_story_first_trial(trial, *, api, edl, source_mp4, source_sha, out_dir
         # Within the same gap, apply later windows first to preserve source order.
         for c in reversed(candidates)
     ]
-    return {"status": "READY_FOR_TRIAL", "feedback": [], "candidates": candidates,
-            "intents": intents}
+    return {
+        "status": "READY_FOR_TRIAL", "feedback": [],
+        "event_observations": observations, "candidates": candidates, "intents": intents,
+    }

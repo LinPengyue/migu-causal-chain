@@ -84,6 +84,10 @@ def build_revision_case(
             or it.get("rationale"),
             "apply": apply_row,
         },
+        **({
+            "story_first_trial_id": it["story_first_trial_id"],
+            "source_event_observations": it.get("source_event_observations") or [],
+        } if it.get("story_first_trial_id") else {}),
         "before_after_video_windows": before_after_windows,
         "expected_improvement": it.get("expected_observable_improvement")
         or it.get("expected_improvement"),

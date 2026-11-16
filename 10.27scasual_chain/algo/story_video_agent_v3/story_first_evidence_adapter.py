@@ -62,12 +62,14 @@ def read_story_first_observation_branch(
     current_source_sha256: Optional[str],
     ranking_dir: Optional[Path] = None,
     rebuild_missing_observation_plan: bool = False,
+    include_ranking: bool = True,
 ) -> Dict[str, Any]:
     """Rebind POC references to the current V3-A story before exposing a queue.
 
     FAIL CLOSED on stale anchors, plan or events. Even a successful rebind
     does NOT validate source-video bytes: the existing POC has no source MP4
-    SHA binding. The result authorizes no executable edits.
+    SHA binding. The result authorizes no executable edits. Runtime callers
+    can import generator artifacts independently of offline rankings.
     """
     result: Dict[str, Any] = {
         "schema": SCHEMA,
@@ -160,8 +162,8 @@ def read_story_first_observation_branch(
         # directory by story_first_a_ranker.py. Scores are ONLY a queue prior.
         # Verify both source artifact byte hashes AND ranker output equations.
         score_dir = ranking_dir if ranking_dir is not None else artifact_dir / "scheme_a_ranking"
-        audit_status = "NOT_PROVIDED"
-        if score_dir.exists():
+        audit_status = "NOT_PROVIDED" if include_ranking else "OFFLINE_RESEARCH_ONLY"
+        if include_ranking and score_dir.exists():
             provenance = _read_artifact(score_dir, "score_model_input.json")
             ranking = _read_artifact(score_dir, "scheme_a_story_ranking.json")
             rank_audit = _read_artifact(score_dir, "scheme_a_audit.json")

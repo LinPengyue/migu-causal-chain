@@ -1202,7 +1202,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 current_edl=working_edl,
                 current_story_plan=plan,
                 permitted_events=permitted_events,
-                current_source_sha256=source_sha,
+                current_source_sha256=source_sha, include_ranking=False,
             )
             write_json(round_dir / "story_first_evidence_search.json", story_first_branch)
             story_first_summary = planner_safe_story_first_summary(story_first_branch)
@@ -1634,7 +1634,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     # One source review and one finished-cut Verifier request.
                     review_api = paid_api if story_first_calls_left(paid_api) >= 2 else None
                     story_first_review = review_story_first_trial(
-                        story_first_trial, api=review_api, edl=working_edl,
+                        story_first_trial, api=review_api,
                         source_mp4=inp.source_mp4, source_sha=source_sha,
                         out_dir=round_dir / "story_first_source_review",
                         first_live_store=first_live_evidence_store, source_events=permitted_events,
