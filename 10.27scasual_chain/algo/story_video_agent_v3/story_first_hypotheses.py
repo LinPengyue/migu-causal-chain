@@ -108,6 +108,21 @@ def _event_id(ev: Mapping[str, Any]) -> str:
     return ""
 
 
+def _story_anchors(rows: Sequence[Mapping[str, Any]]) -> List[Mapping[str, Any]]:
+    semantic = [r for r in rows if r.get("story_anchor") is True]
+    if len(semantic) >= 2:
+        return semantic
+    return [r for r in rows if r.get("story_anchor") is True
+            or "goal_action" in str(r.get("role") or "").lower()]
+
+
+def adjacent_story_anchor_pairs(edl_document: Any) -> List[Tuple[str, str]]:
+    """Use active semantic anchors in edit order, with the legacy goal-action fallback."""
+    anchors = _story_anchors(active_cut_rows(edl_rows(edl_document)))
+    ids = [str(row.get("segment_id") or "") for row in anchors]
+    return list(zip(ids, ids[1:]))
+
+
 def select_story_interval(
     edl_document: Any,
     *,
@@ -126,14 +141,7 @@ def select_story_interval(
         a = next((r for r in rows if str(r.get("segment_id")) == from_segment_id), None)
         b = next((r for r in rows if str(r.get("segment_id")) == to_segment_id), None)
     else:
-        # Prefer explicit V3-R semantic story nodes; legacy goal-action anchors
-        # are retained only when no marked semantic pair exists.
-        semantic = [r for r in rows if r.get("story_anchor") is True]
-        if len(semantic) >= 2:
-            anchors = semantic
-        else:
-            anchors = [r for r in rows if ("goal_action" in str(r.get("role") or "").lower()
-                        or r.get("story_anchor") is True)]
+        anchors = _story_anchors(rows)
         a, b = (anchors[0], anchors[1]) if len(anchors) >= 2 else (None, None)
     if a is None or b is None:
         raise ValueError("story_anchor_pair_not_found")
@@ -263,7 +271,7 @@ def prepare_story_input(
             "scores_metadata": e["scores_metadata"],
             "is_rich_context": e["event_id"] in selected_ids,
             "known_replay_or_slowmo": (
-                str(e.get("broadcast_phase_metadata") or "").upper() == "REPLAY"
+                str(e.get("broadcast_phase_metadata") or "").upper() in ("REPLAY", "SLOWMO", "SLOW_MOTION")
                 or e.get("is_replay_metadata") in (True, "true", "True", 1)
                 or e.get("is_slow_motion_metadata") in (True, "true", "True", 1)
             ),
@@ -274,7 +282,7 @@ def prepare_story_input(
     for ev in full_events:
         # Replays may inform what an annotation refers to, but are NOT legal
         # candidate SOURCE observations under the first-broadcast constraint.
-        if (str(ev.get("broadcast_phase_metadata") or "").upper() == "REPLAY"
+        if (str(ev.get("broadcast_phase_metadata") or "").upper() in ("REPLAY", "SLOWMO", "SLOW_MOTION")
                 or ev.get("is_replay_metadata") in (True, "true", "True", 1)
                 or ev.get("is_slow_motion_metadata") in (True, "true", "True", 1)):
             continue

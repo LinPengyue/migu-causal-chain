@@ -750,6 +750,8 @@ def run_llm_revision_planner(
     audit_dir: Path,
     feedback_context: Optional[Mapping[str, Any]] = None,
     search_results: Optional[Mapping[str, Any]] = None,
+    story_first_proposals: Sequence[Mapping[str, Any]] = (),
+    story_first_feedback: Sequence[Mapping[str, Any]] = (),
     allow_exploratory_proposals: bool = False,
 ) -> Dict[str, Any]:
     fb = None
@@ -894,6 +896,32 @@ def run_llm_revision_planner(
         "DIFFERENT evidence-backed edit or UNRESOLVED; never treat unverified REJECT "
         "as a permanent negative sample."
     )
+    if story_first_proposals:
+        write_json_path = audit_dir / "story_first_planner_input.json"
+        audit_dir.mkdir(parents=True, exist_ok=True)
+        story_first_context = {
+            "proposals": list(story_first_proposals),
+            "prior_trial_feedback": list(story_first_feedback),
+        }
+        write_json_path.write_text(json.dumps(story_first_context, ensure_ascii=False), encoding="utf-8")
+        user += (
+            "\nStory-First hypotheses are additional source search options. Consider all, "
+            "including weak candidates with a useful local sub-story. Select at most ONE "
+            "story trial, with a subset of the referenced events and relations, optionally "
+            "combining proposals across intervals. Choose no trial when nothing warrants observation "
+            "or the formal revision already has an executable edit. Return "
+            "story_first_trial:{selections:[{proposal_id,event_ids,relation_ids}],rationale,"
+            "revised_relations?:[{source_event_id,target_event_id,relation_type,claim}]} "
+            "or null. Use supplied IDs only. A revised relation links selected events and is "
+            "subject to the same video review. Select only footage events without known replay "
+            "or slow motion. Such annotations can inform the proposal context. "
+            "Remove contradicted events or relations and avoid "
+            "identical retries when reviewing prior feedback. A story trial requests video "
+            "observation and must not appear as a revision_intent or diagnosed defect. "
+            "Clearly separate existing evidence from annotations and hypothesized relations. "
+            "Prefer a compact selection with concrete evidence questions. "
+            + json.dumps(story_first_context, ensure_ascii=False)
+        )
     if allow_exploratory_proposals:
         user += (
             "\nPHASE10-C OPTIONAL EXPLORATION (SEPARATE, NON-RELEASE OUTPUT): "
@@ -983,6 +1011,10 @@ def run_llm_revision_planner(
         "provider_mode": mode,
         "decision": decision,
         "revision_intents": list((parsed or {}).get("revision_intents") or []),
+        **({"story_first_trial": parsed.get("story_first_trial")}
+           if story_first_proposals and mode == "real"
+           and str(raw.get("finish_reason") or "").lower() not in ("length", "content_filter")
+           else {}),
         "exploratory_intents": (
             list((parsed or {}).get("exploratory_intents") or [])[:1]
             if allow_exploratory_proposals

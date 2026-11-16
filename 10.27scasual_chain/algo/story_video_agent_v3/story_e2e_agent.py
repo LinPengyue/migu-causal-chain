@@ -102,6 +102,7 @@ class StoryE2EInputs:
     # V2 opt-in only: import existing Story-First POC as unverified search queue.
     # Never sends paid HTTP, changes EDL, or bypasses legacy Planner/Verifier.
     story_first_artifacts_dir: Optional[Path] = None
+    enable_story_first: bool = False
     causal_atoms_json: Optional[Path] = None
     independent_atoms_json: Optional[Path] = None
     match_id: Optional[str] = None
@@ -468,6 +469,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             "phase8_paid_multi_round": bool(inp.phase8_paid_multi_round),
             "phase10_explore": bool(inp.phase10_explore),
             "phase10_explore_fixture": bool(inp.phase10_explore_fixture is not None),
+            "enable_story_first": inp.enable_story_first,
             "story_first_artifacts_dir": (
                 str(inp.story_first_artifacts_dir)
                 if inp.story_first_artifacts_dir else None
@@ -501,6 +503,9 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         ),
     }
 
+    if inp.enable_story_first and (out / "story_first" / "story_first_pool.json").exists():
+        return {**audit, "error": "story_first_output_already_exists_use_new_out_dir"}
+
     if inp.human_assisted_first_live_attestation is not None and (
         inp.enable_real_api or inp.run_fresh_v3r or int(inp.max_rounds) != 1
         or inp.fixture_revision is not None or inp.fixture_verifier is not None
@@ -521,11 +526,15 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         from .story_paid_eval import build_capped_provider, provider_usage
 
         rounds_ok = int(inp.max_rounds) <= 1 or bool(inp.phase8_paid_multi_round)
-        if int(inp.max_calls) > 5 or float(inp.max_cost_usd) > 0.10 or not rounds_ok:
+        # Story-First shares this same provider across discovery, planning, and verification.
+        max_supported_calls = 24 if inp.enable_story_first else 5
+        if not 1 <= int(inp.max_calls) <= max_supported_calls or not (
+            0 < float(inp.max_cost_usd) <= 0.10
+        ) or not rounds_ok:
             audit["error"] = (
                 "paid_eval_refused_budget_exceeds_frozen_protocol "
                 "(max_rounds<=1 unless phase8_paid_multi_round=True; "
-                "max_calls<=5, max_cost_usd<=0.10, retries=0)"
+                f"max_calls<={max_supported_calls}, max_cost_usd<=0.10, retries=0)"
             )
             write_json(out / "story_e2e_audit.json", audit)
             return audit
@@ -787,6 +796,14 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         "false_or_unverified_improve_claims": 0,
     }
 
+    story_first_pool: Optional[Dict[str, Any]] = None
+    story_first_feedback: List[Dict[str, Any]] = []
+    story_first_tried: set[str] = set()
+    story_first_verified_windows: set[tuple] = set()
+    if inp.enable_story_first:
+        from .story_first_revision import bind_story_first_trial, review_story_first_trial
+        from .story_first_search import discover_story_first, story_first_calls_left
+        from .story_paid_eval import provider_usage
     previous_narrative_graph: Optional[Dict[str, Any]] = None
     for round_idx in range(1, max(1, min(inp.max_rounds, MAX_ROUNDS)) + 1):
         round_dir = out / f"02_round_{round_idx:02d}"
@@ -1174,7 +1191,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         # V2 Story-First is a SECOND Evidence Search branch, not a new Agent or
         # Planner. Import only an independently produced POC observation queue.
         # Never hand unverified narrative hypotheses to the legacy Planner.
-        if inp.story_first_artifacts_dir is not None:
+        if inp.story_first_artifacts_dir is not None and not inp.enable_story_first:
             from .story_first_evidence_adapter import (
                 planner_safe_story_first_summary,
                 read_story_first_observation_branch,
@@ -1397,6 +1414,31 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             )
             write_json(round_dir / "evidence_search.json", search_report)
 
+        if inp.enable_story_first and story_first_pool is None:
+            story_first_pool = discover_story_first(
+                edl=version_edl["v0"], story_plan=plan, events=permitted_events,
+                source_sha=source_sha, out_dir=out / "story_first",
+                api=paid_api, artifacts_dir=inp.story_first_artifacts_dir,
+                # Preserve Planner, source review and post-render Verifier
+                # requests after the ordinary evidence-search branches.
+                reserve_calls=3,
+                data_tier=("HUMAN_ATOM_ENRICHED_DEV" if inp.independent_atoms_json
+                           else "EVENT_DERIVED_FROM_PERMITTED_INPUT"),
+            )
+            if paid_api is not None:
+                usage = provider_usage(paid_api)
+                http_calls = int(usage.get("http_attempts") or http_calls)
+                est_cost = float(usage.get("est_cost_usd_real") or est_cost)
+                round_rec["api_usage_after_story_first_search"] = usage
+            audit["story_first_search"] = {
+                "intervals": story_first_pool["intervals"],
+                "proposal_count": len(story_first_pool["proposals"]),
+            }
+        story_first_proposals = (story_first_pool or {}).get("proposals") or []
+        story_first_review = None
+        story_first_trial = None
+        story_first_intents = []
+
         # Revision plan
         fixture_intents = None
         round_fx = None
@@ -1428,7 +1470,9 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         write_json(round_dir / "planner_feedback_context.json", rev.get("feedback_context") or {})
         write_json(round_dir / "fullcut_edit_selection.json", rev.get("fullcut_edit_selection") or {})
         paid_api_was_used_for_planner = False
-        if paid_api is not None and fixture_intents is None:
+        if paid_api is not None and fixture_intents is None and (
+            not inp.enable_story_first or story_first_calls_left(paid_api) > 0
+        ):
             from .story_paid_eval import provider_usage, run_llm_revision_planner
 
             try:
@@ -1440,6 +1484,10 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     audit_dir=round_dir / "paid_api",
                     feedback_context=fb_ctx,
                     search_results=search_report,
+                    **({
+                        "story_first_proposals": story_first_proposals,
+                        "story_first_feedback": story_first_feedback,
+                    } if story_first_proposals else {}),
                     allow_exploratory_proposals=bool(
                         inp.phase10_explore and round_idx == 1
                     ),
@@ -1567,6 +1615,55 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 from .story_fullcut_learning import enforce_one_edit_per_round
 
                 rev = enforce_one_edit_per_round(rev)
+        if story_first_proposals:
+            selection = llm_rev.get("story_first_trial") if llm_rev and llm_rev.get("ok") else None
+            if not inp.enable_real_api and round_fx and round_fx.get("story_first_trial") is not None:
+                selection = round_fx["story_first_trial"]
+            if not any(
+                it.get("action") in ("search_add", "replace", "trim", "drop", "reorder")
+                for it in (rev.get("revision_intents") or []) if isinstance(it, Mapping)
+            ) and isinstance(selection, Mapping):
+                try:
+                    story_first_trial = bind_story_first_trial(
+                        selection, story_first_proposals, working_edl, story_first_tried,
+                    )
+                except ValueError as exc:
+                    story_first_review = {"status": "PLAN_NOT_BOUND",
+                                          "feedback": [{"reason": str(exc)}], "intents": []}
+                if story_first_trial is not None:
+                    # One source review and one finished-cut Verifier request.
+                    review_api = paid_api if story_first_calls_left(paid_api) >= 2 else None
+                    story_first_review = review_story_first_trial(
+                        story_first_trial, api=review_api, edl=working_edl,
+                        source_mp4=inp.source_mp4, source_sha=source_sha,
+                        out_dir=round_dir / "story_first_source_review",
+                        first_live_store=first_live_evidence_store, source_events=permitted_events,
+                        make_live_packs=inp.build_local_first_live_evidence,
+                    )
+                    story_first_tried.add(story_first_trial["trial_id"])
+                    if review_api is not None:
+                        usage = provider_usage(review_api)
+                        http_calls = int(usage.get("http_attempts") or http_calls)
+                        est_cost = float(usage.get("est_cost_usd_real") or est_cost)
+                        round_rec["api_usage_after_story_first_review"] = usage
+                    story_first_intents = story_first_review["intents"]
+                    if story_first_intents:
+                        # A set of verified windows is one story edit. The whole
+                        # proposal stays together through render and dual verification.
+                        rev = {
+                            **rev, "decision": "REVISE",
+                            "rationale": story_first_trial["narrative_purpose"],
+                            "revision_intents": story_first_intents,
+                            "story_first_trial_id": story_first_trial["trial_id"],
+                        }
+                        search_report["story_first_reviewed_candidates"] = story_first_review["candidates"]
+                        write_json(round_dir / "evidence_search.json", search_report)
+                story_first_feedback.append({
+                    "round": round_idx, "selection": dict(selection),
+                    "stage": "SOURCE_REVIEW",
+                    "status": story_first_review["status"],
+                    "findings": story_first_review["feedback"],
+                })
         # Dedicated score→goal coverage hypotheses may drive observation,
         # but cannot authorize an EDL goal insertion from scoreboard timing.
         # Gate AFTER the LLM overlay as well as the normal Planner safeguards.
@@ -1698,7 +1795,24 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 rev.get("revision_intents") or [],
                 observations=search_obs,
             )
+            if story_first_intents and {
+                row.get("intent") for row in (apply_report.get("applied") or [])
+                if row.get("status") == "applied_evidence_bound"
+            } != {item["intent_id"] for item in story_first_intents}:
+                candidate_edl = [dict(r) for r in working_edl]
+                apply_report = {**apply_report, "applied": [], "story_trial_discarded": True}
+                story_first_review["status"] = "TRIAL_APPLY_FAILED"
+                story_first_feedback.append({
+                    "round": round_idx, "stage": "TRIAL_APPLY",
+                    "trial_id": story_first_trial["trial_id"],
+                    "status": "TRIAL_APPLY_FAILED", "findings": apply_report.get("rejected") or [],
+                })
             applied_rows = list(apply_report.get("applied") or [])
+            if story_first_intents:
+                story_first_verified_windows.update(
+                    (row["segment_id"], row["media_in"], row["media_out"])
+                    for row in applied_rows if row.get("status") == "applied_evidence_bound"
+                )
             gates["revision_applied"] = any(
                 a.get("status") in ("applied", "applied_evidence_bound")
                 for a in applied_rows
@@ -1873,6 +1987,21 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         if cand_dup_apply.get("changed"):
             write_json(round_dir / "candidate_duplicate_drop_ledger.json", cand_dup_apply.get("drop_ledger") or [])
             round_rec["candidate_duplicate_auto_drops"] = cand_dup_apply.get("dropped")
+            if story_first_intents:
+                # Auto-dropping any shot changes what this trial tests. Replan
+                # the story as one edit, preserving the previous cut.
+                candidate_edl = [dict(r) for r in working_edl]
+                final_decision = "UNRESOLVED"
+                apply_report = {**apply_report, "applied": [], "story_trial_discarded": True}
+                gates["revision_applied"] = False
+                story_first_review["status"] = "TRIAL_CONFLICTS_WITH_EXISTING_CUT"
+                story_first_feedback.append({
+                    "round": round_idx, "stage": "DUPLICATE_AUDIT",
+                    "trial_id": story_first_trial["trial_id"],
+                    "status": story_first_review["status"], "findings": cand_dup_apply.get("dropped"),
+                })
+                round_rec["decision"] = final_decision
+                write_json(round_dir / "revision_plan.json", {**rev, "decision": final_decision})
 
         write_json(round_dir / "candidate_edl.json", candidate_edl)
         write_json(round_dir / "apply_report.json", apply_report)
@@ -2186,6 +2315,11 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             new_windows=new_windows,
             prior_ledger=first_live_prior_ledger,
             evidence_store=first_live_evidence_store,
+            non_goal_story_segment_ids=[
+                w["segment_id"] for w in new_windows
+                if (w.get("segment_id"), w.get("source_pts_start"), w.get("source_pts_end"))
+                in story_first_verified_windows and "goal_action" not in str(w.get("role") or "")
+            ],
         )
         write_json(round_dir / "first_live_window_ledger.json", first_live_ledger)
         write_json(round_dir / "edl_new_source_windows.json", {"windows": edl_diff_windows})
@@ -2551,7 +2685,9 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         deferred_evidence_edits.extend(
             list((rev.get("one_edit_apply_gate") or {}).get("deferred_intents") or [])
         )
-        has_distinct = has_distinct or bool(deferred_evidence_edits)
+        has_distinct = has_distinct or bool(deferred_evidence_edits) or bool(
+            story_first_intents and len(story_first_proposals) > 1
+        )
         round_rec["deferred_confirmed_alternatives"] = len(deferred_evidence_edits)
         suggested = phase8_verdict.get("suggested_next_evidence")
         specific_reobserve = None
@@ -2599,6 +2735,37 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 "next_action": "STOP_NO_ACTION",
                 "reason": "human_assisted_preview_requires_video_review_not_best",
             }
+        if story_first_review is not None:
+            can_replan = (
+                (not inp.enable_real_api and inp.phase8_round_fixtures is not None)
+                or story_first_calls_left(paid_api) >= 4
+            )
+            if (not edl_changed and story_first_review["status"] != "READY_FOR_TRIAL"
+                    and transition.get("next_action") in ("STOP_NO_ACTION", "REPLAN_FROM_BEST")
+                    and round_idx < min(int(inp.max_rounds), MAX_ROUNDS) and can_replan):
+                transition = {
+                    **transition, "next_action": "REPLAN_FROM_BEST",
+                    "continue_allowed": True, "stop_reason": None,
+                    "reason_codes": ["story_first_source_feedback_can_inform_revision"],
+                }
+            if edl_changed and story_first_intents and not transition.get("promote"):
+                story_first_feedback.append({
+                    "round": round_idx, "stage": "FINISHED_CUT_VERIFIER",
+                    "trial_id": story_first_trial["trial_id"],
+                    "selection": dict(selection),
+                    "status": phase8_verdict.get("quality"),
+                    "findings": {
+                        "hard_vetoes": vfix.get("hard_vetoes"),
+                        "suggested_next_evidence": phase8_verdict.get("suggested_next_evidence"),
+                        "fullcut_screen": (fullcut_semantic_screen or {}).get("aspect_verdicts"),
+                        "per_intent": per_intent_v,
+                    },
+                })
+            round_rec["story_first_trial_status"] = story_first_review["status"]
+            write_json(round_dir / "story_first_trial.json", {
+                "trial": story_first_trial, "review": story_first_review,
+            })
+            write_json(round_dir / "story_first_feedback.json", story_first_feedback)
         write_json(round_dir / "phase8_transition.json", transition)
         loop_state = apply_transition(
             loop_state,
@@ -2847,7 +3014,9 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             write_loop_state(loop_state, out / "phase8_loop_state.json")
             break
         if final_decision in ("KEEP", "UNRESOLVED") and not edl_changed:
-            if next_action in ("CONTINUE_WORKING", "REOBSERVE", "PROMOTE_BEST"):
+            if next_action in ("CONTINUE_WORKING", "REOBSERVE", "PROMOTE_BEST") or (
+                story_first_review is not None and next_action == "REPLAN_FROM_BEST"
+            ):
                 pass
             else:
                 loop_state["stop_reason"] = (

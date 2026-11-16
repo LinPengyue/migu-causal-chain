@@ -60,12 +60,14 @@ def read_story_first_observation_branch(
     current_story_plan: Any,
     permitted_events: Sequence[Mapping[str, Any]],
     current_source_sha256: Optional[str],
+    ranking_dir: Optional[Path] = None,
+    rebuild_missing_observation_plan: bool = False,
 ) -> Dict[str, Any]:
     """Rebind POC references to the current V3-A story before exposing a queue.
 
     FAIL CLOSED on stale anchors, plan or events. Even a successful rebind
     does NOT validate source-video bytes: the existing POC has no source MP4
-    SHA binding. Consequently 0 candidates may enter the Planner.
+    SHA binding. The result authorizes no executable edits.
     """
     result: Dict[str, Any] = {
         "schema": SCHEMA,
@@ -96,7 +98,13 @@ def read_story_first_observation_branch(
     }
     try:
         artifact_dir = Path(artifacts_dir)
-        saved = {name: _read_artifact(artifact_dir, name) for name in _REQUIRED}
+        saved = {
+            name: _read_artifact(artifact_dir, name) for name in _REQUIRED
+            if not (
+                rebuild_missing_observation_plan and name == "observation_plan.json"
+                and not (artifact_dir / name).exists()
+            )
+        }
         old = saved["prepared_story_input.json"]
         scope = old.get("scope")
         if not isinstance(scope, Mapping):
@@ -133,7 +141,7 @@ def read_story_first_observation_branch(
         # Never trust a stored observation target's source times. Reconstruct
         # exact probe windows from current event PTS through the source code.
         observation = build_observation_plan(fresh, validated)
-        supplied_targets = saved["observation_plan.json"].get("targets")
+        supplied_targets = saved.get("observation_plan.json", observation).get("targets")
         if (not isinstance(supplied_targets, list)
                 or any(not isinstance(x, Mapping) for x in supplied_targets)):
             raise ValueError("invalid_saved_observation_plan")
@@ -151,7 +159,7 @@ def read_story_first_observation_branch(
         # Optional Scheme-A evaluation pass, produced in an isolated child
         # directory by story_first_a_ranker.py. Scores are ONLY a queue prior.
         # Verify both source artifact byte hashes AND ranker output equations.
-        score_dir = artifact_dir / "scheme_a_ranking"
+        score_dir = ranking_dir if ranking_dir is not None else artifact_dir / "scheme_a_ranking"
         audit_status = "NOT_PROVIDED"
         if score_dir.exists():
             provenance = _read_artifact(score_dir, "score_model_input.json")

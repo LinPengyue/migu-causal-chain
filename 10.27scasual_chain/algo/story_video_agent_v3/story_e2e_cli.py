@@ -45,10 +45,12 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--t01-story", type=Path, default=None)
     p.add_argument("--events-json", type=Path, default=None,
                    help="Events JSON (prefer V3-R events_enriched.json for Search)")
+    p.add_argument("--enable-story-first", action="store_true",
+                   help="Search all initial EDL story intervals and plan source-video trials")
     p.add_argument(
         "--story-first-artifacts-dir", type=Path, default=None,
         help=("V2 opt-in: import an isolated Story-First POC into Evidence Search "
-              "as an observation-only queue; never authorizes EDL edits"),
+              "as an observation queue, or reuse it in Story-First trials"),
     )
     p.add_argument("--causal-atoms-json", type=Path, default=None,
                    help="Human causal atoms for fresh V3-R")
@@ -278,6 +280,7 @@ def main(argv: list[str] | None = None) -> int:
         story_plan=args.story_plan.resolve() if args.story_plan else None,
         t01_story=args.t01_story.resolve() if args.t01_story else None,
         events_json=args.events_json.resolve() if args.events_json else None,
+        enable_story_first=args.enable_story_first,
         story_first_artifacts_dir=(
             args.story_first_artifacts_dir.resolve()
             if args.story_first_artifacts_dir else None
@@ -345,7 +348,7 @@ def main(argv: list[str] | None = None) -> int:
                 "final_mp4": delivery.get("final_mp4"),
                 "cli_mode": mode_notes,
                 "phase8_paid_multi_round": bool(args.phase8_paid_multi_round),
-                "story_first_branch_opt_in": bool(args.story_first_artifacts_dir),
+                "story_first_branch_opt_in": bool(args.enable_story_first or args.story_first_artifacts_dir),
                 "error": audit.get("error"),
             },
             ensure_ascii=False,

@@ -663,6 +663,7 @@ def validate_first_live_evidence_record(
     pts_end: float,
     require_files_exist: bool = True,
     timeline_review: Optional[Mapping[str, Any]] = None,
+    allow_non_goal_action: bool = False,
 ) -> Dict[str, Any]:
     """Composite validation: binding vs first-broadcast are independent.
 
@@ -721,6 +722,7 @@ def validate_first_live_evidence_record(
                     pts_start=pts_start,
                     pts_end=pts_end,
                     bound_frames=bound_frames,
+                    allow_non_goal_action=allow_non_goal_action,
                 )
                 if phase_gate.get("ok") and binding.get("binding_valid"):
                     first_live_status = FIRST_LIVE_VERIFIED

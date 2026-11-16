@@ -537,6 +537,7 @@ def _annotate_first_live_tier(
     *,
     evidence_store: Optional[Mapping[str, Any]],
     source_sha: Optional[str],
+    allow_non_goal_action: bool = False,
 ) -> Dict[str, Any]:
     """Attach first-live attestation status without promoting event LIVE labels."""
     row = dict(candidate)
@@ -568,6 +569,7 @@ def _annotate_first_live_tier(
         pts_start=float(start),
         pts_end=float(end),
         require_files_exist=True,
+        allow_non_goal_action=allow_non_goal_action,
     )
     row["first_live_key"] = key
     row["first_live_available"] = True

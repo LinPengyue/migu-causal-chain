@@ -81,6 +81,14 @@ def build_parser() -> argparse.ArgumentParser:
     )
     p.add_argument("--native-phase-archived-frame-manifest", type=Path, default=None)
     p.add_argument("--native-phase-archived-semantic-log", type=Path, default=None)
+    p.add_argument("--enable-story-first", action="store_true",
+                   help="Search all initial EDL story intervals and plan source-video trials")
+    p.add_argument("--phase8-paid-multi-round", action="store_true",
+                   help="Opt into multiple rounds within the shared paid budget")
+    p.add_argument("--first-live-evidence-dir", type=Path,
+                   help="Authenticated source SHA/PTS first-live evidence packs")
+    p.add_argument("--build-local-first-live-evidence", action="store_true",
+                   help="Extract local frame packs for requested source windows")
     p.add_argument("--max-calls", type=int, default=5)
     p.add_argument("--max-cost-usd", type=float, default=0.10)
     # Explicitly rejected if passed (catch misuse).
@@ -107,18 +115,22 @@ def validate_inputs(args: argparse.Namespace) -> list[str]:
         errs.append("archived_stage3_evidence_forbidden_in_fresh_full_e2e")
     if args.phase5_dir is not None or args.baseline_edl is not None:
         errs.append("phase5_dir/baseline_edl_forbidden_in_full_e2e")
-    if args.independent_atoms_json is not None and args.causal_json is not None:
+    independent_atoms = getattr(args, "independent_atoms_json", None)
+    if independent_atoms is not None and args.causal_json is not None:
         errs.append("independent_atoms_and_causal_gold_mutually_exclusive")
-    if getattr(args, "strict_raw_only", False) and (args.causal_json is not None or args.independent_atoms_json is not None):
+    if getattr(args, "strict_raw_only", False) and (args.causal_json is not None or independent_atoms is not None):
         errs.append("strict_raw_only_rejects_external_event_annotations")
+    first_live_evidence = getattr(args, "first_live_evidence_dir", None)
+    if first_live_evidence is not None and not first_live_evidence.exists():
+        errs.append(f"missing_first_live_evidence:{first_live_evidence}")
     inputs = [
         ("source_mp4", args.source_mp4),
         ("events_json", args.events_json),
     ]
     if args.causal_json is not None:
         inputs.append(("causal_json", args.causal_json))
-    if args.independent_atoms_json is not None:
-        inputs.append(("independent_atoms_json", args.independent_atoms_json))
+    if independent_atoms is not None:
+        inputs.append(("independent_atoms_json", independent_atoms))
     for label, path in inputs:
         if not path.is_file():
             errs.append(f"missing_{label}:{path}")
@@ -201,6 +213,7 @@ def main(argv: list[str] | None = None) -> int:
             "events_enriched as input",
             "predicted_causal as input",
         ],
+        "story_first_enabled": args.enable_story_first,
         "pipeline": (
             "atomic_enrich → strip831 → v1_adapt → phase5(V3-R) → "
             "V3-A(critic/search/revise/render/verify) → delivery_status"
@@ -221,6 +234,10 @@ def main(argv: list[str] | None = None) -> int:
         match_id=match_id,
         algo_root=algo_root.resolve(),
         run_fresh_v3r=True,
+        enable_story_first=args.enable_story_first,
+        phase8_paid_multi_round=args.phase8_paid_multi_round,
+        first_live_evidence_dir=args.first_live_evidence_dir,
+        build_local_first_live_evidence=args.build_local_first_live_evidence,
         skip_vlm=not bool(args.enable_real_api),
         enable_real_api=bool(args.enable_real_api),
         i_approve_budget=bool(args.i_approve_budget),

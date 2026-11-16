@@ -517,6 +517,7 @@ def build_first_live_window_ledger(
     new_windows: Sequence[Mapping[str, Any]],
     prior_ledger: Optional[Mapping[str, Any]] = None,
     evidence_store: Optional[Mapping[str, Any]] = None,
+    non_goal_story_segment_ids: Sequence[str] = (),
 ) -> Dict[str, Any]:
     """Per-source-window first-LIVE ledger with binding vs broadcast tiers.
 
@@ -540,6 +541,7 @@ def build_first_live_window_ledger(
     if isinstance(evidence_store, Mapping):
         store_by_key = dict(evidence_store.get("by_key") or {})
     rows: List[Dict[str, Any]] = []
+    story_segments = set(non_goal_story_segment_ids)
     for raw in new_windows or []:
         if not isinstance(raw, Mapping):
             continue
@@ -551,6 +553,7 @@ def build_first_live_window_ledger(
         if end <= start:
             continue
         key = _window_key(sha, start, end)
+        allow_story_action = raw.get("segment_id") in story_segments
         claimed = str(
             raw.get("first_live_status")
             or raw.get("evidence_status")
@@ -586,6 +589,7 @@ def build_first_live_window_ledger(
                 pts_end=end,
                 require_files_exist=bool(raw.get("require_evidence_files", True)),
                 timeline_review=timeline_review if isinstance(timeline_review, Mapping) else None,
+                allow_non_goal_action=allow_story_action,
             )
             binding_status = str(validation.get("binding_status") or "BINDING_INVALID")
             if validation.get("replay_confirmed"):
@@ -609,6 +613,7 @@ def build_first_live_window_ledger(
                     pts_end=end,
                     require_files_exist=False,
                     timeline_review=prior.get("broadcast_timeline_review"),
+                    allow_non_goal_action=allow_story_action,
                 )
                 if reval.get("ok") or (
                     reval.get("first_live_verified") and reval.get("binding_valid")
