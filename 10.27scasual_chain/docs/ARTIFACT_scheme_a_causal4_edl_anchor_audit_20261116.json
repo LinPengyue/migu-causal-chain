@@ -1,0 +1,58 @@
+{
+  "story_anchor_true_count": 0,
+  "goal_action_segments": [
+    {
+      "segment_id": "seg_opponent_opening_goal_action",
+      "role": "opponent_opening_goal_action",
+      "media_in": 1325.123,
+      "media_out": 1347.123
+    },
+    {
+      "segment_id": "seg_equalizer_goal_action",
+      "role": "equalizer_goal_action",
+      "media_in": 6436.924,
+      "media_out": 6458.924
+    },
+    {
+      "segment_id": "seg_go_ahead_goal_action",
+      "role": "go_ahead_goal_action",
+      "media_in": 6829.456,
+      "media_out": 6851.456
+    }
+  ],
+  "default_scope": {
+    "from_segment_id": "seg_opponent_opening_goal_action",
+    "from_role": "opponent_opening_goal_action",
+    "to_segment_id": "seg_equalizer_goal_action",
+    "to_role": "equalizer_goal_action",
+    "source_interval_sec": [
+      1347.123,
+      6436.924
+    ],
+    "anchor_source": "existing_v3r_edl",
+    "no_assumed_causality": true
+  },
+  "adjacent_goal_action_pairs": [
+    {
+      "from": "seg_opponent_opening_goal_action",
+      "to": "seg_equalizer_goal_action",
+      "interval": [
+        1347.123,
+        6436.924
+      ],
+      "duration_sec": 5089.8009999999995
+    },
+    {
+      "from": "seg_equalizer_goal_action",
+      "to": "seg_go_ahead_goal_action",
+      "interval": [
+        6458.924,
+        6829.456
+      ],
+      "duration_sec": 370.53200000000015
+    }
+  ],
+  "adapter_block_reason": "missing causal_mechanism when rebuilding evaluations from ranked rows",
+  "adapter_lines": "story_first_evidence_adapter.py:185-197",
+  "paid_calls": 0
+}
