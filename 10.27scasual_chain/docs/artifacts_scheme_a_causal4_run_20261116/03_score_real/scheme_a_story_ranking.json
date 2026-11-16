@@ -1,0 +1,170 @@
+{
+  "causal_claims_verified": 0,
+  "edl_modified": false,
+  "first_live_certified": false,
+  "narrative_gain_verified": false,
+  "planner_candidates": [],
+  "ranked_hypotheses": [
+    {
+      "causal_combination_prior": 0.5,
+      "causal_link_verified": false,
+      "causal_mechanism": "Penalty foul (event_000617) followed by VAR disallowance (event_000622) plausibly represents a denied scoring opportunity that keeps the deficit intact; the subsequent interception (event_000635) is temporally adjacent to the equalizer window, so the combination could describe an obstruction-then-continuation state evolution toward the equalizer.",
+      "cited_event_ids": [
+        "event_000617",
+        "event_000622",
+        "event_000635"
+      ],
+      "first_live_certified": false,
+      "hypothesis_id": "H1",
+      "major_uncertainty": "VAR disallowance is a replay-flagged event and cannot be treated as causal proof; no verified link between the disallowed penalty and the equalizer action; event_000635 is an interception by the opponent (2队) per annotation, which weakens the 'protagonist attack continuation' reading.",
+      "model_priority_0_to_1": 0.5,
+      "multi_event_combination": true,
+      "planner_eligible": false,
+      "requires_video_evidence": true,
+      "scores": {
+        "anchor_causal_bridge": 2,
+        "factual_support": 2,
+        "internal_causal_link": 2,
+        "joint_causal_gain": 2
+      },
+      "story_summary": "禁区内犯规与VAR长时间回看取消点球，构成扳平前最接近得分的受阻节点。",
+      "supporting_event_ids": [
+        "event_000617",
+        "event_000622",
+        "event_000635"
+      ]
+    },
+    {
+      "causal_combination_prior": 0.5,
+      "causal_link_verified": false,
+      "causal_mechanism": "Three interceptions in quick succession (6403.81s, 6405.03s, 6410.07s) immediately precede the equalizer buildup (passes at 6442.874s, assist 6447.042s, shot 6448.924s), so the combination could describe a possession-recovery state transition that initiates the equalizing attack.",
+      "cited_event_ids": [
+        "event_000634",
+        "event_000635",
+        "event_000636"
+      ],
+      "first_live_certified": false,
+      "hypothesis_id": "H5",
+      "major_uncertainty": "Interceptions alternate between teams (1队, 2队, 1队), so the 'protagonist regains control' reading is only partially supported; the gap of ~30s between the last interception and the equalizer buildup is not bridged by cited events; no verified causal chain.",
+      "model_priority_0_to_1": 0.5,
+      "multi_event_combination": true,
+      "planner_eligible": false,
+      "requires_video_evidence": true,
+      "scores": {
+        "anchor_causal_bridge": 2,
+        "factual_support": 2,
+        "internal_causal_link": 2,
+        "joint_causal_gain": 2
+      },
+      "story_summary": "扳平前主角队连续完成拦截夺回球权，或为最后进攻的组织起点。",
+      "supporting_event_ids": [
+        "event_000634",
+        "event_000635",
+        "event_000636"
+      ]
+    },
+    {
+      "causal_combination_prior": 0.2875,
+      "causal_link_verified": false,
+      "causal_mechanism": "Substitutions (event_000563/564) followed by a corner (event_000562) and a shot (event_000593) could reflect a tactical change increasing attacking output, but the sequence is temporal adjacency rather than demonstrated causation.",
+      "cited_event_ids": [
+        "event_000563",
+        "event_000564",
+        "event_000562",
+        "event_000593"
+      ],
+      "first_live_certified": false,
+      "hypothesis_id": "H2",
+      "major_uncertainty": "Substitutions are attributed to 2队 (opponent), while corner and shot are attributed to 1队 (protagonist); the causal chain across opposing teams is not established. No verified possession or tactical data links the substitutions to the later chances.",
+      "model_priority_0_to_1": 0.2875,
+      "multi_event_combination": true,
+      "planner_eligible": false,
+      "requires_video_evidence": true,
+      "scores": {
+        "anchor_causal_bridge": 1,
+        "factual_support": 2,
+        "internal_causal_link": 1,
+        "joint_causal_gain": 1
+      },
+      "story_summary": "两次换人后主角队连续获得角球与射门机会，或为扳平前的攻势积累阶段。",
+      "supporting_event_ids": [
+        "event_000563",
+        "event_000564",
+        "event_000562",
+        "event_000593"
+      ]
+    },
+    {
+      "causal_combination_prior": 0.2875,
+      "causal_link_verified": false,
+      "causal_mechanism": "Alternating dribbles and defensive actions could describe a contested midfield phase, but the events are a narrative rhythm pattern, not a causal mechanism producing the equalizer.",
+      "cited_event_ids": [
+        "event_000575",
+        "event_000580",
+        "event_000584",
+        "event_000590"
+      ],
+      "first_live_certified": false,
+      "hypothesis_id": "H3",
+      "major_uncertainty": "All four events are protagonist dribbles; no interleaved opponent defensive events are cited, so the 'tug-of-war' framing is not supported by the cited subset. No causal link to the equalizer.",
+      "model_priority_0_to_1": 0.2875,
+      "multi_event_combination": true,
+      "planner_eligible": false,
+      "requires_video_evidence": true,
+      "scores": {
+        "anchor_causal_bridge": 1,
+        "factual_support": 2,
+        "internal_causal_link": 1,
+        "joint_causal_gain": 1
+      },
+      "story_summary": "扳平前多次带球突破与防守拦截交替出现，形成攻防拉锯的叙事节奏。",
+      "supporting_event_ids": [
+        "event_000575",
+        "event_000580",
+        "event_000584",
+        "event_000590"
+      ]
+    },
+    {
+      "causal_combination_prior": 0.2875,
+      "causal_link_verified": false,
+      "causal_mechanism": "A yellow card followed by a free kick and corner could represent a response phase, but set-piece awards are not caused by the card itself.",
+      "cited_event_ids": [
+        "event_000548",
+        "event_000552",
+        "event_000562"
+      ],
+      "first_live_certified": false,
+      "hypothesis_id": "H4",
+      "major_uncertainty": "Yellow card is attributed to 2队 (opponent), while free kick and corner are attributed to 1队 (protagonist); the 'response after setback' framing misattributes the card to the protagonist side. No causal link to the equalizer.",
+      "model_priority_0_to_1": 0.2875,
+      "multi_event_combination": true,
+      "planner_eligible": false,
+      "requires_video_evidence": true,
+      "scores": {
+        "anchor_causal_bridge": 1,
+        "factual_support": 2,
+        "internal_causal_link": 1,
+        "joint_causal_gain": 1
+      },
+      "story_summary": "黄牌判罚后主角队连续获得任意球与角球，或为受挫后的回应阶段。",
+      "supporting_event_ids": [
+        "event_000548",
+        "event_000552",
+        "event_000562"
+      ]
+    }
+  ],
+  "ranking_is_model_prior_not_calibrated": true,
+  "schema": "v2_story_first_scheme_a_causal_prior_v2",
+  "selected_for_video_observation": [
+    "H1",
+    "H5",
+    "H2",
+    "H3",
+    "H4"
+  ],
+  "status": "RANKED_FOR_OBSERVATION_ONLY",
+  "top_k": 5,
+  "video_observed": false
+}
