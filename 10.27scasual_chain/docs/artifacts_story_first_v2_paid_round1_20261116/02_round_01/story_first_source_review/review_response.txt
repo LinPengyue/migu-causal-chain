@@ -1,0 +1,58 @@
+{
+  "events": [
+    {
+      "event_id": "event_000634",
+      "status": "SUPPORTED",
+      "reason": "Frame story_first_ab22f01929b5cb4f59e6badd_01:candidate:1 (6403.84s) shows a UAE player (white) intercepting a pass intended for an OMA player (red) in the midfield. This matches the annotation '1队球员截获2队传球'.",
+      "frame_ids": [
+        "story_first_ab22f01929b5cb4f59e6badd_01:candidate:1"
+      ]
+    },
+    {
+      "event_id": "event_000635",
+      "status": "SUPPORTED",
+      "reason": "Frame story_first_ab22f01929b5cb4f59e6badd_01:candidate:2 (6405.04s) shows an OMA player (red) regaining possession from a UAE player (white) shortly after the previous interception. This matches the annotation '2队球员截获1队球员传球'.",
+      "frame_ids": [
+        "story_first_ab22f01929b5cb4f59e6badd_01:candidate:2"
+      ]
+    },
+    {
+      "event_id": "event_000636",
+      "status": "SUPPORTED",
+      "reason": "Frame story_first_ab22f01929b5cb4f59e6badd_01:candidate:3 (6410.08s) shows a UAE player (white) intercepting the ball again near the center circle. This matches the annotation '1队球员截获2队球员传球'.",
+      "frame_ids": [
+        "story_first_ab22f01929b5cb4f59e6badd_01:candidate:3"
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "relation_id": "interval_01:H5:r1",
+      "status": "UNCERTAIN",
+      "reason": "While the sequence of interceptions (White -> Red -> White) is visually confirmed in frames candidate:1, candidate:2, and candidate:3, the causal link to the equalizer buildup at 6443s is unverified due to the ~33s gap. The final frame (candidate:4) shows UAE in possession but does not confirm forward progression or a direct transition to the goal-scoring phase.",
+      "frame_ids": [
+        "story_first_ab22f01929b5cb4f59e6badd_01:candidate:1",
+        "story_first_ab22f01929b5cb4f59e6badd_01:candidate:2",
+        "story_first_ab22f01929b5cb4f59e6badd_01:candidate:3",
+        "story_first_ab22f01929b5cb4f59e6badd_01:candidate:4"
+      ]
+    },
+    {
+      "relation_id": "revised:1",
+      "status": "UNCERTAIN",
+      "reason": "Duplicate relation claim. Visual evidence supports the alternating possession state but fails to bridge the temporal gap to the specific equalizer event cited in the trial purpose without intermediate frames.",
+      "frame_ids": [
+        "story_first_ab22f01929b5cb4f59e6badd_01:candidate:1",
+        "story_first_ab22f01929b5cb4f59e6badd_01:candidate:3",
+        "story_first_ab22f01929b5cb4f59e6badd_01:after:0"
+      ]
+    }
+  ],
+  "fit": [
+    {
+      "window_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+      "verdict": "REJECT_INSERT",
+      "story_function": "Proposes a causal chain of three rapid interceptions leading to an equalizer.",
+      "before_to_candidate": "The 'before' frames (4710s-4714s) show a completely different game state (early second half, goalkeeper holding ball) unrelated to the 75th-minute action, indicating a massive temporal discontinuity or incorrect baseline selection for this specific narrative window.",
+      "candidate_to_after": "The 'candidate' frames (6403s-6411s) show valid live-action interceptions, but the jump to 'after' (6443s) skips 32 seconds of play, leaving the causal mechanism between the last interception and the goal buildup unproven.",
+      "new_story_information": "Confirms a chaotic midfield battle with alternating turnovers (UAE-OMA-UAE) at 75:11-75:17, but fails to establish this as the definitive start of the equalizing attack due to

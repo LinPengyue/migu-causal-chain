@@ -1,0 +1,112 @@
+{
+  "raw_excerpt": "{\n  \"decision\": \"UNRESOLVED\",\n  \"rationale\": \"All three diagnosed issues are HYPOTHESIS_NEEDS_VIDEO with story_defect_confirmed=false. Video critic observations show the two source-time jumps are deliberate highlight compression with consistent scoreboard state (0-1) across cuts, and no omitted causal/game-state information was observed. The thin ending issue has no visual evidence for the unobserved seg_go_ahead_scoreboard segment, so it cannot be confirmed or refuted. No search candidate has FIRST_LIVE_VERIFIED or narrative_fit_status=REVIEW_SUPPORTED, so no search_add is permitted. No confirmed redundancy issue names a preferred_drop_segment_id. The existing cut is understandable per sampled frames; unobserved segments remain unverified.\",\n  \"revision_intents\": [\n    {\n      \"intent_id\": \"intent_mark_unresolved_ending\",\n      \"action\": \"mark_unresolved\",\n      \"target_segment_id\": \"seg_go_ahead_scoreboard\",\n      \"role\": \"go_ahead_scoreboard_anchor\",\n      \"narrative_purpose\": \"Flag the unobserved ending segment for future video review to determine whether emotional closure is adequate.\",\n      \"rationale\": \"thin_post_climax_tail is HYPOTHESIS_NEEDS_VIDEO and the video critic explicitly notes no frames cover seg_go_ahead_scoreboard or seg_title_close. Absence of evidence is not evidence of a defect, so no edit is executable now.\",\n      \"expected_improvement\": \"Prevents premature trimming or extension of the ending without visual confirmation.\",\n      \"risk\": \"None; no mutation applied.\",\n      \"evidence_refs\": [\n        \"issue_id:thin_post_climax_tail\",\n        \"video_critic_observations.unobserved_media_segment_ids:seg_go_ahead_scoreboard\"\n      ]\n    }\n  ],\n  \"story_first_trial\": {\n    \"selections\": [\n      {\n        \"proposal_id\": \"interval_01:H5\",\n        \"event_ids\": [\n          \"event_000634\",\n          \"event_000635\",\n          \"event_000636\"\n        ],\n        \"relation_ids\": [\n          \"r1\"\n        ]\n      }\n    ],\n    \"rationale\": \"This proposal is the most compact and temporally adjacent to the equalizer window (6403.81s–6410.07s vs equalizer buildup at ~6442s). The three interceptions are all non-replay footage events and the observation query targets whether the final interception (event_000636) initiates forward progression toward the equalizer. This directly addresses the unresolved question of whether the buildup-to-equalizer transition has omitted causal state. Other proposals either rely on replay-flagged VAR footage (interval_01:H1), misattribute team sides (interval_01:H2, H4), or lack interleaved opponent events to support their claimed rhythm (interval_01:H3). Interval_02 proposals are weaker because they span post-equalizer to go-ahead with no verified same-phase linkage and several opposing-team actions.\",\n    \"revised_relations\": [\n      {\n        \"source_event_id\": \"event_000634\",\n        \"target_event_id\": \"event_000636\",\n        \"relation_type\": \"state_transition\",\n        \"claim\": \"连续拦截后球权转换或导向扳平进攻\"\n      }\n    ]\n  }\n}",
+  "parsed": {
+    "decision": "UNRESOLVED",
+    "rationale": "All three diagnosed issues are HYPOTHESIS_NEEDS_VIDEO with story_defect_confirmed=false. Video critic observations show the two source-time jumps are deliberate highlight compression with consistent scoreboard state (0-1) across cuts, and no omitted causal/game-state information was observed. The thin ending issue has no visual evidence for the unobserved seg_go_ahead_scoreboard segment, so it cannot be confirmed or refuted. No search candidate has FIRST_LIVE_VERIFIED or narrative_fit_status=REVIEW_SUPPORTED, so no search_add is permitted. No confirmed redundancy issue names a preferred_drop_segment_id. The existing cut is understandable per sampled frames; unobserved segments remain unverified.",
+    "revision_intents": [
+      {
+        "intent_id": "intent_mark_unresolved_ending",
+        "action": "mark_unresolved",
+        "target_segment_id": "seg_go_ahead_scoreboard",
+        "role": "go_ahead_scoreboard_anchor",
+        "narrative_purpose": "Flag the unobserved ending segment for future video review to determine whether emotional closure is adequate.",
+        "rationale": "thin_post_climax_tail is HYPOTHESIS_NEEDS_VIDEO and the video critic explicitly notes no frames cover seg_go_ahead_scoreboard or seg_title_close. Absence of evidence is not evidence of a defect, so no edit is executable now.",
+        "expected_improvement": "Prevents premature trimming or extension of the ending without visual confirmation.",
+        "risk": "None; no mutation applied.",
+        "evidence_refs": [
+          "issue_id:thin_post_climax_tail",
+          "video_critic_observations.unobserved_media_segment_ids:seg_go_ahead_scoreboard"
+        ]
+      }
+    ],
+    "story_first_trial": {
+      "selections": [
+        {
+          "proposal_id": "interval_01:H5",
+          "event_ids": [
+            "event_000634",
+            "event_000635",
+            "event_000636"
+          ],
+          "relation_ids": [
+            "r1"
+          ]
+        }
+      ],
+      "rationale": "This proposal is the most compact and temporally adjacent to the equalizer window (6403.81s–6410.07s vs equalizer buildup at ~6442s). The three interceptions are all non-replay footage events and the observation query targets whether the final interception (event_000636) initiates forward progression toward the equalizer. This directly addresses the unresolved question of whether the buildup-to-equalizer transition has omitted causal state. Other proposals either rely on replay-flagged VAR footage (interval_01:H1), misattribute team sides (interval_01:H2, H4), or lack interleaved opponent events to support their claimed rhythm (interval_01:H3). Interval_02 proposals are weaker because they span post-equalizer to go-ahead with no verified same-phase linkage and several opposing-team actions.",
+      "revised_relations": [
+        {
+          "source_event_id": "event_000634",
+          "target_event_id": "event_000636",
+          "relation_type": "state_transition",
+          "claim": "连续拦截后球权转换或导向扳平进攻"
+        }
+      ]
+    }
+  },
+  "usage": {
+    "prompt_tokens": 14186,
+    "completion_tokens": 723,
+    "total_tokens": 14909,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "call_audit": {
+    "model": "DeepSeek-V4-Pro-0813",
+    "provider_mode": "real",
+    "logical_role": "revision_planner",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "prompt_tokens": 14186,
+    "completion_tokens": 723,
+    "reasoning_tokens": 0,
+    "text_tokens": null,
+    "finish_reason": "stop",
+    "visible_output_chars": 3006,
+    "est_cost_usd": 0.0025616999999999997,
+    "http_ok": true,
+    "empty_content": false
+  },
+  "request_audit": {
+    "role": "planner",
+    "model": "DeepSeek-V4-Pro-0813",
+    "request_profile": "default",
+    "token_param_configured": "max_tokens",
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "temperature_sent": 0.1,
+    "stream_sent": false,
+    "thinking_params_sent": false,
+    "thinking_object_disabled_sent": true,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "sends_both_token_params": false,
+    "sends_both_thinking_formats": false,
+    "message_count": 2,
+    "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+    "paratera_thinking_object_documented": false
+  },
+  "response_audit": {
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "visible_output_chars": 3006,
+    "usage_keys_present": [
+      "completion_tokens",
+      "completion_tokens_details",
+      "prompt_tokens",
+      "prompt_tokens_details",
+      "total_tokens"
+    ],
+    "has_completion_tokens_details": true,
+    "reasoning_content_present": false,
+    "completion_tokens_reported": 723,
+    "output_token_limit": 1200,
+    "output_budget_exceeded": false
+  },
+  "finish_reason": "stop"
+}

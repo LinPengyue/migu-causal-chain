@@ -1,0 +1,293 @@
+{
+  "code_sha": "d3eb826fe674bbef3a9c97d6a91c132240f52375",
+  "cli_exit": 0,
+  "http_calls": 5,
+  "est_cost_usd": 0.014092,
+  "budget": {
+    "max_calls": 8,
+    "max_cost_usd": 0.1
+  },
+  "usage_by_role": {
+    "revision_planner": {
+      "http_attempts": 1,
+      "tokens": 14909,
+      "est_cost_usd": 0.002562,
+      "output_budget_exceeded": false
+    },
+    "story_first_generator": {
+      "http_attempts": 1,
+      "tokens": 13801,
+      "est_cost_usd": 0.00254,
+      "output_budget_exceeded": false
+    },
+    "story_first_scorer": {
+      "http_attempts": 1,
+      "tokens": 15460,
+      "est_cost_usd": 0.002777,
+      "output_budget_exceeded": false
+    },
+    "vision": {
+      "http_attempts": 2,
+      "tokens": 34992,
+      "est_cost_usd": 0.006214,
+      "output_budget_exceeded": true
+    }
+  },
+  "intervals": [
+    {
+      "artifact_sha256": {
+        "prepared_story_input.json": "63d08e7c9e3cf153c0b4d536154e8c15baecfdd88d335169bde16a28d93e7b1d",
+        "scheme_a_story_ranking.json": "ca17c278f2e10bd530db4e82f3bab4114d5d5cd69dbd6a04bbbdcc28f43f6f6b",
+        "story_hypotheses.json": "451b16ada209d5c5a8515bccdf9a131d16d1ed3676b7597c8db30f7feb333040"
+      },
+      "artifact_status": "OBSERVATION_QUEUE_ONLY",
+      "candidate_count": 5,
+      "from_segment_id": "seg_opponent_opening_goal_action",
+      "interval_id": "interval_01",
+      "reused_from": "/tmp/lpy1_scheme_a_causal4_run_20261116/01_generate_max5",
+      "scope": {
+        "anchor_source": "existing_v3r_edl",
+        "from_role": "opponent_opening_goal_action",
+        "from_segment_id": "seg_opponent_opening_goal_action",
+        "no_assumed_causality": true,
+        "source_interval_sec": [
+          1347.123,
+          6436.924
+        ],
+        "to_role": "equalizer_goal_action",
+        "to_segment_id": "seg_equalizer_goal_action"
+      },
+      "score_status": "REAL_MODEL_PRIOR_NOT_VIDEO_VERIFIED",
+      "status": "REUSED",
+      "to_segment_id": "seg_equalizer_goal_action"
+    },
+    {
+      "candidate_count": 5,
+      "from_segment_id": "seg_equalizer_goal_action",
+      "interval_id": "interval_02",
+      "scope": {
+        "anchor_source": "existing_v3r_edl",
+        "from_role": "equalizer_goal_action",
+        "from_segment_id": "seg_equalizer_goal_action",
+        "no_assumed_causality": true,
+        "source_interval_sec": [
+          6458.924,
+          6829.456
+        ],
+        "to_role": "go_ahead_goal_action",
+        "to_segment_id": "seg_go_ahead_goal_action"
+      },
+      "score_status": "REAL_MODEL_PRIOR_NOT_VIDEO_VERIFIED",
+      "status": "GENERATED",
+      "to_segment_id": "seg_go_ahead_goal_action"
+    }
+  ],
+  "proposal_ids": [
+    "interval_01:H1",
+    "interval_01:H5",
+    "interval_01:H2",
+    "interval_01:H3",
+    "interval_01:H4",
+    "interval_02:H3",
+    "interval_02:H4",
+    "interval_02:H5",
+    "interval_02:H2",
+    "interval_02:H1"
+  ],
+  "planner": {
+    "decision": "UNRESOLVED",
+    "rationale": "All three diagnosed issues are HYPOTHESIS_NEEDS_VIDEO with story_defect_confirmed=false. Video critic observations show the two source-time jumps are deliberate highlight compression with consistent scoreboard state (0-1) across cuts, and no omitted causal/game-state information was observed. The thin ending issue has no visual evidence for the unobserved seg_go_ahead_scoreboard segment, so it cannot be confirmed or refuted. No search candidate has FIRST_LIVE_VERIFIED or narrative_fit_status=REVIEW_SUPPORTED, so no search_add is permitted. No confirmed redundancy issue names a preferred_drop_segment_id. The existing cut is understandable per sampled frames; unobserved segments remain unverified.",
+    "story_first_trial": {
+      "selections": [
+        {
+          "proposal_id": "interval_01:H5",
+          "event_ids": [
+            "event_000634",
+            "event_000635",
+            "event_000636"
+          ],
+          "relation_ids": [
+            "r1"
+          ]
+        }
+      ],
+      "rationale": "This proposal is the most compact and temporally adjacent to the equalizer window (6403.81s–6410.07s vs equalizer buildup at ~6442s). The three interceptions are all non-replay footage events and the observation query targets whether the final interception (event_000636) initiates forward progression toward the equalizer. This directly addresses the unresolved question of whether the buildup-to-equalizer transition has omitted causal state. Other proposals either rely on replay-flagged VAR footage (interval_01:H1), misattribute team sides (interval_01:H2, H4), or lack interleaved opponent events to support their claimed rhythm (interval_01:H3). Interval_02 proposals are weaker because they span post-equalizer to go-ahead with no verified same-phase linkage and several opposing-team actions.",
+      "revised_relations": [
+        {
+          "source_event_id": "event_000634",
+          "target_event_id": "event_000636",
+          "relation_type": "state_transition",
+          "claim": "连续拦截后球权转换或导向扳平进攻"
+        }
+      ]
+    },
+    "finish_reason": "stop",
+    "model": "DeepSeek-V4-Pro-0813"
+  },
+  "trial_status": "NEEDS_REVISION",
+  "trial_window": [
+    {
+      "event_ids": [
+        "event_000634",
+        "event_000635",
+        "event_000636"
+      ],
+      "source_pts_start": 6395.81,
+      "source_pts_end": 6418.07,
+      "insert_after_segment_id": "seg_buildup_event_000472",
+      "before_segment_id": "seg_equalizer_goal_action",
+      "candidate_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+      "issue_id": "story_first:ab22f01929b5cb4f59e6badd"
+    }
+  ],
+  "feedback": [
+    {
+      "round": 1,
+      "selection": {
+        "selections": [
+          {
+            "proposal_id": "interval_01:H5",
+            "event_ids": [
+              "event_000634",
+              "event_000635",
+              "event_000636"
+            ],
+            "relation_ids": [
+              "r1"
+            ]
+          }
+        ],
+        "rationale": "This proposal is the most compact and temporally adjacent to the equalizer window (6403.81s–6410.07s vs equalizer buildup at ~6442s). The three interceptions are all non-replay footage events and the observation query targets whether the final interception (event_000636) initiates forward progression toward the equalizer. This directly addresses the unresolved question of whether the buildup-to-equalizer transition has omitted causal state. Other proposals either rely on replay-flagged VAR footage (interval_01:H1), misattribute team sides (interval_01:H2, H4), or lack interleaved opponent events to support their claimed rhythm (interval_01:H3). Interval_02 proposals are weaker because they span post-equalizer to go-ahead with no verified same-phase linkage and several opposing-team actions.",
+        "revised_relations": [
+          {
+            "source_event_id": "event_000634",
+            "target_event_id": "event_000636",
+            "relation_type": "state_transition",
+            "claim": "连续拦截后球权转换或导向扳平进攻"
+          }
+        ]
+      },
+      "stage": "SOURCE_REVIEW",
+      "status": "NEEDS_REVISION",
+      "findings": [
+        {
+          "status": "AWAITING_VIDEO_REVIEW",
+          "reason": "ValueError:video_review_not_real_or_truncated"
+        },
+        {
+          "window_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+          "event_ids": [
+            "event_000634",
+            "event_000635",
+            "event_000636"
+          ],
+          "status": "NOT_VERIFIED",
+          "reason": "no_first_live_evidence_pack_for_window",
+          "local_frame_pack_dir": "/tmp/lpy1_story_first_v2_paid_round1_20261116/agent/02_round_01/story_first_source_review/story_first_ab22f01929b5cb4f59e6badd_01",
+          "timeline_status": "UNKNOWN"
+        },
+        {
+          "window_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+          "event_ids": [
+            "event_000634",
+            "event_000635",
+            "event_000636"
+          ],
+          "status": "NEEDS_VIDEO_REVIEW",
+          "reason": "missing_triplet_review"
+        }
+      ]
+    }
+  ],
+  "interval_02": {
+    "hypotheses": [
+      {
+        "id": "H1",
+        "summary": "扳平后主队连续射门被扑出，攻势未转化为领先，直到终场前才打破僵局。",
+        "events": [
+          "event_000640",
+          "event_000655",
+          "event_000661",
+          "event_000667"
+        ]
+      },
+      {
+        "id": "H2",
+        "summary": "扳平后对方以拦截、抢断、解围连续化解主队推进，形成防守压制链。",
+        "events": [
+          "event_000641",
+          "event_000646",
+          "event_000652",
+          "event_000656"
+        ]
+      },
+      {
+        "id": "H3",
+        "summary": "终场前任意球与争顶、射门连续出现，可能构成领先球前的定位球施压阶段。",
+        "events": [
+          "event_000658",
+          "event_000659",
+          "event_000660",
+          "event_000661"
+        ]
+      },
+      {
+        "id": "H4",
+        "summary": "扳平后多次争顶成功与长传、突破相连，可能铺垫了终场前的领先进攻。",
+        "events": [
+          "event_000637",
+          "event_000660",
+          "event_000665",
+          "event_000666"
+        ]
+      },
+      {
+        "id": "H5",
+        "summary": "危险动作犯规后出现任意球与射门，可能构成领先球前的犯规-定位球转折。",
+        "events": [
+          "event_000658",
+          "event_000659",
+          "event_000661"
+        ]
+      }
+    ],
+    "rank_order": [
+      "H3",
+      "H4",
+      "H5",
+      "H2",
+      "H1"
+    ],
+    "selected": [
+      "H3",
+      "H4"
+    ],
+    "generator_usage": {
+      "prompt_tokens": 12757,
+      "completion_tokens": 1044,
+      "est_cost_usd": 0.0025399499999999996,
+      "finish_reason": "stop",
+      "model": "DeepSeek-V4.1-Flash"
+    },
+    "scorer_usage": {
+      "prompt_tokens": 14443,
+      "completion_tokens": 1017,
+      "est_cost_usd": 0.00277665,
+      "finish_reason": "stop",
+      "model": "DeepSeek-V4.1-Flash"
+    }
+  },
+  "source_review": {
+    "usage": {
+      "prompt_tokens": 21301,
+      "completion_tokens": 1200,
+      "est_cost_usd": 0.00391515,
+      "finish_reason": "length",
+      "model": "Qwen3.7-Plus"
+    },
+    "rejected_as_truncated": true,
+    "local_frame_pack_dir": "agent/02_round_01/story_first_source_review/story_first_ab22f01929b5cb4f59e6badd_01"
+  },
+  "no_trial_render": true,
+  "first_live_ledger_windows": 0
+}

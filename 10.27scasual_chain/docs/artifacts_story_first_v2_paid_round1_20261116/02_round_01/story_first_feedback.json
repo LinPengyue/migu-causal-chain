@@ -1,0 +1,59 @@
+[
+  {
+    "round": 1,
+    "selection": {
+      "selections": [
+        {
+          "proposal_id": "interval_01:H5",
+          "event_ids": [
+            "event_000634",
+            "event_000635",
+            "event_000636"
+          ],
+          "relation_ids": [
+            "r1"
+          ]
+        }
+      ],
+      "rationale": "This proposal is the most compact and temporally adjacent to the equalizer window (6403.81s–6410.07s vs equalizer buildup at ~6442s). The three interceptions are all non-replay footage events and the observation query targets whether the final interception (event_000636) initiates forward progression toward the equalizer. This directly addresses the unresolved question of whether the buildup-to-equalizer transition has omitted causal state. Other proposals either rely on replay-flagged VAR footage (interval_01:H1), misattribute team sides (interval_01:H2, H4), or lack interleaved opponent events to support their claimed rhythm (interval_01:H3). Interval_02 proposals are weaker because they span post-equalizer to go-ahead with no verified same-phase linkage and several opposing-team actions.",
+      "revised_relations": [
+        {
+          "source_event_id": "event_000634",
+          "target_event_id": "event_000636",
+          "relation_type": "state_transition",
+          "claim": "连续拦截后球权转换或导向扳平进攻"
+        }
+      ]
+    },
+    "stage": "SOURCE_REVIEW",
+    "status": "NEEDS_REVISION",
+    "findings": [
+      {
+        "status": "AWAITING_VIDEO_REVIEW",
+        "reason": "ValueError:video_review_not_real_or_truncated"
+      },
+      {
+        "window_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+        "event_ids": [
+          "event_000634",
+          "event_000635",
+          "event_000636"
+        ],
+        "status": "NOT_VERIFIED",
+        "reason": "no_first_live_evidence_pack_for_window",
+        "local_frame_pack_dir": "/tmp/lpy1_story_first_v2_paid_round1_20261116/agent/02_round_01/story_first_source_review/story_first_ab22f01929b5cb4f59e6badd_01",
+        "timeline_status": "UNKNOWN"
+      },
+      {
+        "window_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+        "event_ids": [
+          "event_000634",
+          "event_000635",
+          "event_000636"
+        ],
+        "status": "NEEDS_VIDEO_REVIEW",
+        "reason": "missing_triplet_review"
+      }
+    ]
+  }
+]

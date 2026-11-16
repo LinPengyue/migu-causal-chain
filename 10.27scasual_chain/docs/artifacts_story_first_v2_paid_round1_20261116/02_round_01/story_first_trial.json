@@ -1,0 +1,146 @@
+{
+  "trial": {
+    "trial_id": "ab22f01929b5cb4f59e6badd",
+    "proposal_ids": [
+      "interval_01:H5"
+    ],
+    "events": [
+      {
+        "event_id": "event_000634",
+        "source_pts_sec": 6403.81,
+        "event_type": "Defensive_action",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "1队球员截获2队传球"
+        }
+      },
+      {
+        "event_id": "event_000635",
+        "source_pts_sec": 6405.03,
+        "event_type": "Defensive_action",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "2队球员截获1队球员传球"
+        }
+      },
+      {
+        "event_id": "event_000636",
+        "source_pts_sec": 6410.07,
+        "event_type": "Defensive_action",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "1队球员截获2队球员传球"
+        }
+      }
+    ],
+    "relations": [
+      {
+        "relation_id": "interval_01:H5:r1",
+        "source_event_id": "event_000634",
+        "target_event_id": "event_000636",
+        "relation_type": "state_transition",
+        "claim": "连续拦截后球权转换或导向扳平进攻",
+        "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+      },
+      {
+        "relation_id": "revised:1",
+        "source_event_id": "event_000634",
+        "target_event_id": "event_000636",
+        "relation_type": "state_transition",
+        "claim": "连续拦截后球权转换或导向扳平进攻",
+        "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+      }
+    ],
+    "story_context": [
+      {
+        "proposal_id": "interval_01:H5",
+        "summary": "扳平前主角队连续完成拦截夺回球权，或为最后进攻的组织起点。",
+        "expected_story_contribution": "",
+        "falsification_conditions": [
+          "若三次拦截均发生在主角队防守半场则进攻起点假设不成立"
+        ],
+        "causal_mechanism": "Three interceptions in quick succession (6403.81s, 6405.03s, 6410.07s) immediately precede the equalizer buildup (passes at 6442.874s, assist 6447.042s, shot 6448.924s), so the combination could describe a possession-recovery state transition that initiates the equalizing attack.",
+        "major_uncertainty": "Interceptions alternate between teams (1队, 2队, 1队), so the 'protagonist regains control' reading is only partially supported; the gap of ~30s between the last interception and the equalizer buildup is not bridged by cited events; no verified causal chain."
+      }
+    ],
+    "windows": [
+      {
+        "event_ids": [
+          "event_000634",
+          "event_000635",
+          "event_000636"
+        ],
+        "source_pts_start": 6395.81,
+        "source_pts_end": 6418.07,
+        "insert_after_segment_id": "seg_buildup_event_000472",
+        "before_segment_id": "seg_equalizer_goal_action",
+        "candidate_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+        "issue_id": "story_first:ab22f01929b5cb4f59e6badd"
+      }
+    ],
+    "narrative_purpose": "This proposal is the most compact and temporally adjacent to the equalizer window (6403.81s–6410.07s vs equalizer buildup at ~6442s). The three interceptions are all non-replay footage events and the observation query targets whether the final interception (event_000636) initiates forward progression toward the equalizer. This directly addresses the unresolved question of whether the buildup-to-equalizer transition has omitted causal state. Other proposals either rely on replay-flagged VAR footage (interval_01:H1), misattribute team sides (interval_01:H2, H4), or lack interleaved opponent even"
+  },
+  "review": {
+    "status": "NEEDS_REVISION",
+    "feedback": [
+      {
+        "status": "AWAITING_VIDEO_REVIEW",
+        "reason": "ValueError:video_review_not_real_or_truncated"
+      },
+      {
+        "window_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+        "event_ids": [
+          "event_000634",
+          "event_000635",
+          "event_000636"
+        ],
+        "status": "NOT_VERIFIED",
+        "reason": "no_first_live_evidence_pack_for_window",
+        "local_frame_pack_dir": "/tmp/lpy1_story_first_v2_paid_round1_20261116/agent/02_round_01/story_first_source_review/story_first_ab22f01929b5cb4f59e6badd_01",
+        "timeline_status": "UNKNOWN"
+      },
+      {
+        "window_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+        "event_ids": [
+          "event_000634",
+          "event_000635",
+          "event_000636"
+        ],
+        "status": "NEEDS_VIDEO_REVIEW",
+        "reason": "missing_triplet_review"
+      }
+    ],
+    "candidates": [
+      {
+        "event_ids": [
+          "event_000634",
+          "event_000635",
+          "event_000636"
+        ],
+        "source_pts_start": 6395.81,
+        "source_pts_end": 6418.07,
+        "insert_after_segment_id": "seg_buildup_event_000472",
+        "before_segment_id": "seg_equalizer_goal_action",
+        "candidate_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+        "issue_id": "story_first:ab22f01929b5cb4f59e6badd",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "ab22f01929b5cb4f59e6badd",
+        "narrative_fit_supports_insert": false,
+        "narrative_fit_status": "NEEDS_VIDEO_REVIEW",
+        "narrative_fit": {
+          "status": "NEEDS_VIDEO_REVIEW",
+          "binding_valid": false,
+          "reason": "missing_triplet_review"
+        }
+      }
+    ],
+    "intents": []
+  }
+}

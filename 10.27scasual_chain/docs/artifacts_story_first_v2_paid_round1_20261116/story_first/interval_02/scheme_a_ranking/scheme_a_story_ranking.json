@@ -1,0 +1,171 @@
+{
+  "causal_claims_verified": 0,
+  "edl_modified": false,
+  "first_live_certified": false,
+  "narrative_gain_verified": false,
+  "planner_candidates": [],
+  "ranked_hypotheses": [
+    {
+      "causal_combination_prior": 0.425,
+      "causal_link_verified": false,
+      "causal_mechanism": "Claimed mechanism is a set-piece pressure phase before the go-ahead goal: a foul (658) leads to a free kick (659), then an aerial duel win (660) and a shot (661). This is a plausible football sequence, but the annotations do not confirm that 659's free kick resulted from 658, nor that 660/661 belong to the same set-piece phase, and 661 is noted as a shot off target by team 2, which weakens the link to a home go-ahead buildup.",
+      "cited_event_ids": [
+        "event_000658",
+        "event_000659",
+        "event_000660",
+        "event_000661"
+      ],
+      "first_live_certified": false,
+      "hypothesis_id": "H3",
+      "major_uncertainty": "No verified same-phase linkage; 661 is attributed to team 2 and off target, so it may be a counter-attack rather than continuation of the free-kick sequence.",
+      "model_priority_0_to_1": 0.425,
+      "multi_event_combination": true,
+      "planner_eligible": false,
+      "requires_video_evidence": true,
+      "scores": {
+        "anchor_causal_bridge": 1,
+        "factual_support": 2,
+        "internal_causal_link": 2,
+        "joint_causal_gain": 2
+      },
+      "story_summary": "终场前任意球与争顶、射门连续出现，可能构成领先球前的定位球施压阶段。",
+      "supporting_event_ids": [
+        "event_000658",
+        "event_000659",
+        "event_000660",
+        "event_000661"
+      ]
+    },
+    {
+      "causal_combination_prior": 0.425,
+      "causal_link_verified": false,
+      "causal_mechanism": "Claimed mechanism is that aerial wins and a long pass (665) connected to a subsequent aerial win (666), building toward the go-ahead attack. The long-pass-to-aerial-duel link is a plausible causal micro-sequence, but 637 and 660 are separated by over 100 seconds and 665/666 are only ~3.5s apart with no confirmation they are the same possession or that they led to the goal.",
+      "cited_event_ids": [
+        "event_000637",
+        "event_000660",
+        "event_000665",
+        "event_000666"
+      ],
+      "first_live_certified": false,
+      "hypothesis_id": "H4",
+      "major_uncertainty": "No verified possession continuity between 665 and 666, and no evidence that this sequence produced the go-ahead goal; 637 is far earlier and likely unrelated.",
+      "model_priority_0_to_1": 0.425,
+      "multi_event_combination": true,
+      "planner_eligible": false,
+      "requires_video_evidence": true,
+      "scores": {
+        "anchor_causal_bridge": 1,
+        "factual_support": 2,
+        "internal_causal_link": 2,
+        "joint_causal_gain": 2
+      },
+      "story_summary": "扳平后多次争顶成功与长传、突破相连，可能铺垫了终场前的领先进攻。",
+      "supporting_event_ids": [
+        "event_000637",
+        "event_000660",
+        "event_000665",
+        "event_000666"
+      ]
+    },
+    {
+      "causal_combination_prior": 0.3625,
+      "causal_link_verified": false,
+      "causal_mechanism": "Claimed mechanism is a foul-to-free-kick-to-shot transition before the go-ahead goal. A foul directly producing a free kick is a standard causal link, but the annotations do not confirm that 659's free kick came from 658, and 661 is a team-2 shot off target, which is not a natural continuation of a home free-kick sequence.",
+      "cited_event_ids": [
+        "event_000658",
+        "event_000659",
+        "event_000661"
+      ],
+      "first_live_certified": false,
+      "hypothesis_id": "H5",
+      "major_uncertainty": "No verified same-phase or same-team linkage; 661 being an opposing off-target shot suggests the sequence may be broken or misattributed.",
+      "model_priority_0_to_1": 0.3625,
+      "multi_event_combination": true,
+      "planner_eligible": false,
+      "requires_video_evidence": true,
+      "scores": {
+        "anchor_causal_bridge": 1,
+        "factual_support": 2,
+        "internal_causal_link": 2,
+        "joint_causal_gain": 1
+      },
+      "story_summary": "危险动作犯规后出现任意球与射门，可能构成领先球前的犯规-定位球转折。",
+      "supporting_event_ids": [
+        "event_000658",
+        "event_000659",
+        "event_000661"
+      ]
+    },
+    {
+      "causal_combination_prior": 0.2875,
+      "causal_link_verified": false,
+      "causal_mechanism": "Claimed mechanism is a defensive suppression chain by the opponent (interception, tackle, interception, clearance) that repeatedly stopped home progression after the equalizer. The events are individually plausible defensive actions and some are correctly attributed to team 2, but they are separated by minutes and no single attacking sequence is shown to be repeatedly broken, so the chain is a narrative association rather than a demonstrated causal obstruction.",
+      "cited_event_ids": [
+        "event_000641",
+        "event_000646",
+        "event_000652",
+        "event_000656"
+      ],
+      "first_live_certified": false,
+      "hypothesis_id": "H2",
+      "major_uncertainty": "Events span 6557s to 6703s with no verified shared possession or same-attack continuity; attribution of each action to a specific team is only partially clear from annotations.",
+      "model_priority_0_to_1": 0.2875,
+      "multi_event_combination": true,
+      "planner_eligible": false,
+      "requires_video_evidence": true,
+      "scores": {
+        "anchor_causal_bridge": 1,
+        "factual_support": 2,
+        "internal_causal_link": 1,
+        "joint_causal_gain": 1
+      },
+      "story_summary": "扳平后对方以拦截、抢断、解围连续化解主队推进，形成防守压制链。",
+      "supporting_event_ids": [
+        "event_000641",
+        "event_000646",
+        "event_000652",
+        "event_000656"
+      ]
+    },
+    {
+      "causal_combination_prior": 0.25,
+      "causal_link_verified": false,
+      "causal_mechanism": "Claimed mechanism is that repeated home shots (640, 655, 661) failed to convert and a later dribble (667) relates to the ongoing attack, delaying the go-ahead goal. However, the events are only temporally scattered between the equalizer and go-ahead anchors; no shared possession sequence, rebound, or defensive rebound chain is established, and 667 is attributed to team 2 (opponent) dribbling past, which breaks rather than supports a home attacking chain.",
+      "cited_event_ids": [
+        "event_000640",
+        "event_000655",
+        "event_000661",
+        "event_000667"
+      ],
+      "first_live_certified": false,
+      "hypothesis_id": "H1",
+      "major_uncertainty": "No verified possession/sequence linkage; event_000667 is an opposing-team action, and 640/655/661 are not confirmed as the same attacking phase or even the same team's sustained pressure.",
+      "model_priority_0_to_1": 0.25,
+      "multi_event_combination": true,
+      "planner_eligible": false,
+      "requires_video_evidence": true,
+      "scores": {
+        "anchor_causal_bridge": 1,
+        "factual_support": 1,
+        "internal_causal_link": 1,
+        "joint_causal_gain": 1
+      },
+      "story_summary": "扳平后主队连续射门被扑出，攻势未转化为领先，直到终场前才打破僵局。",
+      "supporting_event_ids": [
+        "event_000640",
+        "event_000655",
+        "event_000661",
+        "event_000667"
+      ]
+    }
+  ],
+  "ranking_is_model_prior_not_calibrated": true,
+  "schema": "v2_story_first_scheme_a_causal_prior_v2",
+  "selected_for_video_observation": [
+    "H3",
+    "H4"
+  ],
+  "status": "RANKED_FOR_OBSERVATION_ONLY",
+  "top_k": 2,
+  "video_observed": false
+}
