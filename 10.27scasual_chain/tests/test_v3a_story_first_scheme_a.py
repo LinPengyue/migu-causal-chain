@@ -72,12 +72,10 @@ def _fixture():
 def _score(hid, ids, gain):
     return {
         "hypothesis_id": hid,
-        "anchor_fit": 3, "internal_coherence": 3,
-        "joint_composition": 3, "marginal_narrative_gain": gain,
-        "event_grounding": 3,
+        "internal_causal_link": 3, "anchor_causal_bridge": 3,
+        "joint_causal_gain": gain, "factual_support": 3,
         "cited_event_ids": ids,
-        "new_story_information": "可能补充此前未表达的攻防过程",
-        "comparison_to_existing_story": "相较已有片段或提供新信息，未验证",
+        "causal_mechanism": "可能构成多事件因果关联，但未验证",
         "major_uncertainty": "缺少原视频连续过程证据",
     }
 
@@ -136,7 +134,7 @@ def test_score_fails_closed(change):
     if change == "hallucinated_id":
         rows[0]["cited_event_ids"] = ["a", "invented"]
     elif change == "bool_score":
-        rows[0]["joint_composition"] = True
+        rows[0]["joint_causal_gain"] = True
     elif change == "missing_candidate":
         rows = rows[:1]
     else:
