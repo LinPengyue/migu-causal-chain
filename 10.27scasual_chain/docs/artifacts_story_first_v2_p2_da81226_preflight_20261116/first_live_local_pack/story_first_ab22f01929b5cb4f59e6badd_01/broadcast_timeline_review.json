@@ -1,0 +1,76 @@
+{
+  "schema": "v3a_broadcast_timeline_review_v1",
+  "source_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+  "source_pts_start": 6395.81,
+  "source_pts_end": 6418.07,
+  "context_window": {
+    "start": 6387.81,
+    "end": 6426.07
+  },
+  "requested_context_window": {
+    "start": 6387.81,
+    "end": 6426.07
+  },
+  "context_truncated": false,
+  "continuous_context_complete": true,
+  "outcome": "UNKNOWN",
+  "first_live_status": "NOT_VERIFIED",
+  "method": "binding_only_no_timeline_proof",
+  "rationale": [
+    "frame_binding_present_but_no_first_broadcast_proof",
+    "no_continuous_timeline_or_authenticated_review"
+  ],
+  "evidence_refs": [
+    {
+      "kind": "continuous_context_clip",
+      "path": "/tmp/lpy1_story_first_v2_p2_da81226_preflight_20261116/first_live_local_pack/story_first_ab22f01929b5cb4f59e6badd_01/context_clip.mp4",
+      "sha256": "984101003d70aafebd6606421965c2f1ad3b489810e11c8fc3267d7e1a8fd5df",
+      "media_in": 6387.81,
+      "media_out": 6426.07
+    }
+  ],
+  "replay_hits": [],
+  "live_hits_in_window": [
+    {
+      "event_id": "event_000634",
+      "start": 6400.9,
+      "end": 6412.5,
+      "broadcast_phase": "LIVE",
+      "is_replay": false
+    },
+    {
+      "event_id": "event_000635",
+      "start": 6400.9,
+      "end": 6412.5,
+      "broadcast_phase": "LIVE",
+      "is_replay": false
+    },
+    {
+      "event_id": "event_000636",
+      "start": 6400.9,
+      "end": 6412.5,
+      "broadcast_phase": "LIVE",
+      "is_replay": false
+    }
+  ],
+  "clip": {
+    "ok": true,
+    "path": "/tmp/lpy1_story_first_v2_p2_da81226_preflight_20261116/first_live_local_pack/story_first_ab22f01929b5cb4f59e6badd_01/context_clip.mp4",
+    "media_in": 6387.81,
+    "media_out": 6426.07,
+    "duration_sec": 38.26,
+    "sha256": "984101003d70aafebd6606421965c2f1ad3b489810e11c8fc3267d7e1a8fd5df",
+    "bytes": 44932372,
+    "continuous_source": true,
+    "stitched": false,
+    "accurate_decode": true,
+    "stream_copy": false,
+    "elapsed_sec": 10.397,
+    "stderr_tail": "",
+    "reason": null
+  },
+  "provenance": "ZERO_HTTP_BROADCAST_TIMELINE_REVIEW",
+  "phase_evidence": null,
+  "frame_pack_insufficient_alone": true,
+  "note": "FIRST_LIVE_VERIFIED only via authenticated timeline review bound to source SHA+PTS with continuous context evidence. Otherwise UNKNOWN; replay overlap ⇒ REPLAY_CONFIRMED."
+}
