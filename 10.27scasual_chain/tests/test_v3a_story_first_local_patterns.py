@@ -1,7 +1,7 @@
 """Regression: Scheme A generation is interval-local and preserves output schema."""
 import json
 
-from algo.story_video_agent_v3.story_first_hypotheses import model_messages, select_story_interval
+from story_video_agent_v3.story_first_hypotheses import model_messages, select_story_interval
 
 
 def test_local_patterns_prompt_stays_within_selected_interval():
@@ -19,14 +19,14 @@ def test_local_patterns_prompt_stays_within_selected_interval():
 
 
 def test_semantic_story_anchors_preferred_to_goal_fallback():
-    edl = {"clips": [
+    edl = [
         {"segment_id": "goal0", "role": "goal_action", "media_in": 10, "media_out": 20},
         {"segment_id": "deficit", "role": "deficit", "story_anchor": True,
          "media_in": 30, "media_out": 40},
         {"segment_id": "buildup", "role": "buildup", "story_anchor": True,
          "media_in": 80, "media_out": 90},
         {"segment_id": "goal1", "role": "goal_action", "media_in": 100, "media_out": 110},
-    ]}
+    ]
     scope = select_story_interval(edl)
     assert scope["from_segment_id"] == "deficit"
     assert scope["to_segment_id"] == "buildup"
