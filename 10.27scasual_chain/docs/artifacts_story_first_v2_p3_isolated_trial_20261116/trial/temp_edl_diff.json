@@ -1,0 +1,97 @@
+{
+  "formal_edl_sha256": "b38434b9f15ea550b878fee4c7a4537115ae85d5cd57bdb189f6ad8036a4c47a",
+  "baseline_n": 9,
+  "trial_n": 10,
+  "baseline_ids": [
+    "seg_title_open",
+    "seg_opponent_opening_goal_action",
+    "seg_setup_deficit",
+    "seg_buildup_event_000472",
+    "seg_equalizer_goal_action",
+    "seg_equalizer_scoreboard",
+    "seg_go_ahead_goal_action",
+    "seg_go_ahead_scoreboard",
+    "seg_title_close"
+  ],
+  "trial_ids": [
+    "seg_title_open",
+    "seg_opponent_opening_goal_action",
+    "seg_setup_deficit",
+    "seg_buildup_event_000472",
+    "seg_story_first_ab22f01929b5cb4f59e6badd_01",
+    "seg_equalizer_goal_action",
+    "seg_equalizer_scoreboard",
+    "seg_go_ahead_goal_action",
+    "seg_go_ahead_scoreboard",
+    "seg_title_close"
+  ],
+  "added_segment_ids": [
+    "seg_story_first_ab22f01929b5cb4f59e6badd_01"
+  ],
+  "removed_segment_ids": [],
+  "unchanged_goal_and_mainline": true,
+  "neighbors": {
+    "insert_index": 4,
+    "prev": {
+      "segment_id": "seg_buildup_event_000472",
+      "role": "buildup_action",
+      "media_in": 4706.45,
+      "media_out": 4718.45,
+      "event_ids": [
+        "event_000472"
+      ],
+      "evidence_status": null,
+      "first_live_status": null
+    },
+    "added": {
+      "segment_id": "seg_story_first_ab22f01929b5cb4f59e6badd_01",
+      "role": "buildup_bridge_action",
+      "media_in": 6395.81,
+      "media_out": 6418.07,
+      "event_ids": [
+        "event_000634",
+        "event_000635",
+        "event_000636"
+      ],
+      "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+      "first_live_status": "NOT_VERIFIED"
+    },
+    "next": {
+      "segment_id": "seg_equalizer_goal_action",
+      "role": "equalizer_goal_action",
+      "media_in": 6436.924,
+      "media_out": 6458.924,
+      "event_ids": [
+        "v3_goal_goalcand_03_01_to_11"
+      ],
+      "evidence_status": null,
+      "first_live_status": null
+    }
+  },
+  "apply_meta": {
+    "applied": [
+      {
+        "intent": "story_first_ab22f01929b5cb4f59e6badd_01",
+        "action": "search_add",
+        "status": "applied_evidence_bound",
+        "segment_id": "seg_story_first_ab22f01929b5cb4f59e6badd_01",
+        "media_in": 6395.81,
+        "media_out": 6418.07,
+        "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "first_live_status": "NOT_VERIFIED",
+        "authorization": {
+          "allow": true,
+          "denies": [],
+          "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+          "method": "bound_source_window"
+        },
+        "observation_ref": "search:story_first_ab22f01929b5cb4f59e6badd_01",
+        "insert_after_segment_id": "seg_buildup_event_000472"
+      }
+    ],
+    "rejected": [],
+    "edl_row_count": 10,
+    "evidence_bound_count": 1,
+    "pending_count": 0
+  }
+}

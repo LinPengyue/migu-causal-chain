@@ -1,0 +1,210 @@
+{
+  "paid_http_calls": 0,
+  "code_sha": "a2e0b06f4d326ea51ce1abc92b2c5ff5c40eed64",
+  "formal_edl_unchanged": true,
+  "formal_edl_sha256": "b38434b9f15ea550b878fee4c7a4537115ae85d5cd57bdb189f6ad8036a4c47a",
+  "formal_video_size_unchanged": true,
+  "mainline_segments_intact": true,
+  "mainline_notes": [],
+  "baseline_video": {
+    "path": "/tmp/lpy1_story_first_v2_p3_isolated_trial_20261116/baseline/story_clean_original.mp4",
+    "exists": true,
+    "size_bytes": 40329365,
+    "duration_sec": 94.877,
+    "video": {
+      "codec": "h264",
+      "w": 1280,
+      "h": 720,
+      "fps": "25/1",
+      "nb_frames": "2368"
+    },
+    "audio": {
+      "codec": "aac",
+      "sample_rate": "44100",
+      "channels": 2
+    }
+  },
+  "trial_video": {
+    "path": "/tmp/lpy1_story_first_v2_p3_isolated_trial_20261116/trial/story_clean_trial_h5.mp4",
+    "exists": true,
+    "size_bytes": 48338919,
+    "duration_sec": 117.168,
+    "video": {
+      "codec": "h264",
+      "w": 1280,
+      "h": 720,
+      "fps": "25/1",
+      "nb_frames": "2925"
+    },
+    "audio": {
+      "codec": "aac",
+      "sample_rate": "44100",
+      "channels": 2
+    }
+  },
+  "trial_qc_video": {
+    "path": "/tmp/lpy1_story_first_v2_p3_isolated_trial_20261116/trial/render/story_qc.mp4",
+    "exists": true,
+    "size_bytes": 54820004,
+    "duration_sec": 117.168,
+    "video": {
+      "codec": "h264",
+      "w": 1280,
+      "h": 720,
+      "fps": "25/1",
+      "nb_frames": "2925"
+    },
+    "audio": {
+      "codec": "aac",
+      "sample_rate": "44100",
+      "channels": 2
+    }
+  },
+  "duration_delta_sec": 22.291,
+  "expected_h5_span_sec": 22.26,
+  "duration_delta_vs_h5_span": 0.031,
+  "insert_position_ok": true,
+  "source_pts_order_nondecreasing": true,
+  "media_starts": [
+    {
+      "segment_id": "seg_opponent_opening_goal_action",
+      "media_in": 1325.123,
+      "media_out": 1347.123
+    },
+    {
+      "segment_id": "seg_setup_deficit",
+      "media_in": 1409.43,
+      "media_out": 1412.93
+    },
+    {
+      "segment_id": "seg_buildup_event_000472",
+      "media_in": 4706.45,
+      "media_out": 4718.45
+    },
+    {
+      "segment_id": "seg_story_first_ab22f01929b5cb4f59e6badd_01",
+      "media_in": 6395.81,
+      "media_out": 6418.07
+    },
+    {
+      "segment_id": "seg_equalizer_goal_action",
+      "media_in": 6436.924,
+      "media_out": 6458.924
+    },
+    {
+      "segment_id": "seg_equalizer_scoreboard",
+      "media_in": 6534.62,
+      "media_out": 6538.12
+    },
+    {
+      "segment_id": "seg_go_ahead_goal_action",
+      "media_in": 6829.456,
+      "media_out": 6851.456
+    },
+    {
+      "segment_id": "seg_go_ahead_scoreboard",
+      "media_in": 6956.12,
+      "media_out": 6959.62
+    }
+  ],
+  "duplicate_overlaps_iou_ge_0_2": [],
+  "av_integrity": {
+    "baseline_has_video": true,
+    "baseline_has_audio": true,
+    "trial_has_video": true,
+    "trial_has_audio": true,
+    "resolution_match": true
+  },
+  "source_gaps": {
+    "buildup_to_h5_sec": 1677.36,
+    "h5_to_equalizer_sec": 18.854
+  },
+  "story_assessment": {
+    "question": "H5是否改善「落后→蓄力」铺垫，而非仅堆三个拦截画面",
+    "facts": {
+      "insert_slot": "after buildup(4706.45–4718.45) / before equalizer(6436.924–6458.924)",
+      "h5_window": [
+        6395.81,
+        6418.07
+      ],
+      "source_gap_prev_sec": 1677.36,
+      "source_gap_next_sec": 18.854,
+      "events_vlm": [
+        {
+          "event_id": "event_000634",
+          "frame_ids": [
+            "f2"
+          ],
+          "reason": "Frame shows players in proximity but no clear interception action or ball contact is visible at this timestamp.",
+          "status": "UNCERTAIN"
+        },
+        {
+          "event_id": "event_000635",
+          "frame_ids": [
+            "f3"
+          ],
+          "reason": "Red player (Team 2) is visibly challenging and intercepting the ball from White player (Team 1).",
+          "status": "SUPPORTED"
+        },
+        {
+          "event_id": "event_000636",
+          "frame_ids": [
+            "f4"
+          ],
+          "reason": "Players are separated and moving; no active pass interception is occurring in this frame.",
+          "status": "UNCERTAIN"
+        }
+      ],
+      "team_alternation_annotated": "1队截获 → 2队截获 → 1队截获"
+    },
+    "structural_read": "H5 插在既有 early buildup 与 equalizer 之间，源时间紧贴扳平前约 18.9s；实际填补的是「早期蓄力镜头 → 扳平」晚段空白，而非「落后比分板 → 早期蓄力」空档（后者源间隔仍约 1677s）。内容以交替拦截/球权转换构成，距 equalizer action 仍有 ~18.9s；634/636 为 UNCERTAIN，本试剪不能单独证明已建立清晰进攻发起因果。",
+    "auto_accept": false,
+    "stop_after_trial": true
+  },
+  "paths": {
+    "baseline_mp4": "/tmp/lpy1_story_first_v2_p3_isolated_trial_20261116/baseline/story_clean_original.mp4",
+    "trial_mp4": "/tmp/lpy1_story_first_v2_p3_isolated_trial_20261116/trial/story_clean_trial_h5.mp4",
+    "trial_render_clean": "/tmp/lpy1_story_first_v2_p3_isolated_trial_20261116/trial/render/story_clean.mp4",
+    "trial_qc_mp4": "/tmp/lpy1_story_first_v2_p3_isolated_trial_20261116/trial/render/story_qc.mp4",
+    "temp_edl": "/tmp/lpy1_story_first_v2_p3_isolated_trial_20261116/trial/temp_edl.json",
+    "temp_edl_diff": "/tmp/lpy1_story_first_v2_p3_isolated_trial_20261116/trial/temp_edl_diff.json",
+    "formal_edl_not_modified": "/tmp/lpy1_v3a_p14_cv_integration_20261113/run/01_to_04_fresh_v3r/04_phase5/candidate_edl.json"
+  },
+  "stills": [
+    "/tmp/lpy1_story_first_v2_p3_isolated_trial_20261116/qc/stills/buildup_end.jpg",
+    "/tmp/lpy1_story_first_v2_p3_isolated_trial_20261116/qc/stills/equalizer_start.jpg",
+    "/tmp/lpy1_story_first_v2_p3_isolated_trial_20261116/qc/stills/h5_end.jpg",
+    "/tmp/lpy1_story_first_v2_p3_isolated_trial_20261116/qc/stills/h5_event635.jpg",
+    "/tmp/lpy1_story_first_v2_p3_isolated_trial_20261116/qc/stills/h5_start.jpg"
+  ],
+  "render_listing_sample": [
+    "_work_clean/clips/000_seg_title_open.mp4",
+    "_work_clean/clips/001_seg_opponent_opening_goal_action.mp4",
+    "_work_clean/clips/002_seg_setup_deficit.mp4",
+    "_work_clean/clips/003_seg_buildup_event_000472.mp4",
+    "_work_clean/clips/004_seg_story_first_ab22f01929b5cb4f59e6badd_01.mp4",
+    "_work_clean/clips/005_seg_equalizer_goal_action.mp4",
+    "_work_clean/clips/006_seg_equalizer_scoreboard.mp4",
+    "_work_clean/clips/007_seg_go_ahead_goal_action.mp4",
+    "_work_clean/clips/008_seg_go_ahead_scoreboard.mp4",
+    "_work_clean/clips/009_seg_title_close.mp4",
+    "_work_clean/concat_raw.concat.txt",
+    "_work_clean/concat_raw.mp4",
+    "_work_qc/clips/000_seg_title_open.mp4",
+    "_work_qc/clips/001_seg_opponent_opening_goal_action.mp4",
+    "_work_qc/clips/002_seg_setup_deficit.mp4",
+    "_work_qc/clips/003_seg_buildup_event_000472.mp4",
+    "_work_qc/clips/004_seg_story_first_ab22f01929b5cb4f59e6badd_01.mp4",
+    "_work_qc/clips/005_seg_equalizer_goal_action.mp4",
+    "_work_qc/clips/006_seg_equalizer_scoreboard.mp4",
+    "_work_qc/clips/007_seg_go_ahead_goal_action.mp4",
+    "_work_qc/clips/008_seg_go_ahead_scoreboard.mp4",
+    "_work_qc/clips/009_seg_title_close.mp4",
+    "_work_qc/concat_raw.concat.txt",
+    "_work_qc/concat_raw.mp4",
+    "story_clean.mp4",
+    "story_qc.mp4"
+  ],
+  "candidate_accepted": false,
+  "continue_revision": false
+}
