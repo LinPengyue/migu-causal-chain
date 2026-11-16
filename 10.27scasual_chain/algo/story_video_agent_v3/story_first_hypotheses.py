@@ -29,6 +29,19 @@ Return exactly one compact JSON object and no markdown, commentary or examples.
 Use ONLY real event IDs in the supplied full_event_inventory (all events between
 the V3-R anchors). rich_detail_events is only a detailed subset. Existing V3-R
 story_plan is frozen context, not proof of causality.
+Work ONLY INSIDE the interval between the supplied two existing EDL anchors.
+The anchor roles explain the narrative transition, but DO NOT prescribe its cause.
+First inspect the chronological event sequence for LOCAL NARRATIVE PATTERNS:
+repeated attempts, escalating threats, alternating pressure, interruption,
+setback, recovery, contrast or a turning point. These are possibilities, not facts.
+Then combine supported local patterns into 0..K DISTINCT candidate stories that
+could enrich or bridge the two anchor beats. Do not work backward from the next
+goal and attach arbitrary earlier events as causes. A candidate may be a
+non-causal narrative association; do not force every story to explain a goal.
+Prefer genuinely different event combinations and narrative functions over
+paraphrases of the same eventual outcome. Do not fabricate missing intermediate
+actions or sustained pressure. Score-worthy stories need multiple real events;
+if none exists, return fewer hypotheses or [].
 Suggest 0..K DISTINCT mechanisms. It is better to return 0 or 1 than invent
 a second mechanism. Each must connect events from separated phases AND propose
 one observable discriminating test that might refute the hypothesis.
@@ -333,6 +346,8 @@ def model_messages(prepared: Mapping[str, Any], max_hypotheses: int = 5) -> List
         raise ValueError("max_hypotheses_must_be_1_to_5")
     data = {
         "K": max_hypotheses, "story_scope": prepared["scope"],
+        "generation_strategy": "interval_local_patterns_then_story_combinations",
+        "anchor_transition_is_context_not_causal_proof": True,
         "frozen_story_plan": prepared["story_plan_reference"],
         # Full coverage: all real IDs and their labels. Rich context is a
         # documented subset, never the only universe of potential explanations.
