@@ -1,0 +1,74 @@
+{
+  "events": [
+    {
+      "annotation": {
+        "description": "",
+        "notes": "1队球员截获2队传球"
+      },
+      "event_id": "event_000634",
+      "event_type": "Defensive_action",
+      "known_replay_or_slowmo": false,
+      "source_pts_sec": 6403.81
+    },
+    {
+      "annotation": {
+        "description": "",
+        "notes": "2队球员截获1队球员传球"
+      },
+      "event_id": "event_000635",
+      "event_type": "Defensive_action",
+      "known_replay_or_slowmo": false,
+      "source_pts_sec": 6405.03
+    },
+    {
+      "annotation": {
+        "description": "",
+        "notes": "1队球员截获2队球员传球"
+      },
+      "event_id": "event_000636",
+      "event_type": "Defensive_action",
+      "known_replay_or_slowmo": false,
+      "source_pts_sec": 6410.07
+    }
+  ],
+  "narrative_purpose": "This proposal is the most compact and temporally adjacent to the equalizer window (6403.81s–6410.07s vs equalizer buildup at ~6442s). The three interceptions are all non-replay footage events and the observation query targets whether the final interception (event_000636) initiates forward progression toward the equalizer. This directly addresses the unresolved question of whether the buildup-to-equalizer transition has omitted causal state. Other proposals either rely on replay-flagged VAR footage (interval_01:H1), misattribute team sides (interval_01:H2, H4), or lack interleaved opponent even",
+  "proposal_ids": [
+    "interval_01:H5"
+  ],
+  "relations": [
+    {
+      "claim": "连续拦截后球权转换或导向扳平进攻",
+      "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+      "relation_id": "interval_01:H5:r1",
+      "relation_type": "state_transition",
+      "source_event_id": "event_000634",
+      "target_event_id": "event_000636"
+    }
+  ],
+  "story_context": [
+    {
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若三次拦截均发生在主角队防守半场则进攻起点假设不成立"
+      ],
+      "proposal_id": "interval_01:H5",
+      "summary": "扳平前主角队连续完成拦截夺回球权，或为最后进攻的组织起点。"
+    }
+  ],
+  "trial_id": "ab22f01929b5cb4f59e6badd",
+  "windows": [
+    {
+      "before_segment_id": "seg_equalizer_goal_action",
+      "candidate_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+      "event_ids": [
+        "event_000634",
+        "event_000635",
+        "event_000636"
+      ],
+      "insert_after_segment_id": "seg_buildup_event_000472",
+      "issue_id": "story_first:ab22f01929b5cb4f59e6badd",
+      "source_pts_end": 6418.07,
+      "source_pts_start": 6395.81
+    }
+  ]
+}

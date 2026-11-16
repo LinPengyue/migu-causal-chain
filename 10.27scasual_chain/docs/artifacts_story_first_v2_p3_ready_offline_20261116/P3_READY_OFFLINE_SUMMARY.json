@@ -1,0 +1,96 @@
+{
+  "code_sha": "75f31c64aca0da5933b5adc130f67e9890d5efae",
+  "baseline_vision_commit": "57119fe178f06d47c84b4850211bea48afb6d01a",
+  "paid_http_calls": 0,
+  "events_path": "/tmp/lpy1_v3a_p14_cv_integration_20261113/run/01_to_04_fresh_v3r/01_enrich/events_enriched.json",
+  "events_sha16": "33958b106f3daddd",
+  "annotated_ids": [
+    "event_000634",
+    "event_000635",
+    "event_000636"
+  ],
+  "status": "READY_FOR_TRIAL",
+  "intents_n": 1,
+  "intents": [
+    {
+      "intent_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+      "action": "search_add",
+      "story_first_preview_only": true,
+      "bound_source_window": {
+        "start": 6395.81,
+        "end": 6418.07
+      },
+      "event_ids": [
+        "event_000634",
+        "event_000635",
+        "event_000636"
+      ]
+    }
+  ],
+  "candidates": [
+    {
+      "candidate_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+      "preview_only": true,
+      "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+      "first_live_status": "NOT_VERIFIED",
+      "executable_safe_revision": false,
+      "source_pts_start": 6395.81,
+      "source_pts_end": 6418.07,
+      "reject_or_defer_reason": "first_live_evidence_validation_failed:frame_binding_validated"
+    }
+  ],
+  "advisory": [
+    {
+      "event_id": "event_000634",
+      "event_ids": [
+        "event_000634"
+      ],
+      "frame_ids": [
+        "f2"
+      ],
+      "reason": "Frame shows players in proximity but no clear interception action or ball contact is visible at this timestamp.",
+      "status": "UNCERTAIN"
+    },
+    {
+      "event_id": "event_000636",
+      "event_ids": [
+        "event_000636"
+      ],
+      "frame_ids": [
+        "f4"
+      ],
+      "reason": "Players are separated and moving; no active pass interception is occurring in this frame.",
+      "status": "UNCERTAIN"
+    }
+  ],
+  "feedback": [],
+  "event_observations": [
+    {
+      "event_id": "event_000634",
+      "frame_ids": [
+        "f2"
+      ],
+      "reason": "Frame shows players in proximity but no clear interception action or ball contact is visible at this timestamp.",
+      "status": "UNCERTAIN"
+    },
+    {
+      "event_id": "event_000635",
+      "frame_ids": [
+        "f3"
+      ],
+      "reason": "Red player (Team 2) is visibly challenging and intercepting the ball from White player (Team 1).",
+      "status": "SUPPORTED"
+    },
+    {
+      "event_id": "event_000636",
+      "frame_ids": [
+        "f4"
+      ],
+      "reason": "Players are separated and moving; no active pass interception is occurring in this frame.",
+      "status": "UNCERTAIN"
+    }
+  ],
+  "NO_ANNOTATED_REPLAY_OVERLAP": "NO_ANNOTATED_REPLAY_OVERLAP",
+  "p3_isolated_trial_ready": true,
+  "formal_edl_blocked": true
+}

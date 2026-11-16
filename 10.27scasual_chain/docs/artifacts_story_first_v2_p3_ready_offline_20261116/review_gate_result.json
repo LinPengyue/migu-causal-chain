@@ -1,0 +1,152 @@
+{
+  "status": "READY_FOR_TRIAL",
+  "feedback": [],
+  "advisory": [
+    {
+      "event_id": "event_000634",
+      "event_ids": [
+        "event_000634"
+      ],
+      "frame_ids": [
+        "f2"
+      ],
+      "reason": "Frame shows players in proximity but no clear interception action or ball contact is visible at this timestamp.",
+      "status": "UNCERTAIN"
+    },
+    {
+      "event_id": "event_000636",
+      "event_ids": [
+        "event_000636"
+      ],
+      "frame_ids": [
+        "f4"
+      ],
+      "reason": "Players are separated and moving; no active pass interception is occurring in this frame.",
+      "status": "UNCERTAIN"
+    }
+  ],
+  "annotation_supported_event_ids": [
+    "event_000634",
+    "event_000635",
+    "event_000636"
+  ],
+  "event_observations": [
+    {
+      "event_id": "event_000634",
+      "frame_ids": [
+        "f2"
+      ],
+      "reason": "Frame shows players in proximity but no clear interception action or ball contact is visible at this timestamp.",
+      "status": "UNCERTAIN"
+    },
+    {
+      "event_id": "event_000635",
+      "frame_ids": [
+        "f3"
+      ],
+      "reason": "Red player (Team 2) is visibly challenging and intercepting the ball from White player (Team 1).",
+      "status": "SUPPORTED"
+    },
+    {
+      "event_id": "event_000636",
+      "frame_ids": [
+        "f4"
+      ],
+      "reason": "Players are separated and moving; no active pass interception is occurring in this frame.",
+      "status": "UNCERTAIN"
+    }
+  ],
+  "candidates": [
+    {
+      "before_segment_id": "seg_equalizer_goal_action",
+      "candidate_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+      "event_ids": [
+        "event_000634",
+        "event_000635",
+        "event_000636"
+      ],
+      "insert_after_segment_id": "seg_buildup_event_000472",
+      "issue_id": "story_first:ab22f01929b5cb4f59e6badd",
+      "source_pts_end": 6418.07,
+      "source_pts_start": 6395.81,
+      "evidence_tier": "EVENT_PTS_CANDIDATE",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_available": true,
+      "executable_safe_revision": false,
+      "first_live_key": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c|6395.810:6418.070",
+      "first_live_validation": {
+        "ok": false,
+        "binding_valid": true,
+        "binding_status": "FRAME_BOUND_VALID",
+        "first_live_verified": false,
+        "replay_confirmed": false,
+        "reason": null,
+        "method": "frame_binding_validated",
+        "manifest_digest": "bc32ef52a9e2683814400a4b8a0e1ce481a9ecc5730d69e39d0e516dbf6a2e00"
+      },
+      "review_claimed_first_live_status": "NOT_VERIFIED",
+      "reject_or_defer_reason": "first_live_evidence_validation_failed:frame_binding_validated",
+      "story_first_trial_id": "ab22f01929b5cb4f59e6badd",
+      "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+      "preview_only": true
+    }
+  ],
+  "intents": [
+    {
+      "intent_id": "story_first_ab22f01929b5cb4f59e6badd_01",
+      "action": "search_add",
+      "role": "buildup_bridge_action",
+      "issue_id": "story_first:ab22f01929b5cb4f59e6badd",
+      "story_first_trial_id": "ab22f01929b5cb4f59e6badd",
+      "story_first_preview_only": true,
+      "anchor_id": "search:story_first_ab22f01929b5cb4f59e6badd_01",
+      "new_segment_id": "seg_story_first_ab22f01929b5cb4f59e6badd_01",
+      "insert_after_segment_id": "seg_buildup_event_000472",
+      "before_segment_id": "seg_equalizer_goal_action",
+      "bound_source_window": {
+        "start": 6395.81,
+        "end": 6418.07
+      },
+      "event_ids": [
+        "event_000634",
+        "event_000635",
+        "event_000636"
+      ],
+      "narrative_purpose": "This proposal is the most compact and temporally adjacent to the equalizer window (6403.81s–6410.07s vs equalizer buildup at ~6442s). The three interceptions are all non-replay footage events and the observation query targets whether the final interception (event_000636) initiates forward progression toward the equalizer. This directly addresses the unresolved question of whether the buildup-to-equalizer transition has omitted causal state. Other proposals either rely on replay-flagged VAR footage (interval_01:H1), misattribute team sides (interval_01:H2, H4), or lack interleaved opponent even",
+      "source_event_observations": [
+        {
+          "event_id": "event_000634",
+          "frame_ids": [
+            "f2"
+          ],
+          "reason": "Frame shows players in proximity but no clear interception action or ball contact is visible at this timestamp.",
+          "status": "UNCERTAIN"
+        },
+        {
+          "event_id": "event_000635",
+          "frame_ids": [
+            "f3"
+          ],
+          "reason": "Red player (Team 2) is visibly challenging and intercepting the ball from White player (Team 1).",
+          "status": "SUPPORTED"
+        },
+        {
+          "event_id": "event_000636",
+          "frame_ids": [
+            "f4"
+          ],
+          "reason": "Players are separated and moving; no active pass interception is occurring in this frame.",
+          "status": "UNCERTAIN"
+        }
+      ],
+      "expected_observable_improvement": "This proposal is the most compact and temporally adjacent to the equalizer window (6403.81s–6410.07s vs equalizer buildup at ~6442s). The three interceptions are all non-replay footage events and the observation query targets whether the final interception (event_000636) initiates forward progression toward the equalizer. This directly addresses the unresolved question of whether the buildup-to-equalizer transition has omitted causal state. Other proposals either rely on replay-flagged VAR footage (interval_01:H1), misattribute team sides (interval_01:H2, H4), or lack interleaved opponent even",
+      "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+      "evidence_refs": [
+        {
+          "kind": "story_first_source_review",
+          "ref": "story_first_ab22f01929b5cb4f59e6badd_01"
+        }
+      ]
+    }
+  ]
+}
