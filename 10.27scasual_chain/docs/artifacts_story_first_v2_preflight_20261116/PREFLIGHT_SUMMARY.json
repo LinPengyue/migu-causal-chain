@@ -1,0 +1,82 @@
+{
+  "code_sha": "5aef37cfa96e7ad2d9581b0df642f4cf20f308ff",
+  "pytest_acceptance": "74 passed (closed_loop + story_first suite + continuous_broadcast_phase)",
+  "http_calls": 0,
+  "est_cost_usd": 0.0,
+  "source_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+  "intervals": [
+    {
+      "artifact_sha256": {
+        "prepared_story_input.json": "63d08e7c9e3cf153c0b4d536154e8c15baecfdd88d335169bde16a28d93e7b1d",
+        "scheme_a_story_ranking.json": "ca17c278f2e10bd530db4e82f3bab4114d5d5cd69dbd6a04bbbdcc28f43f6f6b",
+        "story_hypotheses.json": "451b16ada209d5c5a8515bccdf9a131d16d1ed3676b7597c8db30f7feb333040"
+      },
+      "artifact_status": "OBSERVATION_QUEUE_ONLY",
+      "candidate_count": 5,
+      "from_segment_id": "seg_opponent_opening_goal_action",
+      "interval_id": "interval_01",
+      "reused_from": "/tmp/lpy1_scheme_a_causal4_run_20261116/01_generate_max5",
+      "scope": {
+        "anchor_source": "existing_v3r_edl",
+        "from_role": "opponent_opening_goal_action",
+        "from_segment_id": "seg_opponent_opening_goal_action",
+        "no_assumed_causality": true,
+        "source_interval_sec": [
+          1347.123,
+          6436.924
+        ],
+        "to_role": "equalizer_goal_action",
+        "to_segment_id": "seg_equalizer_goal_action"
+      },
+      "score_status": "REAL_MODEL_PRIOR_NOT_VIDEO_VERIFIED",
+      "status": "REUSED",
+      "to_segment_id": "seg_equalizer_goal_action"
+    },
+    {
+      "from_segment_id": "seg_equalizer_goal_action",
+      "interval_id": "interval_02",
+      "reason": null,
+      "scope": {
+        "anchor_source": "existing_v3r_edl",
+        "from_role": "equalizer_goal_action",
+        "from_segment_id": "seg_equalizer_goal_action",
+        "no_assumed_causality": true,
+        "source_interval_sec": [
+          6458.924,
+          6829.456
+        ],
+        "to_role": "go_ahead_goal_action",
+        "to_segment_id": "seg_go_ahead_goal_action"
+      },
+      "status": "PREPARED_ONLY",
+      "to_segment_id": "seg_go_ahead_goal_action"
+    }
+  ],
+  "proposal_count": 5,
+  "proposal_ids": [
+    "interval_01:H1",
+    "interval_01:H5",
+    "interval_01:H2",
+    "interval_01:H3",
+    "interval_01:H4"
+  ],
+  "interval_02_events": {
+    "inventory": 58,
+    "rich": 58
+  },
+  "interval_02_gen_budget": {
+    "measured_input_tokens_gen_interval_02": 12757,
+    "max_out": 4500,
+    "fits": true,
+    "est_usd_worst_case": 0.004613549999999999
+  },
+  "first_live_windows": 0,
+  "story_first_trial_present": false,
+  "numeric_scores_in_proposals": false,
+  "blocked_pending": [
+    "interval_02 real Generator+Scorer (paid)",
+    "Planner trial selection on real API",
+    "FIRST_LIVE for candidate story-action windows",
+    "trial render + dual-video verifier quality"
+  ]
+}
