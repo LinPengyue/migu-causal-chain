@@ -22,11 +22,10 @@ from .story_first_poc_cli import (
     write_json,
 )
 
-SCHEMA = "v2_story_first_scheme_a_whole_story_prior_v1"
-_AXES = ("anchor_fit", "internal_coherence", "joint_composition",
-         "marginal_narrative_gain", "event_grounding")
-_WORDS = ("new_story_information", "comparison_to_existing_story",
-          "major_uncertainty")
+SCHEMA = "v2_story_first_scheme_a_causal_prior_v2"
+_AXES = ("internal_causal_link", "anchor_causal_bridge",
+         "joint_causal_gain", "factual_support")
+_WORDS = ("causal_mechanism", "major_uncertainty")
 
 
 def _read(path: Path) -> Dict[str, Any]:
@@ -80,34 +79,30 @@ def build_score_messages(prepared: Mapping[str, Any],
             "expected_story_contribution": h.get("expected_story_contribution"),
         })
     system = (
-        "You are an INDEPENDENT football story assessor, not the candidate generator. "
-        "Given a frozen V3-R story, two existing story anchors, and real event IDs, "
-        "score each proposed MULTI-EVENT story AS A WHOLE, not by summing per-event relevance. "
-        "Check every proposed causal arrow against source_pts_sec: its source must be "
-        "earlier than its target. Distinguish protagonist and opponent team from "
-        "explicit event annotations; do not attribute opponent actions to protagonist. "
-        "A shot predating a proposed buildup cannot support its claimed consequence. "
-        "Use only supplied event facts; event order, substitutions and commentary DO NOT prove "
-        "causality, player intentions or tactical changes. Replay-labelled events cannot be "
-        "promoted to source footage. No video has been watched. Score cautiously on 0..4 "
-        "ordinal scales (0=no support; 4=strong event-level justification, NOT verified). "
-        "Assess anchor_fit, internal_coherence, joint_composition "
-        "(whole more useful than isolated events), marginal_narrative_gain "
-        "(nonredundant information compared with existing story), event_grounding. "
-        "Use frozen_story_plan for the intended narrative and current_edl for the "
-        "segments already selected, in playback order. Compare the proposed new information "
-        "to those segments for marginal gain: prefer 0 if it is already covered. "
-        "EDL times and labels describe the cut plan; they are not video observations. "
-        "If an event has only an ID, time and label, those do not establish team or player "
-        "identity, continuous possession, or a link between distinct events. "
-        "Never invent event IDs, source times, frames, or observations. "
-        "Return ONE JSON object exactly {evaluations:[{hypothesis_id,anchor_fit,"
-        "internal_coherence,joint_composition,marginal_narrative_gain,event_grounding,"
-        "cited_event_ids,new_story_information,comparison_to_existing_story,"
-        "major_uncertainty}]}. All five scores are INTEGERS 0..4. "
-        "cited_event_ids must be a nonempty subset of that hypothesis's event IDs. "
-        "Return one evaluation per candidate, including bad ones. "
-        "No EDL edits, causal certification, video evidence or final decision."
+        "You are an INDEPENDENT causal-combination assessor, not the generator. "
+        "Evaluate candidate multi-event causal hypotheses strictly within the two "
+        "existing V3-R EDL anchors. The story plan and EDL define anchor roles and "
+        "time scope, NOT causal proof. No novelty, EDL overlap, storytelling appeal "
+        "or narrative tension scoring. Evaluate the COMBINATION, not the sum of "
+        "individual event importance. Four integer axes 0..4: "
+        "internal_causal_link (30%: plausible cause, obstruction or state evolution "
+        "among events, not just temporal adjacency), "
+        "anchor_causal_bridge (30%: combination plausibly supports A-to-B transition), "
+        "joint_causal_gain (25%: multi-event explanation adds explanatory structure "
+        "beyond any single event), factual_support (15%: alignment with supplied "
+        "events, temporal order and actors; missing video evidence limits certainty). "
+        "Do not treat temporal order, commentary, substitution or replay as causal "
+        "proof. Check event times and explicit team identities; opposing-team "
+        "actions are allowed when correctly attributed. Distinguish hypothetical "
+        "causation from verified evidence. For non-causal narrative associations, "
+        "do not invent causal links to raise the score. All axes are ordinal, "
+        "0=no support, 4=strong event-level plausibility, never causal proof. "
+        "Return ONE JSON object exactly "
+        "{evaluations:[{hypothesis_id,internal_causal_link,anchor_causal_bridge,"
+        "joint_causal_gain,factual_support,cited_event_ids,causal_mechanism,"
+        "major_uncertainty}]}. cited_event_ids must be a nonempty subset of "
+        "that candidate's supporting event IDs. Return one evaluation per candidate "
+        "including weak candidates. No video verification, EDL edits or Planner promotion."
     )
     user = {
         "story_scope": prepared["scope"],
@@ -158,13 +153,12 @@ def rank_model_evaluations(score_json: Mapping[str, Any],
                 or len(set(map(str, cited))) != len(cited)
                 or any(str(e) not in support for e in cited)):
             raise ValueError("cited_events_unbound_to_candidate:" + hid)
-        # The ranking is a non-calibrated, bounded QUEUE PRIOR only.
-        structural = (item["anchor_fit"] + item["internal_coherence"]
-                      + item["joint_composition"]) / 12.0
-        gain = item["marginal_narrative_gain"] / 4.0
-        grounding = item["event_grounding"] / 4.0
+        # Weighted causal plausibility, not a calibrated causal effect.
         multi_event = len(support) >= 2
-        priority = round(0.45 * structural + 0.40 * gain + 0.15 * grounding, 4)
+        priority = round((0.30 * item["internal_causal_link"]
+                          + 0.30 * item["anchor_causal_bridge"]
+                          + 0.25 * item["joint_causal_gain"]
+                          + 0.15 * item["factual_support"]) / 4.0, 4)
         ranked.append({
             "multi_event_combination": multi_event,
             "hypothesis_id": hid,
@@ -173,16 +167,12 @@ def rank_model_evaluations(score_json: Mapping[str, Any],
             "scores": {axis: item[axis] for axis in _AXES},
             "cited_event_ids": [str(e) for e in cited],
             "model_priority_0_to_1": priority,
-            "structural_prior": round(structural, 4),
-            "marginal_gain_prior": round(gain, 4),
-            "event_grounding_prior": round(grounding, 4),
-            "new_story_information": item["new_story_information"],
-            "comparison_to_existing_story": item["comparison_to_existing_story"],
+            "causal_combination_prior": priority,
+            "causal_mechanism": item["causal_mechanism"],
             "major_uncertainty": item["major_uncertainty"],
             "requires_video_evidence": True,
             "causal_link_verified": False,
-            "narrative_gain_verified": False,
-            "first_live_certified": False,
+                "first_live_certified": False,
             "planner_eligible": False,
         })
     ranked.sort(key=lambda x: (-x["model_priority_0_to_1"], x["hypothesis_id"]))
