@@ -49,7 +49,7 @@ tests/test_v3a_continuous_broadcast_phase.py
 ### interval_02 付费就绪（未调用）
 
 - 已写出 `generator_request.json`
-- 官方 tokenizer 测量：**≈14968** input tokens；`max_out=4500` 时 worst-case 项目估价约 **$0.0035**（远低于 $0.10）
+- 官方 tokenizer 测量：**12757** input tokens；`max_out=4500` 时 worst-case 项目估价约 **$0.0046**（远低于 $0.10）
 - 状态停在 `PREPARED_ONLY`（offline / 无 API）
 
 ## 3. 尚未完成（步骤 3–4，需预算授权）
