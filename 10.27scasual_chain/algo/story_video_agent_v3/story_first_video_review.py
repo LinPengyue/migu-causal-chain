@@ -13,10 +13,16 @@ from .story_first_poc_cli import parse_model_json, write_json
 from .story_paid_eval import _call_audit_from_raw
 
 
+# Footage immediately outside an insertion helps inspect the play in source
+# order. Its sampled frames do not become part of the edit-fit triplet.
+_SOURCE_CONTEXT_SEC = 20.0
+_EDIT_ROLES = {"before", "candidate", "after"}
+
+
 def _story_review_frames(trial, edl, source_mp4, out_dir):
     media = probe_video(source_mp4)
     store = FrameStore(media, out_dir=out_dir / "source_frames",
-                       budget=FrameBudget(max_frames=6 * len(trial["windows"]) + len(trial["events"])))
+                       budget=FrameBudget(max_frames=10 * len(trial["windows"]) + len(trial["events"])))
     event_pts = {row["event_id"]: row["source_pts_sec"] for row in trial["events"]}
     refs, contexts = {}, {}
     for window in trial["windows"]:
@@ -29,13 +35,23 @@ def _story_review_frames(trial, edl, source_mp4, out_dir):
             roles = {role: (window if role == "candidate" else context[role])
                      for role in ("before", "candidate", "after")}
             contexts[wid] = context
+            local_before = float(context["before"]["source_pts_end"])
+            local_after = float(context["after"]["source_pts_start"])
+            start = float(window["source_pts_start"])
+            end = float(window["source_pts_end"])
+            for role, lo, hi in (
+                ("source_leadin", max(local_before, start - _SOURCE_CONTEXT_SEC), start),
+                ("source_followthrough", end, min(local_after, end + _SOURCE_CONTEXT_SEC)),
+            ):
+                if hi - lo >= 1.0:
+                    roles[role] = {"source_pts_start": lo, "source_pts_end": hi}
         for role, span in roles.items():
             start, end = span["source_pts_start"], span["source_pts_end"]
             times = {start + fraction * (end - start): [] for fraction in (0.3, 0.7)}
             if role == "candidate":
                 for eid in window["event_ids"]:
                     times.setdefault(event_pts[eid], []).append(eid)
-            for idx, (target, event_ids) in enumerate(sorted(times.items())):
+            for target, event_ids in sorted(times.items()):
                 frame = store.extract_at(
                     target, gap_id=f"{wid}:{role}",
                     tool="story_first_source_review",
@@ -44,7 +60,7 @@ def _story_review_frames(trial, edl, source_mp4, out_dir):
                 if (frame.pts_status != "pts" or pts is None
                         or not start - 0.05 <= pts <= end + 0.05):
                     raise ValueError("decoded_pts_outside_review_window:" + wid)
-                fid = f"{wid}:{role}:{idx}"
+                fid = f"f{len(refs) + 1}"
                 refs[fid] = {
                     "role": role, "frame_id": fid, "window_id": wid,
                     "event_ids": event_ids,
@@ -96,29 +112,39 @@ def observe_story_first_trial(api, *, trial, edl, source_mp4, source_sha, out_di
     try:
         refs, contexts = _story_review_frames(trial, edl, source_mp4, out_dir)
         context = {
-            "trial": trial,
-            "frame_refs": [{k: v for k, v in ref.items() if k not in ("path", "sha256")}
-                           for ref in refs.values()],
+            "purpose": trial.get("narrative_purpose"),
+            "events": trial["events"],
+            "relations": trial["relations"],
+            "windows": [
+                {k: w.get(k) for k in ("candidate_id", "source_pts_start", "source_pts_end",
+                                      "event_ids", "existing_segment_id")}
+                for w in trial["windows"]
+            ],
+            "frame_refs": [
+                {k: ref[k] for k in ("frame_id", "role", "window_id", "event_ids", "source_pts_sec")}
+                for ref in refs.values()
+            ],
         }
         prompt = (
-            "Review this proposed story from ordered, source-bound still frames. "
-            "Check each event and each proposed relation separately. Cite the supplied "
-            "candidate frames for that event or both relation endpoints. If the evidence is "
-            "ambiguous, specify what the next observation must resolve. Chronology and action "
-            "similarity alone do not establish a causal relation. Judge the selected events "
-            "and stated trial purpose. Other details in the original proposal are context "
-            "and may have been explicitly dropped. Opposing teams may act, "
-            "but the attribution must be accurate. If motion, attribution or the relation "
-            "cannot be determined, return UNCERTAIN. Do not certify first live; flag visible "
-            "replay/slow motion as CONTRADICTED. For each new window also assess BEFORE, "
-            "CANDIDATE, AFTER in the current cut and name the specific story information it "
-            "contributes. The trial may combine more than one clip. Return compact JSON "
-            "with events:[{event_id,status:SUPPORTED|CONTRADICTED|UNCERTAIN,reason,frame_ids}], "
-            "relations:[{relation_id,status,reason,frame_ids}], "
-            "fit:[{window_id,verdict:SUPPORTS_INSERT|REJECT_INSERT|UNCERTAIN,story_function,"
+            "Review the selected story from source-bound stills. For event and relation "
+            "checks, use candidate frames and the optional source_leadin/source_followthrough "
+            "frames in original broadcast order. Cite the candidate frames for each event "
+            "or both relation endpoints. Describe only visible facts. Use UNCERTAIN when "
+            "the sequence or causal mechanism is missing; team attribution must match. "
+            "Flag replay or slow motion in the candidate as CONTRADICTED. For edit fit, BEFORE and "
+            "AFTER are the adjacent clips in the actual cut. A large PTS jump does not by "
+            "itself imply a bad edit. Use the before/candidate/after frames to assess the "
+            "added information and cut continuity. Source-only context is not in the cut. "
+            "Return one compact JSON object, no markdown or restating event descriptions. "
+            "One row per event, relation and new window. Use short frame IDs. Limit each "
+            "reason or explanation to 4–12 words; explain the most important uncertainty. "
+            "{events:[{event_id,status:SUPPORTED|CONTRADICTED|UNCERTAIN,reason,frame_ids}],"
+            "relations:[{relation_id,status,reason,frame_ids}],"
+            "fit:[{window_id,verdict:SUPPORTS_INSERT|REJECT_INSERT|UNCERTAIN,"
             "before_to_candidate,candidate_to_after,new_story_information,baseline_comparison,"
-            "missing_information_addressed,falsifiable_gain,evidence_frame_ids}]. "
-            "Cite all three roles for each fit result.\n" + json.dumps(context, ensure_ascii=False)
+            "missing_information_addressed,falsifiable_gain,evidence_frame_ids}]}. "
+            "For fit, cite at least one frame from each edit role. First-live certification "
+            "requires separate evidence.\n" + json.dumps(context, ensure_ascii=False, separators=(",", ":"))
         )
         write_json(out_dir / "review_input.json", {
             "source_sha256": source_sha, "prompt": prompt, "frame_refs": list(refs.values()),
@@ -159,7 +185,9 @@ def observe_story_first_trial(api, *, trial, edl, source_mp4, source_sha, out_di
                for r in ("before", "after") for k in ("start", "end")},
             "review_method": "vlm_ordered_triplet_frames",
             "verdict": review.get("verdict"),
-            "frame_refs": [r for r in refs.values() if r["window_id"] == wid],
+            "frame_refs": [
+                r for r in refs.values() if r["window_id"] == wid and r["role"] in _EDIT_ROLES
+            ],
             "narrative_review": dict(review),
         }
     return {"feedback": feedback, "fit_records": fit_records}

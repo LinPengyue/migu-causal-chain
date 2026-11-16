@@ -206,6 +206,8 @@ def validate_narrative_fit_review(
         "review_method": record["review_method"],
         "review_verdict": verdict,
         "story_function": review.get("story_function"),
+        "before_to_candidate": review.get("before_to_candidate"),
+        "candidate_to_after": review.get("candidate_to_after"),
         "missing_information_addressed": review.get("missing_information_addressed"),
         "new_story_information": review.get("new_story_information"),
         "falsifiable_gain": review.get("falsifiable_gain"),

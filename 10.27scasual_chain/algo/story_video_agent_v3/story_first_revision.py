@@ -110,6 +110,16 @@ def bind_story_first_trial(selection, proposals, edl, tried):
             "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
         })
 
+    # A Planner can repeat an original relation in revised_relations.
+    # Keep the original ID for feedback and review the identical claim once.
+    unique_claims = {}
+    for claim in claims:
+        identity = tuple(claim[field] for field in (
+            "source_event_id", "target_event_id", "relation_type", "claim",
+        ))
+        unique_claims.setdefault(identity, claim)
+    claims = list(unique_claims.values())
+
     windows.sort(key=lambda x: (x["source_pts_start"], x["source_pts_end"]))
     merged = []
     for window in windows:
@@ -214,6 +224,12 @@ def review_story_first_trial(trial, *, api, edl, source_mp4, source_sha, out_dir
             feedback.append({
                 "window_id": w["candidate_id"], "event_ids": w["event_ids"],
                 "status": fit["status"], "reason": fit["reason"],
+                "edit_context": {
+                    k: value for k, value in (
+                        ("before_to_candidate", fit.get("before_to_candidate")),
+                        ("candidate_to_after", fit.get("candidate_to_after")),
+                    ) if value
+                },
             })
         candidates.append({
             **c, "story_first_trial_id": trial["trial_id"],

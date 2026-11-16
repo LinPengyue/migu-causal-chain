@@ -93,6 +93,19 @@ def test_all_intervals_and_planner_receives_all_without_numeric_score(tmp_path, 
     pool = _generate(tmp_path, monkeypatch)
     assert [i["scope"]["source_interval_sec"] for i in pool["intervals"]] == [[10, 90], [100, 170]]
     assert [p["proposal_id"] for p in pool["proposals"]] == ["interval_01:H1", "interval_02:H1"]
+    from story_video_agent_v3.story_first_revision import bind_story_first_trial
+
+    proposal = pool["proposals"][0]
+    duplicate = {k: proposal["relations"][0][k] for k in (
+        "source_event_id", "target_event_id", "relation_type", "claim"
+    )}
+    bound = bind_story_first_trial({
+        "selections": [{"proposal_id": proposal["proposal_id"],
+                        "event_ids": ["x", "y"], "relation_ids": ["r1"]}],
+        "revised_relations": [duplicate],
+    }, pool["proposals"], EDL, set())
+    assert [r["relation_id"] for r in bound["relations"]] == ["interval_01:H1:r1"]
+
     rank_path = tmp_path / "interval_01/scheme_a_ranking/scheme_a_story_ranking.json"
     assert json.loads(rank_path.read_text())["ranked_hypotheses"][0]["causal_combination_prior"] == .25
 
@@ -264,17 +277,17 @@ def test_source_observation_uses_decoded_pts_and_relation_specific_citations(tmp
     source = tmp_path / "source.mp4"
     subprocess.run([
         "ffmpeg", "-hide_banner", "-loglevel", "error", "-f", "lavfi",
-        "-i", "testsrc2=duration=7:size=96x64:rate=25", "-c:v", "libx264", str(source),
+        "-i", "testsrc2=duration=16:size=96x64:rate=25", "-c:v", "libx264", str(source),
     ], check=True, capture_output=True)
     edl = [
         {"segment_id": "a", "media_in": 0.0, "media_out": 1.0},
-        {"segment_id": "b", "media_in": 5.0, "media_out": 6.0},
+        {"segment_id": "b", "media_in": 13.0, "media_out": 15.0},
     ]
     trial = {
-        "events": [{"event_id": "x", "source_pts_sec": 2.0}, {"event_id": "y", "source_pts_sec": 3.0}],
+        "events": [{"event_id": "x", "source_pts_sec": 6.0}, {"event_id": "y", "source_pts_sec": 8.0}],
         "relations": [{"relation_id": "r", "source_event_id": "x", "target_event_id": "y"}],
         "windows": [{
-            "candidate_id": "w", "source_pts_start": 1.25, "source_pts_end": 4.5,
+            "candidate_id": "w", "source_pts_start": 4.0, "source_pts_end": 10.0,
             "event_ids": ["x", "y"], "issue_id": "f",
             "insert_after_segment_id": "a", "before_segment_id": "b",
         }],
@@ -286,13 +299,30 @@ def test_source_observation_uses_decoded_pts_and_relation_specific_citations(tmp
             by_event = {eid: r["frame_id"] for r in refs for eid in r["event_ids"]}
             assert set(by_event) == {"x", "y"}
             assert all(r["pts_status"] == "pts" for r in refs)
+            by_role = {role: [r["source_pts_sec"] for r in refs if r["role"] == role]
+                       for role in ("before", "candidate", "after", "source_leadin", "source_followthrough")}
+            assert all(by_role.values())
+            assert all(0 <= pts <= 1 for pts in by_role["before"])
+            assert all(1 < pts < 4 for pts in by_role["source_leadin"])
+            assert all(10 < pts < 13 for pts in by_role["source_followthrough"])
+            assert all(13 <= pts <= 15 for pts in by_role["after"])
             result = {
                 "events": [{"event_id": eid, "status": "SUPPORTED", "frame_ids": [fid],
                             "reason": "Fixture observation at the referenced event frame"}
                            for eid, fid in by_event.items()],
                 # A citation to x alone can't support the relationship to y.
                 "relations": [{"relation_id": "r", "status": "SUPPORTED", "frame_ids": [by_event["x"]]}],
-                "fit": [],
+                "fit": [{
+                    "window_id": "w", "verdict": "REJECT_INSERT",
+                    "before_to_candidate": "Prior cut does not motivate insertion",
+                    "candidate_to_after": "The later cut starts a different attack",
+                    "new_story_information": "The clips show possession changed several times",
+                    "baseline_comparison": "The baseline already conveys the narrative transition",
+                    "evidence_frame_ids": [
+                        next(r["frame_id"] for r in refs if r["role"] == role)
+                        for role in ("before", "candidate", "after")
+                    ],
+                }],
             }
             return {"provider_mode": "real", "finish_reason": "stop", "content": json.dumps(result)}
 
@@ -304,6 +334,13 @@ def test_source_observation_uses_decoded_pts_and_relation_specific_citations(tmp
         "relation_id": "r", "event_ids": ["x", "y"], "status": "UNCERTAIN",
         "reason": "missing_bound_visual_support",
     }]
+    from story_video_agent_v3.story_narrative_fit import validate_narrative_fit_review
+    fit = validate_narrative_fit_review(
+        result["fit_records"]["w"], candidate=trial["windows"][0],
+        source_sha=hashlib.sha256(source.read_bytes()).hexdigest(), edl=edl,
+    )
+    assert fit["status"] == "REVIEW_REJECTED"
+    assert fit["before_to_candidate"] == "Prior cut does not motivate insertion"
 
 
 def test_multi_clip_story_in_one_gap_preserves_source_order(tmp_path, monkeypatch):
