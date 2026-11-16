@@ -280,6 +280,7 @@ def test_scheme_a_ranking_integrates_to_observation_queue_only(tmp_path):
     result = run()
     assert result["status"] == "OBSERVATION_QUEUE_ONLY"
     assert result["scheme_a_selected_for_observation"] == ["H2"]
+    assert result["scheme_a_ranking"] == output["ranked_hypotheses"]
     assert result["observation_targets"][0]["hypothesis_id"] == "H2"
     assert result["planner_candidates"] == []
     assert result["first_live_certified"] is False
@@ -302,3 +303,18 @@ def test_scheme_a_ranking_integrates_to_observation_queue_only(tmp_path):
     assert "scheme_a_ranking_not_reproducible" in rejected["reason"]
     assert rejected["observation_targets"] == []
     assert rejected["hypotheses"] == []
+
+    legacy_schema = "v2_story_first_scheme_a_whole_story_prior_v1"
+    (ranking_dir / "scheme_a_story_ranking.json").write_text(
+        json.dumps({**output, "schema": legacy_schema}), encoding="utf-8")
+    (ranking_dir / "scheme_a_audit.json").write_text(
+        json.dumps({"schema": legacy_schema,
+                    "status": "OFFLINE_FIXTURE_NOT_REAL_LLM"}),
+        encoding="utf-8")
+    legacy = run()
+    assert legacy["status"] == "OBSERVATION_QUEUE_ONLY"
+    assert legacy["scheme_a_ranking_status"] == "LEGACY_RANKING_IGNORED"
+    assert legacy["scheme_a_selected_for_observation"] == []
+    assert legacy["observation_targets"] == awaiting["observation_targets"]
+    (poc / "prepared_story_input.json").write_text(json.dumps(prepared) + "\n")
+    assert "scheme_a_source_artifacts_changed" in run()["reason"]

@@ -13,6 +13,7 @@ import json
 from pathlib import Path
 from typing import Any, Dict, Mapping, Optional, Sequence
 
+from .story_first_a_ranker import SCHEMA as CAUSAL_RANKING_SCHEMA
 from .story_first_a_ranker import rank_model_evaluations
 from .story_first_hypotheses import (
     build_observation_plan,
@@ -31,6 +32,7 @@ _UNSCORED_MODES = {
     "PREPARED_ONLY_ZERO_HTTP": "AWAITING_SCORING_MODEL",
     "NO_STAGE1_CANDIDATES": "NO_CANDIDATES",
 }
+_LEGACY_RANKING_SCHEMA = "v2_story_first_scheme_a_whole_story_prior_v1"
 
 
 def _read_artifact(directory: Path, name: str) -> Mapping[str, Any]:
@@ -164,6 +166,9 @@ def read_story_first_observation_branch(
                 ).hexdigest()):
                 raise ValueError("scheme_a_source_artifacts_changed")
             audit_status = str(rank_audit.get("status") or "")
+            if (audit_status in _SCORED_MODES and "current_edl" in old
+                    and old["current_edl"] != fresh["current_edl"]):
+                raise ValueError("current_edl_changed_since_scheme_a_input")
             if audit_status not in _SCORED_MODES:
                 if (audit_status not in _UNSCORED_MODES
                         or ranking.get("status") != _UNSCORED_MODES[audit_status]
@@ -172,9 +177,14 @@ def read_story_first_observation_branch(
                         or (audit_status == "NO_STAGE1_CANDIDATES"
                             and validated["hypotheses"])):
                     raise ValueError("scheme_a_not_scored_or_untrusted_mode")
+            elif (ranking.get("schema") == _LEGACY_RANKING_SCHEMA
+                  and rank_audit.get("schema") == _LEGACY_RANKING_SCHEMA):
+                # Retain reconstructed observations from older artifacts without
+                # applying the obsolete whole-story priority.
+                audit_status = "LEGACY_RANKING_IGNORED"
         if audit_status in _SCORED_MODES:
-            if "current_edl" in old and old["current_edl"] != fresh["current_edl"]:
-                raise ValueError("current_edl_changed_since_scheme_a_input")
+            if ranking.get("schema") != CAUSAL_RANKING_SCHEMA:
+                raise ValueError("scheme_a_unsupported_ranking_schema")
             rows = ranking.get("ranked_hypotheses")
             if not isinstance(rows, list):
                 raise ValueError("scheme_a_missing_rank_rows")
@@ -185,9 +195,7 @@ def read_story_first_observation_branch(
                 entry = {
                     "hypothesis_id": item.get("hypothesis_id"),
                     "cited_event_ids": item.get("cited_event_ids"),
-                    "new_story_information": item.get("new_story_information"),
-                    "comparison_to_existing_story": item.get(
-                        "comparison_to_existing_story"),
+                    "causal_mechanism": item.get("causal_mechanism"),
                     "major_uncertainty": item.get("major_uncertainty"),
                 }
                 scores = item.get("scores")
