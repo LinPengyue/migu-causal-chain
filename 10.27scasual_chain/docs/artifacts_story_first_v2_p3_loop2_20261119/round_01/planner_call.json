@@ -1,0 +1,44 @@
+{
+  "error": null,
+  "parsed": {
+    "actions": [
+      {
+        "action": "KEEP",
+        "rationale": "The current bridge segment (seg_story_first_ab22f01929b5cb4f59e6badd_01) is already trimmed to the strict source window [6403.81, 6410.07] from the prior feedback. The working cut caption shows the insert phase is DESCRIBED with a wide shot of midfield passing, which provides setup/context before the equalizer without claiming an outcome. The source jump issue from seg_buildup_event_000472 to the bridge remains, but the bridge itself is functioning as a chronological buffer and no further edit is warranted given the advisory flags on the underlying events (event_000634 and event_000636 are UNCERTAIN)."
+      },
+      {
+        "action": "STOP",
+        "rationale": "If the goal is to minimize unverified visual claims, returning to the baseline would remove the bridge entirely. However, this would restore the larger source jump (1718.5s) between seg_buildup_event_000472 and seg_equalizer_goal_action, which the prior feedback identified as resolved by the current bridge. STOP is a fallback only if the bridge is judged to add no narrative value."
+      },
+      {
+        "action": "TRIM",
+        "rationale": "A further trim could tighten the bridge to only the first interception (event_000634 at 6403.81) to reduce the window to a single possession-recovery moment. However, the current advisory marks event_000634 as UNCERTAIN, so narrowing to that event would increase reliance on unverified action. The current 6.26s window is already minimal and preserves the midfield context without overclaiming.",
+        "segment_id": "seg_story_first_ab22f01929b5cb4f59e6badd_01",
+        "source_window_sec": [
+          6403.81,
+          6405.03
+        ]
+      }
+    ]
+  },
+  "call_audit": {
+    "model": "DeepSeek-V4-Pro-0813",
+    "provider_mode": "real",
+    "logical_role": "story_first_p3_planner",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "prompt_tokens": 11767,
+    "completion_tokens": 429,
+    "reasoning_tokens": 0,
+    "text_tokens": null,
+    "finish_reason": "stop",
+    "visible_output_chars": 1709,
+    "est_cost_usd": 0.00202245,
+    "http_ok": true,
+    "empty_content": false
+  }
+}
