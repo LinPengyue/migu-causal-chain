@@ -209,3 +209,49 @@ def test_resume_records_second_edit_and_after_cut_evidence(case):
     context = json.loads((case["out_dir"] / "round_01/planner_input.json").read_text())
     assert context["editable_trial_segment_ids_and_source_bounds"] == {"trial": [28, 39]}
     assert [c["status"] for c in context["working_cut_caption"]["coverage"]] == ["DESCRIBED"] * 3
+
+
+def test_local_p3_allows_three_applied_trims_then_accepts(case, monkeypatch):
+    windows = [(26, 42), (27, 41), (28, 40)]
+    actions = iter([
+        [{"action": "TRIM", "segment_id": "right", "source_window_sec": [51, 59]},
+         {"action": "TRIM", "segment_id": "trial", "source_window_sec": list(window)}]
+        for window in windows
+    ])
+    captions, applied = [], []
+    api = ScriptedAPI(max_calls=7)
+
+    def caption(api, manifest, out):
+        api._http_attempts += 1
+        captions.append(manifest["render_mp4_sha256"])
+        return {"observations": [{"description": "Visible play"}]}
+
+    def plan(api, **kwargs):
+        api._http_attempts += 1
+        return next(actions)
+
+    def render(rows, out):
+        assert rows[0] == BASE[0] and rows[-1] == BASE[1]
+        applied.append((rows[1]["media_in"], rows[1]["media_out"]))
+        out.mkdir(parents=True)
+        path = out / "preview.mp4"
+        path.write_bytes(str(applied[-1]).encode())
+        return path
+
+    monkeypatch.setattr(p3, "_caption", caption)
+    monkeypatch.setattr(p3, "_plan", plan)
+    result = p3.run_p3_revision(**case, api=api, render=render, max_local_trims=3)
+    assert applied == windows
+    assert result["completed_edits"] == 3 and result["http_calls"] == 7
+    assert len(set(captions)) == 4 and captions[-1] == result["selected_preview_mp4_sha256"]
+    assert result["stop_reason"] == "TRIM_LIMIT" and result["preview_accepted"]
+    assert not result["release_authorized"]
+
+
+def test_local_p3_missing_caption_keeps_verified_cut(case):
+    api = ScriptedAPI(({}, "length"), max_calls=2)
+    result = p3.run_p3_revision(**case, api=api, max_local_trims=3)
+    assert result["preview_accepted"] and result["completed_edits"] == 0
+    assert result["selected_preview_mp4"] == str(case["trial_mp4"])
+    assert result["stop_reason"] == "CAPTION_UNAVAILABLE"
+    assert api.roles == ["story_first_p3_caption"]

@@ -56,6 +56,8 @@ def main(argv=None):
     parser.add_argument("--resume-trim-artifacts", type=Path)
     parser.add_argument("--resume-mp4", type=Path)
     parser.add_argument("--max-rounds", type=int, default=1, choices=range(1, MAX_P3_ROUNDS + 1))
+    parser.add_argument("--max-local-trims", type=int, choices=range(MAX_P3_ROUNDS + 1),
+                        help="Default-accept P3 mode with up to this many applied trims")
     parser.add_argument("--max-calls", type=int, default=2)
     parser.add_argument("--max-cost-usd", type=float, default=0.05)
     parser.add_argument("--enable-real-api", action="store_true")
@@ -67,7 +69,8 @@ def main(argv=None):
     api, render, review_replacement = None, None, None
     if args.enable_real_api and (
         not args.i_approve_budget or os.environ.get("STORY_API_ENABLE") != "1"
-        or not 2 <= args.max_calls <= 3 * args.max_rounds
+        or not 2 <= args.max_calls <= (2 * args.max_local_trims + 1
+                                      if args.max_local_trims else 3 * args.max_rounds)
         or not math.isfinite(args.max_cost_usd) or args.max_cost_usd <= 0
         or not args.source_mp4 or not args.events_json
     ):
@@ -116,7 +119,7 @@ def main(argv=None):
             proposals=pool["proposals"], story_plan=plan, out_dir=args.out_dir,
             api=api, render=render, review_replacement=review_replacement,
             prior_feedback=[read_json(path) for path in args.history], max_rounds=args.max_rounds,
-            resume_trim=resume_trim,
+            resume_trim=resume_trim, max_local_trims=args.max_local_trims,
         )
     except (KeyError, TypeError, ValueError, OSError, RuntimeError) as exc:
         parser.exit(2, f"P3 setup failed: {exc}\n")
