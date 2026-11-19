@@ -1,0 +1,191 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若两事件间无同队连续进攻画面则假设不成立"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "post_equalizer_shot_sequence_to_go_ahead",
+      "narrative_summary": "扳平后连续射门与扑救交替出现，可能为反超进球积累攻势。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "射门方球衣颜色",
+          "question": "该射门是否由反超方发起？",
+          "target_id": "event:event_000562"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "早期射门与后期突破或属同一攻势链，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000562",
+          "target_event_id": "event_000631"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000562",
+        "event_000586",
+        "event_000615",
+        "event_000631"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若两次判罚涉及不同球队或无申诉画面则假设不成立"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "penalty_appeal_to_card_escalation",
+      "narrative_summary": "禁区内犯规申诉与后续黄牌可能构成判罚争议升级的叙事线。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "裁判手势指向点球点",
+          "question": "该犯规是否引发点球判罚？",
+          "target_id": "event:event_000595"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "早期点球申诉与后期黄牌或有关联，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000595",
+          "target_event_id": "event_000633"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000595",
+        "event_000596",
+        "event_000632",
+        "event_000633"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若换人后无同队进攻画面则假设不成立"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "substitution_then_attacking_shift",
+      "narrative_summary": "换人调整后射门与扑救增多，可能反映进攻节奏变化。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "替补球员位置与跑动",
+          "question": "换人是否针对进攻调整？",
+          "target_id": "event:event_000607"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "换人或改变进攻方式，但无直接证据",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000607",
+          "target_event_id": "event_000631"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000607",
+        "event_000613",
+        "event_000615",
+        "event_000631"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若扑救与射门非同一球门方向则假设不成立"
+      ],
+      "hypothesis_id": "H4",
+      "mechanism_key": "repeated_saves_keep_score_level",
+      "narrative_summary": "多次扑救阻止进球，可能维持平局直至反超发生。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "球被扑出轨迹",
+          "question": "扑救是否阻止必进球？",
+          "target_id": "event:event_000586"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "连续扑救与后续射门或构成攻防对抗，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000586",
+          "target_event_id": "event_000615"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000586",
+        "event_000588",
+        "event_000589",
+        "event_000615"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若犯规后比赛未中断或无争顶画面则假设不成立"
+      ],
+      "hypothesis_id": "H5",
+      "mechanism_key": "late_fouls_disrupt_momentum",
+      "narrative_summary": "后期犯规与黄牌可能打断进攻节奏，影响反超前态势。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "裁判鸣哨与球员聚集",
+          "question": "犯规是否导致比赛暂停？",
+          "target_id": "event:event_000632"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "犯规与争顶或打断进攻连续性，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000632",
+          "target_event_id": "event_000635"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000632",
+        "event_000633",
+        "event_000634",
+        "event_000635"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

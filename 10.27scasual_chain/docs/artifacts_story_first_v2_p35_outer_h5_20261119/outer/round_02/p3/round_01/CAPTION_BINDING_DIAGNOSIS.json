@@ -1,0 +1,68 @@
+{
+  "http_ok": true,
+  "model": "Qwen3.7-Plus",
+  "finish_reason": "stop",
+  "prompt_tokens": 30033,
+  "completion_tokens": 469,
+  "parsed_observation_count": 3,
+  "bound_observation_count": 0,
+  "reason_if_no_observations": "no_bound_caption_observations",
+  "coverage_status": [
+    "MISSING",
+    "MISSING",
+    "MISSING"
+  ],
+  "binding_diagnosis": [
+    {
+      "phase_id": "3:before",
+      "model_clip_id": "part_02",
+      "story_range_sec": [
+        25.0,
+        28.5
+      ],
+      "model_clip_range": [
+        43.080999999999996,
+        86.16199999999999
+      ],
+      "bound_ok": false,
+      "clip_id_that_covers_range": "part_01",
+      "fail_reason": "clip_id_range_mismatch"
+    },
+    {
+      "phase_id": "3:insert",
+      "model_clip_id": "part_03",
+      "story_range_sec": [
+        28.5,
+        56.59
+      ],
+      "model_clip_range": [
+        86.16199999999999,
+        129.243
+      ],
+      "bound_ok": false,
+      "clip_id_that_covers_range": null,
+      "fail_reason": "clip_id_range_mismatch"
+    },
+    {
+      "phase_id": "3:after",
+      "model_clip_id": "part_03",
+      "story_range_sec": [
+        56.59,
+        68.59
+      ],
+      "model_clip_range": [
+        86.16199999999999,
+        129.243
+      ],
+      "bound_ok": false,
+      "clip_id_that_covers_range": "part_02",
+      "fail_reason": "clip_id_range_mismatch"
+    }
+  ],
+  "note": "HTTP returned 3 observations; binder requires story_range_sec inside the named clip_id window. Model used wrong clip_ids (part_02/03 for ranges inside part_01/02), so all unbound → CAPTION_UNAVAILABLE.",
+  "local_part_mp4s": [
+    "/tmp/story_first_outer_h5_20261119_150623/outer/round_02/p3/round_01/rendered_part_01.mp4",
+    "/tmp/story_first_outer_h5_20261119_150623/outer/round_02/p3/round_01/rendered_part_02.mp4",
+    "/tmp/story_first_outer_h5_20261119_150623/outer/round_02/p3/round_01/rendered_part_03.mp4"
+  ]
+}

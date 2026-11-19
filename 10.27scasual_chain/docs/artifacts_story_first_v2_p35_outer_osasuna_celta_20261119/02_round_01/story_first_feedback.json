@@ -1,0 +1,48 @@
+[
+  {
+    "round": 1,
+    "selection": {
+      "selections": [
+        {
+          "proposal_id": "interval_01:H1",
+          "event_ids": [
+            "event_000531",
+            "event_000534",
+            "event_000536",
+            "event_000555"
+          ],
+          "relation_ids": [
+            "r1"
+          ]
+        }
+      ],
+      "rationale": "Interval 01:H1 selects only non-replay, non-slowmo footage events (Shot, two Substitutions, Free_kick) spanning the large source jump between the opponent opening goal and the equalizer. This is the most compact trial that could reveal whether the 2428.9s source gap hides a meaningful rhythm-reset sub-story (shot miss followed by substitutions then a free kick) that would justify an insert. All other proposals either include known replay/slowmo events (interval_02:H4, interval_02:H5) or are less directly tied to the diagnosed transition gap. The trial requests video observation only and does not authorize an edit.",
+      "revised_relations": [
+        {
+          "source_event_id": "event_000531",
+          "target_event_id": "event_000555",
+          "relation_type": "narrative_association",
+          "claim": "射门失误与后续任意球或存在节奏关联（未证实）"
+        }
+      ]
+    },
+    "stage": "SOURCE_REVIEW",
+    "status": "NEEDS_REVISION",
+    "findings": [
+      {
+        "window_id": "story_first_b0f52408d79b67b9464b7a19_02",
+        "event_ids": [
+          "event_000534",
+          "event_000536"
+        ],
+        "status": "REPLAY_CONFIRMED",
+        "reason": "window_overlaps_replay_or_slowmo_annotation",
+        "replay_event_ids": [
+          "event_000532",
+          "event_000533"
+        ]
+      }
+    ],
+    "advisory": []
+  }
+]

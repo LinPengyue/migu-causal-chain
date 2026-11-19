@@ -1,0 +1,98 @@
+{
+  "raw_excerpt": "{\n  \"decision\": \"UNRESOLVED\",\n  \"rationale\": \"All four diagnosed issues are HYPOTHESIS_NEEDS_VIDEO with story_defect_confirmed=false. The VLM critic summary is empty (UNAVAILABLE), so no observed frame evidence confirms any structural anomaly as a real story-quality defect. The two goal_coverage issues lack first_live_verified action footage and auto_insert is not authorized. The large source jump is explicitly noted as normal highlight compression and must not trigger an insert without video-backed missing story state. The thin ending is minor and unverified. No search candidate has FIRST_LIVE_VERIFIED or narrative_fit_status=REVIEW_SUPPORTED, so search_add is not permitted. No confirmed redundancy issue names a preferred_drop_segment_id. The correct action is to request video observation rather than mutate the EDL.\",\n  \"revision_intents\": [],\n  \"story_first_trial\": {\n    \"selections\": [\n      {\n        \"proposal_id\": \"interval_01:H1\",\n        \"event_ids\": [\n          \"event_000531\",\n          \"event_000534\",\n          \"event_000536\",\n          \"event_000555\"\n        ],\n        \"relation_ids\": [\n          \"r1\"\n        ]\n      }\n    ],\n    \"rationale\": \"Interval 01:H1 selects only non-replay, non-slowmo footage events (Shot, two Substitutions, Free_kick) spanning the large source jump between the opponent opening goal and the equalizer. This is the most compact trial that could reveal whether the 2428.9s source gap hides a meaningful rhythm-reset sub-story (shot miss followed by substitutions then a free kick) that would justify an insert. All other proposals either include known replay/slowmo events (interval_02:H4, interval_02:H5) or are less directly tied to the diagnosed transition gap. The trial requests video observation only and does not authorize an edit.\",\n    \"revised_relations\": [\n      {\n        \"source_event_id\": \"event_000531\",\n        \"target_event_id\": \"event_000555\",\n        \"relation_type\": \"narrative_association\",\n        \"claim\": \"射门失误与后续任意球或存在节奏关联（未证实）\"\n      }\n    ]\n  }\n}",
+  "parsed": {
+    "decision": "UNRESOLVED",
+    "rationale": "All four diagnosed issues are HYPOTHESIS_NEEDS_VIDEO with story_defect_confirmed=false. The VLM critic summary is empty (UNAVAILABLE), so no observed frame evidence confirms any structural anomaly as a real story-quality defect. The two goal_coverage issues lack first_live_verified action footage and auto_insert is not authorized. The large source jump is explicitly noted as normal highlight compression and must not trigger an insert without video-backed missing story state. The thin ending is minor and unverified. No search candidate has FIRST_LIVE_VERIFIED or narrative_fit_status=REVIEW_SUPPORTED, so search_add is not permitted. No confirmed redundancy issue names a preferred_drop_segment_id. The correct action is to request video observation rather than mutate the EDL.",
+    "revision_intents": [],
+    "story_first_trial": {
+      "selections": [
+        {
+          "proposal_id": "interval_01:H1",
+          "event_ids": [
+            "event_000531",
+            "event_000534",
+            "event_000536",
+            "event_000555"
+          ],
+          "relation_ids": [
+            "r1"
+          ]
+        }
+      ],
+      "rationale": "Interval 01:H1 selects only non-replay, non-slowmo footage events (Shot, two Substitutions, Free_kick) spanning the large source jump between the opponent opening goal and the equalizer. This is the most compact trial that could reveal whether the 2428.9s source gap hides a meaningful rhythm-reset sub-story (shot miss followed by substitutions then a free kick) that would justify an insert. All other proposals either include known replay/slowmo events (interval_02:H4, interval_02:H5) or are less directly tied to the diagnosed transition gap. The trial requests video observation only and does not authorize an edit.",
+      "revised_relations": [
+        {
+          "source_event_id": "event_000531",
+          "target_event_id": "event_000555",
+          "relation_type": "narrative_association",
+          "claim": "射门失误与后续任意球或存在节奏关联（未证实）"
+        }
+      ]
+    }
+  },
+  "usage": {
+    "prompt_tokens": 13789,
+    "completion_tokens": 485,
+    "total_tokens": 14274,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "call_audit": {
+    "model": "DeepSeek-V4-Pro-0813",
+    "provider_mode": "real",
+    "logical_role": "revision_planner",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "prompt_tokens": 13789,
+    "completion_tokens": 485,
+    "reasoning_tokens": 0,
+    "text_tokens": null,
+    "finish_reason": "stop",
+    "visible_output_chars": 2028,
+    "est_cost_usd": 0.0023593499999999996,
+    "http_ok": true,
+    "empty_content": false
+  },
+  "request_audit": {
+    "role": "planner",
+    "model": "DeepSeek-V4-Pro-0813",
+    "request_profile": "default",
+    "token_param_configured": "max_tokens",
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "temperature_sent": 0.1,
+    "stream_sent": false,
+    "thinking_params_sent": false,
+    "thinking_object_disabled_sent": true,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "sends_both_token_params": false,
+    "sends_both_thinking_formats": false,
+    "message_count": 2,
+    "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+    "paratera_thinking_object_documented": false
+  },
+  "response_audit": {
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "visible_output_chars": 2028,
+    "usage_keys_present": [
+      "completion_tokens",
+      "completion_tokens_details",
+      "prompt_tokens",
+      "prompt_tokens_details",
+      "total_tokens"
+    ],
+    "has_completion_tokens_details": true,
+    "reasoning_content_present": false,
+    "completion_tokens_reported": 485,
+    "output_token_limit": 1200,
+    "output_budget_exceeded": false
+  },
+  "finish_reason": "stop"
+}

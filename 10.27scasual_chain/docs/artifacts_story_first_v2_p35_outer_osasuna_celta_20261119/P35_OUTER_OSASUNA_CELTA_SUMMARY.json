@@ -1,0 +1,90 @@
+{
+  "schema": "story_first_p35_outer_osasuna_celta_report_v1",
+  "code_sha": "ed72bce177923608c8c8cc9c952fe36954c63fbb",
+  "run_out": "/tmp/story_first_outer_osasuna_celta_20261119_161929",
+  "release_authorized": false,
+  "http_calls": 4,
+  "est_cost_usd": 0.013587,
+  "decision": "UNRESOLVED",
+  "story_first_outer_comparison_json": null,
+  "outer_executed": false,
+  "stop_reason": "P2_SOURCE_REVIEW_NEEDS_REVISION_REPLAY_OVERLAP",
+  "p1": {
+    "intervals": 2,
+    "proposals": 10
+  },
+  "round1_selection": "interval_01:H1",
+  "proposed_source_windows_sec": [
+    {
+      "candidate_id": "story_first_b0f52408d79b67b9464b7a19_01",
+      "event_ids": [
+        "event_000531"
+      ],
+      "source_window_sec": [
+        5165.88,
+        5181.88
+      ],
+      "insert_after": "seg_buildup_event_000458",
+      "before": "seg_equalizer_goal_action"
+    },
+    {
+      "candidate_id": "story_first_b0f52408d79b67b9464b7a19_02",
+      "event_ids": [
+        "event_000534",
+        "event_000536"
+      ],
+      "source_window_sec": [
+        5188.1,
+        5218.18
+      ],
+      "insert_after": "seg_buildup_event_000458",
+      "before": "seg_equalizer_goal_action"
+    },
+    {
+      "candidate_id": "story_first_b0f52408d79b67b9464b7a19_03",
+      "event_ids": [
+        "event_000555"
+      ],
+      "source_window_sec": [
+        5577.63,
+        5593.63
+      ],
+      "insert_after": "seg_buildup_event_000458",
+      "before": "seg_equalizer_goal_action"
+    }
+  ],
+  "p2_findings": [
+    {
+      "window_id": "story_first_b0f52408d79b67b9464b7a19_02",
+      "event_ids": [
+        "event_000534",
+        "event_000536"
+      ],
+      "status": "REPLAY_CONFIRMED",
+      "reason": "window_overlaps_replay_or_slowmo_annotation",
+      "replay_event_ids": [
+        "event_000532",
+        "event_000533"
+      ]
+    }
+  ],
+  "p2_status": "NEEDS_REVISION",
+  "videos": {
+    "v0_v3r_baseline": {
+      "path": "/tmp/story_first_outer_osasuna_celta_20261119_161929/01_initial_story/story_clean.mp4",
+      "sha256": "187e490b8c0e0bee049b765b73030dcab78765098289ce4fb7369769d46ce29c",
+      "duration_sec": 104.931,
+      "also": "/tmp/story_first_outer_osasuna_celta_20261119_161929/00_baseline/story_clean.mp4",
+      "also_sha256": "187e490b8c0e0bee049b765b73030dcab78765098289ce4fb7369769d46ce29c"
+    },
+    "v1_accepted_preview": null,
+    "v2_outer_round2": null
+  },
+  "note": [
+    "Ran user-specified story_e2e_cli on ed72bce with outer_rounds=2.",
+    "P1 generated 10 proposals across 2 intervals.",
+    "Planner selected interval_01:H1; SOURCE_REVIEW returned NEEDS_REVISION because substitution window overlapped replay/slowmo events event_000532/event_000533.",
+    "No EDL mutation, no trial render, no P3, no story_first_outer_comparison.json / V1 / V2.",
+    "Only V0 V3-R baseline video exists for review."
+  ]
+}

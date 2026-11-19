@@ -1,0 +1,191 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若换人前后射门/控球节奏无变化则不支持"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "mistake_shot_then_substitution_reset",
+      "narrative_summary": "连续射门失误后紧接三次换人，或为扳平前的节奏重置节点。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "失误到换人的时间间隔",
+          "question": "该射门失误后是否立即出现换人？",
+          "target_id": "event:event_000531"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "射门失误与后续任意球或存在节奏关联（未证实）",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000531",
+          "target_event_id": "event_000555"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000531",
+        "event_000534",
+        "event_000536",
+        "event_000555"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若两次黄牌间无犯规事件则不支持升级叙事"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "foul_card_escalation_before_equalizer",
+      "narrative_summary": "下半场多次犯规与黄牌累积，或构成扳平前对抗升级的叙事线。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "犯规到黄牌的时间差",
+          "question": "该黄牌是否紧接一次危险犯规？",
+          "target_id": "event:event_000539"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "两次黄牌间犯规密度或上升（未证实）",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000496",
+          "target_event_id": "event_000553"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000496",
+        "event_000538",
+        "event_000539",
+        "event_000553"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若扑救后无长传或解围则不支持该模式"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "save_then_long_pass_counter_pattern",
+      "narrative_summary": "门将扑救后紧接长传，或反映由守转攻的重复模式。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "扑救到长传的间隔",
+          "question": "扑救后是否立即出现长传？",
+          "target_id": "event:event_000504"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "扑救后连续解围或显示防守回合（未证实）",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000504",
+          "target_event_id": "event_000510"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000504",
+        "event_000505",
+        "event_000509",
+        "event_000510"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若争顶后无解围事件则不支持该关联"
+      ],
+      "hypothesis_id": "H4",
+      "mechanism_key": "aerial_duel_cluster_then_clearance",
+      "narrative_summary": "多次争顶获胜后紧接解围，或为扳平前防守端连续承压的片段。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "争顶到解围的间隔",
+          "question": "争顶获胜后是否紧接解围？",
+          "target_id": "event:event_000516"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "争顶与解围密集出现或暗示防守回合（未证实）",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000512",
+          "target_event_id": "event_000519"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000512",
+        "event_000516",
+        "event_000517",
+        "event_000519"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若任意球之间无犯规或争顶事件则不支持"
+      ],
+      "hypothesis_id": "H5",
+      "mechanism_key": "free_kick_sequence_before_equalizer",
+      "narrative_summary": "扳平前多次任意球与犯规交替，或构成定位球反复尝试的叙事。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "犯规到任意球的间隔",
+          "question": "该任意球前是否紧接犯规？",
+          "target_id": "event:event_000551"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "连续任意球或反映定位球反复尝试（未证实）",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000542",
+          "target_event_id": "event_000555"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000542",
+        "event_000549",
+        "event_000551",
+        "event_000555"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

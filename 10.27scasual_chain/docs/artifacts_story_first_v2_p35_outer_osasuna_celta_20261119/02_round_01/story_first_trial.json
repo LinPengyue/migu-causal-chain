@@ -1,0 +1,169 @@
+{
+  "trial": {
+    "trial_id": "b0f52408d79b67b9464b7a19",
+    "proposal_ids": [
+      "interval_01:H1"
+    ],
+    "events": [
+      {
+        "event_id": "event_000531",
+        "source_pts_sec": 5173.88,
+        "event_type": "Shot",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "1队14号球员在防守三区射门"
+        }
+      },
+      {
+        "event_id": "event_000534",
+        "source_pts_sec": 5196.1,
+        "event_type": "Substitution",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "2队12号球员换下3号球员换上"
+        }
+      },
+      {
+        "event_id": "event_000536",
+        "source_pts_sec": 5210.18,
+        "event_type": "Substitution",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "2队21号球员换下39号球员换上"
+        }
+      },
+      {
+        "event_id": "event_000555",
+        "source_pts_sec": 5585.63,
+        "event_type": "Free_kick",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "1队球员在中场三区开出任意球"
+        }
+      }
+    ],
+    "relations": [
+      {
+        "relation_id": "interval_01:H1:r1",
+        "source_event_id": "event_000531",
+        "target_event_id": "event_000555",
+        "relation_type": "narrative_association",
+        "claim": "射门失误与后续任意球或存在节奏关联（未证实）",
+        "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+      }
+    ],
+    "story_context": [
+      {
+        "proposal_id": "interval_01:H1",
+        "summary": "连续射门失误后紧接三次换人，或为扳平前的节奏重置节点。",
+        "expected_story_contribution": "",
+        "falsification_conditions": [
+          "若换人前后射门/控球节奏无变化则不支持"
+        ]
+      }
+    ],
+    "windows": [
+      {
+        "event_ids": [
+          "event_000531"
+        ],
+        "source_pts_start": 5165.88,
+        "source_pts_end": 5181.88,
+        "insert_after_segment_id": "seg_buildup_event_000458",
+        "before_segment_id": "seg_equalizer_goal_action",
+        "candidate_id": "story_first_b0f52408d79b67b9464b7a19_01",
+        "issue_id": "story_first:b0f52408d79b67b9464b7a19"
+      },
+      {
+        "event_ids": [
+          "event_000534",
+          "event_000536"
+        ],
+        "source_pts_start": 5188.1,
+        "source_pts_end": 5218.18,
+        "insert_after_segment_id": "seg_buildup_event_000458",
+        "before_segment_id": "seg_equalizer_goal_action",
+        "candidate_id": "story_first_b0f52408d79b67b9464b7a19_02",
+        "issue_id": "story_first:b0f52408d79b67b9464b7a19"
+      },
+      {
+        "event_ids": [
+          "event_000555"
+        ],
+        "source_pts_start": 5577.63,
+        "source_pts_end": 5593.63,
+        "insert_after_segment_id": "seg_buildup_event_000458",
+        "before_segment_id": "seg_equalizer_goal_action",
+        "candidate_id": "story_first_b0f52408d79b67b9464b7a19_03",
+        "issue_id": "story_first:b0f52408d79b67b9464b7a19"
+      }
+    ],
+    "narrative_purpose": "Interval 01:H1 selects only non-replay, non-slowmo footage events (Shot, two Substitutions, Free_kick) spanning the large source jump between the opponent opening goal and the equalizer. This is the most compact trial that could reveal whether the 2428.9s source gap hides a meaningful rhythm-reset sub-story (shot miss followed by substitutions then a free kick) that would justify an insert. All other proposals either include known replay/slowmo events (interval_02:H4, interval_02:H5) or are less directly tied to the diagnosed transition gap. The trial requests video observation only and does n"
+  },
+  "review": {
+    "status": "NEEDS_REVISION",
+    "feedback": [
+      {
+        "window_id": "story_first_b0f52408d79b67b9464b7a19_02",
+        "event_ids": [
+          "event_000534",
+          "event_000536"
+        ],
+        "status": "REPLAY_CONFIRMED",
+        "reason": "window_overlaps_replay_or_slowmo_annotation",
+        "replay_event_ids": [
+          "event_000532",
+          "event_000533"
+        ]
+      }
+    ],
+    "advisory": [],
+    "annotation_supported_event_ids": [],
+    "event_observations": [],
+    "candidates": [
+      {
+        "event_ids": [
+          "event_000531"
+        ],
+        "source_pts_start": 5165.88,
+        "source_pts_end": 5181.88,
+        "insert_after_segment_id": "seg_buildup_event_000458",
+        "before_segment_id": "seg_equalizer_goal_action",
+        "candidate_id": "story_first_b0f52408d79b67b9464b7a19_01",
+        "issue_id": "story_first:b0f52408d79b67b9464b7a19",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "b0f52408d79b67b9464b7a19",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      },
+      {
+        "event_ids": [
+          "event_000555"
+        ],
+        "source_pts_start": 5577.63,
+        "source_pts_end": 5593.63,
+        "insert_after_segment_id": "seg_buildup_event_000458",
+        "before_segment_id": "seg_equalizer_goal_action",
+        "candidate_id": "story_first_b0f52408d79b67b9464b7a19_03",
+        "issue_id": "story_first:b0f52408d79b67b9464b7a19",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "b0f52408d79b67b9464b7a19",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      }
+    ],
+    "intents": []
+  }
+}
