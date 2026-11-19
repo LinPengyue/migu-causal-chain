@@ -1,0 +1,20 @@
+```json
+{
+  "actions": [
+    {
+      "action": "TRIM",
+      "rationale": "The inserted bridge segment seg_story_first_ab22f01929b5cb4f59e6badd_01 spans source 6395.81-6418.07s, but the current source review advisory marks both event_000634 (6395.81s) and event_000636 (6410.07s) as UNCERTAIN with no clear interception visible. The working cut caption only verifies visual evidence at story 37.5-40.5s (buildup tail) and 40.5-46.76s (midfield pass, not interception). Trimming to the verified midfield-pass portion avoids claiming an unverified possession-recovery sequence while retaining a short transition buffer before the equalizer.",
+      "segment_id": "seg_story_first_ab22f01929b5cb4f59e6badd_01",
+      "source_window_sec": [6403.81, 6410.07]
+    },
+    {
+      "action": "KEEP",
+      "rationale": "If the trim is not applied, the current preview is acceptable as a structural bridge: it does not claim a causal outcome, preserves chronological order, and the large PTS jump issue is only info/needs_video_verify, not a confirmed defect. The bridge provides setup/tension without causing a later event."
+    },
+    {
+      "action": "STOP",
+      "rationale": "Return to baseline would remove the unverified bridge entirely, eliminating the new large_source_jump issue and avoiding any claim about interceptions. This is the safest option if the UNCERTAIN advisory is treated as disqualifying for the inserted segment."
+    }
+  ]
+}
+```

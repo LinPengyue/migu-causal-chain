@@ -1,0 +1,152 @@
+{
+  "schema": "story_first_p3_caption_revision_v1",
+  "release_authorized": false,
+  "promote_best": false,
+  "preview_only": true,
+  "baseline_mp4": "/tmp/lpy1_story_first_v2_p3_isolated_trial_20261116/baseline/story_clean_original.mp4",
+  "baseline_mp4_sha256": "7764010f0aa1f41282e22faeee295df88e5c0ec26b07d09f4f110c1d80e3553a",
+  "selected_preview_mp4": "/tmp/story_first_p3_caption_20261119_123121/round_01/edit_01/rerender/story_clean.mp4",
+  "rounds": [
+    {
+      "round": 1,
+      "working_mp4": "/tmp/lpy1_story_first_v2_p3_isolated_trial_20261116/trial/story_clean_trial_h5.mp4",
+      "rejected_actions": [],
+      "action": "TRIM",
+      "rationale": "The inserted bridge segment spans 6395.81-6418.07s, but the working cut caption only verifies visual evidence at 37.5-40.5s story time (which corresponds to the tail of the buildup segment, not the bridge) and 62.76-65.76s (equalizer goal). The bridge's source window includes events 000634-000636, but the current source review advisory marks both 000634 and 000636 as UNCERTAIN with no clear interception visible. Trimming to the verified portion of the bridge avoids claiming an unverified possession-recovery sequence while retaining a shorter transition buffer before the equalizer.",
+      "next_preview_mp4": "/tmp/story_first_p3_caption_20261119_123121/round_01/edit_01/rerender/story_clean.mp4",
+      "revision_intents": "/tmp/story_first_p3_caption_20261119_123121/round_01/edit_01/revision_intents.json"
+    },
+    {
+      "round": 2,
+      "working_mp4": "/tmp/story_first_p3_caption_20261119_123121/round_01/edit_01/rerender/story_clean.mp4",
+      "rejected_actions": [
+        {
+          "action": "TRIM",
+          "reason": "no_round_or_budget_for_render_and_followup",
+          "rationale": "The inserted bridge segment seg_story_first_ab22f01929b5cb4f59e6badd_01 spans source 6395.81-6418.07s, but the current source review advisory marks both event_000634 (6395.81s) and event_000636 (6410.07s) as UNCERTAIN with no clear interception visible. The working cut caption only verifies visual evidence at story 37.5-40.5s (buildup tail) and 40.5-46.76s (midfield pass, not interception). Trimming to the verified midfield-pass portion avoids claiming an unverified possession-recovery sequence while retaining a short transition buffer before the equalizer."
+        }
+      ],
+      "action": "KEEP",
+      "rationale": "If the trim is not applied, the current preview is acceptable as a structural bridge: it does not claim a causal outcome, preserves chronological order, and the large PTS jump issue is only info/needs_video_verify, not a confirmed defect. The bridge provides setup/tension without causing a later event."
+    }
+  ],
+  "http_calls": 4,
+  "stop_reason": "PLANNER_KEEP",
+  "api_usage": {
+    "http_attempts": 4,
+    "max_calls": 5,
+    "max_cost_usd": 0.05,
+    "est_cost_usd_real": 0.012321,
+    "by_role": {
+      "story_first_p3_caption": {
+        "http_attempts": 2,
+        "tokens": 53266,
+        "est_cost_usd": 0.008336,
+        "output_budget_exceeded": false
+      },
+      "story_first_p3_planner": {
+        "http_attempts": 2,
+        "tokens": 23711,
+        "est_cost_usd": 0.003985,
+        "output_budget_exceeded": false
+      }
+    },
+    "cost_is_estimate_not_invoice_cap": true,
+    "max_retries": 0,
+    "request_preflight": {
+      "planner": {
+        "model": "DeepSeek-V4-Pro-0813",
+        "thinking_in_body": {
+          "type": "disabled"
+        },
+        "max_tokens_in_body": 1200,
+        "max_completion_tokens_in_body": null,
+        "enable_thinking_in_body": null,
+        "thinking_budget_in_body": null,
+        "request_audit": {
+          "role": "planner",
+          "model": "DeepSeek-V4-Pro-0813",
+          "request_profile": "default",
+          "token_param_configured": "max_tokens",
+          "token_param_sent": "max_tokens",
+          "token_limit_sent": 1200,
+          "temperature_sent": 0.0,
+          "stream_sent": false,
+          "thinking_params_sent": false,
+          "thinking_object_disabled_sent": true,
+          "enable_thinking_sent": null,
+          "thinking_budget_sent": null,
+          "sends_both_token_params": false,
+          "sends_both_thinking_formats": false,
+          "message_count": 1,
+          "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+          "paratera_thinking_object_documented": false
+        },
+        "thinking_object_disabled_cfg": true,
+        "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+      },
+      "vision": {
+        "model": "Qwen3.7-Plus",
+        "thinking_in_body": {
+          "type": "disabled"
+        },
+        "max_tokens_in_body": 1200,
+        "max_completion_tokens_in_body": null,
+        "enable_thinking_in_body": null,
+        "thinking_budget_in_body": null,
+        "request_audit": {
+          "role": "vision",
+          "model": "Qwen3.7-Plus",
+          "request_profile": "video_rsi",
+          "token_param_configured": "max_tokens",
+          "token_param_sent": "max_tokens",
+          "token_limit_sent": 1200,
+          "temperature_sent": 0.0,
+          "stream_sent": false,
+          "thinking_params_sent": false,
+          "thinking_object_disabled_sent": true,
+          "enable_thinking_sent": null,
+          "thinking_budget_sent": null,
+          "sends_both_token_params": false,
+          "sends_both_thinking_formats": false,
+          "message_count": 1,
+          "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+          "paratera_thinking_object_documented": false
+        },
+        "thinking_object_disabled_cfg": true,
+        "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+      }
+    },
+    "env_thinking_overrides": {
+      "before": {
+        "STORY_API_MAX_CALLS": "5",
+        "STORY_API_MAX_COST_USD": "0.05",
+        "STORY_API_MAX_COMPLETION_TOKENS": "1600",
+        "STORY_VLM_MAX_COMPLETION_TOKENS": "1600",
+        "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+        "STORY_VLM_SEND_THINKING": null,
+        "STORY_VLM_ENABLE_THINKING": null,
+        "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+        "STORY_VLM_TOKEN_PARAM": null,
+        "STORY_API_TOKEN_PARAM": "max_tokens"
+      },
+      "after": {
+        "STORY_API_MAX_CALLS": "5",
+        "STORY_API_MAX_COST_USD": "0.05",
+        "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+        "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+        "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+        "STORY_VLM_SEND_THINKING": null,
+        "STORY_VLM_ENABLE_THINKING": null,
+        "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+        "STORY_VLM_TOKEN_PARAM": "max_tokens",
+        "STORY_API_TOKEN_PARAM": "max_tokens",
+        "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+        "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+        "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+      },
+      "disable_thinking": true
+    }
+  },
+  "selected_preview_mp4_sha256": "b8ea196564440dd4da66e322b3a4e7d89074fed1d36184ef052d5bd7fa37a61d"
+}

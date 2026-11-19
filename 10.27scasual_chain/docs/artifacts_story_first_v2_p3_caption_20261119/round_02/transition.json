@@ -1,0 +1,13 @@
+{
+  "round": 2,
+  "working_mp4": "/tmp/story_first_p3_caption_20261119_123121/round_01/edit_01/rerender/story_clean.mp4",
+  "rejected_actions": [
+    {
+      "action": "TRIM",
+      "reason": "no_round_or_budget_for_render_and_followup",
+      "rationale": "The inserted bridge segment seg_story_first_ab22f01929b5cb4f59e6badd_01 spans source 6395.81-6418.07s, but the current source review advisory marks both event_000634 (6395.81s) and event_000636 (6410.07s) as UNCERTAIN with no clear interception visible. The working cut caption only verifies visual evidence at story 37.5-40.5s (buildup tail) and 40.5-46.76s (midfield pass, not interception). Trimming to the verified midfield-pass portion avoids claiming an unverified possession-recovery sequence while retaining a short transition buffer before the equalizer."
+    }
+  ],
+  "action": "KEEP",
+  "rationale": "If the trim is not applied, the current preview is acceptable as a structural bridge: it does not claim a causal outcome, preserves chronological order, and the large PTS jump issue is only info/needs_video_verify, not a confirmed defect. The bridge provides setup/tension without causing a later event."
+}

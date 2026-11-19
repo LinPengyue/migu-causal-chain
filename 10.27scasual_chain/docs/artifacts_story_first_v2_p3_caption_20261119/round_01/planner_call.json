@@ -1,0 +1,66 @@
+{
+  "error": null,
+  "parsed": {
+    "actions": [
+      {
+        "action": "TRIM",
+        "rationale": "The inserted bridge segment spans 6395.81-6418.07s, but the working cut caption only verifies visual evidence at 37.5-40.5s story time (which corresponds to the tail of the buildup segment, not the bridge) and 62.76-65.76s (equalizer goal). The bridge's source window includes events 000634-000636, but the current source review advisory marks both 000634 and 000636 as UNCERTAIN with no clear interception visible. Trimming to the verified portion of the bridge avoids claiming an unverified possession-recovery sequence while retaining a shorter transition buffer before the equalizer.",
+        "segment_id": "seg_story_first_ab22f01929b5cb4f59e6badd_01",
+        "source_window_sec": [
+          6403.81,
+          6410.07
+        ]
+      },
+      {
+        "action": "REPLACE",
+        "rationale": "The current bridge relies on UNCERTAIN interception events. Candidate interval_01:H5 (events 000634, 000635, 000636) is the closest match but has the same uncertainty. Candidate interval_01:H1 (penalty foul + VAR + interception) offers a stronger narrative beat for the comeback template's 蓄力 phase, but the VAR event is replay-flagged and the interception is opponent-attributed. Replacing with H1 would introduce a denied scoring opportunity as tension, though it requires accepting an unverified causal link to the equalizer.",
+        "selection": {
+          "selections": [
+            {
+              "proposal_id": "interval_01:H1",
+              "event_ids": [
+                "event_000617",
+                "event_000622",
+                "event_000635"
+              ],
+              "relation_ids": [
+                "r1"
+              ]
+            }
+          ],
+          "rationale": "H1 provides a more dramatic 蓄力 beat (penalty disallowed by VAR) that fits the comeback template better than uncertain interceptions, despite the replay-flagged VAR event and unverified causal chain."
+        }
+      },
+      {
+        "action": "KEEP",
+        "rationale": "If the goal is to preserve the current preview without further edits, KEEP retains the bridge as-is. The structural diagnosis notes the large PTS jump is only info/needs_video_verify, not a confirmed defect. The bridge does provide some temporal continuity between buildup and equalizer, even if the visual evidence is uncertain.",
+        "segment_id": null,
+        "source_window_sec": [
+          0,
+          1
+        ],
+        "selection": {}
+      }
+    ]
+  },
+  "call_audit": {
+    "model": "DeepSeek-V4-Pro-0813",
+    "provider_mode": "real",
+    "logical_role": "story_first_p3_planner",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "prompt_tokens": 11245,
+    "completion_tokens": 572,
+    "reasoning_tokens": 0,
+    "text_tokens": null,
+    "finish_reason": "stop",
+    "visible_output_chars": 2321,
+    "est_cost_usd": 0.00202995,
+    "http_ok": true,
+    "empty_content": false
+  }
+}
