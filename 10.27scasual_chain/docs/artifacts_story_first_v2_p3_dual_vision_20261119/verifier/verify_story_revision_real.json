@@ -1,0 +1,654 @@
+{
+  "schema": "v3a_story_video_verifier_v1",
+  "decision_input": "REVISE",
+  "hard_vetoes": [],
+  "business_first_live_review": {
+    "schema": "v3a_light_first_live_business_v1",
+    "status": "NO_NEW_SOURCE_WINDOWS",
+    "windows": [],
+    "hard_vetoes": [],
+    "first_live_verified": false,
+    "edit_authorized": false,
+    "note": "Business checks are an independent negative/diagnostic layer. Only existing source-PTS/frame-bound broadcast evidence ledger can certify FIRST_LIVE; VLM claims and score timing cannot."
+  },
+  "warnings": [],
+  "render_rows_ok": true,
+  "goal_protection": {
+    "baseline_goals": {
+      "seg_opponent_opening_goal_action": [
+        1325.123,
+        1347.123
+      ],
+      "seg_equalizer_goal_action": [
+        6436.924,
+        6458.924
+      ],
+      "seg_go_ahead_goal_action": [
+        6829.456,
+        6851.456
+      ]
+    },
+    "candidate_goals": {
+      "seg_opponent_opening_goal_action": [
+        1325.123,
+        1347.123
+      ],
+      "seg_equalizer_goal_action": [
+        6436.924,
+        6458.924
+      ],
+      "seg_go_ahead_goal_action": [
+        6829.456,
+        6851.456
+      ]
+    },
+    "intact": true
+  },
+  "video_probe": {
+    "baseline_exists": true,
+    "candidate_exists": true,
+    "baseline_duration_sec": 94.877,
+    "candidate_duration_sec": 117.168,
+    "duration_delta_sec": 22.291,
+    "method": "ffprobe_duration_and_existence",
+    "note": "Technical probe only; not semantic story quality."
+  },
+  "edl_delta": {
+    "baseline_count": 9,
+    "candidate_count": 10,
+    "added_segment_ids": [
+      "seg_story_first_ab22f01929b5cb4f59e6badd_01"
+    ],
+    "removed_segment_ids": [],
+    "changed_segments": [],
+    "exactly_equal": false
+  },
+  "sent_frame_ids": [
+    "baseline_pre_edit_0",
+    "candidate_pre_edit_0",
+    "baseline_edit_impact_1",
+    "candidate_edit_impact_1",
+    "baseline_post_edit_2",
+    "candidate_post_edit_2",
+    "baseline_global_ending_3",
+    "candidate_global_ending_3"
+  ],
+  "vision_backed": true,
+  "dual_verifier": {
+    "rule_verification_status": "PASSED",
+    "semantic_verification_status": "FAILED",
+    "ok_for_semantic_accept": true,
+    "provider_mode": "real",
+    "rule_baseline_score": null,
+    "rule_candidate_score": null
+  },
+  "dual_verifier_full": {
+    "rule_baseline": {
+      "track": "rule",
+      "ok": true,
+      "rule_verification_status": "PASSED",
+      "audit": {
+        "schema": "v3a_story_quality_audit_v1",
+        "mode": "READ_ONLY_RULE_BASELINE",
+        "match_id": "10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语",
+        "story_tier": "story",
+        "dimensions": {
+          "story_element_coverage": {
+            "score": 100.0,
+            "score_kind": "candidate_edl_role_proxy",
+            "required_roles": [
+              {
+                "name": "opponent_opening",
+                "required": true,
+                "edl_present": true,
+                "status": "EDL_PRESENT_UNVERIFIED",
+                "segment_ids": [
+                  "seg_opponent_opening_goal_action"
+                ]
+              },
+              {
+                "name": "equalizer",
+                "required": true,
+                "edl_present": true,
+                "status": "EDL_PRESENT_UNVERIFIED",
+                "segment_ids": [
+                  "seg_equalizer_goal_action"
+                ]
+              },
+              {
+                "name": "go_ahead",
+                "required": true,
+                "edl_present": true,
+                "status": "EDL_PRESENT_UNVERIFIED",
+                "segment_ids": [
+                  "seg_go_ahead_goal_action"
+                ]
+              }
+            ],
+            "not_measured": [
+              "visual_truth",
+              "missing_unannotated_events",
+              "tactical_causality"
+            ]
+          },
+          "story_coherence": {
+            "score": 100.0,
+            "score_kind": "edl_structural_proxy",
+            "checks": {
+              "valid_media_windows": true,
+              "narrative_beat_order": true,
+              "unique_goal_event_roles": true
+            },
+            "not_measured": [
+              "semantic_narrative_coherence",
+              "shot_relevance"
+            ]
+          },
+          "image_quality": {
+            "status": "NOT_MEASURED",
+            "score": null,
+            "reason": "no_rendered_video_supplied"
+          }
+        },
+        "hard_gate_findings": [],
+        "diagnostic_issues": [],
+        "unverified": [
+          "live_vs_replay_visual_truth",
+          "VLM_semantics",
+          "shot_event_grounding"
+        ],
+        "input_missing_evidence": [
+          "behind_carrier_unresolved:event_000173",
+          "buildup_dropped_unattributed_setpiece:event_000276",
+          "equalizer_carrier_unresolved:event_000637",
+          "go_ahead_carrier_unresolved:event_000670",
+          "ending_wrap_score_skipped_duplicate_of_go_ahead_board",
+          "ending_match_end_rejected:match_end_beyond_candidate_horizon:dt=1055.81"
+        ],
+        "revision_requests": [],
+        "structural_proxy_pass": true,
+        "render_ready": false,
+        "release_decision": "NOT_AUTHORIZED",
+        "note": "Scores are deterministic structural proxies, not calibrated quality or semantic release certification."
+      },
+      "p0_count": 0,
+      "semantic_scores": {
+        "story_element_coverage": "NOT_EVALUATED",
+        "narrative_coherence": "NOT_EVALUATED",
+        "image_content_quality": "NOT_EVALUATED",
+        "live_authenticity": "NOT_EVALUATED"
+      },
+      "note": "Rule track does not certify multimodal semantic quality."
+    },
+    "rule_candidate": {
+      "track": "rule",
+      "ok": true,
+      "rule_verification_status": "PASSED",
+      "audit": {
+        "schema": "v3a_story_quality_audit_v1",
+        "mode": "READ_ONLY_RULE_BASELINE",
+        "match_id": "10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语",
+        "story_tier": "story",
+        "dimensions": {
+          "story_element_coverage": {
+            "score": 100.0,
+            "score_kind": "candidate_edl_role_proxy",
+            "required_roles": [
+              {
+                "name": "opponent_opening",
+                "required": true,
+                "edl_present": true,
+                "status": "EDL_PRESENT_UNVERIFIED",
+                "segment_ids": [
+                  "seg_opponent_opening_goal_action"
+                ]
+              },
+              {
+                "name": "equalizer",
+                "required": true,
+                "edl_present": true,
+                "status": "EDL_PRESENT_UNVERIFIED",
+                "segment_ids": [
+                  "seg_equalizer_goal_action"
+                ]
+              },
+              {
+                "name": "go_ahead",
+                "required": true,
+                "edl_present": true,
+                "status": "EDL_PRESENT_UNVERIFIED",
+                "segment_ids": [
+                  "seg_go_ahead_goal_action"
+                ]
+              }
+            ],
+            "not_measured": [
+              "visual_truth",
+              "missing_unannotated_events",
+              "tactical_causality"
+            ]
+          },
+          "story_coherence": {
+            "score": 100.0,
+            "score_kind": "edl_structural_proxy",
+            "checks": {
+              "valid_media_windows": true,
+              "narrative_beat_order": true,
+              "unique_goal_event_roles": true
+            },
+            "not_measured": [
+              "semantic_narrative_coherence",
+              "shot_relevance"
+            ]
+          },
+          "image_quality": {
+            "status": "NOT_MEASURED",
+            "score": null,
+            "reason": "no_rendered_video_supplied"
+          }
+        },
+        "hard_gate_findings": [],
+        "diagnostic_issues": [],
+        "unverified": [
+          "live_vs_replay_visual_truth",
+          "VLM_semantics",
+          "shot_event_grounding"
+        ],
+        "input_missing_evidence": [
+          "behind_carrier_unresolved:event_000173",
+          "buildup_dropped_unattributed_setpiece:event_000276",
+          "equalizer_carrier_unresolved:event_000637",
+          "go_ahead_carrier_unresolved:event_000670",
+          "ending_wrap_score_skipped_duplicate_of_go_ahead_board",
+          "ending_match_end_rejected:match_end_beyond_candidate_horizon:dt=1055.81"
+        ],
+        "revision_requests": [],
+        "structural_proxy_pass": true,
+        "render_ready": false,
+        "release_decision": "NOT_AUTHORIZED",
+        "note": "Scores are deterministic structural proxies, not calibrated quality or semantic release certification."
+      },
+      "p0_count": 0,
+      "semantic_scores": {
+        "story_element_coverage": "NOT_EVALUATED",
+        "narrative_coherence": "NOT_EVALUATED",
+        "image_content_quality": "NOT_EVALUATED",
+        "live_authenticity": "NOT_EVALUATED"
+      },
+      "note": "Rule track does not certify multimodal semantic quality."
+    },
+    "api": {
+      "ok": true,
+      "provider_mode": "real",
+      "validated": {
+        "per_revision_judgments": [
+          {
+            "intent_id": "story_first:ab22f01929b5cb4f59e6badd",
+            "issue_id": "story_first",
+            "quality_judgment": "WORSE",
+            "evidence_sufficiency": "HIGH",
+            "confidence": 1.0,
+            "original_issue_resolved": false,
+            "introduced_new_defect": true,
+            "observed_visuals": "Inserted clip shows unrelated midfield play at 75:13, breaking continuity from 47:05 referee signal to 75:54 goal.",
+            "evidence_refs": [
+              {
+                "frame_id": "candidate_edit_impact_1",
+                "note": "Unrelated gameplay inserted between buildup and equalizer."
+              },
+              {
+                "frame_id": "baseline_edit_impact_1",
+                "note": "Original referee signal provides logical narrative bridge."
+              }
+            ]
+          }
+        ],
+        "hard_vetoes": [
+          "Narrative regression: Inserted footage (75:13) disrupts causal link between referee decision (47:05) and equalizer goal (75:54)."
+        ],
+        "quality_delta_vs_baseline": "WORSE",
+        "accept_candidate": false,
+        "soft_quality": "WORSE",
+        "issue_effect": "UNRESOLVED",
+        "global_regression": "YES",
+        "observed_changes": [
+          "Referee signal replaced by unrelated midfield possession.",
+          "22s duration increase without story gain."
+        ],
+        "suggested_next_evidence": null,
+        "evidence_of_improvement": [],
+        "fullcut_comparison": {
+          "information_gain": {
+            "verdict": "NO",
+            "observed_difference": "Candidate adds irrelevant midfield action; Baseline retains key referee context.",
+            "frame_ids": [
+              "baseline_edit_impact_1",
+              "candidate_edit_impact_1"
+            ]
+          },
+          "beat_continuity": {
+            "verdict": "WORSE",
+            "observed_difference": "Candidate breaks temporal/logical flow between foul call and subsequent goal.",
+            "frame_ids": [
+              "baseline_edit_impact_1",
+              "candidate_edit_impact_1"
+            ]
+          },
+          "pacing_tradeoff": {
+            "verdict": "NOT_JUSTIFIED",
+            "observed_difference": "+22s runtime adds no narrative value or tension.",
+            "frame_ids": [
+              "baseline_edit_impact_1",
+              "candidate_edit_impact_1"
+            ]
+          },
+          "redundancy": {
+            "verdict": "YES",
+            "observed_difference": "Inserted clip is extraneous to the 'Story-First' equalizer arc.",
+            "frame_ids": [
+              "baseline_edit_impact_1",
+              "candidate_edit_impact_1"
+            ]
+          },
+          "global_regression": {
+            "verdict": "YES",
+            "observed_difference": "Core story beat (referee decision leading to goal) is obscured.",
+            "frame_ids": [
+              "baseline_edit_impact_1",
+              "candidate_edit_impact_1"
+            ]
+          }
+        },
+        "recommendation": "KEEP_BASELINE",
+        "marginal_gain_vs_duration": "Candidate adds 22 seconds of unrelated footage that degrades narrative coherence without providing new story information.",
+        "FULLCUT_EDL_DURATION_DIFFERENCE": {
+          "baseline_duration_sec": 88.5,
+          "candidate_duration_sec": 110.76,
+          "duration_delta_sec": 22.26
+        },
+        "dimensions": {
+          "story_element_coverage": {
+            "status": "NOT_EVALUATED",
+            "score": null
+          },
+          "narrative_coherence": {
+            "status": "NOT_EVALUATED",
+            "score": null
+          },
+          "image_content_quality": {
+            "status": "NOT_EVALUATED",
+            "score": null
+          },
+          "live_authenticity": {
+            "status": "NOT_EVALUATED",
+            "score": null
+          }
+        },
+        "semantic_status": "FAILED"
+      },
+      "ok_for_semantic_accept": false,
+      "semantic_verification_status": "FAILED",
+      "sent_frame_ids": [
+        "baseline_pre_edit_0",
+        "candidate_pre_edit_0",
+        "baseline_edit_impact_1",
+        "candidate_edit_impact_1",
+        "baseline_post_edit_2",
+        "candidate_post_edit_2",
+        "baseline_global_ending_3",
+        "candidate_global_ending_3"
+      ],
+      "cited_sent_frame_ids": [],
+      "est_cost_usd": 0.0018254999999999999,
+      "usage": {
+        "prompt_tokens": 8666,
+        "completion_tokens": 876,
+        "total_tokens": 9542,
+        "completion_tokens_details": {
+          "text_tokens": 876
+        }
+      },
+      "reasons": [],
+      "vision_backed": true,
+      "fullcut_semantic_screen": {
+        "schema": "v3a_fullcut_semantic_screen_v1",
+        "status": "UNVERIFIED",
+        "quality_advisory": "UNCERTAIN",
+        "reasons": [
+          "no_contextual_continuity_citation"
+        ],
+        "baseline_mp4_sha256": "7764010f0aa1f41282e22faeee295df88e5c0ec26b07d09f4f110c1d80e3553a",
+        "candidate_mp4_sha256": "305add4be9a957be650927bed352eb21088fe50c96a5548359389b4df335687c",
+        "sampled_frame_sha256": {
+          "baseline_pre_edit_0": "15b6ba2673a09a672243f41f64d8537b7acd7c6ce2f29e0ba3404e068335e2bb",
+          "candidate_pre_edit_0": "15b6ba2673a09a672243f41f64d8537b7acd7c6ce2f29e0ba3404e068335e2bb",
+          "baseline_edit_impact_1": "d17f736994a6e861b9fbc7d0e4ef9b7080335435832cc5ab532ba0053f5b0df1",
+          "candidate_edit_impact_1": "d186814f85e27d77e48619d284793ad401e9b701d218fce1932fc3d95e15ee66",
+          "baseline_post_edit_2": "1f09295d2a92aa5df1cd95b15f6e894a0a8129d1972f78551b69d809c272de6c",
+          "candidate_post_edit_2": "d873533fbe337486e7f1020145cf06935a37049648be0f56e74f537d488f4c1d",
+          "baseline_global_ending_3": "bf7e24a3ee573b6318d6565c860c03f61b459df79be6a1f2d62649cacc5d71a8",
+          "candidate_global_ending_3": "bf7e24a3ee573b6318d6565c860c03f61b459df79be6a1f2d62649cacc5d71a8"
+        },
+        "citable_frames": [
+          "baseline_edit_impact_1",
+          "baseline_global_ending_3",
+          "baseline_post_edit_2",
+          "baseline_pre_edit_0",
+          "candidate_edit_impact_1",
+          "candidate_global_ending_3",
+          "candidate_post_edit_2",
+          "candidate_pre_edit_0"
+        ],
+        "observed_roles_baseline": [
+          "edit_impact",
+          "global_ending",
+          "post_edit",
+          "pre_edit"
+        ],
+        "observed_roles_candidate": [
+          "edit_impact",
+          "global_ending",
+          "post_edit",
+          "pre_edit"
+        ],
+        "missing_required_context_slots": [],
+        "evaluation_scope": "aligned_sampled_finished_cuts_not_continuous_video",
+        "claims_full_video_watch": false,
+        "audio_and_motion_continuity_checked": false,
+        "authorizes_promote_best": false,
+        "authorizes_release": false,
+        "improvement_verified": false,
+        "aspect_verdicts": {
+          "information_gain": "NO",
+          "beat_continuity": "WORSE",
+          "pacing_tradeoff": "NOT_JUSTIFIED",
+          "redundancy": "YES",
+          "global_regression": "YES"
+        },
+        "aspect_citations": {
+          "information_gain": [
+            "baseline_edit_impact_1",
+            "candidate_edit_impact_1"
+          ],
+          "beat_continuity": [
+            "baseline_edit_impact_1",
+            "candidate_edit_impact_1"
+          ],
+          "pacing_tradeoff": [
+            "baseline_edit_impact_1",
+            "candidate_edit_impact_1"
+          ],
+          "redundancy": [
+            "baseline_edit_impact_1",
+            "candidate_edit_impact_1"
+          ],
+          "global_regression": [
+            "baseline_edit_impact_1",
+            "candidate_edit_impact_1"
+          ]
+        },
+        "model_recommendation": null,
+        "marginal_gain_explanation": null
+      }
+    },
+    "rule_verification_status": "PASSED",
+    "semantic_verification_status": "FAILED",
+    "ok_for_semantic_accept": true,
+    "ok": true,
+    "validated": {
+      "per_revision_judgments": [
+        {
+          "intent_id": "story_first:ab22f01929b5cb4f59e6badd",
+          "issue_id": "story_first",
+          "quality_judgment": "WORSE",
+          "evidence_sufficiency": "HIGH",
+          "confidence": 1.0,
+          "original_issue_resolved": false,
+          "introduced_new_defect": true,
+          "observed_visuals": "Inserted clip shows unrelated midfield play at 75:13, breaking continuity from 47:05 referee signal to 75:54 goal.",
+          "evidence_refs": [
+            {
+              "frame_id": "candidate_edit_impact_1",
+              "note": "Unrelated gameplay inserted between buildup and equalizer."
+            },
+            {
+              "frame_id": "baseline_edit_impact_1",
+              "note": "Original referee signal provides logical narrative bridge."
+            }
+          ]
+        }
+      ],
+      "hard_vetoes": [
+        "Narrative regression: Inserted footage (75:13) disrupts causal link between referee decision (47:05) and equalizer goal (75:54)."
+      ],
+      "quality_delta_vs_baseline": "WORSE",
+      "accept_candidate": false,
+      "soft_quality": "WORSE",
+      "issue_effect": "UNRESOLVED",
+      "global_regression": "YES",
+      "observed_changes": [
+        "Referee signal replaced by unrelated midfield possession.",
+        "22s duration increase without story gain."
+      ],
+      "suggested_next_evidence": null,
+      "evidence_of_improvement": [],
+      "fullcut_comparison": {
+        "information_gain": {
+          "verdict": "NO",
+          "observed_difference": "Candidate adds irrelevant midfield action; Baseline retains key referee context.",
+          "frame_ids": [
+            "baseline_edit_impact_1",
+            "candidate_edit_impact_1"
+          ]
+        },
+        "beat_continuity": {
+          "verdict": "WORSE",
+          "observed_difference": "Candidate breaks temporal/logical flow between foul call and subsequent goal.",
+          "frame_ids": [
+            "baseline_edit_impact_1",
+            "candidate_edit_impact_1"
+          ]
+        },
+        "pacing_tradeoff": {
+          "verdict": "NOT_JUSTIFIED",
+          "observed_difference": "+22s runtime adds no narrative value or tension.",
+          "frame_ids": [
+            "baseline_edit_impact_1",
+            "candidate_edit_impact_1"
+          ]
+        },
+        "redundancy": {
+          "verdict": "YES",
+          "observed_difference": "Inserted clip is extraneous to the 'Story-First' equalizer arc.",
+          "frame_ids": [
+            "baseline_edit_impact_1",
+            "candidate_edit_impact_1"
+          ]
+        },
+        "global_regression": {
+          "verdict": "YES",
+          "observed_difference": "Core story beat (referee decision leading to goal) is obscured.",
+          "frame_ids": [
+            "baseline_edit_impact_1",
+            "candidate_edit_impact_1"
+          ]
+        }
+      },
+      "recommendation": "KEEP_BASELINE",
+      "marginal_gain_vs_duration": "Candidate adds 22 seconds of unrelated footage that degrades narrative coherence without providing new story information.",
+      "FULLCUT_EDL_DURATION_DIFFERENCE": {
+        "baseline_duration_sec": 88.5,
+        "candidate_duration_sec": 110.76,
+        "duration_delta_sec": 22.26
+      },
+      "dimensions": {
+        "story_element_coverage": {
+          "status": "NOT_EVALUATED",
+          "score": null
+        },
+        "narrative_coherence": {
+          "status": "NOT_EVALUATED",
+          "score": null
+        },
+        "image_content_quality": {
+          "status": "NOT_EVALUATED",
+          "score": null
+        },
+        "live_authenticity": {
+          "status": "NOT_EVALUATED",
+          "score": null
+        }
+      },
+      "semantic_status": "FAILED"
+    },
+    "provider_mode": "real",
+    "error": null,
+    "attempts": [],
+    "rule_fallback_success": false,
+    "semantic_pretend_pass": false
+  },
+  "candidate_accepted": false,
+  "retain_baseline": true,
+  "phase8_verdict": {
+    "schema": "v3a_phase8_verdict_v1",
+    "safety": "UNKNOWN",
+    "hard_safety": {
+      "safety": "UNKNOWN",
+      "reasons": [
+        "first_live_proof_missing_or_unverified"
+      ],
+      "accept_candidate_ignored": true,
+      "first_live_status": "UNKNOWN",
+      "first_live_ledger": null,
+      "note": "Absent replay flags are NOT first-LIVE proof."
+    },
+    "quality": "WORSE",
+    "evidence": "PARTIAL",
+    "issue_effect": "UNOBSERVED",
+    "global_regression": "UNKNOWN",
+    "focus_issue_id": null,
+    "evidence_refs": [
+      "baseline_pre_edit_0",
+      "candidate_pre_edit_0",
+      "baseline_edit_impact_1",
+      "candidate_edit_impact_1",
+      "baseline_post_edit_2",
+      "candidate_post_edit_2",
+      "baseline_global_ending_3",
+      "candidate_global_ending_3"
+    ],
+    "observed_changes": null,
+    "unresolved_questions": [],
+    "suggested_next_evidence": null,
+    "failure_class": "UNCERTAIN_OR_UNVERIFIED",
+    "compared_parent_version_id": null,
+    "verdict_provenance": "REAL_VLM",
+    "source_kind": "REAL_VLM",
+    "accept_candidate_raw": false,
+    "accept_not_synthesized_from_promising": true,
+    "safety_independent_of_accept_candidate": true,
+    "note": "Hard safety is independent of narrative accept_candidate. FIXTURE/OFFLINE_RULE never establish real IMPROVED; REAL_VLM requires recorded successful provider call + frame bindings."
+  },
+  "evidence_basis": "dual_video_vision_frames",
+  "note": "Semantic accept requires aligned dual-video frames with citable frame_ids. EDL/text/ffprobe alone never authorizes release. phase8_verdict is advisory for exploration; accept_candidate does not synthesize from PROMISING."
+}

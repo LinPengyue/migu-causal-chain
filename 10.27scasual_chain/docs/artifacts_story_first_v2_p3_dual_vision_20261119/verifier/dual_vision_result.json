@@ -1,0 +1,198 @@
+{
+  "ok": true,
+  "provider_mode": "real",
+  "error": null,
+  "ok_for_semantic_accept": false,
+  "semantic_verification_status": "FAILED",
+  "sent_frame_ids": [
+    "baseline_pre_edit_0",
+    "candidate_pre_edit_0",
+    "baseline_edit_impact_1",
+    "candidate_edit_impact_1",
+    "baseline_post_edit_2",
+    "candidate_post_edit_2",
+    "baseline_global_ending_3",
+    "candidate_global_ending_3"
+  ],
+  "cited_sent_frame_ids": [],
+  "est_cost_usd": 0.0018254999999999999,
+  "usage": {
+    "prompt_tokens": 8666,
+    "completion_tokens": 876,
+    "total_tokens": 9542,
+    "completion_tokens_details": {
+      "text_tokens": 876
+    }
+  },
+  "reasons": [],
+  "vision_backed": true,
+  "validated": {
+    "per_revision_judgments": [
+      {
+        "intent_id": "story_first:ab22f01929b5cb4f59e6badd",
+        "issue_id": "story_first",
+        "quality_judgment": "WORSE",
+        "evidence_sufficiency": "HIGH",
+        "confidence": 1.0,
+        "original_issue_resolved": false,
+        "introduced_new_defect": true,
+        "observed_visuals": "Inserted clip shows unrelated midfield play at 75:13, breaking continuity from 47:05 referee signal to 75:54 goal.",
+        "evidence_refs": [
+          {
+            "frame_id": "candidate_edit_impact_1",
+            "note": "Unrelated gameplay inserted between buildup and equalizer."
+          },
+          {
+            "frame_id": "baseline_edit_impact_1",
+            "note": "Original referee signal provides logical narrative bridge."
+          }
+        ]
+      }
+    ],
+    "hard_vetoes": [
+      "Narrative regression: Inserted footage (75:13) disrupts causal link between referee decision (47:05) and equalizer goal (75:54)."
+    ],
+    "quality_delta_vs_baseline": "WORSE",
+    "accept_candidate": false,
+    "soft_quality": "WORSE",
+    "issue_effect": "UNRESOLVED",
+    "global_regression": "YES",
+    "observed_changes": [
+      "Referee signal replaced by unrelated midfield possession.",
+      "22s duration increase without story gain."
+    ],
+    "suggested_next_evidence": null,
+    "evidence_of_improvement": [],
+    "fullcut_comparison": {
+      "information_gain": {
+        "verdict": "NO",
+        "observed_difference": "Candidate adds irrelevant midfield action; Baseline retains key referee context.",
+        "frame_ids": [
+          "baseline_edit_impact_1",
+          "candidate_edit_impact_1"
+        ]
+      },
+      "beat_continuity": {
+        "verdict": "WORSE",
+        "observed_difference": "Candidate breaks temporal/logical flow between foul call and subsequent goal.",
+        "frame_ids": [
+          "baseline_edit_impact_1",
+          "candidate_edit_impact_1"
+        ]
+      },
+      "pacing_tradeoff": {
+        "verdict": "NOT_JUSTIFIED",
+        "observed_difference": "+22s runtime adds no narrative value or tension.",
+        "frame_ids": [
+          "baseline_edit_impact_1",
+          "candidate_edit_impact_1"
+        ]
+      },
+      "redundancy": {
+        "verdict": "YES",
+        "observed_difference": "Inserted clip is extraneous to the 'Story-First' equalizer arc.",
+        "frame_ids": [
+          "baseline_edit_impact_1",
+          "candidate_edit_impact_1"
+        ]
+      },
+      "global_regression": {
+        "verdict": "YES",
+        "observed_difference": "Core story beat (referee decision leading to goal) is obscured.",
+        "frame_ids": [
+          "baseline_edit_impact_1",
+          "candidate_edit_impact_1"
+        ]
+      }
+    },
+    "recommendation": "KEEP_BASELINE",
+    "marginal_gain_vs_duration": "Candidate adds 22 seconds of unrelated footage that degrades narrative coherence without providing new story information.",
+    "FULLCUT_EDL_DURATION_DIFFERENCE": {
+      "baseline_duration_sec": 88.5,
+      "candidate_duration_sec": 110.76,
+      "duration_delta_sec": 22.26
+    },
+    "dimensions": {},
+    "semantic_status": "FAILED"
+  },
+  "fullcut_semantic_screen": {
+    "schema": "v3a_fullcut_semantic_screen_v1",
+    "status": "UNVERIFIED",
+    "quality_advisory": "UNCERTAIN",
+    "reasons": [
+      "no_contextual_continuity_citation"
+    ],
+    "baseline_mp4_sha256": "7764010f0aa1f41282e22faeee295df88e5c0ec26b07d09f4f110c1d80e3553a",
+    "candidate_mp4_sha256": "305add4be9a957be650927bed352eb21088fe50c96a5548359389b4df335687c",
+    "sampled_frame_sha256": {
+      "baseline_pre_edit_0": "15b6ba2673a09a672243f41f64d8537b7acd7c6ce2f29e0ba3404e068335e2bb",
+      "candidate_pre_edit_0": "15b6ba2673a09a672243f41f64d8537b7acd7c6ce2f29e0ba3404e068335e2bb",
+      "baseline_edit_impact_1": "d17f736994a6e861b9fbc7d0e4ef9b7080335435832cc5ab532ba0053f5b0df1",
+      "candidate_edit_impact_1": "d186814f85e27d77e48619d284793ad401e9b701d218fce1932fc3d95e15ee66",
+      "baseline_post_edit_2": "1f09295d2a92aa5df1cd95b15f6e894a0a8129d1972f78551b69d809c272de6c",
+      "candidate_post_edit_2": "d873533fbe337486e7f1020145cf06935a37049648be0f56e74f537d488f4c1d",
+      "baseline_global_ending_3": "bf7e24a3ee573b6318d6565c860c03f61b459df79be6a1f2d62649cacc5d71a8",
+      "candidate_global_ending_3": "bf7e24a3ee573b6318d6565c860c03f61b459df79be6a1f2d62649cacc5d71a8"
+    },
+    "citable_frames": [
+      "baseline_edit_impact_1",
+      "baseline_global_ending_3",
+      "baseline_post_edit_2",
+      "baseline_pre_edit_0",
+      "candidate_edit_impact_1",
+      "candidate_global_ending_3",
+      "candidate_post_edit_2",
+      "candidate_pre_edit_0"
+    ],
+    "observed_roles_baseline": [
+      "edit_impact",
+      "global_ending",
+      "post_edit",
+      "pre_edit"
+    ],
+    "observed_roles_candidate": [
+      "edit_impact",
+      "global_ending",
+      "post_edit",
+      "pre_edit"
+    ],
+    "missing_required_context_slots": [],
+    "evaluation_scope": "aligned_sampled_finished_cuts_not_continuous_video",
+    "claims_full_video_watch": false,
+    "audio_and_motion_continuity_checked": false,
+    "authorizes_promote_best": false,
+    "authorizes_release": false,
+    "improvement_verified": false,
+    "aspect_verdicts": {
+      "information_gain": "NO",
+      "beat_continuity": "WORSE",
+      "pacing_tradeoff": "NOT_JUSTIFIED",
+      "redundancy": "YES",
+      "global_regression": "YES"
+    },
+    "aspect_citations": {
+      "information_gain": [
+        "baseline_edit_impact_1",
+        "candidate_edit_impact_1"
+      ],
+      "beat_continuity": [
+        "baseline_edit_impact_1",
+        "candidate_edit_impact_1"
+      ],
+      "pacing_tradeoff": [
+        "baseline_edit_impact_1",
+        "candidate_edit_impact_1"
+      ],
+      "redundancy": [
+        "baseline_edit_impact_1",
+        "candidate_edit_impact_1"
+      ],
+      "global_regression": [
+        "baseline_edit_impact_1",
+        "candidate_edit_impact_1"
+      ]
+    },
+    "model_recommendation": null,
+    "marginal_gain_explanation": null
+  }
+}

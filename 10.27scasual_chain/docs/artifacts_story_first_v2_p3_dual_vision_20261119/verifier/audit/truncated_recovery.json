@@ -1,0 +1,81 @@
+{
+  "schema": "v3a_truncated_response_recovery_v1",
+  "raw_response_sha256": "1bb7160696fa1635b16d4b55316345cbbc0003ca8c4c7363036488de62466f31",
+  "status_tags": [],
+  "finish_reason": "stop",
+  "full_json_parse_ok": true,
+  "full_json_parse_error": null,
+  "extraction": {
+    "array_found": true,
+    "stop_reason": "array_closed",
+    "char_offset_stop": null,
+    "n_syntax_complete_objects": 1
+  },
+  "n_valid_recovered": 1,
+  "n_rejected": 0,
+  "recovered": [
+    {
+      "schema": "v3a_recovered_judgment_v1",
+      "recovery_status": "RECOVERED_FULL_RESPONSE",
+      "intent_id": "story_first:ab22f01929b5cb4f59e6badd",
+      "quality_judgment": "WORSE",
+      "judgment": {
+        "intent_id": "story_first:ab22f01929b5cb4f59e6badd",
+        "issue_id": "story_first",
+        "quality_judgment": "WORSE",
+        "evidence_sufficiency": "HIGH",
+        "confidence": 1.0,
+        "original_issue_resolved": false,
+        "introduced_new_defect": true,
+        "observed_visuals": "Inserted clip shows unrelated midfield play at 75:13, breaking continuity from 47:05 referee signal to 75:54 goal.",
+        "evidence_refs": [
+          {
+            "frame_id": "candidate_edit_impact_1",
+            "note": "Unrelated gameplay inserted between buildup and equalizer."
+          },
+          {
+            "frame_id": "baseline_edit_impact_1",
+            "note": "Original referee signal provides logical narrative bridge."
+          }
+        ]
+      },
+      "evidence_check": {
+        "ok": true,
+        "method": "structured_evidence_refs",
+        "cited_sent_frame_ids": [
+          "baseline_edit_impact_1",
+          "candidate_edit_impact_1"
+        ],
+        "missing_frame_ids": [],
+        "has_baseline_citation": true,
+        "has_candidate_citation": true
+      },
+      "source": {
+        "raw_response_sha256": "1bb7160696fa1635b16d4b55316345cbbc0003ca8c4c7363036488de62466f31",
+        "char_start": 36,
+        "char_end": 783,
+        "fields_from_model": [
+          "confidence",
+          "evidence_refs",
+          "evidence_sufficiency",
+          "intent_id",
+          "introduced_new_defect",
+          "issue_id",
+          "observed_visuals",
+          "original_issue_resolved",
+          "quality_judgment"
+        ],
+        "no_fields_invented": true
+      },
+      "status_distinction": {
+        "OUTPUT_TRUNCATED": false,
+        "PARSE_FAILED": false,
+        "EVIDENCE_UNCHECKABLE": false,
+        "model_UNRESOLVED": false,
+        "note": "OUTPUT_TRUNCATED/PARSE_FAILED/EVIDENCE_UNCHECKABLE are integrity statuses; model_UNRESOLVED is only quality_judgment==UNRESOLVED."
+      }
+    }
+  ],
+  "rejected": [],
+  "short_output_hint": "Prefer per-revision compact JSON with mandatory evidence_refs [{frame_id,note}] to reduce truncation."
+}

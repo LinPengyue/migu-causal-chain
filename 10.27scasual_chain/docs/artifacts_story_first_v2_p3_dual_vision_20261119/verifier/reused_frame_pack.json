@@ -1,0 +1,70 @@
+{
+  "ok": true,
+  "sent_frame_ids": [
+    "baseline_pre_edit_0",
+    "candidate_pre_edit_0",
+    "baseline_edit_impact_1",
+    "candidate_edit_impact_1",
+    "baseline_post_edit_2",
+    "candidate_post_edit_2",
+    "baseline_global_ending_3",
+    "candidate_global_ending_3"
+  ],
+  "sample_plan": [
+    {
+      "narrative_slot": "pre_edit",
+      "reason": "same_edl_segment_context",
+      "baseline_story_sec": 34.5,
+      "candidate_story_sec": 34.5,
+      "baseline_segment_id": "seg_buildup_event_000472",
+      "candidate_segment_id": "seg_buildup_event_000472",
+      "sampling_purpose": "pre_edit"
+    },
+    {
+      "narrative_slot": "edit_impact",
+      "reason": "counterfactual_cut_boundary_not_same_event",
+      "baseline_story_sec": 40.3,
+      "candidate_story_sec": 51.63,
+      "baseline_segment_id": "seg_buildup_event_000472",
+      "candidate_segment_id": "seg_story_first_ab22f01929b5cb4f59e6badd_01",
+      "changed_segment_id": "seg_story_first_ab22f01929b5cb4f59e6badd_01",
+      "sampling_purpose": "edit_impact"
+    },
+    {
+      "narrative_slot": "post_edit",
+      "reason": "same_edl_segment_context",
+      "baseline_story_sec": 51.5,
+      "candidate_story_sec": 73.76,
+      "baseline_segment_id": "seg_equalizer_goal_action",
+      "candidate_segment_id": "seg_equalizer_goal_action",
+      "sampling_purpose": "post_edit"
+    },
+    {
+      "narrative_slot": "global_ending",
+      "reason": "same_edl_segment_context",
+      "baseline_story_sec": 93.0,
+      "candidate_story_sec": 115.26,
+      "baseline_segment_id": "seg_title_close",
+      "candidate_segment_id": "seg_title_close",
+      "sampling_purpose": "global_ending"
+    }
+  ],
+  "observation_method": "reused_preflight_dual_frames_no_reextract",
+  "note": "Reused offline-preflight 8 frames; no re-render/re-extract this round.",
+  "sampling_slots": [
+    "pre_edit",
+    "edit_impact",
+    "post_edit",
+    "global_ending"
+  ],
+  "edl_delta": {
+    "baseline_count": 9,
+    "candidate_count": 10,
+    "added_segment_ids": [
+      "seg_story_first_ab22f01929b5cb4f59e6badd_01"
+    ],
+    "removed_segment_ids": [],
+    "changed_segments": [],
+    "exactly_equal": false
+  }
+}

@@ -1,0 +1,178 @@
+{
+  "raw_excerpt": "{\n  \"per_revision_judgments\": [\n    {\n      \"intent_id\": \"story_first:ab22f01929b5cb4f59e6badd\",\n      \"issue_id\": \"story_first\",\n      \"quality_judgment\": \"WORSE\",\n      \"evidence_sufficiency\": \"HIGH\",\n      \"confidence\": 1.0,\n      \"original_issue_resolved\": false,\n      \"introduced_new_defect\": true,\n      \"observed_visuals\": \"Inserted clip shows unrelated midfield play at 75:13, breaking continuity from 47:05 referee signal to 75:54 goal.\",\n      \"evidence_refs\": [\n        {\n          \"frame_id\": \"candidate_edit_impact_1\",\n          \"note\": \"Unrelated gameplay inserted between buildup and equalizer.\"\n        },\n        {\n          \"frame_id\": \"baseline_edit_impact_1\",\n          \"note\": \"Original referee signal provides logical narrative bridge.\"\n        }\n      ]\n    }\n  ],\n  \"hard_vetoes\": [\n    \"Narrative regression: Inserted footage (75:13) disrupts causal link between referee decision (47:05) and equalizer goal (75:54).\"\n  ],\n  \"quality_delta_vs_baseline\": \"WORSE\",\n  \"accept_candidate\": false,\n  \"soft_quality\": \"WORSE\",\n  \"issue_effect\": \"UNRESOLVED\",\n  \"global_regression\": \"YES\",\n  \"observed_changes\": [\n    \"Referee signal replaced by unrelated midfield possession.\",\n    \"22s duration increase without story gain.\"\n  ],\n  \"suggested_next_evidence\": null,\n  \"evidence_of_improvement\": [],\n  \"fullcut_comparison\": {\n    \"information_gain\": {\n      \"verdict\": \"NO\",\n      \"observed_difference\": \"Candidate adds irrelevant midfield action; Baseline retains key referee context.\",\n      \"frame_ids\": [\n        \"baseline_edit_impact_1\",\n        \"candidate_edit_impact_1\"\n      ]\n    },\n    \"beat_continuity\": {\n      \"verdict\": \"WORSE\",\n      \"observed_difference\": \"Candidate breaks temporal/logical flow between foul call and subsequent goal.\",\n      \"frame_ids\": [\n        \"baseline_edit_impact_1\",\n        \"candidate_edit_impact_1\"\n      ]\n    },\n    \"pacing_tradeoff\": {\n      \"verdict\": \"NOT_JUSTIFIED\",\n      \"observed_difference\": \"+22s runtime adds no narrative value or tension.\",\n      \"frame_ids\": [\n        \"baseline_edit_impact_1\",\n        \"candidate_edit_impact_1\"\n      ]\n    },\n    \"redundancy\": {\n      \"verdict\": \"YES\",\n      \"observed_difference\": \"Inserted clip is extraneous to the 'Story-First' equalizer arc.\",\n      \"frame_ids\": [\n        \"baseline_edit_impact_1\",\n        \"candidate_edit_impact_1\"\n      ]\n    },\n    \"global_regression\": {\n      \"verdict\": \"YES\",\n      \"observed_difference\": \"Core story beat (referee decision leading to goal) is obscured.\",\n      \"frame_ids\": [\n        \"baseline_edit_impact_1\",\n        \"candidate_edit_impact_1\"\n      ]\n    }\n  },\n  \"recommendation\": \"KEEP_BASELINE\",\n  \"marginal_gain_vs_duration\": \"Candidate adds 22 seconds of unrelated footage that degrades narrative coherence without providing new story information.\",\n  \"FULLCUT_EDL_DURATION_DIFFERENCE\": {\n    \"baseline_duration_sec\": 88.5,\n    \"candidate_duration_sec\": 110.76,\n    \"duration_delta_sec\": 22.26\n  }\n}",
+  "parsed": {
+    "per_revision_judgments": [
+      {
+        "intent_id": "story_first:ab22f01929b5cb4f59e6badd",
+        "issue_id": "story_first",
+        "quality_judgment": "WORSE",
+        "evidence_sufficiency": "HIGH",
+        "confidence": 1.0,
+        "original_issue_resolved": false,
+        "introduced_new_defect": true,
+        "observed_visuals": "Inserted clip shows unrelated midfield play at 75:13, breaking continuity from 47:05 referee signal to 75:54 goal.",
+        "evidence_refs": [
+          {
+            "frame_id": "candidate_edit_impact_1",
+            "note": "Unrelated gameplay inserted between buildup and equalizer."
+          },
+          {
+            "frame_id": "baseline_edit_impact_1",
+            "note": "Original referee signal provides logical narrative bridge."
+          }
+        ]
+      }
+    ],
+    "hard_vetoes": [
+      "Narrative regression: Inserted footage (75:13) disrupts causal link between referee decision (47:05) and equalizer goal (75:54)."
+    ],
+    "quality_delta_vs_baseline": "WORSE",
+    "accept_candidate": false,
+    "soft_quality": "WORSE",
+    "issue_effect": "UNRESOLVED",
+    "global_regression": "YES",
+    "observed_changes": [
+      "Referee signal replaced by unrelated midfield possession.",
+      "22s duration increase without story gain."
+    ],
+    "suggested_next_evidence": null,
+    "evidence_of_improvement": [],
+    "fullcut_comparison": {
+      "information_gain": {
+        "verdict": "NO",
+        "observed_difference": "Candidate adds irrelevant midfield action; Baseline retains key referee context.",
+        "frame_ids": [
+          "baseline_edit_impact_1",
+          "candidate_edit_impact_1"
+        ]
+      },
+      "beat_continuity": {
+        "verdict": "WORSE",
+        "observed_difference": "Candidate breaks temporal/logical flow between foul call and subsequent goal.",
+        "frame_ids": [
+          "baseline_edit_impact_1",
+          "candidate_edit_impact_1"
+        ]
+      },
+      "pacing_tradeoff": {
+        "verdict": "NOT_JUSTIFIED",
+        "observed_difference": "+22s runtime adds no narrative value or tension.",
+        "frame_ids": [
+          "baseline_edit_impact_1",
+          "candidate_edit_impact_1"
+        ]
+      },
+      "redundancy": {
+        "verdict": "YES",
+        "observed_difference": "Inserted clip is extraneous to the 'Story-First' equalizer arc.",
+        "frame_ids": [
+          "baseline_edit_impact_1",
+          "candidate_edit_impact_1"
+        ]
+      },
+      "global_regression": {
+        "verdict": "YES",
+        "observed_difference": "Core story beat (referee decision leading to goal) is obscured.",
+        "frame_ids": [
+          "baseline_edit_impact_1",
+          "candidate_edit_impact_1"
+        ]
+      }
+    },
+    "recommendation": "KEEP_BASELINE",
+    "marginal_gain_vs_duration": "Candidate adds 22 seconds of unrelated footage that degrades narrative coherence without providing new story information.",
+    "FULLCUT_EDL_DURATION_DIFFERENCE": {
+      "baseline_duration_sec": 88.5,
+      "candidate_duration_sec": 110.76,
+      "duration_delta_sec": 22.26
+    }
+  },
+  "parse_error": null,
+  "usage": {
+    "prompt_tokens": 8666,
+    "completion_tokens": 876,
+    "total_tokens": 9542,
+    "completion_tokens_details": {
+      "text_tokens": 876
+    }
+  },
+  "sent_frame_ids": [
+    "baseline_pre_edit_0",
+    "candidate_pre_edit_0",
+    "baseline_edit_impact_1",
+    "candidate_edit_impact_1",
+    "baseline_post_edit_2",
+    "candidate_post_edit_2",
+    "baseline_global_ending_3",
+    "candidate_global_ending_3"
+  ],
+  "finish_reason": "stop",
+  "call_audit": {
+    "model": "Qwen3.7-Plus",
+    "provider_mode": "real",
+    "logical_role": "vision",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1600,
+    "prompt_tokens": 8666,
+    "completion_tokens": 876,
+    "reasoning_tokens": null,
+    "text_tokens": 876,
+    "finish_reason": "stop",
+    "visible_output_chars": 2958,
+    "est_cost_usd": 0.0018254999999999999,
+    "http_ok": true,
+    "empty_content": false
+  },
+  "request_audit": {
+    "role": "vision",
+    "model": "Qwen3.7-Plus",
+    "request_profile": "video_rsi",
+    "token_param_configured": "max_tokens",
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1600,
+    "temperature_sent": 0.0,
+    "stream_sent": false,
+    "thinking_params_sent": false,
+    "thinking_object_disabled_sent": true,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "sends_both_token_params": false,
+    "sends_both_thinking_formats": false,
+    "message_count": 2,
+    "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+    "paratera_thinking_object_documented": false
+  },
+  "response_audit": {
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "visible_output_chars": 2958,
+    "usage_keys_present": [
+      "completion_tokens",
+      "completion_tokens_details",
+      "prompt_tokens",
+      "prompt_tokens_details",
+      "total_tokens"
+    ],
+    "has_completion_tokens_details": true,
+    "reasoning_content_present": false,
+    "completion_tokens_reported": 876,
+    "output_token_limit": 1600,
+    "output_budget_exceeded": false
+  },
+  "truncated_recovery": {
+    "status_tags": [],
+    "n_valid_recovered": 1,
+    "n_rejected": 0,
+    "extraction": {
+      "array_found": true,
+      "stop_reason": "array_closed",
+      "char_offset_stop": null,
+      "n_syntax_complete_objects": 1
+    },
+    "raw_response_sha256": "1bb7160696fa1635b16d4b55316345cbbc0003ca8c4c7363036488de62466f31"
+  }
+}

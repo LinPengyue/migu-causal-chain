@@ -1,0 +1,59 @@
+{
+  "http_attempts": 1,
+  "usage_summary": {
+    "calls": 1,
+    "http_attempts": 1,
+    "real_requests": 1,
+    "real_ok": 1,
+    "real_failures": 0,
+    "cached_hits": 0,
+    "mock_calls": 0,
+    "degraded_calls": 0,
+    "ok": 1,
+    "failures": 0,
+    "prompt_tokens": 8666,
+    "completion_tokens": 876,
+    "total_tokens": 9542,
+    "cached_tokens_reported": 0,
+    "est_cost_usd_real": 0.001825,
+    "est_cost_usd_cached_replay": 0,
+    "cost_disclaimer": "est_cost_usd is a local estimate from configured unit prices (STORY_LLM_PRICE_*); it is NOT a billing guarantee or absolute invoice cap.",
+    "elapsed_sec_real": 19.1141,
+    "output_budget_exceeded_count": 0,
+    "by_role": {
+      "vision": {
+        "http_attempts": 1,
+        "tokens": 9542,
+        "est_cost_usd": 0.001825,
+        "output_budget_exceeded": false
+      }
+    },
+    "records": [
+      {
+        "role": "vision",
+        "model": "Qwen3.7-Plus",
+        "ok": true,
+        "mode": "real",
+        "elapsed_sec": 19.114074018318206,
+        "prompt_tokens": 8666,
+        "completion_tokens": 876,
+        "total_tokens": 9542,
+        "est_cost_usd": 0.0018254999999999999,
+        "cached": false,
+        "error": "",
+        "http_status": 200,
+        "retryable": false,
+        "http_attempt": true,
+        "attempt_index": 0,
+        "failure_status": "",
+        "request_token_param": "max_tokens",
+        "request_token_limit": 1600,
+        "request_thinking_sent": true,
+        "finish_reason": "stop",
+        "reasoning_tokens": null,
+        "visible_output_chars": 2958,
+        "output_budget_exceeded": false
+      }
+    ]
+  }
+}

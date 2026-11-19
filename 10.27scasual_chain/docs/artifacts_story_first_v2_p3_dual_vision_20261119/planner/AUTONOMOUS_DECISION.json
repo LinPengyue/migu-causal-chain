@@ -1,0 +1,74 @@
+{
+  "decision": "UNRESOLVED",
+  "decision_space": [
+    "KEEP",
+    "REVISE",
+    "REJECT",
+    "UNRESOLVED"
+  ],
+  "reasons": [
+    "fullcut_semantic_screen_UNVERIFIED_uncertain",
+    "issue_effect_UNRESOLVED",
+    "model_hard_veto_overclaims_unproven_causal_bridge",
+    "no_evidenced_information_gain_for_KEEP",
+    "NOT_converting_pipeline_hard_veto_alone_into_evidence_grade_REJECT"
+  ],
+  "human_approval_used_as_model_input": false,
+  "direct_causality_required": false,
+  "observable_facts": {
+    "http_ok_untruncated": true,
+    "frames_compared": [
+      "baseline_edit_impact_1",
+      "baseline_global_ending_3",
+      "baseline_post_edit_2",
+      "baseline_pre_edit_0",
+      "candidate_edit_impact_1",
+      "candidate_global_ending_3",
+      "candidate_post_edit_2",
+      "candidate_pre_edit_0"
+    ],
+    "cited_sent_frame_ids_from_model_body": [
+      "baseline_edit_impact_1",
+      "candidate_edit_impact_1"
+    ],
+    "edit_impact_pair_cited": true,
+    "information_gain_verdict": "NO",
+    "pacing_tradeoff_verdict": "NOT_JUSTIFIED",
+    "duration_delta_sec": 22.26,
+    "global_ending_frame_sha_identical": true,
+    "pre_edit_frame_sha_identical": true,
+    "fullcut_semantic_screen_status": "UNVERIFIED",
+    "fullcut_quality_advisory": "UNCERTAIN",
+    "screen_reasons": [
+      "no_contextual_continuity_citation"
+    ],
+    "goals_edl_intact": true
+  },
+  "subjective_narrative_judgments": {
+    "model_quality_delta": "WORSE",
+    "model_soft_quality": "WORSE",
+    "model_hard_vetoes": [
+      "Narrative regression: Inserted footage (75:13) disrupts causal link between referee decision (47:05) and equalizer goal (75:54)."
+    ],
+    "model_recommendation": "KEEP_BASELINE",
+    "issue_effect": "UNRESOLVED",
+    "overclaim_note": "hard_veto asserts a referee→equalizer causal link; baseline already hard-cuts across the same large source gap. Sparse stills cannot prove/disprove on-field causality."
+  },
+  "pipeline_signals_not_equal_to_final_decision": {
+    "decide_accept_accept": false,
+    "decide_accept_reasons": [
+      "verifier_hard_veto"
+    ],
+    "semantic_verification_status_gate": "FAILED",
+    "planner_plan_from_diagnosis": "UNRESOLVED",
+    "model_recommendation": "KEEP_BASELINE"
+  },
+  "candidate_auto_accepted_to_formal_edl": false,
+  "formal_edl_modified": false,
+  "interpretation_guard": {
+    "NOT_EVALUATED_means_quality_bad": false,
+    "FAILED_hard_veto_without_verified_screen_means_auto_REJECT": false,
+    "reliable_KEEP_requires": "ok_for_semantic_accept + cited improved evidence",
+    "reliable_REJECT_requires": "verified regression with frame cites without causality invention, or confirmed hard safety"
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "code_sha": "2f6f71e48d1557fcabb788e1289c1f3b1633cd6a",
+  "authorized_max_http": 1,
+  "actual_http_attempts": 1,
+  "model": "Qwen3.7-Plus",
+  "frames_reused_n": 8,
+  "re_extract": false,
+  "re_render": false,
+  "est_cost_usd": 0.0018254999999999999,
+  "usage": {
+    "prompt_tokens": 8666,
+    "completion_tokens": 876,
+    "total_tokens": 9542,
+    "completion_tokens_details": {
+      "text_tokens": 876
+    }
+  },
+  "finish_reason": "stop",
+  "call_audit": {
+    "model": "Qwen3.7-Plus",
+    "provider_mode": "real",
+    "logical_role": "vision",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1600,
+    "prompt_tokens": 8666,
+    "completion_tokens": 876,
+    "reasoning_tokens": null,
+    "text_tokens": 876,
+    "finish_reason": "stop",
+    "visible_output_chars": 2958,
+    "est_cost_usd": 0.0018254999999999999,
+    "http_ok": true,
+    "empty_content": false
+  },
+  "semantic_verification_status_gate": "FAILED",
+  "ok_for_semantic_accept": false,
+  "fullcut_semantic_screen": {
+    "status": "UNVERIFIED",
+    "quality_advisory": "UNCERTAIN",
+    "reasons": [
+      "no_contextual_continuity_citation"
+    ],
+    "authorizes_promote_best": false
+  },
+  "validated_brief": {
+    "quality_delta_vs_baseline": "WORSE",
+    "accept_candidate": false,
+    "soft_quality": "WORSE",
+    "issue_effect": "UNRESOLVED",
+    "global_regression": "YES",
+    "hard_vetoes": [
+      "Narrative regression: Inserted footage (75:13) disrupts causal link between referee decision (47:05) and equalizer goal (75:54)."
+    ],
+    "recommendation": "KEEP_BASELINE"
+  },
+  "cited_sent_frame_ids_from_model_body": [
+    "baseline_edit_impact_1",
+    "candidate_edit_impact_1"
+  ],
+  "gate_cited_sent_frame_ids": [],
+  "autonomous_decision": {
+    "decision": "UNRESOLVED",
+    "reasons": [
+      "fullcut_semantic_screen_UNVERIFIED_uncertain",
+      "issue_effect_UNRESOLVED",
+      "model_hard_veto_overclaims_unproven_causal_bridge",
+      "no_evidenced_information_gain_for_KEEP",
+      "NOT_converting_pipeline_hard_veto_alone_into_evidence_grade_REJECT"
+    ],
+    "human_approval_used_as_model_input": false
+  },
+  "formal_edl_unchanged": true,
+  "formal_edl_sha256": "b38434b9f15ea550b878fee4c7a4537115ae85d5cd57bdb189f6ad8036a4c47a",
+  "videos_overwritten": false
+}
