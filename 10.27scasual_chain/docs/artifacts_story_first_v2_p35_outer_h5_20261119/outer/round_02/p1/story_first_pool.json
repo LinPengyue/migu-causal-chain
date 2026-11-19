@@ -1,0 +1,789 @@
+{
+  "initial_edl_sha256": "ea1209b4a0e5c300acd66153517b55a2d70d369461732b06f302d76a6a9536be",
+  "intervals": [
+    {
+      "candidate_count": 5,
+      "from_segment_id": "seg_opponent_opening_goal_action",
+      "interval_id": "interval_01",
+      "scope": {
+        "anchor_source": "existing_v3r_edl",
+        "from_role": "opponent_opening_goal_action",
+        "from_segment_id": "seg_opponent_opening_goal_action",
+        "no_assumed_causality": true,
+        "source_interval_sec": [
+          1347.123,
+          6436.924
+        ],
+        "to_role": "equalizer_goal_action",
+        "to_segment_id": "seg_equalizer_goal_action"
+      },
+      "score_status": "OFFLINE_RESEARCH_ONLY",
+      "status": "GENERATED",
+      "to_segment_id": "seg_equalizer_goal_action"
+    },
+    {
+      "candidate_count": 5,
+      "from_segment_id": "seg_equalizer_goal_action",
+      "interval_id": "interval_02",
+      "scope": {
+        "anchor_source": "existing_v3r_edl",
+        "from_role": "equalizer_goal_action",
+        "from_segment_id": "seg_equalizer_goal_action",
+        "no_assumed_causality": true,
+        "source_interval_sec": [
+          6458.924,
+          6829.456
+        ],
+        "to_role": "go_ahead_goal_action",
+        "to_segment_id": "seg_go_ahead_goal_action"
+      },
+      "score_status": "OFFLINE_RESEARCH_ONLY",
+      "status": "GENERATED",
+      "to_segment_id": "seg_go_ahead_goal_action"
+    }
+  ],
+  "proposals": [
+    {
+      "events": [
+        {
+          "annotation": {
+            "description": "",
+            "notes": "2队3号踢到1队7号，造成犯规"
+          },
+          "event_id": "event_000617",
+          "event_type": "Foul_Being_fouled",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 6020.63
+        },
+        {
+          "annotation": {
+            "description": "",
+            "notes": "2队3号踢到1队7号，造成犯规"
+          },
+          "event_id": "event_000622",
+          "event_type": "Video_Assistant_Referee",
+          "known_replay_or_slowmo": true,
+          "source_pts_sec": 6196.82
+        },
+        {
+          "annotation": {
+            "description": "",
+            "notes": "2队球员截获1队球员传球"
+          },
+          "event_id": "event_000635",
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 6405.03
+        }
+      ],
+      "evidence_status": "UNVERIFIED",
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若VAR回放显示取消的是另一次判罚而非该点球，则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "discriminating_signal": "裁判指向点球点",
+          "question": "该犯规是否被判为点球？",
+          "target_id": "event:event_000617"
+        }
+      ],
+      "proposal_id": "interval_01:H1",
+      "relations": [
+        {
+          "claim": "点球判罚后经VAR被取消，关联性未验证",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_id": "r1",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000617",
+          "target_event_id": "event_000622"
+        }
+      ],
+      "scope": {
+        "anchor_source": "existing_v3r_edl",
+        "from_role": "opponent_opening_goal_action",
+        "from_segment_id": "seg_opponent_opening_goal_action",
+        "no_assumed_causality": true,
+        "source_interval_sec": [
+          1347.123,
+          6436.924
+        ],
+        "to_role": "equalizer_goal_action",
+        "to_segment_id": "seg_equalizer_goal_action"
+      },
+      "summary": "禁区内犯规与VAR取消点球构成一段被否定的得分机会，随后出现扳平进球。"
+    },
+    {
+      "events": [
+        {
+          "annotation": {
+            "description": "",
+            "notes": "2队9号换下2队7号"
+          },
+          "event_id": "event_000563",
+          "event_type": "Substitution",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 5557.6
+        },
+        {
+          "annotation": {
+            "description": "",
+            "notes": "1队球员带球过人"
+          },
+          "event_id": "event_000575",
+          "event_type": "Dribble_past",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 5671.58
+        },
+        {
+          "annotation": {
+            "description": "",
+            "notes": "1队9号拿球射门"
+          },
+          "event_id": "event_000593",
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 5793.73
+        }
+      ],
+      "evidence_status": "UNVERIFIED",
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若换人后至射门间无进攻事件，则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "discriminating_signal": "持球越过防守球员",
+          "question": "该突破是否形成进攻推进？",
+          "target_id": "event:event_000575"
+        }
+      ],
+      "proposal_id": "interval_01:H2",
+      "relations": [
+        {
+          "claim": "换人后进攻增多，因果关系未验证",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_id": "r1",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000563",
+          "target_event_id": "event_000593"
+        }
+      ],
+      "scope": {
+        "anchor_source": "existing_v3r_edl",
+        "from_role": "opponent_opening_goal_action",
+        "from_segment_id": "seg_opponent_opening_goal_action",
+        "no_assumed_causality": true,
+        "source_interval_sec": [
+          1347.123,
+          6436.924
+        ],
+        "to_role": "equalizer_goal_action",
+        "to_segment_id": "seg_equalizer_goal_action"
+      },
+      "summary": "换人调整后出现连续进攻与射门，可能构成扳平前的施压阶段。"
+    },
+    {
+      "events": [
+        {
+          "annotation": {
+            "description": "",
+            "notes": "1队球员挑球过人"
+          },
+          "event_id": "event_000501",
+          "event_type": "Dribble_past",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 4941.82
+        },
+        {
+          "annotation": {
+            "description": "",
+            "notes": "2队球员截获1队球员传球"
+          },
+          "event_id": "event_000524",
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 5103.61
+        },
+        {
+          "annotation": {
+            "description": "",
+            "notes": "1队球员接球过人"
+          },
+          "event_id": "event_000580",
+          "event_type": "Dribble_past",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 5684.22
+        }
+      ],
+      "evidence_status": "UNVERIFIED",
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若这些事件分属不同进攻回合且无连续争夺，则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "discriminating_signal": "连续持球推进",
+          "question": "该突破是否延续同一进攻？",
+          "target_id": "event:event_000580"
+        }
+      ],
+      "proposal_id": "interval_01:H3",
+      "relations": [
+        {
+          "claim": "突破与拦截交替，关联性未验证",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_id": "r1",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000501",
+          "target_event_id": "event_000580"
+        }
+      ],
+      "scope": {
+        "anchor_source": "existing_v3r_edl",
+        "from_role": "opponent_opening_goal_action",
+        "from_segment_id": "seg_opponent_opening_goal_action",
+        "no_assumed_causality": true,
+        "source_interval_sec": [
+          1347.123,
+          6436.924
+        ],
+        "to_role": "equalizer_goal_action",
+        "to_segment_id": "seg_equalizer_goal_action"
+      },
+      "summary": "多次突破与拦截交替出现，可能反映扳平前双方在中前场的反复争夺。"
+    },
+    {
+      "events": [
+        {
+          "annotation": {
+            "description": "",
+            "notes": "2队7号犯规被罚黄牌"
+          },
+          "event_id": "event_000548",
+          "event_type": "Receive_a_card",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 5394.14
+        },
+        {
+          "annotation": {
+            "description": "",
+            "notes": "1队14号发任意球"
+          },
+          "event_id": "event_000552",
+          "event_type": "Free_kick",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 5453.84
+        },
+        {
+          "annotation": {
+            "description": "",
+            "notes": "2队球员把球踢走，成功解围"
+          },
+          "event_id": "event_000554",
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 5457.17
+        }
+      ],
+      "evidence_status": "UNVERIFIED",
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若任意球与黄牌犯规地点无关，则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "discriminating_signal": "犯规地点与任意球位置一致",
+          "question": "任意球是否源于该犯规？",
+          "target_id": "event:event_000552"
+        }
+      ],
+      "proposal_id": "interval_01:H4",
+      "relations": [
+        {
+          "claim": "黄牌后出现任意球，关联性未验证",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_id": "r1",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000548",
+          "target_event_id": "event_000552"
+        }
+      ],
+      "scope": {
+        "anchor_source": "existing_v3r_edl",
+        "from_role": "opponent_opening_goal_action",
+        "from_segment_id": "seg_opponent_opening_goal_action",
+        "no_assumed_causality": true,
+        "source_interval_sec": [
+          1347.123,
+          6436.924
+        ],
+        "to_role": "equalizer_goal_action",
+        "to_segment_id": "seg_equalizer_goal_action"
+      },
+      "summary": "黄牌与随后的任意球、解围构成一段定位球攻防序列。"
+    },
+    {
+      "events": [
+        {
+          "annotation": {
+            "description": "",
+            "notes": "1队球员面对2队球员的防守，长传给队友"
+          },
+          "event_id": "event_000467",
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 4679.11
+        },
+        {
+          "annotation": {
+            "description": "",
+            "notes": "1队球员挑球过人"
+          },
+          "event_id": "event_000469",
+          "event_type": "Dribble_past",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 4691.2
+        },
+        {
+          "annotation": {
+            "description": "",
+            "notes": "1队9号接球后打门"
+          },
+          "event_id": "event_000472",
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 4710.45
+        }
+      ],
+      "evidence_status": "UNVERIFIED",
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若射门与突破不在同一进攻回合，则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "discriminating_signal": "同一进攻连续推进",
+          "question": "该射门是否来自此前突破？",
+          "target_id": "event:event_000472"
+        }
+      ],
+      "proposal_id": "interval_01:H5",
+      "relations": [
+        {
+          "claim": "突破后形成射门，因果关系未验证",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_id": "r1",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000469",
+          "target_event_id": "event_000472"
+        }
+      ],
+      "scope": {
+        "anchor_source": "existing_v3r_edl",
+        "from_role": "opponent_opening_goal_action",
+        "from_segment_id": "seg_opponent_opening_goal_action",
+        "no_assumed_causality": true,
+        "source_interval_sec": [
+          1347.123,
+          6436.924
+        ],
+        "to_role": "equalizer_goal_action",
+        "to_segment_id": "seg_equalizer_goal_action"
+      },
+      "summary": "长传、突破与射门被扑出构成一次未果的进攻尝试。"
+    },
+    {
+      "events": [
+        {
+          "annotation": {
+            "description": "",
+            "notes": "1队球员带球射门"
+          },
+          "event_id": "event_000640",
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 6557.14
+        },
+        {
+          "annotation": {
+            "description": "",
+            "notes": "2队守门员关键拦截"
+          },
+          "event_id": "event_000641",
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 6557.97
+        },
+        {
+          "annotation": null,
+          "event_id": "atom_fill_0091_Shot_6599535",
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 6599.535
+        },
+        {
+          "annotation": null,
+          "event_id": "atom_fill_0092_Save_6600268",
+          "event_type": "Save",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 6600.268
+        }
+      ],
+      "evidence_status": "UNVERIFIED",
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若视频显示两次射门间无同一进攻延续则推翻"
+      ],
+      "observation_queries": [
+        {
+          "discriminating_signal": "进攻方向与球员连续性",
+          "question": "这次射门是否延续此前进攻？",
+          "target_id": "event:atom_fill_0091_Shot_6599535"
+        }
+      ],
+      "proposal_id": "interval_02:H1",
+      "relations": [
+        {
+          "claim": "射门与随后扑救或构成连续受阻攻势",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_id": "r1",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000640",
+          "target_event_id": "atom_fill_0092_Save_6600268"
+        }
+      ],
+      "scope": {
+        "anchor_source": "existing_v3r_edl",
+        "from_role": "equalizer_goal_action",
+        "from_segment_id": "seg_equalizer_goal_action",
+        "no_assumed_causality": true,
+        "source_interval_sec": [
+          6458.924,
+          6829.456
+        ],
+        "to_role": "go_ahead_goal_action",
+        "to_segment_id": "seg_go_ahead_goal_action"
+      },
+      "summary": "扳平后主队连续射门被扑出，攻势未能转化为领先。"
+    },
+    {
+      "events": [
+        {
+          "annotation": {
+            "description": "",
+            "notes": "2队球员抢断1队球员带球"
+          },
+          "event_id": "event_000654",
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 6693.73
+        },
+        {
+          "annotation": {
+            "description": "",
+            "notes": "1队11号对2队6号造成犯规"
+          },
+          "event_id": "event_000658",
+          "event_type": "Foul_Being_fouled",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 6724.31
+        },
+        {
+          "annotation": {
+            "description": "",
+            "notes": "1队球员争顶成功"
+          },
+          "event_id": "event_000666",
+          "event_type": "Win_an_aerial_duel",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 6803.48
+        },
+        {
+          "annotation": {
+            "description": "",
+            "notes": "1队球员截获2队球权"
+          },
+          "event_id": "event_000668",
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 6820.61
+        }
+      ],
+      "evidence_status": "UNVERIFIED",
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若对抗双方队别混杂无主队倾向则推翻"
+      ],
+      "observation_queries": [
+        {
+          "discriminating_signal": "球衣颜色与球权归属",
+          "question": "这次争顶是否由主队赢得？",
+          "target_id": "event:event_000666"
+        }
+      ],
+      "proposal_id": "interval_02:H2",
+      "relations": [
+        {
+          "claim": "连续对抗成功或使球权逐步转向主队",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_id": "r1",
+          "relation_type": "state_transition",
+          "source_event_id": "event_000654",
+          "target_event_id": "event_000668"
+        }
+      ],
+      "scope": {
+        "anchor_source": "existing_v3r_edl",
+        "from_role": "equalizer_goal_action",
+        "from_segment_id": "seg_equalizer_goal_action",
+        "no_assumed_causality": true,
+        "source_interval_sec": [
+          6458.924,
+          6829.456
+        ],
+        "to_role": "go_ahead_goal_action",
+        "to_segment_id": "seg_go_ahead_goal_action"
+      },
+      "summary": "领先前主队多次对抗与拦截成功，逐步夺回球权控制。"
+    },
+    {
+      "events": [
+        {
+          "annotation": {
+            "description": "",
+            "notes": "1队11号对2队6号造成犯规"
+          },
+          "event_id": "event_000658",
+          "event_type": "Foul_Being_fouled",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 6724.31
+        },
+        {
+          "annotation": {
+            "description": "",
+            "notes": "2队球员发任意球"
+          },
+          "event_id": "event_000659",
+          "event_type": "Free_kick",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 6768.94
+        },
+        {
+          "annotation": {
+            "description": "",
+            "notes": "2队球员争顶成功"
+          },
+          "event_id": "event_000660",
+          "event_type": "Win_an_aerial_duel",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 6772.02
+        },
+        {
+          "annotation": {
+            "description": "",
+            "notes": "2队15号射门打偏"
+          },
+          "event_id": "event_000661",
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 6774.49
+        }
+      ],
+      "evidence_status": "UNVERIFIED",
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若任意球与犯规地点方向不一致则推翻"
+      ],
+      "observation_queries": [
+        {
+          "discriminating_signal": "犯规地点与任意球位置一致",
+          "question": "任意球是否由该犯规产生？",
+          "target_id": "event:event_000659"
+        }
+      ],
+      "proposal_id": "interval_02:H3",
+      "relations": [
+        {
+          "claim": "犯规判罚或导致随后任意球与射门序列",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_id": "r1",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000658",
+          "target_event_id": "event_000661"
+        }
+      ],
+      "scope": {
+        "anchor_source": "existing_v3r_edl",
+        "from_role": "equalizer_goal_action",
+        "from_segment_id": "seg_equalizer_goal_action",
+        "no_assumed_causality": true,
+        "source_interval_sec": [
+          6458.924,
+          6829.456
+        ],
+        "to_role": "go_ahead_goal_action",
+        "to_segment_id": "seg_go_ahead_goal_action"
+      },
+      "summary": "犯规后主队获任意球并连续争顶射门，形成定位球攻势。"
+    },
+    {
+      "events": [
+        {
+          "annotation": {
+            "description": "",
+            "notes": "2队球员带球过人"
+          },
+          "event_id": "event_000645",
+          "event_type": "Dribble_past",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 6631.33
+        },
+        {
+          "annotation": {
+            "description": "",
+            "notes": "1队球员抢断2队球员带球"
+          },
+          "event_id": "event_000646",
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 6632.81
+        },
+        {
+          "annotation": {
+            "description": "",
+            "notes": "2队球员带球过人"
+          },
+          "event_id": "event_000667",
+          "event_type": "Dribble_past",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 6813.28
+        },
+        {
+          "annotation": {
+            "description": "",
+            "notes": "1队球员与2队球员发生身体对抗"
+          },
+          "event_id": "event_000669",
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 6821.96
+        }
+      ],
+      "evidence_status": "UNVERIFIED",
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若两次突破由不同队完成则推翻"
+      ],
+      "observation_queries": [
+        {
+          "discriminating_signal": "持球队员队别",
+          "question": "这次突破是否由主队发起？",
+          "target_id": "event:event_000667"
+        }
+      ],
+      "proposal_id": "interval_02:H4",
+      "relations": [
+        {
+          "claim": "两次突破被破坏或反映重复的推进受阻模式",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_id": "r1",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000645",
+          "target_event_id": "event_000667"
+        }
+      ],
+      "scope": {
+        "anchor_source": "existing_v3r_edl",
+        "from_role": "equalizer_goal_action",
+        "from_segment_id": "seg_equalizer_goal_action",
+        "no_assumed_causality": true,
+        "source_interval_sec": [
+          6458.924,
+          6829.456
+        ],
+        "to_role": "go_ahead_goal_action",
+        "to_segment_id": "seg_go_ahead_goal_action"
+      },
+      "summary": "主队突破被拦截后再次推进，形成反复的攻防交替节奏。"
+    },
+    {
+      "events": [
+        {
+          "annotation": {
+            "description": "",
+            "notes": "1队球员长传给队友"
+          },
+          "event_id": "event_000665",
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 6799.93
+        },
+        {
+          "annotation": {
+            "description": "",
+            "notes": "1队球员争顶成功"
+          },
+          "event_id": "event_000666",
+          "event_type": "Win_an_aerial_duel",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 6803.48
+        },
+        {
+          "annotation": {
+            "description": "",
+            "notes": "2队球员带球过人"
+          },
+          "event_id": "event_000667",
+          "event_type": "Dribble_past",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 6813.28
+        },
+        {
+          "annotation": null,
+          "event_id": "atom_fill_0100_Pass_6829010",
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "source_pts_sec": 6829.01
+        }
+      ],
+      "evidence_status": "UNVERIFIED",
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若长传后球权立即丢失无延续则推翻"
+      ],
+      "observation_queries": [
+        {
+          "discriminating_signal": "传球方向与接球队别",
+          "question": "这次传球是否延续主队进攻？",
+          "target_id": "event:atom_fill_0100_Pass_6829010"
+        }
+      ],
+      "proposal_id": "interval_02:H5",
+      "relations": [
+        {
+          "claim": "长传争顶后连续传递或构成进球前压迫",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_id": "r1",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000665",
+          "target_event_id": "atom_fill_0100_Pass_6829010"
+        }
+      ],
+      "scope": {
+        "anchor_source": "existing_v3r_edl",
+        "from_role": "equalizer_goal_action",
+        "from_segment_id": "seg_equalizer_goal_action",
+        "no_assumed_causality": true,
+        "source_interval_sec": [
+          6458.924,
+          6829.456
+        ],
+        "to_role": "go_ahead_goal_action",
+        "to_segment_id": "seg_go_ahead_goal_action"
+      },
+      "summary": "领先前主队通过长传与争顶持续施压，逼近进球。"
+    }
+  ],
+  "source_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c"
+}

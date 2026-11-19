@@ -1,0 +1,82 @@
+{
+  "schema": "story_first_outer_comparison_v1",
+  "preview_only": true,
+  "release_authorized": false,
+  "requested_outer_rounds": 1,
+  "attempted_outer_rounds": 1,
+  "accepted_changes": 1,
+  "http_calls_added_by_continuation": 0,
+  "api_usage": {},
+  "round_history": [
+    {
+      "round": 1,
+      "status": "ACCEPTED_PREVIEW",
+      "source_advisory": [
+        {
+          "event_id": "event_000634",
+          "event_ids": [
+            "event_000634"
+          ],
+          "frame_ids": [
+            "f2"
+          ],
+          "reason": "Frame shows players in proximity but no clear interception action or ball contact is visible at this timestamp.",
+          "status": "UNCERTAIN"
+        },
+        {
+          "event_id": "event_000636",
+          "event_ids": [
+            "event_000636"
+          ],
+          "frame_ids": [
+            "f4"
+          ],
+          "reason": "Players are separated and moving; no active pass interception is occurring in this frame.",
+          "status": "UNCERTAIN"
+        }
+      ],
+      "p3_stop_reason": "PREPARED_OFFLINE",
+      "local_trims": 1,
+      "accepted_source_windows_sec": [
+        [
+          6403.81,
+          6410.07
+        ]
+      ],
+      "local_decisions": []
+    }
+  ],
+  "comparison": [
+    {
+      "outer_rounds": 0,
+      "status": "V3_R",
+      "accepted_changes": 0,
+      "edl": "/tmp/story_first_h5_checkpoint_20261119_150607/outer/v0_edl.json",
+      "mp4": "/tmp/lpy1_story_first_v2_p3_isolated_trial_20261116/baseline/story_clean_original.mp4",
+      "mp4_sha256": "7764010f0aa1f41282e22faeee295df88e5c0ec26b07d09f4f110c1d80e3553a",
+      "duration_sec": 94.877
+    },
+    {
+      "outer_rounds": 1,
+      "status": "ACCEPTED_PREVIEW",
+      "accepted_changes": 1,
+      "local_trims": 1,
+      "p3_stop_reason": "PREPARED_OFFLINE",
+      "edl": "/tmp/story_first_h5_checkpoint_20261119_150607/outer/v1_edl.json",
+      "mp4": "/tmp/story_first_p3_caption_20261119_123121/round_01/edit_01/rerender/story_clean.mp4",
+      "mp4_sha256": "b8ea196564440dd4da66e322b3a4e7d89074fed1d36184ef052d5bd7fa37a61d",
+      "duration_sec": 101.147
+    }
+  ],
+  "selected_preview": {
+    "outer_rounds": 1,
+    "status": "ACCEPTED_PREVIEW",
+    "accepted_changes": 1,
+    "local_trims": 1,
+    "p3_stop_reason": "PREPARED_OFFLINE",
+    "edl": "/tmp/story_first_h5_checkpoint_20261119_150607/outer/v1_edl.json",
+    "mp4": "/tmp/story_first_p3_caption_20261119_123121/round_01/edit_01/rerender/story_clean.mp4",
+    "mp4_sha256": "b8ea196564440dd4da66e322b3a4e7d89074fed1d36184ef052d5bd7fa37a61d",
+    "duration_sec": 101.147
+  }
+}

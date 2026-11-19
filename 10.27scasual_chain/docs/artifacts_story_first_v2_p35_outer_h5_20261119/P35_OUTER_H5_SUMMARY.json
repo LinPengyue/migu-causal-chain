@@ -1,0 +1,98 @@
+{
+  "schema": "story_first_p35_outer_h5_report_v1",
+  "code_sha": "9bfd9310b6832a3bcd7d85878ee0bbf7dc2f2661",
+  "run_out": "/tmp/story_first_outer_h5_20261119_150623",
+  "offline_checkpoint": "/tmp/story_first_h5_checkpoint_20261119_150607",
+  "release_authorized": false,
+  "preview_only": true,
+  "formal_edl_untouched": true,
+  "http_calls_added_by_continuation": 5,
+  "est_cost_usd_real": 0.02087,
+  "models": {
+    "story_first_generator": "DeepSeek-V4.1-Flash",
+    "planner": "DeepSeek-V4-Pro-0813",
+    "vision": "Qwen3.7-Plus",
+    "caption": "DeepSeek-V4-Pro-0813 (role story_first_p3_caption; CAPTION_UNAVAILABLE after call)"
+  },
+  "p1": {
+    "proposals": 10,
+    "new_proposals": 10,
+    "intervals": 2
+  },
+  "round2": {
+    "status": "ACCEPTED_PREVIEW",
+    "trial_id": "defb2cc6dac05735c0951fde",
+    "proposal_selected": "interval_01:H5",
+    "event_ids": [
+      "event_000467",
+      "event_000469"
+    ],
+    "source_windows_sec": [
+      [
+        4671.11,
+        4699.2
+      ]
+    ],
+    "accepted_source_windows_sec": [
+      [
+        4671.11,
+        4699.2
+      ]
+    ],
+    "p2_status": "READY_FOR_TRIAL",
+    "p2_veto": false,
+    "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+    "p3_stop_reason": "CAPTION_UNAVAILABLE",
+    "local_trims": 0,
+    "insert_after": "seg_setup_deficit",
+    "before_segment": "seg_buildup_event_000472"
+  },
+  "comparison": [
+    {
+      "outer_rounds": 0,
+      "status": "V3_R",
+      "accepted_changes": 0,
+      "edl": "/tmp/story_first_outer_h5_20261119_150623/outer/v0_edl.json",
+      "mp4": "/tmp/lpy1_story_first_v2_p3_isolated_trial_20261116/baseline/story_clean_original.mp4",
+      "mp4_sha256": "7764010f0aa1f41282e22faeee295df88e5c0ec26b07d09f4f110c1d80e3553a",
+      "duration_sec": 94.877
+    },
+    {
+      "outer_rounds": 1,
+      "status": "ACCEPTED_PREVIEW",
+      "accepted_changes": 1,
+      "local_trims": 1,
+      "p3_stop_reason": "PREPARED_OFFLINE",
+      "edl": "/tmp/story_first_outer_h5_20261119_150623/outer/v1_edl.json",
+      "mp4": "/tmp/story_first_p3_caption_20261119_123121/round_01/edit_01/rerender/story_clean.mp4",
+      "mp4_sha256": "b8ea196564440dd4da66e322b3a4e7d89074fed1d36184ef052d5bd7fa37a61d",
+      "duration_sec": 101.147
+    },
+    {
+      "outer_rounds": 2,
+      "status": "ACCEPTED_PREVIEW",
+      "accepted_changes": 2,
+      "changed_from_previous_round": true,
+      "edl": "/tmp/story_first_outer_h5_20261119_150623/outer/v2_edl.json",
+      "mp4": "/tmp/story_first_outer_h5_20261119_150623/outer/round_02/trial_render/story_clean.mp4",
+      "mp4_sha256": "6b6f2c0f5a518282f4e00fcd324eeac33d13803592a55ec86c98cc80232ede7c",
+      "duration_sec": 129.243
+    }
+  ],
+  "selected_preview": {
+    "outer_rounds": 2,
+    "status": "ACCEPTED_PREVIEW",
+    "accepted_changes": 2,
+    "changed_from_previous_round": true,
+    "edl": "/tmp/story_first_outer_h5_20261119_150623/outer/v2_edl.json",
+    "mp4": "/tmp/story_first_outer_h5_20261119_150623/outer/round_02/trial_render/story_clean.mp4",
+    "mp4_sha256": "6b6f2c0f5a518282f4e00fcd324eeac33d13803592a55ec86c98cc80232ede7c",
+    "duration_sec": 129.243
+  },
+  "notes": [
+    "Offline --outer-rounds 1 checkpoint: 0 HTTP; V0 V3_R + V1 ACCEPTED_PREVIEW (H5 trim).",
+    "Real --outer-rounds 2 continued from accepted H5 trim; reused v0/v1 videos; produced v2 trial.",
+    "P3 local trim not executed on round 2 (CAPTION_UNAVAILABLE); accepted current trial preview.",
+    "No formal EDL promotion; release_authorized=false."
+  ]
+}
