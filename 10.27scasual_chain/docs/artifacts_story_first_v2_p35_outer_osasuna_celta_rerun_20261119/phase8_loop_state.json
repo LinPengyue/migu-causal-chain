@@ -1,0 +1,48 @@
+{
+  "schema": "v3a_phase8_loop_v1",
+  "initial_baseline_version_id": "v0",
+  "best_verified_version_id": "v0",
+  "best_verification_tier": "BASELINE_UNVERIFIED",
+  "working_version_id": "v0",
+  "versions": {
+    "v0": {
+      "parent_version_id": null,
+      "edl_path": "/tmp/story_first_outer_osasuna_celta_20261119_171233/01_initial_story/candidate_edl.json",
+      "mp4_path": "/tmp/story_first_outer_osasuna_celta_20261119_171233/01_initial_story/story_clean.mp4",
+      "safety": "UNKNOWN",
+      "quality": "BASELINE_UNVERIFIED",
+      "source": "V3R_BASELINE",
+      "semantic_evidence_refs": []
+    },
+    "v1": {
+      "parent_version_id": "v0",
+      "edl_path": "/tmp/story_first_outer_osasuna_celta_20261119_171233/02_round_01/candidate_edl.json",
+      "mp4_path": "/tmp/story_first_outer_osasuna_celta_20261119_171233/01_initial_story/story_clean.mp4",
+      "safety": "PASS",
+      "quality": "UNCERTAIN",
+      "source": "OFFLINE_RULE",
+      "semantic_evidence_refs": [],
+      "round_idx": 1
+    }
+  },
+  "feedback_memory_path": "phase8_feedback_memory.json",
+  "round_history": [
+    {
+      "next_action": "STOP_NO_ACTION",
+      "reason_codes": [
+        "no_executable_revision_or_valid_source"
+      ],
+      "candidate_version_id": "v1",
+      "working_ref": "v0",
+      "best_ref": "v0",
+      "quality": "UNCERTAIN",
+      "safety": "PASS"
+    }
+  ],
+  "stop_reason": "STOP_NO_ACTION",
+  "delivery_version_id": "v0",
+  "uncertain_reobserve_count": 0,
+  "promising_depth": 0,
+  "max_uncertain_reobserve": 1,
+  "max_promising_depth": 2
+}

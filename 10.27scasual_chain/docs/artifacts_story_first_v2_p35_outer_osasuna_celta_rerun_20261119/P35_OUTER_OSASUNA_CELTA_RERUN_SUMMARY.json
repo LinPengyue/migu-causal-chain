@@ -1,0 +1,46 @@
+{
+  "schema": "story_first_p35_outer_osasuna_celta_rerun_v1",
+  "code_sha": "42ff8557c57f6dc5154582818187feb245093a0e",
+  "run_out": "/tmp/story_first_outer_osasuna_celta_20261119_171233",
+  "prior_artifacts_dir": "/tmp/story_first_outer_osasuna_celta_20261119_161929/story_first",
+  "flags": {
+    "max_rounds": 2,
+    "phase8_paid_multi_round": true,
+    "story_first_outer_rounds": 2,
+    "story_first_artifacts_dir": "/tmp/story_first_outer_osasuna_celta_20261119_161929/story_first"
+  },
+  "p1_intervals": [
+    {
+      "interval_id": "interval_01",
+      "status": "REUSED",
+      "reused_from": "/tmp/story_first_outer_osasuna_celta_20261119_161929/story_first/interval_01",
+      "candidate_count": 5
+    },
+    {
+      "interval_id": "interval_02",
+      "status": "REUSED",
+      "reused_from": "/tmp/story_first_outer_osasuna_celta_20261119_161929/story_first/interval_02",
+      "candidate_count": 5
+    }
+  ],
+  "p1_both_reused": true,
+  "v1_story_first_preview_produced": false,
+  "rounds_executed": 1,
+  "http_calls": 2,
+  "est_cost_usd": 0.005677,
+  "blocker": {
+    "revision_planner_ok": false,
+    "revision_planner_error": "parse:JSONDecodeError:Expecting ',' delimiter: line 64 column 8 (char 4516)",
+    "revision_planner_output_budget_exceeded": true,
+    "story_first_trial": null,
+    "phase8_stop": "STOP_NO_ACTION",
+    "phase8_reason_codes": [
+      "no_executable_revision_or_valid_source"
+    ]
+  },
+  "note": [
+    "P1 both intervals REUSED from prior B run (0 generator HTTP).",
+    "Round-1 revision planner HTTP returned truncated/invalid JSON (output_budget_exceeded=true) → parse fail → no story_first_trial.",
+    "Without trial/P2 accept, no V1 preview; phase8 STOP_NO_ACTION; round 2 not entered."
+  ]
+}
