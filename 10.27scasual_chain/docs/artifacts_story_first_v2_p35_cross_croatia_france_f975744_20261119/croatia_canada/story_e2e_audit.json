@@ -1,0 +1,2627 @@
+{
+  "schema": "v3a_story_e2e_run_v1",
+  "unified_main_chain": {
+    "id": "v3a_unified_story_self_revise_main_v1",
+    "entry": "run_story_e2e",
+    "does_not_call_run_self_revise": true,
+    "reuses": [
+      "structural_diagnosis",
+      "observe_layers",
+      "apply_semantic_diagnosis_layer",
+      "run_story_evidence_search",
+      "plan_from_diagnosis",
+      "apply_candidate_revision",
+      "check_source_pts_monotonic",
+      "verify_story_revision",
+      "build_revision_cases_for_round",
+      "recover_per_revision_judgments"
+    ],
+    "specialized_lab_entry": "run_self_revise",
+    "phase6": {
+      "semantic_hypothesis_layer": true,
+      "no_auto_add_on_large_source_gap_alone": true,
+      "BETTER_not_auto_IMPROVED": true,
+      "revision_case_closed_loop": true
+    },
+    "phase8": {
+      "failure_aware_iterative_revision": true,
+      "modules": [
+        "story_revision_feedback",
+        "story_loop_policy"
+      ],
+      "accept_candidate_does_not_drive_loop": true,
+      "phase8_paid_multi_round_default": false
+    }
+  },
+  "started_unix": 1795103072.309971,
+  "out_dir": "/tmp/story_first_outer_croatia_canada_20261119_234432",
+  "inputs": {
+    "match_json": "/data2/lpy1/worktrees/migu-v3a-p16-verify/10.27scasual_chain/data/交付_out/2022-11-28 克罗地亚vs加拿大.json",
+    "source_mp4": "/mnt/data4/migu/2022-11-28 克罗地亚vs加拿大.mp4",
+    "phase5_dir": "/data2/lpy1/_story_va_outputs/v3/plan2/story_first_cross_croatia_canada_f975744/04_phase5",
+    "skip_vlm": false,
+    "enable_real_api": true,
+    "i_approve_budget": true,
+    "phase8_paid_multi_round": true,
+    "phase10_explore": false,
+    "phase10_explore_fixture": false,
+    "enable_story_first": true,
+    "story_first_outer_rounds": 2,
+    "story_first_artifacts_dir": null,
+    "first_live_evidence_dir": null,
+    "narrative_fit_evidence_dir": null,
+    "goal_repair_evidence_dir": null,
+    "human_assisted_preview_requested": false,
+    "run_fresh_v3r": false,
+    "max_rounds": 2,
+    "max_calls": 16,
+    "max_cost_usd": 0.05
+  },
+  "http_calls": 6,
+  "est_cost_usd": 0.016623,
+  "rounds": [
+    {
+      "round": 1,
+      "diagnosis_issue_count": 3,
+      "semantic_observation_claimed": false,
+      "agent_narrative_graph": {
+        "schema": "v3a_agent_inferred_narrative_graph_v1",
+        "node_count": 13,
+        "unreviewed_transition_count": 3,
+        "model_reviewed_transition_count": 0,
+        "observation_target_count": 2,
+        "benchmark_gold_used": false
+      },
+      "api_usage_after_narrative_fit": {
+        "http_attempts": 0,
+        "max_calls": 16,
+        "max_cost_usd": 0.05,
+        "est_cost_usd_real": 0,
+        "by_role": {
+          "planner": {
+            "http_attempts": 0,
+            "tokens": 0,
+            "est_cost_usd": 0,
+            "output_budget_exceeded": false
+          },
+          "vision": {
+            "http_attempts": 0,
+            "tokens": 0,
+            "est_cost_usd": 0,
+            "output_budget_exceeded": false
+          }
+        },
+        "cost_is_estimate_not_invoice_cap": true,
+        "max_retries": 0,
+        "request_preflight": {
+          "planner": {
+            "model": "DeepSeek-V4-Pro-0813",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "planner",
+              "model": "DeepSeek-V4-Pro-0813",
+              "request_profile": "default",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          },
+          "vision": {
+            "model": "Qwen3.7-Plus",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "vision",
+              "model": "Qwen3.7-Plus",
+              "request_profile": "video_rsi",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          }
+        },
+        "env_thinking_overrides": {
+          "before": {
+            "STORY_API_MAX_CALLS": "16",
+            "STORY_API_MAX_COST_USD": "0.05",
+            "STORY_API_MAX_COMPLETION_TOKENS": "3200",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": "1600",
+            "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+            "STORY_VLM_TOKEN_PARAM": null,
+            "STORY_API_TOKEN_PARAM": "max_tokens"
+          },
+          "after": {
+            "STORY_API_MAX_CALLS": "16",
+            "STORY_API_MAX_COST_USD": "0.05",
+            "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+            "STORY_VLM_TOKEN_PARAM": "max_tokens",
+            "STORY_API_TOKEN_PARAM": "max_tokens",
+            "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+          },
+          "disable_thinking": true
+        }
+      },
+      "proactive_turn_context_targets": 1,
+      "api_usage_after_goal_video_observation": {
+        "http_attempts": 1,
+        "max_calls": 16,
+        "max_cost_usd": 0.05,
+        "est_cost_usd_real": 0.002907,
+        "by_role": {
+          "vision": {
+            "http_attempts": 1,
+            "tokens": 17657,
+            "est_cost_usd": 0.002907,
+            "output_budget_exceeded": false
+          }
+        },
+        "cost_is_estimate_not_invoice_cap": true,
+        "max_retries": 0,
+        "request_preflight": {
+          "planner": {
+            "model": "DeepSeek-V4-Pro-0813",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "planner",
+              "model": "DeepSeek-V4-Pro-0813",
+              "request_profile": "default",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          },
+          "vision": {
+            "model": "Qwen3.7-Plus",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "vision",
+              "model": "Qwen3.7-Plus",
+              "request_profile": "video_rsi",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          }
+        },
+        "env_thinking_overrides": {
+          "before": {
+            "STORY_API_MAX_CALLS": "16",
+            "STORY_API_MAX_COST_USD": "0.05",
+            "STORY_API_MAX_COMPLETION_TOKENS": "3200",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": "1600",
+            "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+            "STORY_VLM_TOKEN_PARAM": null,
+            "STORY_API_TOKEN_PARAM": "max_tokens"
+          },
+          "after": {
+            "STORY_API_MAX_CALLS": "16",
+            "STORY_API_MAX_COST_USD": "0.05",
+            "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+            "STORY_VLM_TOKEN_PARAM": "max_tokens",
+            "STORY_API_TOKEN_PARAM": "max_tokens",
+            "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+          },
+          "disable_thinking": true
+        }
+      },
+      "native_broadcast_phase_observation": {
+        "enabled": false,
+        "status": "NOT_EXECUTED_NO_APPROVED_REAL_SEMANTIC_SOURCE",
+        "native_video_input": false,
+        "first_live_verified": false,
+        "edl_modified": false,
+        "additional_real_http_calls": 0
+      },
+      "goal_video_review_queue": {
+        "status": "VIDEO_REVIEW_PENDING",
+        "issue_count": 1,
+        "video_semantic_observation": "VIDEO_SEMANTIC_UNRESOLVED",
+        "first_live_verified": false
+      },
+      "search_success": true,
+      "search_verified_count": 7,
+      "api_usage_after_story_first_search": {
+        "http_attempts": 4,
+        "max_calls": 16,
+        "max_cost_usd": 0.05,
+        "est_cost_usd_real": 0.009631,
+        "by_role": {
+          "story_first_generator": {
+            "http_attempts": 3,
+            "tokens": 35928,
+            "est_cost_usd": 0.006723,
+            "output_budget_exceeded": false
+          },
+          "vision": {
+            "http_attempts": 1,
+            "tokens": 17657,
+            "est_cost_usd": 0.002907,
+            "output_budget_exceeded": false
+          }
+        },
+        "cost_is_estimate_not_invoice_cap": true,
+        "max_retries": 0,
+        "request_preflight": {
+          "planner": {
+            "model": "DeepSeek-V4-Pro-0813",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "planner",
+              "model": "DeepSeek-V4-Pro-0813",
+              "request_profile": "default",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          },
+          "vision": {
+            "model": "Qwen3.7-Plus",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "vision",
+              "model": "Qwen3.7-Plus",
+              "request_profile": "video_rsi",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          }
+        },
+        "env_thinking_overrides": {
+          "before": {
+            "STORY_API_MAX_CALLS": "16",
+            "STORY_API_MAX_COST_USD": "0.05",
+            "STORY_API_MAX_COMPLETION_TOKENS": "3200",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": "1600",
+            "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+            "STORY_VLM_TOKEN_PARAM": null,
+            "STORY_API_TOKEN_PARAM": "max_tokens"
+          },
+          "after": {
+            "STORY_API_MAX_CALLS": "16",
+            "STORY_API_MAX_COST_USD": "0.05",
+            "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+            "STORY_VLM_TOKEN_PARAM": "max_tokens",
+            "STORY_API_TOKEN_PARAM": "max_tokens",
+            "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+          },
+          "disable_thinking": true
+        }
+      },
+      "api_usage_after_rp": {
+        "http_attempts": 5,
+        "max_calls": 16,
+        "max_cost_usd": 0.05,
+        "est_cost_usd_real": 0.012248,
+        "by_role": {
+          "revision_planner": {
+            "http_attempts": 1,
+            "tokens": 16147,
+            "est_cost_usd": 0.002617,
+            "output_budget_exceeded": false
+          },
+          "story_first_generator": {
+            "http_attempts": 3,
+            "tokens": 35928,
+            "est_cost_usd": 0.006723,
+            "output_budget_exceeded": false
+          },
+          "vision": {
+            "http_attempts": 1,
+            "tokens": 17657,
+            "est_cost_usd": 0.002907,
+            "output_budget_exceeded": false
+          }
+        },
+        "cost_is_estimate_not_invoice_cap": true,
+        "max_retries": 0,
+        "request_preflight": {
+          "planner": {
+            "model": "DeepSeek-V4-Pro-0813",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "planner",
+              "model": "DeepSeek-V4-Pro-0813",
+              "request_profile": "default",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          },
+          "vision": {
+            "model": "Qwen3.7-Plus",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "vision",
+              "model": "Qwen3.7-Plus",
+              "request_profile": "video_rsi",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          }
+        },
+        "env_thinking_overrides": {
+          "before": {
+            "STORY_API_MAX_CALLS": "16",
+            "STORY_API_MAX_COST_USD": "0.05",
+            "STORY_API_MAX_COMPLETION_TOKENS": "3200",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": "1600",
+            "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+            "STORY_VLM_TOKEN_PARAM": null,
+            "STORY_API_TOKEN_PARAM": "max_tokens"
+          },
+          "after": {
+            "STORY_API_MAX_CALLS": "16",
+            "STORY_API_MAX_COST_USD": "0.05",
+            "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+            "STORY_VLM_TOKEN_PARAM": "max_tokens",
+            "STORY_API_TOKEN_PARAM": "max_tokens",
+            "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+          },
+          "disable_thinking": true
+        }
+      },
+      "api_usage_after_story_first_review": {
+        "http_attempts": 6,
+        "max_calls": 16,
+        "max_cost_usd": 0.05,
+        "est_cost_usd_real": 0.016623,
+        "by_role": {
+          "revision_planner": {
+            "http_attempts": 1,
+            "tokens": 16147,
+            "est_cost_usd": 0.002617,
+            "output_budget_exceeded": false
+          },
+          "story_first_generator": {
+            "http_attempts": 3,
+            "tokens": 35928,
+            "est_cost_usd": 0.006723,
+            "output_budget_exceeded": false
+          },
+          "vision": {
+            "http_attempts": 2,
+            "tokens": 45797,
+            "est_cost_usd": 0.007283,
+            "output_budget_exceeded": false
+          }
+        },
+        "cost_is_estimate_not_invoice_cap": true,
+        "max_retries": 0,
+        "request_preflight": {
+          "planner": {
+            "model": "DeepSeek-V4-Pro-0813",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "planner",
+              "model": "DeepSeek-V4-Pro-0813",
+              "request_profile": "default",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          },
+          "vision": {
+            "model": "Qwen3.7-Plus",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "vision",
+              "model": "Qwen3.7-Plus",
+              "request_profile": "video_rsi",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          }
+        },
+        "env_thinking_overrides": {
+          "before": {
+            "STORY_API_MAX_CALLS": "16",
+            "STORY_API_MAX_COST_USD": "0.05",
+            "STORY_API_MAX_COMPLETION_TOKENS": "3200",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": "1600",
+            "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+            "STORY_VLM_TOKEN_PARAM": null,
+            "STORY_API_TOKEN_PARAM": "max_tokens"
+          },
+          "after": {
+            "STORY_API_MAX_CALLS": "16",
+            "STORY_API_MAX_COST_USD": "0.05",
+            "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+            "STORY_VLM_TOKEN_PARAM": "max_tokens",
+            "STORY_API_TOKEN_PARAM": "max_tokens",
+            "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+          },
+          "disable_thinking": true
+        }
+      },
+      "decision": "REVISE",
+      "goal_video_repair_pending": [
+        {
+          "issue_id": "goal_coverage_31_to_41",
+          "status": "UNRESOLVED",
+          "reason": "independent_first_live_evidence_missing_for_window",
+          "review_provided": false,
+          "observation_bridge_status": "UNRESOLVED"
+        }
+      ],
+      "edl_pts_safety_ok": true,
+      "story_first_preview_only": true,
+      "fullcut_delta_report": "/tmp/story_first_outer_croatia_canada_20261119_234432/02_round_01/fullcut_delta_report.json",
+      "verdict_provenance": "OFFLINE_RULE",
+      "accepted": false,
+      "retain_baseline": true,
+      "revision_status": {
+        "schema": "v3a_revision_status_v1",
+        "APPLIED": true,
+        "VERIFIED": false,
+        "IMPROVED": false,
+        "safety_ok": true,
+        "edl_changed": true,
+        "candidate_rendered": false,
+        "candidate_accepted": false,
+        "vision_backed": false,
+        "semantic_passed": false,
+        "quality_delta": "NOT_EVALUATED",
+        "BETTER_not_auto_IMPROVED": true,
+        "note": "APPLIED=EDL mutated under safety; VERIFIED=accepted with vision; IMPROVED=verified+accepted+vision+semantic+safety+quality_delta. One model BETTER never auto-upgrades to IMPROVED. PTS/first-live/goal gates cannot be overridden by BETTER."
+      },
+      "revision_case_count": 4,
+      "fullcut_feedback_entries": 0,
+      "deferred_confirmed_alternatives": 0,
+      "story_first_trial_status": "READY_FOR_TRIAL",
+      "phase8_transition": {
+        "schema": "v3a_phase8_transition_v1",
+        "next_action": "STOP_SAFETY",
+        "working_ref": "v0",
+        "best_ref": "v0",
+        "reason_codes": [
+          "hard_safety_fail_or_veto"
+        ],
+        "promote": false,
+        "stop_reason": "STOP_SAFETY",
+        "continue_allowed": false,
+        "current_round_outcome": "STOP_SAFETY",
+        "record_confirmed_negative": false,
+        "candidate_version_id": "v1",
+        "parent_version_id": "v0",
+        "safety": "FAIL",
+        "quality": "UNCERTAIN",
+        "evidence": "INSUFFICIENT",
+        "accept_candidate_ignored": true,
+        "compared_against_best": true,
+        "note": "candidate_accepted boolean does not drive this policy; formal release remains stricter than exploration. Budget does not discard the just-finished round outcome."
+      },
+      "phase8_verdict": {
+        "schema": "v3a_phase8_verdict_v1",
+        "safety": "FAIL",
+        "hard_safety": {
+          "safety": "FAIL",
+          "reasons": [
+            "render_row_validation",
+            "missing_candidate_mp4_for_revise"
+          ],
+          "accept_candidate_ignored": true,
+          "first_live_status": "NOT_VERIFIED",
+          "first_live_ledger": {
+            "schema": "v3a_first_live_window_ledger_v1",
+            "source_sha": "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725",
+            "windows": [
+              {
+                "key": "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725|5772.330:5788.330",
+                "source_sha": "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725",
+                "source_pts_start": 5772.33,
+                "source_pts_end": 5788.33,
+                "status": "NOT_VERIFIED",
+                "binding_status": "BINDING_INVALID",
+                "first_live_status": "NOT_VERIFIED",
+                "method": "unverified_new_window",
+                "segment_id": "seg_story_first_3cae310aa1e765f708a4af03_01",
+                "claimed_status": "NOT_VERIFIED",
+                "candidate_class": "unbound_or_invalid",
+                "validation": {
+                  "ok": false,
+                  "binding_valid": false,
+                  "first_live_verified": false,
+                  "replay_confirmed": false,
+                  "reason": "missing_evidence_record",
+                  "manifest_digest": null,
+                  "frame_sha256": null,
+                  "method": "frame_binding_only"
+                },
+                "validated_evidence": null,
+                "broadcast_timeline_review": null,
+                "origin": "apply_report"
+              },
+              {
+                "key": "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725|5951.110:5967.110",
+                "source_sha": "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725",
+                "source_pts_start": 5951.11,
+                "source_pts_end": 5967.11,
+                "status": "NOT_VERIFIED",
+                "binding_status": "BINDING_INVALID",
+                "first_live_status": "NOT_VERIFIED",
+                "method": "unverified_new_window",
+                "segment_id": "seg_story_first_3cae310aa1e765f708a4af03_02",
+                "claimed_status": "NOT_VERIFIED",
+                "candidate_class": "unbound_or_invalid",
+                "validation": {
+                  "ok": false,
+                  "binding_valid": false,
+                  "first_live_verified": false,
+                  "replay_confirmed": false,
+                  "reason": "missing_evidence_record",
+                  "manifest_digest": null,
+                  "frame_sha256": null,
+                  "method": "frame_binding_only"
+                },
+                "validated_evidence": null,
+                "broadcast_timeline_review": null,
+                "origin": "apply_report"
+              },
+              {
+                "key": "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725|6099.100:6115.100",
+                "source_sha": "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725",
+                "source_pts_start": 6099.1,
+                "source_pts_end": 6115.1,
+                "status": "NOT_VERIFIED",
+                "binding_status": "BINDING_INVALID",
+                "first_live_status": "NOT_VERIFIED",
+                "method": "unverified_new_window",
+                "segment_id": "seg_story_first_3cae310aa1e765f708a4af03_03",
+                "claimed_status": "NOT_VERIFIED",
+                "candidate_class": "unbound_or_invalid",
+                "validation": {
+                  "ok": false,
+                  "binding_valid": false,
+                  "first_live_verified": false,
+                  "replay_confirmed": false,
+                  "reason": "missing_evidence_record",
+                  "manifest_digest": null,
+                  "frame_sha256": null,
+                  "method": "frame_binding_only"
+                },
+                "validated_evidence": null,
+                "broadcast_timeline_review": null,
+                "origin": "apply_report"
+              },
+              {
+                "key": "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725|6230.690:6246.690",
+                "source_sha": "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725",
+                "source_pts_start": 6230.69,
+                "source_pts_end": 6246.69,
+                "status": "NOT_VERIFIED",
+                "binding_status": "BINDING_INVALID",
+                "first_live_status": "NOT_VERIFIED",
+                "method": "unverified_new_window",
+                "segment_id": "seg_story_first_3cae310aa1e765f708a4af03_04",
+                "claimed_status": "NOT_VERIFIED",
+                "candidate_class": "unbound_or_invalid",
+                "validation": {
+                  "ok": false,
+                  "binding_valid": false,
+                  "first_live_verified": false,
+                  "replay_confirmed": false,
+                  "reason": "missing_evidence_record",
+                  "manifest_digest": null,
+                  "frame_sha256": null,
+                  "method": "frame_binding_only"
+                },
+                "validated_evidence": null,
+                "broadcast_timeline_review": null,
+                "origin": "apply_report"
+              }
+            ],
+            "n_windows": 4,
+            "all_windows_verified": false,
+            "any_window_unverified": true,
+            "any_replay_confirmed": false,
+            "any_frame_bound_pending_timeline": false,
+            "aggregate_status": "NOT_VERIFIED",
+            "note": "FRAME_BOUND_VALID ≠ FIRST_LIVE_VERIFIED. Hard-safety PASS needs independent broadcast-timeline review on every new window; binding-only stays UNKNOWN; REPLAY_CONFIRMED ⇒ FAIL."
+          }
+        },
+        "quality": "UNCERTAIN",
+        "evidence": "INSUFFICIENT",
+        "issue_effect": "UNOBSERVED",
+        "global_regression": "UNKNOWN",
+        "focus_issue_id": null,
+        "evidence_refs": [],
+        "observed_changes": null,
+        "unresolved_questions": [],
+        "suggested_next_evidence": null,
+        "failure_class": "HARD_SAFETY_VETO",
+        "compared_parent_version_id": null,
+        "verdict_provenance": "OFFLINE_RULE",
+        "source_kind": "OFFLINE_RULE",
+        "accept_candidate_raw": false,
+        "accept_not_synthesized_from_promising": true,
+        "safety_independent_of_accept_candidate": true,
+        "note": "Hard safety is independent of narrative accept_candidate. FIXTURE/OFFLINE_RULE never establish real IMPROVED; REAL_VLM requires recorded successful provider call + frame bindings.",
+        "candidate_accepted": false,
+        "preview_only": true,
+        "best_comparison_status": "COMPARED_PARENT_IS_BEST",
+        "compared_against_best": true
+      },
+      "parent_version_id": "v0",
+      "candidate_version_id": "v1",
+      "working_version_id": "v0",
+      "best_verified_version_id": "v0",
+      "gates_snapshot": {
+        "workflow_completed": false,
+        "story_diagnosis_valid": true,
+        "revision_applied": true,
+        "candidate_rendered": false,
+        "semantic_verification_passed": false,
+        "release_authorized": false,
+        "final_mp4_exists": false
+      },
+      "edl_changed": true
+    }
+  ],
+  "status_gates": {
+    "workflow_completed": true,
+    "story_diagnosis_valid": true,
+    "revision_applied": true,
+    "candidate_rendered": false,
+    "semantic_verification_passed": false,
+    "release_authorized": false,
+    "final_mp4_exists": true
+  },
+  "revision_status_totals": {
+    "APPLIED": 1,
+    "VERIFIED": 0,
+    "IMPROVED": 0
+  },
+  "disclaimer": "Offline/dry-run does not claim real multimodal story understanding. release_authorized stays false unless hard gates + semantic pass. APPLIED ≠ VERIFIED ≠ IMPROVED.",
+  "api_preflight": {
+    "configured": true,
+    "max_calls": 16,
+    "max_cost_usd_estimate": 0.05,
+    "max_retries": 0,
+    "cost_is_estimate_not_invoice_cap": true,
+    "max_completion_tokens": 1200,
+    "request_body_preflight": {
+      "planner": {
+        "model": "DeepSeek-V4-Pro-0813",
+        "thinking_in_body": {
+          "type": "disabled"
+        },
+        "max_tokens_in_body": 1200,
+        "max_completion_tokens_in_body": null,
+        "enable_thinking_in_body": null,
+        "thinking_budget_in_body": null,
+        "request_audit": {
+          "role": "planner",
+          "model": "DeepSeek-V4-Pro-0813",
+          "request_profile": "default",
+          "token_param_configured": "max_tokens",
+          "token_param_sent": "max_tokens",
+          "token_limit_sent": 1200,
+          "temperature_sent": 0.0,
+          "stream_sent": false,
+          "thinking_params_sent": false,
+          "thinking_object_disabled_sent": true,
+          "enable_thinking_sent": null,
+          "thinking_budget_sent": null,
+          "sends_both_token_params": false,
+          "sends_both_thinking_formats": false,
+          "message_count": 1,
+          "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+          "paratera_thinking_object_documented": false
+        },
+        "thinking_object_disabled_cfg": true,
+        "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+      },
+      "vision": {
+        "model": "Qwen3.7-Plus",
+        "thinking_in_body": {
+          "type": "disabled"
+        },
+        "max_tokens_in_body": 1200,
+        "max_completion_tokens_in_body": null,
+        "enable_thinking_in_body": null,
+        "thinking_budget_in_body": null,
+        "request_audit": {
+          "role": "vision",
+          "model": "Qwen3.7-Plus",
+          "request_profile": "video_rsi",
+          "token_param_configured": "max_tokens",
+          "token_param_sent": "max_tokens",
+          "token_limit_sent": 1200,
+          "temperature_sent": 0.0,
+          "stream_sent": false,
+          "thinking_params_sent": false,
+          "thinking_object_disabled_sent": true,
+          "enable_thinking_sent": null,
+          "thinking_budget_sent": null,
+          "sends_both_token_params": false,
+          "sends_both_thinking_formats": false,
+          "message_count": 1,
+          "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+          "paratera_thinking_object_documented": false
+        },
+        "thinking_object_disabled_cfg": true,
+        "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+      }
+    },
+    "env_thinking_overrides": {
+      "before": {
+        "STORY_API_MAX_CALLS": "16",
+        "STORY_API_MAX_COST_USD": "0.05",
+        "STORY_API_MAX_COMPLETION_TOKENS": "3200",
+        "STORY_VLM_MAX_COMPLETION_TOKENS": "1600",
+        "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+        "STORY_VLM_SEND_THINKING": null,
+        "STORY_VLM_ENABLE_THINKING": null,
+        "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+        "STORY_VLM_TOKEN_PARAM": null,
+        "STORY_API_TOKEN_PARAM": "max_tokens"
+      },
+      "after": {
+        "STORY_API_MAX_CALLS": "16",
+        "STORY_API_MAX_COST_USD": "0.05",
+        "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+        "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+        "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+        "STORY_VLM_SEND_THINKING": null,
+        "STORY_VLM_ENABLE_THINKING": null,
+        "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+        "STORY_VLM_TOKEN_PARAM": "max_tokens",
+        "STORY_API_TOKEN_PARAM": "max_tokens",
+        "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+        "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+        "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+      },
+      "disable_thinking": true
+    },
+    "usage_snapshot": {
+      "http_attempts": 0,
+      "max_calls": 16,
+      "max_cost_usd": 0.05,
+      "est_cost_usd_real": 0,
+      "by_role": {
+        "planner": {
+          "http_attempts": 0,
+          "tokens": 0,
+          "est_cost_usd": 0,
+          "output_budget_exceeded": false
+        },
+        "vision": {
+          "http_attempts": 0,
+          "tokens": 0,
+          "est_cost_usd": 0,
+          "output_budget_exceeded": false
+        }
+      },
+      "cost_is_estimate_not_invoice_cap": true,
+      "max_retries": 0,
+      "request_preflight": {
+        "planner": {
+          "model": "DeepSeek-V4-Pro-0813",
+          "thinking_in_body": {
+            "type": "disabled"
+          },
+          "max_tokens_in_body": 1200,
+          "max_completion_tokens_in_body": null,
+          "enable_thinking_in_body": null,
+          "thinking_budget_in_body": null,
+          "request_audit": {
+            "role": "planner",
+            "model": "DeepSeek-V4-Pro-0813",
+            "request_profile": "default",
+            "token_param_configured": "max_tokens",
+            "token_param_sent": "max_tokens",
+            "token_limit_sent": 1200,
+            "temperature_sent": 0.0,
+            "stream_sent": false,
+            "thinking_params_sent": false,
+            "thinking_object_disabled_sent": true,
+            "enable_thinking_sent": null,
+            "thinking_budget_sent": null,
+            "sends_both_token_params": false,
+            "sends_both_thinking_formats": false,
+            "message_count": 1,
+            "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+            "paratera_thinking_object_documented": false
+          },
+          "thinking_object_disabled_cfg": true,
+          "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+        },
+        "vision": {
+          "model": "Qwen3.7-Plus",
+          "thinking_in_body": {
+            "type": "disabled"
+          },
+          "max_tokens_in_body": 1200,
+          "max_completion_tokens_in_body": null,
+          "enable_thinking_in_body": null,
+          "thinking_budget_in_body": null,
+          "request_audit": {
+            "role": "vision",
+            "model": "Qwen3.7-Plus",
+            "request_profile": "video_rsi",
+            "token_param_configured": "max_tokens",
+            "token_param_sent": "max_tokens",
+            "token_limit_sent": 1200,
+            "temperature_sent": 0.0,
+            "stream_sent": false,
+            "thinking_params_sent": false,
+            "thinking_object_disabled_sent": true,
+            "enable_thinking_sent": null,
+            "thinking_budget_sent": null,
+            "sends_both_token_params": false,
+            "sends_both_thinking_formats": false,
+            "message_count": 1,
+            "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+            "paratera_thinking_object_documented": false
+          },
+          "thinking_object_disabled_cfg": true,
+          "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+        }
+      },
+      "env_thinking_overrides": {
+        "before": {
+          "STORY_API_MAX_CALLS": "16",
+          "STORY_API_MAX_COST_USD": "0.05",
+          "STORY_API_MAX_COMPLETION_TOKENS": "3200",
+          "STORY_VLM_MAX_COMPLETION_TOKENS": "1600",
+          "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+          "STORY_VLM_SEND_THINKING": null,
+          "STORY_VLM_ENABLE_THINKING": null,
+          "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+          "STORY_VLM_TOKEN_PARAM": null,
+          "STORY_API_TOKEN_PARAM": "max_tokens"
+        },
+        "after": {
+          "STORY_API_MAX_CALLS": "16",
+          "STORY_API_MAX_COST_USD": "0.05",
+          "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+          "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+          "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+          "STORY_VLM_SEND_THINKING": null,
+          "STORY_VLM_ENABLE_THINKING": null,
+          "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+          "STORY_VLM_TOKEN_PARAM": "max_tokens",
+          "STORY_API_TOKEN_PARAM": "max_tokens",
+          "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+          "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+          "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+        },
+        "disable_thinking": true
+      }
+    }
+  },
+  "input_edl_pts_safety": {
+    "schema": "v3a_edl_source_pts_monotonic_v1",
+    "ok": true,
+    "n_media_rows": 11,
+    "breaks": [],
+    "gate": "safety",
+    "note": "Monotonic source PTS is a safety constraint, not a quality score."
+  },
+  "render_smoke": null,
+  "baseline_duplicate_audit": {
+    "finding_count": 0,
+    "auto_drop_segment_ids": [],
+    "human_review_count": 0,
+    "applied": {
+      "changed": false,
+      "dropped": [],
+      "drop_ledger": [],
+      "refused_goal_drops": []
+    }
+  },
+  "narrative_fit_required": true,
+  "narrative_fit_review_store_n": 0,
+  "first_live_evidence_store_n": 0,
+  "phase8_loop_state": {
+    "schema": "v3a_phase8_loop_v1",
+    "initial_baseline_version_id": "v0",
+    "best_verified_version_id": "v0",
+    "best_verification_tier": "BASELINE_UNVERIFIED",
+    "working_version_id": "v0",
+    "versions": {
+      "v0": {
+        "parent_version_id": null,
+        "edl_path": "/tmp/story_first_outer_croatia_canada_20261119_234432/01_initial_story/candidate_edl.json",
+        "mp4_path": "/tmp/story_first_outer_croatia_canada_20261119_234432/01_initial_story/story_clean.mp4",
+        "safety": "UNKNOWN",
+        "quality": "BASELINE_UNVERIFIED",
+        "source": "V3R_BASELINE",
+        "semantic_evidence_refs": []
+      },
+      "v1": {
+        "parent_version_id": "v0",
+        "edl_path": "/tmp/story_first_outer_croatia_canada_20261119_234432/02_round_01/candidate_edl.json",
+        "mp4_path": null,
+        "safety": "FAIL",
+        "quality": "UNCERTAIN",
+        "source": "OFFLINE_RULE",
+        "semantic_evidence_refs": [],
+        "round_idx": 1
+      }
+    },
+    "feedback_memory_path": "phase8_feedback_memory.json",
+    "round_history": [
+      {
+        "next_action": "STOP_SAFETY",
+        "reason_codes": [
+          "hard_safety_fail_or_veto"
+        ],
+        "candidate_version_id": "v1",
+        "working_ref": "v0",
+        "best_ref": "v0",
+        "quality": "UNCERTAIN",
+        "safety": "FAIL"
+      }
+    ],
+    "stop_reason": "STOP_SAFETY",
+    "delivery_version_id": "v0",
+    "uncertain_reobserve_count": 0,
+    "promising_depth": 0,
+    "max_uncertain_reobserve": 1,
+    "max_promising_depth": 2
+  },
+  "phase8_feedback_memory": {
+    "schema": "v3a_phase8_feedback_memory_v1",
+    "n_records": 4,
+    "records": [
+      {
+        "schema": "v3a_phase8_feedback_v1",
+        "round": 1,
+        "issue_signature": {
+          "template_id": "unknown_template",
+          "category": "unknown",
+          "story_role": null,
+          "anchor_segment_ids": [
+            "seg_go_ahead_scoreboard"
+          ],
+          "missing_narrative_info": "unspecified",
+          "issue_id_raw": "story_first:3cae310aa1e765f708a4af03"
+        },
+        "intent_id": "story_first_3cae310aa1e765f708a4af03_04",
+        "action": "search_add",
+        "source_pts": [
+          6230.69,
+          6246.69
+        ],
+        "parent_version_id": "v0",
+        "candidate_version_id": "v1",
+        "quality": "UNCERTAIN",
+        "evidence_status": "INSUFFICIENT",
+        "failure_class": "HARD_SAFETY_VETO",
+        "observation": "No independently confirmed narrative benefit",
+        "next_search_requirement": "Find visually evident buildup/pressure/turn, not just chronological bridge",
+        "source_kind": "OFFLINE_RULE",
+        "evidence_refs": [],
+        "new_evidence_required_for_retry": true,
+        "candidate_identity": "|unknown_template|unknown|seg_go_ahead_scoreboard|unspecified|v0|search_add|6230.690:6246.690|seg_go_ahead_scoreboard",
+        "legacy_final_decision": "REJECT",
+        "legacy_failure_reasons": [
+          "verifier_or_pipeline_rejected"
+        ],
+        "legacy_accept_candidate": false,
+        "pts_permanently_banned": false,
+        "sent_frame_ids": [],
+        "evidence_token": "sha:6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725|6230.690:6246.690",
+        "apply_status": "applied_evidence_bound",
+        "observation_limitations": [
+          "claims_full_video_watch=false",
+          "sparse_or_truncated_verifier_must_not_become_confirmed_negative"
+        ]
+      },
+      {
+        "schema": "v3a_phase8_feedback_v1",
+        "round": 1,
+        "issue_signature": {
+          "template_id": "unknown_template",
+          "category": "unknown",
+          "story_role": null,
+          "anchor_segment_ids": [
+            "seg_go_ahead_scoreboard"
+          ],
+          "missing_narrative_info": "unspecified",
+          "issue_id_raw": "story_first:3cae310aa1e765f708a4af03"
+        },
+        "intent_id": "story_first_3cae310aa1e765f708a4af03_03",
+        "action": "search_add",
+        "source_pts": [
+          6099.1,
+          6115.1
+        ],
+        "parent_version_id": "v0",
+        "candidate_version_id": "v1",
+        "quality": "UNCERTAIN",
+        "evidence_status": "INSUFFICIENT",
+        "failure_class": "HARD_SAFETY_VETO",
+        "observation": "No independently confirmed narrative benefit",
+        "next_search_requirement": "Find visually evident buildup/pressure/turn, not just chronological bridge",
+        "source_kind": "OFFLINE_RULE",
+        "evidence_refs": [],
+        "new_evidence_required_for_retry": true,
+        "candidate_identity": "|unknown_template|unknown|seg_go_ahead_scoreboard|unspecified|v0|search_add|6099.100:6115.100|seg_go_ahead_scoreboard",
+        "legacy_final_decision": "REJECT",
+        "legacy_failure_reasons": [
+          "verifier_or_pipeline_rejected"
+        ],
+        "legacy_accept_candidate": false,
+        "pts_permanently_banned": false,
+        "sent_frame_ids": [],
+        "evidence_token": "sha:6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725|6230.690:6246.690",
+        "apply_status": "applied_evidence_bound",
+        "observation_limitations": [
+          "claims_full_video_watch=false",
+          "sparse_or_truncated_verifier_must_not_become_confirmed_negative"
+        ]
+      },
+      {
+        "schema": "v3a_phase8_feedback_v1",
+        "round": 1,
+        "issue_signature": {
+          "template_id": "unknown_template",
+          "category": "unknown",
+          "story_role": null,
+          "anchor_segment_ids": [
+            "seg_go_ahead_scoreboard"
+          ],
+          "missing_narrative_info": "unspecified",
+          "issue_id_raw": "story_first:3cae310aa1e765f708a4af03"
+        },
+        "intent_id": "story_first_3cae310aa1e765f708a4af03_02",
+        "action": "search_add",
+        "source_pts": [
+          5951.11,
+          5967.11
+        ],
+        "parent_version_id": "v0",
+        "candidate_version_id": "v1",
+        "quality": "UNCERTAIN",
+        "evidence_status": "INSUFFICIENT",
+        "failure_class": "HARD_SAFETY_VETO",
+        "observation": "No independently confirmed narrative benefit",
+        "next_search_requirement": "Find visually evident buildup/pressure/turn, not just chronological bridge",
+        "source_kind": "OFFLINE_RULE",
+        "evidence_refs": [],
+        "new_evidence_required_for_retry": true,
+        "candidate_identity": "|unknown_template|unknown|seg_go_ahead_scoreboard|unspecified|v0|search_add|5951.110:5967.110|seg_go_ahead_scoreboard",
+        "legacy_final_decision": "REJECT",
+        "legacy_failure_reasons": [
+          "verifier_or_pipeline_rejected"
+        ],
+        "legacy_accept_candidate": false,
+        "pts_permanently_banned": false,
+        "sent_frame_ids": [],
+        "evidence_token": "sha:6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725|6230.690:6246.690",
+        "apply_status": "applied_evidence_bound",
+        "observation_limitations": [
+          "claims_full_video_watch=false",
+          "sparse_or_truncated_verifier_must_not_become_confirmed_negative"
+        ]
+      },
+      {
+        "schema": "v3a_phase8_feedback_v1",
+        "round": 1,
+        "issue_signature": {
+          "template_id": "unknown_template",
+          "category": "unknown",
+          "story_role": null,
+          "anchor_segment_ids": [
+            "seg_go_ahead_scoreboard"
+          ],
+          "missing_narrative_info": "unspecified",
+          "issue_id_raw": "story_first:3cae310aa1e765f708a4af03"
+        },
+        "intent_id": "story_first_3cae310aa1e765f708a4af03_01",
+        "action": "search_add",
+        "source_pts": [
+          5772.33,
+          5788.33
+        ],
+        "parent_version_id": "v0",
+        "candidate_version_id": "v1",
+        "quality": "UNCERTAIN",
+        "evidence_status": "INSUFFICIENT",
+        "failure_class": "HARD_SAFETY_VETO",
+        "observation": "No independently confirmed narrative benefit",
+        "next_search_requirement": "Find visually evident buildup/pressure/turn, not just chronological bridge",
+        "source_kind": "OFFLINE_RULE",
+        "evidence_refs": [],
+        "new_evidence_required_for_retry": true,
+        "candidate_identity": "|unknown_template|unknown|seg_go_ahead_scoreboard|unspecified|v0|search_add|5772.330:5788.330|seg_go_ahead_scoreboard",
+        "legacy_final_decision": "REJECT",
+        "legacy_failure_reasons": [
+          "verifier_or_pipeline_rejected"
+        ],
+        "legacy_accept_candidate": false,
+        "pts_permanently_banned": false,
+        "sent_frame_ids": [],
+        "evidence_token": "sha:6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725|6230.690:6246.690",
+        "apply_status": "applied_evidence_bound",
+        "observation_limitations": [
+          "claims_full_video_watch=false",
+          "sparse_or_truncated_verifier_must_not_become_confirmed_negative"
+        ]
+      }
+    ],
+    "summary": {
+      "schema": "v3a_phase8_feedback_summary_v1",
+      "n_records": 4,
+      "tried_revisions": [
+        {
+          "round": 1,
+          "action": "search_add",
+          "source_pts": [
+            6230.69,
+            6246.69
+          ],
+          "quality": "UNCERTAIN",
+          "failure_class": "HARD_SAFETY_VETO",
+          "issue_signature": {
+            "template_id": "unknown_template",
+            "category": "unknown",
+            "story_role": null,
+            "anchor_segment_ids": [
+              "seg_go_ahead_scoreboard"
+            ],
+            "missing_narrative_info": "unspecified",
+            "issue_id_raw": "story_first:3cae310aa1e765f708a4af03"
+          },
+          "next_search_requirement": "Find visually evident buildup/pressure/turn, not just chronological bridge",
+          "new_evidence_required_for_retry": true
+        },
+        {
+          "round": 1,
+          "action": "search_add",
+          "source_pts": [
+            6099.1,
+            6115.1
+          ],
+          "quality": "UNCERTAIN",
+          "failure_class": "HARD_SAFETY_VETO",
+          "issue_signature": {
+            "template_id": "unknown_template",
+            "category": "unknown",
+            "story_role": null,
+            "anchor_segment_ids": [
+              "seg_go_ahead_scoreboard"
+            ],
+            "missing_narrative_info": "unspecified",
+            "issue_id_raw": "story_first:3cae310aa1e765f708a4af03"
+          },
+          "next_search_requirement": "Find visually evident buildup/pressure/turn, not just chronological bridge",
+          "new_evidence_required_for_retry": true
+        },
+        {
+          "round": 1,
+          "action": "search_add",
+          "source_pts": [
+            5951.11,
+            5967.11
+          ],
+          "quality": "UNCERTAIN",
+          "failure_class": "HARD_SAFETY_VETO",
+          "issue_signature": {
+            "template_id": "unknown_template",
+            "category": "unknown",
+            "story_role": null,
+            "anchor_segment_ids": [
+              "seg_go_ahead_scoreboard"
+            ],
+            "missing_narrative_info": "unspecified",
+            "issue_id_raw": "story_first:3cae310aa1e765f708a4af03"
+          },
+          "next_search_requirement": "Find visually evident buildup/pressure/turn, not just chronological bridge",
+          "new_evidence_required_for_retry": true
+        },
+        {
+          "round": 1,
+          "action": "search_add",
+          "source_pts": [
+            5772.33,
+            5788.33
+          ],
+          "quality": "UNCERTAIN",
+          "failure_class": "HARD_SAFETY_VETO",
+          "issue_signature": {
+            "template_id": "unknown_template",
+            "category": "unknown",
+            "story_role": null,
+            "anchor_segment_ids": [
+              "seg_go_ahead_scoreboard"
+            ],
+            "missing_narrative_info": "unspecified",
+            "issue_id_raw": "story_first:3cae310aa1e765f708a4af03"
+          },
+          "next_search_requirement": "Find visually evident buildup/pressure/turn, not just chronological bridge",
+          "new_evidence_required_for_retry": true
+        }
+      ],
+      "confirmed_negatives": [],
+      "uncertain_or_unverified": [],
+      "technical_failures": [],
+      "positives": [],
+      "current_issue_signatures": [],
+      "forbid_identical_retry_without_new_evidence": true,
+      "never_permanently_ban_pts": true,
+      "opaque_reject_is_not_confirmed_negative": true
+    }
+  },
+  "source_sha256": "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725",
+  "story_first_search": {
+    "intervals": [
+      {
+        "interval_id": "interval_01",
+        "from_segment_id": "seg_opponent_opening_goal_action",
+        "to_segment_id": "seg_equalizer_goal_action",
+        "score_status": "OFFLINE_RESEARCH_ONLY",
+        "scope": {
+          "from_segment_id": "seg_opponent_opening_goal_action",
+          "from_role": "opponent_opening_goal_action",
+          "to_segment_id": "seg_equalizer_goal_action",
+          "to_role": "equalizer_goal_action",
+          "source_interval_sec": [
+            990.137,
+            3053.903
+          ],
+          "anchor_source": "existing_v3r_edl",
+          "no_assumed_causality": true
+        },
+        "status": "GENERATED",
+        "candidate_count": 5
+      },
+      {
+        "interval_id": "interval_02",
+        "from_segment_id": "seg_equalizer_goal_action",
+        "to_segment_id": "seg_go_ahead_goal_action",
+        "score_status": "OFFLINE_RESEARCH_ONLY",
+        "scope": {
+          "from_segment_id": "seg_equalizer_goal_action",
+          "from_role": "equalizer_goal_action",
+          "to_segment_id": "seg_go_ahead_goal_action",
+          "to_role": "go_ahead_goal_action",
+          "source_interval_sec": [
+            3075.903,
+            3511.574
+          ],
+          "anchor_source": "existing_v3r_edl",
+          "no_assumed_causality": true
+        },
+        "status": "GENERATED",
+        "candidate_count": 5
+      },
+      {
+        "interval_id": "interval_03",
+        "from_segment_id": "seg_go_ahead_goal_action",
+        "to_segment_id": "seg_lead_extend_1_goal_action_approach",
+        "score_status": "OFFLINE_RESEARCH_ONLY",
+        "scope": {
+          "from_segment_id": "seg_go_ahead_goal_action",
+          "from_role": "go_ahead_goal_action",
+          "to_segment_id": "seg_lead_extend_1_goal_action_approach",
+          "to_role": "lead_extend_1_goal_action_approach",
+          "source_interval_sec": [
+            3533.574,
+            6305.199
+          ],
+          "anchor_source": "existing_v3r_edl",
+          "no_assumed_causality": true
+        },
+        "status": "GENERATED",
+        "candidate_count": 5
+      },
+      {
+        "interval_id": "interval_04",
+        "from_segment_id": "seg_lead_extend_1_goal_action_approach",
+        "to_segment_id": "seg_lead_extend_1_goal_action",
+        "score_status": "OFFLINE_RESEARCH_ONLY",
+        "status": "INVALID_INTERVAL",
+        "reason": "invalid_anchor_pts_order"
+      }
+    ],
+    "proposal_count": 15
+  },
+  "last_revision_cases": {
+    "schema": "v3a_revision_case_bundle_v1",
+    "match_tag": null,
+    "n_cases": 4,
+    "cases": [
+      {
+        "schema": "v3a_revision_case_v1",
+        "match_tag": null,
+        "issue_id": "story_first:3cae310aa1e765f708a4af03",
+        "revision_intent_id": "story_first_3cae310aa1e765f708a4af03_04",
+        "original_story_problem": {
+          "observation": null,
+          "missing_information": null,
+          "causal_explanation": null,
+          "story_role": null,
+          "diagnosis_status": null,
+          "story_defect_confirmed": null,
+          "confidence": null,
+          "evidence_sufficiency": null
+        },
+        "video_observation_evidence": null,
+        "defect_cause_hypothesis": null,
+        "target_action": "search_add",
+        "candidate_footage": {
+          "source_pts": {
+            "start": 6230.69,
+            "end": 6246.69
+          },
+          "event_ids": [
+            "event_000116"
+          ],
+          "why_solves_problem": null,
+          "apply": {
+            "intent": "story_first_3cae310aa1e765f708a4af03_04",
+            "action": "search_add",
+            "status": "applied_evidence_bound",
+            "segment_id": "seg_story_first_3cae310aa1e765f708a4af03_04",
+            "media_in": 6230.69,
+            "media_out": 6246.69,
+            "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+            "first_live_status": "NOT_VERIFIED",
+            "authorization": {
+              "allow": true,
+              "denies": [],
+              "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+              "method": "bound_source_window"
+            },
+            "observation_ref": "search:story_first_3cae310aa1e765f708a4af03_04",
+            "insert_after_segment_id": "seg_go_ahead_scoreboard"
+          }
+        },
+        "story_first_trial_id": "3cae310aa1e765f708a4af03",
+        "source_event_observations": [
+          {
+            "event_id": "event_000116",
+            "status": "SUPPORTED",
+            "reason": "Frame f11 clearly shows the goalkeeper (Team 1 #1) diving to save the ball near the goal line.",
+            "frame_ids": [
+              "f11"
+            ]
+          }
+        ],
+        "before_after_video_windows": null,
+        "expected_improvement": "The large source jump between seg_go_ahead_scoreboard and seg_lead_extend_1_goal_action_approach spans 2605s. Interval_03:H4 proposes a compact defensive-pressure sub-story (aerial duels then a Save at 6238.69s) that sits just before the lead_extend approach segment and could provide missing causal/emotional context if video observation confirms a continuous defensive sequence. This is the most targeted trial for the only structural gap that could plausibly affect story understanding, and it uses only footage events without known replay or slow-mo.",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "actual_observation": null,
+        "verifier_judgment": {
+          "quality_judgment": null,
+          "original_issue_resolved": null,
+          "introduced_new_defect": null,
+          "evidence_refs": null,
+          "confidence": null,
+          "note": "Verifier must check whether the original diagnosed problem was solved, not only which cut looks nicer. BETTER ≠ ACCEPT ≠ IMPROVED."
+        },
+        "pts_safety": {
+          "schema": "v3a_edl_source_pts_monotonic_v1",
+          "ok": true,
+          "n_media_rows": 15,
+          "breaks": [],
+          "gate": "safety",
+          "note": "Monotonic source PTS is a safety constraint, not a quality score."
+        },
+        "final_decision": "REJECT",
+        "failure_reasons": [
+          "verifier_or_pipeline_rejected"
+        ],
+        "formal_final_is_baseline": true,
+        "bindings": {
+          "issue_id": "story_first:3cae310aa1e765f708a4af03",
+          "evidence": [
+            {
+              "kind": "story_first_source_review",
+              "ref": "story_first_3cae310aa1e765f708a4af03_04"
+            }
+          ],
+          "edit": "search_add",
+          "expected_effect": "The large source jump between seg_go_ahead_scoreboard and seg_lead_extend_1_goal_action_approach spans 2605s. Interval_03:H4 proposes a compact defensive-pressure sub-story (aerial duels then a Save at 6238.69s) that sits just before the lead_extend approach segment and could provide missing causal/emotional context if video observation confirms a continuous defensive sequence. This is the most targeted trial for the only structural gap that could plausibly affect story understanding, and it uses only footage events without known replay or slow-mo."
+        },
+        "duration_pad_forbidden_as_quality_proxy": true
+      },
+      {
+        "schema": "v3a_revision_case_v1",
+        "match_tag": null,
+        "issue_id": "story_first:3cae310aa1e765f708a4af03",
+        "revision_intent_id": "story_first_3cae310aa1e765f708a4af03_03",
+        "original_story_problem": {
+          "observation": null,
+          "missing_information": null,
+          "causal_explanation": null,
+          "story_role": null,
+          "diagnosis_status": null,
+          "story_defect_confirmed": null,
+          "confidence": null,
+          "evidence_sufficiency": null
+        },
+        "video_observation_evidence": null,
+        "defect_cause_hypothesis": null,
+        "target_action": "search_add",
+        "candidate_footage": {
+          "source_pts": {
+            "start": 6099.1,
+            "end": 6115.1
+          },
+          "event_ids": [
+            "event_000111"
+          ],
+          "why_solves_problem": null,
+          "apply": {
+            "intent": "story_first_3cae310aa1e765f708a4af03_03",
+            "action": "search_add",
+            "status": "applied_evidence_bound",
+            "segment_id": "seg_story_first_3cae310aa1e765f708a4af03_03",
+            "media_in": 6099.1,
+            "media_out": 6115.1,
+            "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+            "first_live_status": "NOT_VERIFIED",
+            "authorization": {
+              "allow": true,
+              "denies": [],
+              "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+              "method": "bound_source_window"
+            },
+            "observation_ref": "search:story_first_3cae310aa1e765f708a4af03_03",
+            "insert_after_segment_id": "seg_go_ahead_scoreboard"
+          }
+        },
+        "story_first_trial_id": "3cae310aa1e765f708a4af03",
+        "source_event_observations": [
+          {
+            "event_id": "event_000111",
+            "status": "SUPPORTED",
+            "reason": "Frame f8 shows a close-up of a player in white #4 (Team 1) jumping and contesting the ball in the air, supporting the win annotation.",
+            "frame_ids": [
+              "f8"
+            ]
+          }
+        ],
+        "before_after_video_windows": null,
+        "expected_improvement": "The large source jump between seg_go_ahead_scoreboard and seg_lead_extend_1_goal_action_approach spans 2605s. Interval_03:H4 proposes a compact defensive-pressure sub-story (aerial duels then a Save at 6238.69s) that sits just before the lead_extend approach segment and could provide missing causal/emotional context if video observation confirms a continuous defensive sequence. This is the most targeted trial for the only structural gap that could plausibly affect story understanding, and it uses only footage events without known replay or slow-mo.",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "actual_observation": null,
+        "verifier_judgment": {
+          "quality_judgment": null,
+          "original_issue_resolved": null,
+          "introduced_new_defect": null,
+          "evidence_refs": null,
+          "confidence": null,
+          "note": "Verifier must check whether the original diagnosed problem was solved, not only which cut looks nicer. BETTER ≠ ACCEPT ≠ IMPROVED."
+        },
+        "pts_safety": {
+          "schema": "v3a_edl_source_pts_monotonic_v1",
+          "ok": true,
+          "n_media_rows": 15,
+          "breaks": [],
+          "gate": "safety",
+          "note": "Monotonic source PTS is a safety constraint, not a quality score."
+        },
+        "final_decision": "REJECT",
+        "failure_reasons": [
+          "verifier_or_pipeline_rejected"
+        ],
+        "formal_final_is_baseline": true,
+        "bindings": {
+          "issue_id": "story_first:3cae310aa1e765f708a4af03",
+          "evidence": [
+            {
+              "kind": "story_first_source_review",
+              "ref": "story_first_3cae310aa1e765f708a4af03_03"
+            }
+          ],
+          "edit": "search_add",
+          "expected_effect": "The large source jump between seg_go_ahead_scoreboard and seg_lead_extend_1_goal_action_approach spans 2605s. Interval_03:H4 proposes a compact defensive-pressure sub-story (aerial duels then a Save at 6238.69s) that sits just before the lead_extend approach segment and could provide missing causal/emotional context if video observation confirms a continuous defensive sequence. This is the most targeted trial for the only structural gap that could plausibly affect story understanding, and it uses only footage events without known replay or slow-mo."
+        },
+        "duration_pad_forbidden_as_quality_proxy": true
+      },
+      {
+        "schema": "v3a_revision_case_v1",
+        "match_tag": null,
+        "issue_id": "story_first:3cae310aa1e765f708a4af03",
+        "revision_intent_id": "story_first_3cae310aa1e765f708a4af03_02",
+        "original_story_problem": {
+          "observation": null,
+          "missing_information": null,
+          "causal_explanation": null,
+          "story_role": null,
+          "diagnosis_status": null,
+          "story_defect_confirmed": null,
+          "confidence": null,
+          "evidence_sufficiency": null
+        },
+        "video_observation_evidence": null,
+        "defect_cause_hypothesis": null,
+        "target_action": "search_add",
+        "candidate_footage": {
+          "source_pts": {
+            "start": 5951.11,
+            "end": 5967.11
+          },
+          "event_ids": [
+            "event_000106"
+          ],
+          "why_solves_problem": null,
+          "apply": {
+            "intent": "story_first_3cae310aa1e765f708a4af03_02",
+            "action": "search_add",
+            "status": "applied_evidence_bound",
+            "segment_id": "seg_story_first_3cae310aa1e765f708a4af03_02",
+            "media_in": 5951.11,
+            "media_out": 5967.11,
+            "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+            "first_live_status": "NOT_VERIFIED",
+            "authorization": {
+              "allow": true,
+              "denies": [],
+              "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+              "method": "bound_source_window"
+            },
+            "observation_ref": "search:story_first_3cae310aa1e765f708a4af03_02",
+            "insert_after_segment_id": "seg_go_ahead_scoreboard"
+          }
+        },
+        "story_first_trial_id": "3cae310aa1e765f708a4af03",
+        "source_event_observations": [
+          {
+            "event_id": "event_000106",
+            "status": "UNCERTAIN",
+            "reason": "Frame f5 shows players running in midfield but does not clearly depict an aerial duel or the specific action described.",
+            "frame_ids": [
+              "f5"
+            ]
+          }
+        ],
+        "before_after_video_windows": null,
+        "expected_improvement": "The large source jump between seg_go_ahead_scoreboard and seg_lead_extend_1_goal_action_approach spans 2605s. Interval_03:H4 proposes a compact defensive-pressure sub-story (aerial duels then a Save at 6238.69s) that sits just before the lead_extend approach segment and could provide missing causal/emotional context if video observation confirms a continuous defensive sequence. This is the most targeted trial for the only structural gap that could plausibly affect story understanding, and it uses only footage events without known replay or slow-mo.",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "actual_observation": null,
+        "verifier_judgment": {
+          "quality_judgment": null,
+          "original_issue_resolved": null,
+          "introduced_new_defect": null,
+          "evidence_refs": null,
+          "confidence": null,
+          "note": "Verifier must check whether the original diagnosed problem was solved, not only which cut looks nicer. BETTER ≠ ACCEPT ≠ IMPROVED."
+        },
+        "pts_safety": {
+          "schema": "v3a_edl_source_pts_monotonic_v1",
+          "ok": true,
+          "n_media_rows": 15,
+          "breaks": [],
+          "gate": "safety",
+          "note": "Monotonic source PTS is a safety constraint, not a quality score."
+        },
+        "final_decision": "REJECT",
+        "failure_reasons": [
+          "verifier_or_pipeline_rejected"
+        ],
+        "formal_final_is_baseline": true,
+        "bindings": {
+          "issue_id": "story_first:3cae310aa1e765f708a4af03",
+          "evidence": [
+            {
+              "kind": "story_first_source_review",
+              "ref": "story_first_3cae310aa1e765f708a4af03_02"
+            }
+          ],
+          "edit": "search_add",
+          "expected_effect": "The large source jump between seg_go_ahead_scoreboard and seg_lead_extend_1_goal_action_approach spans 2605s. Interval_03:H4 proposes a compact defensive-pressure sub-story (aerial duels then a Save at 6238.69s) that sits just before the lead_extend approach segment and could provide missing causal/emotional context if video observation confirms a continuous defensive sequence. This is the most targeted trial for the only structural gap that could plausibly affect story understanding, and it uses only footage events without known replay or slow-mo."
+        },
+        "duration_pad_forbidden_as_quality_proxy": true
+      },
+      {
+        "schema": "v3a_revision_case_v1",
+        "match_tag": null,
+        "issue_id": "story_first:3cae310aa1e765f708a4af03",
+        "revision_intent_id": "story_first_3cae310aa1e765f708a4af03_01",
+        "original_story_problem": {
+          "observation": null,
+          "missing_information": null,
+          "causal_explanation": null,
+          "story_role": null,
+          "diagnosis_status": null,
+          "story_defect_confirmed": null,
+          "confidence": null,
+          "evidence_sufficiency": null
+        },
+        "video_observation_evidence": null,
+        "defect_cause_hypothesis": null,
+        "target_action": "search_add",
+        "candidate_footage": {
+          "source_pts": {
+            "start": 5772.33,
+            "end": 5788.33
+          },
+          "event_ids": [
+            "event_000099"
+          ],
+          "why_solves_problem": null,
+          "apply": {
+            "intent": "story_first_3cae310aa1e765f708a4af03_01",
+            "action": "search_add",
+            "status": "applied_evidence_bound",
+            "segment_id": "seg_story_first_3cae310aa1e765f708a4af03_01",
+            "media_in": 5772.33,
+            "media_out": 5788.33,
+            "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+            "first_live_status": "NOT_VERIFIED",
+            "authorization": {
+              "allow": true,
+              "denies": [],
+              "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+              "method": "bound_source_window"
+            },
+            "observation_ref": "search:story_first_3cae310aa1e765f708a4af03_01",
+            "insert_after_segment_id": "seg_go_ahead_scoreboard"
+          }
+        },
+        "story_first_trial_id": "3cae310aa1e765f708a4af03",
+        "source_event_observations": [
+          {
+            "event_id": "event_000099",
+            "status": "SUPPORTED",
+            "reason": "Frame f2 shows a player in black (Team 2) winning an aerial duel against a player in white, consistent with the annotation for Team 2 #13.",
+            "frame_ids": [
+              "f2"
+            ]
+          }
+        ],
+        "before_after_video_windows": null,
+        "expected_improvement": "The large source jump between seg_go_ahead_scoreboard and seg_lead_extend_1_goal_action_approach spans 2605s. Interval_03:H4 proposes a compact defensive-pressure sub-story (aerial duels then a Save at 6238.69s) that sits just before the lead_extend approach segment and could provide missing causal/emotional context if video observation confirms a continuous defensive sequence. This is the most targeted trial for the only structural gap that could plausibly affect story understanding, and it uses only footage events without known replay or slow-mo.",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "actual_observation": null,
+        "verifier_judgment": {
+          "quality_judgment": null,
+          "original_issue_resolved": null,
+          "introduced_new_defect": null,
+          "evidence_refs": null,
+          "confidence": null,
+          "note": "Verifier must check whether the original diagnosed problem was solved, not only which cut looks nicer. BETTER ≠ ACCEPT ≠ IMPROVED."
+        },
+        "pts_safety": {
+          "schema": "v3a_edl_source_pts_monotonic_v1",
+          "ok": true,
+          "n_media_rows": 15,
+          "breaks": [],
+          "gate": "safety",
+          "note": "Monotonic source PTS is a safety constraint, not a quality score."
+        },
+        "final_decision": "REJECT",
+        "failure_reasons": [
+          "verifier_or_pipeline_rejected"
+        ],
+        "formal_final_is_baseline": true,
+        "bindings": {
+          "issue_id": "story_first:3cae310aa1e765f708a4af03",
+          "evidence": [
+            {
+              "kind": "story_first_source_review",
+              "ref": "story_first_3cae310aa1e765f708a4af03_01"
+            }
+          ],
+          "edit": "search_add",
+          "expected_effect": "The large source jump between seg_go_ahead_scoreboard and seg_lead_extend_1_goal_action_approach spans 2605s. Interval_03:H4 proposes a compact defensive-pressure sub-story (aerial duels then a Save at 6238.69s) that sits just before the lead_extend approach segment and could provide missing causal/emotional context if video observation confirms a continuous defensive sequence. This is the most targeted trial for the only structural gap that could plausibly affect story understanding, and it uses only footage events without known replay or slow-mo."
+        },
+        "duration_pad_forbidden_as_quality_proxy": true
+      }
+    ]
+  },
+  "last_verifier": {
+    "candidate_accepted": false,
+    "sent_frame_ids": [],
+    "hard_vetoes": [
+      {
+        "kind": "render_row_validation",
+        "detail": "Refusing duplicate goal cuts: [{'kind': 'duplicate_canonical_role', 'role': 'lead_extend_1_goal_action', 'segment_ids': ['seg_lead_extend_1_goal_action_approach', 'seg_lead_extend_1_goal_action']}]"
+      },
+      {
+        "kind": "missing_candidate_mp4_for_revise"
+      }
+    ],
+    "goal_protection": {
+      "baseline_goals": {
+        "seg_opponent_opening_goal_action": [
+          968.137,
+          990.137
+        ],
+        "seg_equalizer_goal_action": [
+          3053.903,
+          3075.903
+        ],
+        "seg_go_ahead_goal_action": [
+          3511.574,
+          3533.574
+        ],
+        "seg_lead_extend_1_goal_action_approach": [
+          6305.199,
+          6315.8
+        ],
+        "seg_lead_extend_1_goal_action": [
+          6316.7,
+          6327.199
+        ]
+      },
+      "candidate_goals": {
+        "seg_opponent_opening_goal_action": [
+          968.137,
+          990.137
+        ],
+        "seg_equalizer_goal_action": [
+          3053.903,
+          3075.903
+        ],
+        "seg_go_ahead_goal_action": [
+          3511.574,
+          3533.574
+        ],
+        "seg_lead_extend_1_goal_action_approach": [
+          6305.199,
+          6315.8
+        ],
+        "seg_lead_extend_1_goal_action": [
+          6316.7,
+          6327.199
+        ]
+      },
+      "intact": true
+    },
+    "warnings": [
+      "vision_backed_explicitly_false"
+    ],
+    "phase8_verdict": {
+      "schema": "v3a_phase8_verdict_v1",
+      "safety": "FAIL",
+      "hard_safety": {
+        "safety": "FAIL",
+        "reasons": [
+          "render_row_validation",
+          "missing_candidate_mp4_for_revise"
+        ],
+        "accept_candidate_ignored": true,
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_ledger": {
+          "schema": "v3a_first_live_window_ledger_v1",
+          "source_sha": "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725",
+          "windows": [
+            {
+              "key": "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725|5772.330:5788.330",
+              "source_sha": "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725",
+              "source_pts_start": 5772.33,
+              "source_pts_end": 5788.33,
+              "status": "NOT_VERIFIED",
+              "binding_status": "BINDING_INVALID",
+              "first_live_status": "NOT_VERIFIED",
+              "method": "unverified_new_window",
+              "segment_id": "seg_story_first_3cae310aa1e765f708a4af03_01",
+              "claimed_status": "NOT_VERIFIED",
+              "candidate_class": "unbound_or_invalid",
+              "validation": {
+                "ok": false,
+                "binding_valid": false,
+                "first_live_verified": false,
+                "replay_confirmed": false,
+                "reason": "missing_evidence_record",
+                "manifest_digest": null,
+                "frame_sha256": null,
+                "method": "frame_binding_only"
+              },
+              "validated_evidence": null,
+              "broadcast_timeline_review": null,
+              "origin": "apply_report"
+            },
+            {
+              "key": "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725|5951.110:5967.110",
+              "source_sha": "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725",
+              "source_pts_start": 5951.11,
+              "source_pts_end": 5967.11,
+              "status": "NOT_VERIFIED",
+              "binding_status": "BINDING_INVALID",
+              "first_live_status": "NOT_VERIFIED",
+              "method": "unverified_new_window",
+              "segment_id": "seg_story_first_3cae310aa1e765f708a4af03_02",
+              "claimed_status": "NOT_VERIFIED",
+              "candidate_class": "unbound_or_invalid",
+              "validation": {
+                "ok": false,
+                "binding_valid": false,
+                "first_live_verified": false,
+                "replay_confirmed": false,
+                "reason": "missing_evidence_record",
+                "manifest_digest": null,
+                "frame_sha256": null,
+                "method": "frame_binding_only"
+              },
+              "validated_evidence": null,
+              "broadcast_timeline_review": null,
+              "origin": "apply_report"
+            },
+            {
+              "key": "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725|6099.100:6115.100",
+              "source_sha": "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725",
+              "source_pts_start": 6099.1,
+              "source_pts_end": 6115.1,
+              "status": "NOT_VERIFIED",
+              "binding_status": "BINDING_INVALID",
+              "first_live_status": "NOT_VERIFIED",
+              "method": "unverified_new_window",
+              "segment_id": "seg_story_first_3cae310aa1e765f708a4af03_03",
+              "claimed_status": "NOT_VERIFIED",
+              "candidate_class": "unbound_or_invalid",
+              "validation": {
+                "ok": false,
+                "binding_valid": false,
+                "first_live_verified": false,
+                "replay_confirmed": false,
+                "reason": "missing_evidence_record",
+                "manifest_digest": null,
+                "frame_sha256": null,
+                "method": "frame_binding_only"
+              },
+              "validated_evidence": null,
+              "broadcast_timeline_review": null,
+              "origin": "apply_report"
+            },
+            {
+              "key": "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725|6230.690:6246.690",
+              "source_sha": "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725",
+              "source_pts_start": 6230.69,
+              "source_pts_end": 6246.69,
+              "status": "NOT_VERIFIED",
+              "binding_status": "BINDING_INVALID",
+              "first_live_status": "NOT_VERIFIED",
+              "method": "unverified_new_window",
+              "segment_id": "seg_story_first_3cae310aa1e765f708a4af03_04",
+              "claimed_status": "NOT_VERIFIED",
+              "candidate_class": "unbound_or_invalid",
+              "validation": {
+                "ok": false,
+                "binding_valid": false,
+                "first_live_verified": false,
+                "replay_confirmed": false,
+                "reason": "missing_evidence_record",
+                "manifest_digest": null,
+                "frame_sha256": null,
+                "method": "frame_binding_only"
+              },
+              "validated_evidence": null,
+              "broadcast_timeline_review": null,
+              "origin": "apply_report"
+            }
+          ],
+          "n_windows": 4,
+          "all_windows_verified": false,
+          "any_window_unverified": true,
+          "any_replay_confirmed": false,
+          "any_frame_bound_pending_timeline": false,
+          "aggregate_status": "NOT_VERIFIED",
+          "note": "FRAME_BOUND_VALID ≠ FIRST_LIVE_VERIFIED. Hard-safety PASS needs independent broadcast-timeline review on every new window; binding-only stays UNKNOWN; REPLAY_CONFIRMED ⇒ FAIL."
+        }
+      },
+      "quality": "UNCERTAIN",
+      "evidence": "INSUFFICIENT",
+      "issue_effect": "UNOBSERVED",
+      "global_regression": "UNKNOWN",
+      "focus_issue_id": null,
+      "evidence_refs": [],
+      "observed_changes": null,
+      "unresolved_questions": [],
+      "suggested_next_evidence": null,
+      "failure_class": "HARD_SAFETY_VETO",
+      "compared_parent_version_id": null,
+      "verdict_provenance": "OFFLINE_RULE",
+      "source_kind": "OFFLINE_RULE",
+      "accept_candidate_raw": false,
+      "accept_not_synthesized_from_promising": true,
+      "safety_independent_of_accept_candidate": true,
+      "note": "Hard safety is independent of narrative accept_candidate. FIXTURE/OFFLINE_RULE never establish real IMPROVED; REAL_VLM requires recorded successful provider call + frame bindings.",
+      "candidate_accepted": false,
+      "preview_only": true,
+      "best_comparison_status": "COMPARED_PARENT_IS_BEST",
+      "compared_against_best": true
+    },
+    "compared_parent_version_id": "v0",
+    "version_id": "v1"
+  },
+  "last_diagnosis_issues": [
+    {
+      "issue_id": "goal_coverage_31_to_41",
+      "story_time_range": [
+        125.1,
+        131.1
+      ],
+      "segment_ids": [
+        "seg_lead_extend_1_scoreboard"
+      ],
+      "observation": "Observed broadcast score transition (3, 1) -> (4, 1) at score-confirmation PTS 7818.500s, but no distinct active non-replay goal_action cut covers the bounded preceding scoreboard-lag interval.",
+      "narrative_problem": "A game-state change may be missing its on-ball action in the edited story. Locate and verify original first-live source footage before proposing an EDL insertion.",
+      "severity": "major",
+      "suggested_fix": "source_goal_action_search_then_video_verify",
+      "evidence_sufficiency": "needs_video_verify",
+      "category": "goal_coverage",
+      "diagnosis_status": "HYPOTHESIS_NEEDS_VIDEO",
+      "story_defect_confirmed": false,
+      "score_before": [
+        3,
+        1
+      ],
+      "score_after": [
+        4,
+        1
+      ],
+      "score_confirmation_sec": 7818.5,
+      "score_confirmation_carrier_event_id": "event_000154",
+      "source_search_interval": {
+        "media_in": 7717.43,
+        "media_out": 7818.0,
+        "source": "last_old_score_observation_with_30s_lag_pad",
+        "note": "Source search prior only, not the goal timestamp."
+      },
+      "possible_action_interval": {
+        "media_in": 7638.5,
+        "media_out": 7818.0,
+        "source": "score_recognition_bounded_180s_not_goal_action"
+      },
+      "score_transition_source": "raw_or_permitted_enriched_event_scoreboard",
+      "action_timestamp_known": false,
+      "first_live_verified": false,
+      "auto_insert_authorized": false,
+      "board_confirmation_is_not_action": true,
+      "story_role": "missing_key_action_hypothesis",
+      "observed_evidence": "Observed broadcast score transition (3, 1) -> (4, 1) at score-confirmation PTS 7818.500s, but no distinct active non-replay goal_action cut covers the bounded preceding scoreboard-lag interval.",
+      "missing_information": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+      "causal_explanation": "A game-state change may be missing its on-ball action in the edited story. Locate and verify original first-live source footage before proposing an EDL insertion.",
+      "confidence": 0.35,
+      "confirmation_basis": [],
+      "model_confidence_alone_insufficient": true,
+      "frame_cited_alone_insufficient": true,
+      "note": "Structural anomaly is a hypothesis only; not a confirmed story-quality defect.",
+      "critic_video_evidence": {
+        "status": "INCOMPLETE_SOURCE_VIDEO_OBSERVATION",
+        "source_sha256": "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725",
+        "issue_id": "goal_coverage_31_to_41",
+        "candidate_id": "goal_gap_goal_coverage_31_to_41_uncovered_gap_tail_7793",
+        "source_window": [
+          7793.5,
+          7818.5
+        ],
+        "shot_sec": null,
+        "net_sec": null,
+        "cited_frame_ids": [
+          "f_0000_7793550",
+          "f_0001_7797107",
+          "f_0002_7800664",
+          "f_0003_7804221",
+          "f_0004_7807779",
+          "f_0005_7811336",
+          "f_0006_7814893",
+          "f_0007_7818450"
+        ],
+        "model_frame_ids": [
+          "f_0000_7793550",
+          "f_0001_7797107",
+          "f_0002_7800664",
+          "f_0003_7804221",
+          "f_0004_7807779",
+          "f_0005_7811336",
+          "f_0006_7814893",
+          "f_0007_7818450"
+        ],
+        "evidence_kind": "real_source_video_vlm_observation",
+        "first_live_verified": false,
+        "auto_edit_authorized": false
+      }
+    },
+    {
+      "issue_id": "large_source_jump_seg_go_ahead_scoreboard_to_seg_lead_extend_1_goal_action_approach",
+      "story_time_range": [
+        103.0,
+        104.0
+      ],
+      "segment_ids": [
+        "seg_go_ahead_scoreboard",
+        "seg_lead_extend_1_goal_action_approach"
+      ],
+      "observation": "Adjacent cuts jump 2605.3s in source PTS (3699.85 → 6305.199) while contiguous on story timeline.",
+      "narrative_problem": "Source-time compression alone is not a story defect. Only propose an insert if video shows specific omitted causal, emotional, or game-state information necessary to understand the next beat.",
+      "severity": "info",
+      "suggested_fix": "verify_story_state_before_and_after;keep_if_coherent",
+      "evidence_sufficiency": "needs_video_verify",
+      "category": "transition",
+      "temporal_discontinuity_only": true,
+      "source_gap_sec": 2605.349,
+      "required_missing_information_evidence": "specific_unexplained_story_state_change_observed_in_both_adjacent_cuts",
+      "story_role": "transition_break",
+      "observed_evidence": "Adjacent cuts jump 2605.3s in source PTS (3699.85 → 6305.199) while contiguous on story timeline.",
+      "missing_information": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+      "causal_explanation": "Source-time compression alone is not a story defect. Only propose an insert if video shows specific omitted causal, emotional, or game-state information necessary to understand the next beat.",
+      "confidence": 0.35,
+      "confirmation_basis": [],
+      "model_confidence_alone_insufficient": true,
+      "frame_cited_alone_insufficient": true,
+      "diagnosis_status": "HYPOTHESIS_NEEDS_VIDEO",
+      "story_defect_confirmed": false,
+      "note": "Structural anomaly is a hypothesis only; not a confirmed story-quality defect."
+    },
+    {
+      "issue_id": "thin_post_climax_tail",
+      "story_time_range": [
+        124.6,
+        131.1
+      ],
+      "segment_ids": [
+        "seg_lead_extend_1_scoreboard"
+      ],
+      "observation": "After the final goal_action, remaining media cuts are short scoreboard/wrap material totaling 3.5s.",
+      "narrative_problem": "Ending may feel abrupt; whether emotional closure is adequate requires watching the cut (not assumed from structure alone).",
+      "severity": "minor",
+      "suggested_fix": "verify_ending_or_extend_aftermath",
+      "evidence_sufficiency": "needs_video_verify",
+      "category": "ending",
+      "story_role": "ending_incomplete",
+      "observed_evidence": "After the final goal_action, remaining media cuts are short scoreboard/wrap material totaling 3.5s.",
+      "missing_information": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+      "causal_explanation": "Ending may feel abrupt; whether emotional closure is adequate requires watching the cut (not assumed from structure alone).",
+      "confidence": 0.35,
+      "confirmation_basis": [],
+      "model_confidence_alone_insufficient": true,
+      "frame_cited_alone_insufficient": true,
+      "diagnosis_status": "HYPOTHESIS_NEEDS_VIDEO",
+      "story_defect_confirmed": false,
+      "note": "Structural anomaly is a hypothesis only; not a confirmed story-quality defect."
+    }
+  ],
+  "edl_changed_any": true,
+  "phase8_delivery_version_id": "v0",
+  "first_live_visual": {
+    "authority": "final_delivery_edl",
+    "path": "/tmp/story_first_outer_croatia_canada_20261119_234432/99_final/final_goal_evidence_manifest.json",
+    "status_counts": {
+      "FIRST_LIVE_VERIFIED": 0,
+      "POSSIBLE_FIRST_LIVE": 0,
+      "REPLAY_DETECTED": 0,
+      "UNRESOLVED": 5
+    },
+    "n_goal_anchors": 5,
+    "any_first_live_verified": false,
+    "any_replay_on_retained": false,
+    "n_inherited": 0,
+    "n_reverified": 5,
+    "goals": [
+      {
+        "segment_id": "seg_opponent_opening_goal_action",
+        "role": "opponent_opening_goal_action",
+        "first_live_status": "UNRESOLVED",
+        "source_media_in": 968.137,
+        "source_media_out": 990.137,
+        "evidence_binding": "reverified_after_window_or_subject_change",
+        "inherited": false
+      },
+      {
+        "segment_id": "seg_equalizer_goal_action",
+        "role": "equalizer_goal_action",
+        "first_live_status": "UNRESOLVED",
+        "source_media_in": 3053.903,
+        "source_media_out": 3075.903,
+        "evidence_binding": "reverified_after_window_or_subject_change",
+        "inherited": false
+      },
+      {
+        "segment_id": "seg_go_ahead_goal_action",
+        "role": "go_ahead_goal_action",
+        "first_live_status": "UNRESOLVED",
+        "source_media_in": 3511.574,
+        "source_media_out": 3533.574,
+        "evidence_binding": "reverified_after_window_or_subject_change",
+        "inherited": false
+      },
+      {
+        "segment_id": "seg_lead_extend_1_goal_action_approach",
+        "role": "lead_extend_1_goal_action_approach",
+        "first_live_status": "UNRESOLVED",
+        "source_media_in": 6305.199,
+        "source_media_out": 6315.8,
+        "evidence_binding": "reverified_after_window_or_subject_change",
+        "inherited": false
+      },
+      {
+        "segment_id": "seg_lead_extend_1_goal_action",
+        "role": "lead_extend_1_goal_action",
+        "first_live_status": "UNRESOLVED",
+        "source_media_in": 6316.7,
+        "source_media_out": 6327.199,
+        "evidence_binding": "reverified_after_window_or_subject_change",
+        "inherited": false
+      }
+    ],
+    "candidate_separate": {
+      "path": null,
+      "status_counts": null,
+      "n_goal_anchors": null
+    },
+    "v3r_historical_ref": null
+  },
+  "goal_lineage": {
+    "path": "/tmp/story_first_outer_croatia_canada_20261119_234432/99_final/goal_lineage_report.json",
+    "n_final_goal_segments": 5,
+    "n_strict_complete": 0,
+    "n_inferred": 0,
+    "n_unresolved": 5,
+    "n_structurally_traced_to_mp4": 0,
+    "duplicate_segment_ids": [],
+    "prior_source_trust": {
+      "prior_provided": false,
+      "prior_has_trusted_sha": false,
+      "stamped_current_sha_onto_prior": false
+    },
+    "candidate_delivery_binding": {
+      "schema": "v3a_candidate_delivery_video_binding_v1",
+      "same_source_video_sha256": true,
+      "delivery_sha256": "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725",
+      "candidate_sha256": null,
+      "shared_goal_segments": [],
+      "window_changed_segments": [],
+      "candidate_only_goal_segments": [],
+      "delivery_only_goal_segments": [
+        "seg_equalizer_goal_action",
+        "seg_go_ahead_goal_action",
+        "seg_lead_extend_1_goal_action",
+        "seg_lead_extend_1_goal_action_approach",
+        "seg_opponent_opening_goal_action"
+      ],
+      "note": "Candidate and delivery manifests must not share verification conclusions across changed windows; both must bind to the same source video SHA."
+    }
+  },
+  "delivery": {
+    "release_authorized": false,
+    "delivery_label": "BLOCKED",
+    "delivery_status": "BLOCKED",
+    "blocked_reasons": [
+      "hard_vetoes_present"
+    ],
+    "human_review": {
+      "required": false
+    },
+    "final_mp4": null,
+    "final_edl": "/tmp/story_first_outer_croatia_canada_20261119_234432/99_final/final_edl.json",
+    "decision": "REVISE",
+    "release_gate": {
+      "release_authorized": false,
+      "reasons": [
+        "final_edl_hard_rule:Refusing duplicate goal cuts: [{'kind': 'duplicate_canonical_role', 'role': 'lead_extend_1_goal_action', 'segment_ids': ['seg_lead_extend_1_goal_action_approach', 'seg_lead_extend_1_goal_action']}]",
+        "edl_unchanged",
+        "candidate_not_rendered",
+        "candidate_not_accepted",
+        "semantic_verification_not_passed",
+        "decision_not_revise",
+        "fixture_or_offline_source_not_releasable"
+      ],
+      "final_mp4_duration_sec": 131.44,
+      "edl_hard_ok": false,
+      "blocking_issue_ids": [],
+      "note": "workflow_completed/final_mp4_exists/semantic_verification_passed alone never authorize formal release.",
+      "delivery_version_id": "v0",
+      "delivery_snapshot": {
+        "version_id": "v0",
+        "parent_version_id": null,
+        "safety": "UNKNOWN",
+        "quality": "BASELINE_UNVERIFIED",
+        "verdict_provenance": "OFFLINE_RULE",
+        "semantic_verification_passed": false,
+        "candidate_rendered": true,
+        "compared_against_best": null,
+        "mp4_path": "/tmp/story_first_outer_croatia_canada_20261119_234432/01_initial_story/story_clean.mp4",
+        "edl_path": "/tmp/story_first_outer_croatia_canada_20261119_234432/01_initial_story/candidate_edl.json"
+      },
+      "delivery_source": "OFFLINE_RULE",
+      "last_round_ignored_for_release": true,
+      "last_verifier_version_id": "v1",
+      "note_phase8": "Release authorization is version-specific from delivery snapshot; a later rejected/uncertain round does not revoke or grant release of selected best.",
+      "delivery_digest_check": {
+        "source_sha256_expected": "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725",
+        "edl_sha256_expected": "ad46abf1be2dd601ae574670eadc64f9930b49b7ab0d367338cc35447a8ad682",
+        "mp4_sha256_expected": "2c2256ba61a4c2925b5f96f39552ab4ef52070cb073477cdc90e4a6e9e9999e3",
+        "edl_sha256_now": "ad46abf1be2dd601ae574670eadc64f9930b49b7ab0d367338cc35447a8ad682",
+        "mp4_sha256_now": "2c2256ba61a4c2925b5f96f39552ab4ef52070cb073477cdc90e4a6e9e9999e3",
+        "ok": true,
+        "reasons": []
+      }
+    },
+    "metrics": {
+      "revise_proposed": 1,
+      "edl_changed_rounds": 1,
+      "candidate_rendered": 0,
+      "candidate_accepted": 0,
+      "search_success_rounds": 1,
+      "invalid_candidate": 1,
+      "goal_damage_flags": 0,
+      "false_or_unverified_improve_claims": 0
+    },
+    "timeline_mp4_alignment": {
+      "aligned": true,
+      "mp4_duration_sec": 131.44,
+      "story_duration_sec": 131.1,
+      "media_duration_sec": 125.1,
+      "placeholder_duration_sec": 6.0,
+      "delta_sec": 0.34,
+      "root_cause_hint": "placeholder_title_cards_included_in_story_duration"
+    },
+    "first_live_visual": {
+      "authority": "final_delivery_edl",
+      "path": "/tmp/story_first_outer_croatia_canada_20261119_234432/99_final/final_goal_evidence_manifest.json",
+      "status_counts": {
+        "FIRST_LIVE_VERIFIED": 0,
+        "POSSIBLE_FIRST_LIVE": 0,
+        "REPLAY_DETECTED": 0,
+        "UNRESOLVED": 5
+      },
+      "n_goal_anchors": 5,
+      "any_first_live_verified": false,
+      "any_replay_on_retained": false,
+      "n_inherited": 0,
+      "n_reverified": 5,
+      "goals": [
+        {
+          "segment_id": "seg_opponent_opening_goal_action",
+          "role": "opponent_opening_goal_action",
+          "first_live_status": "UNRESOLVED",
+          "source_media_in": 968.137,
+          "source_media_out": 990.137,
+          "evidence_binding": "reverified_after_window_or_subject_change",
+          "inherited": false
+        },
+        {
+          "segment_id": "seg_equalizer_goal_action",
+          "role": "equalizer_goal_action",
+          "first_live_status": "UNRESOLVED",
+          "source_media_in": 3053.903,
+          "source_media_out": 3075.903,
+          "evidence_binding": "reverified_after_window_or_subject_change",
+          "inherited": false
+        },
+        {
+          "segment_id": "seg_go_ahead_goal_action",
+          "role": "go_ahead_goal_action",
+          "first_live_status": "UNRESOLVED",
+          "source_media_in": 3511.574,
+          "source_media_out": 3533.574,
+          "evidence_binding": "reverified_after_window_or_subject_change",
+          "inherited": false
+        },
+        {
+          "segment_id": "seg_lead_extend_1_goal_action_approach",
+          "role": "lead_extend_1_goal_action_approach",
+          "first_live_status": "UNRESOLVED",
+          "source_media_in": 6305.199,
+          "source_media_out": 6315.8,
+          "evidence_binding": "reverified_after_window_or_subject_change",
+          "inherited": false
+        },
+        {
+          "segment_id": "seg_lead_extend_1_goal_action",
+          "role": "lead_extend_1_goal_action",
+          "first_live_status": "UNRESOLVED",
+          "source_media_in": 6316.7,
+          "source_media_out": 6327.199,
+          "evidence_binding": "reverified_after_window_or_subject_change",
+          "inherited": false
+        }
+      ],
+      "candidate_separate": {
+        "path": null,
+        "status_counts": null,
+        "n_goal_anchors": null
+      },
+      "v3r_historical_ref": null
+    },
+    "final_goal_evidence_manifest": "/tmp/story_first_outer_croatia_canada_20261119_234432/99_final/final_goal_evidence_manifest.json",
+    "goal_lineage_report": "/tmp/story_first_outer_croatia_canada_20261119_234432/99_final/goal_lineage_report.json",
+    "goal_lineage": {
+      "path": "/tmp/story_first_outer_croatia_canada_20261119_234432/99_final/goal_lineage_report.json",
+      "n_final_goal_segments": 5,
+      "n_strict_complete": 0,
+      "n_inferred": 0,
+      "n_unresolved": 5,
+      "n_structurally_traced_to_mp4": 0,
+      "duplicate_segment_ids": [],
+      "prior_source_trust": {
+        "prior_provided": false,
+        "prior_has_trusted_sha": false,
+        "stamped_current_sha_onto_prior": false
+      },
+      "candidate_delivery_binding": {
+        "schema": "v3a_candidate_delivery_video_binding_v1",
+        "same_source_video_sha256": true,
+        "delivery_sha256": "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725",
+        "candidate_sha256": null,
+        "shared_goal_segments": [],
+        "window_changed_segments": [],
+        "candidate_only_goal_segments": [],
+        "delivery_only_goal_segments": [
+          "seg_equalizer_goal_action",
+          "seg_go_ahead_goal_action",
+          "seg_lead_extend_1_goal_action",
+          "seg_lead_extend_1_goal_action_approach",
+          "seg_opponent_opening_goal_action"
+        ],
+        "note": "Candidate and delivery manifests must not share verification conclusions across changed windows; both must bind to the same source video SHA."
+      }
+    },
+    "note": "Formal delivery requires release_authorized=true under full conjunction gates. workflow_completed / final_mp4_exists / semantic_verification_passed alone never authorize. HUMAN_REVIEW_REQUIRED means a safe candidate preview exists for human judgment. RELEASE_READY requires FIRST_LIVE_VERIFIED on every final-delivery EDL goal (final_goal_evidence_manifest), not V3-R historical first-live stats."
+  },
+  "metrics": {
+    "revise_proposed": 1,
+    "edl_changed_rounds": 1,
+    "candidate_rendered": 0,
+    "candidate_accepted": 0,
+    "search_success_rounds": 1,
+    "invalid_candidate": 1,
+    "goal_damage_flags": 0,
+    "false_or_unverified_improve_claims": 0
+  },
+  "baseline": {
+    "initial_mp4": "/tmp/story_first_outer_croatia_canada_20261119_234432/01_initial_story/story_clean.mp4",
+    "records": {
+      "initial": {
+        "path": "/data2/lpy1/_story_va_outputs/v3/plan2/story_first_cross_croatia_canada_f975744/04_phase5/story_clean.mp4",
+        "exists": true,
+        "size_bytes": 35752404,
+        "sha256": "2c2256ba61a4c2925b5f96f39552ab4ef52070cb073477cdc90e4a6e9e9999e3"
+      },
+      "final": {
+        "path": "/data2/lpy1/_story_va_outputs/v3/plan2/story_first_cross_croatia_canada_f975744/04_phase5/story_clean.mp4",
+        "exists": true,
+        "size_bytes": 35752404,
+        "sha256": "2c2256ba61a4c2925b5f96f39552ab4ef52070cb073477cdc90e4a6e9e9999e3"
+      },
+      "smoke": {
+        "path": "/__none__",
+        "exists": false,
+        "sha256": null
+      }
+    }
+  },
+  "elapsed_sec": 749.226,
+  "ok": true
+}

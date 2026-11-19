@@ -1,0 +1,129 @@
+{
+  "ok": true,
+  "provider_mode": "real",
+  "decision": "UNRESOLVED",
+  "revision_intents": [],
+  "story_first_trial": {
+    "selections": [
+      {
+        "proposal_id": "interval_03:H4",
+        "event_ids": [
+          "event_000099",
+          "event_000106",
+          "event_000111",
+          "event_000116"
+        ],
+        "relation_ids": [
+          "r1"
+        ]
+      }
+    ],
+    "rationale": "The large source jump between seg_go_ahead_scoreboard and seg_lead_extend_1_goal_action_approach spans 2605s. Interval_03:H4 proposes a compact defensive-pressure sub-story (aerial duels then a Save at 6238.69s) that sits just before the lead_extend approach segment and could provide missing causal/emotional context if video observation confirms a continuous defensive sequence. This is the most targeted trial for the only structural gap that could plausibly affect story understanding, and it uses only footage events without known replay or slow-mo.",
+    "revised_relations": [
+      {
+        "source_event_id": "event_000111",
+        "target_event_id": "event_000116",
+        "relation_type": "narrative_association",
+        "claim": "争顶后扑救或属同一防守段落，未证实"
+      }
+    ]
+  },
+  "exploratory_intents": [],
+  "rationale": "All three diagnosed issues are HYPOTHESIS_NEEDS_VIDEO with story_defect_confirmed=false. The VLM critic summary is empty and video_critic_observations status is UNAVAILABLE, so no cited observed fact confirms any defect. The goal_coverage issue has a candidate Goal event (event_000153) but first_live_status=NOT_VERIFIED and narrative_fit_status=NEEDS_VIDEO_REVIEW, so search_add is not authorized. The large source jump is temporal discontinuity only, explicitly not a story defect. The thin ending is structural only. No executable edit is evidence-backed.",
+  "est_cost_usd": 0.0026168999999999997,
+  "usage": {
+    "prompt_tokens": 15714,
+    "completion_tokens": 433,
+    "total_tokens": 16147,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "parsed": {
+    "decision": "UNRESOLVED",
+    "rationale": "All three diagnosed issues are HYPOTHESIS_NEEDS_VIDEO with story_defect_confirmed=false. The VLM critic summary is empty and video_critic_observations status is UNAVAILABLE, so no cited observed fact confirms any defect. The goal_coverage issue has a candidate Goal event (event_000153) but first_live_status=NOT_VERIFIED and narrative_fit_status=NEEDS_VIDEO_REVIEW, so search_add is not authorized. The large source jump is temporal discontinuity only, explicitly not a story defect. The thin ending is structural only. No executable edit is evidence-backed.",
+    "revision_intents": [],
+    "story_first_trial": {
+      "selections": [
+        {
+          "proposal_id": "interval_03:H4",
+          "event_ids": [
+            "event_000099",
+            "event_000106",
+            "event_000111",
+            "event_000116"
+          ],
+          "relation_ids": [
+            "r1"
+          ]
+        }
+      ],
+      "rationale": "The large source jump between seg_go_ahead_scoreboard and seg_lead_extend_1_goal_action_approach spans 2605s. Interval_03:H4 proposes a compact defensive-pressure sub-story (aerial duels then a Save at 6238.69s) that sits just before the lead_extend approach segment and could provide missing causal/emotional context if video observation confirms a continuous defensive sequence. This is the most targeted trial for the only structural gap that could plausibly affect story understanding, and it uses only footage events without known replay or slow-mo.",
+      "revised_relations": [
+        {
+          "source_event_id": "event_000111",
+          "target_event_id": "event_000116",
+          "relation_type": "narrative_association",
+          "claim": "争顶后扑救或属同一防守段落，未证实"
+        }
+      ]
+    }
+  },
+  "call_audit": {
+    "model": "DeepSeek-V4-Pro-0813",
+    "provider_mode": "real",
+    "logical_role": "revision_planner",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "prompt_tokens": 15714,
+    "completion_tokens": 433,
+    "reasoning_tokens": 0,
+    "text_tokens": null,
+    "finish_reason": "stop",
+    "visible_output_chars": 1733,
+    "est_cost_usd": 0.0026168999999999997,
+    "http_ok": true,
+    "empty_content": false
+  },
+  "request_audit": {
+    "role": "planner",
+    "model": "DeepSeek-V4-Pro-0813",
+    "request_profile": "default",
+    "token_param_configured": "max_tokens",
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "temperature_sent": 0.1,
+    "stream_sent": false,
+    "thinking_params_sent": false,
+    "thinking_object_disabled_sent": true,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "sends_both_token_params": false,
+    "sends_both_thinking_formats": false,
+    "message_count": 2,
+    "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+    "paratera_thinking_object_documented": false
+  },
+  "response_audit": {
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "visible_output_chars": 1733,
+    "usage_keys_present": [
+      "completion_tokens",
+      "completion_tokens_details",
+      "prompt_tokens",
+      "prompt_tokens_details",
+      "total_tokens"
+    ],
+    "has_completion_tokens_details": true,
+    "reasoning_content_present": false,
+    "completion_tokens_reported": 433,
+    "output_token_limit": 1200,
+    "output_budget_exceeded": false
+  },
+  "finish_reason": "stop"
+}

@@ -1,0 +1,207 @@
+{
+  "ok": true,
+  "provider_mode": "real",
+  "decision": "UNRESOLVED",
+  "revision_intents": [
+    {
+      "intent_id": "intent_mark_unresolved_goal_coverage_00_to_01",
+      "action": "mark_unresolved",
+      "target_segment_id": "seg_setup_deficit",
+      "role": "deficit_scoreboard_anchor",
+      "narrative_purpose": "Flag the missing (0,0)->(0,1) goal action as needing source video verification before any insertion is proposed.",
+      "rationale": "Score transition is observed at PTS 1535.650s but no distinct non-replay goal_action cut covers the preceding lag interval. first_live_verified=false and auto_insert_authorized=false. The critic video evidence is INCOMPLETE_SOURCE_VIDEO_OBSERVATION and does not confirm a story defect.",
+      "expected_improvement": "Prevents an unverified insertion; queues the correct next observation step.",
+      "risk": "None; no edit is made.",
+      "evidence_refs": [
+        "goal_coverage_00_to_01"
+      ]
+    },
+    {
+      "intent_id": "intent_mark_unresolved_large_source_jump",
+      "action": "mark_unresolved",
+      "target_segment_id": "seg_go_ahead_scoreboard",
+      "role": "go_ahead_scoreboard_anchor",
+      "narrative_purpose": "Flag the 2515.9s source jump between go_ahead_scoreboard and lead_extend_1_goal_action as needing video verification of omitted story state.",
+      "rationale": "Source-time compression alone is not a story defect. No candidate in search_candidates has FIRST_LIVE_VERIFIED or REVIEW_SUPPORTED, so no insert is authorized. The issue is info severity and story_defect_confirmed=false.",
+      "expected_improvement": "Avoids inserting unverified footage for a temporal gap alone.",
+      "risk": "None; no edit is made.",
+      "evidence_refs": [
+        "large_source_jump_seg_go_ahead_scoreboard_to_seg_lead_extend_1_goal_action"
+      ]
+    },
+    {
+      "intent_id": "intent_mark_unresolved_thin_post_climax_tail",
+      "action": "mark_unresolved",
+      "target_segment_id": "seg_lead_extend_2_scoreboard",
+      "role": "lead_extend_2_scoreboard_anchor",
+      "narrative_purpose": "Flag the 3.5s post-climax tail as needing video verification of emotional closure adequacy.",
+      "rationale": "Ending abruptness is a structural hypothesis only; no video observation confirms a defect. Extending without video evidence would risk adding unverified footage.",
+      "expected_improvement": "Queues ending verification without an unverified extension.",
+      "risk": "None; no edit is made.",
+      "evidence_refs": [
+        "thin_post_climax_tail"
+      ]
+    }
+  ],
+  "story_first_trial": {
+    "selections": [
+      {
+        "proposal_id": "interval_01:H1",
+        "event_ids": [
+          "event_000084",
+          "event_000085",
+          "event_000090"
+        ],
+        "relation_ids": [
+          "r1"
+        ]
+      }
+    ],
+    "rationale": "The equalizer-to-go-ahead interval contains a compact corner->shot->save sequence that could reveal whether the edited story omits a coherent pressure narrative. All events are non-replay and within the existing EDL source interval. This trial requests video observation of whether the save at 2698.08s follows continuous attacking buildup from the corner at 2571.19s, which would inform whether the current cut between equalizer and go-ahead goals is understandable or missing causal context.",
+    "revised_relations": [
+      {
+        "source_event_id": "event_000084",
+        "target_event_id": "event_000090",
+        "relation_type": "narrative_association",
+        "claim": "Corner kick at 2571.19s and save at 2698.08s may belong to the same attacking pressure sequence; unverified hypothesis for video observation."
+      }
+    ]
+  },
+  "exploratory_intents": [],
+  "rationale": "All three diagnosed issues remain HYPOTHESIS_NEEDS_VIDEO with story_defect_confirmed=false. The goal_coverage gap (0,0)->(0,1) lacks first_live_verified action footage and auto_insert is not authorized. The large source jump is temporal discontinuity only, explicitly not a story defect without video evidence of omitted necessary information. The thin ending is structural only. No search candidate has FIRST_LIVE_VERIFIED or REVIEW_SUPPORTED narrative fit, so search_add is not permitted. No confirmed redundancy issue names a preferred drop. The existing cut is structurally understandable; the correct action is to request video observation rather than mutate the EDL.",
+  "est_cost_usd": 0.0026796,
+  "usage": {
+    "prompt_tokens": 13656,
+    "completion_tokens": 1052,
+    "total_tokens": 14708,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "parsed": {
+    "decision": "UNRESOLVED",
+    "rationale": "All three diagnosed issues remain HYPOTHESIS_NEEDS_VIDEO with story_defect_confirmed=false. The goal_coverage gap (0,0)->(0,1) lacks first_live_verified action footage and auto_insert is not authorized. The large source jump is temporal discontinuity only, explicitly not a story defect without video evidence of omitted necessary information. The thin ending is structural only. No search candidate has FIRST_LIVE_VERIFIED or REVIEW_SUPPORTED narrative fit, so search_add is not permitted. No confirmed redundancy issue names a preferred drop. The existing cut is structurally understandable; the correct action is to request video observation rather than mutate the EDL.",
+    "revision_intents": [
+      {
+        "intent_id": "intent_mark_unresolved_goal_coverage_00_to_01",
+        "action": "mark_unresolved",
+        "target_segment_id": "seg_setup_deficit",
+        "role": "deficit_scoreboard_anchor",
+        "narrative_purpose": "Flag the missing (0,0)->(0,1) goal action as needing source video verification before any insertion is proposed.",
+        "rationale": "Score transition is observed at PTS 1535.650s but no distinct non-replay goal_action cut covers the preceding lag interval. first_live_verified=false and auto_insert_authorized=false. The critic video evidence is INCOMPLETE_SOURCE_VIDEO_OBSERVATION and does not confirm a story defect.",
+        "expected_improvement": "Prevents an unverified insertion; queues the correct next observation step.",
+        "risk": "None; no edit is made.",
+        "evidence_refs": [
+          "goal_coverage_00_to_01"
+        ]
+      },
+      {
+        "intent_id": "intent_mark_unresolved_large_source_jump",
+        "action": "mark_unresolved",
+        "target_segment_id": "seg_go_ahead_scoreboard",
+        "role": "go_ahead_scoreboard_anchor",
+        "narrative_purpose": "Flag the 2515.9s source jump between go_ahead_scoreboard and lead_extend_1_goal_action as needing video verification of omitted story state.",
+        "rationale": "Source-time compression alone is not a story defect. No candidate in search_candidates has FIRST_LIVE_VERIFIED or REVIEW_SUPPORTED, so no insert is authorized. The issue is info severity and story_defect_confirmed=false.",
+        "expected_improvement": "Avoids inserting unverified footage for a temporal gap alone.",
+        "risk": "None; no edit is made.",
+        "evidence_refs": [
+          "large_source_jump_seg_go_ahead_scoreboard_to_seg_lead_extend_1_goal_action"
+        ]
+      },
+      {
+        "intent_id": "intent_mark_unresolved_thin_post_climax_tail",
+        "action": "mark_unresolved",
+        "target_segment_id": "seg_lead_extend_2_scoreboard",
+        "role": "lead_extend_2_scoreboard_anchor",
+        "narrative_purpose": "Flag the 3.5s post-climax tail as needing video verification of emotional closure adequacy.",
+        "rationale": "Ending abruptness is a structural hypothesis only; no video observation confirms a defect. Extending without video evidence would risk adding unverified footage.",
+        "expected_improvement": "Queues ending verification without an unverified extension.",
+        "risk": "None; no edit is made.",
+        "evidence_refs": [
+          "thin_post_climax_tail"
+        ]
+      }
+    ],
+    "story_first_trial": {
+      "selections": [
+        {
+          "proposal_id": "interval_01:H1",
+          "event_ids": [
+            "event_000084",
+            "event_000085",
+            "event_000090"
+          ],
+          "relation_ids": [
+            "r1"
+          ]
+        }
+      ],
+      "rationale": "The equalizer-to-go-ahead interval contains a compact corner->shot->save sequence that could reveal whether the edited story omits a coherent pressure narrative. All events are non-replay and within the existing EDL source interval. This trial requests video observation of whether the save at 2698.08s follows continuous attacking buildup from the corner at 2571.19s, which would inform whether the current cut between equalizer and go-ahead goals is understandable or missing causal context.",
+      "revised_relations": [
+        {
+          "source_event_id": "event_000084",
+          "target_event_id": "event_000090",
+          "relation_type": "narrative_association",
+          "claim": "Corner kick at 2571.19s and save at 2698.08s may belong to the same attacking pressure sequence; unverified hypothesis for video observation."
+        }
+      ]
+    }
+  },
+  "call_audit": {
+    "model": "DeepSeek-V4-Pro-0813",
+    "provider_mode": "real",
+    "logical_role": "revision_planner",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "prompt_tokens": 13656,
+    "completion_tokens": 1052,
+    "reasoning_tokens": 0,
+    "text_tokens": null,
+    "finish_reason": "stop",
+    "visible_output_chars": 4253,
+    "est_cost_usd": 0.0026796,
+    "http_ok": true,
+    "empty_content": false
+  },
+  "request_audit": {
+    "role": "planner",
+    "model": "DeepSeek-V4-Pro-0813",
+    "request_profile": "default",
+    "token_param_configured": "max_tokens",
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "temperature_sent": 0.1,
+    "stream_sent": false,
+    "thinking_params_sent": false,
+    "thinking_object_disabled_sent": true,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "sends_both_token_params": false,
+    "sends_both_thinking_formats": false,
+    "message_count": 2,
+    "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+    "paratera_thinking_object_documented": false
+  },
+  "response_audit": {
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "visible_output_chars": 4253,
+    "usage_keys_present": [
+      "completion_tokens",
+      "completion_tokens_details",
+      "prompt_tokens",
+      "prompt_tokens_details",
+      "total_tokens"
+    ],
+    "has_completion_tokens_details": true,
+    "reasoning_content_present": false,
+    "completion_tokens_reported": 1052,
+    "output_token_limit": 1200,
+    "output_budget_exceeded": false
+  },
+  "finish_reason": "stop"
+}

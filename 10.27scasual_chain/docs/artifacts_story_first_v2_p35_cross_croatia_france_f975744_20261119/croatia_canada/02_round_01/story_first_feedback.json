@@ -1,0 +1,91 @@
+[
+  {
+    "round": 1,
+    "selection": {
+      "selections": [
+        {
+          "proposal_id": "interval_03:H4",
+          "event_ids": [
+            "event_000099",
+            "event_000106",
+            "event_000111",
+            "event_000116"
+          ],
+          "relation_ids": [
+            "r1"
+          ]
+        }
+      ],
+      "rationale": "The large source jump between seg_go_ahead_scoreboard and seg_lead_extend_1_goal_action_approach spans 2605s. Interval_03:H4 proposes a compact defensive-pressure sub-story (aerial duels then a Save at 6238.69s) that sits just before the lead_extend approach segment and could provide missing causal/emotional context if video observation confirms a continuous defensive sequence. This is the most targeted trial for the only structural gap that could plausibly affect story understanding, and it uses only footage events without known replay or slow-mo.",
+      "revised_relations": [
+        {
+          "source_event_id": "event_000111",
+          "target_event_id": "event_000116",
+          "relation_type": "narrative_association",
+          "claim": "争顶后扑救或属同一防守段落，未证实"
+        }
+      ]
+    },
+    "stage": "SOURCE_REVIEW",
+    "status": "READY_FOR_TRIAL",
+    "findings": [],
+    "advisory": [
+      {
+        "event_id": "event_000106",
+        "status": "UNCERTAIN",
+        "reason": "Frame f5 shows players running in midfield but does not clearly depict an aerial duel or the specific action described.",
+        "frame_ids": [
+          "f5"
+        ],
+        "event_ids": [
+          "event_000106"
+        ]
+      }
+    ]
+  },
+  {
+    "round": 1,
+    "stage": "FINISHED_CUT_VERIFIER",
+    "trial_id": "3cae310aa1e765f708a4af03",
+    "selection": {
+      "selections": [
+        {
+          "proposal_id": "interval_03:H4",
+          "event_ids": [
+            "event_000099",
+            "event_000106",
+            "event_000111",
+            "event_000116"
+          ],
+          "relation_ids": [
+            "r1"
+          ]
+        }
+      ],
+      "rationale": "The large source jump between seg_go_ahead_scoreboard and seg_lead_extend_1_goal_action_approach spans 2605s. Interval_03:H4 proposes a compact defensive-pressure sub-story (aerial duels then a Save at 6238.69s) that sits just before the lead_extend approach segment and could provide missing causal/emotional context if video observation confirms a continuous defensive sequence. This is the most targeted trial for the only structural gap that could plausibly affect story understanding, and it uses only footage events without known replay or slow-mo.",
+      "revised_relations": [
+        {
+          "source_event_id": "event_000111",
+          "target_event_id": "event_000116",
+          "relation_type": "narrative_association",
+          "claim": "争顶后扑救或属同一防守段落，未证实"
+        }
+      ]
+    },
+    "status": "UNCERTAIN",
+    "findings": {
+      "hard_vetoes": [
+        {
+          "kind": "render_row_validation",
+          "detail": "Refusing duplicate goal cuts: [{'kind': 'duplicate_canonical_role', 'role': 'lead_extend_1_goal_action', 'segment_ids': ['seg_lead_extend_1_goal_action_approach', 'seg_lead_extend_1_goal_action']}]"
+        },
+        {
+          "kind": "missing_candidate_mp4_for_revise"
+        }
+      ],
+      "suggested_next_evidence": null,
+      "fullcut_screen": null,
+      "per_intent": {}
+    }
+  }
+]

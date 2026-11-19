@@ -1,0 +1,217 @@
+{
+  "schema": "story_first_p35_cross_croatia_france_f975744_v1",
+  "croatia_canada": {
+    "match": "2022-11-28 克罗地亚vs加拿大",
+    "code_lineage": "f975744 (+docs 10d2ac4)",
+    "run_out": "/tmp/story_first_outer_croatia_canada_20261119_234432",
+    "inputs": {
+      "events_enriched": "/data2/lpy1/_story_va_outputs/v3/plan2/story_first_cross_croatia_canada_f975744/01_enrich/events_enriched.json",
+      "phase5": "/data2/lpy1/_story_va_outputs/v3/plan2/story_first_cross_croatia_canada_f975744/04_phase5",
+      "phase5_source_note": "copied from /tmp/migu-va2c/.../phase5/croatia (closed_loop_C missing on disk)",
+      "source_mp4": "/mnt/data4/migu/2022-11-28 克罗地亚vs加拿大.mp4"
+    },
+    "release_authorized": false,
+    "http_calls": 6,
+    "est_cost_usd": 0.016623,
+    "planner_pick": "interval_03:H4",
+    "p2_status": "READY_FOR_TRIAL",
+    "proposed_windows": [
+      {
+        "event_ids": [
+          "event_000099"
+        ],
+        "source_window_sec": [
+          5772.33,
+          5788.33
+        ]
+      },
+      {
+        "event_ids": [
+          "event_000106"
+        ],
+        "source_window_sec": [
+          5951.11,
+          5967.11
+        ]
+      },
+      {
+        "event_ids": [
+          "event_000111"
+        ],
+        "source_window_sec": [
+          6099.1,
+          6115.1
+        ]
+      },
+      {
+        "event_ids": [
+          "event_000116"
+        ],
+        "source_window_sec": [
+          6230.69,
+          6246.69
+        ]
+      }
+    ],
+    "p3_status": null,
+    "render_error": "Refusing duplicate goal cuts: [{'kind': 'duplicate_canonical_role', 'role': 'lead_extend_1_goal_action', 'segment_ids': ['seg_lead_extend_1_goal_action_approach', 'seg_lead_extend_1_goal_action']}]",
+    "stop_reason": "STOP_SAFETY / duplicate_canonical_role lead_extend_1_goal_action (approach+action); kept V0",
+    "comparison": [
+      {
+        "outer_rounds": 0,
+        "status": "V3_R",
+        "duration_sec": 131.44,
+        "mp4": "/tmp/story_first_outer_croatia_canada_20261119_234432/01_initial_story/story_clean.mp4",
+        "mp4_sha256": "2c2256ba61a4c2925b5f96f39552ab4ef52070cb073477cdc90e4a6e9e9999e3"
+      },
+      {
+        "outer_rounds": 1,
+        "status": "NOT_PRODUCED",
+        "reason": "render refused duplicate goal cuts after P2 READY_FOR_TRIAL"
+      },
+      {
+        "outer_rounds": 2,
+        "status": "NOT_RUN",
+        "reason": "no accepted round-1 preview"
+      }
+    ]
+  },
+  "france_australia": {
+    "match": "2022年11月23日 法国vs澳大利亚",
+    "code_lineage": "f975744 (+docs 10d2ac4)",
+    "run_out": "/tmp/story_first_outer_france_australia_20261119_235724",
+    "inputs": {
+      "events_enriched": "/data2/lpy1/_story_va_outputs/v3/plan2/story_first_cross_france_australia_f975744/01_enrich/events_enriched.json",
+      "phase5": "/data2/lpy1/_story_va_outputs/v3/plan2/story_first_cross_france_australia_f975744/04_phase5",
+      "phase5_source_note": "copied from /tmp/migu-va2c/.../phase5/france_australia_first_run",
+      "source_mp4": "/mnt/data4/migu/2022年11月23日 法国vs澳大利亚.mp4"
+    },
+    "release_authorized": false,
+    "http_calls": 15,
+    "est_cost_usd": 0.038923,
+    "planner_pick": "interval_01:H1",
+    "p2_status": "READY_FOR_TRIAL",
+    "round1_windows": [
+      {
+        "event_ids": [
+          "event_000084",
+          "event_000085"
+        ],
+        "source_window_sec": [
+          2563.19,
+          2593.92
+        ]
+      },
+      {
+        "event_ids": [
+          "event_000090"
+        ],
+        "source_window_sec": [
+          2690.08,
+          2706.08
+        ]
+      }
+    ],
+    "round_history": [
+      {
+        "round": 1,
+        "status": "ACCEPTED_PREVIEW",
+        "source_advisory": [],
+        "p3_stop_reason": "PLANNER_KEEP",
+        "local_trims": 0,
+        "accepted_source_windows_sec": [
+          [
+            2563.19,
+            2593.92
+          ],
+          [
+            2690.08,
+            2706.08
+          ]
+        ],
+        "local_decisions": [
+          {
+            "action": "KEEP",
+            "rationale": "Keep seg_story_first_fb3541de356897e67a0f09bb_01 as a bridge. The visible observation for phase 6:before shows France attacking and a blocked shot with the scoreboard at 1-1, which provides setup/tension between the equalizer scoreboard and the go-ahead goal. The insert phase is MISSING, so the bridge's causal function remains unverified, but the available visual evidence supports its role as a pressure continuation without claiming an outcome. No concrete pacing or clarity improvement justifies a trim."
+          }
+        ]
+      },
+      {
+        "round": 2,
+        "parent_mp4_sha256": "9108ab194dad1dd16478d9aad4fc03d0c3c25a8b027a5101baccb0b28f652a76",
+        "p1_proposals": 15,
+        "new_proposals": 13,
+        "trial_id": "696c98b7f2d55960e83fe881",
+        "source_windows_sec": [
+          [
+            2639.2,
+            2659.83
+          ]
+        ],
+        "event_ids": [
+          "event_000088",
+          "event_000089"
+        ],
+        "status": "ACCEPTED_PREVIEW",
+        "source_feedback": [],
+        "source_advisory": [],
+        "p3_stop_reason": "PLANNER_KEEP",
+        "local_trims": 0,
+        "accepted_source_windows_sec": [
+          [
+            2639.2,
+            2659.83
+          ]
+        ],
+        "local_decisions": [
+          {
+            "action": "KEEP",
+            "rationale": "Keep seg_story_first_696c98b7f2d55960e83fe881_01 as a bridge. The visible observation for phase 7:before shows a France player (No. 9) on the grass with the scoreboard at France 1-1 Australia, providing setup/tension after the equalizer scoreboard. The insert phase shows France advancing and a run into the penalty area, which sustains pressure without claiming an outcome. The after phase shows a different France player (No. 7) jogging, preserving uncertainty about the attack's result. No concrete pacing or clarity improvement justifies a trim."
+          }
+        ]
+      }
+    ],
+    "comparison": [
+      {
+        "outer_rounds": 0,
+        "status": "V3_R",
+        "accepted_changes": 0,
+        "edl": "/tmp/story_first_outer_france_australia_20261119_235724/story_first_outer/v0_edl.json",
+        "mp4": "/tmp/story_first_outer_france_australia_20261119_235724/01_initial_story/story_clean.mp4",
+        "mp4_sha256": "a7cdbf2b3e46738f9c4e2af93ddb8b46ee757052d9c1b15bbada2f06ae14cd02",
+        "duration_sec": 135.953
+      },
+      {
+        "outer_rounds": 1,
+        "status": "ACCEPTED_PREVIEW",
+        "accepted_changes": 1,
+        "local_trims": 0,
+        "p3_stop_reason": "PLANNER_KEEP",
+        "edl": "/tmp/story_first_outer_france_australia_20261119_235724/story_first_outer/v1_edl.json",
+        "mp4": "/tmp/story_first_outer_france_australia_20261119_235724/02_round_01/candidate_render/story_clean.mp4",
+        "mp4_sha256": "9108ab194dad1dd16478d9aad4fc03d0c3c25a8b027a5101baccb0b28f652a76",
+        "duration_sec": 182.742
+      },
+      {
+        "outer_rounds": 2,
+        "status": "ACCEPTED_PREVIEW",
+        "accepted_changes": 2,
+        "changed_from_previous_round": true,
+        "edl": "/tmp/story_first_outer_france_australia_20261119_235724/story_first_outer/v2_edl.json",
+        "mp4": "/tmp/story_first_outer_france_australia_20261119_235724/story_first_outer/round_02/trial_render/story_clean.mp4",
+        "mp4_sha256": "f38c9353f71dceaa28a91338ac715fc2be07a9601e925c362e14aeee333d9bc0",
+        "duration_sec": 203.407
+      }
+    ],
+    "p3": {
+      "round1": "PLANNER_KEEP",
+      "round2": "PLANNER_KEEP"
+    }
+  },
+  "first_live_gate_preserved": true,
+  "note": [
+    "Closed-loop C/FR dirs missing; rebuilt 01_enrich offline (matches C console: 159/35/5) and staged frozen phase5 from /tmp/migu-va2c.",
+    "Croatia: P2 pass then render blocked on pre-existing duplicate lead_extend goal roles → retain V0.",
+    "France: full 0/1/2 preview comparison produced; release_authorized=false."
+  ]
+}
