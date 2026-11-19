@@ -1,0 +1,196 @@
+{
+  "schema": "story_first_p35_outer_osasuna_celta_replay_trim_v1",
+  "code_sha": "f9757441c23170036a095164b9132bc40492194a",
+  "run_out": "/tmp/story_first_outer_osasuna_celta_replay_20261119_181722",
+  "prior_artifacts": "/tmp/story_first_outer_osasuna_celta_20261119_161929/story_first",
+  "release_authorized": false,
+  "p1_proposals": 10,
+  "h1_replay_window_trim": {
+    "proposal_id": "interval_01:H1",
+    "removed_event_ids": [],
+    "status": "REPLACED",
+    "window_edits": [
+      {
+        "event_ids": [
+          "event_000534",
+          "event_000536"
+        ],
+        "original_source_window_sec": [
+          5188.1,
+          5218.18
+        ],
+        "removed_event_ids": [],
+        "removed_source_windows_sec": [
+          [
+            5181.88,
+            5191.93
+          ]
+        ],
+        "retained_source_windows_sec": [
+          [
+            5191.93,
+            5218.18
+          ]
+        ]
+      }
+    ]
+  },
+  "planner_selection": {
+    "selections": [
+      {
+        "proposal_id": "interval_01:H1",
+        "event_ids": [
+          "event_000531",
+          "event_000534",
+          "event_000536",
+          "event_000555"
+        ],
+        "relation_ids": []
+      }
+    ],
+    "rationale": "在现有逆转模板中，已接受的剪辑已覆盖落后、扳平、反超三个核心节点，但“蓄力”节拍目前只有一个未校准的射门事件，叙事支撑较弱。interval_01:H1 位于落后与扳平之间，其连续射门失误后紧接三次换人及后续任意球的事件组合，可作为扳平前节奏重置的蓄力素材，且不涉及已接受的进球或记分牌节点。该候选的 replay_window_edits 保留了换人事件的有效源窗口，去除了与换人无关的冗余窗口，整体窗口与现有 EDL 无重叠。其他候选或依赖未证实的因果假设，或事件类型与现有模板贡献度较低，故仅选择此一个局部故事作为补充。"
+  },
+  "p2_status": "READY_FOR_TRIAL",
+  "accepted_source_windows_sec": [
+    [
+      5165.88,
+      5181.88
+    ],
+    [
+      5191.93,
+      5218.18
+    ],
+    [
+      5577.63,
+      5593.63
+    ]
+  ],
+  "comparison": [
+    {
+      "outer_rounds": 0,
+      "status": "V3_R",
+      "accepted_changes": 0,
+      "edl": "/tmp/story_first_outer_osasuna_celta_replay_20261119_181722/story_first_outer/v0_edl.json",
+      "mp4": "/tmp/story_first_outer_osasuna_celta_replay_20261119_181722/01_initial_story/story_clean.mp4",
+      "mp4_sha256": "187e490b8c0e0bee049b765b73030dcab78765098289ce4fb7369769d46ce29c",
+      "duration_sec": 104.931
+    },
+    {
+      "outer_rounds": 1,
+      "status": "ACCEPTED_PREVIEW",
+      "accepted_changes": 1,
+      "local_trims": 0,
+      "p3_stop_reason": "CAPTION_UNAVAILABLE",
+      "edl": "/tmp/story_first_outer_osasuna_celta_replay_20261119_181722/story_first_outer/v1_edl.json",
+      "mp4": "/tmp/story_first_outer_osasuna_celta_replay_20261119_181722/02_round_01/candidate_render/story_clean.mp4",
+      "mp4_sha256": "38b9475b2f8c2525b27713bf76d861cca5709894b60d6fd19b74bd7fe33d683c",
+      "duration_sec": 163.306
+    },
+    {
+      "outer_rounds": 2,
+      "status": "ACCEPTED_PREVIEW",
+      "accepted_changes": 2,
+      "changed_from_previous_round": true,
+      "edl": "/tmp/story_first_outer_osasuna_celta_replay_20261119_181722/story_first_outer/v2_edl.json",
+      "mp4": "/tmp/story_first_outer_osasuna_celta_replay_20261119_181722/story_first_outer/round_02/trial_render/story_clean.mp4",
+      "mp4_sha256": "c61cdb0e4ba8e0a46effff42ae334d0d92be015a4560d65d9cc9eb9562bbf54b",
+      "duration_sec": 179.351
+    }
+  ],
+  "round_history": [
+    {
+      "round": 1,
+      "status": "ACCEPTED_PREVIEW",
+      "source_advisory": [],
+      "p3_stop_reason": "CAPTION_UNAVAILABLE",
+      "local_trims": 0,
+      "accepted_source_windows_sec": [
+        [
+          5165.88,
+          5181.88
+        ],
+        [
+          5191.93,
+          5218.18
+        ],
+        [
+          5577.63,
+          5593.63
+        ]
+      ],
+      "local_decisions": [],
+      "replay_replacements": [
+        {
+          "proposal_id": "interval_01:H1",
+          "status": "REPLACED",
+          "removed_event_ids": [],
+          "window_edits": [
+            {
+              "event_ids": [
+                "event_000534",
+                "event_000536"
+              ],
+              "removed_event_ids": [],
+              "original_source_window_sec": [
+                5188.1,
+                5218.18
+              ],
+              "removed_source_windows_sec": [
+                [
+                  5181.88,
+                  5191.93
+                ]
+              ],
+              "retained_source_windows_sec": [
+                [
+                  5191.93,
+                  5218.18
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "parent_mp4_sha256": "38b9475b2f8c2525b27713bf76d861cca5709894b60d6fd19b74bd7fe33d683c",
+      "p1_proposals": 10,
+      "new_proposals": 10,
+      "trial_id": "ebd7b89a21d4e1ebb7255ec7",
+      "source_windows_sec": [
+        [
+          5435.44,
+          5451.44
+        ]
+      ],
+      "event_ids": [
+        "event_000546"
+      ],
+      "status": "ACCEPTED_PREVIEW",
+      "source_feedback": [],
+      "source_advisory": [],
+      "p3_stop_reason": "PLANNER_KEEP",
+      "local_trims": 0,
+      "accepted_source_windows_sec": [
+        [
+          5435.44,
+          5451.44
+        ]
+      ],
+      "local_decisions": [
+        {
+          "action": "KEEP",
+          "rationale": "The new bridge segment seg_story_first_ebd7b89a21d4e1ebb7255ec7_01 is placed between the existing buildup bridges and the equalizer goal. Its visible observation shows a wide shot at match time 66:43 with the score OSA 2-1 CEL, players in red and light blue jerseys positioned across midfield, and a QR code graphic in the top left. This provides concrete visual evidence of the deficit state and ongoing midfield play, which supports the '蓄力' (buildup) phase before the equalizer. The clip contributes setup and tension by reinforcing the scoreline and the team's attempt to build from midfield. The insert and after phases are MISSING, so no claim is made about the outcome of the action. The segme"
+        }
+      ]
+    }
+  ],
+  "http_calls": 10,
+  "est_cost_usd": 0.028637,
+  "note": [
+    "H1 sub window trimmed 5188.10–5218.18 → 5191.93–5218.18; both substitution events retained; pool still 10.",
+    "Planner reselected interval_01:H1; P2 READY_FOR_TRIAL; V1+V2 previews produced.",
+    "Round1 P3 CAPTION_UNAVAILABLE (caption timed out once) still preview_accepted; round2 PLANNER_KEEP."
+  ]
+}

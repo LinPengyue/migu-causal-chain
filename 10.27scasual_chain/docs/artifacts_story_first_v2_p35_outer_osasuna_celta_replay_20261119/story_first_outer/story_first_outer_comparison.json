@@ -1,0 +1,274 @@
+{
+  "schema": "story_first_outer_comparison_v1",
+  "preview_only": true,
+  "release_authorized": false,
+  "requested_outer_rounds": 2,
+  "attempted_outer_rounds": 2,
+  "accepted_changes": 2,
+  "http_calls_added_by_continuation": 6,
+  "api_usage": {
+    "http_attempts": 10,
+    "max_calls": 16,
+    "max_cost_usd": 0.05,
+    "est_cost_usd_real": 0.028637,
+    "by_role": {
+      "story_first_generator": {
+        "http_attempts": 2,
+        "tokens": 50395,
+        "est_cost_usd": 0.008443,
+        "output_budget_exceeded": false
+      },
+      "story_first_p35_planner": {
+        "http_attempts": 2,
+        "tokens": 24458,
+        "est_cost_usd": 0.003898,
+        "output_budget_exceeded": false
+      },
+      "story_first_p3_caption": {
+        "http_attempts": 2,
+        "tokens": 42002,
+        "est_cost_usd": 0.006528,
+        "output_budget_exceeded": false
+      },
+      "story_first_p3_planner": {
+        "http_attempts": 1,
+        "tokens": 11592,
+        "est_cost_usd": 0.001997,
+        "output_budget_exceeded": false
+      },
+      "vision": {
+        "http_attempts": 3,
+        "tokens": 48767,
+        "est_cost_usd": 0.007771,
+        "output_budget_exceeded": false
+      }
+    },
+    "cost_is_estimate_not_invoice_cap": true,
+    "max_retries": 0,
+    "request_preflight": {
+      "planner": {
+        "model": "DeepSeek-V4-Pro-0813",
+        "thinking_in_body": {
+          "type": "disabled"
+        },
+        "max_tokens_in_body": 1200,
+        "max_completion_tokens_in_body": null,
+        "enable_thinking_in_body": null,
+        "thinking_budget_in_body": null,
+        "request_audit": {
+          "role": "planner",
+          "model": "DeepSeek-V4-Pro-0813",
+          "request_profile": "default",
+          "token_param_configured": "max_tokens",
+          "token_param_sent": "max_tokens",
+          "token_limit_sent": 1200,
+          "temperature_sent": 0.0,
+          "stream_sent": false,
+          "thinking_params_sent": false,
+          "thinking_object_disabled_sent": true,
+          "enable_thinking_sent": null,
+          "thinking_budget_sent": null,
+          "sends_both_token_params": false,
+          "sends_both_thinking_formats": false,
+          "message_count": 1,
+          "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+          "paratera_thinking_object_documented": false
+        },
+        "thinking_object_disabled_cfg": true,
+        "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+      },
+      "vision": {
+        "model": "Qwen3.7-Plus",
+        "thinking_in_body": {
+          "type": "disabled"
+        },
+        "max_tokens_in_body": 1200,
+        "max_completion_tokens_in_body": null,
+        "enable_thinking_in_body": null,
+        "thinking_budget_in_body": null,
+        "request_audit": {
+          "role": "vision",
+          "model": "Qwen3.7-Plus",
+          "request_profile": "video_rsi",
+          "token_param_configured": "max_tokens",
+          "token_param_sent": "max_tokens",
+          "token_limit_sent": 1200,
+          "temperature_sent": 0.0,
+          "stream_sent": false,
+          "thinking_params_sent": false,
+          "thinking_object_disabled_sent": true,
+          "enable_thinking_sent": null,
+          "thinking_budget_sent": null,
+          "sends_both_token_params": false,
+          "sends_both_thinking_formats": false,
+          "message_count": 1,
+          "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+          "paratera_thinking_object_documented": false
+        },
+        "thinking_object_disabled_cfg": true,
+        "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+      }
+    },
+    "env_thinking_overrides": {
+      "before": {
+        "STORY_API_MAX_CALLS": "16",
+        "STORY_API_MAX_COST_USD": "0.05",
+        "STORY_API_MAX_COMPLETION_TOKENS": "3200",
+        "STORY_VLM_MAX_COMPLETION_TOKENS": "1600",
+        "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+        "STORY_VLM_SEND_THINKING": null,
+        "STORY_VLM_ENABLE_THINKING": null,
+        "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+        "STORY_VLM_TOKEN_PARAM": null,
+        "STORY_API_TOKEN_PARAM": "max_tokens"
+      },
+      "after": {
+        "STORY_API_MAX_CALLS": "16",
+        "STORY_API_MAX_COST_USD": "0.05",
+        "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+        "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+        "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+        "STORY_VLM_SEND_THINKING": null,
+        "STORY_VLM_ENABLE_THINKING": null,
+        "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+        "STORY_VLM_TOKEN_PARAM": "max_tokens",
+        "STORY_API_TOKEN_PARAM": "max_tokens",
+        "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+        "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+        "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+      },
+      "disable_thinking": true
+    }
+  },
+  "round_history": [
+    {
+      "round": 1,
+      "status": "ACCEPTED_PREVIEW",
+      "source_advisory": [],
+      "p3_stop_reason": "CAPTION_UNAVAILABLE",
+      "local_trims": 0,
+      "accepted_source_windows_sec": [
+        [
+          5165.88,
+          5181.88
+        ],
+        [
+          5191.93,
+          5218.18
+        ],
+        [
+          5577.63,
+          5593.63
+        ]
+      ],
+      "local_decisions": [],
+      "replay_replacements": [
+        {
+          "proposal_id": "interval_01:H1",
+          "status": "REPLACED",
+          "removed_event_ids": [],
+          "window_edits": [
+            {
+              "event_ids": [
+                "event_000534",
+                "event_000536"
+              ],
+              "removed_event_ids": [],
+              "original_source_window_sec": [
+                5188.1,
+                5218.18
+              ],
+              "removed_source_windows_sec": [
+                [
+                  5181.88,
+                  5191.93
+                ]
+              ],
+              "retained_source_windows_sec": [
+                [
+                  5191.93,
+                  5218.18
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "parent_mp4_sha256": "38b9475b2f8c2525b27713bf76d861cca5709894b60d6fd19b74bd7fe33d683c",
+      "p1_proposals": 10,
+      "new_proposals": 10,
+      "trial_id": "ebd7b89a21d4e1ebb7255ec7",
+      "source_windows_sec": [
+        [
+          5435.44,
+          5451.44
+        ]
+      ],
+      "event_ids": [
+        "event_000546"
+      ],
+      "status": "ACCEPTED_PREVIEW",
+      "source_feedback": [],
+      "source_advisory": [],
+      "p3_stop_reason": "PLANNER_KEEP",
+      "local_trims": 0,
+      "accepted_source_windows_sec": [
+        [
+          5435.44,
+          5451.44
+        ]
+      ],
+      "local_decisions": [
+        {
+          "action": "KEEP",
+          "rationale": "The new bridge segment seg_story_first_ebd7b89a21d4e1ebb7255ec7_01 is placed between the existing buildup bridges and the equalizer goal. Its visible observation shows a wide shot at match time 66:43 with the score OSA 2-1 CEL, players in red and light blue jerseys positioned across midfield, and a QR code graphic in the top left. This provides concrete visual evidence of the deficit state and ongoing midfield play, which supports the '蓄力' (buildup) phase before the equalizer. The clip contributes setup and tension by reinforcing the scoreline and the team's attempt to build from midfield. The insert and after phases are MISSING, so no claim is made about the outcome of the action. The segme"
+        }
+      ]
+    }
+  ],
+  "comparison": [
+    {
+      "outer_rounds": 0,
+      "status": "V3_R",
+      "accepted_changes": 0,
+      "edl": "/tmp/story_first_outer_osasuna_celta_replay_20261119_181722/story_first_outer/v0_edl.json",
+      "mp4": "/tmp/story_first_outer_osasuna_celta_replay_20261119_181722/01_initial_story/story_clean.mp4",
+      "mp4_sha256": "187e490b8c0e0bee049b765b73030dcab78765098289ce4fb7369769d46ce29c",
+      "duration_sec": 104.931
+    },
+    {
+      "outer_rounds": 1,
+      "status": "ACCEPTED_PREVIEW",
+      "accepted_changes": 1,
+      "local_trims": 0,
+      "p3_stop_reason": "CAPTION_UNAVAILABLE",
+      "edl": "/tmp/story_first_outer_osasuna_celta_replay_20261119_181722/story_first_outer/v1_edl.json",
+      "mp4": "/tmp/story_first_outer_osasuna_celta_replay_20261119_181722/02_round_01/candidate_render/story_clean.mp4",
+      "mp4_sha256": "38b9475b2f8c2525b27713bf76d861cca5709894b60d6fd19b74bd7fe33d683c",
+      "duration_sec": 163.306
+    },
+    {
+      "outer_rounds": 2,
+      "status": "ACCEPTED_PREVIEW",
+      "accepted_changes": 2,
+      "changed_from_previous_round": true,
+      "edl": "/tmp/story_first_outer_osasuna_celta_replay_20261119_181722/story_first_outer/v2_edl.json",
+      "mp4": "/tmp/story_first_outer_osasuna_celta_replay_20261119_181722/story_first_outer/round_02/trial_render/story_clean.mp4",
+      "mp4_sha256": "c61cdb0e4ba8e0a46effff42ae334d0d92be015a4560d65d9cc9eb9562bbf54b",
+      "duration_sec": 179.351
+    }
+  ],
+  "selected_preview": {
+    "outer_rounds": 2,
+    "status": "ACCEPTED_PREVIEW",
+    "accepted_changes": 2,
+    "changed_from_previous_round": true,
+    "edl": "/tmp/story_first_outer_osasuna_celta_replay_20261119_181722/story_first_outer/v2_edl.json",
+    "mp4": "/tmp/story_first_outer_osasuna_celta_replay_20261119_181722/story_first_outer/round_02/trial_render/story_clean.mp4",
+    "mp4_sha256": "c61cdb0e4ba8e0a46effff42ae334d0d92be015a4560d65d9cc9eb9562bbf54b",
+    "duration_sec": 179.351
+  }
+}
