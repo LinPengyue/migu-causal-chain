@@ -133,7 +133,7 @@ def _native_caption_input(mp4, aligned, target_ids, out, *, focus_only=False):
     return manifest
 
 
-def _request(api, role, stage, prompt, out, clips=()):
+def _request(api, role, stage, prompt, out, clips=(), *, stats_prefix="story_first_p3"):
     parts = [{"type": "text", "text": prompt}]
     for c in clips:
         parts.append({"type": "text", "text": f"{c['clip_id']} story seconds {c['story_range_sec']}"})
@@ -144,7 +144,7 @@ def _request(api, role, stage, prompt, out, clips=()):
     try:
         raw = api.chat(
             role=role, messages=[{"role": "user", "content": parts if clips else prompt}],
-            stats_role=f"story_first_p3_{stage}", temperature=0.0,
+            stats_role=f"{stats_prefix}_{stage}", temperature=0.0,
             allow_degraded_fallback=False,
         )
         content = str(raw.get("content") or "")
@@ -225,7 +225,7 @@ def _caption(api, manifest, out):
 
 
 def _plan(api, *, story_plan, baseline_timeline, timeline, caption, proposals, history,
-          review, bounds, out, remaining_rounds, local_trim_only=False):
+          review, bounds, out, remaining_rounds, local_trim_only=False, reserve_calls=0):
     context = {
         "story_template": {k: story_plan[k] for k in (
             "template_id", "template", "template_name", "title", "beats", "story_beats"
@@ -238,7 +238,7 @@ def _plan(api, *, story_plan, baseline_timeline, timeline, caption, proposals, h
         "editable_trial_segment_ids_and_source_bounds": bounds,
         "current_source_review_advisory": review.get("advisory") or [],
         "following_rounds_available": remaining_rounds,
-        "http_calls_available_after_this_plan": max(0, story_first_calls_left(api) - 1),
+        "http_calls_available_after_this_plan": max(0, story_first_calls_left(api) - reserve_calls - 1),
     }
     write_json(out / "planner_input.json", context)
     instructions = (
@@ -331,7 +331,7 @@ def _replace(baseline, proposals, selection, tried_trials, seen_windows, review_
 def run_p3_revision(
     *, baseline_edl, baseline_mp4, trial_edl, trial_mp4, review, proposals, story_plan,
     out_dir, api=None, render=None, review_replacement=None, prior_feedback=(), max_rounds=1,
-    resume_trim=None, max_local_trims=None,
+    resume_trim=None, max_local_trims=None, reserve_calls=0,
 ):
     """Continue a source-bound, rendered trial. Only the P3 review preview can change."""
     if not 1 <= max_rounds <= MAX_P3_ROUNDS:
@@ -405,7 +405,7 @@ def run_p3_revision(
         report["rounds"].append(rec)
         trim_limit_reached = local_trim_only and len(previews) - 1 >= max_local_trims
         if caption is None:
-            if api is not None and story_first_calls_left(api) < (1 if local_trim_only else 2):
+            if api is not None and story_first_calls_left(api) - reserve_calls < (1 if local_trim_only else 2):
                 report["stop_reason"] = "TRIM_LIMIT" if trim_limit_reached else "API_BUDGET"
                 break
             try:
@@ -431,7 +431,7 @@ def run_p3_revision(
         if local_trim_only and not caption["observations"]:
             report["stop_reason"] = "CAPTION_UNAVAILABLE"
             break
-        if not story_first_calls_left(api):
+        if story_first_calls_left(api) <= reserve_calls:
             report["stop_reason"] = "API_BUDGET"
             break
         actions = _plan(
@@ -444,6 +444,7 @@ def run_p3_revision(
             }, out=out, remaining_rounds=(max_local_trims - (len(previews) - 1)
                                          if local_trim_only else max_rounds - index),
             local_trim_only=local_trim_only,
+            reserve_calls=reserve_calls,
         )
         if not actions:
             report["stop_reason"] = "NO_STRUCTURED_PLANNER_ACTION"
@@ -470,7 +471,8 @@ def run_p3_revision(
                 if kind == "TRIM":
                     revised, intents = _trim(edl, action, bounds)
                 calls_needed = 1 if local_trim_only else 3 if kind == "REPLACE" else 2
-                if render is None or index >= review_round_limit or story_first_calls_left(api) < calls_needed:
+                if (render is None or index >= review_round_limit
+                        or story_first_calls_left(api) - reserve_calls < calls_needed):
                     raise ValueError("no_round_or_budget_for_render_and_followup")
                 next_bounds, next_review = bounds, review
                 if kind == "REPLACE":

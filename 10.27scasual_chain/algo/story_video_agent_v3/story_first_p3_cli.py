@@ -58,6 +58,8 @@ def main(argv=None):
     parser.add_argument("--max-rounds", type=int, default=1, choices=range(1, MAX_P3_ROUNDS + 1))
     parser.add_argument("--max-local-trims", type=int, choices=range(MAX_P3_ROUNDS + 1),
                         help="Default-accept P3 mode with up to this many applied trims")
+    parser.add_argument("--outer-rounds", type=int, choices=range(1, 4),
+                        help="Compare V3-R and the requested Story-First rounds from the archived first cut")
     parser.add_argument("--max-calls", type=int, default=2)
     parser.add_argument("--max-cost-usd", type=float, default=0.05)
     parser.add_argument("--enable-real-api", action="store_true")
@@ -65,12 +67,18 @@ def main(argv=None):
     args = parser.parse_args(argv)
     if bool(args.resume_trim_artifacts) != bool(args.resume_mp4):
         parser.error("--resume-trim-artifacts and --resume-mp4 must be supplied together")
+    if args.outer_rounds is not None and not args.resume_trim_artifacts:
+        parser.error("--outer-rounds requires the selected trim checkpoint")
+    if args.outer_rounds and args.outer_rounds > 1 and not (args.source_mp4 and args.events_json):
+        parser.error("continued rounds require the original source video and enriched events")
 
     api, render, review_replacement = None, None, None
+    max_calls = (24 if args.outer_rounds else
+                 2 * args.max_local_trims + 1 if args.max_local_trims is not None else
+                 3 * args.max_rounds)
     if args.enable_real_api and (
         not args.i_approve_budget or os.environ.get("STORY_API_ENABLE") != "1"
-        or not 2 <= args.max_calls <= (2 * args.max_local_trims + 1
-                                      if args.max_local_trims else 3 * args.max_rounds)
+        or not 1 <= args.max_calls <= max_calls
         or not math.isfinite(args.max_cost_usd) or args.max_cost_usd <= 0
         or not args.source_mp4 or not args.events_json
     ):
@@ -95,32 +103,51 @@ def main(argv=None):
                 args.resume_trim_artifacts, args.resume_mp4, baseline, args.baseline_mp4,
                 trial, args.trial_mp4,
             )
-        if args.enable_real_api:
+        source_sha, events, teams, first_live_store = pool["source_sha256"], [], None, {}
+        if args.source_mp4 and args.events_json:
             source_sha = sha256_file(args.source_mp4)
             if not source_sha or source_sha != pool.get("source_sha256"):
                 raise ValueError("source_video_does_not_match_search_pool")
             document = read_json(args.events_json)
             events = load_match_events(match_json=None, events_json=args.events_json)
+            teams = document.get("teams") if isinstance(document, dict) else None
+            first_live_store = load_evidence_store(args.first_live_evidence_dir)
+        if args.enable_real_api:
             api = build_capped_provider(max_calls=args.max_calls, max_cost_usd=args.max_cost_usd)
 
             def render(edl, out_dir):
                 return _render_edl(plan=plan, video=args.source_mp4, edl=edl,
                                    out_dir=out_dir).get("story_clean")
 
-            review_replacement = p3_replacement_review(
-                api=api, source_mp4=args.source_mp4, source_sha=source_sha,
-                source_events=events, teams=document.get("teams") if isinstance(document, dict) else None,
-                first_live_store=load_evidence_store(args.first_live_evidence_dir),
-                audit_dir=args.out_dir / "replacement_source_reviews",
-            )
+            if args.max_local_trims is None and args.outer_rounds is None:
+                review_replacement = p3_replacement_review(
+                    api=api, source_mp4=args.source_mp4, source_sha=source_sha,
+                    source_events=events, teams=teams, first_live_store=first_live_store,
+                    audit_dir=args.out_dir / "replacement_source_reviews",
+                )
         report = run_p3_revision(
             baseline_edl=baseline, baseline_mp4=args.baseline_mp4,
             trial_edl=trial, trial_mp4=args.trial_mp4, review=review,
             proposals=pool["proposals"], story_plan=plan, out_dir=args.out_dir,
-            api=api, render=render, review_replacement=review_replacement,
+            api=api if args.outer_rounds is None else None,
+            render=render, review_replacement=review_replacement,
             prior_feedback=[read_json(path) for path in args.history], max_rounds=args.max_rounds,
-            resume_trim=resume_trim, max_local_trims=args.max_local_trims,
+            resume_trim=resume_trim,
+            max_local_trims=MAX_P3_ROUNDS if args.outer_rounds else args.max_local_trims,
         )
+        if args.outer_rounds is not None:
+            from .story_first_outer import continue_story_first
+
+            outer = continue_story_first(
+                baseline_edl=baseline, baseline_mp4=args.baseline_mp4, first_p3_dir=args.out_dir,
+                first_p3=report, first_review=review, story_plan=plan,
+                source_mp4=args.source_mp4, source_sha=source_sha, events=events, teams=teams,
+                first_live_store=first_live_store, api=api, render=render,
+                max_outer_rounds=args.outer_rounds, out_dir=args.out_dir / "outer",
+                data_tier="EVENT_DERIVED_FROM_PERMITTED_INPUT",
+            )
+            print(json.dumps(outer, ensure_ascii=False, indent=2))
+            return 0
     except (KeyError, TypeError, ValueError, OSError, RuntimeError) as exc:
         parser.exit(2, f"P3 setup failed: {exc}\n")
     print(json.dumps({k: report[k] for k in (

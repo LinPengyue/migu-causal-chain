@@ -50,3 +50,29 @@ STORY_API_ENABLE=1 PYTHONPATH=algo python -m story_video_agent_v3.story_first_p3
 ```
 
 比较清单在 `p3_revision.json` 的 `edit_count_comparison`。Caption 审计按前接点、桥段本身和后接点记录描述是否存在，后接点最多覆盖 15 秒且限制在相邻片段内。接续运行复用第 1 次修订的成片，无需重新生成候选或重渲第 1 次修订。
+
+## 新版 P3 与 P3.5 外层对照
+
+先在 Cursor 服务器上运行专项回归。三次有效 TRIM、缺少 Caption 时保留试剪、第二轮新增成功以及回放标注阻断都由测试覆盖。
+
+```bash
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=algo python -m pytest -q \
+  tests/test_v3a_story_first_p3.py tests/test_v3a_story_first_closed_loop.py
+```
+
+复用本页前两段中的 `p3_args` 定义，其中包含已选 H5 的 checkpoint 和 MP4。命令会核对三份输入视频与归档记录。先以零 HTTP 复核 V3-R 与第一轮，随后在相同输入上只运行第二轮。沿用原 P1 Flash、Revision Planner 和 Vision 配置。
+
+```bash
+p3_run_name=$(date +%Y%m%d_%H%M%S)
+PYTHONPATH=algo python -m story_video_agent_v3.story_first_p3_cli "${p3_args[@]}" \
+  --outer-rounds 1 --out-dir "/tmp/story_first_h5_checkpoint_$p3_run_name"
+
+STORY_API_ENABLE=1 PYTHONPATH=algo python -m story_video_agent_v3.story_first_p3_cli "${p3_args[@]}" \
+  --source-mp4 "$p3_source" --events-json "$p3_events" \
+  --outer-rounds 2 --enable-real-api --i-approve-budget --max-calls 12 --max-cost-usd 0.05 \
+  --out-dir "/tmp/story_first_outer_h5_$p3_run_name"
+```
+
+以 `outer/story_first_outer_comparison.json` 的三行分别对应 V3-R、第一轮和第二轮。提交对照时提供每行时长、视频路径和 SHA-256、第二轮 P1 候选数、实际新增窗口、P2 否决原因或 P3 局部调整记录。第二轮若没有可用新素材，就记录停止原因和沿用的第一轮 SHA-256。只有执行重渲且通过对齐的局部 TRIM 计入 `local_trims`。一次外层尝试计入 `attempted_outer_rounds`，实际新增计入 `accepted_changes`。三列都是预览比较，正式交付入口继续使用原有门禁。
+
+从 V3-R 新开端到端运行时，`story_e2e_cli --enable-story-first --story-first-outer-rounds 2` 会在首轮 P3 接受后运行 P3.5，并在 `story_first_outer/` 产出同结构的对照。

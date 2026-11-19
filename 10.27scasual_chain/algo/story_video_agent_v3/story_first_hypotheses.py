@@ -363,6 +363,7 @@ def model_messages(prepared: Mapping[str, Any], max_hypotheses: int = 5) -> List
         "generation_strategy": "interval_local_patterns_then_story_combinations",
         "anchor_transition_is_context_not_causal_proof": True,
         "frozen_story_plan": prepared["story_plan_reference"],
+        **({"revision_context": prepared["revision_context"]} if "revision_context" in prepared else {}),
         # Full coverage: all real IDs and their labels. Rich context is a
         # documented subset, never the only universe of potential explanations.
         "full_event_inventory": prepared["event_inventory"],

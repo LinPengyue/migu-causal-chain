@@ -103,6 +103,7 @@ class StoryE2EInputs:
     # Never sends paid HTTP, changes EDL, or bypasses legacy Planner/Verifier.
     story_first_artifacts_dir: Optional[Path] = None
     enable_story_first: bool = False
+    story_first_outer_rounds: int = 1
     causal_atoms_json: Optional[Path] = None
     independent_atoms_json: Optional[Path] = None
     match_id: Optional[str] = None
@@ -470,6 +471,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             "phase10_explore": bool(inp.phase10_explore),
             "phase10_explore_fixture": bool(inp.phase10_explore_fixture is not None),
             "enable_story_first": inp.enable_story_first,
+            "story_first_outer_rounds": inp.story_first_outer_rounds,
             "story_first_artifacts_dir": (
                 str(inp.story_first_artifacts_dir)
                 if inp.story_first_artifacts_dir else None
@@ -801,6 +803,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
     story_first_tried: set[str] = set()
     story_first_windows: set[tuple] = set()
     if inp.enable_story_first:
+        from .story_first_outer import OUTER_CALL_RESERVE, continue_story_first
         from .story_first_revision import bind_story_first_trial, review_story_first_trial
         from .story_first_search import discover_story_first, story_first_calls_left
         from .story_paid_eval import provider_usage
@@ -1420,7 +1423,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 source_sha=source_sha, out_dir=out / "story_first",
                 api=paid_api, artifacts_dir=inp.story_first_artifacts_dir,
                 # Leave room for initial planning, source review, Caption and P3 planning.
-                reserve_calls=4,
+                reserve_calls=4 + OUTER_CALL_RESERVE * (inp.story_first_outer_rounds - 1),
                 data_tier=("HUMAN_ATOM_ENRICHED_DEV" if inp.independent_atoms_json
                            else "EVENT_DERIVED_FROM_PERMITTED_INPUT"),
             )
@@ -2098,7 +2101,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             story_first_intents and edl_changed and candidate_mp4 and candidate_mp4.is_file()
         )
         if p3_rendered_trial and paid_api is not None:
-            from .story_first_p3 import p3_replacement_review, run_p3_revision
+            from .story_first_p3 import MAX_P3_ROUNDS, run_p3_revision
 
             def render_p3(edl, directory):
                 return _render_edl(plan=plan, video=inp.source_mp4, edl=edl,
@@ -2112,17 +2115,25 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     review=story_first_review, proposals=story_first_proposals, story_plan=plan,
                     out_dir=p3_dir, api=paid_api, render=render_p3,
                     prior_feedback=story_first_feedback,
-                    max_rounds=min(int(inp.max_rounds), MAX_ROUNDS) - round_idx + 1,
-                    review_replacement=p3_replacement_review(
-                        api=paid_api, source_mp4=inp.source_mp4, source_sha=source_sha,
-                        first_live_store=first_live_evidence_store, source_events=permitted_events,
-                        teams=teams, audit_dir=p3_dir / "replacement_source_reviews",
-                    ),
+                    max_local_trims=MAX_P3_ROUNDS,
+                    reserve_calls=OUTER_CALL_RESERVE * (inp.story_first_outer_rounds - 1),
                 )
             except (ValueError, OSError) as exc:
                 p3_result = {"stop_reason": "P3_INPUT_ERROR", "error": str(exc),
                              "preview_only": True, "release_authorized": False}
                 write_json(p3_dir / "p3_revision.json", p3_result)
+            if p3_result.get("preview_accepted"):
+                outer = continue_story_first(
+                    baseline_edl=working_edl, baseline_mp4=working_mp4, first_p3_dir=p3_dir,
+                    first_p3=p3_result, first_review=story_first_review, story_plan=plan,
+                    source_mp4=inp.source_mp4, source_sha=source_sha, events=permitted_events,
+                    teams=teams, first_live_store=first_live_evidence_store,
+                    api=paid_api, render=render_p3, out_dir=out / "story_first_outer",
+                    max_outer_rounds=inp.story_first_outer_rounds,
+                    data_tier=("HUMAN_ATOM_ENRICHED_DEV" if inp.independent_atoms_json
+                               else "EVENT_DERIVED_FROM_PERMITTED_INPUT"),
+                )
+                audit["story_first_outer"] = outer
             usage = provider_usage(paid_api)
             http_calls = int(usage.get("http_attempts") or http_calls)
             est_cost = float(usage.get("est_cost_usd_real") or est_cost)

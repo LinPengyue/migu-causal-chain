@@ -75,7 +75,7 @@ def _proposals(prepared, hypotheses, interval_id):
 
 def discover_story_first(*, edl, story_plan, events, source_sha, out_dir,
                          api=None, artifacts_dir=None, reserve_calls=3,
-                         data_tier="RAW_EVENT_DERIVED"):
+                         data_tier="RAW_EVENT_DERIVED", revision_context=None):
     """Generate proposals from adjacent anchors; keep scoring in offline research.
 
     The former runtime scorer call is commented below for reference.
@@ -112,6 +112,8 @@ def discover_story_first(*, edl, story_plan, events, source_sha, out_dir,
                 edl, events, story_plan=story_plan, from_segment_id=left, to_segment_id=right,
             )
             prepared["data_tier"] = data_tier
+            if revision_context is not None:
+                prepared["revision_context"] = revision_context
         except ValueError as exc:
             entry.update(status="INVALID_INTERVAL", reason=str(exc))
             continue
