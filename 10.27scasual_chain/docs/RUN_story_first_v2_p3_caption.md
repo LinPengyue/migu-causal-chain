@@ -76,3 +76,23 @@ STORY_API_ENABLE=1 PYTHONPATH=algo python -m story_video_agent_v3.story_first_p3
 以 `outer/story_first_outer_comparison.json` 的三行分别对应 V3-R、第一轮和第二轮。提交对照时提供每行时长、视频路径和 SHA-256、第二轮 P1 候选数、实际新增窗口、P2 否决原因或 P3 局部调整记录。第二轮若没有可用新素材，就记录停止原因和沿用的第一轮 SHA-256。只有执行重渲且通过对齐的局部 TRIM 计入 `local_trims`。一次外层尝试计入 `attempted_outer_rounds`，实际新增计入 `accepted_changes`。三列都是预览比较，正式交付入口继续使用原有门禁。
 
 从 V3-R 新开端到端运行时，`story_e2e_cli --enable-story-first --story-first-outer-rounds 2` 会在首轮 P3 接受后运行 P3.5，并在 `story_first_outer/` 产出同结构的对照。
+
+## B 场从首次回放拒绝续跑
+
+从本目录执行，沿用已有的模型环境。P1 复用首次运行的两个区间，经原片、EDL 和提案校验后读入其 P2 回放拒绝。更新后的 H1 与其余候选一并交给 Planner，随后重新走 P2 Verifier。
+
+```bash
+b_root=/data2/lpy1/_story_va_outputs/v3/plan2/closed_loop_B_osasuna_celta
+b_prior=/tmp/story_first_outer_osasuna_celta_20261119_161929
+b_out="/tmp/story_first_outer_osasuna_celta_replay_$(date +%Y%m%d_%H%M%S)"
+STORY_API_ENABLE=1 PYTHONPATH=algo python -m story_video_agent_v3.story_e2e_cli \
+  --match-json 'data/交付_out/10月27日_25-26赛季西甲第10轮_奥萨苏纳VS塞尔塔_国语.json' \
+  --events-json "$b_root/01_enrich/events_enriched.json" \
+  --source-mp4 '/mnt/data4/migu/10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语.mp4' \
+  --phase5-dir "$b_root/04_phase5_p1_polish" --out-dir "$b_out" \
+  --story-first-artifacts-dir "$b_prior/story_first" \
+  --enable-story-first --story-first-outer-rounds 2 --max-rounds 2 --phase8-paid-multi-round \
+  --enable-real-api --i-approve-budget --max-calls 16 --max-cost-usd 0.05 --no-smoke-render
+```
+
+核对 `story_first/story_first_pool.json` 的 `replay_revision_history` 里有 H1 替换记录。Planner 输入在 `02_round_01/paid_api/story_first_replay_replan/planner_input.json`，首次运行产生新回放拒绝时也可检查 `02_round_02`。回传 Planner 的选择、P2 结果，以及有产出时的 `story_first_outer/story_first_outer_comparison.json`。

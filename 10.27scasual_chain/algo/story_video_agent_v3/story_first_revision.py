@@ -12,6 +12,22 @@ from .story_timeline import _num, active_cut_rows
 from .story_first_hypotheses import _RELATIONS
 
 
+def _without_replay(start, end, exclusions):
+    """Subtract the union of annotated source intervals, retaining source order."""
+    pieces = []
+    cursor = start
+    for left, right in sorted(exclusions):
+        left, right = max(start, left), min(end, right)
+        if right <= cursor or left >= right:
+            continue
+        if left - cursor >= MIN_BOUND_SPAN:
+            pieces.append((cursor, left))
+        cursor = right
+    if end - cursor >= MIN_BOUND_SPAN:
+        pieces.append((cursor, end))
+    return pieces
+
+
 def bind_story_first_trial(selection, proposals, edl, tried):
     """Resolve one Planner selection into exact, chronological source windows."""
     by_id = {p["proposal_id"]: p for p in proposals}
@@ -24,6 +40,7 @@ def bind_story_first_trial(selection, proposals, edl, tried):
     seen_proposals = set()
     events, claims, windows = {}, [], []
     story_context = []
+    replay_exclusions = {}
     existing_ids = {str(row.get("segment_id") or "") for row in edl}
     for entry in entries:
         if not isinstance(entry, Mapping):
@@ -46,6 +63,13 @@ def bind_story_first_trial(selection, proposals, edl, tried):
         allowed = {e["event_id"]: e for e in p["events"]}
         if not set(ids) <= allowed.keys() or len(ids) != len(set(ids)):
             raise ValueError("unknown_or_duplicate_story_first_event_id:" + pid)
+        edits = [edit for edit in p.get("replay_window_edits", [])
+                 if set(ids) & set(edit["event_ids"])]
+        # A middle cut produces one proposal with multiple source pieces.
+        # Keep its surviving events together when this portion is selected.
+        ids = list(dict.fromkeys([
+            *ids, *(eid for edit in edits for eid in edit["event_ids"] if eid in allowed),
+        ]))
         relations = {r["relation_id"]: r for r in p["relations"]}
         if not set(relation_ids) <= relations.keys() or len(set(relation_ids)) != len(relation_ids):
             raise ValueError("unknown_or_duplicate_story_first_relation_id:" + pid)
@@ -58,6 +82,9 @@ def bind_story_first_trial(selection, proposals, edl, tried):
         for eid in ids:
             e = allowed[eid]
             events[eid] = e
+            event_edits = [edit for edit in edits if eid in edit["event_ids"]]
+            for edit in event_edits:
+                replay_exclusions.setdefault(eid, []).extend(edit["removed_source_windows_sec"])
             if e["known_replay_or_slowmo"]:
                 raise ValueError("event_is_annotated_replay_or_slowmo:" + eid)
             t = e["source_pts_sec"]
@@ -71,9 +98,12 @@ def bind_story_first_trial(selection, proposals, edl, tried):
                                 "source_pts_end": float(containing["media_out"]),
                                 "event_ids": [eid], "existing_segment_id": containing["segment_id"]})
                 continue
+            preferred_start, preferred_end = (
+                event_edits[-1]["original_source_window_sec"] if event_edits else (t - 8, t + 8)
+            )
             for before, after in zip(rows, rows[1:]):
-                start = round(max(float(before["media_out"]), lo, t - 8), 3)
-                end = round(min(float(after["media_in"]), hi, t + 8), 3)
+                start = round(max(float(before["media_out"]), lo, preferred_start), 3)
+                end = round(min(float(after["media_in"]), hi, preferred_end), 3)
                 if start <= t <= end and end - start >= MIN_BOUND_SPAN:
                     windows.append({
                         "event_ids": [eid], "source_pts_start": start, "source_pts_end": end,
@@ -134,6 +164,23 @@ def bind_story_first_trial(selection, proposals, edl, tried):
                 raise ValueError("overlapping_events_exceed_one_clip_window")
         else:
             merged.append(window)
+    if replay_exclusions:
+        pieces = []
+        for window in merged:
+            excluded = [span for eid in window["event_ids"] for span in replay_exclusions.get(eid, [])]
+            if window.get("existing_segment_id") or not excluded:
+                pieces.append(window)
+                continue
+            retained = _without_replay(window["source_pts_start"], window["source_pts_end"], excluded)
+            for start, end in retained:
+                pieces.append({
+                    **window, "source_pts_start": start, "source_pts_end": end,
+                    "event_ids": [eid for eid in window["event_ids"]
+                                  if start <= events[eid]["source_pts_sec"] < end],
+                })
+        if set(events) != {eid for piece in pieces for eid in piece["event_ids"]}:
+            raise ValueError("selected_event_removed_with_replay")
+        merged = pieces
     if all(w.get("existing_segment_id") for w in merged):
         raise ValueError("selected_story_adds_no_source_window")
     # Same events, relation topology and bound windows constitute the same trial.
@@ -160,12 +207,7 @@ def bind_story_first_trial(selection, proposals, edl, tried):
 NO_ANNOTATED_REPLAY_OVERLAP = "NO_ANNOTATED_REPLAY_OVERLAP"
 
 
-def review_story_first_trial(trial, *, api, source_mp4, source_sha, out_dir,
-                             first_live_store, source_events=(), teams=None):
-    """Screen story footage for an isolated trial; record release evidence separately."""
-    from .story_first_video_review import observe_story_first_trial, story_first_event_context
-
-    feedback = []
+def _annotated_replay_spans(source_events):
     replay_events = []
     for event in source_events:
         live = _live_credibility(event)
@@ -182,6 +224,85 @@ def review_story_first_trial(trial, *, api, source_mp4, source_sha, out_dir,
             # A replay-labelled point can block a window containing that point.
             # Default event padding is not an explicitly annotated replay span.
             replay_events.append((event.get("event_id"), span[1], span[1]))
+    return replay_events
+
+
+def story_first_proposals_sha256(proposals):
+    return hashlib.sha256(json.dumps(proposals, sort_keys=True).encode()).hexdigest()
+
+
+def replace_replay_proposals(pool, trial, review, source_events):
+    """Replace the selectable proposals; retain the original trial in audit history."""
+    if review.get("status") != "NEEDS_REVISION" or not trial:
+        return []
+    blocked = {
+        f["window_id"] for f in review.get("feedback", [])
+        if f.get("status") == "REPLAY_CONFIRMED"
+        and f.get("reason") == "window_overlaps_replay_or_slowmo_annotation"
+    }
+    if not blocked:
+        return []
+    spans = _annotated_replay_spans(source_events)
+    changes, updated = [], []
+    for proposal in pool["proposals"]:
+        pid = proposal["proposal_id"]
+        revised = dict(proposal)
+        ids = {e["event_id"] for e in proposal["events"]}
+        discarded = set()
+        edits = []
+        if pid in trial["proposal_ids"]:
+            for window in trial["windows"]:
+                affected = ids & set(window["event_ids"])
+                if not affected or window["candidate_id"] not in blocked:
+                    continue
+                start, end = window["source_pts_start"], window["source_pts_end"]
+                affected.update(e["event_id"] for e in proposal["events"]
+                                if start <= e["source_pts_sec"] < end)
+                overlap = [(lo, hi) for _, lo, hi in spans
+                           if (start <= lo < end if lo == hi else lo < end and hi > start)]
+                if not overlap:
+                    continue
+                # Round outwards because the EDL uses millisecond source bounds.
+                removed = sorted({(math.floor(lo * 1000) / 1000, math.ceil(hi * 1000) / 1000)
+                                  for lo, hi in overlap if lo < hi})
+                kept = [] if any(lo == hi for lo, hi in overlap) else _without_replay(start, end, removed)
+                removed_events = {e["event_id"] for e in proposal["events"] if e["event_id"] in affected
+                                  and not any(lo <= e["source_pts_sec"] < hi for lo, hi in kept)}
+                discarded.update(removed_events)
+                edits.append({
+                    "event_ids": sorted(affected),
+                    "removed_event_ids": sorted(removed_events),
+                    "original_source_window_sec": [start, end],
+                    "removed_source_windows_sec": removed,
+                    "retained_source_windows_sec": kept,
+                })
+        if edits:
+            revised["events"] = [e for e in proposal["events"] if e["event_id"] not in discarded]
+            revised["relations"] = [r for r in proposal["relations"]
+                                    if not discarded & {r["source_event_id"], r["target_event_id"]}]
+            revised["replay_window_edits"] = [*proposal.get("replay_window_edits", []), *edits]
+            changes.append({"proposal_id": pid,
+                            "status": "REPLACED" if revised["events"] else "REMOVED",
+                            "removed_event_ids": sorted(discarded), "window_edits": edits})
+        if revised["events"]:
+            updated.append(revised)
+    if changes:
+        if "replay_base_proposals_sha256" not in pool:
+            pool["replay_base_proposals_sha256"] = story_first_proposals_sha256(pool["proposals"])
+        pool["proposals"] = updated
+        pool.setdefault("replay_revision_history", []).append({
+            "trial": trial, "review": review, "changes": changes,
+        })
+    return changes
+
+
+def review_story_first_trial(trial, *, api, source_mp4, source_sha, out_dir,
+                             first_live_store, source_events=(), teams=None):
+    """Screen story footage for an isolated trial; record release evidence separately."""
+    from .story_first_video_review import observe_story_first_trial, story_first_event_context
+
+    feedback = []
+    replay_events = _annotated_replay_spans(source_events)
 
     candidates = []
     for w in trial["windows"]:

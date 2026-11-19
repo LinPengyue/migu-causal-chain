@@ -145,6 +145,8 @@ def discover_story_first(*, edl, story_plan, events, source_sha, out_dir,
                                      candidate_count=len(items), artifact_sha256=provenance)
                         proposals.extend(_proposals(prepared, items, interval_id))
                         write_json(directory / "imported_evidence.json", imported)
+                        write_json(directory / "story_hypotheses.json",
+                                   _read_artifact(cached, "story_hypotheses.json"))
                         continue
                     entry["artifact_error"] = imported["reason"]
             except (OSError, ValueError) as exc:
@@ -178,6 +180,24 @@ def discover_story_first(*, edl, story_plan, events, source_sha, out_dir,
         ).hexdigest(),
         "intervals": intervals, "proposals": proposals,
     }
+    if artifacts_dir is not None and source_sha:
+        from .story_first_revision import replace_replay_proposals, story_first_proposals_sha256
+
+        try:
+            prior = _read_artifact(artifacts_dir, "story_first_pool.json")
+            if all(prior.get(k) == result[k] for k in ("source_sha256", "initial_edl_sha256")):
+                history = []
+                if prior.get("replay_base_proposals_sha256") == story_first_proposals_sha256(proposals):
+                    history = prior.get("replay_revision_history") or []
+                elif not prior.get("replay_revision_history") and prior.get("proposals") == proposals:
+                    # Reuse the recorded P2 rejection when starting from a pre-repair run.
+                    record = _read_artifact(artifacts_dir.parent / "02_round_01", "story_first_trial.json")
+                    history = [record]
+                for record in history:
+                    replace_replay_proposals(result, record["trial"], record["review"], events)
+        except (OSError, ValueError, KeyError, TypeError):
+            # A generation-only archive has no P2 result to restore.
+            pass
     out_dir.mkdir(parents=True, exist_ok=True)
     write_json(out_dir / "story_first_pool.json", result)
     return result

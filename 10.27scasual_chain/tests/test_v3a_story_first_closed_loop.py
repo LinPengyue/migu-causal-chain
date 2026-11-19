@@ -451,8 +451,79 @@ def test_multi_clip_story_in_one_gap_preserves_source_order(tmp_path, monkeypatc
     ]
 
 
-@pytest.mark.parametrize("outer_rounds, replay", [(1, False), (2, False), (2, True)])
-def test_e2e_rendered_story_first_routes_to_caption_p3(tmp_path, monkeypatch, outer_rounds, replay):
+@pytest.mark.parametrize("replay_bounds, expected", [
+    ((19, 27), [(27, 38)]),
+    ((34, 40), [(22, 34)]),
+    ((33, 35), [(22, 33), (35, 38)]),
+])
+def test_replay_replacement_persists_and_rebinds(
+    tmp_path, monkeypatch, replay_bounds, expected,
+):
+    from story_video_agent_v3 import story_first_revision as revision
+
+    monkeypatch.setenv("STORY_FIRST_LLM_MODEL", "DeepSeek-V4.1-Flash")
+    replay = {
+        "event_id": "broadcast_replay", "event_type": "segment",
+        "media_time": {"event_time_sec": sum(replay_bounds) / 2,
+                       "start_time_sec": replay_bounds[0], "end_time_sec": replay_bounds[1]},
+        "video_context": {"broadcast_phase": "REPLAY"},
+    }
+    source_events = [*EVENTS, replay]
+    class API(_DiscoveryAPI):
+        def chat(self, **kwargs):
+            self._http_attempts += 1
+            context = json.loads(kwargs["messages"][1]["content"])
+            result = _hypotheses([e["event_id"] for e in context["full_event_inventory"]
+                                  if e["event_id"] != replay["event_id"]])
+            return {"provider_mode": "real", "content": json.dumps(result), "finish_reason": "stop"}
+
+    prior_run = tmp_path / "prior"
+    prior = prior_run / "story_first"
+    pool = search.discover_story_first(edl=EDL, story_plan=PLAN, events=source_events,
+                                      source_sha="a" * 64, out_dir=prior, api=API())
+    original = pool["proposals"][0]
+    untouched = pool["proposals"][1]
+    selection = {"selections": [{"proposal_id": original["proposal_id"], "event_ids": ["x"]}]}
+    trial = revision.bind_story_first_trial(selection, pool["proposals"], EDL, set())
+    declined = revision.review_story_first_trial(
+        trial, api=None, source_mp4=None, source_sha="a" * 64,
+        out_dir=tmp_path / "rejected", first_live_store={}, source_events=source_events,
+    )
+    assert declined["feedback"][0]["status"] == "REPLAY_CONFIRMED"
+    _write(prior_run / "02_round_01/story_first_trial.json", {"trial": trial, "review": declined})
+    for n in range(2):
+        next_dir = tmp_path / f"resume_{n}" / "story_first"
+        updated = search.discover_story_first(edl=EDL, story_plan=PLAN, events=source_events,
+                                              source_sha="a" * 64, out_dir=next_dir, artifacts_dir=prior)
+        assert updated["proposals"][1] == untouched
+        assert updated["proposals"][0]["proposal_id"] == original["proposal_id"]
+        assert len(updated["replay_revision_history"]) == 1
+        assert [i["status"] for i in updated["intervals"]] == ["REUSED", "REUSED"]
+        prior = next_dir
+    rebound = revision.bind_story_first_trial(selection, updated["proposals"], EDL, {trial["trial_id"]})
+    assert [(w["source_pts_start"], w["source_pts_end"]) for w in rebound["windows"]] == expected
+    monkeypatch.setattr(video, "observe_story_first_trial", lambda *a, **kw: {
+        "feedback": [], "event_observations": [],
+    })
+    reviewed = revision.review_story_first_trial(
+        rebound, api=None, source_mp4=None, source_sha="a" * 64,
+        out_dir=tmp_path / "reviewed", first_live_store={}, source_events=source_events,
+    )
+    assert reviewed["status"] == "READY_FOR_TRIAL"
+    assert len(reviewed["intents"]) == len(expected)
+    from story_video_agent_v3.self_revise_agent import apply_candidate_revision
+    revised, applied = apply_candidate_revision(EDL, reviewed["intents"], [])
+    assert not applied["rejected"]
+    assert [(w["media_in"], w["media_out"]) for w in revised
+            if w["segment_id"].startswith("seg_story_first_")] == expected
+
+
+@pytest.mark.parametrize("outer_rounds, replay, initial_replay", [
+    (1, False, False), (2, False, False), (2, True, False), (1, False, True),
+])
+def test_e2e_rendered_story_first_routes_to_caption_p3(
+    tmp_path, monkeypatch, outer_rounds, replay, initial_replay,
+):
     from story_video_agent_v3 import story_first_outer as outer
     from story_video_agent_v3 import story_first_p3 as p3
     from story_video_agent_v3 import story_paid_eval as paid
@@ -467,9 +538,10 @@ def test_e2e_rendered_story_first_routes_to_caption_p3(tmp_path, monkeypatch, ou
     (phase5 / "story_clean.mp4").write_bytes(b"baseline fixture")
     events = [{**e, "annotation_quality": {"annotator_confidence": 1.0},
                "notes": "human annotation"} for e in EVENTS]
-    if replay:
+    if replay or initial_replay:
+        left, right = (42, 46) if initial_replay else (127, 129)
         events.append({"event_id": "replay", "event_type": "segment",
-                       "media_time": {"event_time_sec": 127, "start_time_sec": 127, "end_time_sec": 129},
+                       "media_time": {"event_time_sec": left, "start_time_sec": left, "end_time_sec": right},
                        "video_context": {"broadcast_phase": "REPLAY"}})
     match = _write(tmp_path / "events.json", {"events": events})
     roles = []
@@ -501,8 +573,9 @@ def test_e2e_rendered_story_first_routes_to_caption_p3(tmp_path, monkeypatch, ou
                 content = _hypotheses([e["event_id"] for e in context["full_event_inventory"]
                                        if e["event_id"] != "replay"])
             elif role == "story_first_p35_planner":
+                pid, ids = ("interval_01:H1", ["x", "y"]) if initial_replay else ("interval_02:H1", ["w"])
                 content = {"selection": {"selections": [
-                    {"proposal_id": "interval_02:H1", "event_ids": ["w"]},
+                    {"proposal_id": pid, "event_ids": ids},
                 ]}}
             elif role == "story_first_p3_caption":
                 parts = kwargs["messages"][0]["content"]
@@ -558,9 +631,17 @@ def test_e2e_rendered_story_first_routes_to_caption_p3(tmp_path, monkeypatch, ou
         match_json=match, source_mp4=source, out_dir=tmp_path / "run", phase5_dir=phase5,
         enable_story_first=True, story_first_artifacts_dir=tmp_path / "cache",
         story_first_outer_rounds=outer_rounds,
-        enable_real_api=True, i_approve_budget=True, smoke_render=False, max_rounds=1,
+        enable_real_api=True, i_approve_budget=True, smoke_render=False,
+        max_rounds=2 if initial_replay else 1, phase8_paid_multi_round=initial_replay,
     ))
     roles = roles[roles.index("initial_planner"):]
+    if initial_replay:
+        assert roles[1] == "story_first_p35_planner"
+        roles.pop(1)
+        assert [r["story_first_trial_status"] for r in audit["rounds"]] == ["NEEDS_REVISION", "READY_FOR_TRIAL"]
+        planner_path = tmp_path / "run/02_round_02/paid_api/story_first_replay_replan/planner_input.json"
+        reranked = json.loads(planner_path.read_text())["fresh_p1_candidates"]
+        assert reranked[0]["replay_window_edits"][0]["retained_source_windows_sec"] == [[22, 42]]
     assert roles[:4] == ["initial_planner", "existing_source_review",
                          "story_first_p3_caption", "story_first_p3_planner"]
     assert audit["story_first_p3"]["stop_reason"] == "PLANNER_KEEP"
@@ -576,10 +657,18 @@ def test_e2e_rendered_story_first_routes_to_caption_p3(tmp_path, monkeypatch, ou
         assert roles[4:7] == ["story_first_generator", "story_first_generator", "story_first_p35_planner"]
         v2 = continued[0]
         if replay:
-            assert roles[7:] == []
-            assert v2["status"] == "NEEDS_REVISION"
-            assert v1["mp4_sha256"] == v2["mp4_sha256"]
-            assert report["round_history"][-1]["source_feedback"][0]["status"] == "REPLAY_CONFIRMED"
+            assert roles[7:] == ["story_first_p35_planner", "existing_source_review",
+                                 "story_first_p3_caption", "story_first_p3_planner"]
+            assert v2["status"] == "ACCEPTED_PREVIEW"
+            assert v1["mp4_sha256"] != v2["mp4_sha256"]
+            assert report["round_history"][-1]["source_windows_sec"] == [(112, 127)]
+            p2_dir = tmp_path / "run/story_first_outer/round_02"
+            initial = json.loads((p2_dir / "p2_review.json").read_text())
+            planner_input = json.loads((p2_dir / "replay_replan/planner_input.json").read_text())
+            assert initial["review"]["feedback"][0]["status"] == "REPLAY_CONFIRMED"
+            replacement = next(p for p in planner_input["fresh_p1_candidates"]
+                               if p["proposal_id"] == "interval_02:H1")
+            assert replacement["replay_window_edits"][0]["retained_source_windows_sec"] == [[112, 127]]
         else:
             assert roles[7:] == ["existing_source_review", "story_first_p3_caption", "story_first_p3_planner"]
             assert v2["status"] == "ACCEPTED_PREVIEW"

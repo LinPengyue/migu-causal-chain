@@ -803,8 +803,8 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
     story_first_tried: set[str] = set()
     story_first_windows: set[tuple] = set()
     if inp.enable_story_first:
-        from .story_first_outer import OUTER_CALL_RESERVE, continue_story_first
-        from .story_first_revision import bind_story_first_trial, review_story_first_trial
+        from .story_first_outer import OUTER_CALL_RESERVE, _select, continue_story_first
+        from .story_first_revision import bind_story_first_trial, replace_replay_proposals, review_story_first_trial
         from .story_first_search import discover_story_first, story_first_calls_left
         from .story_paid_eval import provider_usage
     previous_narrative_graph: Optional[Dict[str, Any]] = None
@@ -1479,22 +1479,34 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             from .story_paid_eval import provider_usage, run_llm_revision_planner
 
             try:
-                llm_rev = run_llm_revision_planner(
-                    paid_api,
-                    diagnosis=diag,
-                    vlm_critic=vlm_critic or {},
-                    protected_goal_ids=list(diag.get("protected_goal_segment_ids") or []),
-                    audit_dir=round_dir / "paid_api",
-                    feedback_context=fb_ctx,
-                    search_results=search_report,
-                    **({
-                        "story_first_proposals": story_first_proposals,
-                        "story_first_feedback": story_first_feedback,
-                    } if story_first_proposals else {}),
-                    allow_exploratory_proposals=bool(
-                        inp.phase10_explore and round_idx == 1
-                    ),
-                )
+                if story_first_pool and story_first_pool.get("replay_revision_history"):
+                    # The replay replacement requests source review, so use the
+                    # existing selection-only Planner contract for the updated pool.
+                    selection = _select(
+                        paid_api, story_plan=plan, current_edl=working_edl,
+                        proposals=story_first_proposals, history=story_first_feedback or [
+                            row["changes"] for row in story_first_pool["replay_revision_history"]
+                        ], out=round_dir / "paid_api" / "story_first_replay_replan",
+                    ) if story_first_proposals else None
+                    llm_rev = {"ok": True, "provider_mode": "real", "decision": "KEEP",
+                               "story_first_trial": selection, "revision_intents": []}
+                else:
+                    llm_rev = run_llm_revision_planner(
+                        paid_api,
+                        diagnosis=diag,
+                        vlm_critic=vlm_critic or {},
+                        protected_goal_ids=list(diag.get("protected_goal_segment_ids") or []),
+                        audit_dir=round_dir / "paid_api",
+                        feedback_context=fb_ctx,
+                        search_results=search_report,
+                        **({
+                            "story_first_proposals": story_first_proposals,
+                            "story_first_feedback": story_first_feedback,
+                        } if story_first_proposals else {}),
+                        allow_exploratory_proposals=bool(
+                            inp.phase10_explore and round_idx == 1
+                        ),
+                    )
             except Exception as exc:  # noqa: BLE001
                 llm_rev = {"ok": False, "error": f"{type(exc).__name__}:{exc}"}
             write_json(round_dir / "llm_revision_planner.json", llm_rev or {})
@@ -1651,6 +1663,12 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                         teams=teams,
                     )
                     story_first_tried.add(story_first_trial["trial_id"])
+                    replacements = replace_replay_proposals(
+                        story_first_pool, story_first_trial, story_first_review, permitted_events,
+                    )
+                    if replacements:
+                        write_json(out / "story_first" / "story_first_pool.json", story_first_pool)
+                        round_rec["story_first_replay_replacements"] = replacements
                     if review_api is not None:
                         usage = provider_usage(review_api)
                         http_calls = int(usage.get("http_attempts") or http_calls)
@@ -2132,6 +2150,10 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     max_outer_rounds=inp.story_first_outer_rounds,
                     data_tier=("HUMAN_ATOM_ENRICHED_DEV" if inp.independent_atoms_json
                                else "EVENT_DERIVED_FROM_PERMITTED_INPUT"),
+                    replay_replacements=[
+                        change for row in story_first_pool.get("replay_revision_history", [])
+                        for change in row["changes"]
+                    ],
                 )
                 audit["story_first_outer"] = outer
             usage = provider_usage(paid_api)

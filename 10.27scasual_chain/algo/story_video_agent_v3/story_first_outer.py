@@ -10,7 +10,7 @@ from .fresh_e2e_cli import read_json, write_json
 from .self_revise_agent import apply_candidate_revision
 from .story_edl_safety import check_source_pts_monotonic
 from .story_first_p3 import MAX_P3_ROUNDS, _request, run_p3_revision
-from .story_first_revision import bind_story_first_trial, review_story_first_trial
+from .story_first_revision import bind_story_first_trial, replace_replay_proposals, review_story_first_trial
 from .story_first_search import discover_story_first, story_first_calls_left
 from .story_paid_eval import provider_usage
 from .story_timeline import _num, active_cut_rows
@@ -68,6 +68,8 @@ def _select(api, *, story_plan, current_edl, proposals, history, out):
         "Use only IDs from the fresh P1 pool and select only uncovered, non-replay events for new "
         "footage. Prior accepted and rejected event IDs and source windows are recorded in feedback. "
         "Keep relations hypothetical unless the supplied evidence supports them. "
+        "For candidates with replay_window_edits, judge the retained source windows together. "
+        "Compare the replacement fairly with the other candidates. "
         "If all viable footage is exhausted, return a null selection. "
         'Return JSON {"selection":{"selections":[{"proposal_id":"...","event_ids":["..."],'
         '"relation_ids":[]}],"rationale":"..."}}, or {"selection":null}.\n'
@@ -85,7 +87,7 @@ def _select(api, *, story_plan, current_edl, proposals, history, out):
 def continue_story_first(
     *, baseline_edl, baseline_mp4, first_p3_dir, first_p3, first_review, story_plan,
     source_mp4, source_sha, events, teams, first_live_store, api, render, out_dir,
-    max_outer_rounds, data_tier,
+    max_outer_rounds, data_tier, replay_replacements=(),
 ):
     """Report V3-R and round 1, then run new search/verification on the accepted parent."""
     if not 1 <= max_outer_rounds <= 3:
@@ -115,6 +117,8 @@ def continue_story_first(
         "source_advisory": first_review.get("advisory") or [],
         **_p3_feedback(first_p3, edl, first_review),
     }]
+    if replay_replacements:
+        history[0]["replay_replacements"] = list(replay_replacements)
     before = int(provider_usage(api)["http_attempts"] or 0) if api is not None else 0
     attempted = accepted = 1
     for index in range(2, max_outer_rounds + 1):
@@ -160,13 +164,18 @@ def continue_story_first(
             elif story_first_calls_left(api) <= reserve_later + 1:
                 rec["status"] = "API_BUDGET"
             else:
-                selection = _select(
-                    api, story_plan=story_plan, current_edl=edl, proposals=proposals,
-                    history=context, out=folder,
-                )
-                if selection is None:
-                    rec["status"] = "NO_SELECTION"
-                else:
+                eligible_ids = {p["proposal_id"] for p in proposals}
+                review = None
+                for attempt in range(2):
+                    attempt_dir = folder if attempt == 0 else folder / "replay_replan"
+                    attempt_dir.mkdir(exist_ok=True)
+                    selection = _select(
+                        api, story_plan=story_plan, current_edl=edl, proposals=proposals,
+                        history=context, out=attempt_dir,
+                    )
+                    if selection is None:
+                        rec["status"] = "NO_SELECTION"
+                        break
                     trial = bind_story_first_trial(selection, proposals, edl, tried)
                     new_windows = _source_windows(trial)
                     new_events = {eid for w in trial["windows"] if not w.get("existing_segment_id")
@@ -177,41 +186,50 @@ def continue_story_first(
                     ):
                         raise ValueError("already_tried_story_first_events_or_windows")
                     tried.add(trial["trial_id"])
-                    windows.update(new_windows)
-                    events_seen.update(new_events)
                     rec.update(trial_id=trial["trial_id"], source_windows_sec=new_windows,
                                event_ids=sorted(new_events))
                     review = review_story_first_trial(
                         trial, api=api if story_first_calls_left(api) >= reserve_later + 2 else None,
-                        source_mp4=source_mp4, source_sha=source_sha, out_dir=folder / "p2",
+                        source_mp4=source_mp4, source_sha=source_sha, out_dir=attempt_dir / "p2",
                         first_live_store=first_live_store, source_events=events, teams=teams,
                     )
-                    write_json(folder / "p2_review.json", {"trial": trial, "review": review})
+                    write_json(attempt_dir / "p2_review.json", {"trial": trial, "review": review})
                     rec.update(status=review["status"], source_feedback=review["feedback"],
                                source_advisory=review.get("advisory") or [])
-                    if review["status"] == "READY_FOR_TRIAL" and review["intents"]:
-                        intents = [{**i, "story_first_preview_only": True} for i in review["intents"]]
-                        trial_edl, applied = apply_candidate_revision(edl, intents, observations=[])
-                        if (applied["rejected"] or applied["evidence_bound_count"] != len(intents)
-                                or not check_source_pts_monotonic(trial_edl)["ok"]):
-                            raise ValueError("outer_source_intents_failed_edl_checks")
-                        write_json(folder / "trial_edl.json", trial_edl)
-                        trial_mp4 = render(trial_edl, folder / "trial_render")
-                        if not trial_mp4 or not Path(trial_mp4).is_file():
-                            raise ValueError("outer_trial_render_missing")
-                        p3_dir = folder / "p3"
-                        p3 = run_p3_revision(
-                            baseline_edl=edl, baseline_mp4=mp4, trial_edl=trial_edl,
-                            trial_mp4=Path(trial_mp4), review=review, proposals=proposals,
-                            story_plan=story_plan, out_dir=p3_dir, api=api, render=render,
-                            prior_feedback=history, max_local_trims=MAX_P3_ROUNDS,
-                            reserve_calls=reserve_later,
-                        )
-                        edl = read_json(p3_dir / "selected_preview_edl.json")
-                        mp4 = Path(p3["selected_preview_mp4"])
-                        rec.update(status="ACCEPTED_PREVIEW", **_p3_feedback(p3, edl, review))
-                        accepted += 1
-                        accepted_now = True
+                    changes = replace_replay_proposals(pool, trial, review, events)
+                    if not changes:
+                        break
+                    write_json(folder / "p1" / "story_first_pool.json", pool)
+                    rec.setdefault("replay_replacements", []).extend(changes)
+                    proposals = [p for p in pool["proposals"] if p["proposal_id"] in eligible_ids]
+                    if not proposals or story_first_calls_left(api) <= reserve_later + 1:
+                        break
+                    context["source_review_feedback"] = review["feedback"]
+                if rec["status"] == "READY_FOR_TRIAL" and review is not None and review["intents"]:
+                    windows.update(new_windows)
+                    events_seen.update(new_events)
+                    intents = [{**i, "story_first_preview_only": True} for i in review["intents"]]
+                    trial_edl, applied = apply_candidate_revision(edl, intents, observations=[])
+                    if (applied["rejected"] or applied["evidence_bound_count"] != len(intents)
+                            or not check_source_pts_monotonic(trial_edl)["ok"]):
+                        raise ValueError("outer_source_intents_failed_edl_checks")
+                    write_json(folder / "trial_edl.json", trial_edl)
+                    trial_mp4 = render(trial_edl, folder / "trial_render")
+                    if not trial_mp4 or not Path(trial_mp4).is_file():
+                        raise ValueError("outer_trial_render_missing")
+                    p3_dir = folder / "p3"
+                    p3 = run_p3_revision(
+                        baseline_edl=edl, baseline_mp4=mp4, trial_edl=trial_edl,
+                        trial_mp4=Path(trial_mp4), review=review, proposals=proposals,
+                        story_plan=story_plan, out_dir=p3_dir, api=api, render=render,
+                        prior_feedback=history, max_local_trims=MAX_P3_ROUNDS,
+                        reserve_calls=reserve_later,
+                    )
+                    edl = read_json(p3_dir / "selected_preview_edl.json")
+                    mp4 = Path(p3["selected_preview_mp4"])
+                    rec.update(status="ACCEPTED_PREVIEW", **_p3_feedback(p3, edl, review))
+                    accepted += 1
+                    accepted_now = True
         except (ValueError, OSError, RuntimeError) as exc:
             rec.update(status="ROUND_NOT_APPLIED", error=str(exc))
         history.append(rec)
