@@ -860,7 +860,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
         )
         vlm_critic = None
         llm_rev = None
-        if paid_api is not None:
+        if paid_api is not None and not inp.enable_story_first:
             from .story_paid_eval import (
                 provider_usage,
                 run_llm_revision_planner,
@@ -1419,9 +1419,8 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 edl=version_edl["v0"], story_plan=plan, events=permitted_events,
                 source_sha=source_sha, out_dir=out / "story_first",
                 api=paid_api, artifacts_dir=inp.story_first_artifacts_dir,
-                # Preserve Planner, source review and post-render Verifier
-                # requests after the ordinary evidence-search branches.
-                reserve_calls=3,
+                # Leave room for initial planning, source review, Caption and P3 planning.
+                reserve_calls=4,
                 data_tier=("HUMAN_ATOM_ENRICHED_DEV" if inp.independent_atoms_json
                            else "EVENT_DERIVED_FROM_PERMITTED_INPUT"),
             )
@@ -1632,7 +1631,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     story_first_review = {"status": "PLAN_NOT_BOUND",
                                           "feedback": [{"reason": str(exc)}], "intents": []}
                 if story_first_trial is not None:
-                    # One source review and one finished-cut Verifier request.
+                    # Preserve the existing P2 review fallback for constrained budgets.
                     review_api = paid_api if story_first_calls_left(paid_api) >= 2 else None
                     # Team identities come from the same delivery/enriched
                     # document as the source annotations, when supplied.
@@ -2094,7 +2093,43 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             gates["candidate_rendered"] = False
         write_json(round_dir / "candidate_render.json", render_info)
 
-        # Verifier: dual-video vision when revising with a real candidate render.
+        p3_result = None
+        p3_rendered_trial = bool(
+            story_first_intents and edl_changed and candidate_mp4 and candidate_mp4.is_file()
+        )
+        if p3_rendered_trial and paid_api is not None:
+            from .story_first_p3 import p3_replacement_review, run_p3_revision
+
+            def render_p3(edl, directory):
+                return _render_edl(plan=plan, video=inp.source_mp4, edl=edl,
+                                   out_dir=directory).get("story_clean")
+
+            p3_dir = round_dir / "story_first_p3"
+            try:
+                p3_result = run_p3_revision(
+                    baseline_edl=working_edl, baseline_mp4=working_mp4,
+                    trial_edl=candidate_edl, trial_mp4=candidate_mp4,
+                    review=story_first_review, proposals=story_first_proposals, story_plan=plan,
+                    out_dir=p3_dir, api=paid_api, render=render_p3,
+                    prior_feedback=story_first_feedback,
+                    max_rounds=min(int(inp.max_rounds), MAX_ROUNDS) - round_idx + 1,
+                    review_replacement=p3_replacement_review(
+                        api=paid_api, source_mp4=inp.source_mp4, source_sha=source_sha,
+                        first_live_store=first_live_evidence_store, source_events=permitted_events,
+                        teams=teams, audit_dir=p3_dir / "replacement_source_reviews",
+                    ),
+                )
+            except (ValueError, OSError) as exc:
+                p3_result = {"stop_reason": "P3_INPUT_ERROR", "error": str(exc),
+                             "preview_only": True, "release_authorized": False}
+                write_json(p3_dir / "p3_revision.json", p3_result)
+            usage = provider_usage(paid_api)
+            http_calls = int(usage.get("http_attempts") or http_calls)
+            est_cost = float(usage.get("est_cost_usd_real") or est_cost)
+            round_rec["story_first_p3"] = p3_result
+            audit["story_first_p3"] = p3_result
+
+        # Ordinary revisions still use their existing dual-video assessment.
         # Provenance is set by execution path only (P0-1) — never from model content.
         quality_overlay: Optional[Dict[str, Any]] = None
         verdict_provenance = "OFFLINE_RULE"
@@ -2161,6 +2196,7 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             and candidate_mp4 is not None
             and candidate_mp4.is_file()
             and not used_test_fixture
+            and not p3_rendered_trial
         ):
             from .story_paid_eval import provider_usage, run_llm_verifier
             from .story_video_verifier import probe_video_pair
@@ -2384,6 +2420,8 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             source_events=permitted_events,
             new_source_windows=new_windows,
         )
+        if p3_result is not None:
+            story_first_preview_only = True
         if story_first_preview_only:
             vfix["candidate_accepted"] = False
             vfix["retain_baseline"] = True
@@ -2769,7 +2807,17 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                     "continue_allowed": True, "stop_reason": None,
                     "reason_codes": ["story_first_source_feedback_can_inform_revision"],
                 }
-            if edl_changed and story_first_intents and not transition.get("promote"):
+            if p3_result is not None:
+                transition = {
+                    **transition, "promote": False, "next_action": "STOP_NO_ACTION",
+                    "continue_allowed": False, "stop_reason": p3_result["stop_reason"],
+                    "reason_codes": ["story_first_p3_caption_revision_finished"],
+                }
+                story_first_feedback.append({
+                    "round": round_idx, "stage": "FINISHED_CUT_CAPTION_REVISION",
+                    "trial_id": story_first_trial["trial_id"], "result": p3_result,
+                })
+            elif edl_changed and story_first_intents and not transition.get("promote"):
                 story_first_feedback.append({
                     "round": round_idx, "stage": "FINISHED_CUT_VERIFIER",
                     "trial_id": story_first_trial["trial_id"],

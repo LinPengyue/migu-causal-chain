@@ -449,3 +449,91 @@ def test_multi_clip_story_in_one_gap_preserves_source_order(tmp_path, monkeypatc
     assert [row["segment_id"] for row in candidate if row["segment_id"].startswith("seg_w")] == [
         "seg_w0", "seg_w1",
     ]
+
+
+def test_e2e_rendered_story_first_routes_to_caption_p3(tmp_path, monkeypatch):
+    from story_video_agent_v3 import story_first_p3 as p3
+    from story_video_agent_v3 import story_paid_eval as paid
+    from story_video_agent_v3.story_timeline import build_story_timeline
+
+    _generate(tmp_path / "cache", monkeypatch)
+    source = tmp_path / "source.mp4"
+    source.write_bytes(b"source fixture")
+    phase5 = tmp_path / "phase5"
+    _write(phase5 / "candidate_edl.json", EDL)
+    _write(phase5 / "story_plan.json", PLAN)
+    (phase5 / "story_clean.mp4").write_bytes(b"baseline fixture")
+    match = _write(tmp_path / "events.json", {
+        "events": [{**e, "annotation_quality": {"annotator_confidence": 1.0},
+                    "notes": "human annotation"} for e in EVENTS],
+    })
+    roles = []
+
+    class API(_DiscoveryAPI):
+        max_completion_tokens = 1200
+
+        def status(self):
+            return {"planner_ready": True, "vision_ready": True}
+
+        def revise_decision(self, **kwargs):
+            roles.append("initial_planner")
+            self._http_attempts += 1
+            selection = {"selections": [
+                {"proposal_id": "interval_01:H1", "event_ids": ["x", "y"], "relation_ids": ["r1"]},
+            ], "rationale": "Try new buildup"}
+            return {"provider_mode": "real", "finish_reason": "stop", "content": json.dumps(
+                {"decision": "KEEP", "story_first_trial": selection}
+            )}
+
+        def chat(self, **kwargs):
+            role = kwargs["stats_role"]
+            roles.append(role)
+            self._http_attempts += 1
+            content = {"observations": []} if role == "story_first_p3_caption" else {
+                "actions": [{"action": "KEEP", "rationale": "Review this preview"}],
+            }
+            assert role in ("story_first_p3_caption", "story_first_p3_planner")
+            return {"provider_mode": "real", "finish_reason": "stop", "content": json.dumps(content)}
+
+    def review(api, **kwargs):
+        roles.append("existing_source_review")
+        assert api is not None
+        return {"feedback": [], "event_observations": []}
+
+    def alignment(*, edl, mp4):
+        timeline = build_story_timeline(edl)
+        return {"aligned": mp4.is_file(), "timeline": timeline,
+                "mp4_duration_sec": timeline["story_duration_sec"]}
+
+    def fake_clip(*, source_mp4, begin, end, output):
+        output.write_bytes(b"native video fixture")
+        return {"ok": True, "path": str(output), "sha256": "fixture", "bytes": 20}
+
+    def render(*, out_dir, **kwargs):
+        out_dir.mkdir(parents=True, exist_ok=True)
+        path = out_dir / "story_clean.mp4"
+        path.write_bytes(b"candidate fixture")
+        return {"ok": True, "story_clean": str(path)}
+
+    def obsolete(*args, **kwargs):
+        pytest.fail("The Story-First trial must not enter the old finished-cut judging")
+
+    monkeypatch.setattr(paid, "build_capped_provider", lambda **kwargs: API())
+    monkeypatch.setattr(paid, "run_llm_verifier", obsolete)
+    monkeypatch.setattr(paid, "run_vlm_story_critic", obsolete)
+    monkeypatch.setattr(video, "observe_story_first_trial", review)
+    monkeypatch.setattr(agent, "_render_edl", render)
+    monkeypatch.setattr(agent, "observe_layers", lambda **kwargs: {})
+    monkeypatch.setattr(p3, "timeline_mp4_aligned", alignment)
+    monkeypatch.setattr(p3, "_source_context_video", fake_clip)
+    audit = agent.run_story_e2e(agent.StoryE2EInputs(
+        match_json=match, source_mp4=source, out_dir=tmp_path / "run", phase5_dir=phase5,
+        enable_story_first=True, story_first_artifacts_dir=tmp_path / "cache",
+        enable_real_api=True, i_approve_budget=True, smoke_render=False, max_rounds=1,
+    ))
+    assert roles == ["initial_planner", "existing_source_review",
+                     "story_first_p3_caption", "story_first_p3_planner"]
+    assert audit["story_first_p3"]["stop_reason"] == "PLANNER_KEEP"
+    assert audit["story_first_p3"]["http_calls"] == 2
+    assert audit["story_first_p3"]["selected_preview_mp4"].endswith("candidate_render/story_clean.mp4")
+    assert audit["delivery"]["release_authorized"] is False
