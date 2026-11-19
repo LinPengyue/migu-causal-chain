@@ -550,6 +550,52 @@ def test_localization_queue_skips_if_no_gap(tmp_path):
     assert report["zero_http"] is True
 
 
+@pytest.mark.parametrize("case", ["match", "different_source", "different_samples"])
+def test_goal_ocr_reuses_only_matching_source_and_samples(tmp_path, monkeypatch, case):
+    from story_video_agent_v3 import first_live_localize as localizer
+
+    gap = _issue()
+    video = tmp_path / "source.mp4"
+    video.write_bytes(b"video")
+    source_sha = hashlib.sha256(video.read_bytes()).hexdigest()
+    prior = tmp_path / "prior"
+    prior.mkdir()
+    (prior / "story_e2e_audit.json").write_text(json.dumps({
+        "source_sha256": "b" * 64 if case == "different_source" else source_sha,
+    }))
+    issue_path = Path("02_round_01/source_goal_video_review") / gap["issue_id"]
+    prior_samples = prior / issue_path / "ocr_observations.json"
+    prior_samples.parent.mkdir(parents=True)
+    conf = gap["score_confirmation_sec"]
+    samples = [
+        {"media_sec": sec, "status": "ok", "score_tuple": [0, 1] if sec < conf else [1, 1]}
+        for sec in localizer._ocr_sample_times(conf - 120, conf + 2, 3, 45)
+    ]
+    archived = [dict(row) for row in samples]
+    if case == "different_samples":
+        archived[0]["media_sec"] += 1
+    prior_samples.write_text(json.dumps(archived))
+    ocr_runs = []
+
+    def fake_ocr(**kwargs):
+        ocr_runs.append(True)
+        return samples
+
+    monkeypatch.setattr(localizer, "densify_score_observations", fake_ocr)
+    monkeypatch.setattr(localizer, "propose_localization_candidates", lambda **kwargs: {"candidates": []})
+    out = tmp_path / "run" / issue_path.parent
+    report = prepare_source_video_goal_queue(
+        diagnosis={"issues": [gap]}, source_mp4=video, events_path=None, out_dir=out,
+        reuse_ocr_from=prior, source_sha256=source_sha,
+    )
+    assert report["ocr_reuse"]["source_sha256_matched"] == (case != "different_source")
+    assert report["issues"][0]["ocr"]["status"] == ("REUSED" if case == "match" else "GENERATED")
+    assert len(ocr_runs) == (0 if case == "match" else 1)
+    assert json.loads((out / gap["issue_id"] / "ocr_observations.json").read_text()) == samples
+    assert json.loads(prior_samples.read_text()) == archived
+    assert report["issues"][0]["first_live_verified"] is False
+
+
 def test_source_video_review_external_mode_is_not_autonomous(tmp_path, monkeypatch):
     gap, sha, review = _review(tmp_path)
     monkeypatch.setattr(

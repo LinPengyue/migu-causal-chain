@@ -45,6 +45,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--t01-story", type=Path, default=None)
     p.add_argument("--events-json", type=Path, default=None,
                    help="Events JSON (prefer V3-R events_enriched.json for Search)")
+    p.add_argument("--reuse-goal-ocr-from", type=Path,
+                   help="Prior E2E output directory with goal OCR samples for this source MP4")
     p.add_argument("--enable-story-first", action="store_true",
                    help="Search all initial EDL story intervals and plan source-video trials")
     p.add_argument("--story-first-outer-rounds", type=int, default=1, choices=range(1, 4),
@@ -282,6 +284,7 @@ def main(argv: list[str] | None = None) -> int:
         story_plan=args.story_plan.resolve() if args.story_plan else None,
         t01_story=args.t01_story.resolve() if args.t01_story else None,
         events_json=args.events_json.resolve() if args.events_json else None,
+        reuse_goal_ocr_from=args.reuse_goal_ocr_from.resolve() if args.reuse_goal_ocr_from else None,
         enable_story_first=args.enable_story_first,
         story_first_outer_rounds=args.story_first_outer_rounds,
         story_first_artifacts_dir=(

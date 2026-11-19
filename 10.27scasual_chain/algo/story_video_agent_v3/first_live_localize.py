@@ -204,6 +204,41 @@ def uncovered_subintervals(
     return [(a, b) for a, b in gaps if b - a >= 2.0]
 
 
+def _ocr_sample_times(start_sec: float, end_sec: float, step_sec: float,
+                      budget_frames: int) -> List[float]:
+    t = max(0.0, float(start_sec))
+    end = float(end_sec)
+    if end <= t:
+        return []
+    times = []
+    while t <= end + 1e-6 and len(times) < budget_frames:
+        times.append(round(t, 3))
+        t += float(step_sec)
+    return times
+
+
+def _read_ocr_observations(path: Path, times: List[float]) -> Optional[List[Dict[str, Any]]]:
+    try:
+        rows = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    if not isinstance(rows, list) or len(rows) != len(times):
+        return None
+    for row, ts in zip(rows, times):
+        if not isinstance(row, dict) or row.get("media_sec") != ts:
+            return None
+        status = row.get("status")
+        if status not in ("ok", "weak", "unknown", "clock_only", "conflict"):
+            return None
+        score = row.get("score_tuple")
+        if status in ("ok", "weak") and (
+            not isinstance(score, list) or len(score) != 2
+            or any(type(value) is not int or value < 0 for value in score)
+        ):
+            return None
+    return rows
+
+
 def densify_score_observations(
     *,
     video: Path,
@@ -217,17 +252,8 @@ def densify_score_observations(
     import cv2
 
     out_dir.mkdir(parents=True, exist_ok=True)
-    start = max(0.0, float(start_sec))
-    end = float(end_sec)
-    if end <= start:
-        return []
-    times = []
-    t = start
-    while t <= end + 1e-6 and len(times) < budget_frames:
-        times.append(round(t, 3))
-        t += float(step_sec)
     rows = []
-    for i, ts in enumerate(times):
+    for i, ts in enumerate(_ocr_sample_times(start_sec, end_sec, step_sec, budget_frames)):
         fp = out_dir / f"ocr_{i:03d}_{int(ts * 1000)}.jpg"
         fr = extract_frame_accurate(video, ts, fp)
         if not fr.get("ok"):
@@ -800,6 +826,7 @@ def run_first_live_localization(
     max_video_read_sec: float = 100.0,
     ocr_step_sec: float = 3.0,
     skip_ocr: bool = False,
+    prior_ocr_path: Optional[Path] = None,
 ) -> Dict[str, Any]:
     dest = Path(out_dir)
     dest.mkdir(parents=True, exist_ok=True)
@@ -811,16 +838,27 @@ def run_first_live_localization(
 
     # OCR densify around confirm lookback (budgeted)
     ocr_rows: List[Dict[str, Any]] = []
+    ocr = {"status": "SKIPPED"}
     if not skip_ocr:
-        ocr_rows = densify_score_observations(
-            video=video,
-            start_sec=max(0.0, conf - 120.0),
-            end_sec=conf + 2.0,
-            step_sec=ocr_step_sec,
-            out_dir=dest / "ocr_frames",
-            budget_frames=45,
-        )
+        t0 = time.monotonic()
+        start, end, budget = max(0.0, conf - 120.0), conf + 2.0, 45
+        reused = _read_ocr_observations(
+            prior_ocr_path, _ocr_sample_times(start, end, ocr_step_sec, budget)
+        ) if prior_ocr_path is not None else None
+        if reused is None:
+            ocr_rows = densify_score_observations(
+                video=video, start_sec=start, end_sec=end, step_sec=ocr_step_sec,
+                out_dir=dest / "ocr_frames", budget_frames=budget,
+            )
+        else:
+            ocr_rows = reused
         dump(dest / "ocr_observations.json", ocr_rows)
+        ocr = {
+            "status": "REUSED" if reused is not None else "GENERATED",
+            "prior_path": str(prior_ocr_path) if prior_ocr_path is not None else None,
+            "samples": len(ocr_rows),
+            "elapsed_sec": round(time.monotonic() - t0, 3),
+        }
 
     bounds = merge_score_bounds(
         score_before=score_before,
@@ -922,6 +960,7 @@ def run_first_live_localization(
         "score_before": score_before,
         "score_after": score_after,
         "score_confirmation_sec": conf,
+        "ocr": ocr,
         "score_bounds": {
             "last_before": bounds.get("last_before_obs"),
             "first_after": bounds.get("first_after_obs"),
