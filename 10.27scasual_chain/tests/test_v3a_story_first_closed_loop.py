@@ -110,10 +110,6 @@ def test_all_intervals_and_planner_receives_all_without_scorer(tmp_path, monkeyp
     class Planner:
         def revise_decision(self, **kw):
             prompt = kw["user_prompt"]
-            assert "with story_first_trial first" in kw["system_prompt"]
-            assert "Do not emit keep or mark_unresolved intent objects" in kw["system_prompt"]
-            assert '"story_first_trial":null' in prompt
-            assert "Do not explain each issue" in prompt
             for proposal in pool["proposals"]:
                 assert proposal["proposal_id"] in prompt
             for field in ("causal_combination_prior", "internal_causal_link", "model_priority_0_to_1",
@@ -134,28 +130,6 @@ def test_all_intervals_and_planner_receives_all_without_scorer(tmp_path, monkeyp
     )
     assert [i["status"] for i in cached["intervals"]] == ["REUSED", "REUSED"]
     assert cached["proposals"] == pool["proposals"]
-
-
-def test_story_first_planner_retains_truncation_diagnostics(tmp_path):
-    class Planner:
-        def revise_decision(self, **kwargs):
-            return {
-                "provider_mode": "real",
-                "finish_reason": "length",
-                "content": '{"story_first_trial":{"selections":[',
-                "usage": {"completion_tokens": 1200},
-                "response_audit": {"output_budget_exceeded": True},
-            }
-
-    result = run_llm_revision_planner(
-        Planner(), diagnosis={}, vlm_critic={}, protected_goal_ids=[],
-        audit_dir=tmp_path, story_first_proposals=[{"proposal_id": "interval_01:H1"}],
-    )
-    assert result["ok"] is False and "story_first_trial" not in result
-    audit = json.loads((tmp_path / "llm_revision_planner.json").read_text())
-    assert audit["finish_reason"] == result["finish_reason"] == "length"
-    assert audit["usage"]["completion_tokens"] == 1200
-    assert audit["response_audit"]["output_budget_exceeded"]
 
 
 def _first_live_pack(root, sha, start=22, end=43):

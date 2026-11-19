@@ -146,7 +146,6 @@ class StoryE2EInputs:
     # reproduction. Both paths required, never treated as FIRST_LIVE proof.
     native_phase_archived_frame_manifest: Optional[Path] = None
     native_phase_archived_semantic_log: Optional[Path] = None
-    reuse_goal_ocr_from: Optional[Path] = None
     max_rounds: int = MAX_ROUNDS
     max_calls: int = 5
     max_cost_usd: float = 0.10
@@ -473,7 +472,6 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             "phase10_explore_fixture": bool(inp.phase10_explore_fixture is not None),
             "enable_story_first": inp.enable_story_first,
             "story_first_outer_rounds": inp.story_first_outer_rounds,
-            "reuse_goal_ocr_from": str(inp.reuse_goal_ocr_from) if inp.reuse_goal_ocr_from else None,
             "story_first_artifacts_dir": (
                 str(inp.story_first_artifacts_dir)
                 if inp.story_first_artifacts_dir else None
@@ -1243,8 +1241,6 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
                 out_dir=round_dir / "source_goal_video_review",
                 max_issues=1, max_candidates_per_issue=3,
                 max_video_read_sec=75.0,
-                reuse_ocr_from=inp.reuse_goal_ocr_from,
-                source_sha256=source_sha,
             )
         else:
             goal_video_queue = {
@@ -1397,12 +1393,6 @@ def run_story_e2e(inp: StoryE2EInputs) -> Dict[str, Any]:
             "video_semantic_observation": (goal_semantic or {}).get("status"),
             "first_live_verified": False,
         }
-        if inp.reuse_goal_ocr_from is not None and round_idx == 1:
-            round_rec["goal_video_review_queue"]["ocr_reuse"] = goal_video_queue.get("ocr_reuse")
-            round_rec["goal_video_review_queue"]["ocr"] = [
-                {"issue_id": issue["issue_id"], **issue["ocr"]}
-                for issue in goal_video_queue["issues"] if issue.get("ocr")
-            ]
         search_obs = search_candidates_to_observations(search_report)
         round_rec["search_success"] = bool(search_report.get("search_success"))
         round_rec["search_verified_count"] = len(search_report.get("verified_candidates") or [])

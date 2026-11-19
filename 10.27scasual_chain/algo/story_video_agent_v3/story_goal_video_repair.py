@@ -45,8 +45,6 @@ def prepare_source_video_goal_queue(
     max_issues: int = 1,
     max_candidates_per_issue: int = 3,
     max_video_read_sec: float = 75.0,
-    reuse_ocr_from: Optional[Path] = None,
-    source_sha256: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Reuse P13 first_live_localize (no VLM, no human hints, zero HTTP).
 
@@ -57,14 +55,6 @@ def prepare_source_video_goal_queue(
 
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    prior_ocr_dir = None
-    if reuse_ocr_from is not None and source_sha256:
-        try:
-            prior_audit = json.loads((reuse_ocr_from / "story_e2e_audit.json").read_text(encoding="utf-8"))
-        except (OSError, ValueError):
-            prior_audit = None
-        if isinstance(prior_audit, dict) and prior_audit.get("source_sha256") == source_sha256:
-            prior_ocr_dir = reuse_ocr_from / "02_round_01" / "source_goal_video_review"
     issues = goal_coverage_issues(diagnosis)
     rows: List[Dict[str, Any]] = []
     for issue in issues[:max(0, int(max_issues))]:
@@ -94,10 +84,6 @@ def prepare_source_video_goal_queue(
                 # tightened first-after-score from the later event carrier,
                 # keeping the original goal action within the candidate pool.
                 skip_ocr=False,
-                prior_ocr_path=(
-                    prior_ocr_dir / iid / "ocr_observations.json"
-                    if prior_ocr_dir is not None else None
-                ),
             )
             rows.append({
                 "issue_id": iid,
@@ -105,7 +91,6 @@ def prepare_source_video_goal_queue(
                 "score_before": task["score_before"],
                 "score_after": task["score_after"],
                 "score_confirmation_sec": task["score_confirmation_sec"],
-                "ocr": (result.get("summary") or {}).get("ocr"),
                 "candidate_count": len(result.get("audits") or []),
                 "continuous_candidate_clips": [
                     {
@@ -139,11 +124,6 @@ def prepare_source_video_goal_queue(
         "no_oracle_used": True,
         "no_autonomous_goal_verification_claim": True,
     }
-    if reuse_ocr_from is not None:
-        report["ocr_reuse"] = {
-            "from": str(reuse_ocr_from),
-            "source_sha256_matched": prior_ocr_dir is not None,
-        }
     _write(out_dir / "source_goal_video_review_queue.json", report)
     return report
 

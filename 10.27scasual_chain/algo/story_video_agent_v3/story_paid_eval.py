@@ -861,32 +861,13 @@ def run_llm_revision_planner(
             "require_review_supported_triplet_for_search_add": True,
         },
     }
-    system_prompt = SYSTEM_RP
-    response_format = (
+    user = (
+        "Given diagnosis + VLM critic summary, propose a story revision plan.\n"
+        f"INPUT:\n{json.dumps(payload, ensure_ascii=False)}\n"
         "Return JSON: decision (KEEP|REVISE|UNRESOLVED), rationale, "
         "revision_intents (list with intent_id, action, target_segment_id?, role?, "
         "narrative_purpose, rationale, expected_improvement, risk, evidence_refs, "
         "anchor_id?, search_windows?). "
-    )
-    if story_first_proposals:
-        system_prompt += (
-            " In Story-First mode report unchanged footage with decision KEEP or "
-            "UNRESOLVED and revision_intents: []. Do not emit keep or mark_unresolved "
-            "intent objects. Return compact JSON, with story_first_trial first."
-        )
-        response_format = (
-            'Return one compact JSON object: {"story_first_trial":null,'
-            '"decision":"KEEP|REVISE|UNRESOLVED","revision_intents":[],"rationale":"..."}. '
-            "Keep the rationale to one short sentence. Do not explain each issue. "
-            "Populate revision_intents only for one executable change to the existing cut "
-            "(intent_id, action, target_segment_id?, role?, narrative_purpose, rationale, "
-            "expected_improvement, risk, evidence_refs, anchor_id?, search_windows?). "
-            "Use brief values for these fields. "
-        )
-    user = (
-        "Given diagnosis + VLM critic summary, propose a story revision plan.\n"
-        f"INPUT:\n{json.dumps(payload, ensure_ascii=False)}\n"
-        + response_format +
         "Use video_critic_observations to distinguish a cited observed fact, "
         "a merely hypothesized defect, and an observed KEEP finding. "
         "No-defect in a sampled frame packet is not proof that unobserved clips "
@@ -938,8 +919,7 @@ def run_llm_revision_planner(
             "identical retries when reviewing prior feedback. A story trial requests video "
             "observation and must not appear as a revision_intent or diagnosed defect. "
             "Clearly separate existing evidence from annotations and hypothesized relations. "
-            "Keep the trial rationale to one short sentence naming the story contribution. "
-            "Omit revised_relations unless needed to explain the chosen events. "
+            "Prefer a compact selection with concrete evidence questions. "
             + json.dumps(story_first_context, ensure_ascii=False)
         )
     if allow_exploratory_proposals:
@@ -984,7 +964,7 @@ def run_llm_revision_planner(
     }
     try:
         raw = api.revise_decision(
-            system_prompt=system_prompt,
+            system_prompt=SYSTEM_RP,
             user_prompt=user,
             mock_decision=mock,
         )
@@ -992,27 +972,27 @@ def run_llm_revision_planner(
         return {"ok": False, "error": f"{type(exc).__name__}:{exc}", "provider_mode": "degraded"}
     content = str(raw.get("content") or "")
     parsed = None
-    parse_error = None
     try:
         parsed = _parse_model_json_lenient(content)
     except Exception as exc:  # noqa: BLE001
-        parse_error = f"parse:{type(exc).__name__}:{exc}"
+        return {
+            "ok": False,
+            "error": f"parse:{type(exc).__name__}:{exc}",
+            "provider_mode": raw.get("provider_mode"),
+            "raw_excerpt": content[:1500],
+        }
     call_audit = _call_audit_from_raw(raw)
-    audit = {
-        "usage": raw.get("usage"),
-        "call_audit": call_audit,
-        "request_audit": raw.get("request_audit"),
-        "response_audit": raw.get("response_audit"),
-        "finish_reason": raw.get("finish_reason"),
-    }
     audit_dir.mkdir(parents=True, exist_ok=True)
     (audit_dir / "llm_revision_planner.json").write_text(
         json.dumps(
             {
                 "raw_excerpt": content[:4000],
                 "parsed": parsed,
-                **audit,
-                **({"error": parse_error} if parse_error else {}),
+                "usage": raw.get("usage"),
+                "call_audit": call_audit,
+                "request_audit": raw.get("request_audit"),
+                "response_audit": raw.get("response_audit"),
+                "finish_reason": raw.get("finish_reason"),
             },
             ensure_ascii=False,
             indent=2,
@@ -1020,14 +1000,6 @@ def run_llm_revision_planner(
         + "\n",
         encoding="utf-8",
     )
-    if parse_error:
-        return {
-            "ok": False,
-            "error": parse_error,
-            "provider_mode": raw.get("provider_mode"),
-            "raw_excerpt": content[:1500],
-            **audit,
-        }
     mode = str(raw.get("provider_mode") or "")
     if mode == "openai_compatible":
         mode = "real"
@@ -1051,8 +1023,12 @@ def run_llm_revision_planner(
         ),
         "rationale": (parsed or {}).get("rationale"),
         "est_cost_usd": raw.get("est_cost_usd"),
+        "usage": raw.get("usage"),
         "parsed": parsed,
-        **audit,
+        "call_audit": call_audit,
+        "request_audit": raw.get("request_audit"),
+        "response_audit": raw.get("response_audit"),
+        "finish_reason": raw.get("finish_reason"),
     }
 
 
