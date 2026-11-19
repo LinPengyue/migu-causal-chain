@@ -63,7 +63,7 @@ def case(tmp_path, monkeypatch):
 
 def test_p3_turns_caption_and_history_into_safe_trim_and_rerender(case):
     api = ScriptedAPI(
-        ({"observations": [{"clip_id": "part_01", "story_range_sec": [10, 15],
+        ({"observations": [{"phase_id": "1:insert", "clip_id": "part_01", "story_range_sec": [10, 15],
                             "description": "Several players contest the ball."}],
           "hard_veto": True}, "stop"),
         ({"actions": [
@@ -87,6 +87,7 @@ def test_p3_turns_caption_and_history_into_safe_trim_and_rerender(case):
         prior_feedback=[{"note": "earlier placement attempted"}],
     )
     assert result["http_calls"] == 4
+    assert result["completed_edits"] == 1
     assert [r["action"] for r in result["rounds"]] == ["TRIM", "KEEP"]
     assert result["rounds"][0]["rejected_actions"][0]["reason"].startswith("trim_requires")
     assert result["selected_preview_mp4"].endswith("shorter_preview.mp4")
@@ -96,6 +97,9 @@ def test_p3_turns_caption_and_history_into_safe_trim_and_rerender(case):
     assert context["prior_feedback"][0]["note"] == "earlier placement attempted"
     assert context["working_cut_caption"]["observations"]
     assert "hard_veto" not in context["working_cut_caption"]
+    assert {c["phase"]: c["status"] for c in context["working_cut_caption"]["coverage"]} == {
+        "before": "MISSING", "insert": "DESCRIBED", "after": "MISSING",
+    }
     assert case["baseline_mp4"].read_bytes() == b"baseline video"
 
 
@@ -156,3 +160,52 @@ def test_replacement_requires_existing_source_review_before_rerender(case):
     assert api.roles == [
         "story_first_p3_caption", "story_first_p3_planner", "story_first_p3_planner",
     ]
+
+
+def test_resume_records_second_edit_and_after_cut_evidence(case):
+    original_bounds = {"trial": (25, 43)}
+    first_edl, intents = p3._trim(TRIAL, {
+        "segment_id": "trial", "source_window_sec": [28, 39],
+    }, original_bounds)
+    first_mp4 = case["out_dir"].parent / "first_edit.mp4"
+    first_mp4.write_bytes(b"archived P3 edit")
+    resume = {"intent": intents[0], "edl": first_edl, "mp4": first_mp4,
+              "sha256": p3.sha256_file(first_mp4)}
+    api = ScriptedAPI(
+        ({"observations": [
+            {"phase_id": "1:before", "clip_id": "part_01", "story_range_sec": [5, 10],
+             "description": "Referee signals."},
+            {"phase_id": "1:insert", "clip_id": "part_01", "story_range_sec": [10, 21],
+             "description": "Midfield play."},
+            {"phase_id": "1:after", "clip_id": "part_01", "story_range_sec": [21, 26],
+             "description": "Next attack starts."},
+        ]}, "stop"),
+        ({"actions": [
+            {"action": "TRIM", "segment_id": "trial", "source_window_sec": [28, 39]},
+            {"action": "TRIM", "segment_id": "trial", "source_window_sec": [30, 37]},
+        ]}, "stop"),
+        ({}, "stop"),
+        ({"actions": [
+            {"action": "TRIM", "segment_id": "trial", "source_window_sec": [30, 37]},
+            {"action": "KEEP"},
+        ]}, "stop"),
+    )
+
+    def render(edl, directory):
+        assert (edl[1]["media_in"], edl[1]["media_out"]) == (30, 37)
+        directory.mkdir(parents=True)
+        path = directory / "second_edit.mp4"
+        path.write_bytes(b"second edit preview")
+        return path
+
+    result = p3.run_p3_revision(
+        **case, api=api, render=render, max_rounds=2, resume_trim=resume,
+    )
+    assert [row["completed_edits"] for row in result["edit_count_comparison"]] == [0, 1, 2]
+    assert result["completed_edits"] == 2 and result["http_calls"] == 4
+    assert result["selected_preview_mp4"].endswith("second_edit.mp4")
+    assert all(round_["rejected_actions"][0]["reason"] == "trim_does_not_change_current_cut"
+               for round_ in result["rounds"])
+    context = json.loads((case["out_dir"] / "round_01/planner_input.json").read_text())
+    assert context["editable_trial_segment_ids_and_source_bounds"] == {"trial": [28, 39]}
+    assert [c["status"] for c in context["working_cut_caption"]["coverage"]] == ["DESCRIBED"] * 3

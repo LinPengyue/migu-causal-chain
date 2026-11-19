@@ -30,3 +30,23 @@ STORY_API_ENABLE=1 PYTHONPATH=algo python -m story_video_agent_v3.story_first_p3
 ```
 
 检查 `p3_revision.json` 中的停止原因、选中的预览及使用量。每轮目录有 `caption_input.json`、`caption.json`、`planner_input.json`、模型调用记录及动作转移。触发重渲时，`edit_*` 目录包含生成的意图、临时 EDL 和视频。报告记录实际收到的动作和证据。KEEP 指选中的预览版本供审片，正式交付状态由现有 EDL 门禁管理。
+
+## H5 接续第二次修订
+
+在上面的 `p3_args` 基础上追加下面两个参数。服务器若移动了预览，使用 SHA-256 相同的文件。0 次取 H5 初始试剪，1 次取用户已审片的 6.26 秒桥段版，V3-R 原版保留为额外参考。只有新动作实际渲染且通过时间线校验，才记作第 2 次修改。若模型保留现版，比较报告里只有 0 次和 1 次成片。
+
+```bash
+p3_args+=(
+  --resume-trim-artifacts docs/artifacts_story_first_v2_p3_caption_20261119
+  --resume-mp4 /tmp/story_first_p3_caption_20261119_123121/round_01/edit_01/rerender/story_clean.mp4
+)
+PYTHONPATH=algo python -m story_video_agent_v3.story_first_p3_cli "${p3_args[@]}" \
+  --out-dir "/tmp/story_first_p3_loop2_preflight_$p3_run_name"
+
+STORY_API_ENABLE=1 PYTHONPATH=algo python -m story_video_agent_v3.story_first_p3_cli "${p3_args[@]}" \
+  --source-mp4 "$p3_source" --events-json "$p3_events" \
+  --enable-real-api --i-approve-budget --max-calls 5 --max-cost-usd 0.05 \
+  --out-dir "/tmp/story_first_p3_loop2_$p3_run_name"
+```
+
+比较清单在 `p3_revision.json` 的 `edit_count_comparison`。Caption 审计按前接点、桥段本身和后接点记录描述是否存在，后接点最多覆盖 15 秒且限制在相邻片段内。接续运行复用第 1 次修订的成片，无需重新生成候选或重渲第 1 次修订。
