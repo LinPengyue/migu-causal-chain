@@ -1,0 +1,44 @@
+{
+  "schema": "story_first_p35_outer_osasuna_celta_ocr_reuse_v1",
+  "code_sha": "44ad30cc28c106fc33c7bee52de15a22c24d07a5",
+  "run_out": "/tmp/story_first_outer_osasuna_celta_20261119_174843",
+  "reuse_goal_ocr_from": "/tmp/story_first_outer_osasuna_celta_20261119_171233",
+  "story_first_artifacts_dir": "/tmp/story_first_outer_osasuna_celta_20261119_161929/story_first",
+  "wall_elapsed_sec": 188.979,
+  "prior_wall_elapsed_sec_with_fresh_ocr": 750.004,
+  "goal_video_review_queue_ocr": [
+    {
+      "issue_id": "goal_coverage_00_to_01",
+      "status": "REUSED",
+      "prior_path": "/tmp/story_first_outer_osasuna_celta_20261119_171233/02_round_01/source_goal_video_review/goal_coverage_00_to_01/ocr_observations.json",
+      "samples": 41,
+      "elapsed_sec": 0.001
+    }
+  ],
+  "ocr_reuse_meta": {
+    "from": "/tmp/story_first_outer_osasuna_celta_20261119_171233",
+    "source_sha256_matched": true
+  },
+  "p1_intervals": [
+    {
+      "interval_id": "interval_01",
+      "status": "REUSED"
+    },
+    {
+      "interval_id": "interval_02",
+      "status": "REUSED"
+    }
+  ],
+  "planner_ok": true,
+  "planner_output_budget_exceeded": false,
+  "story_first_trial": null,
+  "entered_p2": false,
+  "v1_story_first_preview_produced": false,
+  "http_calls": 2,
+  "est_cost_usd": 0.004977,
+  "note": [
+    "OCR status=REUSED, elapsed_sec=0.001 (41 samples); source_sha256_matched=true.",
+    "Wall clock ~189s vs ~750s prior fresh-OCR run.",
+    "Planner ok with short completion (65 tokens) after b1eb80d, but returned story_first_trial=null → no P2/V1."
+  ]
+}
