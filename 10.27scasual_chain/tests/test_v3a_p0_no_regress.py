@@ -7,6 +7,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from story_video_agent_v3.fresh_e2e_cli import validate_render_rows
 from story_video_agent_v3.quality_audit import compare_edl_non_regression, evaluate
 from story_video_agent_v3.self_revise_agent import (
     apply_candidate_revision,
@@ -22,6 +23,49 @@ A_ROOT = Path("/data2/lpy1/_story_va_outputs/v3/plan2/closed_loop_A_uae_oman")
 A_RAW = A_ROOT / "04_phase5"
 A_POLISH = A_ROOT / "04_phase5_p1_polish"
 A_BEST1 = A_ROOT / "v3a_cross_match_3round_20261104" / "best_candidate_edl.json"
+
+
+class TestPhase5SplitGoal(unittest.TestCase):
+    def setUp(self):
+        archive = Path(__file__).resolve().parents[1] / "reports/phase5/croatia/candidate_edl.json"
+        self.edl = json.loads(archive.read_text(encoding="utf-8"))
+        self.approach, self.result = [
+            row for row in self.edl if row.get("segment_id") in (
+                "seg_lead_extend_1_goal_action_approach", "seg_lead_extend_1_goal_action"
+            )
+        ]
+
+    def test_archived_split_goal_retains_both_windows_for_render(self):
+        original = copy.deepcopy(self.edl)
+        self.assertEqual(find_duplicate_goal_cuts(self.edl), [])
+        self.assertEqual(validate_render_rows(self.edl), original)
+        self.assertEqual(self.edl, original)
+
+    def test_split_goal_requires_consistent_provenance_and_windows(self):
+        for name, updates in (
+            ("missing split record", {"glitch_avoidance": []}),
+            ("different event", {"event_ids": ["different_event"]}),
+            ("wrong cut window", {"media_in": self.result["media_in"] + 0.1}),
+            ("overlap", {"media_in": self.approach["media_in"]}),
+            ("agent-bound segment", {"agent_bound": True}),
+        ):
+            with self.subTest(name=name):
+                rows = [self.approach, {**self.result, **updates}]
+                findings = find_duplicate_goal_cuts(rows)
+                self.assertEqual(findings[0]["kind"], "duplicate_canonical_role")
+                if name == "overlap":
+                    self.assertEqual(findings[1]["kind"], "overlapping_goal_windows")
+
+    def test_third_clip_or_replay_still_blocks_render(self):
+        third = {**self.result, "segment_id": "another_cut", "role": self.result["role"] + "_live"}
+        for rows, error in (
+            ([self.approach, self.result, third], "duplicate_canonical_role"),
+            ([self.approach, {**self.result, "is_replay": True}], "replay-risk"),
+            ([self.result, self.approach], "duplicate_canonical_role"),
+        ):
+            with self.subTest(error=error):
+                with self.assertRaisesRegex(ValueError, error):
+                    validate_render_rows(rows)
 
 
 def _obs(media_in: float, media_out: float, *, live_or_replay: str = "live") -> dict:

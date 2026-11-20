@@ -360,6 +360,73 @@ def active_cut_rows(edl: Sequence[Mapping[str, Any]]) -> List[Dict[str, Any]]:
     ]
 
 
+def _is_phase5_split_goal(
+    approach: Mapping[str, Any], result: Mapping[str, Any]
+) -> bool:
+    """Recognize the linked approach/result rows emitted by Phase5 glitch avoidance."""
+    event_ids = approach.get("event_ids")
+    if (
+        not isinstance(event_ids, list)
+        or len(event_ids) != 1
+        or not isinstance(event_ids[0], str)
+        or not event_ids[0].strip()
+        or event_ids != result.get("event_ids")
+    ):
+        return False
+
+    result_id = result.get("segment_id")
+    if (
+        not result_id
+        or approach.get("segment_id") != f"{result_id}_approach"
+        or approach.get("role") != f"{result.get('role')}_approach"
+        or any(row.get("agent_bound") or row.get("integrity_failure") for row in (approach, result))
+    ):
+        return False
+
+    notes = approach.get("glitch_avoidance")
+    if (
+        not isinstance(notes, list)
+        or notes != result.get("glitch_avoidance")
+        or {"action": "split_around_glitch", "n_clips": 2} not in notes
+    ):
+        return False
+
+    labels = []
+    windows = []
+    for part, row, action in (
+        ("approach", approach, "split_approach_before_glitch"),
+        ("result", result, "split_result_after_glitch"),
+    ):
+        provenance = row.get("time_provenance")
+        if not isinstance(provenance, Mapping) or provenance.get("goal_part") != part:
+            return False
+        records = [n for n in notes if isinstance(n, Mapping) and n.get("action") == action]
+        if len(records) != 1:
+            return False
+        recorded_window = records[0].get("window")
+        if not isinstance(recorded_window, list) or len(recorded_window) != 2:
+            return False
+        actual = (_num(row.get("media_in")), _num(row.get("media_out")))
+        expected = tuple(_num(t) for t in recorded_window)
+        if None in actual or None in expected or any(
+            abs(a - round(e, 3)) > 1e-9 for a, e in zip(actual, expected)
+        ):
+            return False
+        labels.append(records[0].get("label"))
+        windows.append(actual)
+
+    (approach_in, approach_out), (result_in, result_out) = windows
+    anchor = _num(result.get("goal_anchor_t_sec"))
+    return (
+        bool(labels[0])
+        and labels[0] == labels[1]
+        and 0 <= approach_in < approach_out < result_in < result_out
+        and anchor is not None
+        and anchor == _num(approach.get("goal_anchor_t_sec"))
+        and result_in <= anchor < result_out
+    )
+
+
 def find_duplicate_goal_cuts(
     edl: Sequence[Mapping[str, Any]],
     *,
@@ -377,6 +444,8 @@ def find_duplicate_goal_cuts(
         by_role.setdefault(canonical_story_role(r.get("role")), []).append(r)
     for role, group in by_role.items():
         if len(group) < 2:
+            continue
+        if len(group) == 2 and _is_phase5_split_goal(*group):
             continue
         dups.append({
             "kind": "duplicate_canonical_role",
