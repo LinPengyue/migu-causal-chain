@@ -3,6 +3,14 @@
 上游事件识别 → 拆条因果链（`causal_chain6`）+ 集锦因果链（`causal_chain8`）。  
 本 README 以**输入/输出约定**为主（同 `eval/DATA_IO.md`）。
 
+## 足球翻盘 Story Chain（2026-11-20 交付版）
+
+[交付目录与操作手册](./11.20sstory_chain/) · 适用于先落后、再扳平并反超的足球比赛。
+
+1. 准备同一场比赛的完整转播 MP4 和赛事事件 JSON，确认事件时间与原片时间轴对齐。已有 V3-R 剪辑基线时，也可直接复用。
+2. 进入 `11.20sstory_chain`，按[环境配置和运行命令](./11.20sstory_chain/README.md#环境准备)安装依赖、配置 Story-First 模型服务并运行。
+3. 在输出目录中查看 V3-R 基线及 Story-First 试剪，按[产物说明](./11.20sstory_chain/README.md#查看产物)找到每轮 MP4、剪辑单和核验报告。正式交付状态以报告中的 `release_authorized` 为准。
+
 ## 环境
 
 ```bash

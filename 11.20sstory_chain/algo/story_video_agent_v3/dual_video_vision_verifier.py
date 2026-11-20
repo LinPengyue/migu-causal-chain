@@ -1,0 +1,741 @@
+"""Dual-video vision Verifier — real frames via ApiProvider.vision_json.
+
+Text/EDL/ffprobe-only paths must NOT authorize semantic ACCEPT.
+"""
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import Any, Dict, List, Mapping, Optional, Sequence, Set
+
+from story_video_agent.api_provider import ApiCallError, ApiConfigError, ApiProvider
+from story_video_agent.frames import FrameBudget, FrameBudgetExhausted, FrameStore
+from story_video_agent.media import probe_video
+
+from .fresh_e2e_cli import edl_diff
+from .story_paid_eval import SYSTEM_VERIFIER, _parse_model_json_lenient
+from .story_timeline import (
+    aligned_narrative_sample_plan,
+    build_story_timeline,
+    story_time_to_media,
+)
+
+# Keep vision payload small under paid caps (one HTTP call).
+MAX_PAIRS = 4
+MAX_FRAMES_TOTAL = 8
+
+
+def _changed_segment_ids(edl_delta: Mapping[str, Any]) -> List[str]:
+    ids: List[str] = []
+    for sid in edl_delta.get("added_segment_ids") or []:
+        ids.append(str(sid))
+    for sid in edl_delta.get("removed_segment_ids") or []:
+        ids.append(str(sid))
+    for ch in edl_delta.get("changed_segments") or []:
+        if isinstance(ch, dict) and ch.get("segment_id"):
+            ids.append(str(ch["segment_id"]))
+    # unique preserve order
+    out: List[str] = []
+    for x in ids:
+        if x not in out:
+            out.append(x)
+    return out
+
+
+def extract_aligned_dual_frames(
+    *,
+    baseline_mp4: Path,
+    candidate_mp4: Path,
+    baseline_edl: Sequence[Mapping[str, Any]],
+    candidate_edl: Sequence[Mapping[str, Any]],
+    work_dir: Path,
+    max_pairs: int = MAX_PAIRS,
+) -> Dict[str, Any]:
+    """Sample comparable narrative positions from both finished cuts."""
+    work_dir.mkdir(parents=True, exist_ok=True)
+    if not baseline_mp4.is_file() or not candidate_mp4.is_file():
+        return {
+            "ok": False,
+            "error": "missing_baseline_or_candidate_mp4",
+            "frames": [],
+            "sent_frame_ids": [],
+            "pairs": [],
+        }
+    base_tl = build_story_timeline(baseline_edl)
+    cand_tl = build_story_timeline(candidate_edl)
+    delta = edl_diff([dict(r) for r in baseline_edl], [dict(r) for r in candidate_edl])
+    from .story_fullcut_sampling import fullcut_edit_context_sample_plan
+
+    plan = fullcut_edit_context_sample_plan(
+        base_tl,
+        cand_tl,
+        changed_segment_ids=_changed_segment_ids(delta),
+        max_slots=max_pairs,
+    )
+    if not plan:
+        return {
+            "ok": False,
+            "error": "no_aligned_narrative_slots",
+            "frames": [],
+            "sent_frame_ids": [],
+            "pairs": [],
+            "baseline_timeline": base_tl,
+            "candidate_timeline": cand_tl,
+        }
+
+    b_store = FrameStore(
+        probe_video(baseline_mp4),
+        out_dir=work_dir / "baseline_frames",
+        budget=FrameBudget(max_frames=MAX_FRAMES_TOTAL),
+    )
+    c_store = FrameStore(
+        probe_video(candidate_mp4),
+        out_dir=work_dir / "candidate_frames",
+        budget=FrameBudget(max_frames=MAX_FRAMES_TOTAL),
+    )
+
+    frames: List[Dict[str, Any]] = []
+    pairs: List[Dict[str, Any]] = []
+    sent_ids: List[str] = []
+
+    def _pull(store: FrameStore, story_sec: float, tl: Mapping[str, Any], *, video_tag: str, slot: str, idx: int):
+        mapped = story_time_to_media(tl, story_sec) or {}
+        # Story playback time on the finished cut == sample time on story_mp4.
+        sample_t = float(story_sec)
+        dur = float(tl.get("story_duration_sec") or 0.0)
+        sample_t = min(max(0.05, sample_t), max(0.05, dur - 0.05) if dur > 0.1 else sample_t)
+        fid = f"{video_tag}_{slot}_{idx}"
+        try:
+            rec = store.extract_at(sample_t, gap_id=f"dual_{video_tag}", tool="dual_video_verifier")
+            d = rec.to_dict()
+        except FrameBudgetExhausted as exc:
+            return {
+                "ok": False,
+                "error": f"FrameBudgetExhausted:{exc}",
+                "frame_id": fid,
+                "video_tag": video_tag,
+            }
+        d["frame_id"] = fid
+        d["video_tag"] = video_tag
+        d["narrative_slot"] = slot
+        d["story_sec"] = round(sample_t, 3)
+        d["source_media_sec"] = mapped.get("media_sec")
+        d["segment_id"] = mapped.get("segment_id")
+        d["role"] = mapped.get("role")
+        d["is_placeholder_story_region"] = bool(mapped.get("is_placeholder"))
+        d["path"] = d.get("path")
+        return {"ok": True, "frame": d}
+
+    for i, slot in enumerate(plan[:max_pairs]):
+        ns = str(slot.get("narrative_slot") or f"slot_{i}")
+        b = _pull(
+            b_store,
+            float(slot["baseline_story_sec"]),
+            base_tl,
+            video_tag="baseline",
+            slot=ns,
+            idx=i,
+        )
+        c = _pull(
+            c_store,
+            float(slot["candidate_story_sec"]),
+            cand_tl,
+            video_tag="candidate",
+            slot=ns,
+            idx=i,
+        )
+        pair = {
+            "narrative_slot": ns,
+            "reason": slot.get("reason"),
+            "baseline": b,
+            "candidate": c,
+        }
+        pairs.append(pair)
+        if b.get("ok") and b.get("frame"):
+            frames.append(b["frame"])
+            sent_ids.append(str(b["frame"]["frame_id"]))
+        if c.get("ok") and c.get("frame"):
+            frames.append(c["frame"])
+            sent_ids.append(str(c["frame"]["frame_id"]))
+
+    usable = [f for f in frames if f.get("path") and Path(f["path"]).is_file()]
+    return {
+        "ok": len(usable) >= 4 and any(f.get("video_tag") == "baseline" for f in usable)
+        and any(f.get("video_tag") == "candidate" for f in usable),
+        "frames": usable,
+        "all_extracted": frames,
+        "sent_frame_ids": [str(f["frame_id"]) for f in usable],
+        "pairs": pairs,
+        "sample_plan": plan,
+        "baseline_timeline": base_tl,
+        "candidate_timeline": cand_tl,
+        "edl_delta": delta,
+        "claims_full_video_watch": False,
+        "observation_method": "fullcut_edit_context_sampled_dual_frames",
+        "sampling_slots": [p.get("narrative_slot") for p in plan[:max_pairs]],
+        "note": (
+            "Before/edit/after and where possible eventual ending are sampled "
+            "from TWO finished cuts. An insert's baseline counterpart is its "
+            "unedited cut boundary, not the same event. Sparse stills cannot "
+            "exclude other full-cut regressions or assess audio continuity."
+        ),
+    }
+
+
+def _collect_cited_frame_ids(validated: Mapping[str, Any]) -> Set[str]:
+    cited: Set[str] = set()
+
+    def _walk_refs(refs: Any) -> None:
+        if not isinstance(refs, list):
+            return
+        for ref in refs:
+            if not isinstance(ref, dict):
+                continue
+            for key in ("frame_id", "id", "ref"):
+                v = ref.get(key)
+                if v is None:
+                    continue
+                s = str(v)
+                if s.startswith("baseline_") or s.startswith("candidate_") or "frame" in s.lower():
+                    cited.add(s)
+                # also accept exact sent ids later via intersection
+                cited.add(s)
+
+    for item in validated.get("evidence_of_improvement") or []:
+        if isinstance(item, dict):
+            _walk_refs(item.get("evidence_refs"))
+    dims = validated.get("dimensions") or {}
+    if isinstance(dims, dict):
+        for d in dims.values():
+            if isinstance(d, dict):
+                _walk_refs(d.get("evidence_refs"))
+    return cited
+
+
+def validate_visual_verifier_payload(
+    validated: Mapping[str, Any],
+    *,
+    sent_frame_ids: Sequence[str],
+) -> Dict[str, Any]:
+    """Fail-closed: improved claims require citations to frames actually sent."""
+    sent = {str(x) for x in sent_frame_ids}
+    out = dict(validated)
+    reasons: List[str] = []
+    delta = str(out.get("quality_delta_vs_baseline") or "").strip().lower()
+    cited = _collect_cited_frame_ids(out)
+    cited_sent = {c for c in cited if c in sent}
+
+    if not sent:
+        reasons.append("no_frames_sent")
+        out["quality_delta_vs_baseline"] = "NOT_EVALUATED"
+        out["accept_candidate"] = False
+        out["semantic_status"] = "NOT_EVALUATED"
+        return {
+            "ok_for_semantic_accept": False,
+            "semantic_verification_status": "NOT_EVALUATED",
+            "validated": out,
+            "reasons": reasons,
+            "cited_sent_frame_ids": sorted(cited_sent),
+            "sent_frame_ids": sorted(sent),
+        }
+
+    if delta in ("improved", "better"):
+        eoi = out.get("evidence_of_improvement") or []
+        if not eoi:
+            reasons.append("improved_without_evidence_of_improvement")
+            out["quality_delta_vs_baseline"] = "NOT_EVALUATED"
+            out["accept_candidate"] = False
+        elif not cited_sent:
+            reasons.append("improved_evidence_refs_not_in_sent_frames")
+            out["quality_delta_vs_baseline"] = "NOT_EVALUATED"
+            out["accept_candidate"] = False
+            reasons.append("refuse_text_only_or_unknown_frame_citations")
+        else:
+            # Require at least one baseline and one candidate citation when claiming improve.
+            has_b = any(c.startswith("baseline_") for c in cited_sent)
+            has_c = any(c.startswith("candidate_") for c in cited_sent)
+            if not (has_b and has_c):
+                reasons.append("improved_requires_both_baseline_and_candidate_frame_citations")
+                out["quality_delta_vs_baseline"] = "NOT_EVALUATED"
+                out["accept_candidate"] = False
+
+    # Dimensions claiming improved without video frame refs → force NOT_EVALUATED
+    dims = out.get("dimensions") if isinstance(out.get("dimensions"), dict) else {}
+    fixed_dims: Dict[str, Any] = {}
+    for name, d in dims.items():
+        if not isinstance(d, dict):
+            continue
+        dd = dict(d)
+        if str(dd.get("status") or "").lower() == "improved":
+            refs = dd.get("evidence_refs") or []
+            ok_refs = False
+            for ref in refs:
+                if isinstance(ref, dict):
+                    tok = str(ref.get("frame_id") or ref.get("ref") or ref.get("id") or "")
+                    if tok in sent:
+                        ok_refs = True
+                        break
+            if not ok_refs:
+                dd["status"] = "NOT_EVALUATED"
+                dd["score"] = None
+                reasons.append(f"dim_{name}_improved_without_sent_frame_refs")
+        fixed_dims[name] = dd
+    out["dimensions"] = fixed_dims
+
+    # Preserve Phase8 soft_quality even when formal accept is refused.
+    soft = (
+        out.get("soft_quality")
+        or out.get("phase8_quality")
+        or out.get("story_quality_soft")
+    )
+    if soft:
+        out["soft_quality"] = str(soft).strip().upper()
+
+    hard = list(out.get("hard_vetoes") or [])
+    accept = bool(out.get("accept_candidate")) and not hard
+    if str(out.get("quality_delta_vs_baseline") or "").lower() not in ("improved", "better"):
+        accept = False
+        if out.get("accept_candidate"):
+            reasons.append("refuse_accept_without_validated_improved_delta")
+        out["accept_candidate"] = False
+        # Soft PROMISING/UNCERTAIN may remain; formal delta stays NOT_EVALUATED.
+
+    if accept and not cited_sent:
+        accept = False
+        out["accept_candidate"] = False
+        reasons.append("refuse_accept_without_sent_visual_citations")
+
+    semantic = "PASSED" if accept else (
+        "FAILED" if hard else "NOT_EVALUATED"
+    )
+    if accept:
+        semantic = "PASSED"
+    elif hard:
+        semantic = "FAILED"
+    else:
+        semantic = "NOT_EVALUATED"
+        out.setdefault("quality_delta_vs_baseline", "NOT_EVALUATED")
+
+    out["semantic_status"] = semantic
+    return {
+        "ok_for_semantic_accept": bool(accept) and semantic == "PASSED",
+        "semantic_verification_status": semantic,
+        "validated": out,
+        "reasons": reasons,
+        "cited_sent_frame_ids": sorted(cited_sent),
+        "sent_frame_ids": sorted(sent),
+    }
+
+
+def build_verifier_focus_from_revision_cases(
+    revision_cases: Optional[Sequence[Mapping[str, Any]]] = None,
+) -> Dict[str, Any]:
+    """Match-agnostic verifier focus text from actual revision_case records.
+
+    Never hardcodes a specific match or story template (e.g. A critical bridge).
+    """
+    cases = [c for c in (revision_cases or []) if isinstance(c, dict)]
+    if not cases:
+        return {
+            "ok": False,
+            "focus_lines": [
+                "No revision_case supplied. Judge only whether any cited frame "
+                "pair shows a concrete before/after story improvement; do not "
+                "invent match-specific defects."
+            ],
+            "targets": [],
+            "note": "generic_no_revision_case",
+        }
+    targets: List[Dict[str, Any]] = []
+    focus_lines: List[str] = []
+    for i, case in enumerate(cases[:4]):
+        problem = case.get("original_story_problem") or {}
+        footage = case.get("candidate_footage") or {}
+        pts = footage.get("source_pts") or {}
+        apply_row = footage.get("apply") or {}
+        target = {
+            "issue_id": case.get("issue_id"),
+            "revision_intent_id": case.get("revision_intent_id"),
+            "original_defect": problem.get("observation")
+            or case.get("video_observation_evidence"),
+            "missing_information": problem.get("missing_information"),
+            "causal_explanation": problem.get("causal_explanation")
+            or case.get("defect_cause_hypothesis"),
+            "expected_improvement": case.get("expected_improvement"),
+            "falsification_evidence": case.get("falsification_evidence"),
+            "target_action": case.get("target_action"),
+            "edit_location": {
+                "insert_after_segment_id": apply_row.get("insert_after_segment_id"),
+                "segment_id": apply_row.get("segment_id"),
+                "bound_source_pts": pts,
+            },
+            "evidence_requirement": (
+                "Cite baseline_* and candidate_* frame_ids that show whether the "
+                "ORIGINAL defect was resolved; BETTER aesthetics alone is insufficient."
+            ),
+        }
+        is_story_first = bool(case.get("story_first_trial_id"))
+        if is_story_first:
+            target["story_first_trial_id"] = case["story_first_trial_id"]
+            target["evidence_requirement"] = (
+                "Cite baseline_* and candidate_* frames for the proposed editorial gain "
+                "and check whether insertion introduces a new defect."
+            )
+        focus_question = ("  assessment=Story-First editorial hypothesis\n"
+                          if is_story_first
+                          else f"  original_defect={target['original_defect']}\n")
+        targets.append(target)
+        focus_lines.append(
+            f"CASE[{i}] issue_id={target['issue_id']} intent={target['revision_intent_id']} "
+            f"action={target['target_action']}\n"
+            f"{focus_question}"
+            f"  expected_improvement={target['expected_improvement']}\n"
+            f"  edit_location={json.dumps(target['edit_location'], ensure_ascii=False)}\n"
+            f"  falsify_if={target['falsification_evidence']}\n"
+            f"  evidence_requirement={target['evidence_requirement']}"
+        )
+    return {
+        "ok": True,
+        "focus_lines": focus_lines,
+        "targets": targets,
+        "note": "built_from_revision_cases_match_agnostic",
+    }
+
+
+def run_dual_video_vision_verifier(
+    api: ApiProvider,
+    *,
+    baseline_mp4: Path,
+    candidate_mp4: Path,
+    baseline_edl: Sequence[Mapping[str, Any]],
+    candidate_edl: Sequence[Mapping[str, Any]],
+    work_dir: Path,
+    audit_dir: Path,
+    max_pairs: int = MAX_PAIRS,
+    revision_cases: Optional[Sequence[Mapping[str, Any]]] = None,
+) -> Dict[str, Any]:
+    """Vision-backed dual cut comparison. No frames → NOT_EVALUATED (never text ACCEPT)."""
+    audit_dir.mkdir(parents=True, exist_ok=True)
+    pack = extract_aligned_dual_frames(
+        baseline_mp4=baseline_mp4,
+        candidate_mp4=candidate_mp4,
+        baseline_edl=baseline_edl,
+        candidate_edl=candidate_edl,
+        work_dir=work_dir,
+        max_pairs=max_pairs,
+    )
+    (audit_dir / "dual_frame_pack.json").write_text(
+        json.dumps(
+            {
+                k: pack.get(k)
+                for k in (
+                    "ok", "error", "sent_frame_ids", "pairs", "sample_plan",
+                    "claims_full_video_watch", "observation_method", "note", "edl_delta",
+                )
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    if not pack.get("ok"):
+        return {
+            "ok": False,
+            "provider_mode": "skipped_insufficient_frames",
+            "error": pack.get("error") or "insufficient_aligned_frames",
+            "validated": {
+                "hard_vetoes": [],
+                "dimensions": {},
+                "evidence_of_improvement": [],
+                "quality_delta_vs_baseline": "NOT_EVALUATED",
+                "accept_candidate": False,
+                "semantic_status": "NOT_EVALUATED",
+            },
+            "ok_for_semantic_accept": False,
+            "semantic_verification_status": "NOT_EVALUATED",
+            "sent_frame_ids": pack.get("sent_frame_ids") or [],
+            "frame_pack": pack,
+            "reasons": ["insufficient_visual_evidence"],
+        }
+
+    frames = list(pack["frames"])
+    paths = [Path(f["path"]) for f in frames]
+    fids = [str(f["frame_id"]) for f in frames]
+    bindings = []
+    for f in frames:
+        bindings.append({
+            "frame_id": f["frame_id"],
+            "requested_media_sec": f.get("story_sec"),
+            "actual_media_sec": f.get("actual_media_sec") or f.get("story_sec"),
+            "pts_status": f.get("pts_status") or "story_playback",
+            "video_tag": f.get("video_tag"),
+            "narrative_slot": f.get("narrative_slot"),
+            "segment_id": f.get("segment_id"),
+            "source_media_sec": f.get("source_media_sec"),
+        })
+
+    meta_lines = []
+    for f in frames:
+        meta_lines.append(
+            f"{f['frame_id']}: video={f.get('video_tag')} slot={f.get('narrative_slot')} "
+            f"story_sec={f.get('story_sec')} source_pts={f.get('source_media_sec')} "
+            f"segment_id={f.get('segment_id')} role={f.get('role')}"
+        )
+    from .truncated_response_recovery import SHORT_PER_REVISION_JSON_SCHEMA
+    from .story_fullcut_delta import compare_fullcut_edls
+
+    fullcut_delta = compare_fullcut_edls(baseline_edl, candidate_edl)
+    focus = build_verifier_focus_from_revision_cases(revision_cases)
+    (audit_dir / "verifier_focus_from_revision_cases.json").write_text(
+        json.dumps(focus, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    focus_block = "\n".join(focus.get("focus_lines") or [])
+    case_guidance = (
+        "For each case, judge whether the ORIGINAL defect was resolved and whether "
+        "new defects appeared. BETTER aesthetics alone is insufficient.\n"
+        "Top-level: hard_vetoes, quality_delta_vs_baseline, accept_candidate "
+        "(true only if original issues resolved AND no new defects AND citations).\n"
+    )
+    if any(target.get("story_first_trial_id") for target in focus.get("targets", [])):
+        case_guidance = (
+            "For a Story-First editorial hypothesis, use issue_effect to report whether "
+            "the proposed observable improvement is shown by the comparison. "
+            "Check whether the inserted footage improves the story and flows into the "
+            "surrounding edit. Judge supported observations and the edit; do not infer "
+            "an on-field causal link or assume a baseline defect.\n"
+            "For any diagnosed defect, judge whether it was resolved. "
+            "BETTER aesthetics alone is insufficient.\n"
+            "Top-level: hard_vetoes, quality_delta_vs_baseline, accept_candidate "
+            "(true only if all targeted improvements are evidenced, diagnosed defects "
+            "are resolved, and no new defects appear).\n"
+        )
+    prompt = (
+        f"{SYSTEM_VERIFIER}\n"
+        "Compare BASELINE vs CANDIDATE using ONLY provided frames (NOT full-video watch).\n"
+        "EDIT_IMPACT is the added/changed segment in CANDIDATE; its BASELINE "
+        "counterpart may be the former cut boundary, NOT the same play. "
+        "PRE_EDIT and POST_EDIT are matched, shared original story segments. "
+        "GLOBAL_ENDING is a check of eventual payoff, not full coverage. "
+        "If these evidence slots are missing, mark semantic gains UNCERTAIN.\n"
+        "Do not reward added run time, emotional heat, or extra shots without "
+        "new story information that improves understanding of the next beat.\n"
+        "Reply with SHORT JSON only. Keep per_revision_judgments ≤4 items; "
+        "observed_visuals ≤1 short sentence; notes ≤12 words.\n"
+        f"Primary schema: {SHORT_PER_REVISION_JSON_SCHEMA}\n"
+        "Verification targets come ONLY from revision_case records below "
+        "(match-agnostic; do not assume any specific match or story template).\n"
+        f"REVISION_CASES:\n{focus_block}\n"
+        f"{case_guidance}"
+        "Also include Phase8 SOFT fields (independent of accept_candidate):\n"
+        "  soft_quality: BETTER|PROMISING|SAME|WORSE|UNCERTAIN\n"
+        "  issue_effect: RESOLVED|PARTIAL|UNRESOLVED|UNOBSERVED\n"
+        "  global_regression: YES|NO|UNKNOWN\n"
+        "  observed_changes: short list of visible differences\n"
+        "  suggested_next_evidence: null OR {question, source_pts|story_window, issue_id}\n"
+        "  evidence_of_improvement / cited frame_ids from FRAME_MANIFEST only.\n"
+        "PROMISING = partial narrative gain without full resolution; do NOT set "
+        "accept_candidate true for PROMISING alone. Formal accept gate unchanged.\n"
+        "ALSO give fullcut_comparison with FIVE concise aspects: "
+        "information_gain, beat_continuity, pacing_tradeoff, redundancy, "
+        "global_regression. Each aspect is "
+        "{verdict:STRING,observed_difference:STRING,frame_ids:[BASELINE_ID,CANDIDATE_ID]}. "
+        "Use verdicts: information_gain YES|NO|UNCERTAIN; "
+        "beat_continuity IMPROVED|SAME|WORSE|UNCERTAIN; "
+        "pacing_tradeoff JUSTIFIED|NOT_JUSTIFIED|UNCERTAIN; "
+        "redundancy NO|YES|UNCERTAIN; global_regression NO|YES|UNKNOWN. "
+        "Also include recommendation CANDIDATE_PREFERABLE|KEEP_BASELINE|UNRESOLVED "
+        "and marginal_gain_vs_duration as one concrete sentence. "
+        "Cite BOTH versions for every aspect; include edit_impact plus "
+        "pre_edit/post_edit context and global_ending when present. "
+        "If samples cannot show audio or complete story transitions, report UNKNOWN "
+        "rather than guessing absence of regression. "
+        f"FULLCUT_EDL_DURATION_DIFFERENCE:{json.dumps({'baseline_duration_sec': fullcut_delta.get('baseline_duration_sec'), 'candidate_duration_sec': fullcut_delta.get('candidate_duration_sec'), 'duration_delta_sec': fullcut_delta.get('duration_delta_sec')})}\n"
+        "Cite only FRAME_MANIFEST ids.\n"
+        f"FRAME_MANIFEST:\n" + "\n".join(meta_lines) + "\n"
+    )
+    mock = {
+        "hard_vetoes": [],
+        "dimensions": {},
+        "evidence_of_improvement": [],
+        "quality_delta_vs_baseline": "NOT_EVALUATED",
+        "accept_candidate": False,
+        "reasons": ["mock"],
+    }
+    try:
+        raw = api.vision_json(
+            prompt=prompt,
+            frame_paths=paths,
+            frame_ids=fids,
+            mock_obj=mock,
+            frame_bindings=bindings,
+        )
+    except (ApiConfigError, ApiCallError) as exc:
+        return {
+            "ok": False,
+            "error": f"{type(exc).__name__}:{exc}",
+            "provider_mode": "degraded",
+            "validated": {
+                "hard_vetoes": [],
+                "dimensions": {},
+                "evidence_of_improvement": [],
+                "quality_delta_vs_baseline": "NOT_EVALUATED",
+                "accept_candidate": False,
+                "semantic_status": "NOT_EVALUATED",
+            },
+            "ok_for_semantic_accept": False,
+            "semantic_verification_status": "NOT_EVALUATED",
+            "sent_frame_ids": fids,
+            "frame_pack": pack,
+            "reasons": ["vision_api_failed"],
+        }
+
+    content = str(raw.get("content") or "")
+    parsed = None
+    parse_error = None
+    try:
+        parsed = _parse_model_json_lenient(content)
+    except Exception as exc:  # noqa: BLE001
+        parse_error = f"parse:{type(exc).__name__}:{exc}"
+
+    from .truncated_response_recovery import recover_per_revision_judgments
+
+    recovery = recover_per_revision_judgments(
+        content,
+        sent_frame_ids=fids,
+        finish_reason=raw.get("finish_reason"),
+        parse_error=parse_error,
+    )
+    from .story_paid_eval import _call_audit_from_raw
+
+    call_audit = _call_audit_from_raw(raw)
+    (audit_dir / "dual_vision_verifier_raw.json").write_text(
+        json.dumps(
+            {
+                "raw_excerpt": content[:8000],
+                "parsed": parsed,
+                "parse_error": parse_error,
+                "usage": raw.get("usage"),
+                "sent_frame_ids": fids,
+                "finish_reason": raw.get("finish_reason"),
+                "call_audit": call_audit,
+                "request_audit": raw.get("request_audit"),
+                "response_audit": raw.get("response_audit"),
+                "truncated_recovery": {
+                    k: recovery.get(k)
+                    for k in (
+                        "status_tags",
+                        "n_valid_recovered",
+                        "n_rejected",
+                        "extraction",
+                        "raw_response_sha256",
+                    )
+                },
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (audit_dir / "truncated_recovery.json").write_text(
+        json.dumps(recovery, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    mode = str(raw.get("provider_mode") or "")
+    if mode == "openai_compatible":
+        mode = "real"
+
+    # If full parse failed, rebuild a fail-closed payload that still preserves
+    # recovered per-revision judgments (never invent ACCEPT/IMPROVED).
+    if parse_error or not parsed:
+        recovered = list(recovery.get("recovered") or [])
+        parsed = {
+            "hard_vetoes": [],
+            "dimensions": {},
+            "evidence_of_improvement": [],
+            "quality_delta_vs_baseline": "NOT_EVALUATED",
+            "accept_candidate": False,
+            "semantic_status": "NOT_EVALUATED",
+            "per_revision_judgments": [r.get("judgment") for r in recovered if r.get("judgment")],
+            "recovery_status_tags": recovery.get("status_tags") or [],
+            "reasons": ["parse_failed_or_truncated", "BETTER_not_auto_ACCEPT"],
+        }
+        # Still fail-closed for ACCEPT even if some items recovered as BETTER.
+        gate = validate_visual_verifier_payload(parsed, sent_frame_ids=fids)
+        return {
+            "ok": mode == "real" and bool(recovered),
+            "provider_mode": mode,
+            "error": parse_error or "empty_parsed",
+            "validated": gate["validated"],
+            "ok_for_semantic_accept": False,
+            "semantic_verification_status": "NOT_EVALUATED",
+            "sent_frame_ids": fids,
+            "cited_sent_frame_ids": gate.get("cited_sent_frame_ids"),
+            "frame_pack": pack,
+            "est_cost_usd": raw.get("est_cost_usd"),
+            "usage": raw.get("usage"),
+            "reasons": list(gate.get("reasons") or []) + ["truncated_recovery_fail_closed_accept"],
+            "vision_backed": bool(fids),
+            "truncated_recovery": recovery,
+            "per_revision_judgments_recovered": recovered,
+        }
+
+    gate = validate_visual_verifier_payload(parsed, sent_frame_ids=fids)
+    from .story_fullcut_semantic import screen_fullcut_semantic_gain
+
+    fullcut_screen = screen_fullcut_semantic_gain(
+        parsed.get("fullcut_comparison"),
+        frame_pack=pack,
+        baseline_mp4=baseline_mp4,
+        candidate_mp4=candidate_mp4,
+        finish_reason=raw.get("finish_reason"),
+    )
+    (audit_dir / "fullcut_semantic_screen.json").write_text(
+        json.dumps(fullcut_screen, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    # Attach any extra recovered per-revision rows for case binding.
+    if recovery.get("recovered") and not parsed.get("per_revision_judgments"):
+        parsed = dict(gate["validated"])
+        parsed["per_revision_judgments"] = [
+            r.get("judgment") for r in recovery["recovered"] if r.get("judgment")
+        ]
+    return {
+        "ok": mode == "real",
+        "provider_mode": mode,
+        "validated": gate["validated"],
+        "ok_for_semantic_accept": gate["ok_for_semantic_accept"],
+        "semantic_verification_status": gate["semantic_verification_status"],
+        "sent_frame_ids": fids,
+        "cited_sent_frame_ids": gate.get("cited_sent_frame_ids"),
+        "frame_pack": pack,
+        "est_cost_usd": raw.get("est_cost_usd"),
+        "usage": raw.get("usage"),
+        "reasons": gate.get("reasons") or [],
+        "vision_backed": True,
+        "fullcut_semantic_screen": fullcut_screen,
+        "truncated_recovery": recovery,
+        "per_revision_judgments_recovered": recovery.get("recovered") or [],
+    }
+
+
+def text_only_verifier_forbidden_result() -> Dict[str, Any]:
+    """Explicit reject path when caller attempts text/EDL-only verification."""
+    return {
+        "ok": False,
+        "provider_mode": "text_only_forbidden",
+        "error": "text_or_edl_only_verifier_forbidden",
+        "validated": {
+            "hard_vetoes": [],
+            "dimensions": {},
+            "evidence_of_improvement": [],
+            "quality_delta_vs_baseline": "NOT_EVALUATED",
+            "accept_candidate": False,
+            "semantic_status": "NOT_EVALUATED",
+        },
+        "ok_for_semantic_accept": False,
+        "semantic_verification_status": "NOT_EVALUATED",
+        "sent_frame_ids": [],
+        "reasons": ["text_only_verifier_cannot_authorize_accept"],
+        "vision_backed": False,
+    }
