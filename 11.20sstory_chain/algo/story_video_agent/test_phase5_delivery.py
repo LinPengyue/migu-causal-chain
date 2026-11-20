@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+import json
+
+import pytest
+
 from story_video_agent.phase5_delivery import (
     apply_glitch_avoidance,
     assess_goal_completeness,
@@ -12,6 +16,78 @@ from story_video_agent.phase5_delivery import (
     select_delivery_rows,
     validate_story_graph,
 )
+from story_video_agent.phase5_pipeline import run_phase5
+from story_video_agent_v3.global_story_critic import detect_goal_coverage_hypotheses
+from story_video_agent_v3.story_first_hypotheses import adjacent_story_anchor_pairs
+
+
+@pytest.mark.parametrize(
+    ("opening_goals", "expect_opening"),
+    [
+        ([(225.0, False), (218.0, True), (190.0, False)], True),
+        ([(225.0, False), (218.0, False)], False),
+        ([(225.0, True)], False),
+    ],
+    ids=["unique-live-goal", "ambiguous-goals", "replay-only"],
+)
+def test_phase5_opening_goal_between_sparse_score_observations(tmp_path, opening_goals, expect_opening):
+    observations = [
+        (100.0, "0:0", False),
+        (200.0, "0:0", False),
+        (410.0, "0:0", True),
+        (420.0, "0:1", False),
+        (430.0, "0:1", False),
+        (620.0, "1:1", False),
+        (630.0, "1:1", False),
+        (820.0, "2:1", False),
+        (830.0, "2:1", False),
+    ]
+    events = [
+        {
+            "event_id": f"board_{index}",
+            "event_type": "Pass",
+            "event_type_zh": "传球",
+            "media_time": {"event_time_sec": t_sec},
+            "scores": {"score_recognition": score},
+            "video_context": {"is_replay": replay},
+        }
+        for index, (t_sec, score, replay) in enumerate(observations)
+    ]
+    chains = [
+        {
+            "annotation_id": f"chain_{index}",
+            "is_replay": replay,
+            "events": [{
+                "event_id": f"goal_{index}",
+                "type": "进球",
+                "type_en": "Goal",
+                "t_ms": t_sec * 1000,
+            }],
+        }
+        for index, (t_sec, replay) in enumerate([*opening_goals, (590.0, False), (790.0, False)])
+    ]
+    events_path = tmp_path / "events.json"
+    causal_path = tmp_path / "causal.json"
+    out_dir = tmp_path / "phase5"
+    events_path.write_text(json.dumps({"events": events}), encoding="utf-8")
+    causal_path.write_text(json.dumps({"causal_chains": chains}), encoding="utf-8")
+    run_phase5(
+        video=tmp_path / "source.mp4", events=events_path, causal=causal_path,
+        out_dir=out_dir, skip_render=True,
+    )
+    edl = json.loads((out_dir / "candidate_edl.json").read_text(encoding="utf-8"))
+    opening = [row for row in edl if row["role"] == "opponent_opening_goal_action"]
+    issues = detect_goal_coverage_hypotheses(raw_events=events, edl=edl)
+    opening_issues = [issue for issue in issues if issue["issue_id"] == "goal_coverage_00_to_01"]
+    if expect_opening:
+        assert [row["goal_anchor_t_sec"] for row in opening] == [225.0]
+        assert adjacent_story_anchor_pairs(edl)[0] == (
+            "seg_opponent_opening_goal_action", "seg_equalizer_goal_action",
+        )
+        assert not opening_issues
+    else:
+        assert not opening
+        assert [issue["possible_action_interval"]["media_in"] for issue in opening_issues] == [200.0]
 
 
 def test_glitch_split_keeps_approach_and_result():

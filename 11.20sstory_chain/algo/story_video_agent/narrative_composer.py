@@ -15,6 +15,7 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 from story_video_agent.api_provider import ApiProvider
 from story_video_agent.event_mapping import (
+    DEFAULT_TIME_SLACK_SEC,
     find_live_goal_candidates,
     find_replay_supplements,
     index_story_events,
@@ -312,6 +313,24 @@ def compose_story_plan(
             and str(c["event_id"]) not in used_live_goal_ids
         ]
         ranked.sort(key=lambda c: abs(float(c["dt_to_score_sec"])))
+        opener_selection_reason = "opponent_opening_goal_near_behind_scoreboard"
+        previous_score_t = behind.get("previous_score_observed_t_sec")
+        if (
+            not ranked
+            and isinstance(previous_score_t, (int, float))
+            and 0.0 <= previous_score_t < behind_score_t - DEFAULT_TIME_SLACK_SEC
+        ):
+            extended = find_live_goal_candidates(
+                events,
+                score_t=behind_score_t,
+                role_hint="铺垫",
+                slack_before=behind_score_t - previous_score_t,
+                slack_after=0.0,
+            )
+            # 多条因果链可能引用同一动作。多个不同的进球时刻仍需定位。
+            if len({candidate["t_sec"] for candidate in extended}) == 1:
+                ranked = extended
+                opener_selection_reason = "opponent_opening_goal_in_observed_score_interval"
         if ranked:
             best = ranked[0]
             live_id = str(best["event_id"])
@@ -356,7 +375,7 @@ def compose_story_plan(
                         f"率先失球动作 {live_id} @ {t_goal}s"
                         f"（相对 0:1 记分牌 Δ={best.get('dt_to_score_sec')}s；非记分牌时间）。"
                     ),
-                    selection_reason="opponent_opening_goal_near_behind_scoreboard",
+                    selection_reason=opener_selection_reason,
                     source_refs=[
                         provenance_ref(
                             namespace="t01_story_event"

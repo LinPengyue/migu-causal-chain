@@ -68,6 +68,9 @@ def recover_goal_candidates(raw_events: Sequence[Dict[str, Any]]) -> List[Dict[s
         before_obs = [o for o in obs if tuple(o["score"]) == prev and o["media_sec"] < confirm]
         after_obs = [o for o in obs if tuple(o["score"]) == cur and o["media_sec"] >= confirm - 0.5]
         last_before = max(before_obs, key=lambda o: o["media_sec"], default=None)
+        last_before_live_sec = max(
+            (o["media_sec"] for o in before_obs if not o["is_replay"]), default=None
+        )
         first_after = min(after_obs, key=lambda o: o["media_sec"], default=None)
         win_lo = float(last_before["media_sec"]) if last_before else confirm - 180.0
         win_hi = confirm
@@ -103,6 +106,7 @@ def recover_goal_candidates(raw_events: Sequence[Dict[str, Any]]) -> List[Dict[s
             "score_confirmation_event_id": row.get("event_id"),
             "score_confirmation_event_type": row.get("event_type"),
             "last_before_score_obs_sec": last_before["media_sec"] if last_before else None,
+            "last_before_live_score_obs_sec": last_before_live_sec,
             "first_after_score_obs_sec": first_after["media_sec"] if first_after else None,
             "possible_action_interval": {
                 "media_in": round(win_lo, 3),

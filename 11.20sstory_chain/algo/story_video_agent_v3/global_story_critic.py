@@ -129,9 +129,14 @@ def detect_goal_coverage_hypotheses(
             confirm = float(cand["score_confirmation_sec"])
         except (TypeError, ValueError, KeyError):
             continue
-        # Existing Goal Recovery uses a 180s scoreboard-lag search prior.
-        # Avoid forcing an action after the board confirmation into coverage.
+        # Keep the default lookback and include an earlier observation of the old score.
+        # The score confirmation itself still does not establish action coverage.
         lo, hi = max(0.0, confirm - 180.0), confirm - 0.5
+        last_before_live = cand.get("last_before_live_score_obs_sec")
+        last_before = cand.get("last_before_score_obs_sec")
+        extended = last_before_live is not None and 0.0 <= last_before_live < lo
+        if extended:
+            lo = last_before = last_before_live
         if hi <= lo:
             continue
 
@@ -219,11 +224,7 @@ def detect_goal_coverage_hypotheses(
             evidence_sufficiency="needs_video_verify",
             category="goal_coverage",
         )
-        last_before = cand.get("last_before_score_obs_sec")
-        try:
-            search_lo = max(lo, float(last_before) - 30.0) if last_before is not None else lo
-        except (TypeError, ValueError, OverflowError):
-            search_lo = lo
+        search_lo = max(lo, last_before - 30.0) if last_before is not None else lo
         if hi - search_lo < 6.0:
             search_lo = lo
         issue.update({
@@ -242,7 +243,10 @@ def detect_goal_coverage_hypotheses(
             "possible_action_interval": {
                 "media_in": round(lo, 3),
                 "media_out": round(hi, 3),
-                "source": "score_recognition_bounded_180s_not_goal_action",
+                "source": (
+                    "last_old_score_observation_not_goal_action"
+                    if extended else "score_recognition_bounded_180s_not_goal_action"
+                ),
             },
             "score_transition_source": "raw_or_permitted_enriched_event_scoreboard",
             "action_timestamp_known": False,

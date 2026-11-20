@@ -1,8 +1,8 @@
 # 足球翻盘 Story Chain
 
-2026-11-20 交付版，冻结自 [已验收的实现 b5d782d](https://github.com/LinPengyue/migu-causal-chain/commit/b5d782d78cd2081007e892bbede2ee2989289c63)。
+2026-11-20 交付版，基于 [已验收的实现 b5d782d](https://github.com/LinPengyue/migu-causal-chain/commit/b5d782d78cd2081007e892bbede2ee2989289c63)。
 
-本版适用于先落后、再扳平并反超的足球比赛。V3-R 先生成覆盖比分转折的剪辑基线，Story-First 再从相邻故事节点之间寻找铺垫，核验新增素材、渲染试剪并检查剪辑边界。交付目录包含冻结的算法代码 `algo/`、拆条适配入口 `eval/strip_adapter.py`、依赖和操作手册。比赛素材由运行方提供。
+本版适用于先落后、再扳平并反超的足球比赛。V3-R 先生成覆盖比分转折的剪辑基线，Story-First 再从相邻故事节点之间寻找铺垫，核验新增素材、渲染试剪并检查剪辑边界。交付目录包含算法代码 `algo/`、拆条适配入口 `eval/strip_adapter.py`、依赖和操作手册。比赛素材由运行方提供。
 
 ## 环境准备
 
@@ -58,6 +58,8 @@ STORY_API_ENABLE=1 python -m story_video_agent_v3.story_e2e_cli \
 ### 复用已有 V3-R 基线
 
 已有同一源片生成的 `04_phase5` 时，使用上一条命令，把 `--run-fresh-v3r` 换成 `--phase5-dir "/absolute/path/04_phase5"`，并把 `--events-json` 指向同次运行的 `01_enrich/events_enriched.json`。基线目录需有 `story_plan.json`、`candidate_edl.json` 和 `story_clean.mp4`，如有 `t01_story.json` 一并保留。命令中的 `--match-json` 和 `--source-mp4` 仍指向同场原始输入。
+
+比分采样稀疏时，V3-R 可以回查到上一次旧比分观测，从已有事件中定位唯一的非回放首球候选。要让历史比赛应用这项修正，使用 `--run-fresh-v3r` 在新输出目录重建基线。原运行使用因果链补充原子事件时，重建时用 `--causal-atoms-json` 指向同一标注文件。
 
 ## 查看产物
 

@@ -23,15 +23,19 @@ class ScoreNode:
     opening: bool = False
     delta_side: Optional[str] = None
     carrier_event_id: Optional[str] = None
+    previous_score_observed_t_sec: Optional[float] = None
 
     def to_dict(self) -> Dict[str, Any]:
-        return {
+        row = {
             "t_sec": round(self.t_sec, 3),
             "score": f"{self.score[0]}:{self.score[1]}",
             "opening": self.opening,
             "delta_side": self.delta_side,
             "carrier_event_id": self.carrier_event_id,
         }
+        if self.previous_score_observed_t_sec is not None:
+            row["previous_score_observed_t_sec"] = round(self.previous_score_observed_t_sec, 3)
+        return row
 
 
 @dataclass
@@ -138,9 +142,13 @@ def build_score_path(events: Sequence[Dict[str, Any]]) -> List[ScoreNode]:
             carrier_event_id=start_event,
         )
     ]
+    last_observed_t = start_t
     for index, row in enumerate(points):
         prev = path[-1]
         if row.t_sec < prev.t_sec:
+            continue
+        if row.score == prev.score:
+            last_observed_t = row.t_sec
             continue
         side = _plus_one(prev.score, row.score)
         if side is None:
@@ -154,8 +162,10 @@ def build_score_path(events: Sequence[Dict[str, Any]]) -> List[ScoreNode]:
                 opening=False,
                 delta_side=side,
                 carrier_event_id=row.event_id,
+                previous_score_observed_t_sec=last_observed_t,
             )
         )
+        last_observed_t = row.t_sec
     return path
 
 
