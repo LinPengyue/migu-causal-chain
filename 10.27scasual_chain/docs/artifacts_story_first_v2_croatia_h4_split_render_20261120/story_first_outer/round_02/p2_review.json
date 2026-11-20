@@ -1,0 +1,215 @@
+{
+  "trial": {
+    "trial_id": "367403768640b26a7f665a7f",
+    "proposal_ids": [
+      "interval_01:H1"
+    ],
+    "events": [
+      {
+        "event_id": "event_000006",
+        "source_pts_sec": 1146.55,
+        "event_type": "Foul_Being_fouled",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "2队5号犯规"
+        }
+      },
+      {
+        "event_id": "event_000023",
+        "source_pts_sec": 1722.71,
+        "event_type": "Free_kick",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "2队2号发任意球"
+        }
+      }
+    ],
+    "relations": [],
+    "story_context": [
+      {
+        "proposal_id": "interval_01:H1",
+        "summary": "禁区内犯规与任意球反复出现，可能构成定位球施压的叙事线索。",
+        "expected_story_contribution": "",
+        "falsification_conditions": [
+          "检查两次任意球是否由同一队主罚且方向一致"
+        ]
+      }
+    ],
+    "windows": [
+      {
+        "event_ids": [
+          "event_000006"
+        ],
+        "source_pts_start": 1138.55,
+        "source_pts_end": 1153.3,
+        "insert_after_segment_id": "seg_setup_deficit",
+        "before_segment_id": "seg_buildup_event_000007",
+        "candidate_id": "story_first_367403768640b26a7f665a7f_01",
+        "issue_id": "story_first:367403768640b26a7f665a7f"
+      },
+      {
+        "event_ids": [
+          "event_000023"
+        ],
+        "source_pts_start": 1714.71,
+        "source_pts_end": 1730.71,
+        "insert_after_segment_id": "seg_buildup_event_000007",
+        "before_segment_id": "seg_buildup_event_000040",
+        "candidate_id": "story_first_367403768640b26a7f665a7f_02",
+        "issue_id": "story_first:367403768640b26a7f665a7f"
+      }
+    ],
+    "narrative_purpose": "The accepted cut already covers the comeback arc from the opening deficit through the go-ahead and lead-extension goals. The largest remaining narrative gap is between the opponent opening goal (seg_opponent_opening_goal_action, ending 990.137s) and the equalizer (seg_equalizer_goal_action, starting 3053.903s). Within that interval, interval_01:H1 offers a compact set-piece pressure pattern: a foul at 1146.55s followed by a free kick at 1157.3s, then a second foul at 1701.0s followed by a free kick at 1722.71s. This contributes to the existing template by showing the trailing team's repeated a"
+  },
+  "review": {
+    "status": "READY_FOR_TRIAL",
+    "feedback": [],
+    "advisory": [],
+    "annotation_supported_event_ids": [
+      "event_000006",
+      "event_000023"
+    ],
+    "event_observations": [
+      {
+        "event_id": "event_000006",
+        "status": "SUPPORTED",
+        "reason": "Frame f2 (1146.56s) shows a physical challenge in the center circle consistent with the annotated foul time; frame f3 shows the immediate aftermath with players stopped.",
+        "frame_ids": [
+          "f2",
+          "f3"
+        ]
+      },
+      {
+        "event_id": "event_000023",
+        "status": "SUPPORTED",
+        "reason": "Frames f4 and f5 show a player in a black kit (Team 2/Canada) wearing number 2 standing over and preparing to kick a stationary ball for a free kick, matching the annotation.",
+        "frame_ids": [
+          "f4",
+          "f5"
+        ]
+      }
+    ],
+    "candidates": [
+      {
+        "event_ids": [
+          "event_000006"
+        ],
+        "source_pts_start": 1138.55,
+        "source_pts_end": 1153.3,
+        "insert_after_segment_id": "seg_setup_deficit",
+        "before_segment_id": "seg_buildup_event_000007",
+        "candidate_id": "story_first_367403768640b26a7f665a7f_01",
+        "issue_id": "story_first:367403768640b26a7f665a7f",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "367403768640b26a7f665a7f",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      },
+      {
+        "event_ids": [
+          "event_000023"
+        ],
+        "source_pts_start": 1714.71,
+        "source_pts_end": 1730.71,
+        "insert_after_segment_id": "seg_buildup_event_000007",
+        "before_segment_id": "seg_buildup_event_000040",
+        "candidate_id": "story_first_367403768640b26a7f665a7f_02",
+        "issue_id": "story_first:367403768640b26a7f665a7f",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "367403768640b26a7f665a7f",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      }
+    ],
+    "intents": [
+      {
+        "intent_id": "story_first_367403768640b26a7f665a7f_02",
+        "action": "search_add",
+        "role": "buildup_bridge_action",
+        "issue_id": "story_first:367403768640b26a7f665a7f",
+        "story_first_trial_id": "367403768640b26a7f665a7f",
+        "story_first_preview_only": true,
+        "anchor_id": "search:story_first_367403768640b26a7f665a7f_02",
+        "new_segment_id": "seg_story_first_367403768640b26a7f665a7f_02",
+        "insert_after_segment_id": "seg_buildup_event_000007",
+        "before_segment_id": "seg_buildup_event_000040",
+        "bound_source_window": {
+          "start": 1714.71,
+          "end": 1730.71
+        },
+        "event_ids": [
+          "event_000023"
+        ],
+        "narrative_purpose": "The accepted cut already covers the comeback arc from the opening deficit through the go-ahead and lead-extension goals. The largest remaining narrative gap is between the opponent opening goal (seg_opponent_opening_goal_action, ending 990.137s) and the equalizer (seg_equalizer_goal_action, starting 3053.903s). Within that interval, interval_01:H1 offers a compact set-piece pressure pattern: a foul at 1146.55s followed by a free kick at 1157.3s, then a second foul at 1701.0s followed by a free kick at 1722.71s. This contributes to the existing template by showing the trailing team's repeated a",
+        "source_event_observations": [
+          {
+            "event_id": "event_000023",
+            "status": "SUPPORTED",
+            "reason": "Frames f4 and f5 show a player in a black kit (Team 2/Canada) wearing number 2 standing over and preparing to kick a stationary ball for a free kick, matching the annotation.",
+            "frame_ids": [
+              "f4",
+              "f5"
+            ]
+          }
+        ],
+        "expected_observable_improvement": "The accepted cut already covers the comeback arc from the opening deficit through the go-ahead and lead-extension goals. The largest remaining narrative gap is between the opponent opening goal (seg_opponent_opening_goal_action, ending 990.137s) and the equalizer (seg_equalizer_goal_action, starting 3053.903s). Within that interval, interval_01:H1 offers a compact set-piece pressure pattern: a foul at 1146.55s followed by a free kick at 1157.3s, then a second foul at 1701.0s followed by a free kick at 1722.71s. This contributes to the existing template by showing the trailing team's repeated a",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "evidence_refs": [
+          {
+            "kind": "story_first_source_review",
+            "ref": "story_first_367403768640b26a7f665a7f_02"
+          }
+        ]
+      },
+      {
+        "intent_id": "story_first_367403768640b26a7f665a7f_01",
+        "action": "search_add",
+        "role": "buildup_bridge_action",
+        "issue_id": "story_first:367403768640b26a7f665a7f",
+        "story_first_trial_id": "367403768640b26a7f665a7f",
+        "story_first_preview_only": true,
+        "anchor_id": "search:story_first_367403768640b26a7f665a7f_01",
+        "new_segment_id": "seg_story_first_367403768640b26a7f665a7f_01",
+        "insert_after_segment_id": "seg_setup_deficit",
+        "before_segment_id": "seg_buildup_event_000007",
+        "bound_source_window": {
+          "start": 1138.55,
+          "end": 1153.3
+        },
+        "event_ids": [
+          "event_000006"
+        ],
+        "narrative_purpose": "The accepted cut already covers the comeback arc from the opening deficit through the go-ahead and lead-extension goals. The largest remaining narrative gap is between the opponent opening goal (seg_opponent_opening_goal_action, ending 990.137s) and the equalizer (seg_equalizer_goal_action, starting 3053.903s). Within that interval, interval_01:H1 offers a compact set-piece pressure pattern: a foul at 1146.55s followed by a free kick at 1157.3s, then a second foul at 1701.0s followed by a free kick at 1722.71s. This contributes to the existing template by showing the trailing team's repeated a",
+        "source_event_observations": [
+          {
+            "event_id": "event_000006",
+            "status": "SUPPORTED",
+            "reason": "Frame f2 (1146.56s) shows a physical challenge in the center circle consistent with the annotated foul time; frame f3 shows the immediate aftermath with players stopped.",
+            "frame_ids": [
+              "f2",
+              "f3"
+            ]
+          }
+        ],
+        "expected_observable_improvement": "The accepted cut already covers the comeback arc from the opening deficit through the go-ahead and lead-extension goals. The largest remaining narrative gap is between the opponent opening goal (seg_opponent_opening_goal_action, ending 990.137s) and the equalizer (seg_equalizer_goal_action, starting 3053.903s). Within that interval, interval_01:H1 offers a compact set-piece pressure pattern: a foul at 1146.55s followed by a free kick at 1157.3s, then a second foul at 1701.0s followed by a free kick at 1722.71s. This contributes to the existing template by showing the trailing team's repeated a",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "evidence_refs": [
+          {
+            "kind": "story_first_source_review",
+            "ref": "story_first_367403768640b26a7f665a7f_01"
+          }
+        ]
+      }
+    ]
+  }
+}

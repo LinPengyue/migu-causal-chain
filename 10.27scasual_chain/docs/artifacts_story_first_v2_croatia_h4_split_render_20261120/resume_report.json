@@ -1,0 +1,153 @@
+{
+  "code_sha": "b5d782d78cd2081007e892bbede2ee2989289c63",
+  "prior_run": "/tmp/story_first_outer_croatia_canada_20261119_234432",
+  "proposal": "interval_03:H4",
+  "p2_status": "READY_FOR_TRIAL",
+  "render_ok": true,
+  "trial_mp4": "/tmp/story_first_croatia_h4_split_render_20261120_110715/candidate_render/story_clean.mp4",
+  "trial_mp4_sha256": "2fb4df2252ab42a371042369c64198c5e03c662284633d64dda34fc521510aa1",
+  "p3_entered": true,
+  "p3_preview_accepted": true,
+  "p3_stop_reason": "PLANNER_KEEP",
+  "selected_preview_mp4": "/tmp/story_first_croatia_h4_split_render_20261120_110715/candidate_render/story_clean.mp4",
+  "selected_preview_mp4_sha256": "2fb4df2252ab42a371042369c64198c5e03c662284633d64dda34fc521510aa1",
+  "release_authorized": false,
+  "has_approach": true,
+  "has_result": true,
+  "glitch_gap_overlap_sec": 0,
+  "glitch_excluded": true,
+  "api_usage": {
+    "http_attempts": 9,
+    "max_calls": 16,
+    "max_cost_usd": 0.05,
+    "est_cost_usd_real": 0.02252,
+    "by_role": {
+      "story_first_generator": {
+        "http_attempts": 3,
+        "tokens": 36875,
+        "est_cost_usd": 0.006808,
+        "output_budget_exceeded": false
+      },
+      "story_first_p35_planner": {
+        "http_attempts": 1,
+        "tokens": 15903,
+        "est_cost_usd": 0.002528,
+        "output_budget_exceeded": false
+      },
+      "story_first_p3_caption": {
+        "http_attempts": 2,
+        "tokens": 34994,
+        "est_cost_usd": 0.00621,
+        "output_budget_exceeded": false
+      },
+      "story_first_p3_planner": {
+        "http_attempts": 2,
+        "tokens": 29569,
+        "est_cost_usd": 0.004738,
+        "output_budget_exceeded": false
+      },
+      "vision": {
+        "http_attempts": 1,
+        "tokens": 14266,
+        "est_cost_usd": 0.002235,
+        "output_budget_exceeded": false
+      }
+    },
+    "cost_is_estimate_not_invoice_cap": true,
+    "max_retries": 0,
+    "request_preflight": {
+      "planner": {
+        "model": "DeepSeek-V4-Pro-0813",
+        "thinking_in_body": {
+          "type": "disabled"
+        },
+        "max_tokens_in_body": 3200,
+        "max_completion_tokens_in_body": null,
+        "enable_thinking_in_body": null,
+        "thinking_budget_in_body": null,
+        "request_audit": {
+          "role": "planner",
+          "model": "DeepSeek-V4-Pro-0813",
+          "request_profile": "default",
+          "token_param_configured": "max_tokens",
+          "token_param_sent": "max_tokens",
+          "token_limit_sent": 3200,
+          "temperature_sent": 0.0,
+          "stream_sent": false,
+          "thinking_params_sent": false,
+          "thinking_object_disabled_sent": true,
+          "enable_thinking_sent": null,
+          "thinking_budget_sent": null,
+          "sends_both_token_params": false,
+          "sends_both_thinking_formats": false,
+          "message_count": 1,
+          "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+          "paratera_thinking_object_documented": false
+        },
+        "thinking_object_disabled_cfg": true,
+        "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+      },
+      "vision": {
+        "model": "Qwen3.7-Plus",
+        "thinking_in_body": {
+          "type": "disabled"
+        },
+        "max_tokens_in_body": 3200,
+        "max_completion_tokens_in_body": null,
+        "enable_thinking_in_body": null,
+        "thinking_budget_in_body": null,
+        "request_audit": {
+          "role": "vision",
+          "model": "Qwen3.7-Plus",
+          "request_profile": "video_rsi",
+          "token_param_configured": "max_tokens",
+          "token_param_sent": "max_tokens",
+          "token_limit_sent": 3200,
+          "temperature_sent": 0.0,
+          "stream_sent": false,
+          "thinking_params_sent": false,
+          "thinking_object_disabled_sent": true,
+          "enable_thinking_sent": null,
+          "thinking_budget_sent": null,
+          "sends_both_token_params": false,
+          "sends_both_thinking_formats": false,
+          "message_count": 1,
+          "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+          "paratera_thinking_object_documented": false
+        },
+        "thinking_object_disabled_cfg": true,
+        "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+      }
+    },
+    "env_thinking_overrides": {
+      "before": {
+        "STORY_API_MAX_CALLS": "16",
+        "STORY_API_MAX_COST_USD": "0.05",
+        "STORY_API_MAX_COMPLETION_TOKENS": "3200",
+        "STORY_VLM_MAX_COMPLETION_TOKENS": "1600",
+        "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+        "STORY_VLM_SEND_THINKING": null,
+        "STORY_VLM_ENABLE_THINKING": null,
+        "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+        "STORY_VLM_TOKEN_PARAM": null,
+        "STORY_API_TOKEN_PARAM": "max_tokens"
+      },
+      "after": {
+        "STORY_API_MAX_CALLS": "16",
+        "STORY_API_MAX_COST_USD": "0.05",
+        "STORY_API_MAX_COMPLETION_TOKENS": "3200",
+        "STORY_VLM_MAX_COMPLETION_TOKENS": "3200",
+        "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+        "STORY_VLM_SEND_THINKING": null,
+        "STORY_VLM_ENABLE_THINKING": null,
+        "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+        "STORY_VLM_TOKEN_PARAM": "max_tokens",
+        "STORY_API_TOKEN_PARAM": "max_tokens",
+        "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+        "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+        "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+      },
+      "disable_thinking": true
+    }
+  }
+}

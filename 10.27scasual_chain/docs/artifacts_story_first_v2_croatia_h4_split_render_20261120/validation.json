@@ -1,0 +1,93 @@
+{
+  "code_sha": "b5d782d78cd2081007e892bbede2ee2989289c63",
+  "duplicate_goal_cuts": [],
+  "validate_render_rows_n": 17,
+  "lead_extend_windows": [
+    {
+      "segment_id": "seg_lead_extend_1_goal_action_approach",
+      "role": "lead_extend_1_goal_action_approach",
+      "media_in": 6305.199,
+      "media_out": 6315.8,
+      "event_ids": [
+        "event_000025"
+      ],
+      "glitch_avoidance": [
+        {
+          "label": "third_goal_approach_neon_band",
+          "action": "split_approach_before_glitch",
+          "window": [
+            6305.199,
+            6315.8
+          ]
+        },
+        {
+          "label": "third_goal_approach_neon_band",
+          "action": "split_result_after_glitch",
+          "window": [
+            6316.7,
+            6327.199
+          ]
+        },
+        {
+          "action": "split_around_glitch",
+          "n_clips": 2
+        }
+      ],
+      "goal_completeness_facets": {
+        "result_visible": true,
+        "approach_visible": true,
+        "context_sufficient": true,
+        "glitch_break": true,
+        "approach_pad_sec": 0.499,
+        "approach_clip_sec": 10.601,
+        "goal_action_complete": true
+      }
+    },
+    {
+      "segment_id": "seg_lead_extend_1_goal_action",
+      "role": "lead_extend_1_goal_action",
+      "media_in": 6316.7,
+      "media_out": 6327.199,
+      "event_ids": [
+        "event_000025"
+      ],
+      "glitch_avoidance": [
+        {
+          "label": "third_goal_approach_neon_band",
+          "action": "split_approach_before_glitch",
+          "window": [
+            6305.199,
+            6315.8
+          ]
+        },
+        {
+          "label": "third_goal_approach_neon_band",
+          "action": "split_result_after_glitch",
+          "window": [
+            6316.7,
+            6327.199
+          ]
+        },
+        {
+          "action": "split_around_glitch",
+          "n_clips": 2
+        }
+      ],
+      "goal_completeness_facets": {
+        "result_visible": true,
+        "approach_visible": true,
+        "context_sufficient": true,
+        "glitch_break": true,
+        "approach_pad_sec": 0.499,
+        "approach_clip_sec": 10.601,
+        "goal_action_complete": true
+      }
+    }
+  ],
+  "glitch_gap": [
+    6315.8,
+    6316.7
+  ],
+  "glitch_gap_sec": 0.9,
+  "gap_covered_by_any_segment": false
+}
