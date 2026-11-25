@@ -1,0 +1,36 @@
+{
+  "template_id": "set_piece_breakthrough",
+  "category": "关键转折故事链",
+  "subtype": "定位球战术执行与破局",
+  "goal": "Show the set-piece sequence and its observable breakthrough; distinguish tactical evidence from speculation.",
+  "slots": [
+    {
+      "slot_id": "setup",
+      "purpose": "Optional preceding context",
+      "min_items": 0,
+      "max_items": 2,
+      "anchor": false
+    },
+    {
+      "slot_id": "execution",
+      "purpose": "Set-piece preparation or execution with relevant evidence",
+      "min_items": 1,
+      "max_items": 3,
+      "anchor": true
+    },
+    {
+      "slot_id": "result",
+      "purpose": "Observable result of the set piece",
+      "min_items": 1,
+      "max_items": 2,
+      "anchor": true
+    },
+    {
+      "slot_id": "aftermath",
+      "purpose": "Optional immediate aftermath",
+      "min_items": 0,
+      "max_items": 2,
+      "anchor": false
+    }
+  ]
+}

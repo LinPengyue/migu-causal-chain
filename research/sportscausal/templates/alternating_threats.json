@@ -1,0 +1,29 @@
+{
+  "template_id": "alternating_threats",
+  "category": "攻防战术故事链",
+  "subtype": "双方交替威胁",
+  "goal": "Show meaningful changes in threats from both teams, not just a list of shots or assumed tactical changes.",
+  "slots": [
+    {
+      "slot_id": "setup",
+      "purpose": "Optional match context",
+      "min_items": 0,
+      "max_items": 2,
+      "anchor": false
+    },
+    {
+      "slot_id": "threat",
+      "purpose": "Distinct threats across both teams; select evidence that supports alternation",
+      "min_items": 2,
+      "max_items": 8,
+      "anchor": true
+    },
+    {
+      "slot_id": "aftermath",
+      "purpose": "Optional closing context",
+      "min_items": 0,
+      "max_items": 2,
+      "anchor": false
+    }
+  ]
+}

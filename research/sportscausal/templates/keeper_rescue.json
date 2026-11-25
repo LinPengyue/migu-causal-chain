@@ -1,0 +1,29 @@
+{
+  "template_id": "keeper_rescue",
+  "category": "人物故事链",
+  "subtype": "同队门将多次化险",
+  "goal": "Show how the same team's goalkeeper repeatedly protects the team; establish relevant pressure and observable saves without assuming identity or causality.",
+  "slots": [
+    {
+      "slot_id": "setup",
+      "purpose": "Optional match or pressure context",
+      "min_items": 0,
+      "max_items": 2,
+      "anchor": false
+    },
+    {
+      "slot_id": "save",
+      "purpose": "Distinct threatening attacks and saves by the same team's goalkeeper",
+      "min_items": 2,
+      "max_items": 6,
+      "anchor": true
+    },
+    {
+      "slot_id": "aftermath",
+      "purpose": "Optional observable consequence or closing context",
+      "min_items": 0,
+      "max_items": 2,
+      "anchor": false
+    }
+  ]
+}
