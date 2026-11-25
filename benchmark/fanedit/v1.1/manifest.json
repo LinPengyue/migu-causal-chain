@@ -1,0 +1,95 @@
+{
+  "status": "PROVISIONAL_EVAL_REFERENCE_NOT_GOLD",
+  "source_archives_sha256": {
+    "旧规足球.zip": "0d82296c79132744e1bf5db05910d73f5d6a1cc20abf337c53194a0d553f9917",
+    "足球第一批.zip": "b563e452e1e88707f0caa47f060897ad40c6d7e438f11df63908b6874abe2107",
+    "第二批足球.zip": "6931dd664ab464c741195f37e019fd36e0f1804810f5a275b9c5c7a978b75274",
+    "StoryChain_212_Narrative_V5.zip": "c2de6abedeccd4a866b32750c85f4525f1eaa29ab057055f121d6a58e2e913b9"
+  },
+  "matches": 84,
+  "video_sources": 105,
+  "causal_eval_video_sources": 104,
+  "atomic_events": 25022,
+  "causal_chains": 750,
+  "story_chains": 173,
+  "story_segments": 1536,
+  "causal_category_counts": {
+    "结果链": 295,
+    "险情链": 403,
+    "修正链": 13,
+    "特殊链": 39
+  },
+  "causal_subtype_counts": {
+    "其他": 162,
+    "射门扑救链": 328,
+    "角球传中进球链": 27,
+    "射门被扑后补射进球链": 3,
+    "进球无效链": 11,
+    "门线极限救险链": 67,
+    "射中门柱/横梁链": 8,
+    "抢断/反击/失误后直接进球链": 43,
+    "点球命中链": 56,
+    "手抛球发动进攻链": 17,
+    "快发定位球链": 16,
+    "乌龙球致因链": 4,
+    "红牌判罚链": 4,
+    "VAR改判链": 2,
+    "折射/变线入网链": 2
+  },
+  "story_category_counts": {
+    "战局故事链": 41,
+    "攻防战术故事链": 30,
+    "人物故事链": 29,
+    "关键转折故事链": 73
+  },
+  "story_subtype_counts": {
+    "大比分完胜": 5,
+    "一方连续威胁": 19,
+    "同队门将多次化险": 26,
+    "定位球战术执行与破局": 29,
+    "落后追平": 6,
+    "双方交替威胁": 8,
+    "红牌冲击与攻守重构": 7,
+    "攻守转换与关键破门": 24,
+    "末段制胜": 7,
+    "判罚争议与战局转折": 13,
+    "比分拉锯": 2,
+    "逆风翻盘": 7,
+    "点球大战决胜": 5,
+    "同一球员先参与威胁后得分": 3,
+    "领先守成": 9,
+    "攻势换手": 3
+  },
+  "causal_defined_subtypes": 18,
+  "story_defined_subtypes": 17,
+  "initial_story_count": 212,
+  "original_audit_story_holds": 32,
+  "additional_story_holds": 0,
+  "known_development_matches": [
+    "FH-34B9C8A4",
+    "FH-5DA0F989",
+    "FH-723B1912",
+    "FH-E57877ED"
+  ],
+  "quarantine_causal_rows_all_94_sources": 4325,
+  "quarantine_causal_reason_counts": {
+    "replay_or_unknown": 4114,
+    "fewer_than_two_nodes": 3487,
+    "not_live_by_metadata": 4135,
+    "not_distinct_atomic_nodes_or_times": 3487,
+    "span_over_120s": 5,
+    "window_over_120s": 5,
+    "unresolved_story_audit_chain_reference": 4,
+    "unrecognized_category_pair": 3,
+    "alternate_duplicate_half_not_for_causal_scoring": 12,
+    "known_audit_time_interval": 97
+  },
+  "reference_errors": [],
+  "first_live_video_verified": 0,
+  "notes": [
+    "No complete historical per-chain audit exclusion manifest was available. Known V5 audit issues are quarantined; remaining records are provisional.",
+    "Previous v1 counted only V5-cited sources (737); three non-overlapping half sources add 13 eligible chains, yielding 750. The older 769 has no row-level manifest.",
+    "Not all source videos are full matches; no invented full-match offset.",
+    "Unannotated/missing positives cannot establish exhaustiveness."
+  ]
+}
