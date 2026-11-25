@@ -135,5 +135,10 @@ class RTests(unittest.TestCase):
         self.assertEqual(r["score_observation"],[2,1])
         self.assertNotIn("goal_action",r["predicates"])
 
+
+    def test_real_note_coordinated_shot(self):
+        e=evidence(atom("x",10,"2队球员看到进攻机会，选择打门","Shot"))
+        self.assertEqual(normalize(e)["atoms"][0]["predicates"]["attacking_threat"]["actor"],"team_2")
+
 if __name__=="__main__":
     unittest.main()
