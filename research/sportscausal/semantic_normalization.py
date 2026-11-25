@@ -40,6 +40,11 @@ class Roles:
         tail=r"(?:(?!"+self.side+r"|[，。；！？,;.!?]).){0,24}?"
         self.keeper_action=re.compile(self.keeper.pattern+r"(?!\s*(?:的|被))"+tail+RESCUE+r"(?:失败|未果)?")
         self.shot_action=re.compile(r"(?P<side>"+self.side+r")\s*(?:(?P<num>\d{1,2})号)?(?:球员|队员)?"+tail+SHOT)
+        # A same-note coordinated clause may omit the subject, but only accept
+        # an explicit continuation verb (e.g. "看到进攻机会，选择打门").
+        # No inheritance across event rows.
+        self.shot_continuation=re.compile(r"(?P<side>"+self.side+r")\s*(?:(?P<num>\d{1,2})号)?(?:球员|队员)?"+tail+
+                                          r"[，,]\s*(?:选择|随后|接着|直接|顺势|然后|立即|随即)"+SHOT)
         self.shot_object=re.compile(r"(?P<side>"+self.side+r")\s*(?:\d{1,2}号)?(?:球员|队员)?(?:的)?"+tail+SHOT)
         # Bounded subject-action spans. The set-piece predicate must describe
         # an execution, not a player conceding a corner or free kick.
@@ -116,7 +121,8 @@ def normalize_atom(a,roles):
     keeper=resolve(keeper_claims)
     shot_claims=[]
     if typ=="Shot":
-        shot_claims=roles.note_claims(a,roles.shot_action)+roles.claims(a,["BallController_player","BallController_team"])
+        shot_claims=(roles.note_claims(a,roles.shot_action)+roles.note_claims(a,roles.shot_continuation)
+                     +roles.claims(a,["BallController_player","BallController_team"]))
         # Related_Player is not generally the shooter; do not use it blindly.
     shooter=resolve(shot_claims)
     execution_claims=[]
