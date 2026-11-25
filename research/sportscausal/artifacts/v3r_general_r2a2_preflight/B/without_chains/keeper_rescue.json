@@ -1,0 +1,114 @@
+{
+  "schema": "v3r_general_episode_candidates_v1",
+  "video_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+  "template_id": "keeper_rescue",
+  "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "category": "人物故事链",
+  "subtype": "同队门将多次化险",
+  "narrative_goal": [
+    "表现同队门将反复化解威胁",
+    "挖掘比赛阶段及后续发展"
+  ],
+  "use_chains": false,
+  "n_predicate_episodes": 2,
+  "ambiguous_order_episode_ids": [],
+  "cross_actor_overlapping_media": [],
+  "candidates": [
+    {
+      "candidate_id": "keeper_rescue:1",
+      "subjects": [
+        "team_2"
+      ],
+      "actor_runs": null,
+      "nodes": [
+        {
+          "node_id": "anchor:1",
+          "predicate": "goalkeeper_rescue",
+          "actor": "team_2",
+          "event_ids": [
+            "event_000050"
+          ],
+          "core_event_ids": [
+            "event_000050"
+          ],
+          "anchor_t": 630.08,
+          "window": [
+            625.07,
+            635.19
+          ],
+          "media_windows": [
+            [
+              625.07,
+              635.19
+            ]
+          ],
+          "score_observations": [
+            {
+              "event_id": "event_000050",
+              "score": [
+                0,
+                0
+              ]
+            }
+          ],
+          "relation": null,
+          "causal_verified": false,
+          "distinct_episode_basis": "atomic_window_proxy",
+          "episode_id": "episode:3",
+          "story_anchor": true
+        },
+        {
+          "node_id": "anchor:2",
+          "predicate": "goalkeeper_rescue",
+          "actor": "team_2",
+          "event_ids": [
+            "event_000260"
+          ],
+          "core_event_ids": [
+            "event_000260"
+          ],
+          "anchor_t": 1713.28,
+          "window": [
+            1709.34,
+            1719.53
+          ],
+          "media_windows": [
+            [
+              1709.34,
+              1719.53
+            ]
+          ],
+          "score_observations": [
+            {
+              "event_id": "event_000260",
+              "score": [
+                0,
+                0
+              ]
+            }
+          ],
+          "relation": null,
+          "causal_verified": false,
+          "distinct_episode_basis": "atomic_window_proxy",
+          "episode_id": "episode:11",
+          "story_anchor": true
+        }
+      ],
+      "edges": [
+        {
+          "from": "anchor:1",
+          "to": "anchor:2",
+          "relation": "temporal_episode_order",
+          "causal_verified": false
+        }
+      ],
+      "first_live_verified": false,
+      "quality_verified": false,
+      "release_authorized": false
+    }
+  ],
+  "scope": "whole-match anchor discovery; no dominance or narrative quality claim",
+  "first_live_verified": false,
+  "quality_verified": false,
+  "release_authorized": false
+}

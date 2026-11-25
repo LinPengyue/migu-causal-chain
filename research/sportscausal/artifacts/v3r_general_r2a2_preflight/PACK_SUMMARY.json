@@ -1,0 +1,296 @@
+{
+  "schema": "v3r_general_r2a2_preflight_pack_v1",
+  "code_sha": "c698ad6cb5ce6caecffab28a7b5013e7f672c6dc",
+  "baseline_artifact_commit": "40c8db4",
+  "unittest": "test_v3r_general + test_causal_episodes → 24/24 OK",
+  "http_calls": 0,
+  "evidence": {
+    "A": "artifacts/stage1_2_evidence_preflight_20261125/A_uae_oman/keeper_rescue/evidence.json",
+    "B": "artifacts/stage1_2_evidence_preflight_20261125/B_osasuna_celta/keeper_rescue/evidence.json",
+    "note": "full Stage 1.2 evidence (identical sha to alternating_threats copy); not Stage 2 planner_messages"
+  },
+  "A": {
+    "schema": "v3r_general_r2a2_ablation_v1",
+    "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+    "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+    "http_calls": 0,
+    "n_local_links": 3,
+    "n_inferred_roles": 0,
+    "n_with_chain_only": 7,
+    "n_without_chain_only": 7,
+    "patterns": {
+      "keeper_rescue": {
+        "with_chains": {
+          "n_predicate_episodes": 7,
+          "candidates": [
+            {
+              "subjects": [
+                "team_1"
+              ],
+              "n_episodes": 2,
+              "actor_runs": null,
+              "event_ids": [
+                [
+                  "event_000097"
+                ],
+                [
+                  "event_000276",
+                  "event_000277"
+                ]
+              ]
+            },
+            {
+              "subjects": [
+                "team_2"
+              ],
+              "n_episodes": 5,
+              "actor_runs": null,
+              "event_ids": [
+                [
+                  "event_000282"
+                ],
+                [
+                  "event_000416",
+                  "event_000417"
+                ],
+                [
+                  "event_000421"
+                ],
+                [
+                  "event_000476",
+                  "event_000477"
+                ],
+                [
+                  "event_000641"
+                ]
+              ]
+            }
+          ]
+        },
+        "without_chains": {
+          "n_predicate_episodes": 7,
+          "candidates": [
+            {
+              "subjects": [
+                "team_1"
+              ],
+              "n_episodes": 2,
+              "actor_runs": null,
+              "event_ids": [
+                [
+                  "event_000097"
+                ],
+                [
+                  "event_000277"
+                ]
+              ]
+            },
+            {
+              "subjects": [
+                "team_2"
+              ],
+              "n_episodes": 5,
+              "actor_runs": null,
+              "event_ids": [
+                [
+                  "event_000282"
+                ],
+                [
+                  "event_000417"
+                ],
+                [
+                  "event_000421"
+                ],
+                [
+                  "event_000477"
+                ],
+                [
+                  "event_000641"
+                ]
+              ]
+            }
+          ]
+        }
+      },
+      "alternating_threats": {
+        "with_chains": {
+          "n_predicate_episodes": 7,
+          "candidates": [
+            {
+              "subjects": [
+                "team_1",
+                "team_2"
+              ],
+              "n_episodes": 7,
+              "actor_runs": [
+                {
+                  "actor": "team_2",
+                  "n_episodes": 2
+                },
+                {
+                  "actor": "team_1",
+                  "n_episodes": 4
+                },
+                {
+                  "actor": "team_2",
+                  "n_episodes": 1
+                }
+              ],
+              "event_ids": [
+                [
+                  "event_000097"
+                ],
+                [
+                  "event_000276",
+                  "event_000277"
+                ],
+                [
+                  "event_000282"
+                ],
+                [
+                  "event_000421"
+                ],
+                [
+                  "event_000472"
+                ],
+                [
+                  "event_000640"
+                ],
+                [
+                  "event_000681"
+                ]
+              ]
+            }
+          ]
+        },
+        "without_chains": {
+          "n_predicate_episodes": 7,
+          "candidates": [
+            {
+              "subjects": [
+                "team_1",
+                "team_2"
+              ],
+              "n_episodes": 7,
+              "actor_runs": [
+                {
+                  "actor": "team_2",
+                  "n_episodes": 2
+                },
+                {
+                  "actor": "team_1",
+                  "n_episodes": 4
+                },
+                {
+                  "actor": "team_2",
+                  "n_episodes": 1
+                }
+              ],
+              "event_ids": [
+                [
+                  "event_000097"
+                ],
+                [
+                  "event_000277"
+                ],
+                [
+                  "event_000282"
+                ],
+                [
+                  "event_000421"
+                ],
+                [
+                  "event_000472"
+                ],
+                [
+                  "event_000640"
+                ],
+                [
+                  "event_000681"
+                ]
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "quality_verified": false,
+    "first_live_verified": false
+  },
+  "B": {
+    "schema": "v3r_general_r2a2_ablation_v1",
+    "video_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+    "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+    "http_calls": 0,
+    "n_local_links": 1,
+    "n_inferred_roles": 0,
+    "n_with_chain_only": 2,
+    "n_without_chain_only": 2,
+    "patterns": {
+      "keeper_rescue": {
+        "with_chains": {
+          "n_predicate_episodes": 2,
+          "candidates": [
+            {
+              "subjects": [
+                "team_2"
+              ],
+              "n_episodes": 2,
+              "actor_runs": null,
+              "event_ids": [
+                [
+                  "event_000050"
+                ],
+                [
+                  "event_000259",
+                  "event_000260"
+                ]
+              ]
+            }
+          ]
+        },
+        "without_chains": {
+          "n_predicate_episodes": 2,
+          "candidates": [
+            {
+              "subjects": [
+                "team_2"
+              ],
+              "n_episodes": 2,
+              "actor_runs": null,
+              "event_ids": [
+                [
+                  "event_000050"
+                ],
+                [
+                  "event_000260"
+                ]
+              ]
+            }
+          ]
+        }
+      },
+      "alternating_threats": {
+        "with_chains": {
+          "n_predicate_episodes": 1,
+          "candidates": []
+        },
+        "without_chains": {
+          "n_predicate_episodes": 1,
+          "candidates": []
+        }
+      }
+    },
+    "quality_verified": false,
+    "first_live_verified": false
+  },
+  "honest_chain_contribution": {
+    "inferred_roles_A": 0,
+    "inferred_roles_B": 0,
+    "local_links_A": 3,
+    "local_links_B": 1,
+    "effect": "chains only merge explicit delivery events into already-bound keeper episodes; no empty Shot/Save subject recovery; candidate counts do not increase vs without_chains"
+  },
+  "quality_verified": false,
+  "release_authorized": false
+}

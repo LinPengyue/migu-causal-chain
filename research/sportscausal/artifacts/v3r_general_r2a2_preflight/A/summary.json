@@ -1,0 +1,208 @@
+{
+  "schema": "v3r_general_r2a2_ablation_v1",
+  "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+  "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "http_calls": 0,
+  "n_local_links": 3,
+  "n_inferred_roles": 0,
+  "n_with_chain_only": 7,
+  "n_without_chain_only": 7,
+  "patterns": {
+    "keeper_rescue": {
+      "with_chains": {
+        "n_predicate_episodes": 7,
+        "candidates": [
+          {
+            "subjects": [
+              "team_1"
+            ],
+            "n_episodes": 2,
+            "actor_runs": null,
+            "event_ids": [
+              [
+                "event_000097"
+              ],
+              [
+                "event_000276",
+                "event_000277"
+              ]
+            ]
+          },
+          {
+            "subjects": [
+              "team_2"
+            ],
+            "n_episodes": 5,
+            "actor_runs": null,
+            "event_ids": [
+              [
+                "event_000282"
+              ],
+              [
+                "event_000416",
+                "event_000417"
+              ],
+              [
+                "event_000421"
+              ],
+              [
+                "event_000476",
+                "event_000477"
+              ],
+              [
+                "event_000641"
+              ]
+            ]
+          }
+        ]
+      },
+      "without_chains": {
+        "n_predicate_episodes": 7,
+        "candidates": [
+          {
+            "subjects": [
+              "team_1"
+            ],
+            "n_episodes": 2,
+            "actor_runs": null,
+            "event_ids": [
+              [
+                "event_000097"
+              ],
+              [
+                "event_000277"
+              ]
+            ]
+          },
+          {
+            "subjects": [
+              "team_2"
+            ],
+            "n_episodes": 5,
+            "actor_runs": null,
+            "event_ids": [
+              [
+                "event_000282"
+              ],
+              [
+                "event_000417"
+              ],
+              [
+                "event_000421"
+              ],
+              [
+                "event_000477"
+              ],
+              [
+                "event_000641"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    "alternating_threats": {
+      "with_chains": {
+        "n_predicate_episodes": 7,
+        "candidates": [
+          {
+            "subjects": [
+              "team_1",
+              "team_2"
+            ],
+            "n_episodes": 7,
+            "actor_runs": [
+              {
+                "actor": "team_2",
+                "n_episodes": 2
+              },
+              {
+                "actor": "team_1",
+                "n_episodes": 4
+              },
+              {
+                "actor": "team_2",
+                "n_episodes": 1
+              }
+            ],
+            "event_ids": [
+              [
+                "event_000097"
+              ],
+              [
+                "event_000276",
+                "event_000277"
+              ],
+              [
+                "event_000282"
+              ],
+              [
+                "event_000421"
+              ],
+              [
+                "event_000472"
+              ],
+              [
+                "event_000640"
+              ],
+              [
+                "event_000681"
+              ]
+            ]
+          }
+        ]
+      },
+      "without_chains": {
+        "n_predicate_episodes": 7,
+        "candidates": [
+          {
+            "subjects": [
+              "team_1",
+              "team_2"
+            ],
+            "n_episodes": 7,
+            "actor_runs": [
+              {
+                "actor": "team_2",
+                "n_episodes": 2
+              },
+              {
+                "actor": "team_1",
+                "n_episodes": 4
+              },
+              {
+                "actor": "team_2",
+                "n_episodes": 1
+              }
+            ],
+            "event_ids": [
+              [
+                "event_000097"
+              ],
+              [
+                "event_000277"
+              ],
+              [
+                "event_000282"
+              ],
+              [
+                "event_000421"
+              ],
+              [
+                "event_000472"
+              ],
+              [
+                "event_000640"
+              ],
+              [
+                "event_000681"
+              ]
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "quality_verified": false,
+  "first_live_verified": false
+}
