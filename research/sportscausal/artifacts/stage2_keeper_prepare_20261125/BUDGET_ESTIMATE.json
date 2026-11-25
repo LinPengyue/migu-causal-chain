@@ -1,0 +1,60 @@
+{
+  "schema": "sportscausal_stage2_budget_estimate_v1",
+  "code_sha": "bba30aaf3df47df312466314664fea1fb821d152",
+  "paid_http_executed": false,
+  "awaiting_user_gpt_budget_confirmation": true,
+  "provider": {
+    "gateway": "existing_story_planner_service",
+    "base_url": "https://llmapi.paratera.com/v1",
+    "model": "DeepSeek-V4-Pro-0813",
+    "token_param": "max_tokens",
+    "role": "planner",
+    "temperature": 0.0,
+    "max_calls_planned": 1,
+    "no_automatic_retry": true,
+    "STORY_API_ENABLE_required": "1",
+    "cli_flags_required": [
+      "--enable-real-api",
+      "--i-approve-budget",
+      "--max-cost-usd <cap>",
+      "--allow-dev"
+    ],
+    "max_completion_tokens_default": 4096
+  },
+  "context": {
+    "note": "Exact provider context window for DeepSeek-V4-Pro-0813 is not hard-coded in this repo; confirm before paying. Full event inventory is retained (663 atoms); no truncation applied.",
+    "prompt_chars": 368349,
+    "prompt_utf8_bytes": 392330,
+    "n_events": 663,
+    "input_token_estimate": {
+      "method": "heuristic_pending_native_tokenizer",
+      "low_utf8_div4": 98082,
+      "mid_utf8_div3": 130776,
+      "high_chars_div1_5": 245566
+    }
+  },
+  "cost_estimate_local_not_invoice": {
+    "price_prompt_per_mtok_usd": 0.15,
+    "price_completion_per_mtok_usd": 0.6,
+    "assumed_completion_tokens": 4096,
+    "est_usd_at_low_input": 0.01717,
+    "est_usd_at_mid_input": 0.022074,
+    "est_usd_at_high_input": 0.039292,
+    "suggested_max_cost_usd_cap_for_single_call": 0.06,
+    "disclaimer": "Local STORY_LLM_PRICE_* estimate only; not Paratera invoice."
+  },
+  "prepare_outputs": {
+    "planner_messages.json": "present",
+    "run_meta.json": "PREPARE_ONLY",
+    "evidence_sha256": "e5ea1ff24ede7b1daae906721b8d8b62e6dcfa5088b56e331219dfedf07bb355",
+    "messages_sha256": "f6b9930b9384ba34bc4dcc9eb546593aa167cce3536f7b712d4f736c90d57604"
+  },
+  "real_call_will_write": [
+    "planner_response.txt",
+    "planner_call_audit.json",
+    "planner_proposal.json",
+    "story_graph_bundle.json",
+    "candidate_edl.json",
+    "run_meta.json"
+  ]
+}
