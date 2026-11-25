@@ -71,5 +71,69 @@ class RTests(unittest.TestCase):
         self.assertFalse(r["edges"][0]["causal_verified"])
         self.assertFalse(r["quality_verified"])
 
+
+    def test_restart_and_goal_actor(self):
+        e=evidence(atom("restart",10,"1队球员被罚角球，2队球员发角球","Corner_kick",
+                        {"Related_Player":["2队球员"]}),
+                   atom("goal",20,"2队9号头球破门","Goal"),
+                   atom("cancelled",30,"2队9号进球无效","Goal"),
+                   atom("unknown",40,"","Goal"))
+        rows=normalize(e)["atoms"]
+        self.assertEqual(rows[0]["predicates"]["set_piece_execution"]["actor"],"team_2")
+        self.assertEqual(rows[1]["predicates"]["goal_action"]["actor"],"team_2")
+        self.assertNotIn("goal_action",rows[2]["predicates"])
+        self.assertNotIn("goal_action",rows[3]["predicates"])
+
+    def test_relation_path_requires_actor_order_and_full_membership(self):
+        e=evidence(atom("restart",10,"2队球员发角球","Corner_kick"),
+                   atom("other",15,"1队球员发角球","Corner_kick"),
+                   atom("goal",20,"2队9号头球破门","Goal"))
+        def chain(ids,state="FULL",subtype="quick_restart_set_piece_chain"):
+            return {"chain_id":"p","state":state,"subtype":subtype,"available_event_ids":ids}
+        t=template()
+        t["pattern"]={"operator":"relation_path","start_predicate":"set_piece_execution",
+                      "end_predicate":"goal_action","chain_subtypes":["quick_restart_set_piece_chain"]}
+        def run(c):
+            e["chains"]={"p":c}
+            return match(t,normalize(e),e)["candidates"]
+        r=run(chain(["restart","goal"]))
+        self.assertEqual(len(r),1)
+        self.assertEqual(r[0]["subjects"],["team_2"])
+        self.assertEqual(r[0]["edges"][0]["relation"],"predicted_chain_path_hypothesis")
+        self.assertFalse(r[0]["edges"][0]["causal_verified"])
+        self.assertEqual(run(chain(["restart","goal"],"PARTIAL")),[])
+        self.assertEqual(run(chain(["restart","other","goal"])),[])
+        self.assertEqual(run(chain(["goal","restart"])),[])
+        self.assertEqual(run(chain(["restart","goal"],subtype="unrelated")),[])
+
+    def test_state_pattern_uses_score_side_mapping_not_clip_times(self):
+        e=evidence()
+        t=template()
+        t["pattern"]={"operator":"state_transition","signs":[-1,0,1],"terminal_sign":1,"selection":"last"}
+        def row(i,score,delta=None):
+            return {"t_sec":i*100,"score":score,"opening":i==0,"delta_side":delta,
+                    "carrier_event_id":"carrier"+str(i)}
+        doc={"video_id":"v","score_side_mapping":{"left":"team_2","right":"team_1"},
+             "score_path":[row(0,"0:0"),row(1,"0:1","right"),row(2,"1:1","left"),
+                           row(3,"2:1","left"),row(4,"2:2","right"),row(5,"3:2","left")]}
+        r=match(t,normalize(e),e,doc)["candidates"]
+        self.assertEqual(len(r),1)
+        self.assertEqual(r[0]["subjects"],["team_2"])
+        self.assertEqual([n["score"] for n in r[0]["nodes"]],["0:1","1:1","2:1"])
+        self.assertTrue(all(n["media_window"] is None for n in r[0]["nodes"]))
+        self.assertFalse(r[0]["release_authorized"])
+        doc["score_path"]=doc["score_path"][:-1]
+        self.assertEqual(match(t,normalize(e),e,doc)["candidates"],[])
+        doc["video_id"]="other"
+        with self.assertRaises(ValueError):
+            match(t,normalize(e),e,doc)
+
+    def test_score_observation_is_not_goal_action(self):
+        a=atom("x",10,"","Pass")
+        a["scores"]={"score_recognition":"2:1"}
+        r=normalize(evidence(a))["atoms"][0]
+        self.assertEqual(r["score_observation"],[2,1])
+        self.assertNotIn("goal_action",r["predicates"])
+
 if __name__=="__main__":
     unittest.main()
