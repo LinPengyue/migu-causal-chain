@@ -101,6 +101,8 @@ def _relation_path(atoms,p,evidence):
         if not ids or len(ids)!=len(set(ids)) or any(i not in by_id for i in ids):
             continue
         members=[by_id[i] for i in ids]
+        if any(a["t"]>b["t"] for a,b in zip(members,members[1:])):
+            continue
         for j,end in enumerate(members):
             outcome=end["predicates"].get(p["end_predicate"])
             if not outcome:
@@ -113,6 +115,11 @@ def _relation_path(atoms,p,evidence):
                     break
                 first=start["predicates"].get(p["start_predicate"])
                 if not first:
+                    # Unbound intervening restarts/outcomes still interrupt a
+                    # set-piece-to-goal path; do not jump over unknown actors.
+                    if (p["start_predicate"]=="set_piece_execution" and start["type"] in {"Corner_kick","Free_kick","Penalty"}
+                        or p["end_predicate"]=="goal_action" and start["type"] in {"Goal","Own_goal"}):
+                        break
                     continue
                 if first["actor"]==outcome["actor"] and start["t"]<end["t"]:
                     key=(start["event_id"],end["event_id"])
