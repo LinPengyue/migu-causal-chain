@@ -1,4 +1,4 @@
-"""V3-R-General R2a: two composable temporal patterns.
+"""V3-R-General R2: declarative temporal anchor discovery.
 
 Repeat: group by explicitly bound actor, then distinct evidence windows.
 Alternate: group consecutive actor runs; require repeated changes, not one switch.
@@ -10,6 +10,7 @@ import argparse
 from pathlib import Path
 from template_graph import check, read, write
 from semantic_normalization import normalize
+from score_state_patterns import validate_state_pattern, match_score_states
 
 PREDICATES={"goalkeeper_rescue","attacking_threat","set_piece_execution","goal_action"}
 
@@ -18,6 +19,8 @@ def validate_pattern(t):
         check(key in t,"missing "+key)
     p=t["pattern"]
     check(isinstance(p,dict),"invalid pattern schema")
+    if p.get("operator")=="state_transition":
+        return validate_state_pattern(p)
     if p.get("operator")=="relation_path":
         check(set(p)=={"operator","start_predicate","end_predicate","chain_subtypes"},"invalid relation path schema")
         check(p["start_predicate"] in PREDICATES and p["end_predicate"] in PREDICATES,"unsupported path predicate")
@@ -124,9 +127,17 @@ def _relation_path(atoms,p,evidence):
                 break
     return sorted(pairs.values(),key=lambda r:(r["episodes"][0]["anchor_t"],r["episodes"][1]["anchor_t"],r["subjects"]))
 
-def match(t,semantics,evidence):
+def match(t,semantics,evidence,score_doc=None):
     p=validate_pattern(t)
     check(semantics["video_id"]==evidence["video_id"],"source mismatch")
+    if p["operator"]=="state_transition":
+        check(isinstance(score_doc,dict),"state transition requires an existing V3-R score path")
+        return {"schema":"v3r_general_anchor_candidates_v1","template_id":t["template_id"],
+                "category":t["category"],"subtype":t["subtype"],"input_tier":evidence["input_tier"],
+                "video_id":evidence["video_id"],"n_predicate_events":len(score_doc.get("score_path",[])),
+                "candidates":match_score_states(t,score_doc,evidence["video_id"]),
+                "scope":"confirmed scoreboard states only; goal action localization must reuse V3-R",
+                "first_live_verified":False,"quality_verified":False,"release_authorized":False}
     if p["operator"]=="relation_path":
         rows=[a for a in semantics["atoms"] if any(k in a["predicates"] for k in (p["start_predicate"],p["end_predicate"]))]
         raw=_relation_path(semantics["atoms"],p,evidence)
@@ -170,13 +181,14 @@ def main():
     p.add_argument("--template",required=True)
     p.add_argument("--out-dir",required=True)
     p.add_argument("--allow-dev",action="store_true")
+    p.add_argument("--score-path",help="Existing V3-R score path with explicit source/side mapping")
     a=p.parse_args()
     e=read(a.evidence)
     check(a.allow_dev or e.get("input_tier") in {"RAW_EVENTS_ONLY","INDEPENDENT_ATOMIC_ANNOTATED"},
           "development evidence requires --allow-dev")
     t=read(a.template)
     s=normalize(e)
-    r=match(t,s,e)
+    r=match(t,s,e,read(a.score_path) if a.score_path else None)
     out=Path(a.out_dir)
     out.mkdir(parents=True,exist_ok=False)
     write(out/"normalized_semantics.json",s)
