@@ -1,0 +1,449 @@
+{
+  "schema": "sportscausal_stage1_2_evidence_preflight_v1",
+  "code_sha": "1c46b112dd58c93457199b78d3c3fe5769b4b894",
+  "unittest_evidence_representation": "6/6 OK",
+  "paid_api": false,
+  "default_mode_rejects_AB": {
+    "A_uae_oman": {
+      "returncode": 1,
+      "stderr": "build_evidence\n    tier = input_tier(events, report, allow_dev)\n  File \"/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/evidence_representation.py\", line 28, in input_tier\n    check(allow_dev or tier in {\"RAW_EVENTS_ONLY\", \"INDEPENDENT_ATOMIC_ANNOTATED\"},\n  File \"/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/template_graph.py\", line 17, in check\n    raise ValueError(message)\nValueError: development or unconfirmed input requires --allow-dev\n",
+      "rejected": true
+    },
+    "B_osasuna_celta": {
+      "returncode": 1,
+      "stderr": "build_evidence\n    tier = input_tier(events, report, allow_dev)\n  File \"/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/evidence_representation.py\", line 28, in input_tier\n    check(allow_dev or tier in {\"RAW_EVENTS_ONLY\", \"INDEPENDENT_ATOMIC_ANNOTATED\"},\n  File \"/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/template_graph.py\", line 17, in check\n    raise ValueError(message)\nValueError: development or unconfirmed input requires --allow-dev\n",
+      "rejected": true
+    }
+  },
+  "matches": {
+    "A_uae_oman": {
+      "size_compare_keeper_rescue": {
+        "old_v1_compact_chars": 398088,
+        "new_v2_compact_chars": 367160,
+        "old_v1_indent2_chars": 577439,
+        "new_v2_indent2_chars": 655417,
+        "compact_reduction_ratio": 0.0777
+      },
+      "checks": {
+        "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+        "teams_header_preserved": true,
+        "n_evidence_atoms": 663,
+        "n_planner_events": 663,
+        "atoms_equal_planner_events": true,
+        "notes_preserved": true,
+        "attributes_preserved": true,
+        "types_preserved": true,
+        "n_checked_atoms": 663,
+        "chain_state_counts": {
+          "FULL": 9,
+          "PARTIAL": 64,
+          "NONLIVE_CHAIN": 8
+        },
+        "planner_chain_availability_counts": {
+          "FULL": 9,
+          "PARTIAL": 64
+        },
+        "planner_excludes_NONLIVE_and_UNAVAILABLE": true,
+        "replay_events_in_planner": [],
+        "no_replay_in_planner": true,
+        "partial_ids_in_evidence": 64,
+        "partial_ids_in_planner_context": 64,
+        "partial_kept_as_context": true
+      },
+      "chain_type_distribution": {
+        "FULL": {
+          "n": 9,
+          "category_counts": {
+            "特殊链": 8,
+            "险情链": 1
+          },
+          "subtype_counts": {
+            "throw_in_build_up_chain": 8,
+            "goal_line_extreme_save_chain": 1
+          }
+        },
+        "PARTIAL": {
+          "n": 64,
+          "category_counts": {
+            "特殊链": 28,
+            "结果链": 14,
+            "险情链": 22
+          },
+          "subtype_counts": {
+            "quick_restart_set_piece_chain": 10,
+            "team_buildup_goal": 2,
+            "rebound_follow_up_goal": 7,
+            "outcome_other": 5,
+            "throw_in_build_up_chain": 18,
+            "goal_line_extreme_save_chain": 7,
+            "shot_save_chain": 10,
+            "shot_post_bar_chain": 3,
+            "second_phase_after_frame_chain": 2
+          }
+        },
+        "UNAVAILABLE": {
+          "n": 0,
+          "category_counts": {},
+          "subtype_counts": {}
+        },
+        "NONLIVE_CHAIN": {
+          "n": 8,
+          "category_counts": {
+            "结果链": 3,
+            "险情链": 3,
+            "修正链": 2
+          },
+          "subtype_counts": {
+            "rebound_follow_up_goal": 3,
+            "shot_save_chain": 2,
+            "shot_post_bar_chain": 1,
+            "var_overturn_chain": 2
+          }
+        }
+      },
+      "window_merge_demos": {
+        "overlap_merge": {
+          "event_ids": [
+            "event_000004",
+            "event_000005"
+          ],
+          "input_windows": [
+            [
+              643.16,
+              661.85
+            ],
+            [
+              643.16,
+              661.85
+            ]
+          ],
+          "merged_groups": [
+            [
+              643.16,
+              661.85,
+              [
+                "event_000004",
+                "event_000005"
+              ]
+            ]
+          ],
+          "edl_segments": [
+            {
+              "segment_id": "seg_template_save_1_1",
+              "media_in": 643.16,
+              "media_out": 661.85,
+              "event_ids": [
+                "event_000004",
+                "event_000005"
+              ]
+            }
+          ],
+          "n_segments": 1,
+          "pass_single_union_segment": true
+        },
+        "disjoint_retain": {
+          "event_ids": [
+            "event_000014",
+            "event_000015"
+          ],
+          "input_windows": [
+            [
+              662.22,
+              676.14
+            ],
+            [
+              696.18,
+              706.86
+            ]
+          ],
+          "merged_groups": [
+            [
+              662.22,
+              676.14,
+              [
+                "event_000014"
+              ]
+            ],
+            [
+              696.18,
+              706.86,
+              [
+                "event_000015"
+              ]
+            ]
+          ],
+          "edl_segments": [
+            {
+              "segment_id": "seg_template_save_1_1",
+              "media_in": 662.22,
+              "media_out": 676.14,
+              "event_ids": [
+                "event_000014"
+              ]
+            },
+            {
+              "segment_id": "seg_template_save_1_2",
+              "media_in": 696.18,
+              "media_out": 706.86,
+              "event_ids": [
+                "event_000015"
+              ]
+            }
+          ],
+          "n_segments": 2,
+          "pass_two_segments_no_gap_fill": true
+        }
+      },
+      "partial_chain_citation_demo": {
+        "partial_chain_id": "pred_0002",
+        "n_unavailable": 5,
+        "available_used": [
+          "event_000021"
+        ],
+        "second_event": "event_000024",
+        "edl": [
+          {
+            "segment_id": "seg_template_save_1_1",
+            "event_ids": [
+              "event_000021"
+            ],
+            "short_chain_ids": [
+              "pred_0002"
+            ],
+            "media_in": 723.48,
+            "media_out": 735.07
+          },
+          {
+            "segment_id": "seg_template_save_2_1",
+            "event_ids": [
+              "event_000024"
+            ],
+            "short_chain_ids": [],
+            "media_in": 735.27,
+            "media_out": 749.89
+          }
+        ],
+        "pass_partial_as_context_only": true
+      },
+      "paths": {
+        "evidence": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/stage1_2_evidence_preflight_20261125/A_uae_oman/keeper_rescue/evidence.json",
+        "planner_request": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/stage1_2_evidence_preflight_20261125/A_uae_oman/keeper_rescue/planner_request.json"
+      }
+    },
+    "B_osasuna_celta": {
+      "size_compare_keeper_rescue": {
+        "old_v1_compact_chars": 400397,
+        "new_v2_compact_chars": 364857,
+        "old_v1_indent2_chars": 579415,
+        "new_v2_indent2_chars": 649358,
+        "compact_reduction_ratio": 0.0888
+      },
+      "checks": {
+        "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+        "teams_header_preserved": true,
+        "n_evidence_atoms": 660,
+        "n_planner_events": 660,
+        "atoms_equal_planner_events": true,
+        "notes_preserved": true,
+        "attributes_preserved": true,
+        "types_preserved": true,
+        "n_checked_atoms": 660,
+        "chain_state_counts": {
+          "FULL": 18,
+          "PARTIAL": 51,
+          "NONLIVE_CHAIN": 4
+        },
+        "planner_chain_availability_counts": {
+          "FULL": 18,
+          "PARTIAL": 51
+        },
+        "planner_excludes_NONLIVE_and_UNAVAILABLE": true,
+        "replay_events_in_planner": [],
+        "no_replay_in_planner": true,
+        "partial_ids_in_evidence": 51,
+        "partial_ids_in_planner_context": 51,
+        "partial_kept_as_context": true
+      },
+      "chain_type_distribution": {
+        "FULL": {
+          "n": 18,
+          "category_counts": {
+            "特殊链": 16,
+            "险情链": 2
+          },
+          "subtype_counts": {
+            "throw_in_build_up_chain": 11,
+            "quick_restart_set_piece_chain": 5,
+            "shot_save_chain": 1,
+            "goal_line_extreme_save_chain": 1
+          }
+        },
+        "PARTIAL": {
+          "n": 51,
+          "category_counts": {
+            "特殊链": 20,
+            "险情链": 21,
+            "结果链": 10
+          },
+          "subtype_counts": {
+            "throw_in_build_up_chain": 14,
+            "shot_save_chain": 11,
+            "quick_restart_set_piece_chain": 6,
+            "shot_post_bar_chain": 7,
+            "turnover_counter_goal": 1,
+            "rebound_follow_up_goal": 5,
+            "second_phase_after_frame_chain": 1,
+            "goal_line_extreme_save_chain": 2,
+            "corner_coop_goal": 3,
+            "team_buildup_goal": 1
+          }
+        },
+        "UNAVAILABLE": {
+          "n": 0,
+          "category_counts": {},
+          "subtype_counts": {}
+        },
+        "NONLIVE_CHAIN": {
+          "n": 4,
+          "category_counts": {
+            "结果链": 3,
+            "险情链": 1
+          },
+          "subtype_counts": {
+            "rebound_follow_up_goal": 1,
+            "outcome_other": 2,
+            "shot_post_bar_chain": 1
+          }
+        }
+      },
+      "window_merge_demos": {
+        "overlap_merge": {
+          "event_ids": [
+            "event_000004",
+            "event_000005"
+          ],
+          "input_windows": [
+            [
+              422.04,
+              432.83
+            ],
+            [
+              422.04,
+              432.83
+            ]
+          ],
+          "merged_groups": [
+            [
+              422.04,
+              432.83,
+              [
+                "event_000004",
+                "event_000005"
+              ]
+            ]
+          ],
+          "edl_segments": [
+            {
+              "segment_id": "seg_template_save_1_1",
+              "media_in": 422.04,
+              "media_out": 432.83,
+              "event_ids": [
+                "event_000004",
+                "event_000005"
+              ]
+            }
+          ],
+          "n_segments": 1,
+          "pass_single_union_segment": true
+        },
+        "disjoint_retain": {
+          "event_ids": [
+            "event_000010",
+            "event_000011"
+          ],
+          "input_windows": [
+            [
+              433.28,
+              443.57
+            ],
+            [
+              458.08,
+              468.25
+            ]
+          ],
+          "merged_groups": [
+            [
+              433.28,
+              443.57,
+              [
+                "event_000010"
+              ]
+            ],
+            [
+              458.08,
+              468.25,
+              [
+                "event_000011"
+              ]
+            ]
+          ],
+          "edl_segments": [
+            {
+              "segment_id": "seg_template_save_1_1",
+              "media_in": 433.28,
+              "media_out": 443.57,
+              "event_ids": [
+                "event_000010"
+              ]
+            },
+            {
+              "segment_id": "seg_template_save_1_2",
+              "media_in": 458.08,
+              "media_out": 468.25,
+              "event_ids": [
+                "event_000011"
+              ]
+            }
+          ],
+          "n_segments": 2,
+          "pass_two_segments_no_gap_fill": true
+        }
+      },
+      "partial_chain_citation_demo": {
+        "partial_chain_id": "pred_0004",
+        "n_unavailable": 8,
+        "available_used": [
+          "atom_fill_0003_Ball_possession_677277"
+        ],
+        "second_event": "event_000056",
+        "edl": [
+          {
+            "segment_id": "seg_template_save_1_1",
+            "event_ids": [
+              "atom_fill_0003_Ball_possession_677277"
+            ],
+            "short_chain_ids": [
+              "pred_0004"
+            ],
+            "media_in": 677.277,
+            "media_out": 679.277
+          },
+          {
+            "segment_id": "seg_template_save_2_1",
+            "event_ids": [
+              "event_000056"
+            ],
+            "short_chain_ids": [],
+            "media_in": 680.29,
+            "media_out": 690.71
+          }
+        ],
+        "pass_partial_as_context_only": true
+      },
+      "paths": {
+        "evidence": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/stage1_2_evidence_preflight_20261125/B_osasuna_celta/keeper_rescue/evidence.json",
+        "planner_request": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/stage1_2_evidence_preflight_20261125/B_osasuna_celta/keeper_rescue/planner_request.json"
+      }
+    }
+  }
+}
