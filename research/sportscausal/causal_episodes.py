@@ -8,6 +8,7 @@ constraints. The pair is still a hypothesis, not a completed chain.
 from __future__ import annotations
 from collections import defaultdict
 from copy import deepcopy
+import re
 from episode_semantics import opposite, pred, KEEP_TYPES, FAILED
 from semantic_normalization import values
 
@@ -43,7 +44,8 @@ def _candidate_pair(a,b,evidence,max_action_gap_sec):
     if a["type"]=="Shot":
         kind="shot_save"
         attacker=_actor(a,"attacking_attempt")
-        if set(values(evidence["atoms"][a["event_id"]],"Shot_Result")) & NON_SAVE_RESULTS:
+        if (set(values(evidence["atoms"][a["event_id"]],"Shot_Result")) & NON_SAVE_RESULTS
+            or re.search(r"射偏|打偏|击中门柱|击中横梁|打中门柱|打中横梁",a.get("notes") or "")):
             return None,"incompatible_shot_result"
         if a.get("shooter",{}).get("team_status")=="CONFLICT":
             return None,"shooter_conflict"
