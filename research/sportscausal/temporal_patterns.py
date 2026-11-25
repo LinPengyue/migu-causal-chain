@@ -11,13 +11,20 @@ from pathlib import Path
 from template_graph import check, read, write
 from semantic_normalization import normalize
 
-PREDICATES={"goalkeeper_rescue","attacking_threat"}
+PREDICATES={"goalkeeper_rescue","attacking_threat","set_piece_execution","goal_action"}
 
 def validate_pattern(t):
     for key in ("template_id","category","subtype","narrative_goal","pattern"):
         check(key in t,"missing "+key)
     p=t["pattern"]
-    check(isinstance(p,dict) and set(p)=={"operator","predicate","min_occurrences"},"invalid pattern schema")
+    check(isinstance(p,dict),"invalid pattern schema")
+    if p.get("operator")=="relation_path":
+        check(set(p)=={"operator","start_predicate","end_predicate","chain_subtypes"},"invalid relation path schema")
+        check(p["start_predicate"] in PREDICATES and p["end_predicate"] in PREDICATES,"unsupported path predicate")
+        check(isinstance(p["chain_subtypes"],list) and p["chain_subtypes"] and
+              all(isinstance(x,str) and x for x in p["chain_subtypes"]),"explicit allowed prediction subtypes required")
+        return p
+    check(set(p)=={"operator","predicate","min_occurrences"},"invalid pattern schema")
     check(p["operator"] in {"repeat","alternate"},"unsupported operator")
     check(p["predicate"] in PREDICATES,"unsupported predicate")
     lo=p["min_occurrences"]
@@ -74,11 +81,58 @@ def _alternate(rows,p):
              "episodes":[e for r in runs for e in r["episodes"]],
              "actor_runs":[{"actor":r["actor"],"n_episodes":len(r["episodes"])} for r in runs]}]
 
+def _relation_path(atoms,p,evidence):
+    """Ordered, same-actor endpoint pairs in one complete predicted chain.
+
+    FULL is a membership-availability assertion, not causal correctness.
+    Never pair endpoints by proximity alone or complete PARTIAL chains.
+    The caller supplies the prediction subtype vocabulary in the template.
+    Keep all distinct supported pairs, rather than preferring a longer cut.
+    """
+    by_id={a["event_id"]:a for a in atoms}
+    pairs={}
+    for c in evidence["chains"].values():
+        if c["state"]!="FULL" or c.get("subtype") not in p["chain_subtypes"]:
+            continue
+        ids=c["available_event_ids"]
+        if not ids or len(ids)!=len(set(ids)) or any(i not in by_id for i in ids):
+            continue
+        members=[by_id[i] for i in ids]
+        for j,end in enumerate(members):
+            outcome=end["predicates"].get(p["end_predicate"])
+            if not outcome:
+                continue
+            # Choose the last *explicitly* executed restart/action in the
+            # predicted member order before the outcome. An intervening
+            # opposing start or another outcome breaks this association.
+            for start in reversed(members[:j]):
+                if p["end_predicate"] in start["predicates"]:
+                    break
+                first=start["predicates"].get(p["start_predicate"])
+                if not first:
+                    continue
+                if first["actor"]==outcome["actor"] and start["t"]<end["t"]:
+                    key=(start["event_id"],end["event_id"])
+                    if key not in pairs:
+                        pairs[key]={"subjects":[first["actor"]],"episodes":[
+                            {"actor":first["actor"],"window":start["window"],"anchor_t":start["t"],
+                             "event_ids":[start["event_id"]],"predicate":p["start_predicate"]},
+                            {"actor":outcome["actor"],"window":end["window"],"anchor_t":end["t"],
+                             "event_ids":[end["event_id"]],"predicate":p["end_predicate"]}],
+                            "path_chain_ids":[]}
+                    pairs[key]["path_chain_ids"].append(c["chain_id"])
+                break
+    return sorted(pairs.values(),key=lambda r:(r["episodes"][0]["anchor_t"],r["episodes"][1]["anchor_t"],r["subjects"]))
+
 def match(t,semantics,evidence):
     p=validate_pattern(t)
     check(semantics["video_id"]==evidence["video_id"],"source mismatch")
-    rows=[a for a in semantics["atoms"] if p["predicate"] in a["predicates"]]
-    raw=(_repeat if p["operator"]=="repeat" else _alternate)(rows,p)
+    if p["operator"]=="relation_path":
+        rows=[a for a in semantics["atoms"] if any(k in a["predicates"] for k in (p["start_predicate"],p["end_predicate"]))]
+        raw=_relation_path(semantics["atoms"],p,evidence)
+    else:
+        rows=[a for a in semantics["atoms"] if p["predicate"] in a["predicates"]]
+        raw=(_repeat if p["operator"]=="repeat" else _alternate)(rows,p)
     index={}
     for c in evidence["chains"].values():
         if c["state"] not in {"FULL","PARTIAL"}:
@@ -90,10 +144,14 @@ def match(t,semantics,evidence):
         nodes=[]
         for j,e in enumerate(r["episodes"],1):
             refs=sorted({cid for eid in e["event_ids"] for cid in index.get(eid,[])})
-            nodes.append({"node_id":f"anchor:{j}",**e,"predicate":p["predicate"],
+            nodes.append({"node_id":f"anchor:{j}",**e,"predicate":e.get("predicate",p.get("predicate")),
                           "chain_context_ids":refs,"story_anchor":True})
         edges=[{"from":a["node_id"],"to":b["node_id"],"relation":"temporal_anchor_order",
                 "causal_verified":False} for a,b in zip(nodes,nodes[1:])]
+        if r.get("path_chain_ids"):
+            for edge in edges:
+                edge["relation"]="predicted_chain_path_hypothesis"
+                edge["path_chain_ids"]=sorted(set(r["path_chain_ids"]))
         candidates.append({"candidate_id":f"{t['template_id']}:{i}","subjects":r["subjects"],
                            "actor_runs":r.get("actor_runs"),"nodes":nodes,"edges":edges,
                            "narrative_goal":t["narrative_goal"],"quality_verified":False,
