@@ -1,0 +1,595 @@
+{
+  "match": "B_osasuna_celta",
+  "raw_teams_header": {
+    "team_1": {
+      "name": "奥萨苏纳",
+      "color": "红色"
+    },
+    "team_2": {
+      "name": "塞尔塔维戈",
+      "color": "蓝色"
+    }
+  },
+  "human_causal_team_colors": {
+    "team_1_name": "奥萨苏纳",
+    "team_2_name": "塞尔塔维戈",
+    "team_1_color": "红色",
+    "team_2_color": "蓝色"
+  },
+  "nonempty_field_counts_on_raw_events": {
+    "event_type": 663,
+    "event_type_zh": 663,
+    "comment_label": 663,
+    "video_context.broadcast_phase": 663,
+    "scores.emotional_heat_score": 661,
+    "scores.technical_difficulty_rating": 661,
+    "scores.criticality_score": 661,
+    "notes": 661,
+    "scores.overall_score": 658,
+    "attributes.Shot_Type_Camera_Angle": 652,
+    "scores.score_recognition": 647,
+    "attributes.Match_Phase": 643,
+    "attributes.Pitch_Area": 629,
+    "attributes.Score_Recognition": 607,
+    "attributes.Body_Part": 576,
+    "attributes.Related_Player": 417,
+    "attributes.Sub_Type": 285,
+    "attributes.BallController_team": 253,
+    "attributes.BallController_player": 253,
+    "attributes.Attacker": 151,
+    "attributes.Defender": 151,
+    "attributes.Defensive_Action": 151,
+    "video_context.is_replay": 61,
+    "attributes.Active_Player": 41,
+    "attributes.Foul_Type": 41,
+    "attributes.Opponent_Player": 41,
+    "attributes.Time_Score_Recognition": 40,
+    "attributes.Shot_Result": 19,
+    "attributes.Shot_Type": 19,
+    "scores.score_recognition_reason": 16,
+    "attributes.Shot_Power": 15,
+    "attributes.Result_Type": 12,
+    "attributes.Goalkeepers_Position_Pitch_Area": 9,
+    "attributes.Save_Type": 9,
+    "attributes.Substituted_Player_Off": 9,
+    "attributes.Substituted_Player_On": 9,
+    "attributes.Card_Type": 6,
+    "attributes.Tactical_Play_Prior_Key_Action": 1
+  },
+  "attributes_nonempty_key_counts": {
+    "Shot_Type_Camera_Angle": 652,
+    "Match_Phase": 643,
+    "Pitch_Area": 629,
+    "Score_Recognition": 607,
+    "Body_Part": 576,
+    "Related_Player": 417,
+    "Sub_Type": 285,
+    "BallController_team": 253,
+    "BallController_player": 253,
+    "Attacker": 151,
+    "Defender": 151,
+    "Defensive_Action": 151,
+    "Active_Player": 41,
+    "Foul_Type": 41,
+    "Opponent_Player": 41,
+    "Time_Score_Recognition": 40,
+    "Shot_Result": 19,
+    "Shot_Type": 19,
+    "Shot_Power": 15,
+    "Result_Type": 12,
+    "Goalkeepers_Position_Pitch_Area": 9,
+    "Save_Type": 9,
+    "Substituted_Player_Off": 9,
+    "Substituted_Player_On": 9,
+    "Card_Type": 6,
+    "Tactical_Play_Prior_Key_Action": 1
+  },
+  "has_player_fields_on_events": true,
+  "has_team_fields_on_events": true,
+  "has_jersey_or_color_on_events": false,
+  "examples": {
+    "Save": [
+      {
+        "event_id": "event_000093",
+        "event_type": "Save",
+        "event_type_zh": "扑救",
+        "event_type_id": "soccer_save",
+        "comment_label": "Parry",
+        "media_time": {
+          "event_time_sec": 839.54,
+          "start_time_sec": 836.76,
+          "end_time_sec": 846.78
+        },
+        "attributes": {
+          "Body_Part": [
+            "Other_Body_Parts"
+          ],
+          "Goalkeepers_Position_Pitch_Area": [
+            "Goalkeeper_Save"
+          ],
+          "Match_Phase": [
+            "Regular_Time"
+          ],
+          "Save_Type": [
+            "Parry"
+          ],
+          "Score_Recognition": [
+            "0:0"
+          ],
+          "Shot_Type_Camera_Angle": [
+            "Replay"
+          ]
+        },
+        "scores": {
+          "emotional_heat_score": 2.0,
+          "technical_difficulty_rating": 2.0,
+          "criticality_score": 3.0,
+          "overall_score": 2.0,
+          "score_recognition": "0:0",
+          "score_recognition_reason": null
+        },
+        "video_context": {
+          "broadcast_phase": "REPLAY",
+          "is_replay": true,
+          "is_slow_motion": false,
+          "replay_of_event_id": null
+        },
+        "enrichment": null,
+        "notes": "2队13号守门员在小禁区内用手将球顶出解围",
+        "top_level_extra": {}
+      },
+      {
+        "event_id": "event_000244",
+        "event_type": "Save",
+        "event_type_zh": "扑救",
+        "event_type_id": "soccer_save",
+        "comment_label": "Parry",
+        "media_time": {
+          "event_time_sec": 1600.05,
+          "start_time_sec": 1590.54,
+          "end_time_sec": 1600.78
+        },
+        "attributes": {
+          "Body_Part": [
+            "Other_Body_Parts"
+          ],
+          "Goalkeepers_Position_Pitch_Area": [
+            "Goalkeeper_Ball_Control"
+          ],
+          "Match_Phase": [
+            "Regular_Time"
+          ],
+          "Save_Type": [
+            "Parry"
+          ],
+          "Score_Recognition": [
+            "0:0"
+          ],
+          "Shot_Type_Camera_Angle": [
+            "Medium_Shot"
+          ]
+        },
+        "scores": {
+          "emotional_heat_score": 3.0,
+          "technical_difficulty_rating": 3.0,
+          "criticality_score": 3.0,
+          "overall_score": 3.0,
+          "score_recognition": "0:0",
+          "score_recognition_reason": null
+        },
+        "video_context": {
+          "broadcast_phase": "LIVE",
+          "is_replay": false,
+          "is_slow_motion": false,
+          "replay_of_event_id": null
+        },
+        "enrichment": null,
+        "notes": "1队1号守门员在禁区将球抱住",
+        "top_level_extra": {}
+      }
+    ],
+    "Shot": [
+      {
+        "event_id": "event_000051",
+        "event_type": "Shot",
+        "event_type_zh": "射门",
+        "event_type_id": "soccer_shot",
+        "comment_label": "Mistake",
+        "media_time": {
+          "event_time_sec": 632.3,
+          "start_time_sec": 625.07,
+          "end_time_sec": 635.19
+        },
+        "attributes": {
+          "Body_Part": [
+            "Leg"
+          ],
+          "Match_Phase": [
+            "Regular_Time"
+          ],
+          "Pitch_Area": [
+            "Penalty_Area"
+          ],
+          "Score_Recognition": [
+            "0:0"
+          ],
+          "Shot_Type_Camera_Angle": [
+            "Medium_Shot"
+          ],
+          "Shot_Result": [
+            "Shot_Wide"
+          ],
+          "Shot_Type": [
+            "Mistake"
+          ]
+        },
+        "scores": {
+          "emotional_heat_score": 4.0,
+          "technical_difficulty_rating": 3.0,
+          "criticality_score": 4.0,
+          "overall_score": 4.0,
+          "score_recognition": "0:0",
+          "score_recognition_reason": null
+        },
+        "video_context": {
+          "broadcast_phase": "LIVE",
+          "is_replay": false,
+          "is_slow_motion": false,
+          "replay_of_event_id": null
+        },
+        "enrichment": null,
+        "notes": "1队球员在禁区起脚射门",
+        "top_level_extra": {}
+      },
+      {
+        "event_id": "event_000186",
+        "event_type": "Shot",
+        "event_type_zh": "射门",
+        "event_type_id": "soccer_shot",
+        "comment_label": "Mistake",
+        "media_time": {
+          "event_time_sec": 1305.37,
+          "start_time_sec": 1297.08,
+          "end_time_sec": 1307.31
+        },
+        "attributes": {
+          "Body_Part": [
+            "Leg"
+          ],
+          "Match_Phase": [
+            "Regular_Time"
+          ],
+          "Pitch_Area": [
+            "Defensive_Third"
+          ],
+          "Score_Recognition": [
+            "0:0"
+          ],
+          "Shot_Type_Camera_Angle": [
+            "Medium_Shot"
+          ],
+          "Shot_Power": [
+            "Powerful_Shot"
+          ],
+          "Shot_Result": [
+            "Shot_Wide"
+          ],
+          "Shot_Type": [
+            "Mistake"
+          ]
+        },
+        "scores": {
+          "emotional_heat_score": 4.0,
+          "technical_difficulty_rating": 3.0,
+          "criticality_score": 4.0,
+          "overall_score": 4.0,
+          "score_recognition": "0:0",
+          "score_recognition_reason": null
+        },
+        "video_context": {
+          "broadcast_phase": "LIVE",
+          "is_replay": false,
+          "is_slow_motion": false,
+          "replay_of_event_id": null
+        },
+        "enrichment": null,
+        "notes": "1队17号在防守三区禁区前射门，射偏球飞出边界",
+        "top_level_extra": {}
+      }
+    ],
+    "Corner_kick": [
+      {
+        "event_id": "event_000046",
+        "event_type": "Corner_kick",
+        "event_type_zh": "角球",
+        "event_type_id": "soccer_corner_kick",
+        "comment_label": "Corner_kick",
+        "media_time": {
+          "event_time_sec": 618.02,
+          "start_time_sec": 614.06,
+          "end_time_sec": 624.15
+        },
+        "attributes": {
+          "Body_Part": [
+            "Leg"
+          ],
+          "Match_Phase": [
+            "Regular_Time"
+          ],
+          "Pitch_Area": [
+            "Defensive_Third"
+          ],
+          "Related_Player": [
+            "1队球员"
+          ],
+          "Score_Recognition": [
+            "0:0"
+          ],
+          "Shot_Type_Camera_Angle": [
+            "Medium_Shot"
+          ]
+        },
+        "scores": {
+          "emotional_heat_score": 2.0,
+          "technical_difficulty_rating": 2.0,
+          "criticality_score": 2.0,
+          "overall_score": 2.0,
+          "score_recognition": "0:0",
+          "score_recognition_reason": null
+        },
+        "video_context": {
+          "broadcast_phase": "LIVE",
+          "is_replay": false,
+          "is_slow_motion": false,
+          "replay_of_event_id": null
+        },
+        "enrichment": null,
+        "notes": "1队队员发出角球",
+        "top_level_extra": {}
+      },
+      {
+        "event_id": "event_000563",
+        "event_type": "Corner_kick",
+        "event_type_zh": "角球",
+        "event_type_id": "soccer_corner_kick",
+        "comment_label": "Corner_kick",
+        "media_time": {
+          "event_time_sec": 5751.27,
+          "start_time_sec": 5746.62,
+          "end_time_sec": 5756.71
+        },
+        "attributes": {
+          "Body_Part": [
+            "Leg"
+          ],
+          "Match_Phase": [
+            "Regular_Time"
+          ],
+          "Pitch_Area": [
+            "Defensive_Third"
+          ],
+          "Related_Player": [
+            "2队球员"
+          ],
+          "Score_Recognition": [
+            "2:2"
+          ],
+          "Shot_Type_Camera_Angle": [
+            "Medium_Shot"
+          ]
+        },
+        "scores": {
+          "emotional_heat_score": 3.0,
+          "technical_difficulty_rating": 2.0,
+          "criticality_score": 3.0,
+          "overall_score": 3.0,
+          "score_recognition": "2:2",
+          "score_recognition_reason": null
+        },
+        "video_context": {
+          "broadcast_phase": "LIVE",
+          "is_replay": false,
+          "is_slow_motion": false,
+          "replay_of_event_id": null
+        },
+        "enrichment": null,
+        "notes": "2队球员在防守三区开出角球",
+        "top_level_extra": {}
+      }
+    ],
+    "Goal": [
+      {
+        "event_id": "atom_fill_0037_Goal_1979427",
+        "event_type": "Goal",
+        "event_type_zh": "进球",
+        "event_type_id": "soccer_goal",
+        "comment_label": "Goal",
+        "media_time": {
+          "event_time_sec": 1979.427,
+          "start_time_sec": 1979.427,
+          "end_time_sec": 1981.427
+        },
+        "attributes": {},
+        "scores": {},
+        "video_context": {
+          "broadcast_phase": "LIVE",
+          "is_replay": false,
+          "is_slow_motion": false,
+          "replay_of_event_id": null
+        },
+        "enrichment": {
+          "provenance": "causal_atom_fill",
+          "source_event_ids": [
+            "event_000038"
+          ],
+          "copied_fields": [
+            "type",
+            "t_ms",
+            "is_replay"
+          ],
+          "forbidden_copied": [
+            "chain_category",
+            "causal_chain_subtype",
+            "segment_time_video",
+            "edges",
+            "story"
+          ]
+        },
+        "notes": "",
+        "top_level_extra": {}
+      },
+      {
+        "event_id": "atom_fill_0041_Goal_2030730",
+        "event_type": "Goal",
+        "event_type_zh": "进球",
+        "event_type_id": "soccer_goal",
+        "comment_label": "Goal",
+        "media_time": {
+          "event_time_sec": 2030.73,
+          "start_time_sec": 2030.73,
+          "end_time_sec": 2032.73
+        },
+        "attributes": {},
+        "scores": {},
+        "video_context": {
+          "broadcast_phase": "REPLAY",
+          "is_replay": true,
+          "is_slow_motion": false,
+          "replay_of_event_id": null
+        },
+        "enrichment": {
+          "provenance": "causal_atom_fill",
+          "source_event_ids": [
+            "event_000042"
+          ],
+          "copied_fields": [
+            "type",
+            "t_ms",
+            "is_replay"
+          ],
+          "forbidden_copied": [
+            "chain_category",
+            "causal_chain_subtype",
+            "segment_time_video",
+            "edges",
+            "story"
+          ]
+        },
+        "notes": "",
+        "top_level_extra": {}
+      }
+    ],
+    "Defensive_action": [
+      {
+        "event_id": "event_000010",
+        "event_type": "Defensive_action",
+        "event_type_zh": "防守动作",
+        "event_type_id": "soccer_defensive_action",
+        "comment_label": "Clearance",
+        "media_time": {
+          "event_time_sec": 442.58,
+          "start_time_sec": 433.28,
+          "end_time_sec": 443.57
+        },
+        "attributes": {
+          "Attacker": [
+            "2队球员"
+          ],
+          "Body_Part": [
+            "Leg"
+          ],
+          "Defender": [
+            "1队球员"
+          ],
+          "Defensive_Action": [
+            "Clearance"
+          ],
+          "Match_Phase": [
+            "Regular_Time"
+          ],
+          "Pitch_Area": [
+            "Defensive_Third"
+          ],
+          "Score_Recognition": [
+            "0:0"
+          ],
+          "Shot_Type_Camera_Angle": [
+            "Medium_Shot"
+          ]
+        },
+        "scores": {
+          "emotional_heat_score": 2.0,
+          "technical_difficulty_rating": 1.0,
+          "criticality_score": 2.0,
+          "overall_score": 2.0,
+          "score_recognition": "0:0",
+          "score_recognition_reason": null
+        },
+        "video_context": {
+          "broadcast_phase": "LIVE",
+          "is_replay": false,
+          "is_slow_motion": false,
+          "replay_of_event_id": null
+        },
+        "enrichment": null,
+        "notes": "2队队员在禁区将1队队员传球破坏解围",
+        "top_level_extra": {}
+      },
+      {
+        "event_id": "event_000016",
+        "event_type": "Defensive_action",
+        "event_type_zh": "防守动作",
+        "event_type_id": "soccer_defensive_action",
+        "comment_label": "Tackle",
+        "media_time": {
+          "event_time_sec": 485.36,
+          "start_time_sec": 480.21,
+          "end_time_sec": 490.46
+        },
+        "attributes": {
+          "Attacker": [
+            "1队球员"
+          ],
+          "Body_Part": [
+            "Leg"
+          ],
+          "Defender": [
+            "2队球员"
+          ],
+          "Defensive_Action": [
+            "Tackle"
+          ],
+          "Match_Phase": [
+            "Regular_Time"
+          ],
+          "Pitch_Area": [
+            "Defensive_Third"
+          ],
+          "Score_Recognition": [
+            "0:0"
+          ],
+          "Shot_Type_Camera_Angle": [
+            "Medium_Shot"
+          ]
+        },
+        "scores": {
+          "emotional_heat_score": 2.0,
+          "technical_difficulty_rating": 1.0,
+          "criticality_score": 2.0,
+          "overall_score": 2.0,
+          "score_recognition": "0:0",
+          "score_recognition_reason": null
+        },
+        "video_context": {
+          "broadcast_phase": "LIVE",
+          "is_replay": false,
+          "is_slow_motion": false,
+          "replay_of_event_id": null
+        },
+        "enrichment": null,
+        "notes": "1队队员在防守三区抢断2队队员",
+        "top_level_extra": {}
+      }
+    ]
+  }
+}

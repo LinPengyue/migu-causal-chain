@@ -1,0 +1,148 @@
+{
+  "total_chars": 398088,
+  "template_chars": 627,
+  "instruction_chars": 546,
+  "materials_chars": 396874,
+  "n_materials": 672,
+  "materials_field_char_costs": [
+    {
+      "scope": "materials_field_sum",
+      "field": "scores",
+      "chars": 103911,
+      "share_of_materials": 0.3808
+    },
+    {
+      "scope": "materials_field_sum",
+      "field": "video_context",
+      "chars": 61659,
+      "share_of_materials": 0.226
+    },
+    {
+      "scope": "materials_field_sum",
+      "field": "video_id",
+      "chars": 20160,
+      "share_of_materials": 0.0739
+    },
+    {
+      "scope": "materials_field_sum",
+      "field": "window_basis",
+      "chars": 16209,
+      "share_of_materials": 0.0594
+    },
+    {
+      "scope": "materials_field_sum",
+      "field": "event_ids",
+      "chars": 14099,
+      "share_of_materials": 0.0517
+    },
+    {
+      "scope": "materials_field_sum",
+      "field": "material_id",
+      "chars": 14000,
+      "share_of_materials": 0.0513
+    },
+    {
+      "scope": "materials_field_sum",
+      "field": "window_sec",
+      "chars": 11149,
+      "share_of_materials": 0.0409
+    },
+    {
+      "scope": "materials_field_sum",
+      "field": "description",
+      "chars": 9040,
+      "share_of_materials": 0.0331
+    },
+    {
+      "scope": "materials_field_sum",
+      "field": "event_type",
+      "chars": 8289,
+      "share_of_materials": 0.0304
+    },
+    {
+      "scope": "materials_field_sum",
+      "field": "kind",
+      "chars": 4794,
+      "share_of_materials": 0.0176
+    },
+    {
+      "scope": "materials_field_sum",
+      "field": "first_live_verified",
+      "chars": 3360,
+      "share_of_materials": 0.0123
+    },
+    {
+      "scope": "materials_field_sum",
+      "field": "event_type_zh",
+      "chars": 3190,
+      "share_of_materials": 0.0117
+    },
+    {
+      "scope": "materials_field_sum",
+      "field": "teams",
+      "chars": 2652,
+      "share_of_materials": 0.0097
+    },
+    {
+      "scope": "materials_field_sum",
+      "field": "subtype",
+      "chars": 230,
+      "share_of_materials": 0.0008
+    },
+    {
+      "scope": "materials_field_sum",
+      "field": "predicted_chain_id",
+      "chars": 99,
+      "share_of_materials": 0.0004
+    },
+    {
+      "scope": "materials_field_sum",
+      "field": "category",
+      "chars": 45,
+      "share_of_materials": 0.0002
+    }
+  ],
+  "equal_description_to_type_or_empty": 220,
+  "lossless_compression_candidates": [
+    {
+      "idea": "hoist video_id to request root once",
+      "chars_saved_estimate": 20130,
+      "lossless": true
+    },
+    {
+      "idea": "omit constant-false field materials[].first_live_verified (document default=false)",
+      "chars_saved_estimate": 3360,
+      "lossless": true
+    },
+    {
+      "idea": "omit mostly-empty field materials[].teams",
+      "chars_saved_estimate": 2652,
+      "nullish_fraction": 1.0,
+      "lossless": true
+    },
+    {
+      "idea": "omit mostly-empty field materials[].predicted_chain_id",
+      "chars_saved_estimate": 99,
+      "nullish_fraction": 0.9866,
+      "lossless": true
+    },
+    {
+      "idea": "omit mostly-empty field materials[].category",
+      "chars_saved_estimate": 45,
+      "nullish_fraction": 0.9866,
+      "lossless": true
+    },
+    {
+      "idea": "omit mostly-empty field materials[].subtype",
+      "chars_saved_estimate": 230,
+      "nullish_fraction": 0.9866,
+      "lossless": true
+    },
+    {
+      "idea": "drop description when equal to event_type/event_type_zh/comment_label/empty",
+      "equal_or_empty_event_materials": 220,
+      "chars_saved_estimate": "up_to_description_field_sum_for_those_rows",
+      "lossless": true
+    }
+  ]
+}

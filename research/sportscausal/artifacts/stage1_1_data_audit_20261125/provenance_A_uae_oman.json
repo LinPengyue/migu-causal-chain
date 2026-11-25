@@ -1,0 +1,72 @@
+{
+  "match_id": "A_uae_oman",
+  "enrich_report": {
+    "schema": "v3_atomic_enrich_v1",
+    "n_raw_events": 749,
+    "n_causal_atoms_unique": 130,
+    "n_injected": 130,
+    "n_skipped_duplicate": 0,
+    "injected_by_type": {
+      "Throw_in": 1,
+      "Pass": 17,
+      "Shot": 41,
+      "Goal": 28,
+      "Save": 17,
+      "Foul_Being_fouled": 1,
+      "Ball_possession": 6,
+      "Defensive_action": 8,
+      "Dribble_past": 4,
+      "Assist": 6,
+      "Win_an_aerial_duel": 1
+    },
+    "n_goal_injected": 28,
+    "n_goal_injected_live": 3,
+    "n_goal_injected_replay": 25,
+    "note": "Atoms only; no chain_category/subtype/windows/edges. is_replay prefers LIVE when any non-replay occurrence exists.",
+    "out_events": "/data2/lpy1/_story_va_outputs/v3/plan2/closed_loop_A_uae_oman/01_enrich/events_enriched.json",
+    "source_events": "data/交付_out/10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语.json",
+    "source_causal_atoms_only": "data/交付_out/10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语_causal.json"
+  },
+  "conclusion": {
+    "atom_fill_source": "historical_human_causal_chains_flattened",
+    "not_independent_atomic_annotations": true,
+    "evidence": [
+      "enrich_report.source_causal_atoms_only points at *_causal.json containing causal_chains[]",
+      "atomic_event_enrich.extract_atomic_events flattens causal_chains events by (type_en,t_ms)",
+      "injected events carry enrichment.provenance=causal_atom_fill",
+      "independent path enrich_with_independent_atoms exists but was NOT used for A/B"
+    ],
+    "what_was_stripped_on_inject": [
+      "chain_category",
+      "causal_chain_subtype",
+      "segment_time_video",
+      "edges",
+      "story roles"
+    ],
+    "human_causal_file_still_has_chain_labels": true,
+    "n_human_causal_chains": 25,
+    "n_event_mentions_inside_human_chains": 130,
+    "human_chain_fields_nonempty_counts": {
+      "chain_category": 25,
+      "causal_chain_subtype": 25,
+      "segment_time_video": 9,
+      "segment_time_sketch": 25,
+      "is_replay": 25,
+      "events": 25
+    },
+    "n_atom_fill_in_enriched": 130,
+    "n_raw_events": 749,
+    "n_enriched_events": 879,
+    "atom_fill_ids_sample": [
+      "atom_fill_0000_Throw_in_1327559",
+      "atom_fill_0001_Pass_1329476",
+      "atom_fill_0002_Pass_1331566",
+      "atom_fill_0003_Shot_1335974",
+      "atom_fill_0004_Goal_1337123",
+      "atom_fill_0005_Pass_1371351",
+      "atom_fill_0006_Pass_1373576",
+      "atom_fill_0007_Shot_1378038"
+    ],
+    "raw_ids_disjoint_from_atom_fill": true
+  }
+}

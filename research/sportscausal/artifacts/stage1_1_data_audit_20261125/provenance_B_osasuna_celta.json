@@ -1,0 +1,75 @@
+{
+  "match_id": "B_osasuna_celta",
+  "enrich_report": {
+    "schema": "v3_atomic_enrich_v1",
+    "n_raw_events": 663,
+    "n_causal_atoms_unique": 171,
+    "n_injected": 171,
+    "n_skipped_duplicate": 0,
+    "injected_by_type": {
+      "Ball_possession": 12,
+      "Shot": 54,
+      "Save": 16,
+      "Pass": 21,
+      "Defensive_action": 14,
+      "Throw_in": 1,
+      "Win_an_aerial_duel": 4,
+      "Assist": 4,
+      "Goal": 31,
+      "Corner_kick": 7,
+      "Foul_Being_fouled": 2,
+      "Receive_a_card": 1,
+      "Penalty_": 3,
+      "Referees_decision": 1
+    },
+    "n_goal_injected": 31,
+    "n_goal_injected_live": 4,
+    "n_goal_injected_replay": 27,
+    "note": "Atoms only; no chain_category/subtype/windows/edges. is_replay prefers LIVE when any non-replay occurrence exists.",
+    "out_events": "/data2/lpy1/_story_va_outputs/v3/plan2/closed_loop_B_osasuna_celta/01_enrich/events_enriched.json",
+    "source_events": "data/交付_out/10月27日_25-26赛季西甲第10轮_奥萨苏纳VS塞尔塔_国语.json",
+    "source_causal_atoms_only": "data/交付_out/10月27日_25-26赛季西甲第10轮_奥萨苏纳VS塞尔塔_国语_causal.json"
+  },
+  "conclusion": {
+    "atom_fill_source": "historical_human_causal_chains_flattened",
+    "not_independent_atomic_annotations": true,
+    "evidence": [
+      "enrich_report.source_causal_atoms_only points at *_causal.json containing causal_chains[]",
+      "atomic_event_enrich.extract_atomic_events flattens causal_chains events by (type_en,t_ms)",
+      "injected events carry enrichment.provenance=causal_atom_fill",
+      "independent path enrich_with_independent_atoms exists but was NOT used for A/B"
+    ],
+    "what_was_stripped_on_inject": [
+      "chain_category",
+      "causal_chain_subtype",
+      "segment_time_video",
+      "edges",
+      "story roles"
+    ],
+    "human_causal_file_still_has_chain_labels": true,
+    "n_human_causal_chains": 33,
+    "n_event_mentions_inside_human_chains": 171,
+    "human_chain_fields_nonempty_counts": {
+      "chain_category": 33,
+      "causal_chain_subtype": 33,
+      "segment_time_video": 29,
+      "segment_time_sketch": 33,
+      "is_replay": 33,
+      "events": 33
+    },
+    "n_atom_fill_in_enriched": 171,
+    "n_raw_events": 663,
+    "n_enriched_events": 834,
+    "atom_fill_ids_sample": [
+      "atom_fill_0000_Ball_possession_669427",
+      "atom_fill_0001_Shot_670216",
+      "atom_fill_0002_Save_672088",
+      "atom_fill_0003_Ball_possession_677277",
+      "atom_fill_0004_Pass_678191",
+      "atom_fill_0005_Pass_806938",
+      "atom_fill_0006_Ball_possession_809125",
+      "atom_fill_0007_Pass_810444"
+    ],
+    "raw_ids_disjoint_from_atom_fill": true
+  }
+}
