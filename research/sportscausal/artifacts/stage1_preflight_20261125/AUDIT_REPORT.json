@@ -1,0 +1,122 @@
+{
+  "checks": {
+    "1_id_binding": {
+      "pass": true,
+      "n_event_materials": 663,
+      "n_chain_materials": 9,
+      "n_excluded": 288,
+      "bad_event": [],
+      "bad_chain": [],
+      "all_chain_event_ids_subset_of_event_materials": true,
+      "predicted_chain_ids_from_predicted_doc_only": true
+    },
+    "2_timeline_vs_source": {
+      "pass": true,
+      "source_mp4_exists": true,
+      "inventory_duration_sec": 8149.48,
+      "ffprobe_duration_sec": 8149.48,
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "window_basis_counts": {
+        "annotated_media_window": 663,
+        "envelope_of_bound_event_windows": 9
+      },
+      "out_of_range_n": 0,
+      "out_of_range_sample": [],
+      "all_windows_within_0_duration": true
+    },
+    "3_replay_slowmo_excluded": {
+      "pass": true,
+      "annotated_nonlive_events_in_source": 216,
+      "nonlive_still_in_materials": [],
+      "replay_or_slowmo_in_materials": [],
+      "excluded_reason_counts": {
+        "invalid_or_annotated_nonlive_window": 216,
+        "unbound_or_nonlive_chain": 72
+      }
+    },
+    "4_no_reference_leakage": {
+      "pass": true,
+      "planner_request_keys_only": [
+        "template",
+        "materials",
+        "instruction"
+      ],
+      "material_kinds_allowed": [
+        "event",
+        "predicted_chain"
+      ],
+      "gold_true_hits": [],
+      "leak_hits": [],
+      "predicted_is_benchmark_gold": null,
+      "note": "Planner input is template + predicted V1-adapter materials only; no FanEdit/story reference docs."
+    },
+    "5_unique_node_instances_for_repeated_role": {
+      "pass": true,
+      "offline_instantiate_only": true,
+      "picked_materials": [
+        "event:event_000001",
+        "event:event_000002"
+      ],
+      "detail": {
+        "keeper_rescue": {
+          "node_ids": [
+            "save:1",
+            "save:2"
+          ],
+          "segment_ids": [
+            "seg_template_save_1",
+            "seg_template_save_2"
+          ],
+          "unique_nodes": true,
+          "unique_segments": true,
+          "slot_indexes": [
+            "save:1",
+            "save:2"
+          ],
+          "same_slot_id_repeated_as_instances": true
+        },
+        "alternating_threats": {
+          "node_ids": [
+            "threat:1",
+            "threat:2"
+          ],
+          "segment_ids": [
+            "seg_template_threat_1",
+            "seg_template_threat_2"
+          ],
+          "unique_nodes": true,
+          "unique_segments": true,
+          "slot_indexes": [
+            "threat:1",
+            "threat:2"
+          ],
+          "same_slot_id_repeated_as_instances": true
+        }
+      },
+      "mechanism": "node_id = \"{slot_id}:{index}\"; segment_id = seg_template_{slot}_{index}"
+    }
+  },
+  "stats": {
+    "n_source_events": 879,
+    "n_predicted_chains": 81,
+    "n_materials": 672,
+    "n_excluded": 288,
+    "inventory_sha16_identical_across_templates": true,
+    "inventory_sha16": {
+      "keeper_rescue": "c6480d74993a03cd",
+      "set_piece_breakthrough": "c6480d74993a03cd",
+      "alternating_threats": "c6480d74993a03cd"
+    },
+    "unittest": "6/6 OK",
+    "outputs": {
+      "A": {
+        "keeper_rescue": "/tmp/sportscausal_stage1_preflight_20261125/A_uae_oman/keeper_rescue",
+        "set_piece_breakthrough": "/tmp/sportscausal_stage1_preflight_20261125/A_uae_oman/set_piece_breakthrough",
+        "alternating_threats": "/tmp/sportscausal_stage1_preflight_20261125/A_uae_oman/alternating_threats"
+      },
+      "B_sample": "/tmp/sportscausal_stage1_preflight_20261125/B_osasuna_celta/keeper_rescue"
+    }
+  },
+  "findings": [],
+  "overall_pass": true
+}
