@@ -9,7 +9,7 @@ from pathlib import Path
 from episode_semantics import normalize_for_episodes
 from causal_episodes import build_episodes, PROJECTIONS
 from template_graph import check,read,write
-from temporal_patterns import validate_pattern
+
 
 def _runs(episodes):
     runs=[]
@@ -21,28 +21,35 @@ def _runs(episodes):
     return runs
 
 def match_episodes(template, bundle):
-    p=validate_pattern(template)
-    check(p["operator"] in {"repeat","alternate"} and p["predicate"] in PROJECTIONS,
-          "R2a.2 supports repeat/alternate only")
+    check(all(k in template for k in ("template_id","category","subtype","narrative_goal","pattern")),
+          "missing template fields")
+    p=template["pattern"]
+    check(isinstance(p,dict) and set(p)=={"operator","predicate","min_occurrences"}
+          and p["operator"] in {"repeat","alternate"} and p["predicate"] in PROJECTIONS,
+          "invalid episode pattern")
+    check(type(p["min_occurrences"]) is int and p["min_occurrences"] >= (3 if p["operator"]=="alternate" else 2),
+          "invalid occurrence minimum")
     episodes=[e for e in bundle["episodes"] if e["predicate"]==p["predicate"]]
     episodes.sort(key=lambda e:(e["anchor_t"],e["actor"],e["episode_id"]))
     raw=[]
     ambiguous=[]
+    overlapping=[]
     if p["operator"]=="repeat":
         for side in sorted({e["actor"] for e in episodes}):
             eps=[e for e in episodes if e["actor"]==side]
             if len(eps)>=p["min_occurrences"]:
                 raw.append(([side],eps,None))
     else:
-        # A switch inside overlapping action windows has uncertain ordering.
-        # Drop neither episode from diagnostics, but do not count it as a run.
+        # Media windows can overlap even when annotated actions have distinct
+        # times. Flag these overlaps; only equal action times lack an order.
         for i,a in enumerate(episodes):
             for b in episodes[i+1:]:
                 if b["actor"]==a["actor"]:
                     continue
-                if (a["anchor_t"]==b["anchor_t"] or
-                    any(x<v and y>u for x,y in a["media_windows"] for u,v in b["media_windows"])):
+                if a["anchor_t"]==b["anchor_t"]:
                     ambiguous.extend([a["episode_id"],b["episode_id"]])
+                if any(x<v and y>u for x,y in a["media_windows"] for u,v in b["media_windows"]):
+                    overlapping.append([a["episode_id"],b["episode_id"]])
         eps=[e for e in episodes if e["episode_id"] not in set(ambiguous)]
         runs=_runs(eps)
         if len(runs)>=p["min_occurrences"]:
@@ -64,6 +71,7 @@ def match_episodes(template, bundle):
             "narrative_goal":template["narrative_goal"],
             "use_chains":bundle["use_chains"],"n_predicate_episodes":len(episodes),
             "ambiguous_order_episode_ids":sorted(set(ambiguous)),
+            "cross_actor_overlapping_media":overlapping,
             "candidates":candidates,"scope":"whole-match anchor discovery; no dominance or narrative quality claim",
             "first_live_verified":False,"quality_verified":False,"release_authorized":False}
 
