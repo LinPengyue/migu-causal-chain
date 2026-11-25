@@ -1,0 +1,62 @@
+{
+  "schema": "sportscausal_stage2_billing_preflight_v1",
+  "timestamp_local": "2026-11-25T17:22:05+08:00",
+  "code_base": "b5eff67",
+  "endpoint": {
+    "base_url": "https://llmapi.paratera.com/v1",
+    "model": "DeepSeek-V4-Pro-0813",
+    "models_api_hit": true,
+    "models_api_fields_for_DeepSeek-V4-Pro-0813": {
+      "id": "DeepSeek-V4-Pro-0813",
+      "max_input_tokens_reported": null,
+      "note": "Flash siblings report max_input_tokens=1024000; Pro id present without max_* on /models"
+    }
+  },
+  "context_limit_sources": {
+    "creditsplan_paratera_DeepSeek-V4-Pro-0813": 1000000,
+    "deepseek_official_docs_DeepSeek-V4-Pro-0813": 1000000,
+    "max_output_tokens_reported_elsewhere": 384000,
+    "this_request_output_cap": 4096
+  },
+  "paratera_list_price_cny_per_mtok": {
+    "prompt_cache_miss": 9.0,
+    "completion": 27.0,
+    "source": "CreditsPlan Paratera paygo export verified 2026-10-29; aligns with DeepSeek peak rates",
+    "disclaimer": "List price reference; actual invoice may differ (cache hit, peak/idle)."
+  },
+  "prompt_size": {
+    "chars": 368349,
+    "utf8_bytes": 392330,
+    "events": 663,
+    "predicted_chains_in_evidence": 81,
+    "predicted_short_chain_context_in_prompt": {
+      "FULL": 9,
+      "PARTIAL": 64,
+      "NONLIVE_excluded_from_planner": 8,
+      "live_context_total": 73
+    }
+  },
+  "input_token_heuristic": {
+    "low": 98082,
+    "mid": 130776,
+    "high": 245566
+  },
+  "est_cny_at_list_price_completion_4096": {
+    "low": 0.9933,
+    "mid": 1.2876,
+    "high": 2.3207
+  },
+  "authorized_budget_cny": 3.0,
+  "within_budget": true,
+  "usd_soft_cap_for_provider_gate": 0.42,
+  "fx_note": "0.42 USD ≈ 3 CNY at ~7.1 CNY/USD; soft cap is local STORY_LLM_PRICE_* estimate gate, not invoice",
+  "decision": "PROCEED_ONE_HTTP_CALL",
+  "constraints": {
+    "temperature": 0.0,
+    "max_completion_tokens": 4096,
+    "max_calls": 1,
+    "no_retry": true,
+    "no_model_downgrade": true,
+    "allow_degraded_fallback": false
+  }
+}

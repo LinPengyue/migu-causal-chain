@@ -1,0 +1,283 @@
+{
+  "template_id": "keeper_rescue",
+  "category": "人物故事链",
+  "subtype": "同队门将多次化险",
+  "story_goal": "Show how the same team's goalkeeper repeatedly protects the team; establish relevant pressure and observable saves without assuming identity or causality.",
+  "story_graph": {
+    "nodes": [
+      {
+        "node_id": "setup:1",
+        "slot_id": "setup",
+        "event_ids": [
+          "event_000096",
+          "event_000097"
+        ],
+        "chain_ids": [
+          "pred_0004",
+          "pred_0005"
+        ],
+        "segment_ids": [
+          "seg_template_setup_1_1"
+        ],
+        "semantic_status": "UNREVIEWED",
+        "narrative_hypothesis": "比赛进行到上半场中段，阿曼队获得角球机会，皮球开入禁区，阿联酋门将17号在门线上用手将球解出，化解了这次直接威胁。",
+        "link_from_previous_hypothesis": ""
+      },
+      {
+        "node_id": "save:1",
+        "slot_id": "save",
+        "event_ids": [
+          "event_000276",
+          "event_000277"
+        ],
+        "chain_ids": [
+          "pred_0015",
+          "pred_0016"
+        ],
+        "segment_ids": [
+          "seg_template_save_1_1"
+        ],
+        "semantic_status": "UNREVIEWED",
+        "narrative_hypothesis": "随后阿曼队再次通过角球制造威胁，阿联酋守门员在小禁区内将对方开出的角球稳稳接住，没有给对手补射机会。",
+        "link_from_previous_hypothesis": "继第一次角球门线解围之后，阿曼队继续利用定位球施压，阿联酋门将再次在角球防守中完成关键处理。"
+      },
+      {
+        "node_id": "save:2",
+        "slot_id": "save",
+        "event_ids": [
+          "event_000282"
+        ],
+        "chain_ids": [
+          "pred_0015",
+          "pred_0016"
+        ],
+        "segment_ids": [
+          "seg_template_save_2_1"
+        ],
+        "semantic_status": "UNREVIEWED",
+        "narrative_hypothesis": "阿曼队随后形成射门，阿联酋守门员做出扑救，将对方的打门挡出，继续保护球门。",
+        "link_from_previous_hypothesis": "在连续化解角球威胁后，阿曼队尝试通过运动战射门，阿联酋门将再次用扑救回应。"
+      },
+      {
+        "node_id": "save:3",
+        "slot_id": "save",
+        "event_ids": [
+          "event_000417"
+        ],
+        "chain_ids": [
+          "pred_0031",
+          "pred_0032"
+        ],
+        "segment_ids": [
+          "seg_template_save_3_1"
+        ],
+        "semantic_status": "UNREVIEWED",
+        "narrative_hypothesis": "上半场补时阶段，阿联酋队获得角球，但阿曼队门将扑救后，阿联酋门将也在另一端持续面对压力，比赛进入中场休息前，阿联酋门将仍保持专注。",
+        "link_from_previous_hypothesis": "上半场结束前，双方在角球和扑救之间反复转换，阿联酋门将的持续表现成为球队保持比分的重要保障。"
+      },
+      {
+        "node_id": "aftermath:1",
+        "slot_id": "aftermath",
+        "event_ids": [
+          "event_000641"
+        ],
+        "chain_ids": [
+          "pred_0063",
+          "pred_0065"
+        ],
+        "segment_ids": [
+          "seg_template_aftermath_1_1"
+        ],
+        "semantic_status": "UNREVIEWED",
+        "narrative_hypothesis": "下半场比分变为1:1后，阿联酋球员带球射门，阿曼守门员完成关键拦截，而阿联酋门将也在另一端继续面对阿曼队的进攻压力，双方门将都成为各自球队的关键角色。",
+        "link_from_previous_hypothesis": "阿联酋门将的多次化险为球队保住了比赛悬念，下半场比分被扳平后，门将之间的对决更加突出。"
+      }
+    ],
+    "edges": [
+      {
+        "from": "setup:1",
+        "to": "save:1",
+        "relation": "editorial_precedes",
+        "causal_verified": false,
+        "narrative_link_hypothesis": "继第一次角球门线解围之后，阿曼队继续利用定位球施压，阿联酋门将再次在角球防守中完成关键处理。"
+      },
+      {
+        "from": "save:1",
+        "to": "save:2",
+        "relation": "editorial_precedes",
+        "causal_verified": false,
+        "narrative_link_hypothesis": "在连续化解角球威胁后，阿曼队尝试通过运动战射门，阿联酋门将再次用扑救回应。"
+      },
+      {
+        "from": "save:2",
+        "to": "save:3",
+        "relation": "editorial_precedes",
+        "causal_verified": false,
+        "narrative_link_hypothesis": "上半场结束前，双方在角球和扑救之间反复转换，阿联酋门将的持续表现成为球队保持比分的重要保障。"
+      },
+      {
+        "from": "save:3",
+        "to": "aftermath:1",
+        "relation": "editorial_precedes",
+        "causal_verified": false,
+        "narrative_link_hypothesis": "阿联酋门将的多次化险为球队保住了比赛悬念，下半场比分被扳平后，门将之间的对决更加突出。"
+      }
+    ]
+  },
+  "candidate_edl": [
+    {
+      "segment_id": "seg_template_setup_1_1",
+      "template_slot_id": "setup",
+      "story_node_id": "setup:1",
+      "role": "setup",
+      "beat": "setup",
+      "story_anchor": false,
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "media_in": 1049.71,
+      "media_out": 1060.64,
+      "event_ids": [
+        "event_000096",
+        "event_000097"
+      ],
+      "short_chain_ids": [
+        "pred_0004",
+        "pred_0005"
+      ],
+      "include_in_cut": true,
+      "edl_index": 1,
+      "narrative_order": 1,
+      "shot_kind": "action",
+      "time_provenance": {
+        "basis": "union_of_selected_atomic_windows"
+      },
+      "first_live_status": "NOT_VERIFIED",
+      "verification_status": "draft",
+      "preview_only": true
+    },
+    {
+      "segment_id": "seg_template_save_1_1",
+      "template_slot_id": "save",
+      "story_node_id": "save:1",
+      "role": "save",
+      "beat": "save",
+      "story_anchor": true,
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "media_in": 1912.32,
+      "media_out": 1922.55,
+      "event_ids": [
+        "event_000276",
+        "event_000277"
+      ],
+      "short_chain_ids": [
+        "pred_0015",
+        "pred_0016"
+      ],
+      "include_in_cut": true,
+      "edl_index": 2,
+      "narrative_order": 2,
+      "shot_kind": "action",
+      "time_provenance": {
+        "basis": "union_of_selected_atomic_windows"
+      },
+      "first_live_status": "NOT_VERIFIED",
+      "verification_status": "draft",
+      "preview_only": true
+    },
+    {
+      "segment_id": "seg_template_save_2_1",
+      "template_slot_id": "save",
+      "story_node_id": "save:2",
+      "role": "save",
+      "beat": "save",
+      "story_anchor": true,
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "media_in": 1955.54,
+      "media_out": 1966.45,
+      "event_ids": [
+        "event_000282"
+      ],
+      "short_chain_ids": [
+        "pred_0015",
+        "pred_0016"
+      ],
+      "include_in_cut": true,
+      "edl_index": 3,
+      "narrative_order": 3,
+      "shot_kind": "action",
+      "time_provenance": {
+        "basis": "union_of_selected_atomic_windows"
+      },
+      "first_live_status": "NOT_VERIFIED",
+      "verification_status": "draft",
+      "preview_only": true
+    },
+    {
+      "segment_id": "seg_template_save_3_1",
+      "template_slot_id": "save",
+      "story_node_id": "save:3",
+      "role": "save",
+      "beat": "save",
+      "story_anchor": true,
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "media_in": 3504.14,
+      "media_out": 3515.83,
+      "event_ids": [
+        "event_000417"
+      ],
+      "short_chain_ids": [
+        "pred_0031",
+        "pred_0032"
+      ],
+      "include_in_cut": true,
+      "edl_index": 4,
+      "narrative_order": 4,
+      "shot_kind": "action",
+      "time_provenance": {
+        "basis": "union_of_selected_atomic_windows"
+      },
+      "first_live_status": "NOT_VERIFIED",
+      "verification_status": "draft",
+      "preview_only": true
+    },
+    {
+      "segment_id": "seg_template_aftermath_1_1",
+      "template_slot_id": "aftermath",
+      "story_node_id": "aftermath:1",
+      "role": "aftermath",
+      "beat": "aftermath",
+      "story_anchor": false,
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "media_in": 6552.01,
+      "media_out": 6562.64,
+      "event_ids": [
+        "event_000641"
+      ],
+      "short_chain_ids": [
+        "pred_0063",
+        "pred_0065"
+      ],
+      "include_in_cut": true,
+      "edl_index": 5,
+      "narrative_order": 5,
+      "shot_kind": "action",
+      "time_provenance": {
+        "basis": "union_of_selected_atomic_windows"
+      },
+      "first_live_status": "NOT_VERIFIED",
+      "verification_status": "draft",
+      "preview_only": true
+    }
+  ],
+  "missing_required_slots": [],
+  "structurally_complete": true,
+  "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "preview_only": true,
+  "release_authorized": false,
+  "quality_verified": false,
+  "first_live_verified": false,
+  "status": "CANDIDATE",
+  "title": "阿联酋门将多次化解门前险情，力保球队不被扩大比分",
+  "protagonist_hypothesis": "阿联酋队守门员",
+  "story_summary_hypothesis": "在阿联酋对阵阿曼的比赛中，阿联酋门将多次面对阿曼队的角球和射门威胁，通过扑救和门线处理化解险情，成为球队防线上的关键人物。",
+  "narrative_verification_status": "UNREVIEWED"
+}
