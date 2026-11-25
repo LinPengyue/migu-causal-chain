@@ -13,7 +13,7 @@ STRONG_SAVE = re.compile(r"扑救|扑住|扑出|扑飞|扑到|托出|救险|救�
 FAILED = re.compile(r"未能|没能|没有|失败|未果|试图|尝试|无效|被抢断|被截获|被拦截")
 SHOT_DANGER = {"Shot_On_Target", "Shot_Post", "Shot_Bar", "Shot_Woodwork",
                "Shot_Hit_Post", "Shot_Hit_Crossbar"}
-DELIVERY = r"(?:传中(?:球)?|发出(?:的)?角球|开出(?:的)?角球|发角球|开角球|发出(?:的)?任意球|开出(?:的)?任意球|发任意球|开任意球)"
+DELIVERY = r"(?:传中(?:球)?|发出(?:的)?角球|开出(?:的)?角球|开过来的角球|发角球|开角球|发出(?:的)?任意球|开出(?:的)?任意球|发任意球|开任意球)"
 DELIVERY_TYPES = {"Pass", "Corner_kick", "Free_kick"}
 KEEP_TYPES = {"Save", "Goal_line_clearance", "Defensive_action"}
 
