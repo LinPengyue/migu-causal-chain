@@ -1,0 +1,124 @@
+{
+  "schema": "v3r_general_r1_r2a_preflight_summary_v1",
+  "code_sha": "4a9857ad2be1547daee1552d9d6c1868016a79d6",
+  "unittest": "test_v3r_general.py 7/7 OK",
+  "paid_http": false,
+  "matches": {
+    "A_uae_oman": {
+      "teams": {
+        "team_1": "阿联酋",
+        "team_2": "阿曼"
+      },
+      "keeper_rescue": {
+        "n_predicate_events": 8,
+        "candidates": [
+          {
+            "id": "keeper_rescue:1",
+            "subject": "阿联酋(team_1)",
+            "n_episodes": 2,
+            "events": [
+              "event_000097",
+              "event_000277"
+            ]
+          },
+          {
+            "id": "keeper_rescue:2",
+            "subject": "阿曼(team_2)",
+            "n_episodes": 6,
+            "events": [
+              "event_000282",
+              "event_000399",
+              "event_000417",
+              "event_000421",
+              "event_000477",
+              "event_000641"
+            ]
+          }
+        ]
+      },
+      "alternating_threats": {
+        "n_predicate_events": 17,
+        "n_candidates": 1,
+        "actor_run_sequence": [
+          "阿曼",
+          "阿联酋",
+          "阿曼",
+          "阿联酋",
+          "阿曼"
+        ],
+        "actor_runs_detail": [
+          {
+            "actor": "team_2/阿曼",
+            "n_episodes": 1
+          },
+          {
+            "actor": "team_1/阿联酋",
+            "n_episodes": 5
+          },
+          {
+            "actor": "team_2/阿曼",
+            "n_episodes": 1
+          },
+          {
+            "actor": "team_1/阿联酋",
+            "n_episodes": 4
+          },
+          {
+            "actor": "team_2/阿曼",
+            "n_episodes": 4
+          }
+        ],
+        "n_anchor_nodes": 15
+      },
+      "focus_282_417_641": "ALL CORRECT in 阿曼 keeper_rescue:2",
+      "live_save_misses_empty_atom_fill": 3,
+      "team_conflicts_on_rescues": 0
+    },
+    "B_osasuna_celta": {
+      "teams": {
+        "team_1": "奥萨苏纳",
+        "team_2": "塞尔塔维戈"
+      },
+      "keeper_rescue": {
+        "n_predicate_events": 8,
+        "candidates": [
+          {
+            "id": "keeper_rescue:1",
+            "subject": "塞尔塔(team_2)",
+            "n_episodes": 7,
+            "events": [
+              "event_000050",
+              "event_000260",
+              "event_000298",
+              "event_000504",
+              "event_000586",
+              "event_000625",
+              "event_000629"
+            ]
+          }
+        ],
+        "no_team_1_candidate_reason": "only event_000244 for 奥萨苏纳; below repeat min=2"
+      },
+      "alternating_threats": {
+        "n_predicate_events": 13,
+        "n_candidates": 1,
+        "actor_run_sequence": [
+          "奥萨苏纳",
+          "塞尔塔",
+          "奥萨苏纳",
+          "塞尔塔",
+          "奥萨苏纳",
+          "塞尔塔",
+          "奥萨苏纳"
+        ],
+        "n_anchor_nodes": 12
+      },
+      "live_save_misses_empty_atom_fill": 8,
+      "player_conflict_example": "event_000625 notes 3号 vs attr player_13",
+      "team_conflicts_on_rescues": 0
+    }
+  },
+  "quality_verified": false,
+  "release_authorized": false,
+  "scope": "DEV A/B annotation-grounded; not FanEdit formal performance"
+}

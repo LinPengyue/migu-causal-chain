@@ -1,0 +1,2626 @@
+{
+  "A_uae_oman": {
+    "teams": {
+      "team_1": {
+        "name": "阿联酋",
+        "color": "白色"
+      },
+      "team_2": {
+        "name": "阿曼",
+        "color": "红色"
+      }
+    },
+    "keeper_rescue_events_detail": [
+      {
+        "event_id": "event_000097",
+        "type": "Goal_line_clearance",
+        "broadcast_phase": "LIVE",
+        "t": 1056.03,
+        "window": [
+          1049.71,
+          1060.64
+        ],
+        "notes": "2队球员开过来的角球，被守门员用手解出",
+        "attributes_relevant": {
+          "Related_Player": [
+            "1队守门员17号"
+          ]
+        },
+        "keeper_team": "team_1",
+        "keeper_team_name": "阿联酋",
+        "keeper_team_status": "EXPLICIT",
+        "keeper_player_number": "17",
+        "keeper_player_status": "EXPLICIT",
+        "claims": [
+          {
+            "team": "team_1",
+            "player": "17",
+            "keeper_explicit": true,
+            "source": "attributes.Related_Player",
+            "text": "1队守门员17号"
+          }
+        ],
+        "goalkeeper_rescue_predicate": {
+          "actor": "team_1",
+          "basis": "explicit_keeper_action"
+        },
+        "attacking_threat_predicate": null,
+        "team_conflict": false,
+        "player_conflict": false
+      },
+      {
+        "event_id": "event_000277",
+        "type": "Defensive_action",
+        "broadcast_phase": "LIVE",
+        "t": 1918.41,
+        "window": [
+          1912.32,
+          1922.55
+        ],
+        "notes": "2队球员发出的角球被1队守门员接住",
+        "attributes_relevant": {
+          "Attacker": [
+            "2队球员"
+          ],
+          "Defender": [
+            "1队守门员"
+          ],
+          "Defensive_Action": [
+            "Goal_line_Incident"
+          ]
+        },
+        "keeper_team": "team_1",
+        "keeper_team_name": "阿联酋",
+        "keeper_team_status": "EXPLICIT",
+        "keeper_player_number": null,
+        "keeper_player_status": "UNRESOLVED",
+        "claims": [
+          {
+            "team": "team_1",
+            "player": null,
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "1队守门员接住"
+          },
+          {
+            "team": "team_1",
+            "player": null,
+            "keeper_explicit": true,
+            "source": "attributes.Defender",
+            "text": "1队守门员"
+          }
+        ],
+        "goalkeeper_rescue_predicate": {
+          "actor": "team_1",
+          "basis": "explicit_keeper_action"
+        },
+        "attacking_threat_predicate": {
+          "actor": "team_2",
+          "basis": "opposition_to_keeper_rescue"
+        },
+        "team_conflict": false,
+        "player_conflict": false
+      },
+      {
+        "event_id": "event_000282",
+        "type": "Save",
+        "broadcast_phase": "LIVE",
+        "t": 1961.46,
+        "window": [
+          1955.54,
+          1966.45
+        ],
+        "notes": "2队守门员扑住了1队队员的打门",
+        "attributes_relevant": {},
+        "keeper_team": "team_2",
+        "keeper_team_name": "阿曼",
+        "keeper_team_status": "EXPLICIT",
+        "keeper_player_number": null,
+        "keeper_player_status": "UNRESOLVED",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": null,
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队守门员扑住"
+          }
+        ],
+        "goalkeeper_rescue_predicate": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        },
+        "attacking_threat_predicate": {
+          "actor": "team_1",
+          "basis": "opposition_to_keeper_rescue"
+        },
+        "team_conflict": false,
+        "player_conflict": false
+      },
+      {
+        "event_id": "event_000399",
+        "type": "Defensive_action",
+        "broadcast_phase": "LIVE",
+        "t": 3343.33,
+        "window": [
+          3338.39,
+          3351.3
+        ],
+        "notes": "2队守门员用手将球打出",
+        "attributes_relevant": {
+          "Attacker": [
+            "1队球员"
+          ],
+          "Defender": [
+            "2队球员"
+          ],
+          "Defensive_Action": [
+            "Goal_line_Incident"
+          ]
+        },
+        "keeper_team": "team_2",
+        "keeper_team_name": "阿曼",
+        "keeper_team_status": "EXPLICIT",
+        "keeper_player_number": null,
+        "keeper_player_status": "UNRESOLVED",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": null,
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队守门员用手将球打出"
+          },
+          {
+            "team": "team_2",
+            "player": null,
+            "keeper_explicit": false,
+            "source": "attributes.Defender",
+            "text": "2队球员"
+          }
+        ],
+        "goalkeeper_rescue_predicate": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        },
+        "attacking_threat_predicate": {
+          "actor": "team_1",
+          "basis": "opposition_to_keeper_rescue"
+        },
+        "team_conflict": false,
+        "player_conflict": false
+      },
+      {
+        "event_id": "event_000417",
+        "type": "Save",
+        "broadcast_phase": "LIVE",
+        "t": 3508.34,
+        "window": [
+          3504.14,
+          3515.83
+        ],
+        "notes": "2队守门员扑救",
+        "attributes_relevant": {},
+        "keeper_team": "team_2",
+        "keeper_team_name": "阿曼",
+        "keeper_team_status": "EXPLICIT",
+        "keeper_player_number": null,
+        "keeper_player_status": "UNRESOLVED",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": null,
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队守门员扑救"
+          }
+        ],
+        "goalkeeper_rescue_predicate": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        },
+        "attacking_threat_predicate": null,
+        "team_conflict": false,
+        "player_conflict": false
+      },
+      {
+        "event_id": "event_000421",
+        "type": "Save",
+        "broadcast_phase": "LIVE",
+        "t": 3548.12,
+        "window": [
+          3543.01,
+          3553.57
+        ],
+        "notes": "面对1队球员的传中球，2队守门员给扑飞",
+        "attributes_relevant": {},
+        "keeper_team": "team_2",
+        "keeper_team_name": "阿曼",
+        "keeper_team_status": "EXPLICIT",
+        "keeper_player_number": null,
+        "keeper_player_status": "UNRESOLVED",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": null,
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队守门员给扑飞"
+          }
+        ],
+        "goalkeeper_rescue_predicate": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        },
+        "attacking_threat_predicate": null,
+        "team_conflict": false,
+        "player_conflict": false
+      },
+      {
+        "event_id": "event_000477",
+        "type": "Save",
+        "broadcast_phase": "LIVE",
+        "t": 4766.16,
+        "window": [
+          4755.79,
+          4769.62
+        ],
+        "notes": "2队守门员扑救",
+        "attributes_relevant": {},
+        "keeper_team": "team_2",
+        "keeper_team_name": "阿曼",
+        "keeper_team_status": "EXPLICIT",
+        "keeper_player_number": null,
+        "keeper_player_status": "UNRESOLVED",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": null,
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队守门员扑救"
+          }
+        ],
+        "goalkeeper_rescue_predicate": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        },
+        "attacking_threat_predicate": null,
+        "team_conflict": false,
+        "player_conflict": false
+      },
+      {
+        "event_id": "atom_fill_0050_Save_5177072",
+        "type": "Save",
+        "broadcast_phase": "LIVE",
+        "t": 5177.072,
+        "window": [
+          5177.072,
+          5179.072
+        ],
+        "notes": "",
+        "attributes_relevant": {},
+        "keeper_team": null,
+        "keeper_team_name": null,
+        "keeper_team_status": "UNRESOLVED",
+        "keeper_player_number": null,
+        "keeper_player_status": "UNRESOLVED",
+        "claims": [],
+        "goalkeeper_rescue_predicate": null,
+        "attacking_threat_predicate": null,
+        "team_conflict": false,
+        "player_conflict": false
+      },
+      {
+        "event_id": "atom_fill_0060_Save_5361641",
+        "type": "Save",
+        "broadcast_phase": "LIVE",
+        "t": 5361.641,
+        "window": [
+          5361.641,
+          5363.641
+        ],
+        "notes": "",
+        "attributes_relevant": {},
+        "keeper_team": null,
+        "keeper_team_name": null,
+        "keeper_team_status": "UNRESOLVED",
+        "keeper_player_number": null,
+        "keeper_player_status": "UNRESOLVED",
+        "claims": [],
+        "goalkeeper_rescue_predicate": null,
+        "attacking_threat_predicate": null,
+        "team_conflict": false,
+        "player_conflict": false
+      },
+      {
+        "event_id": "event_000641",
+        "type": "Defensive_action",
+        "broadcast_phase": "LIVE",
+        "t": 6557.97,
+        "window": [
+          6552.01,
+          6562.64
+        ],
+        "notes": "2队守门员关键拦截",
+        "attributes_relevant": {
+          "Attacker": [
+            "1队球员"
+          ],
+          "Defender": [
+            "2队守门员"
+          ],
+          "Defensive_Action": [
+            "Interception"
+          ]
+        },
+        "keeper_team": "team_2",
+        "keeper_team_name": "阿曼",
+        "keeper_team_status": "EXPLICIT",
+        "keeper_player_number": null,
+        "keeper_player_status": "UNRESOLVED",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": null,
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队守门员关键拦截"
+          },
+          {
+            "team": "team_2",
+            "player": null,
+            "keeper_explicit": true,
+            "source": "attributes.Defender",
+            "text": "2队守门员"
+          }
+        ],
+        "goalkeeper_rescue_predicate": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        },
+        "attacking_threat_predicate": {
+          "actor": "team_1",
+          "basis": "opposition_to_keeper_rescue"
+        },
+        "team_conflict": false,
+        "player_conflict": false
+      },
+      {
+        "event_id": "atom_fill_0092_Save_6600268",
+        "type": "Save",
+        "broadcast_phase": "LIVE",
+        "t": 6600.268,
+        "window": [
+          6600.268,
+          6602.268
+        ],
+        "notes": "",
+        "attributes_relevant": {},
+        "keeper_team": null,
+        "keeper_team_name": null,
+        "keeper_team_status": "UNRESOLVED",
+        "keeper_player_number": null,
+        "keeper_player_status": "UNRESOLVED",
+        "claims": [],
+        "goalkeeper_rescue_predicate": null,
+        "attacking_threat_predicate": null,
+        "team_conflict": false,
+        "player_conflict": false
+      }
+    ],
+    "n_goalkeeper_rescue_predicates": 8,
+    "n_team_conflicts_on_rescues": 0,
+    "n_player_conflicts_on_rescues": 0,
+    "live_save_misses": [
+      {
+        "event_id": "atom_fill_0050_Save_5177072",
+        "notes": "",
+        "attributes_relevant": {},
+        "keeper_status": "UNRESOLVED",
+        "claims": [],
+        "reason": "LIVE Save without explicit team-bound keeper action/attr parse → UNRESOLVED; conservative miss (often empty atom_fill notes)"
+      },
+      {
+        "event_id": "atom_fill_0060_Save_5361641",
+        "notes": "",
+        "attributes_relevant": {},
+        "keeper_status": "UNRESOLVED",
+        "claims": [],
+        "reason": "LIVE Save without explicit team-bound keeper action/attr parse → UNRESOLVED; conservative miss (often empty atom_fill notes)"
+      },
+      {
+        "event_id": "atom_fill_0092_Save_6600268",
+        "notes": "",
+        "attributes_relevant": {},
+        "keeper_status": "UNRESOLVED",
+        "claims": [],
+        "reason": "LIVE Save without explicit team-bound keeper action/attr parse → UNRESOLVED; conservative miss (often empty atom_fill notes)"
+      }
+    ],
+    "suspicious_false_positive_flags": [],
+    "keeper_rescue_candidates": [
+      {
+        "candidate_id": "keeper_rescue:1",
+        "subjects": [
+          "team_1"
+        ],
+        "subject_names": [
+          "阿联酋"
+        ],
+        "n_episodes": 2,
+        "episodes": [
+          {
+            "actor": "team_1",
+            "actor_name": "阿联酋",
+            "core_event_ids": [
+              "event_000097"
+            ],
+            "window": [
+              1049.71,
+              1060.64
+            ],
+            "chain_context_ids": [
+              "pred_0004",
+              "pred_0005"
+            ]
+          },
+          {
+            "actor": "team_1",
+            "actor_name": "阿联酋",
+            "core_event_ids": [
+              "event_000277"
+            ],
+            "window": [
+              1912.32,
+              1922.55
+            ],
+            "chain_context_ids": [
+              "pred_0015",
+              "pred_0016"
+            ]
+          }
+        ]
+      },
+      {
+        "candidate_id": "keeper_rescue:2",
+        "subjects": [
+          "team_2"
+        ],
+        "subject_names": [
+          "阿曼"
+        ],
+        "n_episodes": 6,
+        "episodes": [
+          {
+            "actor": "team_2",
+            "actor_name": "阿曼",
+            "core_event_ids": [
+              "event_000282"
+            ],
+            "window": [
+              1955.54,
+              1966.45
+            ],
+            "chain_context_ids": [
+              "pred_0015",
+              "pred_0016"
+            ]
+          },
+          {
+            "actor": "team_2",
+            "actor_name": "阿曼",
+            "core_event_ids": [
+              "event_000399"
+            ],
+            "window": [
+              3338.39,
+              3351.3
+            ],
+            "chain_context_ids": [
+              "pred_0030",
+              "pred_0031"
+            ]
+          },
+          {
+            "actor": "team_2",
+            "actor_name": "阿曼",
+            "core_event_ids": [
+              "event_000417"
+            ],
+            "window": [
+              3504.14,
+              3515.83
+            ],
+            "chain_context_ids": [
+              "pred_0031",
+              "pred_0032"
+            ]
+          },
+          {
+            "actor": "team_2",
+            "actor_name": "阿曼",
+            "core_event_ids": [
+              "event_000421"
+            ],
+            "window": [
+              3543.01,
+              3553.57
+            ],
+            "chain_context_ids": [
+              "pred_0032",
+              "pred_0033"
+            ]
+          },
+          {
+            "actor": "team_2",
+            "actor_name": "阿曼",
+            "core_event_ids": [
+              "event_000477"
+            ],
+            "window": [
+              4755.79,
+              4769.62
+            ],
+            "chain_context_ids": [
+              "pred_0042",
+              "pred_0043"
+            ]
+          },
+          {
+            "actor": "team_2",
+            "actor_name": "阿曼",
+            "core_event_ids": [
+              "event_000641"
+            ],
+            "window": [
+              6552.01,
+              6562.64
+            ],
+            "chain_context_ids": [
+              "pred_0063",
+              "pred_0065"
+            ]
+          }
+        ]
+      }
+    ],
+    "alternating_threats": {
+      "subjects": [
+        "team_1",
+        "team_2"
+      ],
+      "actor_runs": [
+        {
+          "actor": "team_2",
+          "n_episodes": 1
+        },
+        {
+          "actor": "team_1",
+          "n_episodes": 5
+        },
+        {
+          "actor": "team_2",
+          "n_episodes": 1
+        },
+        {
+          "actor": "team_1",
+          "n_episodes": 4
+        },
+        {
+          "actor": "team_2",
+          "n_episodes": 4
+        }
+      ],
+      "run_sequence": [
+        "team_2",
+        "team_1",
+        "team_2",
+        "team_1",
+        "team_2"
+      ],
+      "run_sequence_named": [
+        [
+          "阿曼",
+          1
+        ],
+        [
+          "阿联酋",
+          5
+        ],
+        [
+          "阿曼",
+          1
+        ],
+        [
+          "阿联酋",
+          4
+        ],
+        [
+          "阿曼",
+          4
+        ]
+      ],
+      "n_anchor_nodes": 15,
+      "anchors": [
+        {
+          "actor": "team_2",
+          "actor_name": "阿曼",
+          "event_ids": [
+            "event_000277"
+          ],
+          "window": [
+            1912.32,
+            1922.55
+          ],
+          "chain_context_ids": [
+            "pred_0015",
+            "pred_0016"
+          ]
+        },
+        {
+          "actor": "team_1",
+          "actor_name": "阿联酋",
+          "event_ids": [
+            "event_000282"
+          ],
+          "window": [
+            1955.54,
+            1966.45
+          ],
+          "chain_context_ids": [
+            "pred_0015",
+            "pred_0016"
+          ]
+        },
+        {
+          "actor": "team_1",
+          "actor_name": "阿联酋",
+          "event_ids": [
+            "event_000296"
+          ],
+          "window": [
+            2075.08,
+            2086.5
+          ],
+          "chain_context_ids": [
+            "pred_0017",
+            "pred_0018"
+          ]
+        },
+        {
+          "actor": "team_1",
+          "actor_name": "阿联酋",
+          "event_ids": [
+            "event_000313"
+          ],
+          "window": [
+            2273.2,
+            2290.41
+          ],
+          "chain_context_ids": [
+            "pred_0019",
+            "pred_0020"
+          ]
+        },
+        {
+          "actor": "team_1",
+          "actor_name": "阿联酋",
+          "event_ids": [
+            "event_000340"
+          ],
+          "window": [
+            2526.93,
+            2546.2
+          ],
+          "chain_context_ids": [
+            "pred_0022",
+            "pred_0023"
+          ]
+        },
+        {
+          "actor": "team_1",
+          "actor_name": "阿联酋",
+          "event_ids": [
+            "event_000399",
+            "event_000400"
+          ],
+          "window": [
+            3338.39,
+            3351.3
+          ],
+          "chain_context_ids": [
+            "pred_0030",
+            "pred_0031"
+          ]
+        },
+        {
+          "actor": "team_2",
+          "actor_name": "阿曼",
+          "event_ids": [
+            "event_000411"
+          ],
+          "window": [
+            3435.52,
+            3449.27
+          ],
+          "chain_context_ids": [
+            "pred_0031",
+            "pred_0032"
+          ]
+        },
+        {
+          "actor": "team_1",
+          "actor_name": "阿联酋",
+          "event_ids": [
+            "event_000472"
+          ],
+          "window": [
+            4702.5,
+            4714.65
+          ],
+          "chain_context_ids": [
+            "pred_0042",
+            "pred_0043"
+          ]
+        },
+        {
+          "actor": "team_1",
+          "actor_name": "阿联酋",
+          "event_ids": [
+            "event_000495"
+          ],
+          "window": [
+            4892.93,
+            4904.7
+          ],
+          "chain_context_ids": [
+            "pred_0044",
+            "pred_0045"
+          ]
+        },
+        {
+          "actor": "team_1",
+          "actor_name": "阿联酋",
+          "event_ids": [
+            "event_000593"
+          ],
+          "window": [
+            5782.18,
+            5795.24
+          ],
+          "chain_context_ids": [
+            "pred_0054",
+            "pred_0055"
+          ]
+        },
+        {
+          "actor": "team_1",
+          "actor_name": "阿联酋",
+          "event_ids": [
+            "event_000640",
+            "event_000641"
+          ],
+          "window": [
+            6552.01,
+            6562.64
+          ],
+          "chain_context_ids": [
+            "pred_0063",
+            "pred_0065"
+          ]
+        },
+        {
+          "actor": "team_2",
+          "actor_name": "阿曼",
+          "event_ids": [
+            "event_000655"
+          ],
+          "window": [
+            6699.03,
+            6710.26
+          ],
+          "chain_context_ids": [
+            "pred_0066"
+          ]
+        },
+        {
+          "actor": "team_2",
+          "actor_name": "阿曼",
+          "event_ids": [
+            "event_000661"
+          ],
+          "window": [
+            6767.67,
+            6778.15
+          ],
+          "chain_context_ids": [
+            "pred_0067"
+          ]
+        },
+        {
+          "actor": "team_2",
+          "actor_name": "阿曼",
+          "event_ids": [
+            "event_000681"
+          ],
+          "window": [
+            7133.97,
+            7145.39
+          ],
+          "chain_context_ids": [
+            "pred_0070"
+          ]
+        },
+        {
+          "actor": "team_2",
+          "actor_name": "阿曼",
+          "event_ids": [
+            "event_000687"
+          ],
+          "window": [
+            7218.38,
+            7229.51
+          ],
+          "chain_context_ids": [
+            "pred_0071",
+            "pred_0072"
+          ]
+        }
+      ]
+    },
+    "keeper_table_compact": [
+      {
+        "event_id": "event_000097",
+        "type": "Goal_line_clearance",
+        "phase": "LIVE",
+        "notes": "2队球员开过来的角球，被守门员用手解出",
+        "attrs": {
+          "Related_Player": [
+            "1队守门员17号"
+          ]
+        },
+        "keeper_team": "team_1",
+        "team_status": "EXPLICIT",
+        "player_number": "17",
+        "player_status": "EXPLICIT",
+        "claims": [
+          {
+            "team": "team_1",
+            "player": "17",
+            "keeper_explicit": true,
+            "source": "attributes.Related_Player",
+            "text": "1队守门员17号"
+          }
+        ],
+        "predicate": {
+          "actor": "team_1",
+          "basis": "explicit_keeper_action"
+        }
+      },
+      {
+        "event_id": "event_000277",
+        "type": "Defensive_action",
+        "phase": "LIVE",
+        "notes": "2队球员发出的角球被1队守门员接住",
+        "attrs": {
+          "Defender": [
+            "1队守门员"
+          ],
+          "Attacker": [
+            "2队球员"
+          ]
+        },
+        "keeper_team": "team_1",
+        "team_status": "EXPLICIT",
+        "player_number": null,
+        "player_status": "UNRESOLVED",
+        "claims": [
+          {
+            "team": "team_1",
+            "player": null,
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "1队守门员接住"
+          },
+          {
+            "team": "team_1",
+            "player": null,
+            "keeper_explicit": true,
+            "source": "attributes.Defender",
+            "text": "1队守门员"
+          }
+        ],
+        "predicate": {
+          "actor": "team_1",
+          "basis": "explicit_keeper_action"
+        }
+      },
+      {
+        "event_id": "event_000282",
+        "type": "Save",
+        "phase": "LIVE",
+        "notes": "2队守门员扑住了1队队员的打门",
+        "attrs": {},
+        "keeper_team": "team_2",
+        "team_status": "EXPLICIT",
+        "player_number": null,
+        "player_status": "UNRESOLVED",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": null,
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队守门员扑住"
+          }
+        ],
+        "predicate": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        }
+      },
+      {
+        "event_id": "event_000399",
+        "type": "Defensive_action",
+        "phase": "LIVE",
+        "notes": "2队守门员用手将球打出",
+        "attrs": {
+          "Defender": [
+            "2队球员"
+          ],
+          "Attacker": [
+            "1队球员"
+          ]
+        },
+        "keeper_team": "team_2",
+        "team_status": "EXPLICIT",
+        "player_number": null,
+        "player_status": "UNRESOLVED",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": null,
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队守门员用手将球打出"
+          },
+          {
+            "team": "team_2",
+            "player": null,
+            "keeper_explicit": false,
+            "source": "attributes.Defender",
+            "text": "2队球员"
+          }
+        ],
+        "predicate": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        }
+      },
+      {
+        "event_id": "event_000417",
+        "type": "Save",
+        "phase": "LIVE",
+        "notes": "2队守门员扑救",
+        "attrs": {},
+        "keeper_team": "team_2",
+        "team_status": "EXPLICIT",
+        "player_number": null,
+        "player_status": "UNRESOLVED",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": null,
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队守门员扑救"
+          }
+        ],
+        "predicate": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        }
+      },
+      {
+        "event_id": "event_000421",
+        "type": "Save",
+        "phase": "LIVE",
+        "notes": "面对1队球员的传中球，2队守门员给扑飞",
+        "attrs": {},
+        "keeper_team": "team_2",
+        "team_status": "EXPLICIT",
+        "player_number": null,
+        "player_status": "UNRESOLVED",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": null,
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队守门员给扑飞"
+          }
+        ],
+        "predicate": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        }
+      },
+      {
+        "event_id": "event_000477",
+        "type": "Save",
+        "phase": "LIVE",
+        "notes": "2队守门员扑救",
+        "attrs": {},
+        "keeper_team": "team_2",
+        "team_status": "EXPLICIT",
+        "player_number": null,
+        "player_status": "UNRESOLVED",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": null,
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队守门员扑救"
+          }
+        ],
+        "predicate": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        }
+      },
+      {
+        "event_id": "atom_fill_0050_Save_5177072",
+        "type": "Save",
+        "phase": "LIVE",
+        "notes": "",
+        "attrs": {},
+        "keeper_team": null,
+        "team_status": "UNRESOLVED",
+        "player_number": null,
+        "player_status": "UNRESOLVED",
+        "claims": [],
+        "predicate": null
+      },
+      {
+        "event_id": "atom_fill_0060_Save_5361641",
+        "type": "Save",
+        "phase": "LIVE",
+        "notes": "",
+        "attrs": {},
+        "keeper_team": null,
+        "team_status": "UNRESOLVED",
+        "player_number": null,
+        "player_status": "UNRESOLVED",
+        "claims": [],
+        "predicate": null
+      },
+      {
+        "event_id": "event_000641",
+        "type": "Defensive_action",
+        "phase": "LIVE",
+        "notes": "2队守门员关键拦截",
+        "attrs": {
+          "Defender": [
+            "2队守门员"
+          ],
+          "Attacker": [
+            "1队球员"
+          ]
+        },
+        "keeper_team": "team_2",
+        "team_status": "EXPLICIT",
+        "player_number": null,
+        "player_status": "UNRESOLVED",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": null,
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队守门员关键拦截"
+          },
+          {
+            "team": "team_2",
+            "player": null,
+            "keeper_explicit": true,
+            "source": "attributes.Defender",
+            "text": "2队守门员"
+          }
+        ],
+        "predicate": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        }
+      },
+      {
+        "event_id": "atom_fill_0092_Save_6600268",
+        "type": "Save",
+        "phase": "LIVE",
+        "notes": "",
+        "attrs": {},
+        "keeper_team": null,
+        "team_status": "UNRESOLVED",
+        "player_number": null,
+        "player_status": "UNRESOLVED",
+        "claims": [],
+        "predicate": null
+      }
+    ]
+  },
+  "B_osasuna_celta": {
+    "teams": {
+      "team_1": {
+        "name": "奥萨苏纳",
+        "color": "红色"
+      },
+      "team_2": {
+        "name": "塞尔塔维戈",
+        "color": "蓝色"
+      }
+    },
+    "keeper_rescue_events_detail": [
+      {
+        "event_id": "event_000050",
+        "type": "Defensive_action",
+        "broadcast_phase": "LIVE",
+        "t": 630.08,
+        "window": [
+          625.07,
+          635.19
+        ],
+        "notes": "2队守门员在小禁区内将对手传向禁区的传球扑出",
+        "attributes_relevant": {
+          "Attacker": [
+            "1队球员"
+          ],
+          "Defender": [
+            "2队球员"
+          ],
+          "Defensive_Action": [
+            "Clearance"
+          ]
+        },
+        "keeper_team": "team_2",
+        "keeper_team_name": "塞尔塔维戈",
+        "keeper_team_status": "EXPLICIT",
+        "keeper_player_number": null,
+        "keeper_player_status": "UNRESOLVED",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": null,
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队守门员在小禁区内将对手传向禁区的传球扑出"
+          },
+          {
+            "team": "team_2",
+            "player": null,
+            "keeper_explicit": false,
+            "source": "attributes.Defender",
+            "text": "2队球员"
+          }
+        ],
+        "goalkeeper_rescue_predicate": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        },
+        "attacking_threat_predicate": {
+          "actor": "team_1",
+          "basis": "opposition_to_keeper_rescue"
+        },
+        "team_conflict": false,
+        "player_conflict": false
+      },
+      {
+        "event_id": "atom_fill_0002_Save_672088",
+        "type": "Save",
+        "broadcast_phase": "LIVE",
+        "t": 672.088,
+        "window": [
+          672.088,
+          674.088
+        ],
+        "notes": "",
+        "attributes_relevant": {},
+        "keeper_team": null,
+        "keeper_team_name": null,
+        "keeper_team_status": "UNRESOLVED",
+        "keeper_player_number": null,
+        "keeper_player_status": "UNRESOLVED",
+        "claims": [],
+        "goalkeeper_rescue_predicate": null,
+        "attacking_threat_predicate": null,
+        "team_conflict": false,
+        "player_conflict": false
+      },
+      {
+        "event_id": "atom_fill_0008_Save_813871",
+        "type": "Save",
+        "broadcast_phase": "LIVE",
+        "t": 813.871,
+        "window": [
+          813.871,
+          815.871
+        ],
+        "notes": "",
+        "attributes_relevant": {},
+        "keeper_team": null,
+        "keeper_team_name": null,
+        "keeper_team_status": "UNRESOLVED",
+        "keeper_player_number": null,
+        "keeper_player_status": "UNRESOLVED",
+        "claims": [],
+        "goalkeeper_rescue_predicate": null,
+        "attacking_threat_predicate": null,
+        "team_conflict": false,
+        "player_conflict": false
+      },
+      {
+        "event_id": "atom_fill_0018_Save_1009211",
+        "type": "Save",
+        "broadcast_phase": "LIVE",
+        "t": 1009.211,
+        "window": [
+          1009.211,
+          1011.211
+        ],
+        "notes": "",
+        "attributes_relevant": {},
+        "keeper_team": null,
+        "keeper_team_name": null,
+        "keeper_team_status": "UNRESOLVED",
+        "keeper_player_number": null,
+        "keeper_player_status": "UNRESOLVED",
+        "claims": [],
+        "goalkeeper_rescue_predicate": null,
+        "attacking_threat_predicate": null,
+        "team_conflict": false,
+        "player_conflict": false
+      },
+      {
+        "event_id": "atom_fill_0030_Save_1142732",
+        "type": "Save",
+        "broadcast_phase": "LIVE",
+        "t": 1142.732,
+        "window": [
+          1142.732,
+          1144.732
+        ],
+        "notes": "",
+        "attributes_relevant": {},
+        "keeper_team": null,
+        "keeper_team_name": null,
+        "keeper_team_status": "UNRESOLVED",
+        "keeper_player_number": null,
+        "keeper_player_status": "UNRESOLVED",
+        "claims": [],
+        "goalkeeper_rescue_predicate": null,
+        "attacking_threat_predicate": null,
+        "team_conflict": false,
+        "player_conflict": false
+      },
+      {
+        "event_id": "event_000244",
+        "type": "Save",
+        "broadcast_phase": "LIVE",
+        "t": 1600.05,
+        "window": [
+          1590.54,
+          1600.78
+        ],
+        "notes": "1队1号守门员在禁区将球抱住",
+        "attributes_relevant": {},
+        "keeper_team": "team_1",
+        "keeper_team_name": "奥萨苏纳",
+        "keeper_team_status": "EXPLICIT",
+        "keeper_player_number": "1",
+        "keeper_player_status": "EXPLICIT",
+        "claims": [
+          {
+            "team": "team_1",
+            "player": "1",
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "1队1号守门员在禁区将球抱住"
+          }
+        ],
+        "goalkeeper_rescue_predicate": {
+          "actor": "team_1",
+          "basis": "explicit_keeper_action"
+        },
+        "attacking_threat_predicate": null,
+        "team_conflict": false,
+        "player_conflict": false
+      },
+      {
+        "event_id": "event_000260",
+        "type": "Save",
+        "broadcast_phase": "LIVE",
+        "t": 1713.28,
+        "window": [
+          1709.34,
+          1719.53
+        ],
+        "notes": "2队13号守门员在禁区将球扑住",
+        "attributes_relevant": {},
+        "keeper_team": "team_2",
+        "keeper_team_name": "塞尔塔维戈",
+        "keeper_team_status": "EXPLICIT",
+        "keeper_player_number": "13",
+        "keeper_player_status": "EXPLICIT",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": "13",
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队13号守门员在禁区将球扑住"
+          }
+        ],
+        "goalkeeper_rescue_predicate": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        },
+        "attacking_threat_predicate": null,
+        "team_conflict": false,
+        "player_conflict": false
+      },
+      {
+        "event_id": "event_000298",
+        "type": "Save",
+        "broadcast_phase": "LIVE",
+        "t": 1916.14,
+        "window": [
+          1912.49,
+          1922.56
+        ],
+        "notes": "2队13号守门员在禁区将球抱住",
+        "attributes_relevant": {},
+        "keeper_team": "team_2",
+        "keeper_team_name": "塞尔塔维戈",
+        "keeper_team_status": "EXPLICIT",
+        "keeper_player_number": "13",
+        "keeper_player_status": "EXPLICIT",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": "13",
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队13号守门员在禁区将球抱住"
+          }
+        ],
+        "goalkeeper_rescue_predicate": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        },
+        "attacking_threat_predicate": null,
+        "team_conflict": false,
+        "player_conflict": false
+      },
+      {
+        "event_id": "atom_fill_0052_Save_2242332",
+        "type": "Save",
+        "broadcast_phase": "LIVE",
+        "t": 2242.332,
+        "window": [
+          2242.332,
+          2244.332
+        ],
+        "notes": "",
+        "attributes_relevant": {},
+        "keeper_team": null,
+        "keeper_team_name": null,
+        "keeper_team_status": "UNRESOLVED",
+        "keeper_player_number": null,
+        "keeper_player_status": "UNRESOLVED",
+        "claims": [],
+        "goalkeeper_rescue_predicate": null,
+        "attacking_threat_predicate": null,
+        "team_conflict": false,
+        "player_conflict": false
+      },
+      {
+        "event_id": "atom_fill_0087_Save_3271452",
+        "type": "Save",
+        "broadcast_phase": "LIVE",
+        "t": 3271.452,
+        "window": [
+          3271.452,
+          3273.452
+        ],
+        "notes": "",
+        "attributes_relevant": {},
+        "keeper_team": null,
+        "keeper_team_name": null,
+        "keeper_team_status": "UNRESOLVED",
+        "keeper_player_number": null,
+        "keeper_player_status": "UNRESOLVED",
+        "claims": [],
+        "goalkeeper_rescue_predicate": null,
+        "attacking_threat_predicate": null,
+        "team_conflict": false,
+        "player_conflict": false
+      },
+      {
+        "event_id": "event_000504",
+        "type": "Save",
+        "broadcast_phase": "LIVE",
+        "t": 4817.5,
+        "window": [
+          4815.31,
+          4825.58
+        ],
+        "notes": "2队13号守门员在禁区内将球抱住",
+        "attributes_relevant": {},
+        "keeper_team": "team_2",
+        "keeper_team_name": "塞尔塔维戈",
+        "keeper_team_status": "EXPLICIT",
+        "keeper_player_number": "13",
+        "keeper_player_status": "EXPLICIT",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": "13",
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队13号守门员在禁区内将球抱住"
+          }
+        ],
+        "goalkeeper_rescue_predicate": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        },
+        "attacking_threat_predicate": null,
+        "team_conflict": false,
+        "player_conflict": false
+      },
+      {
+        "event_id": "atom_fill_0130_Save_6050294",
+        "type": "Save",
+        "broadcast_phase": "LIVE",
+        "t": 6050.294,
+        "window": [
+          6050.294,
+          6052.294
+        ],
+        "notes": "",
+        "attributes_relevant": {},
+        "keeper_team": null,
+        "keeper_team_name": null,
+        "keeper_team_status": "UNRESOLVED",
+        "keeper_player_number": null,
+        "keeper_player_status": "UNRESOLVED",
+        "claims": [],
+        "goalkeeper_rescue_predicate": null,
+        "attacking_threat_predicate": null,
+        "team_conflict": false,
+        "player_conflict": false
+      },
+      {
+        "event_id": "event_000586",
+        "type": "Save",
+        "broadcast_phase": "LIVE",
+        "t": 6098.32,
+        "window": [
+          6092.65,
+          6102.68
+        ],
+        "notes": "2队13号守门员在小禁区内将球顶出",
+        "attributes_relevant": {},
+        "keeper_team": "team_2",
+        "keeper_team_name": "塞尔塔维戈",
+        "keeper_team_status": "EXPLICIT",
+        "keeper_player_number": "13",
+        "keeper_player_status": "EXPLICIT",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": "13",
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队13号守门员在小禁区内将球顶出"
+          }
+        ],
+        "goalkeeper_rescue_predicate": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        },
+        "attacking_threat_predicate": null,
+        "team_conflict": false,
+        "player_conflict": false
+      },
+      {
+        "event_id": "atom_fill_0149_Save_6532955",
+        "type": "Save",
+        "broadcast_phase": "LIVE",
+        "t": 6532.955,
+        "window": [
+          6532.955,
+          6534.955
+        ],
+        "notes": "",
+        "attributes_relevant": {},
+        "keeper_team": null,
+        "keeper_team_name": null,
+        "keeper_team_status": "UNRESOLVED",
+        "keeper_player_number": null,
+        "keeper_player_status": "UNRESOLVED",
+        "claims": [],
+        "goalkeeper_rescue_predicate": null,
+        "attacking_threat_predicate": null,
+        "team_conflict": false,
+        "player_conflict": false
+      },
+      {
+        "event_id": "event_000625",
+        "type": "Defensive_action",
+        "broadcast_phase": "LIVE",
+        "t": 6627.11,
+        "window": [
+          6622.77,
+          6632.86
+        ],
+        "notes": "2队3号守门员在禁区将球解围踢走",
+        "attributes_relevant": {
+          "Attacker": [
+            "1队球员"
+          ],
+          "Defender": [
+            "team_2_player_13"
+          ],
+          "Defensive_Action": [
+            "Clearance"
+          ]
+        },
+        "keeper_team": "team_2",
+        "keeper_team_name": "塞尔塔维戈",
+        "keeper_team_status": "EXPLICIT",
+        "keeper_player_number": null,
+        "keeper_player_status": "CONFLICT",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": "3",
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队3号守门员在禁区将球解围"
+          },
+          {
+            "team": "team_2",
+            "player": "13",
+            "keeper_explicit": false,
+            "source": "attributes.Defender",
+            "text": "team_2_player_13"
+          }
+        ],
+        "goalkeeper_rescue_predicate": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        },
+        "attacking_threat_predicate": {
+          "actor": "team_1",
+          "basis": "opposition_to_keeper_rescue"
+        },
+        "team_conflict": false,
+        "player_conflict": true
+      },
+      {
+        "event_id": "event_000629",
+        "type": "Defensive_action",
+        "broadcast_phase": "LIVE",
+        "t": 6677.03,
+        "window": [
+          6672.79,
+          6682.74
+        ],
+        "notes": "2队13号守门员在禁区将球解围踢走",
+        "attributes_relevant": {
+          "Attacker": [
+            "1队球员"
+          ],
+          "Defender": [
+            "team_2_player_13"
+          ],
+          "Defensive_Action": [
+            "Clearance"
+          ]
+        },
+        "keeper_team": "team_2",
+        "keeper_team_name": "塞尔塔维戈",
+        "keeper_team_status": "EXPLICIT",
+        "keeper_player_number": "13",
+        "keeper_player_status": "EXPLICIT",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": "13",
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队13号守门员在禁区将球解围"
+          },
+          {
+            "team": "team_2",
+            "player": "13",
+            "keeper_explicit": false,
+            "source": "attributes.Defender",
+            "text": "team_2_player_13"
+          }
+        ],
+        "goalkeeper_rescue_predicate": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        },
+        "attacking_threat_predicate": {
+          "actor": "team_1",
+          "basis": "opposition_to_keeper_rescue"
+        },
+        "team_conflict": false,
+        "player_conflict": false
+      }
+    ],
+    "n_goalkeeper_rescue_predicates": 8,
+    "n_team_conflicts_on_rescues": 0,
+    "n_player_conflicts_on_rescues": 1,
+    "live_save_misses": [
+      {
+        "event_id": "atom_fill_0002_Save_672088",
+        "notes": "",
+        "attributes_relevant": {},
+        "keeper_status": "UNRESOLVED",
+        "claims": [],
+        "reason": "LIVE Save without explicit team-bound keeper action/attr parse → UNRESOLVED; conservative miss (often empty atom_fill notes)"
+      },
+      {
+        "event_id": "atom_fill_0008_Save_813871",
+        "notes": "",
+        "attributes_relevant": {},
+        "keeper_status": "UNRESOLVED",
+        "claims": [],
+        "reason": "LIVE Save without explicit team-bound keeper action/attr parse → UNRESOLVED; conservative miss (often empty atom_fill notes)"
+      },
+      {
+        "event_id": "atom_fill_0018_Save_1009211",
+        "notes": "",
+        "attributes_relevant": {},
+        "keeper_status": "UNRESOLVED",
+        "claims": [],
+        "reason": "LIVE Save without explicit team-bound keeper action/attr parse → UNRESOLVED; conservative miss (often empty atom_fill notes)"
+      },
+      {
+        "event_id": "atom_fill_0030_Save_1142732",
+        "notes": "",
+        "attributes_relevant": {},
+        "keeper_status": "UNRESOLVED",
+        "claims": [],
+        "reason": "LIVE Save without explicit team-bound keeper action/attr parse → UNRESOLVED; conservative miss (often empty atom_fill notes)"
+      },
+      {
+        "event_id": "atom_fill_0052_Save_2242332",
+        "notes": "",
+        "attributes_relevant": {},
+        "keeper_status": "UNRESOLVED",
+        "claims": [],
+        "reason": "LIVE Save without explicit team-bound keeper action/attr parse → UNRESOLVED; conservative miss (often empty atom_fill notes)"
+      },
+      {
+        "event_id": "atom_fill_0087_Save_3271452",
+        "notes": "",
+        "attributes_relevant": {},
+        "keeper_status": "UNRESOLVED",
+        "claims": [],
+        "reason": "LIVE Save without explicit team-bound keeper action/attr parse → UNRESOLVED; conservative miss (often empty atom_fill notes)"
+      },
+      {
+        "event_id": "atom_fill_0130_Save_6050294",
+        "notes": "",
+        "attributes_relevant": {},
+        "keeper_status": "UNRESOLVED",
+        "claims": [],
+        "reason": "LIVE Save without explicit team-bound keeper action/attr parse → UNRESOLVED; conservative miss (often empty atom_fill notes)"
+      },
+      {
+        "event_id": "atom_fill_0149_Save_6532955",
+        "notes": "",
+        "attributes_relevant": {},
+        "keeper_status": "UNRESOLVED",
+        "claims": [],
+        "reason": "LIVE Save without explicit team-bound keeper action/attr parse → UNRESOLVED; conservative miss (often empty atom_fill notes)"
+      }
+    ],
+    "suspicious_false_positive_flags": [],
+    "keeper_rescue_candidates": [
+      {
+        "candidate_id": "keeper_rescue:1",
+        "subjects": [
+          "team_2"
+        ],
+        "subject_names": [
+          "塞尔塔维戈"
+        ],
+        "n_episodes": 7,
+        "episodes": [
+          {
+            "actor": "team_2",
+            "actor_name": "塞尔塔维戈",
+            "core_event_ids": [
+              "event_000050"
+            ],
+            "window": [
+              625.07,
+              635.19
+            ],
+            "chain_context_ids": [
+              "pred_0002",
+              "pred_0003"
+            ]
+          },
+          {
+            "actor": "team_2",
+            "actor_name": "塞尔塔维戈",
+            "core_event_ids": [
+              "event_000260"
+            ],
+            "window": [
+              1709.34,
+              1719.53
+            ],
+            "chain_context_ids": [
+              "pred_0014",
+              "pred_0015"
+            ]
+          },
+          {
+            "actor": "team_2",
+            "actor_name": "塞尔塔维戈",
+            "core_event_ids": [
+              "event_000298"
+            ],
+            "window": [
+              1912.49,
+              1922.56
+            ],
+            "chain_context_ids": [
+              "pred_0016",
+              "pred_0017",
+              "pred_0018"
+            ]
+          },
+          {
+            "actor": "team_2",
+            "actor_name": "塞尔塔维戈",
+            "core_event_ids": [
+              "event_000504"
+            ],
+            "window": [
+              4815.31,
+              4825.58
+            ],
+            "chain_context_ids": [
+              "pred_0045",
+              "pred_0046"
+            ]
+          },
+          {
+            "actor": "team_2",
+            "actor_name": "塞尔塔维戈",
+            "core_event_ids": [
+              "event_000586"
+            ],
+            "window": [
+              6092.65,
+              6102.68
+            ],
+            "chain_context_ids": [
+              "pred_0058",
+              "pred_0059"
+            ]
+          },
+          {
+            "actor": "team_2",
+            "actor_name": "塞尔塔维戈",
+            "core_event_ids": [
+              "event_000625"
+            ],
+            "window": [
+              6622.77,
+              6632.86
+            ],
+            "chain_context_ids": [
+              "pred_0064"
+            ]
+          },
+          {
+            "actor": "team_2",
+            "actor_name": "塞尔塔维戈",
+            "core_event_ids": [
+              "event_000629"
+            ],
+            "window": [
+              6672.79,
+              6682.74
+            ],
+            "chain_context_ids": [
+              "pred_0064",
+              "pred_0065"
+            ]
+          }
+        ]
+      }
+    ],
+    "alternating_threats": {
+      "subjects": [
+        "team_1",
+        "team_2"
+      ],
+      "actor_runs": [
+        {
+          "actor": "team_1",
+          "n_episodes": 4
+        },
+        {
+          "actor": "team_2",
+          "n_episodes": 2
+        },
+        {
+          "actor": "team_1",
+          "n_episodes": 1
+        },
+        {
+          "actor": "team_2",
+          "n_episodes": 1
+        },
+        {
+          "actor": "team_1",
+          "n_episodes": 1
+        },
+        {
+          "actor": "team_2",
+          "n_episodes": 1
+        },
+        {
+          "actor": "team_1",
+          "n_episodes": 2
+        }
+      ],
+      "run_sequence": [
+        "team_1",
+        "team_2",
+        "team_1",
+        "team_2",
+        "team_1",
+        "team_2",
+        "team_1"
+      ],
+      "run_sequence_named": [
+        [
+          "奥萨苏纳",
+          4
+        ],
+        [
+          "塞尔塔维戈",
+          2
+        ],
+        [
+          "奥萨苏纳",
+          1
+        ],
+        [
+          "塞尔塔维戈",
+          1
+        ],
+        [
+          "奥萨苏纳",
+          1
+        ],
+        [
+          "塞尔塔维戈",
+          1
+        ],
+        [
+          "奥萨苏纳",
+          2
+        ]
+      ],
+      "n_anchor_nodes": 12,
+      "anchors": [
+        {
+          "actor": "team_1",
+          "actor_name": "奥萨苏纳",
+          "event_ids": [
+            "event_000050",
+            "event_000051"
+          ],
+          "window": [
+            625.07,
+            635.19
+          ],
+          "chain_context_ids": [
+            "pred_0002",
+            "pred_0003"
+          ]
+        },
+        {
+          "actor": "team_1",
+          "actor_name": "奥萨苏纳",
+          "event_ids": [
+            "event_000186"
+          ],
+          "window": [
+            1297.08,
+            1307.31
+          ],
+          "chain_context_ids": [
+            "pred_0010",
+            "pred_0011"
+          ]
+        },
+        {
+          "actor": "team_1",
+          "actor_name": "奥萨苏纳",
+          "event_ids": [
+            "event_000211"
+          ],
+          "window": [
+            1403.22,
+            1413.53
+          ],
+          "chain_context_ids": [
+            "pred_0011",
+            "pred_0012"
+          ]
+        },
+        {
+          "actor": "team_1",
+          "actor_name": "奥萨苏纳",
+          "event_ids": [
+            "event_000218"
+          ],
+          "window": [
+            1432.49,
+            1442.51
+          ],
+          "chain_context_ids": [
+            "pred_0011",
+            "pred_0012"
+          ]
+        },
+        {
+          "actor": "team_2",
+          "actor_name": "塞尔塔维戈",
+          "event_ids": [
+            "event_000229"
+          ],
+          "window": [
+            1506.12,
+            1516.3
+          ],
+          "chain_context_ids": [
+            "pred_0012",
+            "pred_0013"
+          ]
+        },
+        {
+          "actor": "team_2",
+          "actor_name": "塞尔塔维戈",
+          "event_ids": [
+            "event_000330"
+          ],
+          "window": [
+            2161.64,
+            2172.68
+          ],
+          "chain_context_ids": [
+            "pred_0019",
+            "pred_0020"
+          ]
+        },
+        {
+          "actor": "team_1",
+          "actor_name": "奥萨苏纳",
+          "event_ids": [
+            "event_000367"
+          ],
+          "window": [
+            2400.24,
+            2410.64
+          ],
+          "chain_context_ids": [
+            "pred_0022"
+          ]
+        },
+        {
+          "actor": "team_2",
+          "actor_name": "塞尔塔维戈",
+          "event_ids": [
+            "event_000458"
+          ],
+          "window": [
+            3204.79,
+            3214.95
+          ],
+          "chain_context_ids": [
+            "pred_0031",
+            "pred_0032",
+            "pred_0033"
+          ]
+        },
+        {
+          "actor": "team_1",
+          "actor_name": "奥萨苏纳",
+          "event_ids": [
+            "event_000531"
+          ],
+          "window": [
+            5170.78,
+            5180.86
+          ],
+          "chain_context_ids": [
+            "pred_0049",
+            "pred_0050"
+          ]
+        },
+        {
+          "actor": "team_2",
+          "actor_name": "塞尔塔维戈",
+          "event_ids": [
+            "event_000562"
+          ],
+          "window": [
+            5718.88,
+            5728.87
+          ],
+          "chain_context_ids": [
+            "pred_0054",
+            "pred_0055"
+          ]
+        },
+        {
+          "actor": "team_1",
+          "actor_name": "奥萨苏纳",
+          "event_ids": [
+            "event_000625"
+          ],
+          "window": [
+            6622.77,
+            6632.86
+          ],
+          "chain_context_ids": [
+            "pred_0064"
+          ]
+        },
+        {
+          "actor": "team_1",
+          "actor_name": "奥萨苏纳",
+          "event_ids": [
+            "event_000629"
+          ],
+          "window": [
+            6672.79,
+            6682.74
+          ],
+          "chain_context_ids": [
+            "pred_0064",
+            "pred_0065"
+          ]
+        }
+      ]
+    },
+    "keeper_table_compact": [
+      {
+        "event_id": "event_000050",
+        "type": "Defensive_action",
+        "phase": "LIVE",
+        "notes": "2队守门员在小禁区内将对手传向禁区的传球扑出",
+        "attrs": {
+          "Defender": [
+            "2队球员"
+          ],
+          "Attacker": [
+            "1队球员"
+          ]
+        },
+        "keeper_team": "team_2",
+        "team_status": "EXPLICIT",
+        "player_number": null,
+        "player_status": "UNRESOLVED",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": null,
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队守门员在小禁区内将对手传向禁区的传球扑出"
+          },
+          {
+            "team": "team_2",
+            "player": null,
+            "keeper_explicit": false,
+            "source": "attributes.Defender",
+            "text": "2队球员"
+          }
+        ],
+        "predicate": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        }
+      },
+      {
+        "event_id": "atom_fill_0002_Save_672088",
+        "type": "Save",
+        "phase": "LIVE",
+        "notes": "",
+        "attrs": {},
+        "keeper_team": null,
+        "team_status": "UNRESOLVED",
+        "player_number": null,
+        "player_status": "UNRESOLVED",
+        "claims": [],
+        "predicate": null
+      },
+      {
+        "event_id": "atom_fill_0008_Save_813871",
+        "type": "Save",
+        "phase": "LIVE",
+        "notes": "",
+        "attrs": {},
+        "keeper_team": null,
+        "team_status": "UNRESOLVED",
+        "player_number": null,
+        "player_status": "UNRESOLVED",
+        "claims": [],
+        "predicate": null
+      },
+      {
+        "event_id": "atom_fill_0018_Save_1009211",
+        "type": "Save",
+        "phase": "LIVE",
+        "notes": "",
+        "attrs": {},
+        "keeper_team": null,
+        "team_status": "UNRESOLVED",
+        "player_number": null,
+        "player_status": "UNRESOLVED",
+        "claims": [],
+        "predicate": null
+      },
+      {
+        "event_id": "atom_fill_0030_Save_1142732",
+        "type": "Save",
+        "phase": "LIVE",
+        "notes": "",
+        "attrs": {},
+        "keeper_team": null,
+        "team_status": "UNRESOLVED",
+        "player_number": null,
+        "player_status": "UNRESOLVED",
+        "claims": [],
+        "predicate": null
+      },
+      {
+        "event_id": "event_000244",
+        "type": "Save",
+        "phase": "LIVE",
+        "notes": "1队1号守门员在禁区将球抱住",
+        "attrs": {},
+        "keeper_team": "team_1",
+        "team_status": "EXPLICIT",
+        "player_number": "1",
+        "player_status": "EXPLICIT",
+        "claims": [
+          {
+            "team": "team_1",
+            "player": "1",
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "1队1号守门员在禁区将球抱住"
+          }
+        ],
+        "predicate": {
+          "actor": "team_1",
+          "basis": "explicit_keeper_action"
+        }
+      },
+      {
+        "event_id": "event_000260",
+        "type": "Save",
+        "phase": "LIVE",
+        "notes": "2队13号守门员在禁区将球扑住",
+        "attrs": {},
+        "keeper_team": "team_2",
+        "team_status": "EXPLICIT",
+        "player_number": "13",
+        "player_status": "EXPLICIT",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": "13",
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队13号守门员在禁区将球扑住"
+          }
+        ],
+        "predicate": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        }
+      },
+      {
+        "event_id": "event_000298",
+        "type": "Save",
+        "phase": "LIVE",
+        "notes": "2队13号守门员在禁区将球抱住",
+        "attrs": {},
+        "keeper_team": "team_2",
+        "team_status": "EXPLICIT",
+        "player_number": "13",
+        "player_status": "EXPLICIT",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": "13",
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队13号守门员在禁区将球抱住"
+          }
+        ],
+        "predicate": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        }
+      },
+      {
+        "event_id": "atom_fill_0052_Save_2242332",
+        "type": "Save",
+        "phase": "LIVE",
+        "notes": "",
+        "attrs": {},
+        "keeper_team": null,
+        "team_status": "UNRESOLVED",
+        "player_number": null,
+        "player_status": "UNRESOLVED",
+        "claims": [],
+        "predicate": null
+      },
+      {
+        "event_id": "atom_fill_0087_Save_3271452",
+        "type": "Save",
+        "phase": "LIVE",
+        "notes": "",
+        "attrs": {},
+        "keeper_team": null,
+        "team_status": "UNRESOLVED",
+        "player_number": null,
+        "player_status": "UNRESOLVED",
+        "claims": [],
+        "predicate": null
+      },
+      {
+        "event_id": "event_000504",
+        "type": "Save",
+        "phase": "LIVE",
+        "notes": "2队13号守门员在禁区内将球抱住",
+        "attrs": {},
+        "keeper_team": "team_2",
+        "team_status": "EXPLICIT",
+        "player_number": "13",
+        "player_status": "EXPLICIT",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": "13",
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队13号守门员在禁区内将球抱住"
+          }
+        ],
+        "predicate": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        }
+      },
+      {
+        "event_id": "atom_fill_0130_Save_6050294",
+        "type": "Save",
+        "phase": "LIVE",
+        "notes": "",
+        "attrs": {},
+        "keeper_team": null,
+        "team_status": "UNRESOLVED",
+        "player_number": null,
+        "player_status": "UNRESOLVED",
+        "claims": [],
+        "predicate": null
+      },
+      {
+        "event_id": "event_000586",
+        "type": "Save",
+        "phase": "LIVE",
+        "notes": "2队13号守门员在小禁区内将球顶出",
+        "attrs": {},
+        "keeper_team": "team_2",
+        "team_status": "EXPLICIT",
+        "player_number": "13",
+        "player_status": "EXPLICIT",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": "13",
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队13号守门员在小禁区内将球顶出"
+          }
+        ],
+        "predicate": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        }
+      },
+      {
+        "event_id": "atom_fill_0149_Save_6532955",
+        "type": "Save",
+        "phase": "LIVE",
+        "notes": "",
+        "attrs": {},
+        "keeper_team": null,
+        "team_status": "UNRESOLVED",
+        "player_number": null,
+        "player_status": "UNRESOLVED",
+        "claims": [],
+        "predicate": null
+      },
+      {
+        "event_id": "event_000625",
+        "type": "Defensive_action",
+        "phase": "LIVE",
+        "notes": "2队3号守门员在禁区将球解围踢走",
+        "attrs": {
+          "Defender": [
+            "team_2_player_13"
+          ],
+          "Attacker": [
+            "1队球员"
+          ]
+        },
+        "keeper_team": "team_2",
+        "team_status": "EXPLICIT",
+        "player_number": null,
+        "player_status": "CONFLICT",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": "3",
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队3号守门员在禁区将球解围"
+          },
+          {
+            "team": "team_2",
+            "player": "13",
+            "keeper_explicit": false,
+            "source": "attributes.Defender",
+            "text": "team_2_player_13"
+          }
+        ],
+        "predicate": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        }
+      },
+      {
+        "event_id": "event_000629",
+        "type": "Defensive_action",
+        "phase": "LIVE",
+        "notes": "2队13号守门员在禁区将球解围踢走",
+        "attrs": {
+          "Defender": [
+            "team_2_player_13"
+          ],
+          "Attacker": [
+            "1队球员"
+          ]
+        },
+        "keeper_team": "team_2",
+        "team_status": "EXPLICIT",
+        "player_number": "13",
+        "player_status": "EXPLICIT",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": "13",
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队13号守门员在禁区将球解围"
+          },
+          {
+            "team": "team_2",
+            "player": "13",
+            "keeper_explicit": false,
+            "source": "attributes.Defender",
+            "text": "team_2_player_13"
+          }
+        ],
+        "predicate": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        }
+      }
+    ]
+  },
+  "focus_282_417_641": {
+    "event_000282": {
+      "type": "Save",
+      "notes": "2队守门员扑住了1队队员的打门",
+      "keeper": {
+        "team": "team_2",
+        "team_status": "EXPLICIT",
+        "player_number": null,
+        "player_status": "UNRESOLVED",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": null,
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队守门员扑住"
+          }
+        ]
+      },
+      "predicates": {
+        "goalkeeper_rescue": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        },
+        "attacking_threat": {
+          "actor": "team_1",
+          "basis": "opposition_to_keeper_rescue"
+        }
+      },
+      "assigned_team": "阿曼 (team_2)",
+      "in_oman_keeper_rescue_candidate": true,
+      "verdict": "CORRECT"
+    },
+    "event_000417": {
+      "type": "Save",
+      "notes": "2队守门员扑救",
+      "keeper": {
+        "team": "team_2",
+        "team_status": "EXPLICIT",
+        "player_number": null,
+        "player_status": "UNRESOLVED",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": null,
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队守门员扑救"
+          }
+        ]
+      },
+      "predicates": {
+        "goalkeeper_rescue": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        }
+      },
+      "assigned_team": "阿曼 (team_2)",
+      "in_oman_keeper_rescue_candidate": true,
+      "verdict": "CORRECT"
+    },
+    "event_000641": {
+      "type": "Defensive_action",
+      "notes": "2队守门员关键拦截",
+      "keeper": {
+        "team": "team_2",
+        "team_status": "EXPLICIT",
+        "player_number": null,
+        "player_status": "UNRESOLVED",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": null,
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队守门员关键拦截"
+          },
+          {
+            "team": "team_2",
+            "player": null,
+            "keeper_explicit": true,
+            "source": "attributes.Defender",
+            "text": "2队守门员"
+          }
+        ]
+      },
+      "predicates": {
+        "goalkeeper_rescue": {
+          "actor": "team_2",
+          "basis": "explicit_keeper_action"
+        },
+        "attacking_threat": {
+          "actor": "team_1",
+          "basis": "opposition_to_keeper_rescue"
+        }
+      },
+      "assigned_team": "阿曼 (team_2)",
+      "in_oman_keeper_rescue_candidate": true,
+      "verdict": "CORRECT"
+    }
+  },
+  "annotation_grounded_review": {
+    "A_uae_oman": {
+      "correct_oman_anchors": [
+        "event_000282",
+        "event_000417",
+        "event_000641",
+        "event_000399",
+        "event_000421",
+        "event_000477"
+      ],
+      "uae_anchors": [
+        "event_000097",
+        "event_000277"
+      ],
+      "potential_misses": [
+        {
+          "ids": [
+            "atom_fill_0050_Save_5177072",
+            "atom_fill_0060_Save_5361641",
+            "atom_fill_0092_Save_6600268"
+          ],
+          "issue": "LIVE Save atoms from predicted-chain fill with empty notes/attrs → UNRESOLVED; no team actor; excluded by design (conservative)"
+        }
+      ],
+      "potential_false_or_weak": [
+        {
+          "id": "event_000097",
+          "note": "Goal_line_clearance note says 被守门员用手解出 without explicit team before 守门员 in note action span; team comes from attributes.Related_Player=1队守门员17号 — EXPLICIT via attr, acceptable for R1"
+        },
+        {
+          "id": "event_000399",
+          "note": "Defender attr is 2队球员 (not keeper-explicit) but notes.role_action 2队守门员用手将球打出 supplies keeper claim — OK; player_status UNRESOLVED"
+        }
+      ],
+      "no_team_conflict_observed": true,
+      "player_status": "mostly UNRESOLVED (team-level keeper only); event_000097 EXPLICIT player 17"
+    },
+    "B_osasuna_celta": {
+      "team_2_celta_candidate_n": 7,
+      "team_1_osasuna": "only 1 rescue predicate → below repeat min_occurrences=2 → no team_1 candidate (not a false negative of ownership; pattern threshold)",
+      "potential_misses": "multiple atom_fill_* Save with empty notes → UNRESOLVED",
+      "no_team_conflict_observed": true,
+      "player_conflict_example": {
+        "event_id": "event_000625",
+        "notes": "2队3号守门员在禁区将球解围踢走",
+        "claims": [
+          {
+            "team": "team_2",
+            "player": "3",
+            "keeper_explicit": true,
+            "source": "notes.role_action",
+            "text": "2队3号守门员在禁区将球解围"
+          },
+          {
+            "team": "team_2",
+            "player": "13",
+            "keeper_explicit": false,
+            "source": "attributes.Defender",
+            "text": "team_2_player_13"
+          }
+        ],
+        "team_status": "EXPLICIT",
+        "player_status": "CONFLICT",
+        "note": "notes say 2队3号守门员 vs attributes.Defender team_2_player_13 → PLAYER CONFLICT; team still EXPLICIT team_2 so remains in Celta keeper_rescue candidate. Possible weak/false numbered-player identity; team-level repeat still valid."
+      },
+      "team_1_single_rescue": {
+        "event_id": "event_000244",
+        "notes": "1队1号守门员在禁区将球抱住",
+        "why_no_candidate": "repeat min_occurrences=2; only 1 EXPLICIT team_1 rescue"
+      }
+    }
+  }
+}

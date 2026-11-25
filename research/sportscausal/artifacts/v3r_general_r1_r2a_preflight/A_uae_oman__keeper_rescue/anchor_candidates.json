@@ -1,0 +1,233 @@
+{
+  "schema": "v3r_general_anchor_candidates_v1",
+  "template_id": "keeper_rescue",
+  "category": "人物故事链",
+  "subtype": "同队门将多次化险",
+  "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+  "n_predicate_events": 8,
+  "candidates": [
+    {
+      "candidate_id": "keeper_rescue:1",
+      "subjects": [
+        "team_1"
+      ],
+      "actor_runs": null,
+      "nodes": [
+        {
+          "node_id": "anchor:1",
+          "actor": "team_1",
+          "window": [
+            1049.71,
+            1060.64
+          ],
+          "anchor_t": 1056.03,
+          "event_ids": [
+            "event_000097"
+          ],
+          "predicate": "goalkeeper_rescue",
+          "chain_context_ids": [
+            "pred_0004",
+            "pred_0005"
+          ],
+          "story_anchor": true
+        },
+        {
+          "node_id": "anchor:2",
+          "actor": "team_1",
+          "window": [
+            1912.32,
+            1922.55
+          ],
+          "anchor_t": 1918.41,
+          "event_ids": [
+            "event_000277"
+          ],
+          "predicate": "goalkeeper_rescue",
+          "chain_context_ids": [
+            "pred_0015",
+            "pred_0016"
+          ],
+          "story_anchor": true
+        }
+      ],
+      "edges": [
+        {
+          "from": "anchor:1",
+          "to": "anchor:2",
+          "relation": "temporal_anchor_order",
+          "causal_verified": false
+        }
+      ],
+      "narrative_goal": [
+        "表现同队门将反复化解威胁",
+        "挖掘比赛阶段及后续发展"
+      ],
+      "quality_verified": false,
+      "first_live_verified": false,
+      "release_authorized": false
+    },
+    {
+      "candidate_id": "keeper_rescue:2",
+      "subjects": [
+        "team_2"
+      ],
+      "actor_runs": null,
+      "nodes": [
+        {
+          "node_id": "anchor:1",
+          "actor": "team_2",
+          "window": [
+            1955.54,
+            1966.45
+          ],
+          "anchor_t": 1961.46,
+          "event_ids": [
+            "event_000282"
+          ],
+          "predicate": "goalkeeper_rescue",
+          "chain_context_ids": [
+            "pred_0015",
+            "pred_0016"
+          ],
+          "story_anchor": true
+        },
+        {
+          "node_id": "anchor:2",
+          "actor": "team_2",
+          "window": [
+            3338.39,
+            3351.3
+          ],
+          "anchor_t": 3343.33,
+          "event_ids": [
+            "event_000399"
+          ],
+          "predicate": "goalkeeper_rescue",
+          "chain_context_ids": [
+            "pred_0030",
+            "pred_0031"
+          ],
+          "story_anchor": true
+        },
+        {
+          "node_id": "anchor:3",
+          "actor": "team_2",
+          "window": [
+            3504.14,
+            3515.83
+          ],
+          "anchor_t": 3508.34,
+          "event_ids": [
+            "event_000417"
+          ],
+          "predicate": "goalkeeper_rescue",
+          "chain_context_ids": [
+            "pred_0031",
+            "pred_0032"
+          ],
+          "story_anchor": true
+        },
+        {
+          "node_id": "anchor:4",
+          "actor": "team_2",
+          "window": [
+            3543.01,
+            3553.57
+          ],
+          "anchor_t": 3548.12,
+          "event_ids": [
+            "event_000421"
+          ],
+          "predicate": "goalkeeper_rescue",
+          "chain_context_ids": [
+            "pred_0032",
+            "pred_0033"
+          ],
+          "story_anchor": true
+        },
+        {
+          "node_id": "anchor:5",
+          "actor": "team_2",
+          "window": [
+            4755.79,
+            4769.62
+          ],
+          "anchor_t": 4766.16,
+          "event_ids": [
+            "event_000477"
+          ],
+          "predicate": "goalkeeper_rescue",
+          "chain_context_ids": [
+            "pred_0042",
+            "pred_0043"
+          ],
+          "story_anchor": true
+        },
+        {
+          "node_id": "anchor:6",
+          "actor": "team_2",
+          "window": [
+            6552.01,
+            6562.64
+          ],
+          "anchor_t": 6557.97,
+          "event_ids": [
+            "event_000641"
+          ],
+          "predicate": "goalkeeper_rescue",
+          "chain_context_ids": [
+            "pred_0063",
+            "pred_0065"
+          ],
+          "story_anchor": true
+        }
+      ],
+      "edges": [
+        {
+          "from": "anchor:1",
+          "to": "anchor:2",
+          "relation": "temporal_anchor_order",
+          "causal_verified": false
+        },
+        {
+          "from": "anchor:2",
+          "to": "anchor:3",
+          "relation": "temporal_anchor_order",
+          "causal_verified": false
+        },
+        {
+          "from": "anchor:3",
+          "to": "anchor:4",
+          "relation": "temporal_anchor_order",
+          "causal_verified": false
+        },
+        {
+          "from": "anchor:4",
+          "to": "anchor:5",
+          "relation": "temporal_anchor_order",
+          "causal_verified": false
+        },
+        {
+          "from": "anchor:5",
+          "to": "anchor:6",
+          "relation": "temporal_anchor_order",
+          "causal_verified": false
+        }
+      ],
+      "narrative_goal": [
+        "表现同队门将反复化解威胁",
+        "挖掘比赛阶段及后续发展"
+      ],
+      "quality_verified": false,
+      "first_live_verified": false,
+      "release_authorized": false
+    }
+  ],
+  "scope": "anchor discovery only; chain membership is contextual, not verified causal linkage",
+  "episode_limit": "same actor overlapping media windows are a conservative distinct-episode proxy",
+  "alternation_limit": "actor runs of observed threat proxies, not established dominance or possession",
+  "first_live_verified": false,
+  "quality_verified": false,
+  "release_authorized": false
+}
