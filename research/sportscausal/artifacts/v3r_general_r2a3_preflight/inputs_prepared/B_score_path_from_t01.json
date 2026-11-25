@@ -1,6 +1,9 @@
 {
   "video_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
-  "score_side_mapping": null,
+  "score_side_mapping": {
+    "left": "team_1",
+    "right": "team_2"
+  },
   "score_path": [
     {
       "t_sec": 425.71,
@@ -57,5 +60,18 @@
     }
   },
   "t01_protagonist_side": "right",
-  "note": "score_path copied from existing V3-R/T01 artifact. score_side_mapping intentionally null until left/right board identity is verified against independent evidence; do not assume left=team_1."
+  "note": "Original T01 score_path retained unchanged. Score-side mapping cross-checked using the independent match result and scoring sequence. Score beneficiary must not be conflated with the player/team executing a shot or own goal.",
+  "score_mapping_provenance": {
+    "status": "independently_cross_checked_against_official_match_result_and_scoring_sequence",
+    "match_date": "2025-10-26",
+    "score_order_teams": [
+      "奥萨苏纳",
+      "塞尔塔维戈"
+    ],
+    "sources": [
+      "https://www.laliga.com/en-GB/match/temporada-2025-2026-laliga-ea-sports-ca-osasuna-rc-celta-10",
+      "https://www.osasuna.es/en-laliga-2025-osasuna-vs-celta-de-vigo"
+    ],
+    "scope": "Score-column attribution only; not direct inspection of original broadcast frames, not goal action or shooter attribution. External match reports are not supplied as event labels."
+  }
 }
