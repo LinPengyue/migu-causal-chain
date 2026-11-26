@@ -122,6 +122,9 @@ def run_agent(prepared,evidence,backend,out,*,max_rounds=2):
                                     "questions":["verify actual sequence and narrative relation"]})
             record["hypotheses"]=hypotheses
             targets=[t for t in targets if tuple(t["source_window"]) not in tried]
+            for t in targets:
+                if t["type"]=="missing_goal_localization":
+                    t["tile_event_summary"]=[{k:e[k] for k in ("event_id","t","type","notes","scores")} for e in inventory(evidence,*t["source_window"])]
             if not targets or backend.calls_left()<3:
                 stop="no_new_target_or_budget"; history.append(record); break
             # No Causal-4 scalar is passed to Planner. It decides whether
@@ -208,11 +211,16 @@ def run_agent(prepared,evidence,backend,out,*,max_rounds=2):
                 # A localized missing action is a video-supported candidate,
                 # not a gold annotation or independently proven first live.
                 for n in graph["nodes"]:
-                    if n["node_id"] in obs["story_node_ids"]:
+                    matching=[r for r in rows if r.get("source_observation_id")==obs_id and n["node_id"] in r.get("story_node_ids",[])]
+                    if n["node_id"] in obs["story_node_ids"] and matching:
                         n["node_type"]="anchor"
                         n["localization_status"]="video_supported_candidate"
-                        n["media_windows"]=[obs["action_window_sec"]]
+                        n["media_windows"]=[[r["media_in"],r["media_out"]] for r in matching]
                         n["source_observation_id"]=obs_id
+                        n["event_ids"]=list(dict.fromkeys(e for r in matching for e in r.get("event_ids",[])))
+                        n["material_ids"]=[]
+                for n in graph["nodes"]:
+                    n["active_segment_ids"]=[r["segment_id"] for r in rows if n["node_id"] in r.get("story_node_ids",[])]
                 graph.setdefault("accepted_revisions",[]).append({"round":ri,"observation_id":obs_id,
                     "revision":revision,"verifier":comparison})
             record["feedback"]=comparison.get("rationale")
