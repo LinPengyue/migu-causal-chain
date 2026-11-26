@@ -104,6 +104,9 @@ def compile_pack(evidence,r2a_results,r2bc,*,legacy=None):
             else:
                 b["legacy_seed"]={"status":"not_applicable"}
             b["story_graph"]["legacy_seed"]=deepcopy(b["legacy_seed"])
+            b["story_graph"]["agent_seed"]={"file":"legacy_seed.json" if b["legacy_seed"]["status"]=="preserved_legacy_seed" else "initial_edl.json",
+                "status":"comparison_pending" if b["legacy_seed"]["status"]=="preserved_legacy_seed" else "anchor_preview",
+                "first_live_verified":False,"release_authorized":False}
             stories[sid]=b
     check(set(legacy or {})<=set(stories),"unmatched legacy seed")
     return {"schema":"sportscausal_r3_pack_v1","video_id":evidence["video_id"],
@@ -138,7 +141,7 @@ def write_pack(out,pack,legacy):
             "n_context_candidates":diag["n_context_candidates"],
             "n_observation_tasks":len(b["observation_tasks"]),
             "strict_threat_metric_eligible":g["strict_threat_metric_eligible"],
-            "legacy_seed":b["legacy_seed"],"folder":folder})
+            "legacy_seed":b["legacy_seed"],"agent_seed":g["agent_seed"],"folder":folder})
     write(out/"summary.json",summary)
     write(out/"observation_tasks.json",{"video_id":pack["video_id"],"tasks":pack["observation_tasks"]})
 
