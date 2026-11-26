@@ -91,7 +91,7 @@ def run_agent(prepared,evidence,backend,out,*,max_rounds=2):
             hypotheses=[]; targets=deepcopy(prepared["targets"])
             # Story-First is conditional on a narrative interval, not a
             # prerequisite for task-based goal recovery or verification.
-            if interval is not None and backend.calls_left()>=4:
+            if interval is not None and backend.calls_left()>=5:
                 events=inventory(evidence,*interval["window"])
                 if events:
                     raw=backend.query("story_first",
@@ -125,7 +125,7 @@ def run_agent(prepared,evidence,backend,out,*,max_rounds=2):
             for t in targets:
                 if t["type"]=="missing_goal_localization":
                     t["tile_event_summary"]=[{k:e[k] for k in ("event_id","t","type","notes","scores")} for e in inventory(evidence,*t["source_window"])]
-            if not targets or backend.calls_left()<3:
+            if not targets or backend.calls_left()<4:
                 stop="no_new_target_or_budget"; history.append(record); break
             # No Causal-4 scalar is passed to Planner. It decides whether
             # an observation is useful and selects a concrete source target.
