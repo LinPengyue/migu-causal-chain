@@ -50,6 +50,7 @@ def materialize(graph,evidence,task_index):
     nodes=g["nodes"]
     used=set()
     for n in nodes:
+        n["material_ids"]=[]
         _validate_declared_windows(evidence,n)
         if n["required"] and n["event_ids"]:
             used.update(n["event_ids"])
@@ -120,6 +121,21 @@ def materialize(graph,evidence,task_index):
             search=[t["search_interval"]] if t.get("search_interval") else t.get("media_windows",[])
             if not t.get("candidate_id") and any(a<d and b>c for a,b in intervals for c,d in search):
                 relevant.append({"task_id":tid,"relevance":"inter_anchor_search_context"})
+    # Optional context nodes have explicit graph roles, but no selected material.
+    # Do not attach a search interval as footage or claim an editorial choice.
+    for c in context_pool:
+        nid=c["context_id"]
+        nodes.append({"node_id":nid,"node_type":"context","required":False,
+                      "event_ids":c["event_ids"],"media_windows":c["media_windows"],
+                      "material_ids":[],"selected":False,"perspectives":c["perspectives"],
+                      "observation_task_ids":[]})
+        seen=set()
+        for p in c["perspectives"]:
+            for x,y in ((p["from"],nid),(nid,p["to"])):
+                if x and y and (x,y) not in seen:
+                    seen.add((x,y))
+                    g["edges"].append({"from":x,"to":y,"edge_type":"potential_editorial_context",
+                                       "causal_verified":False,"selected":False})
     g["observation_task_refs"]=relevant
     missing=[n["node_id"] for n in nodes if n["required"] and not n["material_ids"]]
     diagnostics=list(g["diagnostics"])
