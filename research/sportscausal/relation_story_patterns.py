@@ -67,9 +67,14 @@ def relation_candidates(template,graph,evidence):
     ci=chain_edges(evidence,by)
     typed={tuple(e["event_ids"]):e for e in graph["edges"]}
     context={tuple(e["event_ids"]):e for e in graph["outcome_context_edges"]}
+    explicit_conflicts={tuple(e["event_ids"]) for e in graph["rejected_edges"]
+                        if e.get("reason") in {"actor_conflict","keeper_conflict","shooter_conflict",
+                                               "recovery_reference_conflict"}}
     adjacency=defaultdict(list)
     for (x,y),support in ci.items():
         a,b=by[x],by[y]
+        if (x,y) in explicit_conflicts:
+            continue
         if a["broadcast_phase"]!="LIVE" or b["broadcast_phase"]!="LIVE":
             continue
         if not 0<b["t"]-a["t"]<=p["max_edge_gap_sec"]:
@@ -98,7 +103,9 @@ def relation_candidates(template,graph,evidence):
                         return True
                     observed=possession_actor(row,roles,evidence["atoms"][row["event_id"]])
                     gain=turnover_actor(row,roles)
-                    return bool(observed and observed!=actor or gain and gain!=actor)
+                    attacking=[_actor(row,k) for k in ("attacking_attempt","attacking_delivery","attacking_threat")]
+                    return bool(observed and observed!=actor or gain and gain!=actor
+                                or any(side and side!=actor for side in attacking))
                 if any(interrupts(row) for row in mid):
                     continue
                 trail=ids+[y]
