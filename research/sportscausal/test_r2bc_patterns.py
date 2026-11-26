@@ -166,5 +166,28 @@ class IntegrationTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             run(e,g,b,s,default_templates())
 
+    def test_relation_observation_task_keeps_path_alternatives(self):
+        e=evidence(atom("r",80,"2队球员发角球","Corner_kick"),
+                   atom("p",85,"2队球员传球","Pass"),atom("g",92,"","Goal"))
+        s=score((100,"0:1"))
+        chain(e,["r","p","g"])
+        g=graph(e,s); b=project_roles(g)
+        result=run(e,g,b,s,[t("set_piece_breakthrough")])
+        c=result["results"]["set_piece_breakthrough"]["candidates"][0]
+        task=next(x for x in result["observation_tasks"] if x["task_type"]=="relation_path_verification")
+        self.assertIn(task["task_id"],c["observation_task_ids"])
+        self.assertEqual(task["path_alternatives"],c["path_alternatives"])
+        self.assertFalse(task["resolved"])
+
+    def test_phase_observation_task_uses_search_interval_not_clip(self):
+        e=evidence(shot("a",10,1),shot("b",20,1),shot("c",40,2),shot("d",50,2))
+        s=score(); g=graph(e,s); b=project_roles(g)
+        result=run(e,g,b,s,[t("threat_phase_change")])
+        task=next(x for x in result["observation_tasks"] if x["task_type"]=="phase_switch_verification")
+        self.assertEqual(task["search_interval"],[21,39])
+        self.assertFalse(task["media_windows"])
+        self.assertTrue(task["preview_only"])
+
+
 if __name__=="__main__":
     unittest.main()
