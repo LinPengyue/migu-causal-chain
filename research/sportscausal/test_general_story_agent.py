@@ -105,5 +105,60 @@ class LoopTests(unittest.TestCase):
             self.assertEqual(report["n_accepted"],0)
             self.assertTrue((Path(d)/"round_01"/"trial_edl.json").is_file())
 
+    def test_simulated_visual_accept_updates_missing_node(self):
+        # Only a contract simulation: no real images or provider call.
+        backend=FakeBackend()
+        backend.real_visual=True
+        prepared={"graph":G,"seed_edl":[R],"tasks":[T],"intervals":[],"nonlive_windows":[],
+            "targets":[{"target_id":"missing:tile:1","task":T,"type":T["task_type"],
+                        "source_window":[100,140],"event_ids":[]}]}
+        with tempfile.TemporaryDirectory() as d:
+            from template_graph import read
+            report=run_agent(prepared,E,backend,Path(d),max_rounds=1)
+            self.assertEqual(report["n_accepted"],1)
+            self.assertTrue(report["changed"])
+            node=read(Path(d)/"refined_story_graph.json")["nodes"][1]
+            self.assertEqual(node["localization_status"],"video_supported_candidate")
+            self.assertEqual(node["active_segment_ids"],["trial:obs:1"])
+            self.assertFalse(report["first_live_verified"])
+
+    def test_simulated_reject_feeds_next_critic_and_keeps_seed(self):
+        class RejectBackend(FakeBackend):
+            real_visual=True
+            def query(self,stage,prompt,d,clips=()):
+                if stage=="verify":
+                    self.calls.append(stage)
+                    return {"decision":"REJECT","rationale":"insertion disrupts story"}
+                if stage=="critic" and self.calls:
+                    self.calls.append(stage)
+                    self.feedback_seen="insertion disrupts story" in prompt
+                    return {"action":"keep","issue":"no better alternative"}
+                return super().query(stage,prompt,d,clips)
+        backend=RejectBackend()
+        prepared={"graph":G,"seed_edl":[R],"tasks":[T],"intervals":[],"nonlive_windows":[],
+            "targets":[{"target_id":"missing:tile:1","task":T,"type":T["task_type"],
+                        "source_window":[100,140],"event_ids":[]}]}
+        with tempfile.TemporaryDirectory() as d:
+            report=run_agent(prepared,E,backend,Path(d),max_rounds=2)
+            self.assertEqual(report["rounds"][0]["decision"],"REJECT")
+            self.assertTrue(backend.feedback_seen)
+            self.assertFalse(report["changed"])
+            self.assertEqual(report["n_accepted"],0)
+
+    def test_complete_story_can_stop_without_trial(self):
+        class KeepBackend(FakeBackend):
+            def query(self,stage,prompt,d,clips=()):
+                self.calls.append(stage)
+                return {"action":"keep","issue":"no worthwhile improvement"}
+        g=deepcopy(G); g["nodes"]=g["nodes"][:1]
+        prepared={"graph":g,"seed_edl":[R],"tasks":[],"intervals":[],"nonlive_windows":[],"targets":[]}
+        backend=KeepBackend()
+        with tempfile.TemporaryDirectory() as d:
+            report=run_agent(prepared,E,backend,Path(d),max_rounds=2)
+            self.assertEqual(backend.calls,["critic"])
+            self.assertFalse(report["changed"])
+            self.assertEqual(report["stop_reason"],"critic_no_worthwhile_change")
+
+
 if __name__=="__main__":
     unittest.main()
