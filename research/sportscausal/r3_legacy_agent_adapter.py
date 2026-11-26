@@ -130,7 +130,7 @@ def adapt(graph,initial,legacy,tasks,context,evidence,events,*,seed="auto"):
     for n in nodes.values():
         if n["node_type"]=="missing":
             ids=n.get("observation_task_ids",[])
-            check(set(ids)<=set(task_index),"missing node without bound task")
+            check(bool(ids) and set(ids)<=set(task_index),"missing node without bound task")
             missing.append({"node":_node_summary(n),"tasks":[deepcopy(task_index[i]) for i in ids]})
     # Preserve original nonlive rows for P2 replay exclusion; legacy broad
     # candidate spans may overlap them. Flag actual overlaps, never silently
@@ -155,7 +155,9 @@ def adapt(graph,initial,legacy,tasks,context,evidence,events,*,seed="auto"):
     plan={"schema_version":"r3_legacy_agent_input_v1","algorithm":"R3",
           "template_id":graph["template_id"],"template_name":graph["subtype"],
           "template":{"category":graph["category"],"subtype":graph["subtype"],
-                      "narrative_goal":graph["narrative_goal"],"subjects":graph["subjects"]},
+                      "narrative_goal":graph["narrative_goal"],"subjects":graph["subjects"],
+                      "narrative_edges":[{k:edge[k] for k in ("from","to","edge_type","relation","causal_verified") if k in edge}
+                                         for edge in graph.get("edges",[]) if edge.get("selected") is not False]},
           "title":graph["subtype"],"match_id":graph["video_id"],"protagonist":protagonist,
           "beats":[{**_node_summary(n),"role":_role(n) if n["node_type"] in {"anchor","missing"} else n["node_type"]}
                    for n in nodes.values() if n["required"] or n["node_type"]=="transition"],
