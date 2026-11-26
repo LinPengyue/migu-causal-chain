@@ -7,6 +7,7 @@ preparation with api=None. Rendering/agent execution is a separate opt-in.
 import argparse
 from copy import deepcopy
 import hashlib
+import json
 from pathlib import Path
 import sys
 from template_graph import check, read, write, number, event_window, known_nonlive
@@ -53,6 +54,47 @@ def _span(r,duration):
     a,b=r.get("media_in"),r.get("media_out")
     check(number(a) and number(b) and 0<=a<b<=duration,"invalid seed media span")
     return [a,b]
+
+def compact_story_context(graph,rows,tasks,evidence):
+    """First alphabetic plan field survives the original P1 9000-char cap.
+
+    Keep explicit template/goal/subjects even when the full plan is long.
+    Goal transitions are from R3 score bindings, never inferred from team
+    identity or a generic goal label.
+    """
+    goals=[]
+    for n in graph["nodes"]:
+        if not n["required"]:
+            continue
+        for role in n.get("goal_roles",[]):
+            b=role.get("score_binding") or {}
+            if b.get("score_before") and b.get("score_after"):
+                goals.append({"node_id":n["node_id"],"score_before":b["score_before"],
+                    "score_after":b["score_after"],"confirmation_t_sec":b.get("confirmation_t_sec"),
+                    "action_t_sec":b.get("action_t_sec"),"event_id":b.get("event_id")})
+        for t in tasks:
+            if n["node_type"]=="missing" and t["task_id"] in n.get("observation_task_ids",[]) and t.get("task_type")=="missing_goal_localization":
+                goals.append({"node_id":n["node_id"],"score_before":t["score_before"],
+                    "score_after":t["score_after"],"confirmation_t_sec":t["confirmation_t_sec"],
+                    "search_interval":t["search_interval"],"task_id":t["task_id"]})
+    # Full graph/EDL remains separately available. Only include compact
+    # chain IDs/known membership, not unsupported causal claims.
+    required=[{"node_id":n["node_id"],"type":n["node_type"],
+               "role":_role(n) if n["node_type"] in {"anchor","missing"} else n["node_type"],
+               "actor":n.get("actor"),"score":n.get("score"),
+               "segment_ids":[r["segment_id"] for r in rows if n["node_id"] in r["required_story_node_ids"]]}
+              for n in graph["nodes"] if n["required"]]
+    context={"schema":"r3_agent_story_context_v1","template_id":graph["template_id"],
+             "category":graph["category"],"subtype":graph["subtype"],
+             "narrative_goal":deepcopy(graph["narrative_goal"]),"subjects":deepcopy(graph["subjects"]),
+             "teams":deepcopy(evidence.get("teams",{})),
+             "goal_targets":goals,"required_nodes":required,
+             "chain_ids":list(dict.fromkeys(c for r in rows for c in r.get("short_chain_ids",[]))),
+             "observation_task_ids":[t["task_id"] for t in tasks],
+             "causal_relations_are_hypotheses":True}
+    # Preserve the full structured context for Critic; put the essential
+    # template fields in a separately bounded alphabetically early field.
+    return context
 
 def adapt(graph,initial,legacy,tasks,context,evidence,events,*,seed="auto"):
     check(graph["schema"]=="sportscausal_story_graph_v1" and
@@ -152,7 +194,10 @@ def adapt(graph,initial,legacy,tasks,context,evidence,events,*,seed="auto"):
     # The original Story-First extracts this story_plan and template/beats.
     # Keep compact narrative semantics near the beginning; all full R3
     # graph/tasks/short chains remain separately archived for traceability.
-    plan={"schema_version":"r3_legacy_agent_input_v1","algorithm":"R3",
+    agent_context=compact_story_context(graph,rows,tasks,evidence)
+    essential={k:agent_context[k] for k in ("schema","template_id","category","subtype","narrative_goal","subjects","teams")}
+    plan={"a_story_template_context":essential,"agent_story_context":agent_context,
+          "schema_version":"r3_legacy_agent_input_v1","algorithm":"R3",
           "template_id":graph["template_id"],"template_name":graph["subtype"],
           "template":{"category":graph["category"],"subtype":graph["subtype"],
                       "narrative_goal":graph["narrative_goal"],"subjects":graph["subjects"],
@@ -168,6 +213,8 @@ def adapt(graph,initial,legacy,tasks,context,evidence,events,*,seed="auto"):
           "r3_adapter":{"schema":SCHEMA,"story_id":graph["story_id"],"seed_basis":basis,
                         "input_tier":graph["input_tier"],"anchor_bindings":anchor_bindings,
                         "missing_node_ids":[m["node"]["node_id"] for m in missing]}}
+    check(len(json.dumps({"a_story_template_context":essential},ensure_ascii=False,sort_keys=True))<9000,
+          "essential story template exceeds original P1 cap")
     return {"schema":SCHEMA,"plan":plan,"edl":rows,"anchor_bindings":anchor_bindings,
             "missing":missing,"graph":deepcopy(graph),"context_pool":deepcopy(context),
             "observation_tasks":deepcopy(tasks),"predicted_short_chains":deepcopy(evidence["chains"]),
