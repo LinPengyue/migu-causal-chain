@@ -48,8 +48,10 @@ pointing to an exact prior render-only output and a fresh out-dir:
 
 This is one run, not three independent calls. The frozen provider
 allows <=24 calls when Story-First is enabled and cost estimate <=0.10
-USD, retries=0. Formal main loop max_rounds=1; outer rounds=3 is the
-separate Story-First expansion knob. P3 keeps its original local-trim
+USD, retries=0. Formal main loop defaults to --main-rounds 3, with phase8_paid_multi_round=True
+when main rounds exceed one; outer rounds=3 is the separate Story-First
+expansion knob. P2 replay-overlap feedback can now trigger the original
+main-loop REPLAN_FROM_BEST before the first P3 trial. P3 keeps its original local-trim
 budget policy. These are caps and requested rounds, not guarantees of
 completion or final actual billing. Do not loosen limits or automatically
 rerun after partial/failed results. If budget has not been authorized,
@@ -88,3 +90,18 @@ No new general relation/phase-specific Observer routing is claimed.
 Actual R3 observation tasks beyond legacy goal coverage and existing
 Story-First source review remain a future integration question. This
 experiment tests the preserved original agent rather than new gates.
+
+## R4/R5.3c — parameter correction after 1f0b3b3
+
+Actual P2 returned NEEDS_REVISION before any vision call because the
+second window overlapped replay annotations. Native replay replacement
+retained all four events and shortened its end by 0.474s. The one-round
+main-loop cap prevented replan, not a missing FIRST_LIVE preview gate.
+Use fresh P1 generation (no historical story_first_artifacts_dir), reuse
+only the exact prepared V0, and pass --main-rounds 3 --outer-rounds 3.
+Prior total: 7 HTTP and estimated USD 0.019664. For the remaining original
+experiment budget use --max-calls 17 --max-cost-usd 0.0803. No automatic
+retry. Note: original P1 reserves 12 calls for downstream/outer stages
+when requesting three outer rounds; a 17-call cap permits up to five
+initial generator calls but does not guarantee three completed rounds.
+Report actual attempts and native stop reason. No algorithm changes.
