@@ -1,0 +1,122 @@
+{
+  "story_id": "equalization:1",
+  "video_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+  "template_context_survives_actual_p1_cap": true,
+  "p1_request_prepared": false,
+  "n_p1_pairs": 0,
+  "original_goal_issues": [
+    "goal_coverage_01_to_11",
+    "goal_coverage_11_to_21",
+    "goal_coverage_21_to_22",
+    "goal_coverage_22_to_23"
+  ],
+  "native_goal_search_targets": [
+    {
+      "issue_id": "goal_coverage_01_to_11",
+      "score_before": [
+        0,
+        1
+      ],
+      "score_after": [
+        1,
+        1
+      ],
+      "search": {
+        "kind": "missing_goal_action_evidence_search",
+        "lo": 2488.6,
+        "hi": 2660.32,
+        "insert_after_segment_id": null,
+        "before_segment_id": null,
+        "narrative_function": "investigate_missing_goal_action_not_autoinsert",
+        "role": "goal_action_probe",
+        "hints": [
+          "goal",
+          "shot",
+          "header",
+          "cross",
+          "corner",
+          "射",
+          "进球",
+          "头球"
+        ],
+        "score_confirmation_sec": 2660.82,
+        "requires_video_semantic_goal_and_first_live": true,
+        "auto_insert_authorized": false
+      },
+      "r3_goal_target": {
+        "node_id": "score:2",
+        "score_before": "0:1",
+        "score_after": "1:1",
+        "confirmation_t_sec": 2660.82,
+        "search_interval": [
+          2480.82,
+          2675.82
+        ],
+        "task_id": "observe:5"
+      }
+    }
+  ],
+  "scope_audit": {
+    "excluded_legacy_issues": [
+      {
+        "issue_id": "insufficient_media_segments",
+        "reason": "known_partial_r3_story_not_rebuild_request"
+      },
+      {
+        "issue_id": "goal_coverage_11_to_21",
+        "reason": "score_transition_outside_story_goal"
+      },
+      {
+        "issue_id": "goal_coverage_21_to_22",
+        "reason": "score_transition_outside_story_goal"
+      },
+      {
+        "issue_id": "goal_coverage_22_to_23",
+        "reason": "score_transition_outside_story_goal"
+      }
+    ],
+    "goal_targets": [
+      {
+        "node_id": "score:1",
+        "score_before": "0:0",
+        "score_after": "0:1",
+        "confirmation_t_sec": 2071.43,
+        "action_t_sec": 1979.427,
+        "event_id": "atom_fill_0037_Goal_1979427"
+      },
+      {
+        "node_id": "score:2",
+        "score_before": "0:1",
+        "score_after": "1:1",
+        "confirmation_t_sec": 2660.82,
+        "search_interval": [
+          2480.82,
+          2675.82
+        ],
+        "task_id": "observe:5"
+      }
+    ],
+    "missing_goal_tasks_without_native_issue": [],
+    "original_goal_recovery_algorithm_unchanged": true
+  },
+  "protected_story_segment_ids": [
+    "seg:1"
+  ],
+  "original_goal_segment_ids": [
+    "seg:1"
+  ],
+  "planner_protection_fixture": null,
+  "input_hashes": {
+    "artifacts/stage1_2_evidence_preflight_20261125/B_osasuna_celta/keeper_rescue/evidence.json": "a673769fe1b81f93a34f9c987302af49f8988cbf02c429ad97b1317bf7b33292",
+    "/data2/lpy1/_story_va_outputs/v3/plan2/full_e2e_B_strict_lin_20261108_095704/01_to_04_fresh_v3r/01_enrich/events_enriched.json": "c47015ccc7009c1a5869174709ce76e73454a6c6fa4b34bc3a34cd8812e19b6e",
+    "artifacts/v3r_general_r3_preflight/B/equalization__1/story_graph.json": "f072887bb676893a4359e1e2180d4ebf91e58393af62f4cb18e689b5f0072431",
+    "artifacts/v3r_general_r3_preflight/B/equalization__1/initial_edl.json": "2ce2e915b93b393304f2794bd35cdb888a30b0e5663af9643900180f3bf39e01",
+    "artifacts/v3r_general_r3_preflight/B/equalization__1/observation_tasks.json": "695c607339aa756e9e64260012f7fff914145321c6cda660572b7aa70761e838",
+    "artifacts/v3r_general_r3_preflight/B/equalization__1/context_pool.json": "335bd388c9e729766a7eea5cb17f232454de2dba8966e1b56c811270017c13a1"
+  },
+  "http_calls": 0,
+  "video_decoded": false,
+  "quality_verified": false,
+  "first_live_verified": false,
+  "release_authorized": false
+}

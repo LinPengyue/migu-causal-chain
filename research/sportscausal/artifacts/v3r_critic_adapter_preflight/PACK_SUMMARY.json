@@ -1,0 +1,320 @@
+{
+  "schema": "v3r_critic_adapter_preflight_pack_v1",
+  "code_commit": "482e083dc50c6d68ea71990e4560c4e668eabc5e",
+  "frozen_r4_r5_1": "dbc65aa",
+  "route": "original_P1_P2_P3_double_loop_verifier_unchanged_with_isolated_critic_overlay",
+  "cf397a7_single_loop_executed": false,
+  "http_calls": 0,
+  "video_decode": false,
+  "render": false,
+  "history_rerun": false,
+  "unittest": {
+    "module": "test_r3_critic_adapter",
+    "ran": 7,
+    "ok": 7
+  },
+  "overlay": {
+    "out_dir": "/tmp/sportscausal_r3_critic_overlay_20261126",
+    "original_tree_unchanged": true,
+    "verifier_and_story_first_modules_unchanged": true,
+    "patched_existing_files": [
+      "story_e2e_agent.py",
+      "story_paid_eval.py"
+    ],
+    "added_module": "r3_critic_adapter.py",
+    "paid_eval_changed_functions": [
+      "run_llm_revision_planner",
+      "run_vlm_story_critic"
+    ],
+    "original_blobs": {
+      "story_e2e_agent.py": "6c69e861507b82e9a9c766fc1d99437759472971",
+      "story_paid_eval.py": "0f86b3f625f51a8ec362e80b0f9e2c23a7a62c7b",
+      "story_first_search.py": "c083180a8b78d5f9c4966d079a2ae70178674b6a",
+      "story_first_hypotheses.py": "d97676be6fc58e81396498cdefb1c959943a1b47",
+      "story_first_revision.py": "0abb25001d5f5a063512481a27d56ebb374ba5af",
+      "story_first_video_review.py": "2eb9360e0da66b2fb8b6e64181743f656b7c56b6",
+      "story_first_p3.py": "f97e486f4515f0bcb53771b97e27073150e93726",
+      "story_first_outer.py": "95e52472f9b34c047569c9aba0bb7ab7836227ce",
+      "story_video_verifier.py": "a7d958785bc4a7ba307f71650f407ba4db41d5fd",
+      "dual_video_vision_verifier.py": "d873ea8e2495382a13a44d26b574f3b7b587fb23",
+      "story_timeline.py": "58871914da304caf3b26f750005e5be5a453e6aa"
+    },
+    "staged_blobs": {
+      "story_e2e_agent.py": "6c5755fed4d5071ccebe853e4f6eaeb6fe49fa5e",
+      "story_paid_eval.py": "236fe1aac4a3afb59dd9e5ef9b17e9d475b21e4e",
+      "story_first_search.py": "c083180a8b78d5f9c4966d079a2ae70178674b6a",
+      "story_first_hypotheses.py": "d97676be6fc58e81396498cdefb1c959943a1b47",
+      "story_first_revision.py": "0abb25001d5f5a063512481a27d56ebb374ba5af",
+      "story_first_video_review.py": "2eb9360e0da66b2fb8b6e64181743f656b7c56b6",
+      "story_first_p3.py": "f97e486f4515f0bcb53771b97e27073150e93726",
+      "story_first_outer.py": "95e52472f9b34c047569c9aba0bb7ab7836227ce",
+      "story_video_verifier.py": "a7d958785bc4a7ba307f71650f407ba4db41d5fd",
+      "dual_video_vision_verifier.py": "d873ea8e2495382a13a44d26b574f3b7b587fb23",
+      "story_timeline.py": "58871914da304caf3b26f750005e5be5a453e6aa"
+    }
+  },
+  "inputs": {
+    "A_evidence": "artifacts/stage1_2_evidence_preflight_20261125/A_uae_oman/keeper_rescue/evidence.json",
+    "B_evidence": "artifacts/stage1_2_evidence_preflight_20261125/B_osasuna_celta/keeper_rescue/evidence.json",
+    "A_events": "/data2/lpy1/_story_va_outputs/v3/plan2/full_e2e_A_strict_lin_20261108_095704/01_to_04_fresh_v3r/01_enrich/events_enriched.json",
+    "B_events": "/data2/lpy1/_story_va_outputs/v3/plan2/full_e2e_B_strict_lin_20261108_095704/01_to_04_fresh_v3r/01_enrich/events_enriched.json"
+  },
+  "input_sha256": {
+    "A_evidence": "9322933a9c3ef15a990c9377ed498e97b73cb20350bbfe279114bf2f3b4043fc",
+    "B_evidence": "a673769fe1b81f93a34f9c987302af49f8988cbf02c429ad97b1317bf7b33292",
+    "A_events": "33958b106f3daddd8830e8735f7583527b3aa3f39ca4b6a805b6b3cfe0fb0299",
+    "B_events": "c47015ccc7009c1a5869174709ce76e73454a6c6fa4b34bc3a34cd8812e19b6e",
+    "A_comeback_story": "24ee0c469c950a95d5009f9326f391a72ac48cb6e99e77533bb67689098b47b4",
+    "A_keeper_story": "9742e9395c835d478879480bc93bf11e1bece9ab2420b2696dbdd3532977251a",
+    "A_turnover_story": "8a026218d409eceb694a6a839d4440c3d0626a4bfd050cefbec8423699493c23",
+    "B_eq_story": "f072887bb676893a4359e1e2180d4ebf91e58393af62f4cb18e689b5f0072431"
+  },
+  "stories": {
+    "A_comeback": {
+      "story_id": "comeback:1",
+      "p1_request_prepared": true,
+      "n_p1_pairs": 2,
+      "template_context_survives_actual_p1_cap": true,
+      "original_goal_issues": [],
+      "native_goal_search_targets": [],
+      "scope_audit": {
+        "excluded_legacy_issues": [],
+        "goal_targets": [
+          {
+            "node_id": "score:1",
+            "score_before": "0:0",
+            "score_after": "0:1",
+            "confirmation_t_sec": 1410.43,
+            "action_t_sec": 1337.123,
+            "event_id": "atom_fill_0004_Goal_1337123"
+          },
+          {
+            "node_id": "score:2",
+            "score_before": "0:1",
+            "score_after": "1:1",
+            "confirmation_t_sec": 6535.62,
+            "action_t_sec": 6449.644,
+            "event_id": "atom_fill_0075_Goal_6449644"
+          },
+          {
+            "node_id": "score:3",
+            "score_before": "1:1",
+            "score_after": "2:1",
+            "confirmation_t_sec": 6957.12,
+            "action_t_sec": 6843.088,
+            "event_id": "atom_fill_0104_Goal_6843088"
+          }
+        ],
+        "missing_goal_tasks_without_native_issue": [],
+        "original_goal_recovery_algorithm_unchanged": true
+      },
+      "protected_story_segment_ids": [
+        "seg_equalizer_goal_action",
+        "seg_go_ahead_goal_action",
+        "seg_opponent_opening_goal_action"
+      ],
+      "original_goal_segment_ids": [
+        "seg_equalizer_goal_action",
+        "seg_go_ahead_goal_action",
+        "seg_opponent_opening_goal_action"
+      ],
+      "planner_protection_fixture": false
+    },
+    "A_keeper_rescue": {
+      "story_id": "keeper_rescue:2",
+      "p1_request_prepared": true,
+      "n_p1_pairs": 5,
+      "template_context_survives_actual_p1_cap": true,
+      "original_goal_issues": [
+        "goal_coverage_00_to_01",
+        "goal_coverage_01_to_11",
+        "goal_coverage_11_to_21"
+      ],
+      "native_goal_search_targets": [],
+      "scope_audit": {
+        "excluded_legacy_issues": [
+          {
+            "issue_id": "goal_coverage_00_to_01",
+            "reason": "score_transition_outside_story_goal"
+          },
+          {
+            "issue_id": "goal_coverage_01_to_11",
+            "reason": "score_transition_outside_story_goal"
+          },
+          {
+            "issue_id": "goal_coverage_11_to_21",
+            "reason": "score_transition_outside_story_goal"
+          }
+        ],
+        "goal_targets": [],
+        "missing_goal_tasks_without_native_issue": [],
+        "original_goal_recovery_algorithm_unchanged": true
+      },
+      "protected_story_segment_ids": [
+        "seg:1",
+        "seg:2",
+        "seg:3",
+        "seg:4",
+        "seg:5",
+        "seg:6"
+      ],
+      "original_goal_segment_ids": [],
+      "planner_protection_fixture": true
+    },
+    "A_turnover_to_goal": {
+      "story_id": "turnover_to_goal:1",
+      "p1_request_prepared": true,
+      "n_p1_pairs": 1,
+      "template_context_survives_actual_p1_cap": true,
+      "original_goal_issues": [
+        "goal_coverage_00_to_01",
+        "goal_coverage_01_to_11"
+      ],
+      "native_goal_search_targets": [],
+      "scope_audit": {
+        "excluded_legacy_issues": [
+          {
+            "issue_id": "goal_coverage_00_to_01",
+            "reason": "score_transition_outside_story_goal"
+          },
+          {
+            "issue_id": "goal_coverage_01_to_11",
+            "reason": "score_transition_outside_story_goal"
+          }
+        ],
+        "goal_targets": [
+          {
+            "node_id": "outcome",
+            "score_before": "1:1",
+            "score_after": "2:1",
+            "confirmation_t_sec": 6957.12,
+            "action_t_sec": 6843.088,
+            "event_id": "atom_fill_0104_Goal_6843088"
+          }
+        ],
+        "missing_goal_tasks_without_native_issue": [],
+        "original_goal_recovery_algorithm_unchanged": true
+      },
+      "protected_story_segment_ids": [
+        "seg:1",
+        "seg:2",
+        "seg:3",
+        "seg:4",
+        "seg:5"
+      ],
+      "original_goal_segment_ids": [
+        "seg:5"
+      ],
+      "planner_protection_fixture": true
+    },
+    "B_equalization": {
+      "story_id": "equalization:1",
+      "p1_request_prepared": false,
+      "n_p1_pairs": 0,
+      "template_context_survives_actual_p1_cap": true,
+      "original_goal_issues": [
+        "goal_coverage_01_to_11",
+        "goal_coverage_11_to_21",
+        "goal_coverage_21_to_22",
+        "goal_coverage_22_to_23"
+      ],
+      "native_goal_search_targets": [
+        {
+          "issue_id": "goal_coverage_01_to_11",
+          "score_before": [
+            0,
+            1
+          ],
+          "score_after": [
+            1,
+            1
+          ],
+          "search": {
+            "kind": "missing_goal_action_evidence_search",
+            "lo": 2488.6,
+            "hi": 2660.32,
+            "insert_after_segment_id": null,
+            "before_segment_id": null,
+            "narrative_function": "investigate_missing_goal_action_not_autoinsert",
+            "role": "goal_action_probe",
+            "hints": [
+              "goal",
+              "shot",
+              "header",
+              "cross",
+              "corner",
+              "射",
+              "进球",
+              "头球"
+            ],
+            "score_confirmation_sec": 2660.82,
+            "requires_video_semantic_goal_and_first_live": true,
+            "auto_insert_authorized": false
+          },
+          "r3_goal_target": {
+            "node_id": "score:2",
+            "score_before": "0:1",
+            "score_after": "1:1",
+            "confirmation_t_sec": 2660.82,
+            "search_interval": [
+              2480.82,
+              2675.82
+            ],
+            "task_id": "observe:5"
+          }
+        }
+      ],
+      "scope_audit": {
+        "excluded_legacy_issues": [
+          {
+            "issue_id": "insufficient_media_segments",
+            "reason": "known_partial_r3_story_not_rebuild_request"
+          },
+          {
+            "issue_id": "goal_coverage_11_to_21",
+            "reason": "score_transition_outside_story_goal"
+          },
+          {
+            "issue_id": "goal_coverage_21_to_22",
+            "reason": "score_transition_outside_story_goal"
+          },
+          {
+            "issue_id": "goal_coverage_22_to_23",
+            "reason": "score_transition_outside_story_goal"
+          }
+        ],
+        "goal_targets": [
+          {
+            "node_id": "score:1",
+            "score_before": "0:0",
+            "score_after": "0:1",
+            "confirmation_t_sec": 2071.43,
+            "action_t_sec": 1979.427,
+            "event_id": "atom_fill_0037_Goal_1979427"
+          },
+          {
+            "node_id": "score:2",
+            "score_before": "0:1",
+            "score_after": "1:1",
+            "confirmation_t_sec": 2660.82,
+            "search_interval": [
+              2480.82,
+              2675.82
+            ],
+            "task_id": "observe:5"
+          }
+        ],
+        "missing_goal_tasks_without_native_issue": [],
+        "original_goal_recovery_algorithm_unchanged": true
+      },
+      "protected_story_segment_ids": [
+        "seg:1"
+      ],
+      "original_goal_segment_ids": [
+        "seg:1"
+      ],
+      "planner_protection_fixture": false
+    }
+  },
+  "generated_at": "2026-11-26T06:20:46.680977+00:00"
+}

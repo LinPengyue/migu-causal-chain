@@ -1,0 +1,382 @@
+{
+  "schema": "v3a_story_diagnosis_v1",
+  "critic_mode": "structural_plus_file_probes",
+  "inputs": {
+    "initial_story_mp4": null,
+    "source_video": null,
+    "story_mp4_duration_sec": null,
+    "plan_role_hints": [
+      "goalkeeper_rescue",
+      "goalkeeper_rescue",
+      "goalkeeper_rescue",
+      "goalkeeper_rescue",
+      "goalkeeper_rescue",
+      "goalkeeper_rescue",
+      "goalkeeper_rescue",
+      "goalkeeper_rescue",
+      "goalkeeper_rescue",
+      "goalkeeper_rescue",
+      "goalkeeper_rescue",
+      "goalkeeper_rescue"
+    ]
+  },
+  "timeline": {
+    "schema": "v3a_story_timeline_v1",
+    "story_duration_sec": 70.53,
+    "media_duration_sec": 70.53,
+    "placeholder_duration_sec": 0.0,
+    "segment_count": 6,
+    "media_segment_count": 6,
+    "placeholder_segment_count": 0,
+    "segments": [
+      {
+        "index": 0,
+        "segment_id": "seg:1",
+        "role": "goalkeeper_rescue",
+        "beat": "goalkeeper_rescue",
+        "story_in": 0.0,
+        "story_out": 10.91,
+        "duration_sec": 10.91,
+        "media_in": 1955.54,
+        "media_out": 1966.45,
+        "has_media_window": true,
+        "is_placeholder": false,
+        "placeholder_sec": null,
+        "is_replay": false,
+        "first_live_status": "NOT_VERIFIED",
+        "shot_kind": "live"
+      },
+      {
+        "index": 1,
+        "segment_id": "seg:2",
+        "role": "goalkeeper_rescue",
+        "beat": "goalkeeper_rescue",
+        "story_in": 10.91,
+        "story_out": 23.82,
+        "duration_sec": 12.91,
+        "media_in": 3338.39,
+        "media_out": 3351.3,
+        "has_media_window": true,
+        "is_placeholder": false,
+        "placeholder_sec": null,
+        "is_replay": false,
+        "first_live_status": "NOT_VERIFIED",
+        "shot_kind": "live"
+      },
+      {
+        "index": 2,
+        "segment_id": "seg:3",
+        "role": "goalkeeper_rescue",
+        "beat": "goalkeeper_rescue",
+        "story_in": 23.82,
+        "story_out": 35.51,
+        "duration_sec": 11.69,
+        "media_in": 3504.14,
+        "media_out": 3515.83,
+        "has_media_window": true,
+        "is_placeholder": false,
+        "placeholder_sec": null,
+        "is_replay": false,
+        "first_live_status": "NOT_VERIFIED",
+        "shot_kind": "live"
+      },
+      {
+        "index": 3,
+        "segment_id": "seg:4",
+        "role": "goalkeeper_rescue",
+        "beat": "goalkeeper_rescue",
+        "story_in": 35.51,
+        "story_out": 46.07,
+        "duration_sec": 10.56,
+        "media_in": 3543.01,
+        "media_out": 3553.57,
+        "has_media_window": true,
+        "is_placeholder": false,
+        "placeholder_sec": null,
+        "is_replay": false,
+        "first_live_status": "NOT_VERIFIED",
+        "shot_kind": "live"
+      },
+      {
+        "index": 4,
+        "segment_id": "seg:5",
+        "role": "goalkeeper_rescue",
+        "beat": "goalkeeper_rescue",
+        "story_in": 46.07,
+        "story_out": 59.9,
+        "duration_sec": 13.83,
+        "media_in": 4755.79,
+        "media_out": 4769.62,
+        "has_media_window": true,
+        "is_placeholder": false,
+        "placeholder_sec": null,
+        "is_replay": false,
+        "first_live_status": "NOT_VERIFIED",
+        "shot_kind": "live"
+      },
+      {
+        "index": 5,
+        "segment_id": "seg:6",
+        "role": "goalkeeper_rescue",
+        "beat": "goalkeeper_rescue",
+        "story_in": 59.9,
+        "story_out": 70.53,
+        "duration_sec": 10.63,
+        "media_in": 6552.01,
+        "media_out": 6562.64,
+        "has_media_window": true,
+        "is_placeholder": false,
+        "placeholder_sec": null,
+        "is_replay": false,
+        "first_live_status": "NOT_VERIFIED",
+        "shot_kind": "live"
+      }
+    ],
+    "note": "story_duration_sec includes placeholder title cards using placeholder_sec (or renderer default 2.5s). Compare MP4 duration to story_duration_sec, not media_duration_sec alone."
+  },
+  "coverage": {
+    "has_title_open": false,
+    "has_opponent_opening": false,
+    "has_deficit_or_setup": false,
+    "has_equalizer": false,
+    "has_go_ahead": false,
+    "has_wrap_or_close": false,
+    "roles": [
+      "goalkeeper_rescue",
+      "goalkeeper_rescue",
+      "goalkeeper_rescue",
+      "goalkeeper_rescue",
+      "goalkeeper_rescue",
+      "goalkeeper_rescue"
+    ]
+  },
+  "protected_goal_segment_ids": [
+    "seg:1",
+    "seg:2",
+    "seg:3",
+    "seg:4",
+    "seg:5",
+    "seg:6"
+  ],
+  "issues": [
+    {
+      "issue_id": "missing_initial_story_mp4",
+      "story_time_range": [
+        0.0,
+        70.53
+      ],
+      "segment_ids": [],
+      "observation": "Initial story MP4 path missing or not a file.",
+      "narrative_problem": "Cannot perform global story understanding without the actual cut.",
+      "severity": "critical",
+      "suggested_fix": "render_or_locate_initial_story_mp4",
+      "evidence_sufficiency": "observed",
+      "category": "input_integrity"
+    },
+    {
+      "issue_id": "missing_source_video_ref",
+      "story_time_range": [
+        0.0,
+        0.0
+      ],
+      "segment_ids": [],
+      "observation": "Source match MP4 reference missing.",
+      "narrative_problem": "Cannot search for replacement footage with provenance.",
+      "severity": "critical",
+      "suggested_fix": "provide_source_mp4",
+      "evidence_sufficiency": "observed",
+      "category": "input_integrity"
+    },
+    {
+      "issue_id": "large_source_jump_seg:1_to_seg:2",
+      "story_time_range": [
+        10.41,
+        11.41
+      ],
+      "segment_ids": [
+        "seg:1",
+        "seg:2"
+      ],
+      "observation": "Adjacent cuts jump 1371.9s in source PTS (1966.45 → 3338.39) while contiguous on story timeline.",
+      "narrative_problem": "Source-time compression alone is not a story defect. Only propose an insert if video shows specific omitted causal, emotional, or game-state information necessary to understand the next beat.",
+      "severity": "info",
+      "suggested_fix": "verify_story_state_before_and_after;keep_if_coherent",
+      "evidence_sufficiency": "needs_video_verify",
+      "category": "transition",
+      "temporal_discontinuity_only": true,
+      "source_gap_sec": 1371.94,
+      "required_missing_information_evidence": "specific_unexplained_story_state_change_observed_in_both_adjacent_cuts"
+    },
+    {
+      "issue_id": "large_source_jump_seg:4_to_seg:5",
+      "story_time_range": [
+        45.57,
+        46.57
+      ],
+      "segment_ids": [
+        "seg:4",
+        "seg:5"
+      ],
+      "observation": "Adjacent cuts jump 1202.2s in source PTS (3553.57 → 4755.79) while contiguous on story timeline.",
+      "narrative_problem": "Source-time compression alone is not a story defect. Only propose an insert if video shows specific omitted causal, emotional, or game-state information necessary to understand the next beat.",
+      "severity": "info",
+      "suggested_fix": "verify_story_state_before_and_after;keep_if_coherent",
+      "evidence_sufficiency": "needs_video_verify",
+      "category": "transition",
+      "temporal_discontinuity_only": true,
+      "source_gap_sec": 1202.22,
+      "required_missing_information_evidence": "specific_unexplained_story_state_change_observed_in_both_adjacent_cuts"
+    },
+    {
+      "issue_id": "large_source_jump_seg:5_to_seg:6",
+      "story_time_range": [
+        59.4,
+        60.4
+      ],
+      "segment_ids": [
+        "seg:5",
+        "seg:6"
+      ],
+      "observation": "Adjacent cuts jump 1782.4s in source PTS (4769.62 → 6552.01) while contiguous on story timeline.",
+      "narrative_problem": "Source-time compression alone is not a story defect. Only propose an insert if video shows specific omitted causal, emotional, or game-state information necessary to understand the next beat.",
+      "severity": "info",
+      "suggested_fix": "verify_story_state_before_and_after;keep_if_coherent",
+      "evidence_sufficiency": "needs_video_verify",
+      "category": "transition",
+      "temporal_discontinuity_only": true,
+      "source_gap_sec": 1782.39,
+      "required_missing_information_evidence": "specific_unexplained_story_state_change_observed_in_both_adjacent_cuts"
+    }
+  ],
+  "notes": [],
+  "disclaimer": "Structural/file probes are not multimodal story understanding. Issues marked needs_video_verify require layered video observation before revision.",
+  "r3_story_context": {
+    "schema": "r3_agent_story_context_v1",
+    "template_id": "keeper_rescue",
+    "category": "人物故事链",
+    "subtype": "同队门将多次化险",
+    "narrative_goal": [
+      "表现同队门将反复化解威胁",
+      "挖掘比赛阶段及后续发展"
+    ],
+    "subjects": [
+      "team_2"
+    ],
+    "teams": {
+      "team_1": {
+        "name": "阿联酋",
+        "color": "白色"
+      },
+      "team_2": {
+        "name": "阿曼",
+        "color": "红色"
+      }
+    },
+    "goal_targets": [],
+    "required_nodes": [
+      {
+        "node_id": "anchor:1",
+        "type": "anchor",
+        "role": "goalkeeper_rescue",
+        "actor": "team_2",
+        "score": null,
+        "segment_ids": [
+          "seg:1"
+        ]
+      },
+      {
+        "node_id": "anchor:2",
+        "type": "anchor",
+        "role": "goalkeeper_rescue",
+        "actor": "team_2",
+        "score": null,
+        "segment_ids": [
+          "seg:2"
+        ]
+      },
+      {
+        "node_id": "anchor:3",
+        "type": "anchor",
+        "role": "goalkeeper_rescue",
+        "actor": "team_2",
+        "score": null,
+        "segment_ids": [
+          "seg:3"
+        ]
+      },
+      {
+        "node_id": "anchor:4",
+        "type": "anchor",
+        "role": "goalkeeper_rescue",
+        "actor": "team_2",
+        "score": null,
+        "segment_ids": [
+          "seg:4"
+        ]
+      },
+      {
+        "node_id": "anchor:5",
+        "type": "anchor",
+        "role": "goalkeeper_rescue",
+        "actor": "team_2",
+        "score": null,
+        "segment_ids": [
+          "seg:5"
+        ]
+      },
+      {
+        "node_id": "anchor:6",
+        "type": "anchor",
+        "role": "goalkeeper_rescue",
+        "actor": "team_2",
+        "score": null,
+        "segment_ids": [
+          "seg:6"
+        ]
+      }
+    ],
+    "chain_ids": [
+      "pred_0015",
+      "pred_0016",
+      "pred_0030",
+      "pred_0031",
+      "pred_0032",
+      "pred_0033",
+      "pred_0042",
+      "pred_0043",
+      "pred_0063",
+      "pred_0065"
+    ],
+    "observation_task_ids": [
+      "observe:r2bc:threat_phase_change:1"
+    ],
+    "causal_relations_are_hypotheses": true
+  },
+  "protected_story_segment_ids": [
+    "seg:1",
+    "seg:2",
+    "seg:3",
+    "seg:4",
+    "seg:5",
+    "seg:6"
+  ],
+  "r3_scope_audit": {
+    "excluded_legacy_issues": [
+      {
+        "issue_id": "goal_coverage_00_to_01",
+        "reason": "score_transition_outside_story_goal"
+      },
+      {
+        "issue_id": "goal_coverage_01_to_11",
+        "reason": "score_transition_outside_story_goal"
+      },
+      {
+        "issue_id": "goal_coverage_11_to_21",
+        "reason": "score_transition_outside_story_goal"
+      }
+    ],
+    "goal_targets": [],
+    "missing_goal_tasks_without_native_issue": [],
+    "original_goal_recovery_algorithm_unchanged": true
+  }
+}

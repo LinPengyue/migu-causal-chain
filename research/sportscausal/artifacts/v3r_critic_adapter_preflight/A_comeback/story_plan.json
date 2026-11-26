@@ -1,0 +1,897 @@
+{
+  "a_story_template_context": {
+    "schema": "r3_agent_story_context_v1",
+    "template_id": "comeback",
+    "category": "战局故事链",
+    "subtype": "逆风翻盘",
+    "narrative_goal": [
+      "表现从落后、追平到反超的战局变化",
+      "后续用首次直播动作及情节支撑故事"
+    ],
+    "subjects": [
+      "team_1"
+    ],
+    "teams": {
+      "team_1": {
+        "name": "阿联酋",
+        "color": "白色"
+      },
+      "team_2": {
+        "name": "阿曼",
+        "color": "红色"
+      }
+    }
+  },
+  "agent_story_context": {
+    "schema": "r3_agent_story_context_v1",
+    "template_id": "comeback",
+    "category": "战局故事链",
+    "subtype": "逆风翻盘",
+    "narrative_goal": [
+      "表现从落后、追平到反超的战局变化",
+      "后续用首次直播动作及情节支撑故事"
+    ],
+    "subjects": [
+      "team_1"
+    ],
+    "teams": {
+      "team_1": {
+        "name": "阿联酋",
+        "color": "白色"
+      },
+      "team_2": {
+        "name": "阿曼",
+        "color": "红色"
+      }
+    },
+    "goal_targets": [
+      {
+        "node_id": "score:1",
+        "score_before": "0:0",
+        "score_after": "0:1",
+        "confirmation_t_sec": 1410.43,
+        "action_t_sec": 1337.123,
+        "event_id": "atom_fill_0004_Goal_1337123"
+      },
+      {
+        "node_id": "score:2",
+        "score_before": "0:1",
+        "score_after": "1:1",
+        "confirmation_t_sec": 6535.62,
+        "action_t_sec": 6449.644,
+        "event_id": "atom_fill_0075_Goal_6449644"
+      },
+      {
+        "node_id": "score:3",
+        "score_before": "1:1",
+        "score_after": "2:1",
+        "confirmation_t_sec": 6957.12,
+        "action_t_sec": 6843.088,
+        "event_id": "atom_fill_0104_Goal_6843088"
+      }
+    ],
+    "required_nodes": [
+      {
+        "node_id": "score:1",
+        "type": "anchor",
+        "role": "opponent_opening_goal_action",
+        "actor": "team_1",
+        "score": "0:1",
+        "segment_ids": [
+          "seg_opponent_opening_goal_action"
+        ]
+      },
+      {
+        "node_id": "score:2",
+        "type": "anchor",
+        "role": "equalizer_goal_action",
+        "actor": "team_1",
+        "score": "1:1",
+        "segment_ids": [
+          "seg_equalizer_goal_action"
+        ]
+      },
+      {
+        "node_id": "score:3",
+        "type": "anchor",
+        "role": "go_ahead_goal_action",
+        "actor": "team_1",
+        "score": "2:1",
+        "segment_ids": [
+          "seg_go_ahead_goal_action"
+        ]
+      }
+    ],
+    "chain_ids": [],
+    "observation_task_ids": [
+      "observe:1",
+      "observe:2",
+      "observe:3",
+      "observe:4",
+      "observe:5",
+      "observe:6",
+      "observe:r2bc:turnover_to_goal:1",
+      "observe:r2bc:threat_phase_change:1"
+    ],
+    "causal_relations_are_hypotheses": true
+  },
+  "schema_version": "r3_legacy_agent_input_v1",
+  "algorithm": "R3",
+  "template_id": "comeback",
+  "template_name": "逆风翻盘",
+  "template": {
+    "category": "战局故事链",
+    "subtype": "逆风翻盘",
+    "narrative_goal": [
+      "表现从落后、追平到反超的战局变化",
+      "后续用首次直播动作及情节支撑故事"
+    ],
+    "subjects": [
+      "team_1"
+    ],
+    "narrative_edges": [
+      {
+        "from": "score:1",
+        "to": "score:2",
+        "edge_type": "confirmed_score_state_transition",
+        "relation": "confirmed_score_state_transition",
+        "causal_verified": false
+      },
+      {
+        "from": "score:2",
+        "to": "score:3",
+        "edge_type": "confirmed_score_state_transition",
+        "relation": "confirmed_score_state_transition",
+        "causal_verified": false
+      }
+    ]
+  },
+  "title": "逆风翻盘",
+  "match_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+  "protagonist": {
+    "side": "left",
+    "team_name": "阿联酋",
+    "teams": {
+      "left": "阿联酋",
+      "right": "阿曼"
+    }
+  },
+  "beats": [
+    {
+      "node_id": "score:1",
+      "node_type": "anchor",
+      "kind": "score_state",
+      "actor": "team_1",
+      "actor_role": "state_subject",
+      "required": true,
+      "score": "0:1",
+      "state_sign": -1,
+      "score_beneficiary": "team_2",
+      "event_ids": [
+        "atom_fill_0003_Shot_1335974",
+        "atom_fill_0004_Goal_1337123"
+      ],
+      "media_windows": [
+        [
+          1335.974,
+          1339.123
+        ]
+      ],
+      "action_time_interval": [
+        1337.123,
+        1337.123
+      ],
+      "observation_task_ids": [
+        "observe:1"
+      ],
+      "localization_status": "localized_annotation_candidate",
+      "role": "opponent_opening_goal_action"
+    },
+    {
+      "node_id": "score:2",
+      "node_type": "anchor",
+      "kind": "score_state",
+      "actor": "team_1",
+      "actor_role": "state_subject",
+      "required": true,
+      "score": "1:1",
+      "state_sign": 0,
+      "score_beneficiary": "team_1",
+      "event_ids": [
+        "atom_fill_0074_Shot_6448924",
+        "atom_fill_0075_Goal_6449644"
+      ],
+      "media_windows": [
+        [
+          6448.924,
+          6451.644
+        ]
+      ],
+      "action_time_interval": [
+        6449.644,
+        6449.644
+      ],
+      "observation_task_ids": [
+        "observe:2"
+      ],
+      "localization_status": "localized_annotation_candidate",
+      "role": "equalizer_goal_action"
+    },
+    {
+      "node_id": "score:3",
+      "node_type": "anchor",
+      "kind": "score_state",
+      "actor": "team_1",
+      "actor_role": "state_subject",
+      "required": true,
+      "score": "2:1",
+      "state_sign": 1,
+      "score_beneficiary": "team_1",
+      "event_ids": [
+        "atom_fill_0103_Shot_6841456",
+        "atom_fill_0104_Goal_6843088"
+      ],
+      "media_windows": [
+        [
+          6841.456,
+          6845.088
+        ]
+      ],
+      "action_time_interval": [
+        6843.088,
+        6843.088
+      ],
+      "observation_task_ids": [
+        "observe:3"
+      ],
+      "localization_status": "localized_annotation_candidate",
+      "role": "go_ahead_goal_action"
+    }
+  ],
+  "story_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "missing_evidence": [],
+  "segments": [
+    {
+      "edl_index": 1,
+      "segment_id": "seg_opponent_opening_goal_action",
+      "beat": "铺垫",
+      "role": "opponent_opening_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "media_in": 1325.123,
+      "media_out": 1347.123,
+      "time_status": "linked_event_ms",
+      "time_provenance": {
+        "source": "linked_live_goal_event",
+        "t_sec": 1337.123,
+        "score_anchor_t_sec": 1410.43,
+        "pipeline_verified": false,
+        "granted_by": null
+      },
+      "event_ids": [
+        "atom_fill_0000_Throw_in_1327559",
+        "atom_fill_0001_Pass_1329476",
+        "atom_fill_0002_Pass_1331566",
+        "atom_fill_0003_Shot_1335974",
+        "atom_fill_0004_Goal_1337123"
+      ],
+      "frame_ids": [],
+      "linked_live_event_id": null,
+      "narrative_order": 1,
+      "source_media_order": 1325.123,
+      "render_eligibility": "candidate_only",
+      "blocking_reasons": [
+        "awaiting_internal_media_verification"
+      ],
+      "confidence": 0.593,
+      "selection_reason": "opponent_opening_goal_near_behind_scoreboard",
+      "narration": "率先失球动作 causal:pred_0007:atom_fill_0004_Goal_1337123 @ 1337.123s（相对 0:1 记分牌 Δ=-73.307s；非记分牌时间）。",
+      "include_in_cut": true,
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "story_node_ids": [
+        "score:1"
+      ],
+      "required_story_node_ids": [
+        "score:1"
+      ],
+      "story_anchor": true,
+      "preview_only": true,
+      "first_live_verified": false,
+      "first_live_status": "NOT_VERIFIED",
+      "verification_status": "draft",
+      "adapter_seed_basis": "legacy_action_candidates",
+      "legacy_event_ids": [
+        "causal:pred_0007:atom_fill_0004_Goal_1337123"
+      ]
+    },
+    {
+      "edl_index": 2,
+      "segment_id": "seg_buildup_event_000472",
+      "beat": "蓄力",
+      "role": "buildup_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "media_in": 4706.45,
+      "media_out": 4718.45,
+      "time_status": "event_ms",
+      "time_provenance": {
+        "source": "event_ms",
+        "t_sec": 4710.45,
+        "pipeline_verified": false
+      },
+      "event_ids": [
+        "event_000472"
+      ],
+      "frame_ids": [],
+      "linked_live_event_id": null,
+      "narrative_order": 2,
+      "source_media_order": 4706.45,
+      "render_eligibility": "candidate_only",
+      "blocking_reasons": [
+        "unverified_event_ms"
+      ],
+      "confidence": 0.55,
+      "selection_reason": "live_buildup_between_behind_and_equalizer",
+      "narration": "蓄力动作 射门（live，event_ms 未校准成片）。",
+      "include_in_cut": true,
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "story_node_ids": [],
+      "required_story_node_ids": [],
+      "story_anchor": false,
+      "preview_only": true,
+      "first_live_verified": false,
+      "first_live_status": "NOT_VERIFIED",
+      "verification_status": "draft",
+      "adapter_seed_basis": "legacy_action_candidates",
+      "legacy_event_ids": [
+        "event_000472"
+      ]
+    },
+    {
+      "edl_index": 3,
+      "segment_id": "seg_equalizer_goal_action",
+      "beat": "转折",
+      "role": "equalizer_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "media_in": 6436.924,
+      "media_out": 6458.924,
+      "time_status": "linked_event_ms",
+      "time_provenance": {
+        "source": "linked_live_goal_event",
+        "t_sec": 6448.924,
+        "score_anchor_t_sec": 6535.62,
+        "pipeline_verified": false,
+        "granted_by": null
+      },
+      "event_ids": [
+        "atom_fill_0071_Pass_6442874",
+        "atom_fill_0072_Pass_6444487",
+        "atom_fill_0073_Assist_6447042",
+        "atom_fill_0074_Shot_6448924",
+        "atom_fill_0075_Goal_6449644"
+      ],
+      "frame_ids": [],
+      "linked_live_event_id": null,
+      "narrative_order": 3,
+      "source_media_order": 6436.924,
+      "render_eligibility": "candidate_only",
+      "blocking_reasons": [
+        "awaiting_internal_media_verification"
+      ],
+      "confidence": 0.518,
+      "selection_reason": "live_goal_near_scoreboard_anchor",
+      "narration": "equalizer 进球动作候选 v3_goal_goalcand_01_01_to_11 @ 6448.924s（相对记分牌 Δ=-86.696s）。",
+      "include_in_cut": true,
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "story_node_ids": [
+        "score:2"
+      ],
+      "required_story_node_ids": [
+        "score:2"
+      ],
+      "story_anchor": true,
+      "preview_only": true,
+      "first_live_verified": false,
+      "first_live_status": "NOT_VERIFIED",
+      "verification_status": "draft",
+      "adapter_seed_basis": "legacy_action_candidates",
+      "legacy_event_ids": [
+        "v3_goal_goalcand_01_01_to_11"
+      ]
+    },
+    {
+      "edl_index": 4,
+      "segment_id": "seg_go_ahead_goal_action",
+      "beat": "高潮",
+      "role": "go_ahead_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "media_in": 6829.456,
+      "media_out": 6851.456,
+      "time_status": "linked_event_ms",
+      "time_provenance": {
+        "source": "linked_live_goal_event",
+        "t_sec": 6841.456,
+        "score_anchor_t_sec": 6957.12,
+        "pipeline_verified": false,
+        "granted_by": null
+      },
+      "event_ids": [
+        "atom_fill_0101_Win_an_aerial_duel_6831837",
+        "atom_fill_0102_Assist_6836608",
+        "atom_fill_0103_Shot_6841456",
+        "atom_fill_0104_Goal_6843088"
+      ],
+      "frame_ids": [],
+      "linked_live_event_id": null,
+      "narrative_order": 4,
+      "source_media_order": 6829.456,
+      "render_eligibility": "candidate_only",
+      "blocking_reasons": [
+        "awaiting_internal_media_verification"
+      ],
+      "confidence": 0.357,
+      "selection_reason": "live_goal_near_scoreboard_anchor",
+      "narration": "go_ahead 进球动作候选 v3_goal_goalcand_02_11_to_21 @ 6841.456s（相对记分牌 Δ=-115.664s）。",
+      "include_in_cut": true,
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "story_node_ids": [
+        "score:3"
+      ],
+      "required_story_node_ids": [
+        "score:3"
+      ],
+      "story_anchor": true,
+      "preview_only": true,
+      "first_live_verified": false,
+      "first_live_status": "NOT_VERIFIED",
+      "verification_status": "draft",
+      "adapter_seed_basis": "legacy_action_candidates",
+      "legacy_event_ids": [
+        "v3_goal_goalcand_02_11_to_21"
+      ]
+    }
+  ],
+  "edl": [
+    {
+      "edl_index": 1,
+      "segment_id": "seg_opponent_opening_goal_action",
+      "beat": "铺垫",
+      "role": "opponent_opening_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "media_in": 1325.123,
+      "media_out": 1347.123,
+      "time_status": "linked_event_ms",
+      "time_provenance": {
+        "source": "linked_live_goal_event",
+        "t_sec": 1337.123,
+        "score_anchor_t_sec": 1410.43,
+        "pipeline_verified": false,
+        "granted_by": null
+      },
+      "event_ids": [
+        "atom_fill_0000_Throw_in_1327559",
+        "atom_fill_0001_Pass_1329476",
+        "atom_fill_0002_Pass_1331566",
+        "atom_fill_0003_Shot_1335974",
+        "atom_fill_0004_Goal_1337123"
+      ],
+      "frame_ids": [],
+      "linked_live_event_id": null,
+      "narrative_order": 1,
+      "source_media_order": 1325.123,
+      "render_eligibility": "candidate_only",
+      "blocking_reasons": [
+        "awaiting_internal_media_verification"
+      ],
+      "confidence": 0.593,
+      "selection_reason": "opponent_opening_goal_near_behind_scoreboard",
+      "narration": "率先失球动作 causal:pred_0007:atom_fill_0004_Goal_1337123 @ 1337.123s（相对 0:1 记分牌 Δ=-73.307s；非记分牌时间）。",
+      "include_in_cut": true,
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "story_node_ids": [
+        "score:1"
+      ],
+      "required_story_node_ids": [
+        "score:1"
+      ],
+      "story_anchor": true,
+      "preview_only": true,
+      "first_live_verified": false,
+      "first_live_status": "NOT_VERIFIED",
+      "verification_status": "draft",
+      "adapter_seed_basis": "legacy_action_candidates",
+      "legacy_event_ids": [
+        "causal:pred_0007:atom_fill_0004_Goal_1337123"
+      ]
+    },
+    {
+      "edl_index": 2,
+      "segment_id": "seg_buildup_event_000472",
+      "beat": "蓄力",
+      "role": "buildup_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "media_in": 4706.45,
+      "media_out": 4718.45,
+      "time_status": "event_ms",
+      "time_provenance": {
+        "source": "event_ms",
+        "t_sec": 4710.45,
+        "pipeline_verified": false
+      },
+      "event_ids": [
+        "event_000472"
+      ],
+      "frame_ids": [],
+      "linked_live_event_id": null,
+      "narrative_order": 2,
+      "source_media_order": 4706.45,
+      "render_eligibility": "candidate_only",
+      "blocking_reasons": [
+        "unverified_event_ms"
+      ],
+      "confidence": 0.55,
+      "selection_reason": "live_buildup_between_behind_and_equalizer",
+      "narration": "蓄力动作 射门（live，event_ms 未校准成片）。",
+      "include_in_cut": true,
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "story_node_ids": [],
+      "required_story_node_ids": [],
+      "story_anchor": false,
+      "preview_only": true,
+      "first_live_verified": false,
+      "first_live_status": "NOT_VERIFIED",
+      "verification_status": "draft",
+      "adapter_seed_basis": "legacy_action_candidates",
+      "legacy_event_ids": [
+        "event_000472"
+      ]
+    },
+    {
+      "edl_index": 3,
+      "segment_id": "seg_equalizer_goal_action",
+      "beat": "转折",
+      "role": "equalizer_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "media_in": 6436.924,
+      "media_out": 6458.924,
+      "time_status": "linked_event_ms",
+      "time_provenance": {
+        "source": "linked_live_goal_event",
+        "t_sec": 6448.924,
+        "score_anchor_t_sec": 6535.62,
+        "pipeline_verified": false,
+        "granted_by": null
+      },
+      "event_ids": [
+        "atom_fill_0071_Pass_6442874",
+        "atom_fill_0072_Pass_6444487",
+        "atom_fill_0073_Assist_6447042",
+        "atom_fill_0074_Shot_6448924",
+        "atom_fill_0075_Goal_6449644"
+      ],
+      "frame_ids": [],
+      "linked_live_event_id": null,
+      "narrative_order": 3,
+      "source_media_order": 6436.924,
+      "render_eligibility": "candidate_only",
+      "blocking_reasons": [
+        "awaiting_internal_media_verification"
+      ],
+      "confidence": 0.518,
+      "selection_reason": "live_goal_near_scoreboard_anchor",
+      "narration": "equalizer 进球动作候选 v3_goal_goalcand_01_01_to_11 @ 6448.924s（相对记分牌 Δ=-86.696s）。",
+      "include_in_cut": true,
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "story_node_ids": [
+        "score:2"
+      ],
+      "required_story_node_ids": [
+        "score:2"
+      ],
+      "story_anchor": true,
+      "preview_only": true,
+      "first_live_verified": false,
+      "first_live_status": "NOT_VERIFIED",
+      "verification_status": "draft",
+      "adapter_seed_basis": "legacy_action_candidates",
+      "legacy_event_ids": [
+        "v3_goal_goalcand_01_01_to_11"
+      ]
+    },
+    {
+      "edl_index": 4,
+      "segment_id": "seg_go_ahead_goal_action",
+      "beat": "高潮",
+      "role": "go_ahead_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "media_in": 6829.456,
+      "media_out": 6851.456,
+      "time_status": "linked_event_ms",
+      "time_provenance": {
+        "source": "linked_live_goal_event",
+        "t_sec": 6841.456,
+        "score_anchor_t_sec": 6957.12,
+        "pipeline_verified": false,
+        "granted_by": null
+      },
+      "event_ids": [
+        "atom_fill_0101_Win_an_aerial_duel_6831837",
+        "atom_fill_0102_Assist_6836608",
+        "atom_fill_0103_Shot_6841456",
+        "atom_fill_0104_Goal_6843088"
+      ],
+      "frame_ids": [],
+      "linked_live_event_id": null,
+      "narrative_order": 4,
+      "source_media_order": 6829.456,
+      "render_eligibility": "candidate_only",
+      "blocking_reasons": [
+        "awaiting_internal_media_verification"
+      ],
+      "confidence": 0.357,
+      "selection_reason": "live_goal_near_scoreboard_anchor",
+      "narration": "go_ahead 进球动作候选 v3_goal_goalcand_02_11_to_21 @ 6841.456s（相对记分牌 Δ=-115.664s）。",
+      "include_in_cut": true,
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "story_node_ids": [
+        "score:3"
+      ],
+      "required_story_node_ids": [
+        "score:3"
+      ],
+      "story_anchor": true,
+      "preview_only": true,
+      "first_live_verified": false,
+      "first_live_status": "NOT_VERIFIED",
+      "verification_status": "draft",
+      "adapter_seed_basis": "legacy_action_candidates",
+      "legacy_event_ids": [
+        "v3_goal_goalcand_02_11_to_21"
+      ]
+    }
+  ],
+  "candidate_edl": [
+    {
+      "edl_index": 1,
+      "segment_id": "seg_opponent_opening_goal_action",
+      "beat": "铺垫",
+      "role": "opponent_opening_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "media_in": 1325.123,
+      "media_out": 1347.123,
+      "time_status": "linked_event_ms",
+      "time_provenance": {
+        "source": "linked_live_goal_event",
+        "t_sec": 1337.123,
+        "score_anchor_t_sec": 1410.43,
+        "pipeline_verified": false,
+        "granted_by": null
+      },
+      "event_ids": [
+        "atom_fill_0000_Throw_in_1327559",
+        "atom_fill_0001_Pass_1329476",
+        "atom_fill_0002_Pass_1331566",
+        "atom_fill_0003_Shot_1335974",
+        "atom_fill_0004_Goal_1337123"
+      ],
+      "frame_ids": [],
+      "linked_live_event_id": null,
+      "narrative_order": 1,
+      "source_media_order": 1325.123,
+      "render_eligibility": "candidate_only",
+      "blocking_reasons": [
+        "awaiting_internal_media_verification"
+      ],
+      "confidence": 0.593,
+      "selection_reason": "opponent_opening_goal_near_behind_scoreboard",
+      "narration": "率先失球动作 causal:pred_0007:atom_fill_0004_Goal_1337123 @ 1337.123s（相对 0:1 记分牌 Δ=-73.307s；非记分牌时间）。",
+      "include_in_cut": true,
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "story_node_ids": [
+        "score:1"
+      ],
+      "required_story_node_ids": [
+        "score:1"
+      ],
+      "story_anchor": true,
+      "preview_only": true,
+      "first_live_verified": false,
+      "first_live_status": "NOT_VERIFIED",
+      "verification_status": "draft",
+      "adapter_seed_basis": "legacy_action_candidates",
+      "legacy_event_ids": [
+        "causal:pred_0007:atom_fill_0004_Goal_1337123"
+      ]
+    },
+    {
+      "edl_index": 2,
+      "segment_id": "seg_buildup_event_000472",
+      "beat": "蓄力",
+      "role": "buildup_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "media_in": 4706.45,
+      "media_out": 4718.45,
+      "time_status": "event_ms",
+      "time_provenance": {
+        "source": "event_ms",
+        "t_sec": 4710.45,
+        "pipeline_verified": false
+      },
+      "event_ids": [
+        "event_000472"
+      ],
+      "frame_ids": [],
+      "linked_live_event_id": null,
+      "narrative_order": 2,
+      "source_media_order": 4706.45,
+      "render_eligibility": "candidate_only",
+      "blocking_reasons": [
+        "unverified_event_ms"
+      ],
+      "confidence": 0.55,
+      "selection_reason": "live_buildup_between_behind_and_equalizer",
+      "narration": "蓄力动作 射门（live，event_ms 未校准成片）。",
+      "include_in_cut": true,
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "story_node_ids": [],
+      "required_story_node_ids": [],
+      "story_anchor": false,
+      "preview_only": true,
+      "first_live_verified": false,
+      "first_live_status": "NOT_VERIFIED",
+      "verification_status": "draft",
+      "adapter_seed_basis": "legacy_action_candidates",
+      "legacy_event_ids": [
+        "event_000472"
+      ]
+    },
+    {
+      "edl_index": 3,
+      "segment_id": "seg_equalizer_goal_action",
+      "beat": "转折",
+      "role": "equalizer_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "media_in": 6436.924,
+      "media_out": 6458.924,
+      "time_status": "linked_event_ms",
+      "time_provenance": {
+        "source": "linked_live_goal_event",
+        "t_sec": 6448.924,
+        "score_anchor_t_sec": 6535.62,
+        "pipeline_verified": false,
+        "granted_by": null
+      },
+      "event_ids": [
+        "atom_fill_0071_Pass_6442874",
+        "atom_fill_0072_Pass_6444487",
+        "atom_fill_0073_Assist_6447042",
+        "atom_fill_0074_Shot_6448924",
+        "atom_fill_0075_Goal_6449644"
+      ],
+      "frame_ids": [],
+      "linked_live_event_id": null,
+      "narrative_order": 3,
+      "source_media_order": 6436.924,
+      "render_eligibility": "candidate_only",
+      "blocking_reasons": [
+        "awaiting_internal_media_verification"
+      ],
+      "confidence": 0.518,
+      "selection_reason": "live_goal_near_scoreboard_anchor",
+      "narration": "equalizer 进球动作候选 v3_goal_goalcand_01_01_to_11 @ 6448.924s（相对记分牌 Δ=-86.696s）。",
+      "include_in_cut": true,
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "story_node_ids": [
+        "score:2"
+      ],
+      "required_story_node_ids": [
+        "score:2"
+      ],
+      "story_anchor": true,
+      "preview_only": true,
+      "first_live_verified": false,
+      "first_live_status": "NOT_VERIFIED",
+      "verification_status": "draft",
+      "adapter_seed_basis": "legacy_action_candidates",
+      "legacy_event_ids": [
+        "v3_goal_goalcand_01_01_to_11"
+      ]
+    },
+    {
+      "edl_index": 4,
+      "segment_id": "seg_go_ahead_goal_action",
+      "beat": "高潮",
+      "role": "go_ahead_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "media_in": 6829.456,
+      "media_out": 6851.456,
+      "time_status": "linked_event_ms",
+      "time_provenance": {
+        "source": "linked_live_goal_event",
+        "t_sec": 6841.456,
+        "score_anchor_t_sec": 6957.12,
+        "pipeline_verified": false,
+        "granted_by": null
+      },
+      "event_ids": [
+        "atom_fill_0101_Win_an_aerial_duel_6831837",
+        "atom_fill_0102_Assist_6836608",
+        "atom_fill_0103_Shot_6841456",
+        "atom_fill_0104_Goal_6843088"
+      ],
+      "frame_ids": [],
+      "linked_live_event_id": null,
+      "narrative_order": 4,
+      "source_media_order": 6829.456,
+      "render_eligibility": "candidate_only",
+      "blocking_reasons": [
+        "awaiting_internal_media_verification"
+      ],
+      "confidence": 0.357,
+      "selection_reason": "live_goal_near_scoreboard_anchor",
+      "narration": "go_ahead 进球动作候选 v3_goal_goalcand_02_11_to_21 @ 6841.456s（相对记分牌 Δ=-115.664s）。",
+      "include_in_cut": true,
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "story_node_ids": [
+        "score:3"
+      ],
+      "required_story_node_ids": [
+        "score:3"
+      ],
+      "story_anchor": true,
+      "preview_only": true,
+      "first_live_verified": false,
+      "first_live_status": "NOT_VERIFIED",
+      "verification_status": "draft",
+      "adapter_seed_basis": "legacy_action_candidates",
+      "legacy_event_ids": [
+        "v3_goal_goalcand_02_11_to_21"
+      ]
+    }
+  ],
+  "render_ready_edl": [],
+  "render_ready": false,
+  "first_live_verified": false,
+  "release_authorized": false,
+  "verification_status": "not_render_ready",
+  "r3_adapter": {
+    "schema": "sportscausal_r3_legacy_adapter_v1",
+    "story_id": "comeback:1",
+    "seed_basis": "legacy_action_candidates",
+    "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+    "anchor_bindings": [
+      {
+        "node_id": "score:1",
+        "segment_id": "seg_opponent_opening_goal_action",
+        "all_segment_ids": [
+          "seg_opponent_opening_goal_action"
+        ]
+      },
+      {
+        "node_id": "score:2",
+        "segment_id": "seg_equalizer_goal_action",
+        "all_segment_ids": [
+          "seg_equalizer_goal_action"
+        ]
+      },
+      {
+        "node_id": "score:3",
+        "segment_id": "seg_go_ahead_goal_action",
+        "all_segment_ids": [
+          "seg_go_ahead_goal_action"
+        ]
+      }
+    ],
+    "missing_node_ids": []
+  }
+}

@@ -1,0 +1,263 @@
+{
+  "schema": "v3a_story_diagnosis_v1",
+  "critic_mode": "structural_plus_file_probes",
+  "inputs": {
+    "initial_story_mp4": null,
+    "source_video": null,
+    "story_mp4_duration_sec": null,
+    "plan_role_hints": [
+      "opponent_opening_goal_action",
+      "opponent_opening_goal_action",
+      "equalizer_goal_action"
+    ]
+  },
+  "timeline": {
+    "schema": "v3a_story_timeline_v1",
+    "story_duration_sec": 3.84,
+    "media_duration_sec": 3.84,
+    "placeholder_duration_sec": 0.0,
+    "segment_count": 1,
+    "media_segment_count": 1,
+    "placeholder_segment_count": 0,
+    "segments": [
+      {
+        "index": 0,
+        "segment_id": "seg:1",
+        "role": "opponent_opening_goal_action",
+        "beat": "opponent_opening_goal_action",
+        "story_in": 0.0,
+        "story_out": 3.84,
+        "duration_sec": 3.84,
+        "media_in": 1977.587,
+        "media_out": 1981.427,
+        "has_media_window": true,
+        "is_placeholder": false,
+        "placeholder_sec": null,
+        "is_replay": false,
+        "first_live_status": "NOT_VERIFIED",
+        "shot_kind": "live"
+      }
+    ],
+    "note": "story_duration_sec includes placeholder title cards using placeholder_sec (or renderer default 2.5s). Compare MP4 duration to story_duration_sec, not media_duration_sec alone."
+  },
+  "coverage": {
+    "has_title_open": false,
+    "has_opponent_opening": true,
+    "has_deficit_or_setup": false,
+    "has_equalizer": false,
+    "has_go_ahead": false,
+    "has_wrap_or_close": false,
+    "roles": [
+      "opponent_opening_goal_action"
+    ]
+  },
+  "protected_goal_segment_ids": [
+    "seg:1"
+  ],
+  "issues": [
+    {
+      "issue_id": "missing_initial_story_mp4",
+      "story_time_range": [
+        0.0,
+        3.84
+      ],
+      "segment_ids": [],
+      "observation": "Initial story MP4 path missing or not a file.",
+      "narrative_problem": "Cannot perform global story understanding without the actual cut.",
+      "severity": "critical",
+      "suggested_fix": "render_or_locate_initial_story_mp4",
+      "evidence_sufficiency": "observed",
+      "category": "input_integrity"
+    },
+    {
+      "issue_id": "missing_source_video_ref",
+      "story_time_range": [
+        0.0,
+        0.0
+      ],
+      "segment_ids": [],
+      "observation": "Source match MP4 reference missing.",
+      "narrative_problem": "Cannot search for replacement footage with provenance.",
+      "severity": "critical",
+      "suggested_fix": "provide_source_mp4",
+      "evidence_sufficiency": "observed",
+      "category": "input_integrity"
+    },
+    {
+      "issue_id": "goal_coverage_01_to_11",
+      "story_time_range": [
+        0.8399999999999999,
+        3.84
+      ],
+      "segment_ids": [
+        "seg:1"
+      ],
+      "observation": "Observed broadcast score transition (0, 1) -> (1, 1) at score-confirmation PTS 2660.820s, but no distinct active non-replay goal_action cut covers the bounded preceding scoreboard-lag interval.",
+      "narrative_problem": "A game-state change may be missing its on-ball action in the edited story. Locate and verify original first-live source footage before proposing an EDL insertion.",
+      "severity": "major",
+      "suggested_fix": "source_goal_action_search_then_video_verify",
+      "evidence_sufficiency": "needs_video_verify",
+      "category": "goal_coverage",
+      "diagnosis_status": "HYPOTHESIS_NEEDS_VIDEO",
+      "story_defect_confirmed": false,
+      "score_before": [
+        0,
+        1
+      ],
+      "score_after": [
+        1,
+        1
+      ],
+      "score_confirmation_sec": 2660.82,
+      "score_confirmation_carrier_event_id": "event_000382",
+      "source_search_interval": {
+        "media_in": 2488.6,
+        "media_out": 2660.32,
+        "source": "last_old_score_observation_with_30s_lag_pad",
+        "note": "Source search prior only, not the goal timestamp."
+      },
+      "possible_action_interval": {
+        "media_in": 2480.82,
+        "media_out": 2660.32,
+        "source": "score_recognition_bounded_180s_not_goal_action"
+      },
+      "score_transition_source": "raw_or_permitted_enriched_event_scoreboard",
+      "action_timestamp_known": false,
+      "first_live_verified": false,
+      "auto_insert_authorized": false,
+      "board_confirmation_is_not_action": true,
+      "r3_goal_target": {
+        "node_id": "score:2",
+        "score_before": "0:1",
+        "score_after": "1:1",
+        "confirmation_t_sec": 2660.82,
+        "search_interval": [
+          2480.82,
+          2675.82
+        ],
+        "task_id": "observe:5"
+      }
+    }
+  ],
+  "notes": [],
+  "disclaimer": "Structural/file probes are not multimodal story understanding. Issues marked needs_video_verify require layered video observation before revision.",
+  "r3_story_context": {
+    "schema": "r3_agent_story_context_v1",
+    "template_id": "equalization",
+    "category": "战局故事链",
+    "subtype": "落后追平",
+    "narrative_goal": [
+      "落后到追平的阶段性战局变化"
+    ],
+    "subjects": [
+      "team_1"
+    ],
+    "teams": {
+      "team_1": {
+        "name": "奥萨苏纳",
+        "color": "红色"
+      },
+      "team_2": {
+        "name": "塞尔塔维戈",
+        "color": "蓝色"
+      }
+    },
+    "goal_targets": [
+      {
+        "node_id": "score:1",
+        "score_before": "0:0",
+        "score_after": "0:1",
+        "confirmation_t_sec": 2071.43,
+        "action_t_sec": 1979.427,
+        "event_id": "atom_fill_0037_Goal_1979427"
+      },
+      {
+        "node_id": "score:2",
+        "score_before": "0:1",
+        "score_after": "1:1",
+        "confirmation_t_sec": 2660.82,
+        "search_interval": [
+          2480.82,
+          2675.82
+        ],
+        "task_id": "observe:5"
+      }
+    ],
+    "required_nodes": [
+      {
+        "node_id": "score:1",
+        "type": "anchor",
+        "role": "opponent_opening_goal_action",
+        "actor": "team_1",
+        "score": "0:1",
+        "segment_ids": [
+          "seg:1"
+        ]
+      },
+      {
+        "node_id": "score:2",
+        "type": "missing",
+        "role": "equalizer_goal_action",
+        "actor": "team_1",
+        "score": "1:1",
+        "segment_ids": []
+      }
+    ],
+    "chain_ids": [
+      "pred_0017",
+      "pred_0018"
+    ],
+    "observation_task_ids": [
+      "observe:1",
+      "observe:5",
+      "observe:9"
+    ],
+    "causal_relations_are_hypotheses": true
+  },
+  "protected_story_segment_ids": [
+    "seg:1"
+  ],
+  "r3_scope_audit": {
+    "excluded_legacy_issues": [
+      {
+        "issue_id": "insufficient_media_segments",
+        "reason": "known_partial_r3_story_not_rebuild_request"
+      },
+      {
+        "issue_id": "goal_coverage_11_to_21",
+        "reason": "score_transition_outside_story_goal"
+      },
+      {
+        "issue_id": "goal_coverage_21_to_22",
+        "reason": "score_transition_outside_story_goal"
+      },
+      {
+        "issue_id": "goal_coverage_22_to_23",
+        "reason": "score_transition_outside_story_goal"
+      }
+    ],
+    "goal_targets": [
+      {
+        "node_id": "score:1",
+        "score_before": "0:0",
+        "score_after": "0:1",
+        "confirmation_t_sec": 2071.43,
+        "action_t_sec": 1979.427,
+        "event_id": "atom_fill_0037_Goal_1979427"
+      },
+      {
+        "node_id": "score:2",
+        "score_before": "0:1",
+        "score_after": "1:1",
+        "confirmation_t_sec": 2660.82,
+        "search_interval": [
+          2480.82,
+          2675.82
+        ],
+        "task_id": "observe:5"
+      }
+    ],
+    "missing_goal_tasks_without_native_issue": [],
+    "original_goal_recovery_algorithm_unchanged": true
+  }
+}
