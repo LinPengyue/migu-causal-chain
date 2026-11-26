@@ -86,6 +86,7 @@ def stage(algo_dir,out):
     check(source!=out and source not in out.parents,"stage must be outside original algo")
     check(not out.exists(),"fresh stage directory required")
     package=source/"story_video_agent_v3"
+    check(not package.is_symlink(),"original package may not be a symlink")
     before={f:blob((package/f).read_bytes()) for f in PINNED}
     check(before==PINNED,"original pinned source mismatch")
     # Compile patches and verify paid evaluator changes are limited to
@@ -100,6 +101,7 @@ def stage(algo_dir,out):
           {"run_vlm_story_critic","run_llm_revision_planner"},"unexpected paid evaluator change")
     shutil.copytree(source,out/"algo",symlinks=True,ignore=shutil.ignore_patterns("__pycache__","*.pyc",".git"))
     staged=out/"algo"/"story_video_agent_v3"
+    check(out in staged.resolve().parents,"staged package escaped output directory")
     for f,s in patched.items():
         check(not (staged/f).is_symlink(),"refuse patching symlink")
         (staged/f).write_text(s,encoding="utf-8")
