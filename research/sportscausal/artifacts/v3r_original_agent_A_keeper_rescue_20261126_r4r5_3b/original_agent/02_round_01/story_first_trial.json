@@ -1,0 +1,129 @@
+{
+  "trial": {
+    "trial_id": "80ec7dfdeff6ed443784026f",
+    "proposal_ids": [
+      "interval_05:H2"
+    ],
+    "events": [
+      {
+        "event_id": "atom_fill_0049_Shot_5175752",
+        "source_pts_sec": 5175.752,
+        "event_type": "Shot",
+        "known_replay_or_slowmo": false,
+        "annotation": null
+      },
+      {
+        "event_id": "atom_fill_0050_Save_5177072",
+        "source_pts_sec": 5177.072,
+        "event_type": "Save",
+        "known_replay_or_slowmo": false,
+        "annotation": null
+      },
+      {
+        "event_id": "atom_fill_0059_Shot_5360612",
+        "source_pts_sec": 5360.612,
+        "event_type": "Shot",
+        "known_replay_or_slowmo": false,
+        "annotation": null
+      },
+      {
+        "event_id": "atom_fill_0060_Save_5361641",
+        "source_pts_sec": 5361.641,
+        "event_type": "Save",
+        "known_replay_or_slowmo": false,
+        "annotation": null
+      }
+    ],
+    "relations": [
+      {
+        "relation_id": "interval_05:H2:r1",
+        "source_event_id": "atom_fill_0049_Shot_5175752",
+        "target_event_id": "atom_fill_0050_Save_5177072",
+        "relation_type": "causal_hypothesis",
+        "claim": "射门后门将扑救可能阻止进球",
+        "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+      }
+    ],
+    "story_context": [
+      {
+        "proposal_id": "interval_05:H2",
+        "summary": "多次射门被扑出，门将连续化解威胁，进攻未能转化为进球。",
+        "expected_story_contribution": "",
+        "falsification_conditions": [
+          "若扑救未发生在射门之后则假设不成立"
+        ]
+      }
+    ],
+    "windows": [
+      {
+        "event_ids": [
+          "atom_fill_0049_Shot_5175752",
+          "atom_fill_0050_Save_5177072"
+        ],
+        "source_pts_start": 5167.752,
+        "source_pts_end": 5185.072,
+        "insert_after_segment_id": "seg:5",
+        "before_segment_id": "seg:6",
+        "candidate_id": "story_first_80ec7dfdeff6ed443784026f_01",
+        "issue_id": "story_first:80ec7dfdeff6ed443784026f"
+      },
+      {
+        "event_ids": [
+          "atom_fill_0059_Shot_5360612",
+          "atom_fill_0060_Save_5361641"
+        ],
+        "source_pts_start": 5352.612,
+        "source_pts_end": 5369.641,
+        "insert_after_segment_id": "seg:5",
+        "before_segment_id": "seg:6",
+        "candidate_id": "story_first_80ec7dfdeff6ed443784026f_02",
+        "issue_id": "story_first:80ec7dfdeff6ed443784026f"
+      }
+    ],
+    "narrative_purpose": "该提案直接对应故事目标“同队门将多次化险”，包含射门与扑救事件对，且无已知 replay/slow-mo 标记。观察这些事件可验证门将连续化解威胁的叙事链，为后续是否需要在 seg:5 与 seg:6 之间补充素材提供证据。"
+  },
+  "review": {
+    "status": "NEEDS_REVISION",
+    "feedback": [
+      {
+        "window_id": "story_first_80ec7dfdeff6ed443784026f_02",
+        "event_ids": [
+          "atom_fill_0059_Shot_5360612",
+          "atom_fill_0060_Save_5361641"
+        ],
+        "status": "REPLAY_CONFIRMED",
+        "reason": "window_overlaps_replay_or_slowmo_annotation",
+        "replay_event_ids": [
+          "atom_fill_0061_Dribble_past_5369167",
+          "atom_fill_0062_Defensive_action_5369505"
+        ]
+      }
+    ],
+    "advisory": [],
+    "annotation_supported_event_ids": [],
+    "event_observations": [],
+    "candidates": [
+      {
+        "event_ids": [
+          "atom_fill_0049_Shot_5175752",
+          "atom_fill_0050_Save_5177072"
+        ],
+        "source_pts_start": 5167.752,
+        "source_pts_end": 5185.072,
+        "insert_after_segment_id": "seg:5",
+        "before_segment_id": "seg:6",
+        "candidate_id": "story_first_80ec7dfdeff6ed443784026f_01",
+        "issue_id": "story_first:80ec7dfdeff6ed443784026f",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "80ec7dfdeff6ed443784026f",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      }
+    ],
+    "intents": []
+  }
+}

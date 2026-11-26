@@ -1,0 +1,98 @@
+{
+  "raw_excerpt": "{\n  \"decision\": \"UNRESOLVED\",\n  \"rationale\": \"所有诊断问题均为 temporal_discontinuity_only 且 story_defect_confirmed=false，VLM critic 无任何确认缺陷，video_critic_observations 为 UNAVAILABLE。所有 search_candidates 的 narrative_fit_status 均为 NEEDS_VIDEO_REVIEW，无 FIRST_LIVE_VERIFIED 或 REVIEW_SUPPORTED，不满足 search_add 约束。无确认冗余问题可 drop。因此不执行编辑，标记为 UNRESOLVED 等待视频观察。\",\n  \"revision_intents\": [],\n  \"story_first_trial\": {\n    \"selections\": [\n      {\n        \"proposal_id\": \"interval_05:H2\",\n        \"event_ids\": [\n          \"atom_fill_0049_Shot_5175752\",\n          \"atom_fill_0050_Save_5177072\",\n          \"atom_fill_0059_Shot_5360612\",\n          \"atom_fill_0060_Save_5361641\"\n        ],\n        \"relation_ids\": [\n          \"r1\"\n        ]\n      }\n    ],\n    \"rationale\": \"该提案直接对应故事目标“同队门将多次化险”，包含射门与扑救事件对，且无已知 replay/slow-mo 标记。观察这些事件可验证门将连续化解威胁的叙事链，为后续是否需要在 seg:5 与 seg:6 之间补充素材提供证据。\",\n    \"revised_relations\": [\n      {\n        \"source_event_id\": \"atom_fill_0049_Shot_5175752\",\n        \"target_event_id\": \"atom_fill_0050_Save_5177072\",\n        \"relation_type\": \"causal_hypothesis\",\n        \"claim\": \"射门后门将扑救可能阻止进球\"\n      }\n    ]\n  }\n}",
+  "parsed": {
+    "decision": "UNRESOLVED",
+    "rationale": "所有诊断问题均为 temporal_discontinuity_only 且 story_defect_confirmed=false，VLM critic 无任何确认缺陷，video_critic_observations 为 UNAVAILABLE。所有 search_candidates 的 narrative_fit_status 均为 NEEDS_VIDEO_REVIEW，无 FIRST_LIVE_VERIFIED 或 REVIEW_SUPPORTED，不满足 search_add 约束。无确认冗余问题可 drop。因此不执行编辑，标记为 UNRESOLVED 等待视频观察。",
+    "revision_intents": [],
+    "story_first_trial": {
+      "selections": [
+        {
+          "proposal_id": "interval_05:H2",
+          "event_ids": [
+            "atom_fill_0049_Shot_5175752",
+            "atom_fill_0050_Save_5177072",
+            "atom_fill_0059_Shot_5360612",
+            "atom_fill_0060_Save_5361641"
+          ],
+          "relation_ids": [
+            "r1"
+          ]
+        }
+      ],
+      "rationale": "该提案直接对应故事目标“同队门将多次化险”，包含射门与扑救事件对，且无已知 replay/slow-mo 标记。观察这些事件可验证门将连续化解威胁的叙事链，为后续是否需要在 seg:5 与 seg:6 之间补充素材提供证据。",
+      "revised_relations": [
+        {
+          "source_event_id": "atom_fill_0049_Shot_5175752",
+          "target_event_id": "atom_fill_0050_Save_5177072",
+          "relation_type": "causal_hypothesis",
+          "claim": "射门后门将扑救可能阻止进球"
+        }
+      ]
+    }
+  },
+  "usage": {
+    "prompt_tokens": 16838,
+    "completion_tokens": 404,
+    "total_tokens": 17242,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "call_audit": {
+    "model": "DeepSeek-V4-Pro-0813",
+    "provider_mode": "real",
+    "logical_role": "revision_planner",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "prompt_tokens": 16838,
+    "completion_tokens": 404,
+    "reasoning_tokens": 0,
+    "text_tokens": null,
+    "finish_reason": "stop",
+    "visible_output_chars": 1110,
+    "est_cost_usd": 0.0027680999999999995,
+    "http_ok": true,
+    "empty_content": false
+  },
+  "request_audit": {
+    "role": "planner",
+    "model": "DeepSeek-V4-Pro-0813",
+    "request_profile": "default",
+    "token_param_configured": "max_tokens",
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "temperature_sent": 0.1,
+    "stream_sent": false,
+    "thinking_params_sent": false,
+    "thinking_object_disabled_sent": true,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "sends_both_token_params": false,
+    "sends_both_thinking_formats": false,
+    "message_count": 2,
+    "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+    "paratera_thinking_object_documented": false
+  },
+  "response_audit": {
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "visible_output_chars": 1110,
+    "usage_keys_present": [
+      "completion_tokens",
+      "completion_tokens_details",
+      "prompt_tokens",
+      "prompt_tokens_details",
+      "total_tokens"
+    ],
+    "has_completion_tokens_details": true,
+    "reasoning_content_present": false,
+    "completion_tokens_reported": 404,
+    "output_token_limit": 1200,
+    "output_budget_exceeded": false
+  },
+  "finish_reason": "stop"
+}

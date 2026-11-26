@@ -1,0 +1,339 @@
+{
+  "schema": "v3r_original_agent_A_keeper_rescue_r4r5_3b_pack_v1",
+  "code_commit_base": "1ce808d",
+  "frozen_r4_r5_3": "67e49c4",
+  "story_id": "keeper_rescue:2",
+  "prepared_dir": "artifacts/v3r_original_agent_A_keeper_rescue_20261126_r4r5_3",
+  "v0_sha256": "338e842499cb2d60df0de42d68e2fa05b9e2948f7a8350a3baa30c62eac4ff91",
+  "v0_reused": true,
+  "STORY_FIRST_LLM_MODEL": "DeepSeek-V4.1-Flash",
+  "flash_preflight_zero_http": true,
+  "flash_preflight": {
+    "configured_flash_model_id": "DeepSeek-V4.1-Flash",
+    "gateway": "existing_story_planner_service",
+    "token_param": "max_tokens"
+  },
+  "this_run_http_calls": 6,
+  "this_run_est_cost_usd": 0.018484,
+  "cumulative_with_prior_http_calls": 7,
+  "cumulative_with_prior_est_cost_usd": 0.019664,
+  "budget_caps_this_run": {
+    "max_calls": 23,
+    "max_cost_usd": 0.0988
+  },
+  "p1_interval_usage": [
+    {
+      "interval_id": "interval_01",
+      "model": "DeepSeek-V4.1-Flash",
+      "http_ok": true,
+      "est_cost_usd": 0.00412575,
+      "prompt_tokens": 23473,
+      "completion_tokens": 1008,
+      "hyp_status": "UNVERIFIED_HYPOTHESES",
+      "n_hypotheses": 5
+    },
+    {
+      "interval_id": "interval_02",
+      "model": "DeepSeek-V4.1-Flash",
+      "http_ok": true,
+      "est_cost_usd": 0.0015872999999999998,
+      "prompt_tokens": 6870,
+      "completion_tokens": 928,
+      "hyp_status": "UNVERIFIED_HYPOTHESES",
+      "n_hypotheses": 5
+    },
+    {
+      "interval_id": "interval_03",
+      "model": "DeepSeek-V4.1-Flash",
+      "http_ok": true,
+      "est_cost_usd": 0.0009606,
+      "prompt_tokens": 4812,
+      "completion_tokens": 398,
+      "hyp_status": "NO_VALID_HYPOTHESES",
+      "n_hypotheses": 0
+    },
+    {
+      "interval_id": "interval_04",
+      "model": "DeepSeek-V4.1-Flash",
+      "http_ok": true,
+      "est_cost_usd": 0.0030085499999999996,
+      "prompt_tokens": 15933,
+      "completion_tokens": 1031,
+      "hyp_status": "UNVERIFIED_HYPOTHESES",
+      "n_hypotheses": 5
+    },
+    {
+      "interval_id": "interval_05",
+      "model": "DeepSeek-V4.1-Flash",
+      "http_ok": true,
+      "est_cost_usd": 0.0060336,
+      "prompt_tokens": 36088,
+      "completion_tokens": 1034,
+      "hyp_status": "UNVERIFIED_HYPOTHESES",
+      "n_hypotheses": 4
+    }
+  ],
+  "proposal_count": 19,
+  "proposals": [
+    {
+      "proposal_id": "interval_01:H1",
+      "summary": "阿曼门将两次化险之间，阿联酋多次通过定位球与传中制造连续威胁。",
+      "event_ids": [
+        "event_000285",
+        "event_000311",
+        "event_000370",
+        "event_000395"
+      ],
+      "n_relations": 1
+    },
+    {
+      "proposal_id": "interval_01:H2",
+      "summary": "阿联酋多次射门被挡后，阿曼防线以解围结束威胁，形成重复化险节奏。",
+      "event_ids": [
+        "event_000313",
+        "event_000340",
+        "event_000374",
+        "event_000397"
+      ],
+      "n_relations": 1
+    },
+    {
+      "proposal_id": "interval_01:H3",
+      "summary": "阿联酋多次被犯规获得任意球，随后形成射门，构成定位球威胁链。",
+      "event_ids": [
+        "event_000334",
+        "event_000337",
+        "event_000363",
+        "event_000366"
+      ],
+      "n_relations": 1
+    },
+    {
+      "proposal_id": "interval_01:H4",
+      "summary": "阿曼换人后，阿联酋仍连续射门，显示换人未阻断对方进攻节奏。",
+      "event_ids": [
+        "event_000357",
+        "event_000374",
+        "event_000375"
+      ],
+      "n_relations": 1
+    },
+    {
+      "proposal_id": "interval_01:H5",
+      "summary": "阿曼多次赢得空中对抗后完成解围，形成从争顶到解围的防守模式。",
+      "event_ids": [
+        "event_000371",
+        "event_000381",
+        "event_000396",
+        "event_000397"
+      ],
+      "n_relations": 1
+    },
+    {
+      "proposal_id": "interval_02:H1",
+      "summary": "禁区内连续出现两次一对一射门尝试，可能构成同一波威胁的重复冲击。",
+      "event_ids": [
+        "event_000411",
+        "event_000412",
+        "event_000413"
+      ],
+      "n_relations": 1
+    },
+    {
+      "proposal_id": "interval_02:H2",
+      "summary": "短传与带球突破铺垫后出现一对一射门，可能形成由组织到终结的对比。",
+      "event_ids": [
+        "event_000408",
+        "event_000410",
+        "event_000411"
+      ],
+      "n_relations": 1
+    },
+    {
+      "proposal_id": "interval_02:H3",
+      "summary": "多次抢断与带球突破交替出现，可能反映中场反复争夺的防守链条。",
+      "event_ids": [
+        "event_000404",
+        "event_000405",
+        "event_000407"
+      ],
+      "n_relations": 1
+    },
+    {
+      "proposal_id": "interval_02:H4",
+      "summary": "射门后出现控球事件，可能显示威胁被化解后球权重新稳定。",
+      "event_ids": [
+        "event_000411",
+        "event_000413",
+        "event_000414"
+      ],
+      "n_relations": 1
+    },
+    {
+      "proposal_id": "interval_02:H5",
+      "summary": "界外球后经短传与突破发展至射门，可能构成一次完整进攻段落。",
+      "event_ids": [
+        "event_000406",
+        "event_000408",
+        "event_000411"
+      ],
+      "n_relations": 1
+    },
+    {
+      "proposal_id": "interval_04:H1",
+      "summary": "阿曼门将先经长传与争顶组织推进，随后一段连续射门扑救画面或构成威胁片段。",
+      "event_ids": [
+        "event_000423",
+        "event_000424",
+        "event_000472",
+        "event_000473"
+      ],
+      "n_relations": 1
+    },
+    {
+      "proposal_id": "interval_04:H2",
+      "summary": "换人后阿曼出现后场传递与争顶，随后形成射门与扑救，或为一次阶段转换。",
+      "event_ids": [
+        "event_000458",
+        "event_000459",
+        "event_000460",
+        "event_000472"
+      ],
+      "n_relations": 1
+    },
+    {
+      "proposal_id": "interval_04:H3",
+      "summary": "阿曼连续长传与争顶后出现一次凌空射门，或显示同一推进链条的延续。",
+      "event_ids": [
+        "event_000464",
+        "event_000465",
+        "event_000467",
+        "event_000472"
+      ],
+      "n_relations": 1
+    },
+    {
+      "proposal_id": "interval_04:H4",
+      "summary": "阿曼出现带球突破与被抢断交替，随后形成射门，或为攻防拉锯的片段。",
+      "event_ids": [
+        "event_000468",
+        "event_000469",
+        "event_000470",
+        "event_000472"
+      ],
+      "n_relations": 1
+    },
+    {
+      "proposal_id": "interval_04:H5",
+      "summary": "阿曼后场回传与争顶后出现凌空射门，或为从后向前的推进片段。",
+      "event_ids": [
+        "event_000472",
+        "event_000473",
+        "event_000474"
+      ],
+      "n_relations": 1
+    },
+    {
+      "proposal_id": "interval_05:H1",
+      "summary": "禁区内多次倒地申诉后，VAR介入判定点球被取消，威胁未转化为进球。",
+      "event_ids": [
+        "event_000617",
+        "event_000622",
+        "event_000627",
+        "event_000634"
+      ],
+      "n_relations": 1
+    },
+    {
+      "proposal_id": "interval_05:H2",
+      "summary": "多次射门被扑出，门将连续化解威胁，进攻未能转化为进球。",
+      "event_ids": [
+        "atom_fill_0049_Shot_5175752",
+        "atom_fill_0050_Save_5177072",
+        "atom_fill_0059_Shot_5360612",
+        "atom_fill_0060_Save_5361641"
+      ],
+      "n_relations": 1
+    },
+    {
+      "proposal_id": "interval_05:H3",
+      "summary": "多次犯规导致黄牌和任意球，比赛对抗强度上升。",
+      "event_ids": [
+        "event_000547",
+        "event_000548",
+        "event_000552",
+        "event_000565"
+      ],
+      "n_relations": 1
+    },
+    {
+      "proposal_id": "interval_05:H4",
+      "summary": "换人调整后防守动作增多，可能改变比赛节奏。",
+      "event_ids": [
+        "event_000563",
+        "event_000564",
+        "event_000569",
+        "event_000570"
+      ],
+      "n_relations": 1
+    }
+  ],
+  "planner_selection": {
+    "selections": [
+      {
+        "proposal_id": "interval_05:H2",
+        "event_ids": [
+          "atom_fill_0049_Shot_5175752",
+          "atom_fill_0050_Save_5177072",
+          "atom_fill_0059_Shot_5360612",
+          "atom_fill_0060_Save_5361641"
+        ],
+        "relation_ids": [
+          "r1"
+        ]
+      }
+    ],
+    "rationale": "该提案直接对应故事目标“同队门将多次化险”，包含射门与扑救事件对，且无已知 replay/slow-mo 标记。观察这些事件可验证门将连续化解威胁的叙事链，为后续是否需要在 seg:5 与 seg:6 之间补充素材提供证据。",
+    "revised_relations": [
+      {
+        "source_event_id": "atom_fill_0049_Shot_5175752",
+        "target_event_id": "atom_fill_0050_Save_5177072",
+        "relation_type": "causal_hypothesis",
+        "claim": "射门后门将扑救可能阻止进球"
+      }
+    ]
+  },
+  "first_failure": {
+    "stage": "story_first_source_review_then_main_loop_stop",
+    "story_first_trial_status": "NEEDS_REVISION",
+    "p2_finding": [
+      {
+        "window_id": "story_first_80ec7dfdeff6ed443784026f_02",
+        "event_ids": [
+          "atom_fill_0059_Shot_5360612",
+          "atom_fill_0060_Save_5361641"
+        ],
+        "status": "REPLAY_CONFIRMED",
+        "reason": "window_overlaps_replay_or_slowmo_annotation",
+        "replay_event_ids": [
+          "atom_fill_0061_Dribble_past_5369167",
+          "atom_fill_0062_Defensive_action_5369505"
+        ]
+      }
+    ],
+    "surviving_candidate_block": "no_first_live_evidence_pack_for_window / executable_safe_revision=false",
+    "planner_decision": "UNRESOLVED",
+    "phase8": "STOP_NO_ACTION / no_executable_revision_or_valid_source",
+    "outer": "NO_NATIVE_OUTER_COMPARISON",
+    "note": "No algo bypass. Single run only."
+  },
+  "versions_present": [
+    "v0_reused"
+  ],
+  "p3_executed": false,
+  "outer_rounds_completed": 0,
+  "requested_outer_rounds": 3,
+  "cf397a7_executed": false,
+  "algo_modified": false,
+  "generated_at": "2026-11-26T06:52:21.479735+00:00"
+}

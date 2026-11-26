@@ -1,0 +1,1743 @@
+{
+  "source_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+  "initial_edl_sha256": "c89552cef1f97715272f1226c3889ead4c51db906b745925130a818751566cc4",
+  "intervals": [
+    {
+      "interval_id": "interval_01",
+      "from_segment_id": "seg:1",
+      "to_segment_id": "seg:2",
+      "score_status": "OFFLINE_RESEARCH_ONLY",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "goalkeeper_rescue",
+        "to_segment_id": "seg:2",
+        "to_role": "goalkeeper_rescue",
+        "source_interval_sec": [
+          1966.45,
+          3338.39
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "status": "GENERATED",
+      "candidate_count": 5
+    },
+    {
+      "interval_id": "interval_02",
+      "from_segment_id": "seg:2",
+      "to_segment_id": "seg:3",
+      "score_status": "OFFLINE_RESEARCH_ONLY",
+      "scope": {
+        "from_segment_id": "seg:2",
+        "from_role": "goalkeeper_rescue",
+        "to_segment_id": "seg:3",
+        "to_role": "goalkeeper_rescue",
+        "source_interval_sec": [
+          3351.3,
+          3504.14
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "status": "GENERATED",
+      "candidate_count": 5
+    },
+    {
+      "interval_id": "interval_03",
+      "from_segment_id": "seg:3",
+      "to_segment_id": "seg:4",
+      "score_status": "OFFLINE_RESEARCH_ONLY",
+      "scope": {
+        "from_segment_id": "seg:3",
+        "from_role": "goalkeeper_rescue",
+        "to_segment_id": "seg:4",
+        "to_role": "goalkeeper_rescue",
+        "source_interval_sec": [
+          3515.83,
+          3543.01
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "status": "NO_VALID_HYPOTHESES",
+      "candidate_count": 0
+    },
+    {
+      "interval_id": "interval_04",
+      "from_segment_id": "seg:4",
+      "to_segment_id": "seg:5",
+      "score_status": "OFFLINE_RESEARCH_ONLY",
+      "scope": {
+        "from_segment_id": "seg:4",
+        "from_role": "goalkeeper_rescue",
+        "to_segment_id": "seg:5",
+        "to_role": "goalkeeper_rescue",
+        "source_interval_sec": [
+          3553.57,
+          4755.79
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "status": "GENERATED",
+      "candidate_count": 5
+    },
+    {
+      "interval_id": "interval_05",
+      "from_segment_id": "seg:5",
+      "to_segment_id": "seg:6",
+      "score_status": "OFFLINE_RESEARCH_ONLY",
+      "scope": {
+        "from_segment_id": "seg:5",
+        "from_role": "goalkeeper_rescue",
+        "to_segment_id": "seg:6",
+        "to_role": "goalkeeper_rescue",
+        "source_interval_sec": [
+          4769.62,
+          6552.01
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "status": "GENERATED",
+      "candidate_count": 4
+    }
+  ],
+  "proposals": [
+    {
+      "proposal_id": "interval_01:H1",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "goalkeeper_rescue",
+        "to_segment_id": "seg:2",
+        "to_role": "goalkeeper_rescue",
+        "source_interval_sec": [
+          1966.45,
+          3338.39
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "阿曼门将两次化险之间，阿联酋多次通过定位球与传中制造连续威胁。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000285",
+          "source_pts_sec": 1989.0,
+          "event_type": "Corner_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队14号发出角球"
+          }
+        },
+        {
+          "event_id": "event_000311",
+          "source_pts_sec": 2277.94,
+          "event_type": "Free_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员发任意球"
+          }
+        },
+        {
+          "event_id": "event_000370",
+          "source_pts_sec": 3049.14,
+          "event_type": "Corner_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队14号角球"
+          }
+        },
+        {
+          "event_id": "event_000395",
+          "source_pts_sec": 3313.6,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员把球传到中路"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000285",
+          "target_event_id": "event_000395",
+          "relation_type": "narrative_association",
+          "claim": "早期角球与后期传中或属同一施压模式",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若两次定位球间无任何阿联酋进攻事件则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000370",
+          "question": "该角球是否由阿联酋持续进攻造成？",
+          "discriminating_signal": "角球前是否有阿联酋射门或传中"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_01:H2",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "goalkeeper_rescue",
+        "to_segment_id": "seg:2",
+        "to_role": "goalkeeper_rescue",
+        "source_interval_sec": [
+          1966.45,
+          3338.39
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "阿联酋多次射门被挡后，阿曼防线以解围结束威胁，形成重复化险节奏。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000313",
+          "source_pts_sec": 2285.84,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员外围一脚远射，射偏"
+          }
+        },
+        {
+          "event_id": "event_000340",
+          "source_pts_sec": 2542.06,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队14号带球突破并射门"
+          }
+        },
+        {
+          "event_id": "event_000374",
+          "source_pts_sec": 3079.65,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员看到进攻机会，选择打门"
+          }
+        },
+        {
+          "event_id": "event_000397",
+          "source_pts_sec": 3321.77,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员用身体挡出了1队球员的传中"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000340",
+          "target_event_id": "event_000397",
+          "relation_type": "narrative_association",
+          "claim": "射门与解围或构成重复的攻防循环",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若射门与解围之间无球权转换证据则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000374",
+          "question": "该射门是否被防守方直接解围？",
+          "discriminating_signal": "射门后是否紧接解围动作"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_01:H3",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "goalkeeper_rescue",
+        "to_segment_id": "seg:2",
+        "to_role": "goalkeeper_rescue",
+        "source_interval_sec": [
+          1966.45,
+          3338.39
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "阿联酋多次被犯规获得任意球，随后形成射门，构成定位球威胁链。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000334",
+          "source_pts_sec": 2465.99,
+          "event_type": "Foul_Being_fouled",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员抢球犯规"
+          }
+        },
+        {
+          "event_id": "event_000337",
+          "source_pts_sec": 2510.42,
+          "event_type": "Free_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队4号发任意球"
+          }
+        },
+        {
+          "event_id": "event_000363",
+          "source_pts_sec": 2974.1,
+          "event_type": "Foul_Being_fouled",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队17号在争抢球权的过程中，撞倒1队10号，造成犯规"
+          }
+        },
+        {
+          "event_id": "event_000366",
+          "source_pts_sec": 3019.32,
+          "event_type": "Free_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队6号任意球"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000337",
+          "target_event_id": "event_000366",
+          "relation_type": "narrative_association",
+          "claim": "两次任意球或反映相似的被侵犯后进攻模式",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若任意球后无射门或传中则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000366",
+          "question": "该任意球是否直接形成射门？",
+          "discriminating_signal": "任意球后是否出现射门事件"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_01:H4",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "goalkeeper_rescue",
+        "to_segment_id": "seg:2",
+        "to_role": "goalkeeper_rescue",
+        "source_interval_sec": [
+          1966.45,
+          3338.39
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "阿曼换人后，阿联酋仍连续射门，显示换人未阻断对方进攻节奏。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000357",
+          "source_pts_sec": 2918.91,
+          "event_type": "Substitution",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队20号换1队7号上场"
+          }
+        },
+        {
+          "event_id": "event_000374",
+          "source_pts_sec": 3079.65,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员看到进攻机会，选择打门"
+          }
+        },
+        {
+          "event_id": "event_000375",
+          "source_pts_sec": 3091.41,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": true,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员看到进攻机会，选择打门"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000357",
+          "target_event_id": "event_000374",
+          "relation_type": "narrative_association",
+          "claim": "换人后射门或表明威胁未因调整而减少",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若换人后长时间无阿联酋射门则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000374",
+          "question": "换人后首次射门是否来自阿联酋？",
+          "discriminating_signal": "射门方是否为阿联酋"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_01:H5",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "goalkeeper_rescue",
+        "to_segment_id": "seg:2",
+        "to_role": "goalkeeper_rescue",
+        "source_interval_sec": [
+          1966.45,
+          3338.39
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "阿曼多次赢得空中对抗后完成解围，形成从争顶到解围的防守模式。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000371",
+          "source_pts_sec": 3050.29,
+          "event_type": "Win_an_aerial_duel",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员争顶成功"
+          }
+        },
+        {
+          "event_id": "event_000381",
+          "source_pts_sec": 3165.62,
+          "event_type": "Win_an_aerial_duel",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员争顶成功"
+          }
+        },
+        {
+          "event_id": "event_000396",
+          "source_pts_sec": 3314.99,
+          "event_type": "Win_an_aerial_duel",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员头球"
+          }
+        },
+        {
+          "event_id": "event_000397",
+          "source_pts_sec": 3321.77,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员用身体挡出了1队球员的传中"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000381",
+          "target_event_id": "event_000397",
+          "relation_type": "narrative_association",
+          "claim": "空中对抗胜利或与随后解围构成防守链",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若空中对抗后无解围或球权丢失则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000397",
+          "question": "该解围是否紧接阿曼赢得的空中对抗？",
+          "discriminating_signal": "解围前是否有阿曼争顶成功"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_02:H1",
+      "scope": {
+        "from_segment_id": "seg:2",
+        "from_role": "goalkeeper_rescue",
+        "to_segment_id": "seg:3",
+        "to_role": "goalkeeper_rescue",
+        "source_interval_sec": [
+          3351.3,
+          3504.14
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "禁区内连续出现两次一对一射门尝试，可能构成同一波威胁的重复冲击。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000411",
+          "source_pts_sec": 3446.75,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员带球打门"
+          }
+        },
+        {
+          "event_id": "event_000412",
+          "source_pts_sec": 3462.13,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": true,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员带球打门"
+          }
+        },
+        {
+          "event_id": "event_000413",
+          "source_pts_sec": 3468.68,
+          "event_type": "Ball_possession",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员带球前进"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000411",
+          "target_event_id": "event_000412",
+          "relation_type": "narrative_association",
+          "claim": "两次一对一射门或属同一威胁序列，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若两次射门间球权已明确转换则不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000411",
+          "question": "该一对一射门是否被门将化解？",
+          "discriminating_signal": "门将触球或扑救动作"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_02:H2",
+      "scope": {
+        "from_segment_id": "seg:2",
+        "from_role": "goalkeeper_rescue",
+        "to_segment_id": "seg:3",
+        "to_role": "goalkeeper_rescue",
+        "source_interval_sec": [
+          3351.3,
+          3504.14
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "短传与带球突破铺垫后出现一对一射门，可能形成由组织到终结的对比。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000408",
+          "source_pts_sec": 3411.45,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员传球给队友"
+          }
+        },
+        {
+          "event_id": "event_000410",
+          "source_pts_sec": 3437.43,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员传球给队友"
+          }
+        },
+        {
+          "event_id": "event_000411",
+          "source_pts_sec": 3446.75,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员带球打门"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000408",
+          "target_event_id": "event_000411",
+          "relation_type": "causal_hypothesis",
+          "claim": "短传组织或为射门铺垫，尚属推测",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若射门前球权来自对方解围则不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000410",
+          "question": "该短传是否指向射门球员？",
+          "discriminating_signal": "传球方向与接球者"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_02:H3",
+      "scope": {
+        "from_segment_id": "seg:2",
+        "from_role": "goalkeeper_rescue",
+        "to_segment_id": "seg:3",
+        "to_role": "goalkeeper_rescue",
+        "source_interval_sec": [
+          3351.3,
+          3504.14
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "多次抢断与带球突破交替出现，可能反映中场反复争夺的防守链条。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000404",
+          "source_pts_sec": 3382.1,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员抢断1队球员带球"
+          }
+        },
+        {
+          "event_id": "event_000405",
+          "source_pts_sec": 3386.59,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员抢断2对球员的带球"
+          }
+        },
+        {
+          "event_id": "event_000407",
+          "source_pts_sec": 3398.91,
+          "event_type": "Dribble_past",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员带球突破"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000404",
+          "target_event_id": "event_000407",
+          "relation_type": "narrative_association",
+          "claim": "抢断与突破或属同一争夺段落，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若抢断与突破分属不同半场则不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000407",
+          "question": "该突破是否紧接抢断后发生？",
+          "discriminating_signal": "球权转换的连续性"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_02:H4",
+      "scope": {
+        "from_segment_id": "seg:2",
+        "from_role": "goalkeeper_rescue",
+        "to_segment_id": "seg:3",
+        "to_role": "goalkeeper_rescue",
+        "source_interval_sec": [
+          3351.3,
+          3504.14
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "射门后出现控球事件，可能显示威胁被化解后球权重新稳定。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000411",
+          "source_pts_sec": 3446.75,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员带球打门"
+          }
+        },
+        {
+          "event_id": "event_000413",
+          "source_pts_sec": 3468.68,
+          "event_type": "Ball_possession",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员带球前进"
+          }
+        },
+        {
+          "event_id": "event_000414",
+          "source_pts_sec": 3478.92,
+          "event_type": "Ball_possession",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员传球给队友，控制球权"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000411",
+          "target_event_id": "event_000413",
+          "relation_type": "state_transition",
+          "claim": "射门后控球或标志威胁段落结束，属推测",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若控球方为射门方持续进攻则不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000413",
+          "question": "控球方是否为防守一方？",
+          "discriminating_signal": "控球球员球衣颜色"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_02:H5",
+      "scope": {
+        "from_segment_id": "seg:2",
+        "from_role": "goalkeeper_rescue",
+        "to_segment_id": "seg:3",
+        "to_role": "goalkeeper_rescue",
+        "source_interval_sec": [
+          3351.3,
+          3504.14
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "界外球后经短传与突破发展至射门，可能构成一次完整进攻段落。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000406",
+          "source_pts_sec": 3393.35,
+          "event_type": "Throw_in",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队16号发界外手抛球"
+          }
+        },
+        {
+          "event_id": "event_000408",
+          "source_pts_sec": 3411.45,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员传球给队友"
+          }
+        },
+        {
+          "event_id": "event_000411",
+          "source_pts_sec": 3446.75,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员带球打门"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000406",
+          "target_event_id": "event_000411",
+          "relation_type": "causal_hypothesis",
+          "claim": "界外球或开启该进攻段落，尚属推测",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若界外球后球权迅速丢失则不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000406",
+          "question": "界外球由哪一方掷出？",
+          "discriminating_signal": "掷球方球衣颜色"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_04:H1",
+      "scope": {
+        "from_segment_id": "seg:4",
+        "from_role": "goalkeeper_rescue",
+        "to_segment_id": "seg:5",
+        "to_role": "goalkeeper_rescue",
+        "source_interval_sec": [
+          3553.57,
+          4755.79
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "阿曼门将先经长传与争顶组织推进，随后一段连续射门扑救画面或构成威胁片段。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000423",
+          "source_pts_sec": 3574.25,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员禁区长传"
+          }
+        },
+        {
+          "event_id": "event_000424",
+          "source_pts_sec": 3577.76,
+          "event_type": "Win_an_aerial_duel",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员争顶成功"
+          }
+        },
+        {
+          "event_id": "event_000472",
+          "source_pts_sec": 4710.45,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队9号接球后打门"
+          }
+        },
+        {
+          "event_id": "event_000473",
+          "source_pts_sec": 4743.29,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员把球回传给门将"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000423",
+          "target_event_id": "event_000472",
+          "relation_type": "narrative_association",
+          "claim": "长传争顶与后段射门或属同一威胁序列，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若两段间无同一进攻方向或球权延续，则关联不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000472",
+          "question": "该射门是否源自前段长传推进？",
+          "discriminating_signal": "进攻方向与球权连续性"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_04:H2",
+      "scope": {
+        "from_segment_id": "seg:4",
+        "from_role": "goalkeeper_rescue",
+        "to_segment_id": "seg:5",
+        "to_role": "goalkeeper_rescue",
+        "source_interval_sec": [
+          3553.57,
+          4755.79
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "换人后阿曼出现后场传递与争顶，随后形成射门与扑救，或为一次阶段转换。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000458",
+          "source_pts_sec": 4562.65,
+          "event_type": "Substitution",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队连续换15号，9号，11号三人入场，换下8号，10号，6号。"
+          }
+        },
+        {
+          "event_id": "event_000459",
+          "source_pts_sec": 4593.22,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员把球回传给门将"
+          }
+        },
+        {
+          "event_id": "event_000460",
+          "source_pts_sec": 4601.84,
+          "event_type": "Win_an_aerial_duel",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队队员发现2队队员传球之后与其他2队球员头球争顶，1队球员争顶成功"
+          }
+        },
+        {
+          "event_id": "event_000472",
+          "source_pts_sec": 4710.45,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队9号接球后打门"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000458",
+          "target_event_id": "event_000472",
+          "relation_type": "state_transition",
+          "claim": "换人后比赛节奏或变化，但因果未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若换人前后球权与推进方式无差异，则转换不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000459",
+          "question": "换人后是否立即出现后场组织？",
+          "discriminating_signal": "换人后首次球权归属"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_04:H3",
+      "scope": {
+        "from_segment_id": "seg:4",
+        "from_role": "goalkeeper_rescue",
+        "to_segment_id": "seg:5",
+        "to_role": "goalkeeper_rescue",
+        "source_interval_sec": [
+          3553.57,
+          4755.79
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "阿曼连续长传与争顶后出现一次凌空射门，或显示同一推进链条的延续。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000464",
+          "source_pts_sec": 4654.24,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队守门员长传"
+          }
+        },
+        {
+          "event_id": "event_000465",
+          "source_pts_sec": 4659.78,
+          "event_type": "Win_an_aerial_duel",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员头球争顶成功"
+          }
+        },
+        {
+          "event_id": "event_000467",
+          "source_pts_sec": 4679.11,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员面对2队球员的防守，长传给队友"
+          }
+        },
+        {
+          "event_id": "event_000472",
+          "source_pts_sec": 4710.45,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队9号接球后打门"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000465",
+          "target_event_id": "event_000472",
+          "relation_type": "causal_hypothesis",
+          "claim": "争顶成功或为后续射门铺垫，但仅为假设",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若争顶后球权立即丢失且无后续进攻，则链条不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000472",
+          "question": "凌空射门是否来自此前争顶落点？",
+          "discriminating_signal": "落点与射门位置一致性"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_04:H4",
+      "scope": {
+        "from_segment_id": "seg:4",
+        "from_role": "goalkeeper_rescue",
+        "to_segment_id": "seg:5",
+        "to_role": "goalkeeper_rescue",
+        "source_interval_sec": [
+          3553.57,
+          4755.79
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "阿曼出现带球突破与被抢断交替，随后形成射门，或为攻防拉锯的片段。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000468",
+          "source_pts_sec": 4682.65,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员抢断了1队球员的球权"
+          }
+        },
+        {
+          "event_id": "event_000469",
+          "source_pts_sec": 4691.2,
+          "event_type": "Dribble_past",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员挑球过人"
+          }
+        },
+        {
+          "event_id": "event_000470",
+          "source_pts_sec": 4698.0,
+          "event_type": "Ball_possession",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员传球给队友，控制球权"
+          }
+        },
+        {
+          "event_id": "event_000472",
+          "source_pts_sec": 4710.45,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队9号接球后打门"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000469",
+          "target_event_id": "event_000472",
+          "relation_type": "narrative_association",
+          "claim": "突破与后续射门或同属一次进攻，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若突破后球权被对方控制且无射门，则关联不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000469",
+          "question": "突破后球权是否仍属阿曼？",
+          "discriminating_signal": "突破后控球方"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_04:H5",
+      "scope": {
+        "from_segment_id": "seg:4",
+        "from_role": "goalkeeper_rescue",
+        "to_segment_id": "seg:5",
+        "to_role": "goalkeeper_rescue",
+        "source_interval_sec": [
+          3553.57,
+          4755.79
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "阿曼后场回传与争顶后出现凌空射门，或为从后向前的推进片段。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000472",
+          "source_pts_sec": 4710.45,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队9号接球后打门"
+          }
+        },
+        {
+          "event_id": "event_000473",
+          "source_pts_sec": 4743.29,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员把球回传给门将"
+          }
+        },
+        {
+          "event_id": "event_000474",
+          "source_pts_sec": 4749.59,
+          "event_type": "Win_an_aerial_duel",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员争顶成功"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000473",
+          "target_event_id": "event_000472",
+          "relation_type": "narrative_association",
+          "claim": "后场回传与后段射门或属同一推进，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若回传后未形成向前推进，则关联不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000474",
+          "question": "争顶后是否立即向前传递？",
+          "discriminating_signal": "争顶后传球方向"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_05:H1",
+      "scope": {
+        "from_segment_id": "seg:5",
+        "from_role": "goalkeeper_rescue",
+        "to_segment_id": "seg:6",
+        "to_role": "goalkeeper_rescue",
+        "source_interval_sec": [
+          4769.62,
+          6552.01
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "禁区内多次倒地申诉后，VAR介入判定点球被取消，威胁未转化为进球。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000617",
+          "source_pts_sec": 6020.63,
+          "event_type": "Foul_Being_fouled",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队3号踢到1队7号，造成犯规"
+          }
+        },
+        {
+          "event_id": "event_000622",
+          "source_pts_sec": 6196.82,
+          "event_type": "Video_Assistant_Referee",
+          "known_replay_or_slowmo": true,
+          "annotation": {
+            "description": "",
+            "notes": "2队3号踢到1队7号，造成犯规"
+          }
+        },
+        {
+          "event_id": "event_000627",
+          "source_pts_sec": 6272.28,
+          "event_type": "Win_an_aerial_duel",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员争顶成功"
+          }
+        },
+        {
+          "event_id": "event_000634",
+          "source_pts_sec": 6403.81,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员截获2队传球"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000617",
+          "target_event_id": "event_000622",
+          "relation_type": "causal_hypothesis",
+          "claim": "点球申诉后VAR介入可能取消判罚",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若VAR回放未显示取消点球判罚则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000627",
+          "question": "点球取消后比赛是否恢复常规攻防？",
+          "discriminating_signal": "恢复常规攻防或持续争议"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_05:H2",
+      "scope": {
+        "from_segment_id": "seg:5",
+        "from_role": "goalkeeper_rescue",
+        "to_segment_id": "seg:6",
+        "to_role": "goalkeeper_rescue",
+        "source_interval_sec": [
+          4769.62,
+          6552.01
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "多次射门被扑出，门将连续化解威胁，进攻未能转化为进球。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "atom_fill_0049_Shot_5175752",
+          "source_pts_sec": 5175.752,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "annotation": null
+        },
+        {
+          "event_id": "atom_fill_0050_Save_5177072",
+          "source_pts_sec": 5177.072,
+          "event_type": "Save",
+          "known_replay_or_slowmo": false,
+          "annotation": null
+        },
+        {
+          "event_id": "atom_fill_0059_Shot_5360612",
+          "source_pts_sec": 5360.612,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "annotation": null
+        },
+        {
+          "event_id": "atom_fill_0060_Save_5361641",
+          "source_pts_sec": 5361.641,
+          "event_type": "Save",
+          "known_replay_or_slowmo": false,
+          "annotation": null
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "atom_fill_0049_Shot_5175752",
+          "target_event_id": "atom_fill_0050_Save_5177072",
+          "relation_type": "causal_hypothesis",
+          "claim": "射门后门将扑救可能阻止进球",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若扑救未发生在射门之后则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:atom_fill_0059_Shot_5360612",
+          "question": "射门是否被门将扑出？",
+          "discriminating_signal": "扑救成功或射门偏出"
+        }
+      ],
+      "replay_window_edits": [
+        {
+          "event_ids": [
+            "atom_fill_0059_Shot_5360612",
+            "atom_fill_0060_Save_5361641"
+          ],
+          "removed_event_ids": [],
+          "original_source_window_sec": [
+            5352.612,
+            5369.641
+          ],
+          "removed_source_windows_sec": [
+            [
+              5369.167,
+              5371.167
+            ],
+            [
+              5369.505,
+              5371.505
+            ]
+          ],
+          "retained_source_windows_sec": [
+            [
+              5352.612,
+              5369.167
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_05:H3",
+      "scope": {
+        "from_segment_id": "seg:5",
+        "from_role": "goalkeeper_rescue",
+        "to_segment_id": "seg:6",
+        "to_role": "goalkeeper_rescue",
+        "source_interval_sec": [
+          4769.62,
+          6552.01
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "多次犯规导致黄牌和任意球，比赛对抗强度上升。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000547",
+          "source_pts_sec": 5388.71,
+          "event_type": "Foul_Being_fouled",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队7号铲倒1队18号，造成犯规"
+          }
+        },
+        {
+          "event_id": "event_000548",
+          "source_pts_sec": 5394.14,
+          "event_type": "Receive_a_card",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队7号犯规被罚黄牌"
+          }
+        },
+        {
+          "event_id": "event_000552",
+          "source_pts_sec": 5453.84,
+          "event_type": "Free_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队14号发任意球"
+          }
+        },
+        {
+          "event_id": "event_000565",
+          "source_pts_sec": 5584.99,
+          "event_type": "Foul_Being_fouled",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队21号冲撞1队7号，造成犯规"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000547",
+          "target_event_id": "event_000548",
+          "relation_type": "causal_hypothesis",
+          "claim": "犯规可能导致黄牌警告",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若黄牌未在犯规后出现则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000552",
+          "question": "任意球是否由犯规导致？",
+          "discriminating_signal": "任意球判罚或比赛继续"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_05:H4",
+      "scope": {
+        "from_segment_id": "seg:5",
+        "from_role": "goalkeeper_rescue",
+        "to_segment_id": "seg:6",
+        "to_role": "goalkeeper_rescue",
+        "source_interval_sec": [
+          4769.62,
+          6552.01
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "换人调整后防守动作增多，可能改变比赛节奏。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000563",
+          "source_pts_sec": 5557.6,
+          "event_type": "Substitution",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队9号换下2队7号"
+          }
+        },
+        {
+          "event_id": "event_000564",
+          "source_pts_sec": 5561.0,
+          "event_type": "Substitution",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队9号换下2队7号"
+          }
+        },
+        {
+          "event_id": "event_000569",
+          "source_pts_sec": 5643.54,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员2队球员为争夺球权发生身体对抗"
+          }
+        },
+        {
+          "event_id": "event_000570",
+          "source_pts_sec": 5652.36,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员把球解围"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000563",
+          "target_event_id": "event_000569",
+          "relation_type": "narrative_association",
+          "claim": "换人后防守动作可能增多",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若换人后防守动作未增加则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000569",
+          "question": "换人后是否出现防守动作？",
+          "discriminating_signal": "防守动作出现或比赛平稳"
+        }
+      ]
+    }
+  ],
+  "replay_base_proposals_sha256": "6d8a92b84d09a75a2dff34fc051de82a8e1a2fb92dae1a913bc891ba19257ed9",
+  "replay_revision_history": [
+    {
+      "trial": {
+        "trial_id": "80ec7dfdeff6ed443784026f",
+        "proposal_ids": [
+          "interval_05:H2"
+        ],
+        "events": [
+          {
+            "event_id": "atom_fill_0049_Shot_5175752",
+            "source_pts_sec": 5175.752,
+            "event_type": "Shot",
+            "known_replay_or_slowmo": false,
+            "annotation": null
+          },
+          {
+            "event_id": "atom_fill_0050_Save_5177072",
+            "source_pts_sec": 5177.072,
+            "event_type": "Save",
+            "known_replay_or_slowmo": false,
+            "annotation": null
+          },
+          {
+            "event_id": "atom_fill_0059_Shot_5360612",
+            "source_pts_sec": 5360.612,
+            "event_type": "Shot",
+            "known_replay_or_slowmo": false,
+            "annotation": null
+          },
+          {
+            "event_id": "atom_fill_0060_Save_5361641",
+            "source_pts_sec": 5361.641,
+            "event_type": "Save",
+            "known_replay_or_slowmo": false,
+            "annotation": null
+          }
+        ],
+        "relations": [
+          {
+            "relation_id": "interval_05:H2:r1",
+            "source_event_id": "atom_fill_0049_Shot_5175752",
+            "target_event_id": "atom_fill_0050_Save_5177072",
+            "relation_type": "causal_hypothesis",
+            "claim": "射门后门将扑救可能阻止进球",
+            "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+          }
+        ],
+        "story_context": [
+          {
+            "proposal_id": "interval_05:H2",
+            "summary": "多次射门被扑出，门将连续化解威胁，进攻未能转化为进球。",
+            "expected_story_contribution": "",
+            "falsification_conditions": [
+              "若扑救未发生在射门之后则假设不成立"
+            ]
+          }
+        ],
+        "windows": [
+          {
+            "event_ids": [
+              "atom_fill_0049_Shot_5175752",
+              "atom_fill_0050_Save_5177072"
+            ],
+            "source_pts_start": 5167.752,
+            "source_pts_end": 5185.072,
+            "insert_after_segment_id": "seg:5",
+            "before_segment_id": "seg:6",
+            "candidate_id": "story_first_80ec7dfdeff6ed443784026f_01",
+            "issue_id": "story_first:80ec7dfdeff6ed443784026f"
+          },
+          {
+            "event_ids": [
+              "atom_fill_0059_Shot_5360612",
+              "atom_fill_0060_Save_5361641"
+            ],
+            "source_pts_start": 5352.612,
+            "source_pts_end": 5369.641,
+            "insert_after_segment_id": "seg:5",
+            "before_segment_id": "seg:6",
+            "candidate_id": "story_first_80ec7dfdeff6ed443784026f_02",
+            "issue_id": "story_first:80ec7dfdeff6ed443784026f"
+          }
+        ],
+        "narrative_purpose": "该提案直接对应故事目标“同队门将多次化险”，包含射门与扑救事件对，且无已知 replay/slow-mo 标记。观察这些事件可验证门将连续化解威胁的叙事链，为后续是否需要在 seg:5 与 seg:6 之间补充素材提供证据。"
+      },
+      "review": {
+        "status": "NEEDS_REVISION",
+        "feedback": [
+          {
+            "window_id": "story_first_80ec7dfdeff6ed443784026f_02",
+            "event_ids": [
+              "atom_fill_0059_Shot_5360612",
+              "atom_fill_0060_Save_5361641"
+            ],
+            "status": "REPLAY_CONFIRMED",
+            "reason": "window_overlaps_replay_or_slowmo_annotation",
+            "replay_event_ids": [
+              "atom_fill_0061_Dribble_past_5369167",
+              "atom_fill_0062_Defensive_action_5369505"
+            ]
+          }
+        ],
+        "advisory": [],
+        "annotation_supported_event_ids": [],
+        "event_observations": [],
+        "candidates": [
+          {
+            "event_ids": [
+              "atom_fill_0049_Shot_5175752",
+              "atom_fill_0050_Save_5177072"
+            ],
+            "source_pts_start": 5167.752,
+            "source_pts_end": 5185.072,
+            "insert_after_segment_id": "seg:5",
+            "before_segment_id": "seg:6",
+            "candidate_id": "story_first_80ec7dfdeff6ed443784026f_01",
+            "issue_id": "story_first:80ec7dfdeff6ed443784026f",
+            "evidence_tier": "EVENT_PTS_CANDIDATE",
+            "first_live_status": "NOT_VERIFIED",
+            "first_live_available": false,
+            "executable_safe_revision": false,
+            "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+            "story_first_trial_id": "80ec7dfdeff6ed443784026f",
+            "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+            "preview_only": true
+          }
+        ],
+        "intents": []
+      },
+      "changes": [
+        {
+          "proposal_id": "interval_05:H2",
+          "status": "REPLACED",
+          "removed_event_ids": [],
+          "window_edits": [
+            {
+              "event_ids": [
+                "atom_fill_0059_Shot_5360612",
+                "atom_fill_0060_Save_5361641"
+              ],
+              "removed_event_ids": [],
+              "original_source_window_sec": [
+                5352.612,
+                5369.641
+              ],
+              "removed_source_windows_sec": [
+                [
+                  5369.167,
+                  5371.167
+                ],
+                [
+                  5369.505,
+                  5371.505
+                ]
+              ],
+              "retained_source_windows_sec": [
+                [
+                  5352.612,
+                  5369.167
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

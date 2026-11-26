@@ -1,0 +1,186 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若两次射门间球权已明确转换则不成立"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "repeated_one_on_one_shot_sequence",
+      "narrative_summary": "禁区内连续出现两次一对一射门尝试，可能构成同一波威胁的重复冲击。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "门将触球或扑救动作",
+          "question": "该一对一射门是否被门将化解？",
+          "target_id": "event:event_000411"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "两次一对一射门或属同一威胁序列，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000411",
+          "target_event_id": "event_000412"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000411",
+        "event_000412",
+        "event_000413"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若射门前球权来自对方解围则不成立"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "buildup_then_shot_contrast",
+      "narrative_summary": "短传与带球突破铺垫后出现一对一射门，可能形成由组织到终结的对比。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "传球方向与接球者",
+          "question": "该短传是否指向射门球员？",
+          "target_id": "event:event_000410"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "短传组织或为射门铺垫，尚属推测",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000408",
+          "target_event_id": "event_000411"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000408",
+        "event_000410",
+        "event_000411"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若抢断与突破分属不同半场则不成立"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "defensive_tackle_chain",
+      "narrative_summary": "多次抢断与带球突破交替出现，可能反映中场反复争夺的防守链条。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "球权转换的连续性",
+          "question": "该突破是否紧接抢断后发生？",
+          "target_id": "event:event_000407"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "抢断与突破或属同一争夺段落，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000404",
+          "target_event_id": "event_000407"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000404",
+        "event_000405",
+        "event_000407"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若控球方为射门方持续进攻则不成立"
+      ],
+      "hypothesis_id": "H4",
+      "mechanism_key": "possession_after_shot_recovery",
+      "narrative_summary": "射门后出现控球事件，可能显示威胁被化解后球权重新稳定。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "控球球员球衣颜色",
+          "question": "控球方是否为防守一方？",
+          "target_id": "event:event_000413"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "射门后控球或标志威胁段落结束，属推测",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "state_transition",
+          "source_event_id": "event_000411",
+          "target_event_id": "event_000413"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000411",
+        "event_000413",
+        "event_000414"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若界外球后球权迅速丢失则不成立"
+      ],
+      "hypothesis_id": "H5",
+      "mechanism_key": "throw_in_to_shot_phase",
+      "narrative_summary": "界外球后经短传与突破发展至射门，可能构成一次完整进攻段落。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "掷球方球衣颜色",
+          "question": "界外球由哪一方掷出？",
+          "target_id": "event:event_000406"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "界外球或开启该进攻段落，尚属推测",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000406",
+          "target_event_id": "event_000411"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000406",
+        "event_000408",
+        "event_000411"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

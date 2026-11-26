@@ -1,0 +1,48 @@
+[
+  {
+    "round": 1,
+    "selection": {
+      "selections": [
+        {
+          "proposal_id": "interval_05:H2",
+          "event_ids": [
+            "atom_fill_0049_Shot_5175752",
+            "atom_fill_0050_Save_5177072",
+            "atom_fill_0059_Shot_5360612",
+            "atom_fill_0060_Save_5361641"
+          ],
+          "relation_ids": [
+            "r1"
+          ]
+        }
+      ],
+      "rationale": "该提案直接对应故事目标“同队门将多次化险”，包含射门与扑救事件对，且无已知 replay/slow-mo 标记。观察这些事件可验证门将连续化解威胁的叙事链，为后续是否需要在 seg:5 与 seg:6 之间补充素材提供证据。",
+      "revised_relations": [
+        {
+          "source_event_id": "atom_fill_0049_Shot_5175752",
+          "target_event_id": "atom_fill_0050_Save_5177072",
+          "relation_type": "causal_hypothesis",
+          "claim": "射门后门将扑救可能阻止进球"
+        }
+      ]
+    },
+    "stage": "SOURCE_REVIEW",
+    "status": "NEEDS_REVISION",
+    "findings": [
+      {
+        "window_id": "story_first_80ec7dfdeff6ed443784026f_02",
+        "event_ids": [
+          "atom_fill_0059_Shot_5360612",
+          "atom_fill_0060_Save_5361641"
+        ],
+        "status": "REPLAY_CONFIRMED",
+        "reason": "window_overlaps_replay_or_slowmo_annotation",
+        "replay_event_ids": [
+          "atom_fill_0061_Dribble_past_5369167",
+          "atom_fill_0062_Defensive_action_5369505"
+        ]
+      }
+    ],
+    "advisory": []
+  }
+]
