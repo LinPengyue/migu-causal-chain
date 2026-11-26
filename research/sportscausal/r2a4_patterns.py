@@ -57,7 +57,12 @@ def match_mixed_alternation(template,bundle):
        "subtype":"攻防与比分交替（待视频核验）",
        "narrative_goal":["组织攻防证据与比分变化的叙事假设；比分受益方不代表进攻方"]}
     result=match_episodes(t,temp)
+    score_only=[c for c in result["candidates"] if not any(n["actor_role"]=="attacking_team" for n in c["nodes"])]
+    result["candidates"]=[c for c in result["candidates"] if c not in score_only]
+    result["score_only_sequence_count"]=len(score_only)
     for c in result["candidates"]:
+        c["n_attack_evidence_nodes"]=sum(n["actor_role"]=="attacking_team" for n in c["nodes"])
+        c["n_score_only_nodes"]=sum(n["actor_role"]=="score_beneficiary" for n in c["nodes"])
         c["subject_roles"]=sorted({(n["actor"],n["actor_role"]) for n in c["nodes"]})
         c["subject_roles"]=[{"team":s,"role":r} for s,r in c["subject_roles"]]
         for n in c["nodes"]:
@@ -108,6 +113,7 @@ def run(evidence,semantics,score_doc,templates,out,*,base_graph=None,max_action_
             summary["patterns"][mixed["template_id"]]={"n_mixed_episodes":mixed["n_mixed_episodes"],
                 "strict_threat_metric_eligible":False,
                 "candidates":[{"subjects":c["subjects"],"mixed_role_runs":c["mixed_role_runs"],
+                    "n_attack_evidence_nodes":c["n_attack_evidence_nodes"],"n_score_only_nodes":c["n_score_only_nodes"],
                     "nodes":[{"event_ids":n["event_ids"],"actor":n["actor"],
                               "actor_role":n["actor_role"],"predicate":n["predicate"]}
                              for n in c["nodes"]]} for c in mixed["candidates"]]}
