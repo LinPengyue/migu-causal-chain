@@ -1,0 +1,260 @@
+{
+  "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+  "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "template_counts": {
+    "keeper_rescue": 2,
+    "alternating_threats": 1,
+    "alternating_threats_score_context": 1,
+    "comeback": 1,
+    "equalization": 1,
+    "lead_preservation": 1,
+    "set_piece_breakthrough": 0,
+    "turnover_to_goal": 1,
+    "threat_phase_change": 1
+  },
+  "stories": [
+    {
+      "story_id": "keeper_rescue:1",
+      "template_id": "keeper_rescue",
+      "operator": "repeat",
+      "subjects": [
+        "team_1"
+      ],
+      "n_segments": 2,
+      "duration_sec": 21.160000000000082,
+      "missing_required_nodes": [],
+      "structurally_complete": true,
+      "n_context_candidates": 0,
+      "n_observation_tasks": 1,
+      "strict_threat_metric_eligible": true,
+      "legacy_seed": {
+        "status": "not_applicable"
+      },
+      "agent_seed": {
+        "file": "initial_edl.json",
+        "status": "anchor_preview",
+        "first_live_verified": false,
+        "release_authorized": false
+      },
+      "folder": "keeper_rescue__1"
+    },
+    {
+      "story_id": "keeper_rescue:2",
+      "template_id": "keeper_rescue",
+      "operator": "repeat",
+      "subjects": [
+        "team_2"
+      ],
+      "n_segments": 6,
+      "duration_sec": 70.53000000000043,
+      "missing_required_nodes": [],
+      "structurally_complete": true,
+      "n_context_candidates": 0,
+      "n_observation_tasks": 1,
+      "strict_threat_metric_eligible": true,
+      "legacy_seed": {
+        "status": "not_applicable"
+      },
+      "agent_seed": {
+        "file": "initial_edl.json",
+        "status": "anchor_preview",
+        "first_live_verified": false,
+        "release_authorized": false
+      },
+      "folder": "keeper_rescue__2"
+    },
+    {
+      "story_id": "alternating_threats:1",
+      "template_id": "alternating_threats",
+      "operator": "alternate",
+      "subjects": [
+        "team_1",
+        "team_2"
+      ],
+      "n_segments": 10,
+      "duration_sec": 115.26000000000022,
+      "missing_required_nodes": [],
+      "structurally_complete": true,
+      "n_context_candidates": 0,
+      "n_observation_tasks": 1,
+      "strict_threat_metric_eligible": true,
+      "legacy_seed": {
+        "status": "not_applicable"
+      },
+      "agent_seed": {
+        "file": "initial_edl.json",
+        "status": "anchor_preview",
+        "first_live_verified": false,
+        "release_authorized": false
+      },
+      "folder": "alternating_threats__1"
+    },
+    {
+      "story_id": "alternating_threats_score_context:1",
+      "template_id": "alternating_threats_score_context",
+      "operator": "mixed_role_hypothesis",
+      "subjects": [
+        "team_1",
+        "team_2"
+      ],
+      "n_segments": 13,
+      "duration_sec": 124.7610000000002,
+      "missing_required_nodes": [],
+      "structurally_complete": true,
+      "n_context_candidates": 0,
+      "n_observation_tasks": 5,
+      "strict_threat_metric_eligible": false,
+      "legacy_seed": {
+        "status": "not_applicable"
+      },
+      "agent_seed": {
+        "file": "initial_edl.json",
+        "status": "anchor_preview",
+        "first_live_verified": false,
+        "release_authorized": false
+      },
+      "folder": "alternating_threats_score_context__1"
+    },
+    {
+      "story_id": "comeback:1",
+      "template_id": "comeback",
+      "operator": "state_transition",
+      "subjects": [
+        "team_1"
+      ],
+      "n_segments": 3,
+      "duration_sec": 9.500999999999976,
+      "missing_required_nodes": [],
+      "structurally_complete": true,
+      "n_context_candidates": 9,
+      "n_observation_tasks": 8,
+      "strict_threat_metric_eligible": true,
+      "legacy_seed": {
+        "status": "preserved_legacy_seed",
+        "file": "legacy_seed.json",
+        "source_provenance": "Original V3-R T01 comeback phase5 packaging from server run full_e2e_A_strict_lin_20261108_095704/01_to_04_fresh_v3r/04_phase5; protagonist 阿联酋=team_1 (left). Seed file is story_plan.json with edl_key=edl (7 timed segments). Sibling candidate_edl.json also exists at same phase5 dir (sha256=c2d65e50163751711912c788e049e0ad78a0bec649fab4cb06a9f17305036151) but includes placeholder title segments with null media_in/out and cannot pass R3 numeric window checks; not substituted with any newly generated EDL.",
+        "sha256": "dec28e8e9d82825167e1ef0ac56f068a0b84578a7116f683e17b625d9f4a9274",
+        "n_segments": 7,
+        "duration_sec": 89.0,
+        "chronological_nonoverlap": true,
+        "source_mapping_basis": "explicit_manifest",
+        "use_policy": "independent_agent_seed_pending_comparison_and_video_review",
+        "first_live_verified": false,
+        "release_authorized": false
+      },
+      "agent_seed": {
+        "file": "legacy_seed.json",
+        "status": "comparison_pending",
+        "first_live_verified": false,
+        "release_authorized": false
+      },
+      "folder": "comeback__1"
+    },
+    {
+      "story_id": "equalization:1",
+      "template_id": "equalization",
+      "operator": "state_transition",
+      "subjects": [
+        "team_1"
+      ],
+      "n_segments": 2,
+      "duration_sec": 5.869000000000369,
+      "missing_required_nodes": [],
+      "structurally_complete": true,
+      "n_context_candidates": 9,
+      "n_observation_tasks": 5,
+      "strict_threat_metric_eligible": true,
+      "legacy_seed": {
+        "status": "not_applicable"
+      },
+      "agent_seed": {
+        "file": "initial_edl.json",
+        "status": "anchor_preview",
+        "first_live_verified": false,
+        "release_authorized": false
+      },
+      "folder": "equalization__1"
+    },
+    {
+      "story_id": "lead_preservation:1",
+      "template_id": "lead_preservation",
+      "operator": "state_transition",
+      "subjects": [
+        "team_1"
+      ],
+      "n_segments": 2,
+      "duration_sec": 6.351999999999862,
+      "missing_required_nodes": [],
+      "structurally_complete": true,
+      "n_context_candidates": 2,
+      "n_observation_tasks": 5,
+      "strict_threat_metric_eligible": true,
+      "legacy_seed": {
+        "status": "not_applicable"
+      },
+      "agent_seed": {
+        "file": "initial_edl.json",
+        "status": "anchor_preview",
+        "first_live_verified": false,
+        "release_authorized": false
+      },
+      "folder": "lead_preservation__1"
+    },
+    {
+      "story_id": "turnover_to_goal:1",
+      "template_id": "turnover_to_goal",
+      "operator": "relation_path",
+      "subjects": [
+        "team_1"
+      ],
+      "n_segments": 5,
+      "duration_sec": 23.54199999999946,
+      "missing_required_nodes": [],
+      "structurally_complete": true,
+      "n_context_candidates": 0,
+      "n_observation_tasks": 2,
+      "strict_threat_metric_eligible": true,
+      "legacy_seed": {
+        "status": "not_applicable"
+      },
+      "agent_seed": {
+        "file": "initial_edl.json",
+        "status": "anchor_preview",
+        "first_live_verified": false,
+        "release_authorized": false
+      },
+      "folder": "turnover_to_goal__1"
+    },
+    {
+      "story_id": "threat_phase_change:1",
+      "template_id": "threat_phase_change",
+      "operator": "phase_change",
+      "subjects": [
+        "team_2",
+        "team_1"
+      ],
+      "n_segments": 9,
+      "duration_sec": 103.84000000000015,
+      "missing_required_nodes": [],
+      "structurally_complete": true,
+      "n_context_candidates": 0,
+      "n_observation_tasks": 1,
+      "strict_threat_metric_eligible": true,
+      "legacy_seed": {
+        "status": "not_applicable"
+      },
+      "agent_seed": {
+        "file": "initial_edl.json",
+        "status": "anchor_preview",
+        "first_live_verified": false,
+        "release_authorized": false
+      },
+      "folder": "threat_phase_change__1"
+    }
+  ],
+  "n_global_observation_tasks": 8,
+  "http_calls": 0,
+  "quality_verified": false,
+  "first_live_verified": false,
+  "release_authorized": false
+}

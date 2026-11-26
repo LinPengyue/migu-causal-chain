@@ -1,0 +1,217 @@
+[
+  {
+    "task_type": "goal_execution_roles",
+    "event_ids": [
+      "atom_fill_0003_Shot_1335974",
+      "atom_fill_0004_Goal_1337123"
+    ],
+    "goal_event_id": "atom_fill_0004_Goal_1337123",
+    "score_beneficiary": "team_2",
+    "goal_kind": "untyped_goal",
+    "known_executor": null,
+    "known_attacking_team": null,
+    "role_conflict": false,
+    "media_windows": [
+      [
+        1335.974,
+        1339.123
+      ]
+    ],
+    "questions": [
+      "identify actual ball-striking team",
+      "identify attacking team",
+      "ordinary goal, own goal, or other deflection",
+      "confirm first live footage"
+    ],
+    "reason": "separate execution, attack and score roles",
+    "resolved": false,
+    "task_id": "observe:1",
+    "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+    "preview_only": true
+  },
+  {
+    "task_type": "goal_execution_roles",
+    "event_ids": [
+      "atom_fill_0074_Shot_6448924",
+      "atom_fill_0075_Goal_6449644"
+    ],
+    "goal_event_id": "atom_fill_0075_Goal_6449644",
+    "score_beneficiary": "team_1",
+    "goal_kind": "untyped_goal",
+    "known_executor": null,
+    "known_attacking_team": null,
+    "role_conflict": false,
+    "media_windows": [
+      [
+        6448.924,
+        6451.644
+      ]
+    ],
+    "questions": [
+      "identify actual ball-striking team",
+      "identify attacking team",
+      "ordinary goal, own goal, or other deflection",
+      "confirm first live footage"
+    ],
+    "reason": "separate execution, attack and score roles",
+    "resolved": false,
+    "task_id": "observe:2",
+    "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+    "preview_only": true
+  },
+  {
+    "task_type": "shot_save_roles",
+    "event_ids": [
+      "atom_fill_0049_Shot_5175752",
+      "atom_fill_0050_Save_5177072"
+    ],
+    "media_windows": [
+      [
+        5175.752,
+        5179.072
+      ]
+    ],
+    "actor_hypotheses": [
+      {
+        "attacker": "team_1",
+        "keeper": "team_2",
+        "conditionally_compatible_clues": [],
+        "conditionally_contrary_clues": [
+          "event_000533"
+        ]
+      },
+      {
+        "attacker": "team_2",
+        "keeper": "team_1",
+        "conditionally_compatible_clues": [
+          "event_000533"
+        ],
+        "conditionally_contrary_clues": []
+      }
+    ],
+    "context_clues": [
+      {
+        "direction": "after",
+        "event_id": "event_000533",
+        "actor": "team_1",
+        "intervening_event_ids": [
+          "event_000532"
+        ],
+        "possible_turnover": true,
+        "continuous_chain_ids": [
+          "pred_0047",
+          "pred_0048"
+        ],
+        "assumption": "keeper_team_retains_ball"
+      }
+    ],
+    "chain_support": [
+      {
+        "chain_id": "pred_0047",
+        "state": "PARTIAL",
+        "subtype": "goal_line_extreme_save_chain"
+      },
+      {
+        "chain_id": "pred_0048",
+        "state": "PARTIAL",
+        "subtype": "shot_save_chain"
+      }
+    ],
+    "reason": "context_continuity_not_established",
+    "questions": [
+      "identify shooting and saving teams",
+      "verify action relation",
+      "confirm first live footage"
+    ],
+    "resolved": false,
+    "task_id": "observe:4",
+    "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+    "preview_only": true
+  },
+  {
+    "task_type": "shot_save_roles",
+    "event_ids": [
+      "atom_fill_0059_Shot_5360612",
+      "atom_fill_0060_Save_5361641"
+    ],
+    "media_windows": [
+      [
+        5360.612,
+        5363.641
+      ]
+    ],
+    "actor_hypotheses": [
+      {
+        "attacker": "team_1",
+        "keeper": "team_2",
+        "conditionally_compatible_clues": [],
+        "conditionally_contrary_clues": []
+      },
+      {
+        "attacker": "team_2",
+        "keeper": "team_1",
+        "conditionally_compatible_clues": [],
+        "conditionally_contrary_clues": []
+      }
+    ],
+    "context_clues": [],
+    "chain_support": [
+      {
+        "chain_id": "pred_0049",
+        "state": "PARTIAL",
+        "subtype": "shot_save_chain"
+      },
+      {
+        "chain_id": "pred_0050",
+        "state": "PARTIAL",
+        "subtype": "shot_save_chain"
+      }
+    ],
+    "reason": "context_continuity_not_established",
+    "questions": [
+      "identify shooting and saving teams",
+      "verify action relation",
+      "confirm first live footage"
+    ],
+    "resolved": false,
+    "task_id": "observe:5",
+    "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+    "preview_only": true
+  },
+  {
+    "task_id": "observe:r2bc:threat_phase_change:1",
+    "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+    "candidate_id": "threat_phase_change:1",
+    "preview_only": true,
+    "resolved": false,
+    "media_windows": [],
+    "task_type": "phase_switch_verification",
+    "search_interval": [
+      1922.55,
+      1955.54
+    ],
+    "event_ids": [
+      "event_000096",
+      "event_000097",
+      "event_000276",
+      "event_000277",
+      "event_000282",
+      "event_000398",
+      "event_000399",
+      "event_000400",
+      "event_000416",
+      "event_000417",
+      "event_000421",
+      "event_000472",
+      "event_000476",
+      "event_000477",
+      "event_000640",
+      "event_000641"
+    ],
+    "questions": [
+      "inspect whether the observed threat runs indicate a meaningful attack shift",
+      "identify the transition or intervening story event",
+      "confirm first live footage"
+    ]
+  }
+]

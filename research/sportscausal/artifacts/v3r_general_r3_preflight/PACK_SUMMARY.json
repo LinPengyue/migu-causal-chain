@@ -1,0 +1,525 @@
+{
+  "schema": "v3r_general_r3_preflight_pack_v1",
+  "code_commit": "15646d3d0086b17eedc503f06fd0fbc122b394e4",
+  "frozen_r2bc": "73078bbe319bf4b9eccd5004b291d1d61350520b",
+  "frozen_r2a4": "0bba8b799e39d35305663d2497683c2602690950",
+  "http_calls": 0,
+  "paid_models": false,
+  "video_render": false,
+  "history_rerun": false,
+  "unittest": {
+    "module": "test_r3_story_pipeline",
+    "ran": 12,
+    "ok": 12
+  },
+  "inputs": {
+    "A_evidence": "artifacts/stage1_2_evidence_preflight_20261125/A_uae_oman/keeper_rescue/evidence.json",
+    "B_evidence": "artifacts/stage1_2_evidence_preflight_20261125/B_osasuna_celta/keeper_rescue/evidence.json",
+    "A_r2a4_relation_graph": "artifacts/v3r_general_r2a4_preflight/A/relation_graph.json",
+    "A_r2a4_causal_episodes": "artifacts/v3r_general_r2a4_preflight/A/causal_episodes.json",
+    "B_r2a4_relation_graph": "artifacts/v3r_general_r2a4_preflight/B/relation_graph.json",
+    "B_r2a4_causal_episodes": "artifacts/v3r_general_r2a4_preflight/B/causal_episodes.json",
+    "A_r2bc_anchor": "artifacts/v3r_general_r2bc_preflight/A/anchor_pack.json",
+    "B_r2bc_anchor": "artifacts/v3r_general_r2bc_preflight/B/anchor_pack.json",
+    "A_legacy_manifest": "artifacts/v3r_general_r3_preflight/inputs_prepared/A_legacy_seed_manifest.json",
+    "B_legacy_manifest": "artifacts/v3r_general_r3_preflight/inputs_prepared/B_legacy_seed_manifest.json",
+    "A_legacy_story_plan": "/data2/lpy1/_story_va_outputs/v3/plan2/full_e2e_A_strict_lin_20261108_095704/01_to_04_fresh_v3r/04_phase5/story_plan.json",
+    "B_legacy_story_plan": "/data2/lpy1/_story_va_outputs/v3/plan2/full_e2e_B_strict_lin_20261108_095704/01_to_04_fresh_v3r/04_phase5/story_plan.json",
+    "A_legacy_candidate_edl": "/data2/lpy1/_story_va_outputs/v3/plan2/full_e2e_A_strict_lin_20261108_095704/01_to_04_fresh_v3r/04_phase5/candidate_edl.json",
+    "B_legacy_candidate_edl": "/data2/lpy1/_story_va_outputs/v3/plan2/full_e2e_B_strict_lin_20261108_095704/01_to_04_fresh_v3r/04_phase5/candidate_edl.json"
+  },
+  "input_sha256": {
+    "A_evidence": "9322933a9c3ef15a990c9377ed498e97b73cb20350bbfe279114bf2f3b4043fc",
+    "B_evidence": "a673769fe1b81f93a34f9c987302af49f8988cbf02c429ad97b1317bf7b33292",
+    "A_r2a4_relation_graph": "05dd0cfcc61556d2e0b9aeb8f89d52b2c4bdc80f8cca15f59423b7b7e925f05d",
+    "A_r2a4_causal_episodes": "9f54e404a18c0c4d95f5b9ffd2fcd3af193f9784d5aa003f6e48d7cdf1bd3b62",
+    "B_r2a4_relation_graph": "71baf210706ea081002f6c27b61592e964daa61df1f5fd1aeec53bd75c3e56c8",
+    "B_r2a4_causal_episodes": "91610d0cd3517f399dd4a5e5287444c7d77c4b46d4ff806db44d4716ba824d40",
+    "A_r2bc_anchor": "4169cddf1415781eefd620a0a69b52a2a1d0983377cd8360501d3c228dcfadb6",
+    "B_r2bc_anchor": "21206d0cfb1be2afffac656aa4db13948b26c0b539d940584a5c9ab59b58d004",
+    "A_legacy_manifest": "4d32a3e3ed557fd64f18d660dadc5c8029f85ed87f97d59dcc838ab2d3c5ecb4",
+    "B_legacy_manifest": "6a9fe3d5aaafd682fbe4b04bae2df717dffee1f9ef8864f11a3ec31886f7500e",
+    "A_legacy_story_plan": "dec28e8e9d82825167e1ef0ac56f068a0b84578a7116f683e17b625d9f4a9274",
+    "B_legacy_story_plan": "5ba76074c2d08727c4eb800251775b50dfd8e0b3925895809e935ecde11c14e4",
+    "A_legacy_candidate_edl": "c2d65e50163751711912c788e049e0ad78a0bec649fab4cb06a9f17305036151",
+    "B_legacy_candidate_edl": "90212f3c97d1371e3a491b665b5627e04bc79147be49bc1662baff2f6a6db406"
+  },
+  "n_original_type_stories": 13,
+  "n_mixed_hypotheses": 2,
+  "n_global_observation_tasks": 20,
+  "legacy": {
+    "A": {
+      "status": "preserved_legacy_seed",
+      "file": "legacy_seed.json",
+      "source_provenance": "Original V3-R T01 comeback phase5 packaging from server run full_e2e_A_strict_lin_20261108_095704/01_to_04_fresh_v3r/04_phase5; protagonist 阿联酋=team_1 (left). Seed file is story_plan.json with edl_key=edl (7 timed segments). Sibling candidate_edl.json also exists at same phase5 dir (sha256=c2d65e50163751711912c788e049e0ad78a0bec649fab4cb06a9f17305036151) but includes placeholder title segments with null media_in/out and cannot pass R3 numeric window checks; not substituted with any newly generated EDL.",
+      "sha256": "dec28e8e9d82825167e1ef0ac56f068a0b84578a7116f683e17b625d9f4a9274",
+      "n_segments": 7,
+      "duration_sec": 89.0,
+      "chronological_nonoverlap": true,
+      "source_mapping_basis": "explicit_manifest",
+      "use_policy": "independent_agent_seed_pending_comparison_and_video_review",
+      "first_live_verified": false,
+      "release_authorized": false
+    },
+    "B": {
+      "status": "preserved_legacy_seed",
+      "file": "legacy_seed.json",
+      "source_provenance": "Original V3-R T01 comeback phase5 packaging from server run full_e2e_B_strict_lin_20261108_095704/01_to_04_fresh_v3r/04_phase5; protagonist 塞尔塔维戈=team_2 (right). Seed file is story_plan.json with edl_key=edl (7 timed segments). Sibling candidate_edl.json also exists at same phase5 dir (sha256=90212f3c97d1371e3a491b665b5627e04bc79147be49bc1662baff2f6a6db406) but includes placeholder title/background segments with null media_in/out and cannot pass R3 numeric window checks; not substituted with any newly generated EDL.",
+      "sha256": "5ba76074c2d08727c4eb800251775b50dfd8e0b3925895809e935ecde11c14e4",
+      "n_segments": 7,
+      "duration_sec": 89.0,
+      "chronological_nonoverlap": true,
+      "source_mapping_basis": "explicit_manifest",
+      "use_policy": "independent_agent_seed_pending_comparison_and_video_review",
+      "first_live_verified": false,
+      "release_authorized": false
+    }
+  },
+  "sides": {
+    "A": {
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+      "template_counts": {
+        "keeper_rescue": 2,
+        "alternating_threats": 1,
+        "alternating_threats_score_context": 1,
+        "comeback": 1,
+        "equalization": 1,
+        "lead_preservation": 1,
+        "set_piece_breakthrough": 0,
+        "turnover_to_goal": 1,
+        "threat_phase_change": 1
+      },
+      "stories": [
+        {
+          "story_id": "keeper_rescue:1",
+          "template_id": "keeper_rescue",
+          "operator": "repeat",
+          "subjects": [
+            "team_1"
+          ],
+          "n_segments": 2,
+          "duration_sec": 21.160000000000082,
+          "missing_required_nodes": [],
+          "structurally_complete": true,
+          "n_context_candidates": 0,
+          "n_observation_tasks": 1,
+          "strict_threat_metric_eligible": true,
+          "legacy_seed": {
+            "status": "not_applicable"
+          },
+          "agent_seed": {
+            "file": "initial_edl.json",
+            "status": "anchor_preview",
+            "first_live_verified": false,
+            "release_authorized": false
+          },
+          "folder": "keeper_rescue__1"
+        },
+        {
+          "story_id": "keeper_rescue:2",
+          "template_id": "keeper_rescue",
+          "operator": "repeat",
+          "subjects": [
+            "team_2"
+          ],
+          "n_segments": 6,
+          "duration_sec": 70.53000000000043,
+          "missing_required_nodes": [],
+          "structurally_complete": true,
+          "n_context_candidates": 0,
+          "n_observation_tasks": 1,
+          "strict_threat_metric_eligible": true,
+          "legacy_seed": {
+            "status": "not_applicable"
+          },
+          "agent_seed": {
+            "file": "initial_edl.json",
+            "status": "anchor_preview",
+            "first_live_verified": false,
+            "release_authorized": false
+          },
+          "folder": "keeper_rescue__2"
+        },
+        {
+          "story_id": "alternating_threats:1",
+          "template_id": "alternating_threats",
+          "operator": "alternate",
+          "subjects": [
+            "team_1",
+            "team_2"
+          ],
+          "n_segments": 10,
+          "duration_sec": 115.26000000000022,
+          "missing_required_nodes": [],
+          "structurally_complete": true,
+          "n_context_candidates": 0,
+          "n_observation_tasks": 1,
+          "strict_threat_metric_eligible": true,
+          "legacy_seed": {
+            "status": "not_applicable"
+          },
+          "agent_seed": {
+            "file": "initial_edl.json",
+            "status": "anchor_preview",
+            "first_live_verified": false,
+            "release_authorized": false
+          },
+          "folder": "alternating_threats__1"
+        },
+        {
+          "story_id": "alternating_threats_score_context:1",
+          "template_id": "alternating_threats_score_context",
+          "operator": "mixed_role_hypothesis",
+          "subjects": [
+            "team_1",
+            "team_2"
+          ],
+          "n_segments": 13,
+          "duration_sec": 124.7610000000002,
+          "missing_required_nodes": [],
+          "structurally_complete": true,
+          "n_context_candidates": 0,
+          "n_observation_tasks": 5,
+          "strict_threat_metric_eligible": false,
+          "legacy_seed": {
+            "status": "not_applicable"
+          },
+          "agent_seed": {
+            "file": "initial_edl.json",
+            "status": "anchor_preview",
+            "first_live_verified": false,
+            "release_authorized": false
+          },
+          "folder": "alternating_threats_score_context__1"
+        },
+        {
+          "story_id": "comeback:1",
+          "template_id": "comeback",
+          "operator": "state_transition",
+          "subjects": [
+            "team_1"
+          ],
+          "n_segments": 3,
+          "duration_sec": 9.500999999999976,
+          "missing_required_nodes": [],
+          "structurally_complete": true,
+          "n_context_candidates": 9,
+          "n_observation_tasks": 8,
+          "strict_threat_metric_eligible": true,
+          "legacy_seed": {
+            "status": "preserved_legacy_seed",
+            "file": "legacy_seed.json",
+            "source_provenance": "Original V3-R T01 comeback phase5 packaging from server run full_e2e_A_strict_lin_20261108_095704/01_to_04_fresh_v3r/04_phase5; protagonist 阿联酋=team_1 (left). Seed file is story_plan.json with edl_key=edl (7 timed segments). Sibling candidate_edl.json also exists at same phase5 dir (sha256=c2d65e50163751711912c788e049e0ad78a0bec649fab4cb06a9f17305036151) but includes placeholder title segments with null media_in/out and cannot pass R3 numeric window checks; not substituted with any newly generated EDL.",
+            "sha256": "dec28e8e9d82825167e1ef0ac56f068a0b84578a7116f683e17b625d9f4a9274",
+            "n_segments": 7,
+            "duration_sec": 89.0,
+            "chronological_nonoverlap": true,
+            "source_mapping_basis": "explicit_manifest",
+            "use_policy": "independent_agent_seed_pending_comparison_and_video_review",
+            "first_live_verified": false,
+            "release_authorized": false
+          },
+          "agent_seed": {
+            "file": "legacy_seed.json",
+            "status": "comparison_pending",
+            "first_live_verified": false,
+            "release_authorized": false
+          },
+          "folder": "comeback__1"
+        },
+        {
+          "story_id": "equalization:1",
+          "template_id": "equalization",
+          "operator": "state_transition",
+          "subjects": [
+            "team_1"
+          ],
+          "n_segments": 2,
+          "duration_sec": 5.869000000000369,
+          "missing_required_nodes": [],
+          "structurally_complete": true,
+          "n_context_candidates": 9,
+          "n_observation_tasks": 5,
+          "strict_threat_metric_eligible": true,
+          "legacy_seed": {
+            "status": "not_applicable"
+          },
+          "agent_seed": {
+            "file": "initial_edl.json",
+            "status": "anchor_preview",
+            "first_live_verified": false,
+            "release_authorized": false
+          },
+          "folder": "equalization__1"
+        },
+        {
+          "story_id": "lead_preservation:1",
+          "template_id": "lead_preservation",
+          "operator": "state_transition",
+          "subjects": [
+            "team_1"
+          ],
+          "n_segments": 2,
+          "duration_sec": 6.351999999999862,
+          "missing_required_nodes": [],
+          "structurally_complete": true,
+          "n_context_candidates": 2,
+          "n_observation_tasks": 5,
+          "strict_threat_metric_eligible": true,
+          "legacy_seed": {
+            "status": "not_applicable"
+          },
+          "agent_seed": {
+            "file": "initial_edl.json",
+            "status": "anchor_preview",
+            "first_live_verified": false,
+            "release_authorized": false
+          },
+          "folder": "lead_preservation__1"
+        },
+        {
+          "story_id": "turnover_to_goal:1",
+          "template_id": "turnover_to_goal",
+          "operator": "relation_path",
+          "subjects": [
+            "team_1"
+          ],
+          "n_segments": 5,
+          "duration_sec": 23.54199999999946,
+          "missing_required_nodes": [],
+          "structurally_complete": true,
+          "n_context_candidates": 0,
+          "n_observation_tasks": 2,
+          "strict_threat_metric_eligible": true,
+          "legacy_seed": {
+            "status": "not_applicable"
+          },
+          "agent_seed": {
+            "file": "initial_edl.json",
+            "status": "anchor_preview",
+            "first_live_verified": false,
+            "release_authorized": false
+          },
+          "folder": "turnover_to_goal__1"
+        },
+        {
+          "story_id": "threat_phase_change:1",
+          "template_id": "threat_phase_change",
+          "operator": "phase_change",
+          "subjects": [
+            "team_2",
+            "team_1"
+          ],
+          "n_segments": 9,
+          "duration_sec": 103.84000000000015,
+          "missing_required_nodes": [],
+          "structurally_complete": true,
+          "n_context_candidates": 0,
+          "n_observation_tasks": 1,
+          "strict_threat_metric_eligible": true,
+          "legacy_seed": {
+            "status": "not_applicable"
+          },
+          "agent_seed": {
+            "file": "initial_edl.json",
+            "status": "anchor_preview",
+            "first_live_verified": false,
+            "release_authorized": false
+          },
+          "folder": "threat_phase_change__1"
+        }
+      ],
+      "n_global_observation_tasks": 8,
+      "http_calls": 0,
+      "quality_verified": false,
+      "first_live_verified": false,
+      "release_authorized": false
+    },
+    "B": {
+      "video_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+      "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+      "template_counts": {
+        "keeper_rescue": 1,
+        "alternating_threats": 0,
+        "alternating_threats_score_context": 1,
+        "comeback": 1,
+        "equalization": 2,
+        "lead_preservation": 1,
+        "set_piece_breakthrough": 0,
+        "turnover_to_goal": 0,
+        "threat_phase_change": 0
+      },
+      "stories": [
+        {
+          "story_id": "keeper_rescue:1",
+          "template_id": "keeper_rescue",
+          "operator": "repeat",
+          "subjects": [
+            "team_2"
+          ],
+          "n_segments": 3,
+          "duration_sec": 30.340000000000714,
+          "missing_required_nodes": [],
+          "structurally_complete": true,
+          "n_context_candidates": 0,
+          "n_observation_tasks": 0,
+          "strict_threat_metric_eligible": true,
+          "legacy_seed": {
+            "status": "not_applicable"
+          },
+          "agent_seed": {
+            "file": "initial_edl.json",
+            "status": "anchor_preview",
+            "first_live_verified": false,
+            "release_authorized": false
+          },
+          "folder": "keeper_rescue__1"
+        },
+        {
+          "story_id": "alternating_threats_score_context:1",
+          "template_id": "alternating_threats_score_context",
+          "operator": "mixed_role_hypothesis",
+          "subjects": [
+            "team_1",
+            "team_2"
+          ],
+          "n_segments": 7,
+          "duration_sec": 43.47999999999945,
+          "missing_required_nodes": [],
+          "structurally_complete": true,
+          "n_context_candidates": 0,
+          "n_observation_tasks": 4,
+          "strict_threat_metric_eligible": false,
+          "legacy_seed": {
+            "status": "not_applicable"
+          },
+          "agent_seed": {
+            "file": "initial_edl.json",
+            "status": "anchor_preview",
+            "first_live_verified": false,
+            "release_authorized": false
+          },
+          "folder": "alternating_threats_score_context__1"
+        },
+        {
+          "story_id": "comeback:1",
+          "template_id": "comeback",
+          "operator": "state_transition",
+          "subjects": [
+            "team_2"
+          ],
+          "n_segments": 3,
+          "duration_sec": 9.299999999998818,
+          "missing_required_nodes": [],
+          "structurally_complete": true,
+          "n_context_candidates": 1,
+          "n_observation_tasks": 6,
+          "strict_threat_metric_eligible": true,
+          "legacy_seed": {
+            "status": "preserved_legacy_seed",
+            "file": "legacy_seed.json",
+            "source_provenance": "Original V3-R T01 comeback phase5 packaging from server run full_e2e_B_strict_lin_20261108_095704/01_to_04_fresh_v3r/04_phase5; protagonist 塞尔塔维戈=team_2 (right). Seed file is story_plan.json with edl_key=edl (7 timed segments). Sibling candidate_edl.json also exists at same phase5 dir (sha256=90212f3c97d1371e3a491b665b5627e04bc79147be49bc1662baff2f6a6db406) but includes placeholder title/background segments with null media_in/out and cannot pass R3 numeric window checks; not substituted with any newly generated EDL.",
+            "sha256": "5ba76074c2d08727c4eb800251775b50dfd8e0b3925895809e935ecde11c14e4",
+            "n_segments": 7,
+            "duration_sec": 89.0,
+            "chronological_nonoverlap": true,
+            "source_mapping_basis": "explicit_manifest",
+            "use_policy": "independent_agent_seed_pending_comparison_and_video_review",
+            "first_live_verified": false,
+            "release_authorized": false
+          },
+          "agent_seed": {
+            "file": "legacy_seed.json",
+            "status": "comparison_pending",
+            "first_live_verified": false,
+            "release_authorized": false
+          },
+          "folder": "comeback__1"
+        },
+        {
+          "story_id": "equalization:1",
+          "template_id": "equalization",
+          "operator": "state_transition",
+          "subjects": [
+            "team_1"
+          ],
+          "n_segments": 1,
+          "duration_sec": 3.839999999999918,
+          "missing_required_nodes": [
+            "score:2"
+          ],
+          "structurally_complete": false,
+          "n_context_candidates": 1,
+          "n_observation_tasks": 3,
+          "strict_threat_metric_eligible": true,
+          "legacy_seed": {
+            "status": "not_applicable"
+          },
+          "agent_seed": {
+            "file": "initial_edl.json",
+            "status": "anchor_preview",
+            "first_live_verified": false,
+            "release_authorized": false
+          },
+          "folder": "equalization__1"
+        },
+        {
+          "story_id": "equalization:2",
+          "template_id": "equalization",
+          "operator": "state_transition",
+          "subjects": [
+            "team_2"
+          ],
+          "n_segments": 2,
+          "duration_sec": 6.1609999999996035,
+          "missing_required_nodes": [],
+          "structurally_complete": true,
+          "n_context_candidates": 1,
+          "n_observation_tasks": 3,
+          "strict_threat_metric_eligible": true,
+          "legacy_seed": {
+            "status": "not_applicable"
+          },
+          "agent_seed": {
+            "file": "initial_edl.json",
+            "status": "anchor_preview",
+            "first_live_verified": false,
+            "release_authorized": false
+          },
+          "folder": "equalization__2"
+        },
+        {
+          "story_id": "lead_preservation:1",
+          "template_id": "lead_preservation",
+          "operator": "state_transition",
+          "subjects": [
+            "team_2"
+          ],
+          "n_segments": 2,
+          "duration_sec": 5.601999999998952,
+          "missing_required_nodes": [],
+          "structurally_complete": true,
+          "n_context_candidates": 1,
+          "n_observation_tasks": 4,
+          "strict_threat_metric_eligible": true,
+          "legacy_seed": {
+            "status": "not_applicable"
+          },
+          "agent_seed": {
+            "file": "initial_edl.json",
+            "status": "anchor_preview",
+            "first_live_verified": false,
+            "release_authorized": false
+          },
+          "folder": "lead_preservation__1"
+        }
+      ],
+      "n_global_observation_tasks": 12,
+      "http_calls": 0,
+      "quality_verified": false,
+      "first_live_verified": false,
+      "release_authorized": false
+    }
+  }
+}
