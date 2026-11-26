@@ -1,0 +1,72 @@
+{
+  "frame_refs": [
+    {
+      "actual_media_sec": 3312.88,
+      "event_ids": [],
+      "frame_id": "f1",
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_original_agent_A_keeper_rescue_20261126_r4r5_3c/original_agent/02_round_01/story_first_source_review/source_frames/f_0000_3312851.jpg",
+      "pts_status": "pts",
+      "requested_media_sec": 3312.851,
+      "role": "candidate",
+      "sha256": "ecb05f33d1caa4eddd14f9fa3d415f0ad400a54de989074cfe4e0bee58c843c6",
+      "source_pts_sec": 3312.88,
+      "window_id": "story_first_1c669cd4128667f0e64c4dab_01"
+    },
+    {
+      "actual_media_sec": 3313.6,
+      "event_ids": [
+        "event_000395"
+      ],
+      "frame_id": "f2",
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_original_agent_A_keeper_rescue_20261126_r4r5_3c/original_agent/02_round_01/story_first_source_review/source_frames/f_0001_3313600.jpg",
+      "pts_status": "pts",
+      "requested_media_sec": 3313.6,
+      "role": "candidate",
+      "sha256": "f2b75308d97203cb3cafbe4722f0cb9d36a506cc068a98e6f4be2b4ce1caee6c",
+      "source_pts_sec": 3313.6,
+      "window_id": "story_first_1c669cd4128667f0e64c4dab_01"
+    },
+    {
+      "actual_media_sec": 3315.0,
+      "event_ids": [
+        "event_000396"
+      ],
+      "frame_id": "f3",
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_original_agent_A_keeper_rescue_20261126_r4r5_3c/original_agent/02_round_01/story_first_source_review/source_frames/f_0002_3314990.jpg",
+      "pts_status": "pts",
+      "requested_media_sec": 3314.99,
+      "role": "candidate",
+      "sha256": "e4e9c01c44eaa1916bdf197985f58b3dd786609769616f1f0a8646fbf4d8c462",
+      "source_pts_sec": 3315.0,
+      "window_id": "story_first_1c669cd4128667f0e64c4dab_01"
+    },
+    {
+      "actual_media_sec": 3321.8,
+      "event_ids": [
+        "event_000397"
+      ],
+      "frame_id": "f4",
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_original_agent_A_keeper_rescue_20261126_r4r5_3c/original_agent/02_round_01/story_first_source_review/source_frames/f_0003_3321770.jpg",
+      "pts_status": "pts",
+      "requested_media_sec": 3321.77,
+      "role": "candidate",
+      "sha256": "d070ed0a27c19ad0eb628b05f47c7df67084bfd7e2cf260d6724f6804e509cd5",
+      "source_pts_sec": 3321.8,
+      "window_id": "story_first_1c669cd4128667f0e64c4dab_01"
+    },
+    {
+      "actual_media_sec": 3322.52,
+      "event_ids": [],
+      "frame_id": "f5",
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_original_agent_A_keeper_rescue_20261126_r4r5_3c/original_agent/02_round_01/story_first_source_review/source_frames/f_0004_3322519.jpg",
+      "pts_status": "pts",
+      "requested_media_sec": 3322.519,
+      "role": "candidate",
+      "sha256": "c316db6bb0e90df4f44413a44039ffa14ec6c0c59552659665c4fe3c6d40dadd",
+      "source_pts_sec": 3322.52,
+      "window_id": "story_first_1c669cd4128667f0e64c4dab_01"
+    }
+  ],
+  "prompt": "Verify the listed events from source-bound stills in original time order. Use the surrounding source event timeline, including human annotations, for event facts and timing. Report what the sampled frames support or clearly contradict. Cite candidate frames bound to each selected event. Use UNCERTAIN if the sampled frames do not show the action or attribution clearly. Do not infer team numbers from kit color without a supplied mapping. If an event is visible only as a replay or slow-motion shot, mark it CONTRADICTED. First-live certification requires separate evidence. Return one compact JSON object with one row per event. Use short frame IDs and one brief, factual reason. {events:[{event_id,status:SUPPORTED|CONTRADICTED|UNCERTAIN,reason,frame_ids}]}\n{\"events\":[{\"event_id\":\"event_000395\",\"source_pts_sec\":3313.6,\"event_type\":\"Pass\",\"known_replay_or_slowmo\":false,\"annotation\":{\"description\":\"\",\"notes\":\"1队球员把球传到中路\"}},{\"event_id\":\"event_000396\",\"source_pts_sec\":3314.99,\"event_type\":\"Win_an_aerial_duel\",\"known_replay_or_slowmo\":false,\"annotation\":{\"description\":\"\",\"notes\":\"1队球员头球\"}},{\"event_id\":\"event_000397\",\"source_pts_sec\":3321.77,\"event_type\":\"Defensive_action\",\"known_replay_or_slowmo\":false,\"annotation\":{\"description\":\"\",\"notes\":\"2队球员用身体挡出了1队球员的传中\"}}],\"source_event_context\":[{\"event_id\":\"event_000392\",\"source_pts_sec\":3289.1,\"event_type\":\"Ball_possession\",\"label\":\"Ball_possession\",\"notes\":\"1队球员传球给队友，控制球权\",\"attributes\":{},\"broadcast_phase\":\"LIVE\",\"annotation_source\":\"annotated_delivery_event\",\"annotator_confidence\":1.0},{\"event_id\":\"event_000393\",\"source_pts_sec\":3297.43,\"event_type\":\"Pass\",\"label\":\"Short_Pass\",\"notes\":\"1队球员传球给队友，控制球权\",\"attributes\":{},\"broadcast_phase\":\"LIVE\",\"annotation_source\":\"annotated_delivery_event\",\"annotator_confidence\":1.0},{\"event_id\":\"event_000394\",\"source_pts_sec\":3309.39,\"event_type\":\"Pass\",\"label\":\"Short_Pass\",\"notes\":\"1队球员传球给队友，控制球权\",\"attributes\":{},\"broadcast_phase\":\"LIVE\",\"annotation_source\":\"annotated_delivery_event\",\"annotator_confidence\":1.0},{\"event_id\":\"event_000395\",\"source_pts_sec\":3313.6,\"event_type\":\"Pass\",\"label\":\"Cross\",\"notes\":\"1队球员把球传到中路\",\"attributes\":{},\"broadcast_phase\":\"LIVE\",\"annotation_source\":\"annotated_delivery_event\",\"annotator_confidence\":1.0},{\"event_id\":\"event_000396\",\"source_pts_sec\":3314.99,\"event_type\":\"Win_an_aerial_duel\",\"label\":\"Win_an_aerial_duel\",\"notes\":\"1队球员头球\",\"attributes\":{},\"broadcast_phase\":\"LIVE\",\"annotation_source\":\"annotated_delivery_event\",\"annotator_confidence\":1.0},{\"event_id\":\"event_000397\",\"source_pts_sec\":3321.77,\"event_type\":\"Defensive_action\",\"label\":\"Clearance\",\"notes\":\"2队球员用身体挡出了1队球员的传中\",\"attributes\":{\"Attacker\":[\"1队球员\"],\"Defender\":[\"2队球员\"],\"Defensive_Action\":[\"Clearance\"]},\"broadcast_phase\":\"LIVE\",\"annotation_source\":\"annotated_delivery_event\",\"annotator_confidence\":1.0},{\"event_id\":\"event_000398\",\"source_pts_sec\":3341.84,\"event_type\":\"Corner_kick\",\"label\":\"Corner_kick\",\"notes\":\"1队10号发角球\",\"attributes\":{},\"broadcast_phase\":\"LIVE\",\"annotation_source\":\"annotated_delivery_event\",\"annotator_confidence\":1.0},{\"event_id\":\"event_000399\",\"source_pts_sec\":3343.33,\"event_type\":\"Defensive_action\",\"label\":\"Goal_line_Incident\",\"notes\":\"2队守门员用手将球打出\",\"attributes\":{\"Attacker\":[\"1队球员\"],\"Defender\":[\"2队球员\"],\"Defensive_Action\":[\"Goal_line_Incident\"]},\"broadcast_phase\":\"LIVE\",\"annotation_source\":\"annotated_delivery_event\",\"annotator_confidence\":1.0}],\"teams\":{\"team_1\":{\"name\":\"阿联酋\",\"color\":\"白色\"},\"team_2\":{\"name\":\"阿曼\",\"color\":\"红色\"}},\"windows\":[{\"candidate_id\":\"story_first_1c669cd4128667f0e64c4dab_01\",\"source_pts_start\":3305.6,\"source_pts_end\":3329.77,\"event_ids\":[\"event_000395\",\"event_000396\",\"event_000397\"],\"existing_segment_id\":null}],\"frame_refs\":[{\"frame_id\":\"f1\",\"role\":\"candidate\",\"window_id\":\"story_first_1c669cd4128667f0e64c4dab_01\",\"event_ids\":[],\"source_pts_sec\":3312.88},{\"frame_id\":\"f2\",\"role\":\"candidate\",\"window_id\":\"story_first_1c669cd4128667f0e64c4dab_01\",\"event_ids\":[\"event_000395\"],\"source_pts_sec\":3313.6},{\"frame_id\":\"f3\",\"role\":\"candidate\",\"window_id\":\"story_first_1c669cd4128667f0e64c4dab_01\",\"event_ids\":[\"event_000396\"],\"source_pts_sec\":3315.0},{\"frame_id\":\"f4\",\"role\":\"candidate\",\"window_id\":\"story_first_1c669cd4128667f0e64c4dab_01\",\"event_ids\":[\"event_000397\"],\"source_pts_sec\":3321.8},{\"frame_id\":\"f5\",\"role\":\"candidate\",\"window_id\":\"story_first_1c669cd4128667f0e64c4dab_01\",\"event_ids\":[],\"source_pts_sec\":3322.52}]}",
+  "source_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c"
+}

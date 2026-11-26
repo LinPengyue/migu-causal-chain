@@ -1,0 +1,4203 @@
+{
+  "counts": {
+    "distinct_events_inside_scope": 78,
+    "events_dropped_by_context_cap": 0,
+    "events_in_full_inventory": 78,
+    "events_in_llm_context": 78,
+    "events_not_in_rich_detail_context": 0,
+    "events_omitted_entirely_from_prompt": 0,
+    "events_with_missing_ids": 0,
+    "gap_probes": 2,
+    "observation_probes": 20,
+    "supplied_event_rows": 879,
+    "timed_events_inside_scope": 78
+  },
+  "current_edl": [
+    {
+      "beat": "goalkeeper_rescue",
+      "event_ids": [
+        "event_000282"
+      ],
+      "is_replay": false,
+      "media_in": 1955.54,
+      "media_out": 1966.45,
+      "role": "goalkeeper_rescue",
+      "segment_id": "seg:1",
+      "shot_kind": "live"
+    },
+    {
+      "event_ids": [
+        "event_000285"
+      ],
+      "is_replay": false,
+      "media_in": 1981.0,
+      "media_out": 1997.0,
+      "role": "buildup_bridge_action",
+      "segment_id": "seg_story_first_5c223a27722ffb47d0ed5f93_01",
+      "shot_kind": "search_bridge"
+    },
+    {
+      "event_ids": [
+        "event_000311"
+      ],
+      "is_replay": false,
+      "media_in": 2269.94,
+      "media_out": 2285.94,
+      "role": "buildup_bridge_action",
+      "segment_id": "seg_story_first_5c223a27722ffb47d0ed5f93_02",
+      "shot_kind": "search_bridge"
+    },
+    {
+      "event_ids": [
+        "event_000337"
+      ],
+      "is_replay": false,
+      "media_in": 2502.42,
+      "media_out": 2518.42,
+      "role": "buildup_bridge_action",
+      "segment_id": "seg_story_first_5c223a27722ffb47d0ed5f93_03",
+      "shot_kind": "search_bridge"
+    },
+    {
+      "event_ids": [
+        "event_000370"
+      ],
+      "is_replay": false,
+      "media_in": 3041.14,
+      "media_out": 3057.14,
+      "role": "buildup_bridge_action",
+      "segment_id": "seg_story_first_5c223a27722ffb47d0ed5f93_04",
+      "shot_kind": "search_bridge"
+    },
+    {
+      "beat": "goalkeeper_rescue",
+      "event_ids": [
+        "event_000398",
+        "event_000399",
+        "event_000400"
+      ],
+      "is_replay": false,
+      "media_in": 3338.39,
+      "media_out": 3351.3,
+      "role": "goalkeeper_rescue",
+      "segment_id": "seg:2",
+      "shot_kind": "live"
+    },
+    {
+      "beat": "goalkeeper_rescue",
+      "event_ids": [
+        "event_000416",
+        "event_000417"
+      ],
+      "is_replay": false,
+      "media_in": 3504.14,
+      "media_out": 3515.83,
+      "role": "goalkeeper_rescue",
+      "segment_id": "seg:3",
+      "shot_kind": "live"
+    },
+    {
+      "beat": "goalkeeper_rescue",
+      "event_ids": [
+        "event_000421"
+      ],
+      "is_replay": false,
+      "media_in": 3543.01,
+      "media_out": 3553.57,
+      "role": "goalkeeper_rescue",
+      "segment_id": "seg:4",
+      "shot_kind": "live"
+    },
+    {
+      "beat": "goalkeeper_rescue",
+      "event_ids": [
+        "event_000476",
+        "event_000477"
+      ],
+      "is_replay": false,
+      "media_in": 4755.79,
+      "media_out": 4769.62,
+      "role": "goalkeeper_rescue",
+      "segment_id": "seg:5",
+      "shot_kind": "live"
+    },
+    {
+      "beat": "goalkeeper_rescue",
+      "event_ids": [
+        "event_000640",
+        "event_000641"
+      ],
+      "is_replay": false,
+      "media_in": 6552.01,
+      "media_out": 6562.64,
+      "role": "goalkeeper_rescue",
+      "segment_id": "seg:6",
+      "shot_kind": "live"
+    }
+  ],
+  "data_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "edl_modified": false,
+  "event_annotations": {
+    "event_000422": {
+      "description": "",
+      "notes": "1队10号球员越位"
+    },
+    "event_000423": {
+      "description": "",
+      "notes": "2队球员禁区长传"
+    },
+    "event_000424": {
+      "description": "",
+      "notes": "1队球员争顶成功"
+    },
+    "event_000425": {
+      "description": "",
+      "notes": "1队球员和2队球员在争抢球权的过程中，发生身体对抗"
+    },
+    "event_000426": {
+      "description": "",
+      "notes": "下半场比赛两队球员入场"
+    },
+    "event_000427": {
+      "description": "",
+      "notes": "2队球员带球过人"
+    },
+    "event_000428": {
+      "description": "",
+      "notes": "2队13号射门被1队球员挡了一下，乌龙球进门"
+    },
+    "event_000429": {
+      "description": "",
+      "notes": "1队球员解围队球员射门"
+    },
+    "event_000430": {
+      "description": "",
+      "notes": "2队球员门前解围"
+    },
+    "event_000431": {
+      "description": "",
+      "notes": "2队守门员将球扑出"
+    },
+    "event_000432": {
+      "description": "",
+      "notes": "2队球员将球截获"
+    },
+    "event_000433": {
+      "description": "",
+      "notes": "1队14号带球射门"
+    },
+    "event_000434": {
+      "description": "",
+      "notes": "1队14号带球射门打偏"
+    },
+    "event_000435": {
+      "description": "",
+      "notes": "2队球员抢断1队球员带球"
+    },
+    "event_000436": {
+      "description": "",
+      "notes": "2队7号打门被挡出"
+    },
+    "event_000437": {
+      "description": "",
+      "notes": "2队球员抢断1队球员带球"
+    },
+    "event_000438": {
+      "description": "",
+      "notes": "1队球员将球解围"
+    },
+    "event_000439": {
+      "description": "",
+      "notes": "2队7号抢断1队球员带球"
+    },
+    "event_000440": {
+      "description": "",
+      "notes": "1队球员将球解围"
+    },
+    "event_000441": {
+      "description": "",
+      "notes": "2队7号带球打门"
+    },
+    "event_000442": {
+      "description": "",
+      "notes": "2队1号将球扑出"
+    },
+    "event_000443": {
+      "description": "",
+      "notes": "2队1号将球扑出"
+    },
+    "event_000444": {
+      "description": "",
+      "notes": "2队1号将球扑出"
+    },
+    "event_000445": {
+      "description": "",
+      "notes": "1队14号带球打门"
+    },
+    "event_000446": {
+      "description": "",
+      "notes": "1队球员将球抢断"
+    },
+    "event_000447": {
+      "description": "",
+      "notes": "1队14号带球打门"
+    },
+    "event_000448": {
+      "description": "",
+      "notes": "1队14号带球打门"
+    },
+    "event_000449": {
+      "description": "",
+      "notes": "1队14号带球打门"
+    },
+    "event_000450": {
+      "description": "",
+      "notes": "1队14号带球打门"
+    },
+    "event_000451": {
+      "description": "",
+      "notes": "1队球员任意球发球"
+    },
+    "event_000452": {
+      "description": "",
+      "notes": "2队球员将球解围"
+    },
+    "event_000453": {
+      "description": "",
+      "notes": "2队守门员将球扑救出"
+    },
+    "event_000454": {
+      "description": "",
+      "notes": "2队守门员扑救出球"
+    },
+    "event_000455": {
+      "description": "",
+      "notes": "2队守门员将球扑出"
+    },
+    "event_000456": {
+      "description": "",
+      "notes": "1队14号带球打门"
+    },
+    "event_000457": {
+      "description": "",
+      "notes": "2队球员射门打偏"
+    },
+    "event_000458": {
+      "description": "",
+      "notes": "1队连续换15号，9号，11号三人入场，换下8号，10号，6号。"
+    },
+    "event_000459": {
+      "description": "",
+      "notes": "1队球员把球回传给门将"
+    },
+    "event_000460": {
+      "description": "",
+      "notes": "1队队员发现2队队员传球之后与其他2队球员头球争顶，1队球员争顶成功"
+    },
+    "event_000461": {
+      "description": "",
+      "notes": "1队18号踢到2队守门员"
+    },
+    "event_000462": {
+      "description": "",
+      "notes": "2队守门员扑住了进攻球"
+    },
+    "event_000463": {
+      "description": "",
+      "notes": "1队18号踢到2队守门员，造成犯规"
+    },
+    "event_000464": {
+      "description": "",
+      "notes": "2队守门员长传"
+    },
+    "event_000465": {
+      "description": "",
+      "notes": "1队球员头球争顶成功"
+    },
+    "event_000466": {
+      "description": "",
+      "notes": "1队球员传球给队友，控制球权"
+    },
+    "event_000467": {
+      "description": "",
+      "notes": "1队球员面对2队球员的防守，长传给队友"
+    },
+    "event_000468": {
+      "description": "",
+      "notes": "2队球员抢断了1队球员的球权"
+    },
+    "event_000469": {
+      "description": "",
+      "notes": "1队球员挑球过人"
+    },
+    "event_000470": {
+      "description": "",
+      "notes": "1队球员传球给队友，控制球权"
+    },
+    "event_000471": {
+      "description": "",
+      "notes": "1队2号传球给队友，控制球权"
+    },
+    "event_000472": {
+      "description": "",
+      "notes": "1队9号接球后打门"
+    },
+    "event_000473": {
+      "description": "",
+      "notes": "1队球员把球回传给门将"
+    },
+    "event_000474": {
+      "description": "",
+      "notes": "2队球员争顶成功"
+    }
+  },
+  "event_inventory": [
+    {
+      "comment_label": "Offside",
+      "event_id": "event_000422",
+      "event_type": "Foul_Being_fouled",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 3562.45
+    },
+    {
+      "comment_label": "Long_Pass",
+      "event_id": "event_000423",
+      "event_type": "Pass",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 1.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 3574.25
+    },
+    {
+      "comment_label": "Win_an_aerial_duel",
+      "event_id": "event_000424",
+      "event_type": "Win_an_aerial_duel",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 3577.76
+    },
+    {
+      "comment_label": "Physical_Challenge",
+      "event_id": "event_000425",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 3585.6
+    },
+    {
+      "comment_label": "Players_enter_the_pitch",
+      "event_id": "event_000426",
+      "event_type": "Players_enter_the_pitch",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 3726.69
+    },
+    {
+      "comment_label": "Dribble_Break",
+      "event_id": "event_000427",
+      "event_type": "Dribble_past",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 3734.95
+    },
+    {
+      "comment_label": "Regular_Shot",
+      "event_id": "event_000428",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 4.0,
+        "emotional_heat_score": 4.0,
+        "overall_score": 4.0
+      },
+      "source_pts_sec": 3735.45
+    },
+    {
+      "comment_label": "Clearance",
+      "event_id": "event_000429",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3735.78
+    },
+    {
+      "comment_label": "Shot",
+      "event_id": "atom_fill_0020_Shot_3743454",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 3743.454
+    },
+    {
+      "comment_label": "Goal",
+      "event_id": "atom_fill_0021_Goal_3744734",
+      "event_type": "Goal",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 3744.734
+    },
+    {
+      "comment_label": "Shot",
+      "event_id": "atom_fill_0022_Shot_3752899",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 3752.899
+    },
+    {
+      "comment_label": "Goal",
+      "event_id": "atom_fill_0023_Goal_3754039",
+      "event_type": "Goal",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 3754.039
+    },
+    {
+      "comment_label": "Goal",
+      "event_id": "atom_fill_0024_Goal_3755797",
+      "event_type": "Goal",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 3755.797
+    },
+    {
+      "comment_label": "Clearance",
+      "event_id": "event_000430",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 3772.58
+    },
+    {
+      "comment_label": "Save",
+      "event_id": "event_000431",
+      "event_type": "Save",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3782.3
+    },
+    {
+      "comment_label": "Interception",
+      "event_id": "event_000432",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 3784.55
+    },
+    {
+      "comment_label": "Regular_Shot",
+      "event_id": "event_000433",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3793.93
+    },
+    {
+      "comment_label": "Regular_Shot",
+      "event_id": "event_000434",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3800.28
+    },
+    {
+      "comment_label": "Tackle",
+      "event_id": "event_000435",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3838.71
+    },
+    {
+      "comment_label": "Regular_Shot",
+      "event_id": "event_000436",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3844.61
+    },
+    {
+      "comment_label": "Tackle",
+      "event_id": "event_000437",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 3852.01
+    },
+    {
+      "comment_label": "Clearance",
+      "event_id": "event_000438",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 3858.43
+    },
+    {
+      "comment_label": "Tackle",
+      "event_id": "event_000439",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3863.35
+    },
+    {
+      "comment_label": "Clearance",
+      "event_id": "event_000440",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3868.96
+    },
+    {
+      "comment_label": "Regular_Shot",
+      "event_id": "event_000441",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3878.01
+    },
+    {
+      "comment_label": "Pass",
+      "event_id": "atom_fill_0025_Pass_3883767",
+      "event_type": "Pass",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 3883.767
+    },
+    {
+      "comment_label": "Shot",
+      "event_id": "atom_fill_0026_Shot_3888246",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 3888.246
+    },
+    {
+      "comment_label": "Shot",
+      "event_id": "atom_fill_0027_Shot_3897904",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 3897.904
+    },
+    {
+      "comment_label": "Goal",
+      "event_id": "atom_fill_0028_Goal_3899137",
+      "event_type": "Goal",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 3899.137
+    },
+    {
+      "comment_label": "Pass",
+      "event_id": "atom_fill_0029_Pass_3900830",
+      "event_type": "Pass",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 3900.83
+    },
+    {
+      "comment_label": "Shot",
+      "event_id": "atom_fill_0030_Shot_3905329",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 3905.329
+    },
+    {
+      "comment_label": "Goal",
+      "event_id": "atom_fill_0031_Goal_3906795",
+      "event_type": "Goal",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 3906.795
+    },
+    {
+      "comment_label": "Pass",
+      "event_id": "atom_fill_0032_Pass_3909645",
+      "event_type": "Pass",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 3909.645
+    },
+    {
+      "comment_label": "Goal",
+      "event_id": "atom_fill_0033_Goal_3914375",
+      "event_type": "Goal",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 3914.375
+    },
+    {
+      "comment_label": "Shot",
+      "event_id": "atom_fill_0034_Shot_3921348",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 3921.348
+    },
+    {
+      "comment_label": "Save",
+      "event_id": "event_000442",
+      "event_type": "Save",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3930.61
+    },
+    {
+      "comment_label": "Save",
+      "event_id": "event_000443",
+      "event_type": "Save",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3938.05
+    },
+    {
+      "comment_label": "Save",
+      "event_id": "event_000444",
+      "event_type": "Save",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3959.8
+    },
+    {
+      "comment_label": "Regular_Shot",
+      "event_id": "event_000445",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3976.85
+    },
+    {
+      "comment_label": "Tackle",
+      "event_id": "event_000446",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3982.45
+    },
+    {
+      "comment_label": "Regular_Shot",
+      "event_id": "event_000447",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3993.8
+    },
+    {
+      "comment_label": "Regular_Shot",
+      "event_id": "event_000448",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 4013.21
+    },
+    {
+      "comment_label": "Regular_Shot",
+      "event_id": "event_000449",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 4021.98
+    },
+    {
+      "comment_label": "Regular_Shot",
+      "event_id": "event_000450",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 4029.18
+    },
+    {
+      "comment_label": "Direct_Free_Kick",
+      "event_id": "event_000451",
+      "event_type": "Free_kick",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 4037.49
+    },
+    {
+      "comment_label": "Clearance",
+      "event_id": "event_000452",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 4038.73
+    },
+    {
+      "comment_label": "Save",
+      "event_id": "event_000453",
+      "event_type": "Save",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 4043.1
+    },
+    {
+      "comment_label": "Mistake",
+      "event_id": "event_000454",
+      "event_type": "Save",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 4052.83
+    },
+    {
+      "comment_label": "Save",
+      "event_id": "event_000455",
+      "event_type": "Save",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 4062.34
+    },
+    {
+      "comment_label": "Shot",
+      "event_id": "atom_fill_0035_Shot_4093619",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 4093.619
+    },
+    {
+      "comment_label": "Goal",
+      "event_id": "atom_fill_0036_Goal_4094801",
+      "event_type": "Goal",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 4094.801
+    },
+    {
+      "comment_label": "Goal",
+      "event_id": "atom_fill_0037_Goal_4096648",
+      "event_type": "Goal",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 4096.648
+    },
+    {
+      "comment_label": "Shot",
+      "event_id": "atom_fill_0038_Shot_4100768",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 4100.768
+    },
+    {
+      "comment_label": "Goal",
+      "event_id": "atom_fill_0039_Goal_4103426",
+      "event_type": "Goal",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 4103.426
+    },
+    {
+      "comment_label": "Regular_Shot",
+      "event_id": "event_000456",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 4162.71
+    },
+    {
+      "comment_label": "Regular_Shot",
+      "event_id": "event_000457",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 4185.22
+    },
+    {
+      "comment_label": "Substitution",
+      "event_id": "event_000458",
+      "event_type": "Substitution",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 4562.65
+    },
+    {
+      "comment_label": "Back_Pass",
+      "event_id": "event_000459",
+      "event_type": "Pass",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 1.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 1.0
+      },
+      "source_pts_sec": 4593.22
+    },
+    {
+      "comment_label": "Win_an_aerial_duel",
+      "event_id": "event_000460",
+      "event_type": "Win_an_aerial_duel",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 4601.84
+    },
+    {
+      "comment_label": "Dangerous_Play",
+      "event_id": "event_000461",
+      "event_type": "Foul_Being_fouled",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 4623.65
+    },
+    {
+      "comment_label": "Save",
+      "event_id": "event_000462",
+      "event_type": "Save",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 4629.09
+    },
+    {
+      "comment_label": "Dangerous_Play",
+      "event_id": "event_000463",
+      "event_type": "Foul_Being_fouled",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 4634.73
+    },
+    {
+      "comment_label": "Long_Pass",
+      "event_id": "event_000464",
+      "event_type": "Pass",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 4654.24
+    },
+    {
+      "comment_label": "Win_an_aerial_duel",
+      "event_id": "event_000465",
+      "event_type": "Win_an_aerial_duel",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 4659.78
+    },
+    {
+      "comment_label": "Ball_possession",
+      "event_id": "event_000466",
+      "event_type": "Ball_possession",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 4671.24
+    },
+    {
+      "comment_label": "Long_Pass",
+      "event_id": "event_000467",
+      "event_type": "Pass",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 4679.11
+    },
+    {
+      "comment_label": "Tackle",
+      "event_id": "event_000468",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 4682.65
+    },
+    {
+      "comment_label": "Dribble_past",
+      "event_id": "event_000469",
+      "event_type": "Dribble_past",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 4691.2
+    },
+    {
+      "comment_label": "Ball_possession",
+      "event_id": "event_000470",
+      "event_type": "Ball_possession",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 1.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 1.0
+      },
+      "source_pts_sec": 4698.0
+    },
+    {
+      "comment_label": "Ball_possession",
+      "event_id": "event_000471",
+      "event_type": "Ball_possession",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 1.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 1.0
+      },
+      "source_pts_sec": 4704.46
+    },
+    {
+      "comment_label": "Volley_Shot",
+      "event_id": "event_000472",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 1.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 1.0
+      },
+      "source_pts_sec": 4710.45
+    },
+    {
+      "comment_label": "Foul_Being_fouled",
+      "event_id": "atom_fill_0040_Foul_Being_fouled_4721632",
+      "event_type": "Foul_Being_fouled",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 4721.632
+    },
+    {
+      "comment_label": "Shot",
+      "event_id": "atom_fill_0041_Shot_4726398",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 4726.398
+    },
+    {
+      "comment_label": "Save",
+      "event_id": "atom_fill_0042_Save_4726999",
+      "event_type": "Save",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 4726.999
+    },
+    {
+      "comment_label": "Shot",
+      "event_id": "atom_fill_0043_Shot_4730216",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 4730.216
+    },
+    {
+      "comment_label": "Save",
+      "event_id": "atom_fill_0044_Save_4733699",
+      "event_type": "Save",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 4733.699
+    },
+    {
+      "comment_label": "Back_Pass",
+      "event_id": "event_000473",
+      "event_type": "Pass",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 1.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 1.0
+      },
+      "source_pts_sec": 4743.29
+    },
+    {
+      "comment_label": "Win_an_aerial_duel",
+      "event_id": "event_000474",
+      "event_type": "Win_an_aerial_duel",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 4749.59
+    }
+  ],
+  "events": [
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Offside",
+      "description": "",
+      "event_id": "event_000422",
+      "event_type": "Foul_Being_fouled",
+      "event_type_zh": "犯规/被犯规",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3559.18,
+        3569.32
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 3562.45
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Long_Pass",
+      "description": "",
+      "event_id": "event_000423",
+      "event_type": "Pass",
+      "event_type_zh": "传球",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3572.42,
+        3588.31
+      ],
+      "scores_metadata": {
+        "criticality_score": 1.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 3574.25
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Win_an_aerial_duel",
+      "description": "",
+      "event_id": "event_000424",
+      "event_type": "Win_an_aerial_duel",
+      "event_type_zh": "争顶成功",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3572.42,
+        3588.31
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 3577.76
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Physical_Challenge",
+      "description": "",
+      "event_id": "event_000425",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3572.42,
+        3588.31
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 3585.6
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Players_enter_the_pitch",
+      "description": "",
+      "event_id": "event_000426",
+      "event_type": "Players_enter_the_pitch",
+      "event_type_zh": "队员入场",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3719.56,
+        3729.61
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 3726.69
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Dribble_Break",
+      "description": "",
+      "event_id": "event_000427",
+      "event_type": "Dribble_past",
+      "event_type_zh": "过人",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3730.44,
+        3739.94
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 3734.95
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Regular_Shot",
+      "description": "",
+      "event_id": "event_000428",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3730.44,
+        3739.94
+      ],
+      "scores_metadata": {
+        "criticality_score": 4.0,
+        "emotional_heat_score": 4.0,
+        "overall_score": 4.0
+      },
+      "source_pts_sec": 3735.45
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Clearance",
+      "description": "",
+      "event_id": "event_000429",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3730.44,
+        3739.94
+      ],
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3735.78
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Shot",
+      "description": "",
+      "event_id": "atom_fill_0020_Shot_3743454",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3743.454,
+        3745.454
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 3743.454
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Goal",
+      "description": "",
+      "event_id": "atom_fill_0021_Goal_3744734",
+      "event_type": "Goal",
+      "event_type_zh": "进球",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3744.734,
+        3746.734
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 3744.734
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Shot",
+      "description": "",
+      "event_id": "atom_fill_0022_Shot_3752899",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3752.899,
+        3754.899
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 3752.899
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Goal",
+      "description": "",
+      "event_id": "atom_fill_0023_Goal_3754039",
+      "event_type": "Goal",
+      "event_type_zh": "进球",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3754.039,
+        3756.039
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 3754.039
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Goal",
+      "description": "",
+      "event_id": "atom_fill_0024_Goal_3755797",
+      "event_type": "Goal",
+      "event_type_zh": "进球",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3755.797,
+        3757.797
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 3755.797
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Clearance",
+      "description": "",
+      "event_id": "event_000430",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3766.74,
+        3778.14
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 3772.58
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Save",
+      "description": "",
+      "event_id": "event_000431",
+      "event_type": "Save",
+      "event_type_zh": "扑救",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3779.53,
+        3791.04
+      ],
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3782.3
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Interception",
+      "description": "",
+      "event_id": "event_000432",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3779.53,
+        3791.04
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 3784.55
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Regular_Shot",
+      "description": "",
+      "event_id": "event_000433",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3791.98,
+        3804.84
+      ],
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3793.93
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Regular_Shot",
+      "description": "",
+      "event_id": "event_000434",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3791.98,
+        3804.84
+      ],
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3800.28
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Tackle",
+      "description": "",
+      "event_id": "event_000435",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3835.41,
+        3848.38
+      ],
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3838.71
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Regular_Shot",
+      "description": "",
+      "event_id": "event_000436",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3835.41,
+        3848.38
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3844.61
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Tackle",
+      "description": "",
+      "event_id": "event_000437",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3850.0,
+        3865.9
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 3852.01
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Clearance",
+      "description": "",
+      "event_id": "event_000438",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3850.0,
+        3865.9
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 3858.43
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Tackle",
+      "description": "",
+      "event_id": "event_000439",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3850.0,
+        3865.9
+      ],
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3863.35
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Clearance",
+      "description": "",
+      "event_id": "event_000440",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3866.92,
+        3881.41
+      ],
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3868.96
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Regular_Shot",
+      "description": "",
+      "event_id": "event_000441",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3866.92,
+        3881.41
+      ],
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3878.01
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Pass",
+      "description": "",
+      "event_id": "atom_fill_0025_Pass_3883767",
+      "event_type": "Pass",
+      "event_type_zh": "传球",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3883.767,
+        3885.767
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 3883.767
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Shot",
+      "description": "",
+      "event_id": "atom_fill_0026_Shot_3888246",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3888.246,
+        3890.246
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 3888.246
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Shot",
+      "description": "",
+      "event_id": "atom_fill_0027_Shot_3897904",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3897.904,
+        3899.904
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 3897.904
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Goal",
+      "description": "",
+      "event_id": "atom_fill_0028_Goal_3899137",
+      "event_type": "Goal",
+      "event_type_zh": "进球",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3899.137,
+        3901.137
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 3899.137
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Pass",
+      "description": "",
+      "event_id": "atom_fill_0029_Pass_3900830",
+      "event_type": "Pass",
+      "event_type_zh": "传球",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3900.83,
+        3902.83
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 3900.83
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Shot",
+      "description": "",
+      "event_id": "atom_fill_0030_Shot_3905329",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3905.329,
+        3907.329
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 3905.329
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Goal",
+      "description": "",
+      "event_id": "atom_fill_0031_Goal_3906795",
+      "event_type": "Goal",
+      "event_type_zh": "进球",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3906.795,
+        3908.795
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 3906.795
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Pass",
+      "description": "",
+      "event_id": "atom_fill_0032_Pass_3909645",
+      "event_type": "Pass",
+      "event_type_zh": "传球",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3909.645,
+        3911.645
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 3909.645
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Goal",
+      "description": "",
+      "event_id": "atom_fill_0033_Goal_3914375",
+      "event_type": "Goal",
+      "event_type_zh": "进球",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3914.375,
+        3916.375
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 3914.375
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Shot",
+      "description": "",
+      "event_id": "atom_fill_0034_Shot_3921348",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3921.348,
+        3923.348
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 3921.348
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Save",
+      "description": "",
+      "event_id": "event_000442",
+      "event_type": "Save",
+      "event_type_zh": "扑救",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3926.93,
+        3944.17
+      ],
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3930.61
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Save",
+      "description": "",
+      "event_id": "event_000443",
+      "event_type": "Save",
+      "event_type_zh": "扑救",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3926.93,
+        3944.17
+      ],
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3938.05
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Save",
+      "description": "",
+      "event_id": "event_000444",
+      "event_type": "Save",
+      "event_type_zh": "扑救",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3952.4,
+        3966.9
+      ],
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3959.8
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Regular_Shot",
+      "description": "",
+      "event_id": "event_000445",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3972.97,
+        3997.66
+      ],
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3976.85
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Tackle",
+      "description": "",
+      "event_id": "event_000446",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3972.97,
+        3997.66
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3982.45
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Regular_Shot",
+      "description": "",
+      "event_id": "event_000447",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3972.97,
+        3997.66
+      ],
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 3993.8
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Regular_Shot",
+      "description": "",
+      "event_id": "event_000448",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4006.34,
+        4024.76
+      ],
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 4013.21
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Regular_Shot",
+      "description": "",
+      "event_id": "event_000449",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4006.34,
+        4024.76
+      ],
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 4021.98
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Regular_Shot",
+      "description": "",
+      "event_id": "event_000450",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4026.92,
+        4040.43
+      ],
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 4029.18
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Direct_Free_Kick",
+      "description": "",
+      "event_id": "event_000451",
+      "event_type": "Free_kick",
+      "event_type_zh": "任意球",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4026.92,
+        4040.43
+      ],
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 4037.49
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Clearance",
+      "description": "",
+      "event_id": "event_000452",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4026.92,
+        4040.43
+      ],
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 4038.73
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Save",
+      "description": "",
+      "event_id": "event_000453",
+      "event_type": "Save",
+      "event_type_zh": "扑救",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4041.87,
+        4065.77
+      ],
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 4043.1
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Mistake",
+      "description": "",
+      "event_id": "event_000454",
+      "event_type": "Save",
+      "event_type_zh": "扑救",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4041.87,
+        4065.77
+      ],
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 4052.83
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Save",
+      "description": "",
+      "event_id": "event_000455",
+      "event_type": "Save",
+      "event_type_zh": "扑救",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4041.87,
+        4065.77
+      ],
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 4062.34
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Shot",
+      "description": "",
+      "event_id": "atom_fill_0035_Shot_4093619",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4093.619,
+        4095.619
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 4093.619
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Goal",
+      "description": "",
+      "event_id": "atom_fill_0036_Goal_4094801",
+      "event_type": "Goal",
+      "event_type_zh": "进球",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4094.801,
+        4096.801
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 4094.801
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Goal",
+      "description": "",
+      "event_id": "atom_fill_0037_Goal_4096648",
+      "event_type": "Goal",
+      "event_type_zh": "进球",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4096.648,
+        4098.648
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 4096.648
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Shot",
+      "description": "",
+      "event_id": "atom_fill_0038_Shot_4100768",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4100.768,
+        4102.768
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 4100.768
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Goal",
+      "description": "",
+      "event_id": "atom_fill_0039_Goal_4103426",
+      "event_type": "Goal",
+      "event_type_zh": "进球",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4103.426,
+        4105.426
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 4103.426
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Regular_Shot",
+      "description": "",
+      "event_id": "event_000456",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4157.98,
+        4190.3
+      ],
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 3.0
+      },
+      "source_pts_sec": 4162.71
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Regular_Shot",
+      "description": "",
+      "event_id": "event_000457",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4157.98,
+        4190.3
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 4185.22
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Substitution",
+      "description": "",
+      "event_id": "event_000458",
+      "event_type": "Substitution",
+      "event_type_zh": "换人",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4552.95,
+        4568.62
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 4562.65
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Back_Pass",
+      "description": "",
+      "event_id": "event_000459",
+      "event_type": "Pass",
+      "event_type_zh": "传球",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4590.57,
+        4607.02
+      ],
+      "scores_metadata": {
+        "criticality_score": 1.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 1.0
+      },
+      "source_pts_sec": 4593.22
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Win_an_aerial_duel",
+      "description": "",
+      "event_id": "event_000460",
+      "event_type": "Win_an_aerial_duel",
+      "event_type_zh": "争顶成功",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4590.57,
+        4607.02
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 4601.84
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Dangerous_Play",
+      "description": "",
+      "event_id": "event_000461",
+      "event_type": "Foul_Being_fouled",
+      "event_type_zh": "犯规/被犯规",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4619.76,
+        4637.0
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 4623.65
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Save",
+      "description": "",
+      "event_id": "event_000462",
+      "event_type": "Save",
+      "event_type_zh": "扑救",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4619.76,
+        4637.0
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 4629.09
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Dangerous_Play",
+      "description": "",
+      "event_id": "event_000463",
+      "event_type": "Foul_Being_fouled",
+      "event_type_zh": "犯规/被犯规",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4619.76,
+        4637.0
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 4634.73
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Long_Pass",
+      "description": "",
+      "event_id": "event_000464",
+      "event_type": "Pass",
+      "event_type_zh": "传球",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4649.21,
+        4665.86
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 4654.24
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Win_an_aerial_duel",
+      "description": "",
+      "event_id": "event_000465",
+      "event_type": "Win_an_aerial_duel",
+      "event_type_zh": "争顶成功",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4649.21,
+        4665.86
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 4659.78
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Ball_possession",
+      "description": "",
+      "event_id": "event_000466",
+      "event_type": "Ball_possession",
+      "event_type_zh": "控球",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4668.02,
+        4685.65
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 4671.24
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Long_Pass",
+      "description": "",
+      "event_id": "event_000467",
+      "event_type": "Pass",
+      "event_type_zh": "传球",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4668.02,
+        4685.65
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 4679.11
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Tackle",
+      "description": "",
+      "event_id": "event_000468",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4668.02,
+        4685.65
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 4682.65
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Dribble_past",
+      "description": "",
+      "event_id": "event_000469",
+      "event_type": "Dribble_past",
+      "event_type_zh": "过人",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4687.61,
+        4700.93
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 4691.2
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Ball_possession",
+      "description": "",
+      "event_id": "event_000470",
+      "event_type": "Ball_possession",
+      "event_type_zh": "控球",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4687.61,
+        4700.93
+      ],
+      "scores_metadata": {
+        "criticality_score": 1.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 1.0
+      },
+      "source_pts_sec": 4698.0
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Ball_possession",
+      "description": "",
+      "event_id": "event_000471",
+      "event_type": "Ball_possession",
+      "event_type_zh": "控球",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4702.5,
+        4714.65
+      ],
+      "scores_metadata": {
+        "criticality_score": 1.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 1.0
+      },
+      "source_pts_sec": 4704.46
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Volley_Shot",
+      "description": "",
+      "event_id": "event_000472",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4702.5,
+        4714.65
+      ],
+      "scores_metadata": {
+        "criticality_score": 1.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 1.0
+      },
+      "source_pts_sec": 4710.45
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Foul_Being_fouled",
+      "description": "",
+      "event_id": "atom_fill_0040_Foul_Being_fouled_4721632",
+      "event_type": "Foul_Being_fouled",
+      "event_type_zh": "犯规/被犯规",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4721.632,
+        4723.632
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 4721.632
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Shot",
+      "description": "",
+      "event_id": "atom_fill_0041_Shot_4726398",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4726.398,
+        4728.398
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 4726.398
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Save",
+      "description": "",
+      "event_id": "atom_fill_0042_Save_4726999",
+      "event_type": "Save",
+      "event_type_zh": "扑救",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4726.999,
+        4728.999
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 4726.999
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Shot",
+      "description": "",
+      "event_id": "atom_fill_0043_Shot_4730216",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4730.216,
+        4732.216
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 4730.216
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Save",
+      "description": "",
+      "event_id": "atom_fill_0044_Save_4733699",
+      "event_type": "Save",
+      "event_type_zh": "扑救",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4733.699,
+        4735.699
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 4733.699
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Back_Pass",
+      "description": "",
+      "event_id": "event_000473",
+      "event_type": "Pass",
+      "event_type_zh": "传球",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4739.69,
+        4753.21
+      ],
+      "scores_metadata": {
+        "criticality_score": 1.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 1.0
+      },
+      "source_pts_sec": 4743.29
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Win_an_aerial_duel",
+      "description": "",
+      "event_id": "event_000474",
+      "event_type": "Win_an_aerial_duel",
+      "event_type_zh": "争顶成功",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        4739.69,
+        4753.21
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 4749.59
+    }
+  ],
+  "first_live_certified": false,
+  "frozen_story_plan": {
+    "a_story_template_context": {
+      "category": "人物故事链",
+      "narrative_goal": [
+        "表现同队门将反复化解威胁",
+        "挖掘比赛阶段及后续发展"
+      ],
+      "schema": "r3_agent_story_context_v1",
+      "subjects": [
+        "team_2"
+      ],
+      "subtype": "同队门将多次化险",
+      "teams": {
+        "team_1": {
+          "color": "白色",
+          "name": "阿联酋"
+        },
+        "team_2": {
+          "color": "红色",
+          "name": "阿曼"
+        }
+      },
+      "template_id": "keeper_rescue"
+    },
+    "agent_story_context": {
+      "category": "人物故事链",
+      "causal_relations_are_hypotheses": true,
+      "chain_ids": [
+        "pred_0015",
+        "pred_0016",
+        "pred_0030",
+        "pred_0031",
+        "pred_0032",
+        "pred_0033",
+        "pred_0042",
+        "pred_0043",
+        "pred_0063",
+        "pred_0065"
+      ],
+      "goal_targets": [],
+      "narrative_goal": [
+        "表现同队门将反复化解威胁",
+        "挖掘比赛阶段及后续发展"
+      ],
+      "observation_task_ids": [
+        "observe:r2bc:threat_phase_change:1"
+      ],
+      "required_nodes": [
+        {
+          "actor": "team_2",
+          "node_id": "anchor:1",
+          "role": "goalkeeper_rescue",
+          "score": null,
+          "segment_ids": [
+            "seg:1"
+          ],
+          "type": "anchor"
+        },
+        {
+          "actor": "team_2",
+          "node_id": "anchor:2",
+          "role": "goalkeeper_rescue",
+          "score": null,
+          "segment_ids": [
+            "seg:2"
+          ],
+          "type": "anchor"
+        },
+        {
+          "actor": "team_2",
+          "node_id": "anchor:3",
+          "role": "goalkeeper_rescue",
+          "score": null,
+          "segment_ids": [
+            "seg:3"
+          ],
+          "type": "anchor"
+        },
+        {
+          "actor": "team_2",
+          "node_id": "anchor:4",
+          "role": "goalkeeper_rescue",
+          "score": null,
+          "segment_ids": [
+            "seg:4"
+          ],
+          "type": "anchor"
+        },
+        {
+          "actor": "team_2",
+          "node_id": "anchor:5",
+          "role": "goalkeeper_rescue",
+          "score": null,
+          "segment_ids": [
+            "seg:5"
+          ],
+          "type": "anchor"
+        },
+        {
+          "actor": "team_2",
+          "node_id": "anchor:6",
+          "role": "goalkeeper_rescue",
+          "score": null,
+          "segment_ids": [
+            "seg:6"
+          ],
+          "type": "anchor"
+        }
+      ],
+      "schema": "r3_agent_story_context_v1",
+      "subjects": [
+        "team_2"
+      ],
+      "subtype": "同队门将多次化险",
+      "teams": {
+        "team_1": {
+          "color": "白色",
+          "name": "阿联酋"
+        },
+        "team_2": {
+          "color": "红色",
+          "name": "阿曼"
+        }
+      },
+      "template_id": "keeper_rescue"
+    },
+    "algorithm": "R3",
+    "beats": [
+      {
+        "actor": "team_2",
+        "actor_role": "goalkeeper_team",
+        "event_ids": [
+          "event_000282"
+        ],
+        "media_windows": [
+          [
+            1955.54,
+            1966.45
+          ]
+        ],
+        "node_id": "anchor:1",
+        "node_type": "anchor",
+        "observation_task_ids": [],
+        "predicate": "goalkeeper_rescue",
+        "required": true,
+        "role": "goalkeeper_rescue"
+      },
+      {
+        "actor": "team_2",
+        "actor_role": "goalkeeper_team",
+        "event_ids": [
+          "event_000398",
+          "event_000399",
+          "event_000400"
+        ],
+        "media_windows": [
+          [
+            3338.39,
+            3351.3
+          ]
+        ],
+        "node_id": "anchor:2",
+        "node_type": "anchor",
+        "observation_task_ids": [],
+        "predicate": "goalkeeper_rescue",
+        "required": true,
+        "role": "goalkeeper_rescue"
+      },
+      {
+        "actor": "team_2",
+        "actor_role": "goalkeeper_team",
+        "event_ids": [
+          "event_000416",
+          "event_000417"
+        ],
+        "media_windows": [
+          [
+            3504.14,
+            3515.83
+          ]
+        ],
+        "node_id": "anchor:3",
+        "node_type": "anchor",
+        "observation_task_ids": [],
+        "predicate": "goalkeeper_rescue",
+        "required": true,
+        "role": "goalkeeper_rescue"
+      },
+      {
+        "actor": "team_2",
+        "actor_role": "goalkeeper_team",
+        "event_ids": [
+          "event_000421"
+        ],
+        "media_windows": [
+          [
+            3543.01,
+            3553.57
+          ]
+        ],
+        "node_id": "anchor:4",
+        "node_type": "anchor",
+        "observation_task_ids": [],
+        "predicate": "goalkeeper_rescue",
+        "required": true,
+        "role": "goalkeeper_rescue"
+      },
+      {
+        "actor": "team_2",
+        "actor_role": "goalkeeper_team",
+        "event_ids": [
+          "event_000476",
+          "event_000477"
+        ],
+        "media_windows": [
+          [
+            4755.79,
+            4769.62
+          ]
+        ],
+        "node_id": "anchor:5",
+        "node_type": "anchor",
+        "observation_task_ids": [],
+        "predicate": "goalkeeper_rescue",
+        "required": true,
+        "role": "goalkeeper_rescue"
+      },
+      {
+        "actor": "team_2",
+        "actor_role": "goalkeeper_team",
+        "event_ids": [
+          "event_000640",
+          "event_000641"
+        ],
+        "media_windows": [
+          [
+            6552.01,
+            6562.64
+          ]
+        ],
+        "node_id": "anchor:6",
+        "node_type": "anchor",
+        "observation_task_ids": [],
+        "predicate": "goalkeeper_rescue",
+        "required": true,
+        "role": "goalkeeper_rescue"
+      }
+    ],
+    "candidate_edl": [
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 1,
+        "event_ids": [
+          "event_000282"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 1955.54,
+        "media_out": 1966.45,
+        "narrative_order": 1,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:1"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:1",
+        "short_chain_ids": [
+          "pred_0015",
+          "pred_0016"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:1",
+        "source_media_order": 1955.54,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:1"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 2,
+        "event_ids": [
+          "event_000398",
+          "event_000399",
+          "event_000400"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 3338.39,
+        "media_out": 3351.3,
+        "narrative_order": 2,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:2"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:2",
+        "short_chain_ids": [
+          "pred_0030",
+          "pred_0031"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:2",
+        "source_media_order": 3338.39,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:2"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 3,
+        "event_ids": [
+          "event_000416",
+          "event_000417"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 3504.14,
+        "media_out": 3515.83,
+        "narrative_order": 3,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:3"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:3",
+        "short_chain_ids": [
+          "pred_0031",
+          "pred_0032"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:3",
+        "source_media_order": 3504.14,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:3"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 4,
+        "event_ids": [
+          "event_000421"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 3543.01,
+        "media_out": 3553.57,
+        "narrative_order": 4,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:4"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:4",
+        "short_chain_ids": [
+          "pred_0032",
+          "pred_0033"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:4",
+        "source_media_order": 3543.01,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:4"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 5,
+        "event_ids": [
+          "event_000476",
+          "event_000477"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 4755.79,
+        "media_out": 4769.62,
+        "narrative_order": 5,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:5"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:5",
+        "short_chain_ids": [
+          "pred_0042",
+          "pred_0043"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:5",
+        "source_media_order": 4755.79,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:5"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 6,
+        "event_ids": [
+          "event_000640",
+          "event_000641"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 6552.01,
+        "media_out": 6562.64,
+        "narrative_order": 6,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:6"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:6",
+        "short_chain_ids": [
+          "pred_0063",
+          "pred_0065"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:6",
+        "source_media_order": 6552.01,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:6"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      }
+    ],
+    "edl": [
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 1,
+        "event_ids": [
+          "event_000282"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 1955.54,
+        "media_out": 1966.45,
+        "narrative_order": 1,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:1"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:1",
+        "short_chain_ids": [
+          "pred_0015",
+          "pred_0016"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:1",
+        "source_media_order": 1955.54,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:1"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 2,
+        "event_ids": [
+          "event_000398",
+          "event_000399",
+          "event_000400"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 3338.39,
+        "media_out": 3351.3,
+        "narrative_order": 2,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:2"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:2",
+        "short_chain_ids": [
+          "pred_0030",
+          "pred_0031"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:2",
+        "source_media_order": 3338.39,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:2"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 3,
+        "event_ids": [
+          "event_000416",
+          "event_000417"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 3504.14,
+        "media_out": 3515.83,
+        "narrative_order": 3,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:3"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:3",
+        "short_chain_ids": [
+          "pred_0031",
+          "pred_0032"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:3",
+        "source_media_order": 3504.14,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:3"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 4,
+        "event_ids": [
+          "event_000421"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 3543.01,
+        "media_out": 3553.57,
+        "narrative_order": 4,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:4"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:4",
+        "short_chain_ids": [
+          "pred_0032",
+          "pred_0033"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:4",
+        "source_media_order": 3543.01,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:4"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 5,
+        "event_ids": [
+          "event_000476",
+          "event_000477"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 4755.79,
+        "media_out": 4769.62,
+        "narrative_order": 5,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:5"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:5",
+        "short_chain_ids": [
+          "pred_0042",
+          "pred_0043"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:5",
+        "source_media_order": 4755.79,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:5"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 6,
+        "event_ids": [
+          "event_000640",
+          "event_000641"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 6552.01,
+        "media_out": 6562.64,
+        "narrative_order": 6,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:6"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:6",
+        "short_chain_ids": [
+          "pred_0063",
+          "pred_0065"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:6",
+        "source_media_order": 6552.01,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:6"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      }
+    ],
+    "first_live_verified": false,
+    "match_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+    "missing_evidence": [],
+    "protagonist": {
+      "side": "right",
+      "team_name": "阿曼",
+      "teams": {
+        "left": "阿联酋",
+        "right": "阿曼"
+      }
+    },
+    "r3_adapter": {
+      "anchor_bindings": [
+        {
+          "all_segment_ids": [
+            "seg:1"
+          ],
+          "node_id": "anchor:1",
+          "segment_id": "seg:1"
+        },
+        {
+          "all_segment_ids": [
+            "seg:2"
+          ],
+          "node_id": "anchor:2",
+          "segment_id": "seg:2"
+        },
+        {
+          "all_segment_ids": [
+            "seg:3"
+          ],
+          "node_id": "anchor:3",
+          "segment_id": "seg:3"
+        },
+        {
+          "all_segment_ids": [
+            "seg:4"
+          ],
+          "node_id": "anchor:4",
+          "segment_id": "seg:4"
+        },
+        {
+          "all_segment_ids": [
+            "seg:5"
+          ],
+          "node_id": "anchor:5",
+          "segment_id": "seg:5"
+        },
+        {
+          "all_segment_ids": [
+            "seg:6"
+          ],
+          "node_id": "anchor:6",
+          "segment_id": "seg:6"
+        }
+      ],
+      "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+      "missing_node_ids": [],
+      "schema": "sportscausal_r3_legacy_adapter_v1",
+      "seed_basis": "r3_anchor_materials",
+      "story_id": "keeper_rescue:2"
+    },
+    "release_authorized": false,
+    "render_ready": false,
+    "render_ready_edl": [],
+    "schema_version": "r3_legacy_agent_input_v1",
+    "segments": [
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 1,
+        "event_ids": [
+          "event_000282"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 1955.54,
+        "media_out": 1966.45,
+        "narrative_order": 1,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:1"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:1",
+        "short_chain_ids": [
+          "pred_0015",
+          "pred_0016"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:1",
+        "source_media_order": 1955.54,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:1"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 2,
+        "event_ids": [
+          "event_000398",
+          "event_000399",
+          "event_000400"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 3338.39,
+        "media_out": 3351.3,
+        "narrative_order": 2,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:2"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:2",
+        "short_chain_ids": [
+          "pred_0030",
+          "pred_0031"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:2",
+        "source_media_order": 3338.39,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:2"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 3,
+        "event_ids": [
+          "event_000416",
+          "event_000417"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 3504.14,
+        "media_out": 3515.83,
+        "narrative_order": 3,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:3"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:3",
+        "short_chain_ids": [
+          "pred_0031",
+          "pred_0032"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:3",
+        "source_media_order": 3504.14,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:3"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 4,
+        "event_ids": [
+          "event_000421"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 3543.01,
+        "media_out": 3553.57,
+        "narrative_order": 4,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:4"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:4",
+        "short_chain_ids": [
+          "pred_0032",
+          "pred_0033"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:4",
+        "source_media_order": 3543.01,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:4"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 5,
+        "event_ids": [
+          "event_000476",
+          "event_000477"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 4755.79,
+        "media_out": 4769.62,
+        "narrative_order": 5,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:5"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:5",
+        "short_chain_ids": [
+          "pred_0042",
+          "pred_0043"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:5",
+        "source_media_order": 4755.79,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:5"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 6,
+        "event_ids": [
+          "event_000640",
+          "event_000641"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 6552.01,
+        "media_out": 6562.64,
+        "narrative_order": 6,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:6"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:6",
+        "short_chain_ids": [
+          "pred_0063",
+          "pred_0065"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:6",
+        "source_media_order": 6552.01,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:6"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      }
+    ],
+    "story_tier": "HUMAN_ATOM_ENRICHED_DEV",
+    "template": {
+      "category": "人物故事链",
+      "narrative_edges": [
+        {
+          "causal_verified": false,
+          "edge_type": "temporal_episode_order",
+          "from": "anchor:1",
+          "relation": "temporal_episode_order",
+          "to": "anchor:2"
+        },
+        {
+          "causal_verified": false,
+          "edge_type": "temporal_episode_order",
+          "from": "anchor:2",
+          "relation": "temporal_episode_order",
+          "to": "anchor:3"
+        },
+        {
+          "causal_verified": false,
+          "edge_type": "temporal_episode_order",
+          "from": "anchor:3",
+          "relation": "temporal_episode_order",
+          "to": "anchor:4"
+        },
+        {
+          "causal_verified": false,
+          "edge_type": "temporal_episode_order",
+          "from": "anchor:4",
+          "relation": "temporal_episode_order",
+          "to": "anchor:5"
+        },
+        {
+          "causal_verified": false,
+          "edge_type": "temporal_episode_order",
+          "from": "anchor:5",
+          "relation": "temporal_episode_order",
+          "to": "anchor:6"
+        }
+      ],
+      "narrative_goal": [
+        "表现同队门将反复化解威胁",
+        "挖掘比赛阶段及后续发展"
+      ],
+      "subjects": [
+        "team_2"
+      ],
+      "subtype": "同队门将多次化险"
+    },
+    "template_id": "keeper_rescue",
+    "template_name": "同队门将多次化险",
+    "title": "同队门将多次化险",
+    "verification_status": "not_render_ready"
+  },
+  "observation_only": true,
+  "probes": [
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000423",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000423",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        3566.25,
+        3582.25
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000424",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000424",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        3569.76,
+        3585.76
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000425",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000425",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        3577.6,
+        3593.6
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000426",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000426",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        3718.69,
+        3734.69
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000458",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000458",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        4554.65,
+        4570.65
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000459",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000459",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        4585.22,
+        4601.22
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000460",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000460",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        4593.84,
+        4609.84
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000464",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000464",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        4646.24,
+        4662.24
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000465",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000465",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        4651.78,
+        4667.78
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000466",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000466",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        4663.24,
+        4679.24
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000467",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000467",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        4671.11,
+        4687.11
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000468",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000468",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        4674.65,
+        4690.65
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000469",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000469",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        4683.2,
+        4699.2
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000470",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000470",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        4690.0,
+        4706.0
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000471",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000471",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        4696.46,
+        4712.46
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000472",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000472",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        4702.45,
+        4718.45
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000473",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000473",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        4735.29,
+        4751.29
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000474",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000474",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        4741.59,
+        4755.79
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": null,
+      "first_live_status": "UNRESOLVED",
+      "gap_bounds_sec": [
+        4185.22,
+        4562.65
+      ],
+      "not_a_verified_event_action": true,
+      "origin": "unobserved_gap_midpoint_search_proposal",
+      "overlaps_existing_edl": false,
+      "probe_id": "gap:001",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        4358.935,
+        4388.935
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": null,
+      "first_live_status": "UNRESOLVED",
+      "gap_bounds_sec": [
+        3585.6,
+        3726.69
+      ],
+      "not_a_verified_event_action": true,
+      "origin": "unobserved_gap_midpoint_search_proposal",
+      "overlaps_existing_edl": false,
+      "probe_id": "gap:002",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        3641.145,
+        3671.145
+      ]
+    }
+  ],
+  "revision_context": {
+    "instruction": "Propose new story footage. Covered and tried events may provide context, but every story must include an untried uncovered event.",
+    "previous_rounds": [
+      {
+        "accepted_source_windows_sec": [
+          [
+            1981.0,
+            1997.0
+          ],
+          [
+            2269.94,
+            2285.94
+          ],
+          [
+            2502.42,
+            2518.42
+          ],
+          [
+            3041.14,
+            3057.14
+          ]
+        ],
+        "local_decisions": [],
+        "local_trims": 0,
+        "p3_stop_reason": "API_BUDGET",
+        "replay_replacements": [
+          {
+            "proposal_id": "interval_01:H2",
+            "removed_event_ids": [],
+            "status": "REPLACED",
+            "window_edits": [
+              {
+                "event_ids": [
+                  "event_000340"
+                ],
+                "original_source_window_sec": [
+                  2534.06,
+                  2550.06
+                ],
+                "removed_event_ids": [],
+                "removed_source_windows_sec": [
+                  [
+                    2549.87,
+                    2570.13
+                  ]
+                ],
+                "retained_source_windows_sec": [
+                  [
+                    2534.06,
+                    2549.87
+                  ]
+                ]
+              },
+              {
+                "event_ids": [
+                  "event_000367"
+                ],
+                "original_source_window_sec": [
+                  3012.38,
+                  3028.38
+                ],
+                "removed_event_ids": [],
+                "removed_source_windows_sec": [
+                  [
+                    3027.94,
+                    3038.24
+                  ]
+                ],
+                "retained_source_windows_sec": [
+                  [
+                    3012.38,
+                    3027.94
+                  ]
+                ]
+              }
+            ]
+          }
+        ],
+        "round": 1,
+        "source_advisory": [],
+        "status": "ACCEPTED_PREVIEW"
+      }
+    ],
+    "tried_event_ids": [
+      "event_000285",
+      "event_000311",
+      "event_000337",
+      "event_000370"
+    ],
+    "tried_source_windows_sec": [
+      [
+        1981.0,
+        1997.0
+      ],
+      [
+        2269.94,
+        2285.94
+      ],
+      [
+        2502.42,
+        2518.42
+      ],
+      [
+        3041.14,
+        3057.14
+      ]
+    ]
+  },
+  "rich_context_selection": "all_events",
+  "schema": "story_first_hypotheses_poc_v1",
+  "scope": {
+    "anchor_source": "existing_v3r_edl",
+    "from_role": "goalkeeper_rescue",
+    "from_segment_id": "seg:4",
+    "no_assumed_causality": true,
+    "source_interval_sec": [
+      3553.57,
+      4755.79
+    ],
+    "to_role": "goalkeeper_rescue",
+    "to_segment_id": "seg:5"
+  },
+  "story_plan_reference": "{\"a_story_template_context\": {\"category\": \"人物故事链\", \"narrative_goal\": [\"表现同队门将反复化解威胁\", \"挖掘比赛阶段及后续发展\"], \"schema\": \"r3_agent_story_context_v1\", \"subjects\": [\"team_2\"], \"subtype\": \"同队门将多次化险\", \"teams\": {\"team_1\": {\"color\": \"白色\", \"name\": \"阿联酋\"}, \"team_2\": {\"color\": \"红色\", \"name\": \"阿曼\"}}, \"template_id\": \"keeper_rescue\"}, \"agent_story_context\": {\"category\": \"人物故事链\", \"causal_relations_are_hypotheses\": true, \"chain_ids\": [\"pred_0015\", \"pred_0016\", \"pred_0030\", \"pred_0031\", \"pred_0032\", \"pred_0033\", \"pred_0042\", \"pred_0043\", \"pred_0063\", \"pred_0065\"], \"goal_targets\": [], \"narrative_goal\": [\"表现同队门将反复化解威胁\", \"挖掘比赛阶段及后续发展\"], \"observation_task_ids\": [\"observe:r2bc:threat_phase_change:1\"], \"required_nodes\": [{\"actor\": \"team_2\", \"node_id\": \"anchor:1\", \"role\": \"goalkeeper_rescue\", \"score\": null, \"segment_ids\": [\"seg:1\"], \"type\": \"anchor\"}, {\"actor\": \"team_2\", \"node_id\": \"anchor:2\", \"role\": \"goalkeeper_rescue\", \"score\": null, \"segment_ids\": [\"seg:2\"], \"type\": \"anchor\"}, {\"actor\": \"team_2\", \"node_id\": \"anchor:3\", \"role\": \"goalkeeper_rescue\", \"score\": null, \"segment_ids\": [\"seg:3\"], \"type\": \"anchor\"}, {\"actor\": \"team_2\", \"node_id\": \"anchor:4\", \"role\": \"goalkeeper_rescue\", \"score\": null, \"segment_ids\": [\"seg:4\"], \"type\": \"anchor\"}, {\"actor\": \"team_2\", \"node_id\": \"anchor:5\", \"role\": \"goalkeeper_rescue\", \"score\": null, \"segment_ids\": [\"seg:5\"], \"type\": \"anchor\"}, {\"actor\": \"team_2\", \"node_id\": \"anchor:6\", \"role\": \"goalkeeper_rescue\", \"score\": null, \"segment_ids\": [\"seg:6\"], \"type\": \"anchor\"}], \"schema\": \"r3_agent_story_context_v1\", \"subjects\": [\"team_2\"], \"subtype\": \"同队门将多次化险\", \"teams\": {\"team_1\": {\"color\": \"白色\", \"name\": \"阿联酋\"}, \"team_2\": {\"color\": \"红色\", \"name\": \"阿曼\"}}, \"template_id\": \"keeper_rescue\"}, \"algorithm\": \"R3\", \"beats\": [{\"actor\": \"team_2\", \"actor_role\": \"goalkeeper_team\", \"event_ids\": [\"event_000282\"], \"media_windows\": [[1955.54, 1966.45]], \"node_id\": \"anchor:1\", \"node_type\": \"anchor\", \"observation_task_ids\": [], \"predicate\": \"goalkeeper_rescue\", \"required\": true, \"role\": \"goalkeeper_rescue\"}, {\"actor\": \"team_2\", \"actor_role\": \"goalkeeper_team\", \"event_ids\": [\"event_000398\", \"event_000399\", \"event_000400\"], \"media_windows\": [[3338.39, 3351.3]], \"node_id\": \"anchor:2\", \"node_type\": \"anchor\", \"observation_task_ids\": [], \"predicate\": \"goalkeeper_rescue\", \"required\": true, \"role\": \"goalkeeper_rescue\"}, {\"actor\": \"team_2\", \"actor_role\": \"goalkeeper_team\", \"event_ids\": [\"event_000416\", \"event_000417\"], \"media_windows\": [[3504.14, 3515.83]], \"node_id\": \"anchor:3\", \"node_type\": \"anchor\", \"observation_task_ids\": [], \"predicate\": \"goalkeeper_rescue\", \"required\": true, \"role\": \"goalkeeper_rescue\"}, {\"actor\": \"team_2\", \"actor_role\": \"goalkeeper_team\", \"event_ids\": [\"event_000421\"], \"media_windows\": [[3543.01, 3553.57]], \"node_id\": \"anchor:4\", \"node_type\": \"anchor\", \"observation_task_ids\": [], \"predicate\": \"goalkeeper_rescue\", \"required\": true, \"role\": \"goalkeeper_rescue\"}, {\"actor\": \"team_2\", \"actor_role\": \"goalkeeper_team\", \"event_ids\": [\"event_000476\", \"event_000477\"], \"media_windows\": [[4755.79, 4769.62]], \"node_id\": \"anchor:5\", \"node_type\": \"anchor\", \"observation_task_ids\": [], \"predicate\": \"goalkeeper_rescue\", \"required\": true, \"role\": \"goalkeeper_rescue\"}, {\"actor\": \"team_2\", \"actor_role\": \"goalkeeper_team\", \"event_ids\": [\"event_000640\", \"event_000641\"], \"media_windows\": [[6552.01, 6562.64]], \"node_id\": \"anchor:6\", \"node_type\": \"anchor\", \"observation_task_ids\": [], \"predicate\": \"goalkeeper_rescue\", \"required\": true, \"role\": \"goalkeeper_rescue\"}], \"candidate_edl\": [{\"adapter_seed_basis\": \"r3_anchor_materials\", \"beat\": \"goalkeeper_rescue\", \"edl_index\": 1, \"event_ids\": [\"event_000282\"], \"first_live_status\": \"NOT_VERIFIED\", \"first_live_verified\": false, \"include_in_cut\": true, \"is_replay\": false, \"media_in\": 1955.54, \"media_out\": 1966.45, \"narrative_order\": 1, \"preview_only\": true, \"required_story_node_ids\": [\"anchor:1\"], \"role\": \"goalkeeper_rescue\", \"segment_id\": \"seg:1\", \"short_chain_ids\": [\"pred_0015\", \"pred_0016\"], \"shot_kind\": \"live\", \"source_material_id\": \"material:1\", \"source_media_order\": 1955.54, \"story_anchor\": true, \"story_node_ids\": [\"anchor:1\"], \"time_provenance\": {\"basis\": \"union_of_source_atomic_windows\"}, \"verification_status\": \"draft\", \"video_id\": \"10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语\"}, {\"adapter_seed_basis\": \"r3_anchor_materials\", \"beat\": \"goalkeeper_rescue\", \"edl_index\": 2, \"event_ids\": [\"event_000398\", \"event_000399\", \"event_000400\"], \"first_live_status\": \"NOT_VERIFIED\", \"first_live_verified\": false, \"include_in_cut\": true, \"is_replay\": false, \"media_in\": 3338.39, \"media_out\": 3351.3, \"narrative_order\": 2, \"preview_only\": true, \"required_story_node_ids\": [\"anchor:2\"], \"role\": \"goalkeeper_rescue\", \"segment_id\": \"seg:2\", \"short_chain_ids\": [\"pred_0030\", \"pred_0031\"], \"shot_kind\": \"live\", \"source_material_id\": \"material:2\", \"source_media_order\": 3338.39, \"story_anchor\": true, \"story_node_ids\": [\"anchor:2\"], \"time_provenance\": {\"basis\": \"union_of_source_atomic_windows\"}, \"verification_status\": \"draft\", \"video_id\": \"10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语\"}, {\"adapter_seed_basis\": \"r3_anchor_materials\", \"beat\": \"goalkeeper_rescue\", \"edl_index\": 3, \"event_ids\": [\"event_000416\", \"event_000417\"], \"first_live_status\": \"NOT_VERIFIED\", \"first_live_verified\": false, \"include_in_cut\": true, \"is_replay\": false, \"media_in\": 3504.14, \"media_out\": 3515.83, \"narrative_order\": 3, \"preview_only\": true, \"required_story_node_ids\": [\"anchor:3\"], \"role\": \"goalkeeper_rescue\", \"segment_id\": \"seg:3\", \"short_chain_ids\": [\"pred_0031\", \"pred_0032\"], \"shot_kind\": \"live\", \"source_material_id\": \"material:3\", \"source_media_order\": 3504.14, \"story_anchor\": true, \"story_node_ids\": [\"anchor:3\"], \"time_provenance\": {\"basis\": \"union_of_source_atomic_windows\"}, \"verification_status\": \"draft\", \"video_id\": \"10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语\"}, {\"adapter_seed_basis\": \"r3_anchor_materials\", \"beat\": \"goalkeeper_rescue\", \"edl_index\": 4, \"event_ids\": [\"event_000421\"], \"first_live_status\": \"NOT_VERIFIED\", \"first_live_verified\": false, \"include_in_cut\": true, \"is_replay\": false, \"media_in\": 3543.01, \"media_out\": 3553.57, \"narrative_order\": 4, \"preview_only\": true, \"required_story_node_ids\": [\"anchor:4\"], \"role\": \"goalkeeper_rescue\", \"segment_id\": \"seg:4\", \"short_chain_ids\": [\"pred_0032\", \"pred_0033\"], \"shot_kind\": \"live\", \"source_material_id\": \"material:4\", \"source_media_order\": 3543.01, \"story_anchor\": true, \"story_node_ids\": [\"anchor:4\"], \"time_provenance\": {\"basis\": \"union_of_source_atomic_windows\"}, \"verification_status\": \"draft\", \"video_id\": \"10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语\"}, {\"adapter_seed_basis\": \"r3_anchor_materials\", \"beat\": \"goalkeeper_rescue\", \"edl_index\": 5, \"event_ids\": [\"event_000476\", \"event_000477\"], \"first_live_status\": \"NOT_VERIFIED\", \"first_live_verified\": false, \"include_in_cut\": true, \"is_replay\": false, \"media_in\": 4755.79, \"media_out\": 4769.62, \"narrative_order\": 5, \"preview_only\": true, \"required_story_node_ids\": [\"anchor:5\"], \"role\": \"goalkeeper_rescue\", \"segment_id\": \"seg:5\", \"short_chain_ids\": [\"pred_0042\", \"pred_0043\"], \"shot_kind\": \"live\", \"source_material_id\": \"material:5\", \"source_media_order\": 4755.79, \"story_anchor\": true, \"story_node_ids\": [\"anchor:5\"], \"time_provenance\": {\"basis\": \"union_of_source_atomic_windows\"}, \"verification_status\": \"draft\", \"video_id\": \"10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语\"}, {\"adapter_seed_basis\": \"r3_anchor_materials\", \"beat\": \"goalkeeper_rescue\", \"edl_index\": 6, \"event_ids\": [\"event_000640\", \"event_000641\"], \"first_live_status\": \"NOT_VERIFIED\", \"first_live_verified\": false, \"include_in_cut\": true, \"is_replay\": false, \"media_in\": 6552.01, \"media_out\": 6562.64, \"narrative_order\": 6, \"preview_only\": true, \"required_story_node_ids\": [\"anchor:6\"], \"role\": \"goalkeeper_rescue\", \"segment_id\": \"seg:6\", \"short_chain_ids\": [\"pred_0063\", \"pred_0065\"], \"shot_kind\": \"live\", \"source_material_id\": \"material:6\", \"source_media_order\": 6552.01, \"story_anchor\": true, \"story_node_ids\": [\"anchor:6\"], \"time_provenance\": {\"basis\": \"union_of_source_atomic_windows\"}, \"verification_status\": \"draft\", \"video_id\": \"10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语\"}], \"edl\": [{\"adapter_seed_basis\": \"r3_anchor_materials\", \"beat\": \"goalkeeper_rescue\", \"edl_index\": 1, \"event_ids\": [\"event_000282\"], \"first_live_status\": \"NOT_VERIFIED\", \"first_live_verified\": false, \"include_in_cut\": true, \"is_replay\": false, \"media_in\": 1955.54, \"media_out\": 1966.45, \"narrative_order\": 1, \"preview_only\": true, \"required_story_node_ids\": [\"anchor:1\"], \"role\": \"goalkeeper_rescue\", \"segment_id\": \"seg:1\", \"short_chain_ids\": [\"pred_0015\", \"pred_0016\"], \"shot_kind\": \"live\", \"source_material_id\": \"material:1\", \"source_media_order\": 1955.54, \"story_anchor\": true, \"story_node_ids\": [\"anchor:1\"], \"time_provenance\": {\"basis\": \"union_of_source_atomic_windows\"}, \"verification_status\": \"draft\", \"video_id\": \"10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语\"}, {\"adapter_seed_basis\": \"r3_anchor_materials\", \"beat\": \"goalkeeper_rescue\", \"edl_index\": 2, \"event_ids\": [\"event_000398\", \"event_000399\", \"event_000400\"], \"first_live_status\": \"NOT_VERIFIED\", \"first_live_v",
+  "verified_long_range_causal_links": 0
+}

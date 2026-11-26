@@ -1,0 +1,191 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若视频显示该序列无射门或门将未触球则假设不成立"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "setpiece_sequence_to_keeper_save",
+      "narrative_summary": "阿曼连续定位球与传中制造威胁，最终由门将化解，形成同一防守阶段的叙事关联。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "解围前是否有连续传中",
+          "question": "该解围是否源于此前定位球序列？",
+          "target_id": "event:event_000397"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "定位球与传中序列或与门将化险相关，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000311",
+          "target_event_id": "event_000397"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000311",
+        "event_000313",
+        "event_000370",
+        "event_000397"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若视频显示各射门间无连续进攻组织则假设不成立"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "repeated_shot_block_escalation",
+      "narrative_summary": "阿曼多次射门被防守封堵，威胁逐步升级，构成同一进攻阶段的重复尝试模式。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "射门间是否有连续控球",
+          "question": "该射门是否延续此前射门压力？",
+          "target_id": "event:event_000374"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "多次射门或构成重复威胁模式，因果关系未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000313",
+          "target_event_id": "event_000375"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000313",
+        "event_000340",
+        "event_000374",
+        "event_000375"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若视频显示任意球与解围无直接关联则假设不成立"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "foul_free_kick_clearance_cycle",
+      "narrative_summary": "阿曼多次被犯规获得任意球，随后出现解围，形成犯规-定位球-解围的循环叙事。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "解围前是否有任意球开出",
+          "question": "该解围是否来自此前任意球？",
+          "target_id": "event:event_000367"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "犯规后任意球与解围或属同一序列，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000363",
+          "target_event_id": "event_000367"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000363",
+        "event_000366",
+        "event_000367",
+        "event_000385"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若视频显示换人前后进攻方式无差异则假设不成立"
+      ],
+      "hypothesis_id": "H4",
+      "mechanism_key": "substitution_then_attack_shift",
+      "narrative_summary": "换人后阿曼进攻方式出现变化，随后产生射门与角球，构成换人后阶段转换的叙事关联。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "换人前后进攻组织差异",
+          "question": "换人后进攻方式是否改变？",
+          "target_id": "event:event_000374"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "换人或与随后进攻方式变化相关，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "state_transition",
+          "source_event_id": "event_000357",
+          "target_event_id": "event_000374"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000357",
+        "event_000370",
+        "event_000374",
+        "event_000381"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若视频显示空中对抗与传中无连续关系则假设不成立"
+      ],
+      "hypothesis_id": "H5",
+      "mechanism_key": "aerial_duel_chain_to_cross",
+      "narrative_summary": "阿曼多次赢得空中对抗并完成传中，形成空中对抗-传中的连续叙事链。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "传中前是否有空中争顶",
+          "question": "该传中是否源于此前空中对抗？",
+          "target_id": "event:event_000395"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "空中对抗与传中或构成连续模式，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000371",
+          "target_event_id": "event_000396"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000371",
+        "event_000381",
+        "event_000395",
+        "event_000396"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

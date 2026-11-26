@@ -1,0 +1,160 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若472段无门将参与或非同一进攻序列则证伪"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "live_buildup_then_replay_threat_cluster",
+      "narrative_summary": "阿曼门将先经长传与争顶组织推进，随后一段连续射门扑救画面或为威胁累积的再现。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "进攻发起方式与参与球员",
+          "question": "该射门是否源自前段长传推进？",
+          "target_id": "event:event_000472"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "长传争顶与后段射门或属同一威胁序列",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000423",
+          "target_event_id": "event_000472"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000423",
+        "event_000424",
+        "event_000472",
+        "event_000474"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若换人后无连续进攻事件则证伪"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "substitution_then_live_pressure_sequence",
+      "narrative_summary": "换人后阿曼连续长传、争顶与控球，随后一次凌空射门或标志该阶段攻势收束。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "换人前后传球类型变化",
+          "question": "换人后是否立即出现长传组织？",
+          "target_id": "event:event_000464"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "换人或改变进攻方式，但因果未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000458",
+          "target_event_id": "event_000472"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000458",
+        "event_000464",
+        "event_000467",
+        "event_000472"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若争顶后球权未延续或未形成进攻则证伪"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "repeated_aerial_duel_chain",
+      "narrative_summary": "阿曼多次赢得空中对抗并伴随长传与控球，构成一段以争顶为节点的推进链。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "争顶后下一触球方",
+          "question": "争顶后球权是否继续由阿曼控制？",
+          "target_id": "event:event_000465"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "多次争顶或构成同一推进模式，非因果",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000424",
+          "target_event_id": "event_000474"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000424",
+        "event_000460",
+        "event_000465",
+        "event_000474"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若回传后无向前传递或射门则证伪"
+      ],
+      "hypothesis_id": "H5",
+      "mechanism_key": "backpass_switch_to_attack",
+      "narrative_summary": "阿曼先回传与争顶，随后长传、控球并完成射门，或显示由后向前的推进转换。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "传球起点与接球区域",
+          "question": "长传是否由后场发起并找到前场？",
+          "target_id": "event:event_000467"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "由回传到射门或为推进转换，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "state_transition",
+          "source_event_id": "event_000459",
+          "target_event_id": "event_000472"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000459",
+        "event_000460",
+        "event_000467",
+        "event_000472"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [
+    {
+      "index": 3,
+      "reason": "invalid_observation_probe"
+    }
+  ],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

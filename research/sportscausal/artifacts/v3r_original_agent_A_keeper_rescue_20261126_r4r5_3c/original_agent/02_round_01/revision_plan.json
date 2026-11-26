@@ -1,0 +1,121 @@
+{
+  "schema": "v3a_story_revision_plan_v1",
+  "decision": "UNRESOLVED",
+  "rationale": "All three diagnosed issues are temporal-discontinuity-only hypotheses with diagnosis_status=HYPOTHESIS_NEEDS_VIDEO and story_defect_confirmed=false. The VLM critic summary is empty and video_critic_observations status is UNAVAILABLE, so no observed defect or KEEP finding exists. No search candidate has FIRST_LIVE_VERIFIED or narrative_fit_status=REVIEW_SUPPORTED, so no search_add is permitted. The protected goal segments cover all six segments, and no overturn evidence exists. Per constraints, source-time jumps alone are normal highlight compression and must not trigger edits.",
+  "offline": false,
+  "semantic_confirmation": false,
+  "search_confirmation": false,
+  "narrative_fit_required": true,
+  "narrative_fit_confirmation": false,
+  "event_pts_search_available": true,
+  "protected_goal_segment_ids": [
+    "seg:1",
+    "seg:2",
+    "seg:3",
+    "seg:4",
+    "seg:5",
+    "seg:6"
+  ],
+  "revision_intents": [],
+  "feedback_context": {
+    "schema": "v3a_phase8_feedback_summary_v1",
+    "n_records": 0,
+    "tried_revisions": [],
+    "confirmed_negatives": [],
+    "uncertain_or_unverified": [],
+    "technical_failures": [],
+    "positives": [],
+    "current_issue_signatures": [],
+    "forbid_identical_retry_without_new_evidence": true,
+    "never_permanently_ban_pts": true,
+    "opaque_reject_is_not_confirmed_negative": true
+  },
+  "fullcut_learning_enabled": true,
+  "fullcut_edit_selection": null,
+  "agent_narrative_graph_context": {
+    "data_role": "AGENT_INFERRED",
+    "edl_sha256": "c89552cef1f97715272f1226c3889ead4c51db906b745925130a818751566cc4",
+    "summary": {
+      "node_count": 6,
+      "edge_count": 5,
+      "event_or_short_chain_reference_links": 23,
+      "event_reference_links": 11,
+      "short_chain_prediction_reference_links": 12,
+      "unclassified_reference_count": 0,
+      "unreviewed_narrative_transitions": 0,
+      "model_reviewed_transitions": 0
+    },
+    "authorizes_revision": false
+  },
+  "budget": {
+    "max_rounds": 3,
+    "round_idx": 1,
+    "max_calls": 17,
+    "max_cost_usd": 0.0803,
+    "http_calls_so_far": 5,
+    "est_cost_usd_so_far": 0.015722
+  },
+  "phase6_rules": {
+    "no_auto_add_on_large_source_gap_alone": true,
+    "duration_pad_not_quality_proxy": true,
+    "require_confirmed_defect_for_search_add": true,
+    "require_narrative_fit_triplet_before_insert": true,
+    "temporal_jump_alone_can_be_kept": true,
+    "one_confirmed_edit_per_round": true,
+    "hypothesis_status": "HYPOTHESIS_NEEDS_VIDEO"
+  },
+  "phase8_rules": {
+    "use_prior_round_feedback": true,
+    "block_identical_pts_action_without_new_evidence": true,
+    "never_permanently_ban_pts": true,
+    "unverified_reject_is_not_confirmed_negative": true,
+    "stop_if_no_narrative_live_after_filter": true
+  },
+  "narrative_purposes_supported": [
+    "supplement_buildup",
+    "adjust_non_goal_segments",
+    "repair_transitions",
+    "drop_redundant_or_meaningless",
+    "improve_ending_closure",
+    "preserve_true_match_time_and_causality",
+    "protect_confirmed_goal_anchors"
+  ],
+  "constraints": {
+    "no_replay_or_slowmo": true,
+    "no_scoreboard_time_as_goal_action": true,
+    "new_footage_must_trace_to_source_pts": true,
+    "max_rounds": 3
+  },
+  "search_feedback_filter": {
+    "filtered_count": 0,
+    "kept_count": 15
+  },
+  "provider_mode": "real",
+  "llm_overlay_note": "llm_unresolved_or_keep_only_honored",
+  "llm_rationale": "All three diagnosed issues are temporal-discontinuity-only hypotheses with diagnosis_status=HYPOTHESIS_NEEDS_VIDEO and story_defect_confirmed=false. The VLM critic summary is empty and video_critic_observations status is UNAVAILABLE, so no observed defect or KEEP finding exists. No search candidate has FIRST_LIVE_VERIFIED or narrative_fit_status=REVIEW_SUPPORTED, so no search_add is permitted. The protected goal segments cover all six segments, and no overturn evidence exists. Per constraints, source-time jumps alone are normal highlight compression and must not trigger edits.",
+  "search_revise_suppressed_by_llm": false,
+  "suppressed_search_intents": [],
+  "nonadditive_apply_gate": {
+    "required": true,
+    "blocked_intents": [],
+    "n_blocked": 0,
+    "explicitly_protected_goals": []
+  },
+  "narrative_fit_apply_gate": {
+    "required": true,
+    "approved_candidate_count": 0,
+    "blocked_intents": [],
+    "n_blocked": 0
+  },
+  "one_edit_apply_gate": {
+    "required": true,
+    "selected_intent_id": null,
+    "deferred_intents": [],
+    "n_deferred": 0
+  },
+  "goal_coverage_mutation_gate": {
+    "blocked": [],
+    "n_blocked": 0,
+    "no_auto_goal_from_scoreboard": true
+  }
+}

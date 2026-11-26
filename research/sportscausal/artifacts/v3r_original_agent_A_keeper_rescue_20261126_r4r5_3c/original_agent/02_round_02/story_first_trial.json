@@ -1,0 +1,190 @@
+{
+  "trial": {
+    "trial_id": "534438b8518465cbac338afe",
+    "proposal_ids": [
+      "interval_01:H2"
+    ],
+    "events": [
+      {
+        "event_id": "event_000313",
+        "source_pts_sec": 2285.84,
+        "event_type": "Shot",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "1队球员外围一脚远射，射偏"
+        }
+      },
+      {
+        "event_id": "event_000340",
+        "source_pts_sec": 2542.06,
+        "event_type": "Shot",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "1队14号带球突破并射门"
+        }
+      },
+      {
+        "event_id": "event_000367",
+        "source_pts_sec": 3020.38,
+        "event_type": "Defensive_action",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "2队7号将球解围"
+        }
+      },
+      {
+        "event_id": "event_000374",
+        "source_pts_sec": 3079.65,
+        "event_type": "Shot",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "2队球员看到进攻机会，选择打门"
+        }
+      }
+    ],
+    "relations": [
+      {
+        "relation_id": "interval_01:H2:r1",
+        "source_event_id": "event_000340",
+        "target_event_id": "event_000367",
+        "relation_type": "causal_hypothesis",
+        "claim": "射门后解围或为应对，未验证",
+        "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+      }
+    ],
+    "story_context": [
+      {
+        "proposal_id": "interval_01:H2",
+        "summary": "阿联酋射门后阿曼防线以解围化解，形成射门与解围交替的段落。",
+        "expected_story_contribution": "",
+        "falsification_conditions": [
+          "若解围前无任何射门事件则交替模式不成立"
+        ]
+      }
+    ],
+    "windows": [
+      {
+        "event_ids": [
+          "event_000313"
+        ],
+        "source_pts_start": 2277.84,
+        "source_pts_end": 2293.84,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_534438b8518465cbac338afe_01",
+        "issue_id": "story_first:534438b8518465cbac338afe"
+      },
+      {
+        "event_ids": [
+          "event_000340"
+        ],
+        "source_pts_start": 2534.06,
+        "source_pts_end": 2550.06,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_534438b8518465cbac338afe_02",
+        "issue_id": "story_first:534438b8518465cbac338afe"
+      },
+      {
+        "event_ids": [
+          "event_000367"
+        ],
+        "source_pts_start": 3012.38,
+        "source_pts_end": 3028.38,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_534438b8518465cbac338afe_03",
+        "issue_id": "story_first:534438b8518465cbac338afe"
+      },
+      {
+        "event_ids": [
+          "event_000374"
+        ],
+        "source_pts_start": 3071.65,
+        "source_pts_end": 3087.65,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_534438b8518465cbac338afe_04",
+        "issue_id": "story_first:534438b8518465cbac338afe"
+      }
+    ],
+    "narrative_purpose": "Prior trial interval_01:H5 was contradicted because event_000397 was a replay angle. Interval_01:H2 covers the same seg:1→seg:2 gap but selects a different local sub-story: shot-clearance alternation (Shot event_000313, Shot event_000340, Defensive_action event_000367, Shot event_000374). All selected events are marked known_replay_or_slowmo=false, avoiding the prior replay contradiction. This trial requests video observation only and does not constitute an executable edit."
+  },
+  "review": {
+    "status": "NEEDS_REVISION",
+    "feedback": [
+      {
+        "window_id": "story_first_534438b8518465cbac338afe_02",
+        "event_ids": [
+          "event_000340"
+        ],
+        "status": "REPLAY_CONFIRMED",
+        "reason": "window_overlaps_replay_or_slowmo_annotation",
+        "replay_event_ids": [
+          "event_000341",
+          "event_000342"
+        ]
+      },
+      {
+        "window_id": "story_first_534438b8518465cbac338afe_03",
+        "event_ids": [
+          "event_000367"
+        ],
+        "status": "REPLAY_CONFIRMED",
+        "reason": "window_overlaps_replay_or_slowmo_annotation",
+        "replay_event_ids": [
+          "event_000368",
+          "event_000369"
+        ]
+      }
+    ],
+    "advisory": [],
+    "annotation_supported_event_ids": [],
+    "event_observations": [],
+    "candidates": [
+      {
+        "event_ids": [
+          "event_000313"
+        ],
+        "source_pts_start": 2277.84,
+        "source_pts_end": 2293.84,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_534438b8518465cbac338afe_01",
+        "issue_id": "story_first:534438b8518465cbac338afe",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "534438b8518465cbac338afe",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      },
+      {
+        "event_ids": [
+          "event_000374"
+        ],
+        "source_pts_start": 3071.65,
+        "source_pts_end": 3087.65,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_534438b8518465cbac338afe_04",
+        "issue_id": "story_first:534438b8518465cbac338afe",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "534438b8518465cbac338afe",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      }
+    ],
+    "intents": []
+  }
+}

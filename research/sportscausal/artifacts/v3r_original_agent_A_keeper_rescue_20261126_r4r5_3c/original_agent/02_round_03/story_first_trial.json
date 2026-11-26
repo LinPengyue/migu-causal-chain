@@ -1,0 +1,394 @@
+{
+  "trial": {
+    "trial_id": "5c223a27722ffb47d0ed5f93",
+    "proposal_ids": [
+      "interval_01:H1"
+    ],
+    "events": [
+      {
+        "event_id": "event_000285",
+        "source_pts_sec": 1989.0,
+        "event_type": "Corner_kick",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "1队14号发出角球"
+        }
+      },
+      {
+        "event_id": "event_000311",
+        "source_pts_sec": 2277.94,
+        "event_type": "Free_kick",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "1队球员发任意球"
+        }
+      },
+      {
+        "event_id": "event_000337",
+        "source_pts_sec": 2510.42,
+        "event_type": "Free_kick",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "2队4号发任意球"
+        }
+      },
+      {
+        "event_id": "event_000370",
+        "source_pts_sec": 3049.14,
+        "event_type": "Corner_kick",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "1队14号角球"
+        }
+      }
+    ],
+    "relations": [
+      {
+        "relation_id": "interval_01:H1:r1",
+        "source_event_id": "event_000285",
+        "target_event_id": "event_000370",
+        "relation_type": "narrative_association",
+        "claim": "角球到角球的重复定位球模式，非因果",
+        "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+      }
+    ],
+    "story_context": [
+      {
+        "proposal_id": "interval_01:H1",
+        "summary": "阿联酋在禁区前沿反复以定位球和传中制造威胁，阿曼门将多次应对。",
+        "expected_story_contribution": "",
+        "falsification_conditions": [
+          "若两次角球间无任何射门或传中事件则模式不成立"
+        ]
+      }
+    ],
+    "windows": [
+      {
+        "event_ids": [
+          "event_000285"
+        ],
+        "source_pts_start": 1981.0,
+        "source_pts_end": 1997.0,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_5c223a27722ffb47d0ed5f93_01",
+        "issue_id": "story_first:5c223a27722ffb47d0ed5f93"
+      },
+      {
+        "event_ids": [
+          "event_000311"
+        ],
+        "source_pts_start": 2269.94,
+        "source_pts_end": 2285.94,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_5c223a27722ffb47d0ed5f93_02",
+        "issue_id": "story_first:5c223a27722ffb47d0ed5f93"
+      },
+      {
+        "event_ids": [
+          "event_000337"
+        ],
+        "source_pts_start": 2502.42,
+        "source_pts_end": 2518.42,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_5c223a27722ffb47d0ed5f93_03",
+        "issue_id": "story_first:5c223a27722ffb47d0ed5f93"
+      },
+      {
+        "event_ids": [
+          "event_000370"
+        ],
+        "source_pts_start": 3041.14,
+        "source_pts_end": 3057.14,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_5c223a27722ffb47d0ed5f93_04",
+        "issue_id": "story_first:5c223a27722ffb47d0ed5f93"
+      }
+    ],
+    "narrative_purpose": "The accepted cut preserves six goalkeeper-rescue anchors. The largest uncovered gap remains between seg:1 and seg:2 (1966.45–3338.39). Prior trials in this gap were contradicted due to replay footage: interval_01:H5 (event_000397) and interval_01:H2 (event_000340, event_000367). Interval_01:H1 offers a different local sub-story in the same gap: repeated set-piece pressure (Corner_kick event_000285, Free_kick event_000311, Free_kick event_000337, Corner_kick event_000370). All four selected events are marked known_replay_or_slowmo=false, avoiding the prior replay contradictions. The proposed re"
+  },
+  "review": {
+    "status": "READY_FOR_TRIAL",
+    "feedback": [],
+    "advisory": [],
+    "annotation_supported_event_ids": [
+      "event_000285",
+      "event_000311",
+      "event_000337",
+      "event_000370"
+    ],
+    "event_observations": [
+      {
+        "event_id": "event_000285",
+        "status": "SUPPORTED",
+        "reason": "Frame f2 shows player #14 in white (Team 1) kicking the ball from the corner arc, matching the annotation for a Team 1 corner kick.",
+        "frame_ids": [
+          "f2"
+        ]
+      },
+      {
+        "event_id": "event_000311",
+        "status": "SUPPORTED",
+        "reason": "Frame f5 shows a player in white (Team 1) striking a stationary ball for a free kick, consistent with the event description.",
+        "frame_ids": [
+          "f5"
+        ]
+      },
+      {
+        "event_id": "event_000337",
+        "status": "SUPPORTED",
+        "reason": "Frame f8 captures a player in red (Team 2) taking a free kick, aligning with the annotation of Team 2 player #4 taking the kick.",
+        "frame_ids": [
+          "f8"
+        ]
+      },
+      {
+        "event_id": "event_000370",
+        "status": "SUPPORTED",
+        "reason": "Frame f11 depicts a player in white (Team 1) kicking the ball from the corner flag area, confirming the Team 1 corner kick event.",
+        "frame_ids": [
+          "f11"
+        ]
+      }
+    ],
+    "candidates": [
+      {
+        "event_ids": [
+          "event_000285"
+        ],
+        "source_pts_start": 1981.0,
+        "source_pts_end": 1997.0,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_5c223a27722ffb47d0ed5f93_01",
+        "issue_id": "story_first:5c223a27722ffb47d0ed5f93",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "5c223a27722ffb47d0ed5f93",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      },
+      {
+        "event_ids": [
+          "event_000311"
+        ],
+        "source_pts_start": 2269.94,
+        "source_pts_end": 2285.94,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_5c223a27722ffb47d0ed5f93_02",
+        "issue_id": "story_first:5c223a27722ffb47d0ed5f93",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "5c223a27722ffb47d0ed5f93",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      },
+      {
+        "event_ids": [
+          "event_000337"
+        ],
+        "source_pts_start": 2502.42,
+        "source_pts_end": 2518.42,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_5c223a27722ffb47d0ed5f93_03",
+        "issue_id": "story_first:5c223a27722ffb47d0ed5f93",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "5c223a27722ffb47d0ed5f93",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      },
+      {
+        "event_ids": [
+          "event_000370"
+        ],
+        "source_pts_start": 3041.14,
+        "source_pts_end": 3057.14,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_5c223a27722ffb47d0ed5f93_04",
+        "issue_id": "story_first:5c223a27722ffb47d0ed5f93",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "5c223a27722ffb47d0ed5f93",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      }
+    ],
+    "intents": [
+      {
+        "intent_id": "story_first_5c223a27722ffb47d0ed5f93_04",
+        "action": "search_add",
+        "role": "buildup_bridge_action",
+        "issue_id": "story_first:5c223a27722ffb47d0ed5f93",
+        "story_first_trial_id": "5c223a27722ffb47d0ed5f93",
+        "story_first_preview_only": true,
+        "anchor_id": "search:story_first_5c223a27722ffb47d0ed5f93_04",
+        "new_segment_id": "seg_story_first_5c223a27722ffb47d0ed5f93_04",
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "bound_source_window": {
+          "start": 3041.14,
+          "end": 3057.14
+        },
+        "event_ids": [
+          "event_000370"
+        ],
+        "narrative_purpose": "The accepted cut preserves six goalkeeper-rescue anchors. The largest uncovered gap remains between seg:1 and seg:2 (1966.45–3338.39). Prior trials in this gap were contradicted due to replay footage: interval_01:H5 (event_000397) and interval_01:H2 (event_000340, event_000367). Interval_01:H1 offers a different local sub-story in the same gap: repeated set-piece pressure (Corner_kick event_000285, Free_kick event_000311, Free_kick event_000337, Corner_kick event_000370). All four selected events are marked known_replay_or_slowmo=false, avoiding the prior replay contradictions. The proposed re",
+        "source_event_observations": [
+          {
+            "event_id": "event_000370",
+            "status": "SUPPORTED",
+            "reason": "Frame f11 depicts a player in white (Team 1) kicking the ball from the corner flag area, confirming the Team 1 corner kick event.",
+            "frame_ids": [
+              "f11"
+            ]
+          }
+        ],
+        "expected_observable_improvement": "The accepted cut preserves six goalkeeper-rescue anchors. The largest uncovered gap remains between seg:1 and seg:2 (1966.45–3338.39). Prior trials in this gap were contradicted due to replay footage: interval_01:H5 (event_000397) and interval_01:H2 (event_000340, event_000367). Interval_01:H1 offers a different local sub-story in the same gap: repeated set-piece pressure (Corner_kick event_000285, Free_kick event_000311, Free_kick event_000337, Corner_kick event_000370). All four selected events are marked known_replay_or_slowmo=false, avoiding the prior replay contradictions. The proposed re",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "evidence_refs": [
+          {
+            "kind": "story_first_source_review",
+            "ref": "story_first_5c223a27722ffb47d0ed5f93_04"
+          }
+        ]
+      },
+      {
+        "intent_id": "story_first_5c223a27722ffb47d0ed5f93_03",
+        "action": "search_add",
+        "role": "buildup_bridge_action",
+        "issue_id": "story_first:5c223a27722ffb47d0ed5f93",
+        "story_first_trial_id": "5c223a27722ffb47d0ed5f93",
+        "story_first_preview_only": true,
+        "anchor_id": "search:story_first_5c223a27722ffb47d0ed5f93_03",
+        "new_segment_id": "seg_story_first_5c223a27722ffb47d0ed5f93_03",
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "bound_source_window": {
+          "start": 2502.42,
+          "end": 2518.42
+        },
+        "event_ids": [
+          "event_000337"
+        ],
+        "narrative_purpose": "The accepted cut preserves six goalkeeper-rescue anchors. The largest uncovered gap remains between seg:1 and seg:2 (1966.45–3338.39). Prior trials in this gap were contradicted due to replay footage: interval_01:H5 (event_000397) and interval_01:H2 (event_000340, event_000367). Interval_01:H1 offers a different local sub-story in the same gap: repeated set-piece pressure (Corner_kick event_000285, Free_kick event_000311, Free_kick event_000337, Corner_kick event_000370). All four selected events are marked known_replay_or_slowmo=false, avoiding the prior replay contradictions. The proposed re",
+        "source_event_observations": [
+          {
+            "event_id": "event_000337",
+            "status": "SUPPORTED",
+            "reason": "Frame f8 captures a player in red (Team 2) taking a free kick, aligning with the annotation of Team 2 player #4 taking the kick.",
+            "frame_ids": [
+              "f8"
+            ]
+          }
+        ],
+        "expected_observable_improvement": "The accepted cut preserves six goalkeeper-rescue anchors. The largest uncovered gap remains between seg:1 and seg:2 (1966.45–3338.39). Prior trials in this gap were contradicted due to replay footage: interval_01:H5 (event_000397) and interval_01:H2 (event_000340, event_000367). Interval_01:H1 offers a different local sub-story in the same gap: repeated set-piece pressure (Corner_kick event_000285, Free_kick event_000311, Free_kick event_000337, Corner_kick event_000370). All four selected events are marked known_replay_or_slowmo=false, avoiding the prior replay contradictions. The proposed re",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "evidence_refs": [
+          {
+            "kind": "story_first_source_review",
+            "ref": "story_first_5c223a27722ffb47d0ed5f93_03"
+          }
+        ]
+      },
+      {
+        "intent_id": "story_first_5c223a27722ffb47d0ed5f93_02",
+        "action": "search_add",
+        "role": "buildup_bridge_action",
+        "issue_id": "story_first:5c223a27722ffb47d0ed5f93",
+        "story_first_trial_id": "5c223a27722ffb47d0ed5f93",
+        "story_first_preview_only": true,
+        "anchor_id": "search:story_first_5c223a27722ffb47d0ed5f93_02",
+        "new_segment_id": "seg_story_first_5c223a27722ffb47d0ed5f93_02",
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "bound_source_window": {
+          "start": 2269.94,
+          "end": 2285.94
+        },
+        "event_ids": [
+          "event_000311"
+        ],
+        "narrative_purpose": "The accepted cut preserves six goalkeeper-rescue anchors. The largest uncovered gap remains between seg:1 and seg:2 (1966.45–3338.39). Prior trials in this gap were contradicted due to replay footage: interval_01:H5 (event_000397) and interval_01:H2 (event_000340, event_000367). Interval_01:H1 offers a different local sub-story in the same gap: repeated set-piece pressure (Corner_kick event_000285, Free_kick event_000311, Free_kick event_000337, Corner_kick event_000370). All four selected events are marked known_replay_or_slowmo=false, avoiding the prior replay contradictions. The proposed re",
+        "source_event_observations": [
+          {
+            "event_id": "event_000311",
+            "status": "SUPPORTED",
+            "reason": "Frame f5 shows a player in white (Team 1) striking a stationary ball for a free kick, consistent with the event description.",
+            "frame_ids": [
+              "f5"
+            ]
+          }
+        ],
+        "expected_observable_improvement": "The accepted cut preserves six goalkeeper-rescue anchors. The largest uncovered gap remains between seg:1 and seg:2 (1966.45–3338.39). Prior trials in this gap were contradicted due to replay footage: interval_01:H5 (event_000397) and interval_01:H2 (event_000340, event_000367). Interval_01:H1 offers a different local sub-story in the same gap: repeated set-piece pressure (Corner_kick event_000285, Free_kick event_000311, Free_kick event_000337, Corner_kick event_000370). All four selected events are marked known_replay_or_slowmo=false, avoiding the prior replay contradictions. The proposed re",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "evidence_refs": [
+          {
+            "kind": "story_first_source_review",
+            "ref": "story_first_5c223a27722ffb47d0ed5f93_02"
+          }
+        ]
+      },
+      {
+        "intent_id": "story_first_5c223a27722ffb47d0ed5f93_01",
+        "action": "search_add",
+        "role": "buildup_bridge_action",
+        "issue_id": "story_first:5c223a27722ffb47d0ed5f93",
+        "story_first_trial_id": "5c223a27722ffb47d0ed5f93",
+        "story_first_preview_only": true,
+        "anchor_id": "search:story_first_5c223a27722ffb47d0ed5f93_01",
+        "new_segment_id": "seg_story_first_5c223a27722ffb47d0ed5f93_01",
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "bound_source_window": {
+          "start": 1981.0,
+          "end": 1997.0
+        },
+        "event_ids": [
+          "event_000285"
+        ],
+        "narrative_purpose": "The accepted cut preserves six goalkeeper-rescue anchors. The largest uncovered gap remains between seg:1 and seg:2 (1966.45–3338.39). Prior trials in this gap were contradicted due to replay footage: interval_01:H5 (event_000397) and interval_01:H2 (event_000340, event_000367). Interval_01:H1 offers a different local sub-story in the same gap: repeated set-piece pressure (Corner_kick event_000285, Free_kick event_000311, Free_kick event_000337, Corner_kick event_000370). All four selected events are marked known_replay_or_slowmo=false, avoiding the prior replay contradictions. The proposed re",
+        "source_event_observations": [
+          {
+            "event_id": "event_000285",
+            "status": "SUPPORTED",
+            "reason": "Frame f2 shows player #14 in white (Team 1) kicking the ball from the corner arc, matching the annotation for a Team 1 corner kick.",
+            "frame_ids": [
+              "f2"
+            ]
+          }
+        ],
+        "expected_observable_improvement": "The accepted cut preserves six goalkeeper-rescue anchors. The largest uncovered gap remains between seg:1 and seg:2 (1966.45–3338.39). Prior trials in this gap were contradicted due to replay footage: interval_01:H5 (event_000397) and interval_01:H2 (event_000340, event_000367). Interval_01:H1 offers a different local sub-story in the same gap: repeated set-piece pressure (Corner_kick event_000285, Free_kick event_000311, Free_kick event_000337, Corner_kick event_000370). All four selected events are marked known_replay_or_slowmo=false, avoiding the prior replay contradictions. The proposed re",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "evidence_refs": [
+          {
+            "kind": "story_first_source_review",
+            "ref": "story_first_5c223a27722ffb47d0ed5f93_01"
+          }
+        ]
+      }
+    ]
+  }
+}

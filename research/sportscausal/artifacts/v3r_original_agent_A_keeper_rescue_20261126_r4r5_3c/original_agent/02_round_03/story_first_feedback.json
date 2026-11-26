@@ -1,0 +1,290 @@
+[
+  {
+    "round": 1,
+    "selection": {
+      "selections": [
+        {
+          "proposal_id": "interval_01:H5",
+          "event_ids": [
+            "event_000395",
+            "event_000396",
+            "event_000397"
+          ],
+          "relation_ids": [
+            "r1"
+          ]
+        }
+      ],
+      "rationale": "The interval between seg:1 and seg:2 has the largest source gap (1371.9s) and the candidate event_000395 (Pass) already appears in search_candidates for that gap. Interval_01:H5 proposes a compact cross-to-clearance chain (Pass → Win_an_aerial_duel → Defensive_action) immediately before seg:2, which is the most relevant local sub-story to verify whether the goalkeeper-rescue beat continues coherently. The selected events are all non-replay/non-slowmo footage events. This trial requests video observation only and does not constitute an executable edit.",
+      "revised_relations": [
+        {
+          "source_event_id": "event_000395",
+          "target_event_id": "event_000397",
+          "relation_type": "causal_hypothesis",
+          "claim": "传中争顶后解围或为应对，未验证"
+        }
+      ]
+    },
+    "stage": "SOURCE_REVIEW",
+    "status": "NEEDS_REVISION",
+    "findings": [
+      {
+        "event_id": "event_000397",
+        "status": "CONTRADICTED",
+        "reason": "Frames f4 and f5 show a close-up replay angle (indicated by camera cut and zoom) of a body block, contradicting the requirement for first-live evidence.",
+        "frame_ids": [
+          "f4",
+          "f5"
+        ],
+        "event_ids": [
+          "event_000397"
+        ]
+      }
+    ],
+    "advisory": []
+  },
+  {
+    "round": 2,
+    "selection": {
+      "selections": [
+        {
+          "proposal_id": "interval_01:H2",
+          "event_ids": [
+            "event_000313",
+            "event_000340",
+            "event_000367",
+            "event_000374"
+          ],
+          "relation_ids": [
+            "r1"
+          ]
+        }
+      ],
+      "rationale": "Prior trial interval_01:H5 was contradicted because event_000397 was a replay angle. Interval_01:H2 covers the same seg:1→seg:2 gap but selects a different local sub-story: shot-clearance alternation (Shot event_000313, Shot event_000340, Defensive_action event_000367, Shot event_000374). All selected events are marked known_replay_or_slowmo=false, avoiding the prior replay contradiction. This trial requests video observation only and does not constitute an executable edit.",
+      "revised_relations": [
+        {
+          "source_event_id": "event_000340",
+          "target_event_id": "event_000367",
+          "relation_type": "causal_hypothesis",
+          "claim": "射门后解围或为应对，未验证"
+        }
+      ]
+    },
+    "stage": "SOURCE_REVIEW",
+    "status": "NEEDS_REVISION",
+    "findings": [
+      {
+        "window_id": "story_first_534438b8518465cbac338afe_02",
+        "event_ids": [
+          "event_000340"
+        ],
+        "status": "REPLAY_CONFIRMED",
+        "reason": "window_overlaps_replay_or_slowmo_annotation",
+        "replay_event_ids": [
+          "event_000341",
+          "event_000342"
+        ]
+      },
+      {
+        "window_id": "story_first_534438b8518465cbac338afe_03",
+        "event_ids": [
+          "event_000367"
+        ],
+        "status": "REPLAY_CONFIRMED",
+        "reason": "window_overlaps_replay_or_slowmo_annotation",
+        "replay_event_ids": [
+          "event_000368",
+          "event_000369"
+        ]
+      }
+    ],
+    "advisory": []
+  },
+  {
+    "round": 3,
+    "selection": {
+      "selections": [
+        {
+          "proposal_id": "interval_01:H1",
+          "event_ids": [
+            "event_000285",
+            "event_000311",
+            "event_000337",
+            "event_000370"
+          ],
+          "relation_ids": [
+            "r1"
+          ]
+        }
+      ],
+      "rationale": "The accepted cut preserves six goalkeeper-rescue anchors. The largest uncovered gap remains between seg:1 and seg:2 (1966.45–3338.39). Prior trials in this gap were contradicted due to replay footage: interval_01:H5 (event_000397) and interval_01:H2 (event_000340, event_000367). Interval_01:H1 offers a different local sub-story in the same gap: repeated set-piece pressure (Corner_kick event_000285, Free_kick event_000311, Free_kick event_000337, Corner_kick event_000370). All four selected events are marked known_replay_or_slowmo=false, avoiding the prior replay contradictions. The proposed relation is explicitly non-causal narrative association, consistent with the template's temporal-episode-order structure. This selection contributes to the existing goalkeeper-rescue template by showing the recurring threat patterns that the goalkeeper repeatedly faces, without assuming unverified causality."
+    },
+    "stage": "SOURCE_REVIEW",
+    "status": "READY_FOR_TRIAL",
+    "findings": [],
+    "advisory": []
+  },
+  {
+    "round": 3,
+    "stage": "FINISHED_CUT_CAPTION_REVISION",
+    "trial_id": "5c223a27722ffb47d0ed5f93",
+    "result": {
+      "schema": "story_first_p3_caption_revision_v1",
+      "release_authorized": false,
+      "promote_best": false,
+      "preview_only": true,
+      "baseline_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_original_agent_A_keeper_rescue_20261126_r4r5_3c/original_agent/01_initial_story/story_clean.mp4",
+      "baseline_mp4_sha256": "338e842499cb2d60df0de42d68e2fa05b9e2948f7a8350a3baa30c62eac4ff91",
+      "selected_preview_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_original_agent_A_keeper_rescue_20261126_r4r5_3c/original_agent/02_round_03/candidate_render/story_clean.mp4",
+      "rounds": [
+        {
+          "round": 1,
+          "working_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_original_agent_A_keeper_rescue_20261126_r4r5_3c/original_agent/02_round_03/candidate_render/story_clean.mp4",
+          "rejected_actions": []
+        }
+      ],
+      "http_calls": 0,
+      "edit_count_comparison": [
+        {
+          "completed_edits": 0,
+          "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_original_agent_A_keeper_rescue_20261126_r4r5_3c/original_agent/02_round_03/candidate_render/story_clean.mp4",
+          "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_original_agent_A_keeper_rescue_20261126_r4r5_3c/original_agent/02_round_03/story_first_p3/initial_trial_edl.json",
+          "duration_sec": 134.885
+        }
+      ],
+      "stop_reason": "API_BUDGET",
+      "preview_accepted": true,
+      "max_local_trims": 3,
+      "api_usage": {
+        "http_attempts": 10,
+        "max_calls": 17,
+        "max_cost_usd": 0.0803,
+        "est_cost_usd_real": 0.030134,
+        "by_role": {
+          "revision_planner": {
+            "http_attempts": 2,
+            "tokens": 35570,
+            "est_cost_usd": 0.005721,
+            "output_budget_exceeded": false
+          },
+          "story_first_generator": {
+            "http_attempts": 5,
+            "tokens": 91586,
+            "est_cost_usd": 0.015722,
+            "output_budget_exceeded": false
+          },
+          "story_first_p35_planner": {
+            "http_attempts": 1,
+            "tokens": 14533,
+            "est_cost_usd": 0.002312,
+            "output_budget_exceeded": false
+          },
+          "vision": {
+            "http_attempts": 2,
+            "tokens": 40653,
+            "est_cost_usd": 0.006379,
+            "output_budget_exceeded": false
+          }
+        },
+        "cost_is_estimate_not_invoice_cap": true,
+        "max_retries": 0,
+        "request_preflight": {
+          "planner": {
+            "model": "DeepSeek-V4-Pro-0813",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "planner",
+              "model": "DeepSeek-V4-Pro-0813",
+              "request_profile": "default",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          },
+          "vision": {
+            "model": "Qwen3.7-Plus",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "vision",
+              "model": "Qwen3.7-Plus",
+              "request_profile": "video_rsi",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          }
+        },
+        "env_thinking_overrides": {
+          "before": {
+            "STORY_API_MAX_CALLS": "2",
+            "STORY_API_MAX_COST_USD": "0.10",
+            "STORY_API_MAX_COMPLETION_TOKENS": "512",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": null,
+            "STORY_VLM_REQUEST_PROFILE": null,
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+            "STORY_VLM_TOKEN_PARAM": null,
+            "STORY_API_TOKEN_PARAM": "max_tokens"
+          },
+          "after": {
+            "STORY_API_MAX_CALLS": "17",
+            "STORY_API_MAX_COST_USD": "0.0803",
+            "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+            "STORY_VLM_TOKEN_PARAM": "max_tokens",
+            "STORY_API_TOKEN_PARAM": "max_tokens",
+            "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+          },
+          "disable_thinking": true
+        }
+      },
+      "selected_preview_mp4_sha256": "2c1e022caae646edfe46c0a50a22be6ad91a90f1a52cd6a41d26a8202a8c1fbc",
+      "completed_edits": 0
+    }
+  }
+]

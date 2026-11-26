@@ -1,0 +1,202 @@
+{
+  "trial": {
+    "trial_id": "04fc08a19a9acd097a92a07a",
+    "proposal_ids": [
+      "interval_01:H1"
+    ],
+    "events": [
+      {
+        "event_id": "event_000311",
+        "source_pts_sec": 2277.94,
+        "event_type": "Free_kick",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "1队球员发任意球"
+        }
+      },
+      {
+        "event_id": "event_000313",
+        "source_pts_sec": 2285.84,
+        "event_type": "Shot",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "1队球员外围一脚远射，射偏"
+        }
+      },
+      {
+        "event_id": "event_000370",
+        "source_pts_sec": 3049.14,
+        "event_type": "Corner_kick",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "1队14号角球"
+        }
+      },
+      {
+        "event_id": "event_000397",
+        "source_pts_sec": 3321.77,
+        "event_type": "Defensive_action",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "2队球员用身体挡出了1队球员的传中"
+        }
+      }
+    ],
+    "relations": [],
+    "story_context": [
+      {
+        "proposal_id": "interval_01:H1",
+        "summary": "阿曼连续定位球与传中制造威胁，最终由门将化解，形成同一防守阶段的叙事关联。",
+        "expected_story_contribution": "",
+        "falsification_conditions": [
+          "若视频显示该序列无射门或门将未触球则假设不成立"
+        ]
+      }
+    ],
+    "windows": [
+      {
+        "source_pts_start": 2269.94,
+        "source_pts_end": 2285.94,
+        "event_ids": [
+          "event_000311",
+          "event_000313"
+        ],
+        "existing_segment_id": "seg_story_first_5c223a27722ffb47d0ed5f93_02",
+        "candidate_id": "story_first_04fc08a19a9acd097a92a07a_01",
+        "issue_id": "story_first:04fc08a19a9acd097a92a07a"
+      },
+      {
+        "source_pts_start": 3041.14,
+        "source_pts_end": 3057.14,
+        "event_ids": [
+          "event_000370"
+        ],
+        "existing_segment_id": "seg_story_first_5c223a27722ffb47d0ed5f93_04",
+        "candidate_id": "story_first_04fc08a19a9acd097a92a07a_02",
+        "issue_id": "story_first:04fc08a19a9acd097a92a07a"
+      },
+      {
+        "event_ids": [
+          "event_000397"
+        ],
+        "source_pts_start": 3313.77,
+        "source_pts_end": 3329.77,
+        "insert_after_segment_id": "seg_story_first_5c223a27722ffb47d0ed5f93_04",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_04fc08a19a9acd097a92a07a_03",
+        "issue_id": "story_first:04fc08a19a9acd097a92a07a"
+      }
+    ],
+    "narrative_purpose": "The accepted cut preserves six goalkeeper-rescue anchors. The largest uncovered gap remains between seg:1 and seg:2 (1966.45–3338.39). Prior trials in this gap were contradicted due to replay footage: interval_01:H5 (event_000397) and interval_01:H2 (event_000340, event_000367). Interval_01:H1 offers a different local sub-story in the same gap: repeated set-piece pressure (Free_kick event_000311, Shot event_000313, Corner_kick event_000370, Defensive_action event_000397). All four selected events are marked known_replay_or_slowmo=false, avoiding the prior replay contradictions. The proposed se"
+  },
+  "review": {
+    "status": "READY_FOR_TRIAL",
+    "feedback": [],
+    "advisory": [],
+    "annotation_supported_event_ids": [
+      "event_000311",
+      "event_000313",
+      "event_000370",
+      "event_000397"
+    ],
+    "event_observations": [
+      {
+        "event_id": "event_000311",
+        "status": "SUPPORTED",
+        "reason": "Frame f2 shows a player in white (Team 1) striking the ball from a stationary position outside the penalty area, consistent with a direct free kick execution at the annotated timestamp.",
+        "frame_ids": [
+          "f2"
+        ]
+      },
+      {
+        "event_id": "event_000313",
+        "status": "SUPPORTED",
+        "reason": "Frame f4 captures a player in white executing a long-range shot towards the goal from outside the box, matching the description of an外围 (peripheral/long-range) shot.",
+        "frame_ids": [
+          "f4"
+        ]
+      },
+      {
+        "event_id": "event_000370",
+        "status": "SUPPORTED",
+        "reason": "Frame f6 shows a player in white kicking the ball from the corner arc into the penalty area, visually confirming the corner kick event.",
+        "frame_ids": [
+          "f6"
+        ]
+      },
+      {
+        "event_id": "event_000397",
+        "status": "SUPPORTED",
+        "reason": "Frame f9 depicts a player in red (Team 2) using their body to block a cross from a player in white (Team 1) near the goal line, supporting the defensive action annotation.",
+        "frame_ids": [
+          "f9"
+        ]
+      }
+    ],
+    "candidates": [
+      {
+        "event_ids": [
+          "event_000397"
+        ],
+        "source_pts_start": 3313.77,
+        "source_pts_end": 3329.77,
+        "insert_after_segment_id": "seg_story_first_5c223a27722ffb47d0ed5f93_04",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_04fc08a19a9acd097a92a07a_03",
+        "issue_id": "story_first:04fc08a19a9acd097a92a07a",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "04fc08a19a9acd097a92a07a",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      }
+    ],
+    "intents": [
+      {
+        "intent_id": "story_first_04fc08a19a9acd097a92a07a_03",
+        "action": "search_add",
+        "role": "buildup_bridge_action",
+        "issue_id": "story_first:04fc08a19a9acd097a92a07a",
+        "story_first_trial_id": "04fc08a19a9acd097a92a07a",
+        "story_first_preview_only": true,
+        "anchor_id": "search:story_first_04fc08a19a9acd097a92a07a_03",
+        "new_segment_id": "seg_story_first_04fc08a19a9acd097a92a07a_03",
+        "insert_after_segment_id": "seg_story_first_5c223a27722ffb47d0ed5f93_04",
+        "before_segment_id": "seg:2",
+        "bound_source_window": {
+          "start": 3313.77,
+          "end": 3329.77
+        },
+        "event_ids": [
+          "event_000397"
+        ],
+        "narrative_purpose": "The accepted cut preserves six goalkeeper-rescue anchors. The largest uncovered gap remains between seg:1 and seg:2 (1966.45–3338.39). Prior trials in this gap were contradicted due to replay footage: interval_01:H5 (event_000397) and interval_01:H2 (event_000340, event_000367). Interval_01:H1 offers a different local sub-story in the same gap: repeated set-piece pressure (Free_kick event_000311, Shot event_000313, Corner_kick event_000370, Defensive_action event_000397). All four selected events are marked known_replay_or_slowmo=false, avoiding the prior replay contradictions. The proposed se",
+        "source_event_observations": [
+          {
+            "event_id": "event_000397",
+            "status": "SUPPORTED",
+            "reason": "Frame f9 depicts a player in red (Team 2) using their body to block a cross from a player in white (Team 1) near the goal line, supporting the defensive action annotation.",
+            "frame_ids": [
+              "f9"
+            ]
+          }
+        ],
+        "expected_observable_improvement": "The accepted cut preserves six goalkeeper-rescue anchors. The largest uncovered gap remains between seg:1 and seg:2 (1966.45–3338.39). Prior trials in this gap were contradicted due to replay footage: interval_01:H5 (event_000397) and interval_01:H2 (event_000340, event_000367). Interval_01:H1 offers a different local sub-story in the same gap: repeated set-piece pressure (Free_kick event_000311, Shot event_000313, Corner_kick event_000370, Defensive_action event_000397). All four selected events are marked known_replay_or_slowmo=false, avoiding the prior replay contradictions. The proposed se",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "evidence_refs": [
+          {
+            "kind": "story_first_source_review",
+            "ref": "story_first_04fc08a19a9acd097a92a07a_03"
+          }
+        ]
+      }
+    ]
+  }
+}

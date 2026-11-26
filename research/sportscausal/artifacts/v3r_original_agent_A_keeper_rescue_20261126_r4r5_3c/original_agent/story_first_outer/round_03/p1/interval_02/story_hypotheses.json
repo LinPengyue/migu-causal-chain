@@ -1,0 +1,191 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若event_000411与event_000413间无门将触球画面则证伪"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "live_shot_sequence_before_anchor3",
+      "narrative_summary": "阿联酋在两次单刀射门与连续传递后，阿曼门将再度面临门前险情。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "门将扑救动作或球出底线",
+          "question": "该单刀射门是否被门将扑出？",
+          "target_id": "event:event_000411"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "单刀射门后球权转换，或与门将化解相关",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000411",
+          "target_event_id": "event_000413"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000408",
+        "event_000410",
+        "event_000411",
+        "event_000413"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若event_000407与event_000415间无连续防守动作则证伪"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "defensive_tackle_chain_after_shot",
+      "narrative_summary": "阿联酋射门未果后，阿曼防线连续抢断与解围，形成门将前的防守链条。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "防守方球衣颜色与断球动作",
+          "question": "该突破被断是否由阿曼防守完成？",
+          "target_id": "event:event_000407"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "突破被断后，防守方持续拦截，或延续至门前险情",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000407",
+          "target_event_id": "event_000415"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000404",
+        "event_000405",
+        "event_000407",
+        "event_000415"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若event_000409至event_000414间球权未多次转换则证伪"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "possession_alternation_before_anchor3",
+      "narrative_summary": "球权在双方间多次转换，阿联酋的传递与阿曼的防守交替，最终逼近门前。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "控球方球衣颜色",
+          "question": "该球权归属哪一方？",
+          "target_id": "event:event_000409"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "球权多次易手，或使进攻推进至危险区域",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "state_transition",
+          "source_event_id": "event_000409",
+          "target_event_id": "event_000414"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000403",
+        "event_000406",
+        "event_000409",
+        "event_000414"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若event_000406至event_000411间无连续传递则证伪"
+      ],
+      "hypothesis_id": "H4",
+      "mechanism_key": "throw_in_to_shot_buildup",
+      "narrative_summary": "阿联酋从界外球发起，经短传与突破，形成一次单刀射门机会。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "掷球方球衣颜色",
+          "question": "该界外球由哪队掷出？",
+          "target_id": "event:event_000406"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "界外球后的连续传递，或促成单刀射门",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000406",
+          "target_event_id": "event_000411"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000406",
+        "event_000408",
+        "event_000410",
+        "event_000411"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若event_000411与event_000415间无球权转换则证伪"
+      ],
+      "hypothesis_id": "H5",
+      "mechanism_key": "shot_rebound_to_possession_shift",
+      "narrative_summary": "单刀射门后球权转换，阿曼获得球权并展开防守，门将再次面临压力。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "控球方球衣颜色",
+          "question": "该球权是否由阿曼获得？",
+          "target_id": "event:event_000413"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "射门后球权转换，或引发后续防守与门前险情",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000411",
+          "target_event_id": "event_000415"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000411",
+        "event_000413",
+        "event_000414",
+        "event_000415"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

@@ -1,0 +1,127 @@
+{
+  "ok": true,
+  "provider_mode": "real",
+  "decision": "UNRESOLVED",
+  "revision_intents": [],
+  "story_first_trial": {
+    "selections": [
+      {
+        "proposal_id": "interval_01:H5",
+        "event_ids": [
+          "event_000395",
+          "event_000396",
+          "event_000397"
+        ],
+        "relation_ids": [
+          "r1"
+        ]
+      }
+    ],
+    "rationale": "The interval between seg:1 and seg:2 has the largest source gap (1371.9s) and the candidate event_000395 (Pass) already appears in search_candidates for that gap. Interval_01:H5 proposes a compact cross-to-clearance chain (Pass → Win_an_aerial_duel → Defensive_action) immediately before seg:2, which is the most relevant local sub-story to verify whether the goalkeeper-rescue beat continues coherently. The selected events are all non-replay/non-slowmo footage events. This trial requests video observation only and does not constitute an executable edit.",
+    "revised_relations": [
+      {
+        "source_event_id": "event_000395",
+        "target_event_id": "event_000397",
+        "relation_type": "causal_hypothesis",
+        "claim": "传中争顶后解围或为应对，未验证"
+      }
+    ]
+  },
+  "exploratory_intents": [],
+  "rationale": "All three diagnosed issues are temporal-discontinuity-only hypotheses with diagnosis_status=HYPOTHESIS_NEEDS_VIDEO and story_defect_confirmed=false. The VLM critic summary is empty and video_critic_observations status is UNAVAILABLE, so no observed defect or KEEP finding exists. No search candidate has FIRST_LIVE_VERIFIED or narrative_fit_status=REVIEW_SUPPORTED, so no search_add is permitted. The protected goal segments cover all six segments, and no overturn evidence exists. Per constraints, source-time jumps alone are normal highlight compression and must not trigger edits.",
+  "est_cost_usd": 0.00282675,
+  "usage": {
+    "prompt_tokens": 17113,
+    "completion_tokens": 433,
+    "total_tokens": 17546,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "parsed": {
+    "decision": "UNRESOLVED",
+    "rationale": "All three diagnosed issues are temporal-discontinuity-only hypotheses with diagnosis_status=HYPOTHESIS_NEEDS_VIDEO and story_defect_confirmed=false. The VLM critic summary is empty and video_critic_observations status is UNAVAILABLE, so no observed defect or KEEP finding exists. No search candidate has FIRST_LIVE_VERIFIED or narrative_fit_status=REVIEW_SUPPORTED, so no search_add is permitted. The protected goal segments cover all six segments, and no overturn evidence exists. Per constraints, source-time jumps alone are normal highlight compression and must not trigger edits.",
+    "revision_intents": [],
+    "story_first_trial": {
+      "selections": [
+        {
+          "proposal_id": "interval_01:H5",
+          "event_ids": [
+            "event_000395",
+            "event_000396",
+            "event_000397"
+          ],
+          "relation_ids": [
+            "r1"
+          ]
+        }
+      ],
+      "rationale": "The interval between seg:1 and seg:2 has the largest source gap (1371.9s) and the candidate event_000395 (Pass) already appears in search_candidates for that gap. Interval_01:H5 proposes a compact cross-to-clearance chain (Pass → Win_an_aerial_duel → Defensive_action) immediately before seg:2, which is the most relevant local sub-story to verify whether the goalkeeper-rescue beat continues coherently. The selected events are all non-replay/non-slowmo footage events. This trial requests video observation only and does not constitute an executable edit.",
+      "revised_relations": [
+        {
+          "source_event_id": "event_000395",
+          "target_event_id": "event_000397",
+          "relation_type": "causal_hypothesis",
+          "claim": "传中争顶后解围或为应对，未验证"
+        }
+      ]
+    }
+  },
+  "call_audit": {
+    "model": "DeepSeek-V4-Pro-0813",
+    "provider_mode": "real",
+    "logical_role": "revision_planner",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "prompt_tokens": 17113,
+    "completion_tokens": 433,
+    "reasoning_tokens": 0,
+    "text_tokens": null,
+    "finish_reason": "stop",
+    "visible_output_chars": 1728,
+    "est_cost_usd": 0.00282675,
+    "http_ok": true,
+    "empty_content": false
+  },
+  "request_audit": {
+    "role": "planner",
+    "model": "DeepSeek-V4-Pro-0813",
+    "request_profile": "default",
+    "token_param_configured": "max_tokens",
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "temperature_sent": 0.1,
+    "stream_sent": false,
+    "thinking_params_sent": false,
+    "thinking_object_disabled_sent": true,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "sends_both_token_params": false,
+    "sends_both_thinking_formats": false,
+    "message_count": 2,
+    "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+    "paratera_thinking_object_documented": false
+  },
+  "response_audit": {
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "visible_output_chars": 1728,
+    "usage_keys_present": [
+      "completion_tokens",
+      "completion_tokens_details",
+      "prompt_tokens",
+      "prompt_tokens_details",
+      "total_tokens"
+    ],
+    "has_completion_tokens_details": true,
+    "reasoning_content_present": false,
+    "completion_tokens_reported": 433,
+    "output_token_limit": 1200,
+    "output_budget_exceeded": false
+  },
+  "finish_reason": "stop"
+}

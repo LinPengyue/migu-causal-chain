@@ -1,0 +1,190 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若411与415间无同一进攻方连续推进画面则不支持"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "repeated_shot_sequence_before_anchor",
+      "narrative_summary": "两次单刀射门尝试与随后抢断构成连续威胁序列，可能延续门将化险节奏。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "射门是否命中门框范围",
+          "question": "该单刀射门是否形成实际威胁？",
+          "target_id": "event:event_000411"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "两次射门后出现抢断，或为威胁延续",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000411",
+          "target_event_id": "event_000415"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000411",
+        "event_000412",
+        "event_000413",
+        "event_000415"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若408至411间球权多次易手则不支持"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "buildup_pass_chain_to_shot",
+      "narrative_summary": "短传与控球串联后出现单刀射门，可能构成一次有组织的进攻推进。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "控球方是否与射门方一致",
+          "question": "控球是否属于同一队连续推进？",
+          "target_id": "event:event_000409"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "短传串联或为单刀射门的前置推进",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000408",
+          "target_event_id": "event_000411"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000408",
+        "event_000409",
+        "event_000410",
+        "event_000411"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若407与404-405非同一区域连续对抗则不支持"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "defensive_recovery_after_dribble_break",
+      "narrative_summary": "过人突破后接连出现抢断与界外球，可能是防守方对突破的回应。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "突破与抢断位置是否邻近",
+          "question": "突破是否发生在随后抢断同一区域？",
+          "target_id": "event:event_000407"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "突破后连续抢断或为防守回应",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000407",
+          "target_event_id": "event_000405"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000407",
+        "event_000404",
+        "event_000405",
+        "event_000406"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若401-402为回放且403非紧接恢复比赛则不支持"
+      ],
+      "hypothesis_id": "H4",
+      "mechanism_key": "corner_incident_to_open_play_shift",
+      "narrative_summary": "角球与门线事件后转入短传与抢断，可能标志定位球到运动战的转换。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "是否由定位球直接开出",
+          "question": "短传是否紧接定位球恢复比赛？",
+          "target_id": "event:event_000403"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "门线事件后或转入运动战短传",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "state_transition",
+          "source_event_id": "event_000402",
+          "target_event_id": "event_000403"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000401",
+        "event_000402",
+        "event_000403",
+        "event_000404"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若413-414与411非同一进攻序列则不支持"
+      ],
+      "hypothesis_id": "H5",
+      "mechanism_key": "possession_alternation_before_shot",
+      "narrative_summary": "两次控球事件后出现单刀射门，可能反映球权交替后的快速反击。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "控球后是否快速前插",
+          "question": "该控球是否直接导向射门？",
+          "target_id": "event:event_000414"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "控球交替后或形成快速射门机会",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000413",
+          "target_event_id": "event_000411"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000413",
+        "event_000414",
+        "event_000411"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

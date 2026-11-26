@@ -1,0 +1,46 @@
+[
+  {
+    "round": 1,
+    "selection": {
+      "selections": [
+        {
+          "proposal_id": "interval_01:H5",
+          "event_ids": [
+            "event_000395",
+            "event_000396",
+            "event_000397"
+          ],
+          "relation_ids": [
+            "r1"
+          ]
+        }
+      ],
+      "rationale": "The interval between seg:1 and seg:2 has the largest source gap (1371.9s) and the candidate event_000395 (Pass) already appears in search_candidates for that gap. Interval_01:H5 proposes a compact cross-to-clearance chain (Pass → Win_an_aerial_duel → Defensive_action) immediately before seg:2, which is the most relevant local sub-story to verify whether the goalkeeper-rescue beat continues coherently. The selected events are all non-replay/non-slowmo footage events. This trial requests video observation only and does not constitute an executable edit.",
+      "revised_relations": [
+        {
+          "source_event_id": "event_000395",
+          "target_event_id": "event_000397",
+          "relation_type": "causal_hypothesis",
+          "claim": "传中争顶后解围或为应对，未验证"
+        }
+      ]
+    },
+    "stage": "SOURCE_REVIEW",
+    "status": "NEEDS_REVISION",
+    "findings": [
+      {
+        "event_id": "event_000397",
+        "status": "CONTRADICTED",
+        "reason": "Frames f4 and f5 show a close-up replay angle (indicated by camera cut and zoom) of a body block, contradicting the requirement for first-live evidence.",
+        "frame_ids": [
+          "f4",
+          "f5"
+        ],
+        "event_ids": [
+          "event_000397"
+        ]
+      }
+    ],
+    "advisory": []
+  }
+]

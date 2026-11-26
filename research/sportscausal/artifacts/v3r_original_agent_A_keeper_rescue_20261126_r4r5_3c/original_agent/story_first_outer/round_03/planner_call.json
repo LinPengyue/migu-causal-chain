@@ -1,0 +1,40 @@
+{
+  "error": null,
+  "parsed": {
+    "selection": {
+      "selections": [
+        {
+          "proposal_id": "interval_01:H1",
+          "event_ids": [
+            "event_000311",
+            "event_000313",
+            "event_000370",
+            "event_000397"
+          ],
+          "relation_ids": []
+        }
+      ],
+      "rationale": "The accepted cut preserves six goalkeeper-rescue anchors. The largest uncovered gap remains between seg:1 and seg:2 (1966.45–3338.39). Prior trials in this gap were contradicted due to replay footage: interval_01:H5 (event_000397) and interval_01:H2 (event_000340, event_000367). Interval_01:H1 offers a different local sub-story in the same gap: repeated set-piece pressure (Free_kick event_000311, Shot event_000313, Corner_kick event_000370, Defensive_action event_000397). All four selected events are marked known_replay_or_slowmo=false, avoiding the prior replay contradictions. The proposed sequence contributes to the existing template by showing the attacking pressure that precedes the goalkeeper's repeated rescues, without asserting unsupported causal relations. The retained source windows are judged together and are non-overlapping with the accepted anchors and prior tried windows. No other candidate in the fresh P1 pool provides a comparable contribution while avoiding replay-flagged events and prior contradictions."
+    }
+  },
+  "call_audit": {
+    "model": "DeepSeek-V4-Pro-0813",
+    "provider_mode": "real",
+    "logical_role": "story_first_p35_planner",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "prompt_tokens": 13768,
+    "completion_tokens": 306,
+    "reasoning_tokens": 0,
+    "text_tokens": null,
+    "finish_reason": "stop",
+    "visible_output_chars": 1339,
+    "est_cost_usd": 0.0022488,
+    "http_ok": true,
+    "empty_content": false
+  }
+}
