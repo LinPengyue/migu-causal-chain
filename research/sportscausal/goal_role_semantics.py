@@ -4,7 +4,7 @@ from collections import Counter
 from score_state_patterns import _score
 from template_graph import check, number
 import re
-from episode_semantics import pred, Roles, opposite
+from episode_semantics import Roles
 from semantic_normalization import resolve, values
 
 
@@ -17,7 +17,8 @@ def bind_score_outcomes(semantics, score_doc, *, before=180.0, after=15.0):
           and set(mapping.values()) == {"team_1", "team_2"}, "explicit score-side mapping required")
     path = score_doc.get("score_path")
     check(isinstance(path, list), "score_path required")
-    goals = [a for a in semantics["atoms"] if a["type"] == "Goal" and a["broadcast_phase"] == "LIVE"
+    check(0 <= before <= 300 and 0 <= after <= 60, "invalid localization interval")
+    goals = [a for a in semantics["atoms"] if is_goal(a) and a["broadcast_phase"] == "LIVE"
              and not cancelled_goal(a)]
     options = []
     for i, node in enumerate(path):
@@ -65,8 +66,11 @@ def bind_score_outcomes(semantics, score_doc, *, before=180.0, after=15.0):
 
 
 OWN=re.compile(r"乌龙|own[_ -]?goal",re.I)
-CANCELLED=re.compile(r"进球无效|进球被取消|取消进球|判罚进球无效|越位在先|goal[_ -]?(?:disallowed|cancelled|canceled|invalid)",re.I)
+CANCELLED=re.compile(r"进球无效|无效进球|进球被取消|取消进球|判罚进球无效|越位在先|goal[_ -]?(?:disallowed|cancelled|canceled|invalid)",re.I)
 GOAL_RESULT_KEYS=("Goal_Type","Goal_Result","Shot_Result","Event_Type","Related_Event")
+
+def is_goal(a):
+    return str(a.get("type","")).lower().replace(" ","_") in {"goal","own_goal","header_goal"}
 
 def cancelled_goal(a):
     return bool(CANCELLED.search(a.get("notes") or "") or
@@ -75,7 +79,8 @@ def cancelled_goal(a):
 def goal_roles(a, roles, binding=None):
     """Execution claims and score claims are independent, even when they agree."""
     note=a.get("notes") or ""
-    own=bool(OWN.search(note) or any(OWN.search(str(v)) for k in GOAL_RESULT_KEYS for v in values(a,k)))
+    own=bool(OWN.search(str(a.get("type",""))) or OWN.search(note)
+             or any(OWN.search(str(v)) for k in GOAL_RESULT_KEYS for v in values(a,k)))
     beneficiary=binding["score_beneficiary"] if binding else None
     cancelled=cancelled_goal(a)
     direct=a.get("execution_actor") or {}
@@ -91,10 +96,12 @@ def goal_roles(a, roles, binding=None):
         # The previous role parser accepts some attributes; only explicit
         # action-language can independently establish execution in this module.
         claims=[c for c in direct.get("claims",[]) if c.get("source")=="notes.role_action"]
-        direct=resolve(claims)
-    executor=direct.get("team") if not cancelled else None
-    conflict=bool(executor and beneficiary and
-                  ((own and executor==beneficiary) or (not own and executor!=beneficiary)))
+        # Never erase the original note/attribute team conflict.
+        if direct.get("team_status")!="CONFLICT":
+            direct=resolve(claims)
+    executor=direct.get("team") if not cancelled and direct.get("team_status")=="EXPLICIT" else None
+    conflict=bool(direct.get("team_status")=="CONFLICT" or (executor and beneficiary and
+                  ((own and executor==beneficiary) or (not own and executor!=beneficiary))))
     # No beneficiary-to-execution or beneficiary-to-attack transfer.
     attacking_team=executor if executor and not own and not conflict and not cancelled else None
     return {"score_beneficiary":beneficiary,"goal_executor":executor,
