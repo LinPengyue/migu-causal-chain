@@ -81,6 +81,8 @@ def main():
     p.add_argument("--allow-dev",action="store_true")
     p.add_argument("--enable-real-api",action="store_true")
     p.add_argument("--approve-budget",action="store_true")
+    p.add_argument("--main-rounds",type=int,choices=(1,2,3),default=3,
+                   help="original main-loop attempts, including initial P2 feedback replanning")
     p.add_argument("--outer-rounds",type=int,choices=(1,2,3),default=3)
     p.add_argument("--max-calls",type=int,default=24)
     p.add_argument("--max-cost-usd",type=float,default=0.10)
@@ -127,7 +129,10 @@ def main():
         "match_json_sha256":sha(match),"plan_sha256":sha(pack/"story_plan.json"),
         "edl_sha256":sha(pack/"candidate_edl.json"),
         "original_algorithm":"run_story_e2e","fresh_v3r":False,
-        "legacy_single_loop":False,"research_preview_only":True}
+        "legacy_single_loop":False,"research_preview_only":True,
+        "requested_main_rounds":a.main_rounds,"requested_outer_rounds":a.outer_rounds,
+        "phase8_paid_multi_round":bool(a.enable_real_api and a.main_rounds>1),
+        "reuse_prior_story_first_hypotheses":False}
     write(out/"input_provenance.json",provenance)
     write(out/"story_plan.json",plan)
     write(out/"candidate_edl.json",rows)
@@ -156,9 +161,10 @@ def main():
              "initial_mp4":str(initial),"actual_duration_sec":alignment["mp4_duration_sec"],
              "quality_verified":False})
         return
-    # Original main entry. max_rounds=1 is the formal main loop's existing
-    # paid protocol; story_first_outer_rounds is the separate story expansion
-    # loop count. Never confuse these knobs or run 3 independent paid jobs.
+    # Original main entry: allow native P2 feedback to trigger replanning
+    # before the first P3 trial. Outer expansion is a separate loop.
+    # No historical P1 cache is passed; each new run generates fresh P1
+    # proposals, then the native main loop retains its own proposal pool.
     run_dir=out/"original_agent"
     inp=StoryE2EInputs(match_json=match,source_mp4=source,out_dir=run_dir,
         baseline_edl=out/"candidate_edl.json",story_plan=out/"story_plan.json",
@@ -168,7 +174,8 @@ def main():
         enable_story_first=True,story_first_outer_rounds=a.outer_rounds,
         enable_native_broadcast_observation=a.enable_native_broadcast_observation,
         smoke_render=False,force_render_initial=False,force_render_candidate=False,
-        max_rounds=1,max_calls=a.max_calls,max_cost_usd=a.max_cost_usd,max_retries=0)
+        max_rounds=a.main_rounds,phase8_paid_multi_round=a.main_rounds>1,
+        max_calls=a.max_calls,max_cost_usd=a.max_cost_usd,max_retries=0)
     audit=run_story_e2e(inp)
     # Preserve native output and decisions, with actual provenance and
     # separate preview comparison. Never reclassify ACCEPTED_PREVIEW as
