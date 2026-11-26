@@ -55,6 +55,15 @@ def patch_entry(s):
         "            from .story_revision_planner import _protect_filter\n"
         "            rev = protect_planner_intents(rev, diag, _protect_filter)\n"
         "        if story_first_proposals:\n            selection = llm_rev.get(\"story_first_trial\")")
+    # R3 inputs can contain human-enriched development atoms even when
+    # independent_atoms_json is absent. Propagate actual provenance, not
+    # the old fresh-V3R branch's inference about the input tier.
+    old = 'data_tier=("HUMAN_ATOM_ENRICHED_DEV" if inp.independent_atoms_json'
+    new = 'data_tier=((plan.get("r3_adapter") or {}).get("input_tier") or ("HUMAN_ATOM_ENRICHED_DEV" if inp.independent_atoms_json'
+    for indent in (27, 31):
+        old_block = old + '\n' + ' ' * indent + 'else "EVENT_DERIVED_FROM_PERMITTED_INPUT"),'
+        new_block = new + '\n' + ' ' * indent + 'else "EVENT_DERIVED_FROM_PERMITTED_INPUT")),'
+        s = replace_once(s, old_block, new_block)
     return s
 
 def patch_paid(s):
