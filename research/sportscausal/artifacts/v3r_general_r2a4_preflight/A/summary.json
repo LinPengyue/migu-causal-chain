@@ -1,0 +1,390 @@
+{
+  "schema": "v3r_general_r2a4_roles_v1",
+  "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+  "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "http_calls": 0,
+  "reused_without_score_graph": true,
+  "n_attack_save_links": 7,
+  "n_score_bound_goals": 3,
+  "n_goal_context_edges": 3,
+  "n_role_inferences": 0,
+  "n_score_derived_executor_or_shooter_inferences": 0,
+  "goal_roles": [
+    {
+      "event_id": "atom_fill_0004_Goal_1337123",
+      "score_beneficiary": "team_2",
+      "goal_executor": null,
+      "attacking_team": null,
+      "goal_kind": "untyped_goal",
+      "execution_status": "UNRESOLVED",
+      "execution_claims": [],
+      "role_conflict": false,
+      "score_binding": {
+        "path_index": 1,
+        "score_beneficiary": "team_2",
+        "score_before": "0:0",
+        "score_after": "0:1",
+        "confirmation_t_sec": 1410.43,
+        "carrier_event_id": "event_000173",
+        "previous_score_observed_t_sec": null,
+        "candidate_ids": [
+          "atom_fill_0004_Goal_1337123"
+        ],
+        "search_interval": [
+          1230.43,
+          1425.43
+        ],
+        "event_id": "atom_fill_0004_Goal_1337123",
+        "action_t_sec": 1337.123,
+        "media_window": [
+          1337.123,
+          1339.123
+        ],
+        "basis": "unique_live_goal_and_v3r_score_increment",
+        "causal_verified": false,
+        "first_live_verified": false
+      },
+      "first_live_verified": false
+    },
+    {
+      "event_id": "atom_fill_0075_Goal_6449644",
+      "score_beneficiary": "team_1",
+      "goal_executor": null,
+      "attacking_team": null,
+      "goal_kind": "untyped_goal",
+      "execution_status": "UNRESOLVED",
+      "execution_claims": [],
+      "role_conflict": false,
+      "score_binding": {
+        "path_index": 2,
+        "score_beneficiary": "team_1",
+        "score_before": "0:1",
+        "score_after": "1:1",
+        "confirmation_t_sec": 6535.62,
+        "carrier_event_id": "event_000637",
+        "previous_score_observed_t_sec": null,
+        "candidate_ids": [
+          "atom_fill_0075_Goal_6449644"
+        ],
+        "search_interval": [
+          6355.62,
+          6550.62
+        ],
+        "event_id": "atom_fill_0075_Goal_6449644",
+        "action_t_sec": 6449.644,
+        "media_window": [
+          6449.644,
+          6451.644
+        ],
+        "basis": "unique_live_goal_and_v3r_score_increment",
+        "causal_verified": false,
+        "first_live_verified": false
+      },
+      "first_live_verified": false
+    },
+    {
+      "event_id": "atom_fill_0104_Goal_6843088",
+      "score_beneficiary": "team_1",
+      "goal_executor": null,
+      "attacking_team": null,
+      "goal_kind": "untyped_goal",
+      "execution_status": "UNRESOLVED",
+      "execution_claims": [],
+      "role_conflict": false,
+      "score_binding": {
+        "path_index": 3,
+        "score_beneficiary": "team_1",
+        "score_before": "1:1",
+        "score_after": "2:1",
+        "confirmation_t_sec": 6957.12,
+        "carrier_event_id": "event_000670",
+        "previous_score_observed_t_sec": null,
+        "candidate_ids": [
+          "atom_fill_0104_Goal_6843088"
+        ],
+        "search_interval": [
+          6777.12,
+          6972.12
+        ],
+        "event_id": "atom_fill_0104_Goal_6843088",
+        "action_t_sec": 6843.088,
+        "media_window": [
+          6843.088,
+          6845.088
+        ],
+        "basis": "unique_live_goal_and_v3r_score_increment",
+        "causal_verified": false,
+        "first_live_verified": false
+      },
+      "first_live_verified": false
+    }
+  ],
+  "observation_tasks_by_type": {
+    "goal_execution_roles": 3,
+    "shot_save_roles": 3
+  },
+  "patterns": {
+    "keeper_rescue": {
+      "n_predicate_episodes": 8,
+      "candidates": [
+        {
+          "subjects": [
+            "team_1"
+          ],
+          "actor_runs": null,
+          "event_ids": [
+            [
+              "event_000096",
+              "event_000097"
+            ],
+            [
+              "event_000276",
+              "event_000277"
+            ]
+          ]
+        },
+        {
+          "subjects": [
+            "team_2"
+          ],
+          "actor_runs": null,
+          "event_ids": [
+            [
+              "event_000282"
+            ],
+            [
+              "event_000398",
+              "event_000399",
+              "event_000400"
+            ],
+            [
+              "event_000416",
+              "event_000417"
+            ],
+            [
+              "event_000421"
+            ],
+            [
+              "event_000476",
+              "event_000477"
+            ],
+            [
+              "event_000640",
+              "event_000641"
+            ]
+          ]
+        }
+      ]
+    },
+    "alternating_threats": {
+      "n_predicate_episodes": 10,
+      "candidates": [
+        {
+          "subjects": [
+            "team_1",
+            "team_2"
+          ],
+          "actor_runs": [
+            {
+              "actor": "team_2",
+              "n_episodes": 2
+            },
+            {
+              "actor": "team_1",
+              "n_episodes": 7
+            },
+            {
+              "actor": "team_2",
+              "n_episodes": 1
+            }
+          ],
+          "event_ids": [
+            [
+              "event_000096",
+              "event_000097"
+            ],
+            [
+              "event_000276",
+              "event_000277"
+            ],
+            [
+              "event_000282"
+            ],
+            [
+              "event_000398",
+              "event_000399",
+              "event_000400"
+            ],
+            [
+              "event_000416",
+              "event_000417"
+            ],
+            [
+              "event_000421"
+            ],
+            [
+              "event_000472"
+            ],
+            [
+              "event_000476",
+              "event_000477"
+            ],
+            [
+              "event_000640",
+              "event_000641"
+            ],
+            [
+              "event_000681"
+            ]
+          ]
+        }
+      ]
+    },
+    "alternating_threats_score_context": {
+      "n_mixed_episodes": 13,
+      "strict_threat_metric_eligible": false,
+      "candidates": [
+        {
+          "subjects": [
+            "team_1",
+            "team_2"
+          ],
+          "mixed_role_runs": [
+            {
+              "actor": "team_2",
+              "n_episodes": 3
+            },
+            {
+              "actor": "team_1",
+              "n_episodes": 9
+            },
+            {
+              "actor": "team_2",
+              "n_episodes": 1
+            }
+          ],
+          "n_attack_evidence_nodes": 10,
+          "n_score_only_nodes": 3,
+          "nodes": [
+            {
+              "event_ids": [
+                "event_000096",
+                "event_000097"
+              ],
+              "actor": "team_2",
+              "actor_role": "attacking_team",
+              "predicate": "attacking_threat"
+            },
+            {
+              "event_ids": [
+                "atom_fill_0003_Shot_1335974",
+                "atom_fill_0004_Goal_1337123"
+              ],
+              "actor": "team_2",
+              "actor_role": "score_beneficiary",
+              "predicate": "scoring_outcome"
+            },
+            {
+              "event_ids": [
+                "event_000276",
+                "event_000277"
+              ],
+              "actor": "team_2",
+              "actor_role": "attacking_team",
+              "predicate": "attacking_threat"
+            },
+            {
+              "event_ids": [
+                "event_000282"
+              ],
+              "actor": "team_1",
+              "actor_role": "attacking_team",
+              "predicate": "attacking_threat"
+            },
+            {
+              "event_ids": [
+                "event_000398",
+                "event_000399",
+                "event_000400"
+              ],
+              "actor": "team_1",
+              "actor_role": "attacking_team",
+              "predicate": "attacking_threat"
+            },
+            {
+              "event_ids": [
+                "event_000416",
+                "event_000417"
+              ],
+              "actor": "team_1",
+              "actor_role": "attacking_team",
+              "predicate": "attacking_threat"
+            },
+            {
+              "event_ids": [
+                "event_000421"
+              ],
+              "actor": "team_1",
+              "actor_role": "attacking_team",
+              "predicate": "attacking_threat"
+            },
+            {
+              "event_ids": [
+                "event_000472"
+              ],
+              "actor": "team_1",
+              "actor_role": "attacking_team",
+              "predicate": "attacking_threat"
+            },
+            {
+              "event_ids": [
+                "event_000476",
+                "event_000477"
+              ],
+              "actor": "team_1",
+              "actor_role": "attacking_team",
+              "predicate": "attacking_threat"
+            },
+            {
+              "event_ids": [
+                "atom_fill_0074_Shot_6448924",
+                "atom_fill_0075_Goal_6449644"
+              ],
+              "actor": "team_1",
+              "actor_role": "score_beneficiary",
+              "predicate": "scoring_outcome"
+            },
+            {
+              "event_ids": [
+                "event_000640",
+                "event_000641"
+              ],
+              "actor": "team_1",
+              "actor_role": "attacking_team",
+              "predicate": "attacking_threat"
+            },
+            {
+              "event_ids": [
+                "atom_fill_0103_Shot_6841456",
+                "atom_fill_0104_Goal_6843088"
+              ],
+              "actor": "team_1",
+              "actor_role": "score_beneficiary",
+              "predicate": "scoring_outcome"
+            },
+            {
+              "event_ids": [
+                "event_000681"
+              ],
+              "actor": "team_2",
+              "actor_role": "attacking_team",
+              "predicate": "attacking_threat"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "quality_verified": false,
+  "first_live_verified": false
+}

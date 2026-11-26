@@ -1,0 +1,620 @@
+{
+  "schema": "v3r_general_r2a4_preflight_pack_v1",
+  "code_commit": "7f47f24ec76101a3886d76ffe8b898c612c95a44",
+  "baseline_commit": "cbc11f17eac3b8f3473fdb69ee9a7de6a30d963d",
+  "http_calls": 0,
+  "paid_models": false,
+  "video_render": false,
+  "r2a3_ablation_rerun": false,
+  "unittest": {
+    "module": "test_r2a4_roles",
+    "ran": 19,
+    "ok": 19
+  },
+  "inputs": {
+    "A_evidence": "artifacts/stage1_2_evidence_preflight_20261125/A_uae_oman/keeper_rescue/evidence.json",
+    "B_evidence": "artifacts/stage1_2_evidence_preflight_20261125/B_osasuna_celta/keeper_rescue/evidence.json",
+    "A_semantics": "artifacts/v3r_general_r2a2_preflight/A/normalized_semantics.json",
+    "B_semantics": "artifacts/v3r_general_r2a2_preflight/B/normalized_semantics.json",
+    "A_score": "artifacts/v3r_general_r2a3_preflight/inputs_prepared/A_score_path_from_t01.json",
+    "B_score": "artifacts/v3r_general_r2a3_preflight/inputs_prepared/B_score_path_from_t01.json",
+    "A_base_graph": "artifacts/v3r_general_r2a3_preflight/A/without_score/relation_graph.json",
+    "B_base_graph": "artifacts/v3r_general_r2a3_preflight/B/without_score/relation_graph.json"
+  },
+  "input_sha256": {
+    "A_evidence": "9322933a9c3ef15a990c9377ed498e97b73cb20350bbfe279114bf2f3b4043fc",
+    "B_evidence": "a673769fe1b81f93a34f9c987302af49f8988cbf02c429ad97b1317bf7b33292",
+    "A_semantics": "d9ef5ec2f99d6d85bb3750b849b69bbf9f91378ffcf27ccbdd16daedd7c1136f",
+    "B_semantics": "f1e8c222e6faeba704eb90b94e2f0470f2101f4c40c84b9132e33dcc7aaaa439",
+    "A_score": "0c55b3a03dabda4ec14eeed150bf6ef22342f14503a82c5ef369770d2b5782ac",
+    "B_score": "fef9d22228d34f5348bc771b752470cd96da5a1c7ff5c2baf146284cfc6fb635",
+    "A_base_graph": "fc69ad6961c636c1156ef76bb739f5bc05088365973f2c0b6f9c06a20ab08bd4",
+    "B_base_graph": "534dbe460b15756f179cf1a43466dd32f9b2927fdd03e8e42d4de77081fe33c7"
+  },
+  "cache": {
+    "A_reused_without_score_graph": true,
+    "B_reused_without_score_graph": true,
+    "note": "both A/B accepted saved without_score graphs; no contaminated full-graph substitution"
+  },
+  "r2a3_score_derived_shooters": [
+    {
+      "side": "A",
+      "event_id": "atom_fill_0003_Shot_1335974",
+      "actor": "team_2",
+      "path_index": 1
+    },
+    {
+      "side": "A",
+      "event_id": "atom_fill_0074_Shot_6448924",
+      "actor": "team_1",
+      "path_index": 2
+    },
+    {
+      "side": "A",
+      "event_id": "atom_fill_0103_Shot_6841456",
+      "actor": "team_1",
+      "path_index": 3
+    },
+    {
+      "side": "B",
+      "event_id": "atom_fill_0036_Shot_1977587",
+      "actor": "team_2",
+      "path_index": 1
+    },
+    {
+      "side": "B",
+      "event_id": "atom_fill_0071_Shot_3132270",
+      "actor": "team_1",
+      "path_index": 3
+    },
+    {
+      "side": "B",
+      "event_id": "atom_fill_0115_Shot_5657158",
+      "actor": "team_2",
+      "path_index": 4
+    },
+    {
+      "side": "B",
+      "event_id": "atom_fill_0158_Shot_6790743",
+      "actor": "team_2",
+      "path_index": 5
+    }
+  ],
+  "sides": {
+    "A": {
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "summary": {
+        "schema": "v3r_general_r2a4_roles_v1",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+        "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+        "http_calls": 0,
+        "reused_without_score_graph": true,
+        "n_attack_save_links": 7,
+        "n_score_bound_goals": 3,
+        "n_goal_context_edges": 3,
+        "n_role_inferences": 0,
+        "n_score_derived_executor_or_shooter_inferences": 0,
+        "goal_roles": [
+          {
+            "event_id": "atom_fill_0004_Goal_1337123",
+            "score_beneficiary": "team_2",
+            "goal_executor": null,
+            "attacking_team": null,
+            "goal_kind": "untyped_goal",
+            "execution_status": "UNRESOLVED",
+            "execution_claims": [],
+            "role_conflict": false,
+            "score_binding": {
+              "path_index": 1,
+              "score_beneficiary": "team_2",
+              "score_before": "0:0",
+              "score_after": "0:1",
+              "confirmation_t_sec": 1410.43,
+              "carrier_event_id": "event_000173",
+              "previous_score_observed_t_sec": null,
+              "candidate_ids": [
+                "atom_fill_0004_Goal_1337123"
+              ],
+              "search_interval": [
+                1230.43,
+                1425.43
+              ],
+              "event_id": "atom_fill_0004_Goal_1337123",
+              "action_t_sec": 1337.123,
+              "media_window": [
+                1337.123,
+                1339.123
+              ],
+              "basis": "unique_live_goal_and_v3r_score_increment",
+              "causal_verified": false,
+              "first_live_verified": false
+            },
+            "first_live_verified": false
+          },
+          {
+            "event_id": "atom_fill_0075_Goal_6449644",
+            "score_beneficiary": "team_1",
+            "goal_executor": null,
+            "attacking_team": null,
+            "goal_kind": "untyped_goal",
+            "execution_status": "UNRESOLVED",
+            "execution_claims": [],
+            "role_conflict": false,
+            "score_binding": {
+              "path_index": 2,
+              "score_beneficiary": "team_1",
+              "score_before": "0:1",
+              "score_after": "1:1",
+              "confirmation_t_sec": 6535.62,
+              "carrier_event_id": "event_000637",
+              "previous_score_observed_t_sec": null,
+              "candidate_ids": [
+                "atom_fill_0075_Goal_6449644"
+              ],
+              "search_interval": [
+                6355.62,
+                6550.62
+              ],
+              "event_id": "atom_fill_0075_Goal_6449644",
+              "action_t_sec": 6449.644,
+              "media_window": [
+                6449.644,
+                6451.644
+              ],
+              "basis": "unique_live_goal_and_v3r_score_increment",
+              "causal_verified": false,
+              "first_live_verified": false
+            },
+            "first_live_verified": false
+          },
+          {
+            "event_id": "atom_fill_0104_Goal_6843088",
+            "score_beneficiary": "team_1",
+            "goal_executor": null,
+            "attacking_team": null,
+            "goal_kind": "untyped_goal",
+            "execution_status": "UNRESOLVED",
+            "execution_claims": [],
+            "role_conflict": false,
+            "score_binding": {
+              "path_index": 3,
+              "score_beneficiary": "team_1",
+              "score_before": "1:1",
+              "score_after": "2:1",
+              "confirmation_t_sec": 6957.12,
+              "carrier_event_id": "event_000670",
+              "previous_score_observed_t_sec": null,
+              "candidate_ids": [
+                "atom_fill_0104_Goal_6843088"
+              ],
+              "search_interval": [
+                6777.12,
+                6972.12
+              ],
+              "event_id": "atom_fill_0104_Goal_6843088",
+              "action_t_sec": 6843.088,
+              "media_window": [
+                6843.088,
+                6845.088
+              ],
+              "basis": "unique_live_goal_and_v3r_score_increment",
+              "causal_verified": false,
+              "first_live_verified": false
+            },
+            "first_live_verified": false
+          }
+        ],
+        "observation_tasks_by_type": {
+          "goal_execution_roles": 3,
+          "shot_save_roles": 3
+        },
+        "quality_verified": false,
+        "first_live_verified": false
+      },
+      "patterns_compact": {
+        "keeper_rescue": {
+          "n_predicate_episodes": 8,
+          "n_candidates": 2
+        },
+        "alternating_threats": {
+          "n_predicate_episodes": 10,
+          "n_candidates": 1
+        },
+        "alternating_threats_score_context": {
+          "n_mixed_episodes": 13,
+          "strict_threat_metric_eligible": false,
+          "n_candidates": 1
+        }
+      },
+      "goal_bindings": [
+        {
+          "path_index": 1,
+          "score_beneficiary": "team_2",
+          "score_before": "0:0",
+          "score_after": "0:1",
+          "confirmation_t_sec": 1410.43,
+          "carrier_event_id": "event_000173",
+          "previous_score_observed_t_sec": null,
+          "candidate_ids": [
+            "atom_fill_0004_Goal_1337123"
+          ],
+          "search_interval": [
+            1230.43,
+            1425.43
+          ],
+          "event_id": "atom_fill_0004_Goal_1337123",
+          "action_t_sec": 1337.123,
+          "media_window": [
+            1337.123,
+            1339.123
+          ],
+          "basis": "unique_live_goal_and_v3r_score_increment",
+          "causal_verified": false,
+          "first_live_verified": false
+        },
+        {
+          "path_index": 2,
+          "score_beneficiary": "team_1",
+          "score_before": "0:1",
+          "score_after": "1:1",
+          "confirmation_t_sec": 6535.62,
+          "carrier_event_id": "event_000637",
+          "previous_score_observed_t_sec": null,
+          "candidate_ids": [
+            "atom_fill_0075_Goal_6449644"
+          ],
+          "search_interval": [
+            6355.62,
+            6550.62
+          ],
+          "event_id": "atom_fill_0075_Goal_6449644",
+          "action_t_sec": 6449.644,
+          "media_window": [
+            6449.644,
+            6451.644
+          ],
+          "basis": "unique_live_goal_and_v3r_score_increment",
+          "causal_verified": false,
+          "first_live_verified": false
+        },
+        {
+          "path_index": 3,
+          "score_beneficiary": "team_1",
+          "score_before": "1:1",
+          "score_after": "2:1",
+          "confirmation_t_sec": 6957.12,
+          "carrier_event_id": "event_000670",
+          "previous_score_observed_t_sec": null,
+          "candidate_ids": [
+            "atom_fill_0104_Goal_6843088"
+          ],
+          "search_interval": [
+            6777.12,
+            6972.12
+          ],
+          "event_id": "atom_fill_0104_Goal_6843088",
+          "action_t_sec": 6843.088,
+          "media_window": [
+            6843.088,
+            6845.088
+          ],
+          "basis": "unique_live_goal_and_v3r_score_increment",
+          "causal_verified": false,
+          "first_live_verified": false
+        }
+      ],
+      "unresolved_score": [],
+      "observation_tasks_by_type": {
+        "goal_execution_roles": 3,
+        "shot_save_roles": 3
+      }
+    },
+    "B": {
+      "video_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+      "summary": {
+        "schema": "v3r_general_r2a4_roles_v1",
+        "video_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+        "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+        "http_calls": 0,
+        "reused_without_score_graph": true,
+        "n_attack_save_links": 2,
+        "n_score_bound_goals": 4,
+        "n_goal_context_edges": 4,
+        "n_role_inferences": 0,
+        "n_score_derived_executor_or_shooter_inferences": 0,
+        "goal_roles": [
+          {
+            "event_id": "atom_fill_0037_Goal_1979427",
+            "score_beneficiary": "team_2",
+            "goal_executor": null,
+            "attacking_team": null,
+            "goal_kind": "untyped_goal",
+            "execution_status": "UNRESOLVED",
+            "execution_claims": [],
+            "role_conflict": false,
+            "score_binding": {
+              "path_index": 1,
+              "score_beneficiary": "team_2",
+              "score_before": "0:0",
+              "score_after": "0:1",
+              "confirmation_t_sec": 2071.43,
+              "carrier_event_id": "event_000309",
+              "previous_score_observed_t_sec": null,
+              "candidate_ids": [
+                "atom_fill_0037_Goal_1979427"
+              ],
+              "search_interval": [
+                1891.4299999999998,
+                2086.43
+              ],
+              "event_id": "atom_fill_0037_Goal_1979427",
+              "action_t_sec": 1979.427,
+              "media_window": [
+                1979.427,
+                1981.427
+              ],
+              "basis": "unique_live_goal_and_v3r_score_increment",
+              "causal_verified": false,
+              "first_live_verified": false
+            },
+            "first_live_verified": false
+          },
+          {
+            "event_id": "atom_fill_0072_Goal_3133968",
+            "score_beneficiary": "team_1",
+            "goal_executor": null,
+            "attacking_team": null,
+            "goal_kind": "untyped_goal",
+            "execution_status": "UNRESOLVED",
+            "execution_claims": [],
+            "role_conflict": false,
+            "score_binding": {
+              "path_index": 3,
+              "score_beneficiary": "team_1",
+              "score_before": "1:1",
+              "score_after": "2:1",
+              "confirmation_t_sec": 3199.66,
+              "carrier_event_id": "event_000456",
+              "previous_score_observed_t_sec": null,
+              "candidate_ids": [
+                "atom_fill_0072_Goal_3133968"
+              ],
+              "search_interval": [
+                3019.66,
+                3214.66
+              ],
+              "event_id": "atom_fill_0072_Goal_3133968",
+              "action_t_sec": 3133.968,
+              "media_window": [
+                3133.968,
+                3135.968
+              ],
+              "basis": "unique_live_goal_and_v3r_score_increment",
+              "causal_verified": false,
+              "first_live_verified": false
+            },
+            "first_live_verified": false
+          },
+          {
+            "event_id": "atom_fill_0116_Goal_5657621",
+            "score_beneficiary": "team_2",
+            "goal_executor": null,
+            "attacking_team": null,
+            "goal_kind": "untyped_goal",
+            "execution_status": "UNRESOLVED",
+            "execution_claims": [],
+            "role_conflict": false,
+            "score_binding": {
+              "path_index": 4,
+              "score_beneficiary": "team_2",
+              "score_before": "2:1",
+              "score_after": "2:2",
+              "confirmation_t_sec": 5712.01,
+              "carrier_event_id": "event_000560",
+              "previous_score_observed_t_sec": null,
+              "candidate_ids": [
+                "atom_fill_0116_Goal_5657621"
+              ],
+              "search_interval": [
+                5532.01,
+                5727.01
+              ],
+              "event_id": "atom_fill_0116_Goal_5657621",
+              "action_t_sec": 5657.621,
+              "media_window": [
+                5657.621,
+                5659.621
+              ],
+              "basis": "unique_live_goal_and_v3r_score_increment",
+              "causal_verified": false,
+              "first_live_verified": false
+            },
+            "first_live_verified": false
+          },
+          {
+            "event_id": "atom_fill_0159_Goal_6791882",
+            "score_beneficiary": "team_2",
+            "goal_executor": null,
+            "attacking_team": null,
+            "goal_kind": "untyped_goal",
+            "execution_status": "UNRESOLVED",
+            "execution_claims": [],
+            "role_conflict": false,
+            "score_binding": {
+              "path_index": 5,
+              "score_beneficiary": "team_2",
+              "score_before": "2:2",
+              "score_after": "2:3",
+              "confirmation_t_sec": 6881.94,
+              "carrier_event_id": "event_000636",
+              "previous_score_observed_t_sec": null,
+              "candidate_ids": [
+                "atom_fill_0159_Goal_6791882"
+              ],
+              "search_interval": [
+                6701.94,
+                6896.94
+              ],
+              "event_id": "atom_fill_0159_Goal_6791882",
+              "action_t_sec": 6791.882,
+              "media_window": [
+                6791.882,
+                6793.882
+              ],
+              "basis": "unique_live_goal_and_v3r_score_increment",
+              "causal_verified": false,
+              "first_live_verified": false
+            },
+            "first_live_verified": false
+          }
+        ],
+        "observation_tasks_by_type": {
+          "goal_execution_roles": 4,
+          "missing_goal_localization": 1,
+          "shot_save_roles": 7
+        },
+        "quality_verified": false,
+        "first_live_verified": false
+      },
+      "patterns_compact": {
+        "keeper_rescue": {
+          "n_predicate_episodes": 3,
+          "n_candidates": 1
+        },
+        "alternating_threats": {
+          "n_predicate_episodes": 3,
+          "n_candidates": 0
+        },
+        "alternating_threats_score_context": {
+          "n_mixed_episodes": 7,
+          "strict_threat_metric_eligible": false,
+          "n_candidates": 1
+        }
+      },
+      "goal_bindings": [
+        {
+          "path_index": 1,
+          "score_beneficiary": "team_2",
+          "score_before": "0:0",
+          "score_after": "0:1",
+          "confirmation_t_sec": 2071.43,
+          "carrier_event_id": "event_000309",
+          "previous_score_observed_t_sec": null,
+          "candidate_ids": [
+            "atom_fill_0037_Goal_1979427"
+          ],
+          "search_interval": [
+            1891.4299999999998,
+            2086.43
+          ],
+          "event_id": "atom_fill_0037_Goal_1979427",
+          "action_t_sec": 1979.427,
+          "media_window": [
+            1979.427,
+            1981.427
+          ],
+          "basis": "unique_live_goal_and_v3r_score_increment",
+          "causal_verified": false,
+          "first_live_verified": false
+        },
+        {
+          "path_index": 3,
+          "score_beneficiary": "team_1",
+          "score_before": "1:1",
+          "score_after": "2:1",
+          "confirmation_t_sec": 3199.66,
+          "carrier_event_id": "event_000456",
+          "previous_score_observed_t_sec": null,
+          "candidate_ids": [
+            "atom_fill_0072_Goal_3133968"
+          ],
+          "search_interval": [
+            3019.66,
+            3214.66
+          ],
+          "event_id": "atom_fill_0072_Goal_3133968",
+          "action_t_sec": 3133.968,
+          "media_window": [
+            3133.968,
+            3135.968
+          ],
+          "basis": "unique_live_goal_and_v3r_score_increment",
+          "causal_verified": false,
+          "first_live_verified": false
+        },
+        {
+          "path_index": 4,
+          "score_beneficiary": "team_2",
+          "score_before": "2:1",
+          "score_after": "2:2",
+          "confirmation_t_sec": 5712.01,
+          "carrier_event_id": "event_000560",
+          "previous_score_observed_t_sec": null,
+          "candidate_ids": [
+            "atom_fill_0116_Goal_5657621"
+          ],
+          "search_interval": [
+            5532.01,
+            5727.01
+          ],
+          "event_id": "atom_fill_0116_Goal_5657621",
+          "action_t_sec": 5657.621,
+          "media_window": [
+            5657.621,
+            5659.621
+          ],
+          "basis": "unique_live_goal_and_v3r_score_increment",
+          "causal_verified": false,
+          "first_live_verified": false
+        },
+        {
+          "path_index": 5,
+          "score_beneficiary": "team_2",
+          "score_before": "2:2",
+          "score_after": "2:3",
+          "confirmation_t_sec": 6881.94,
+          "carrier_event_id": "event_000636",
+          "previous_score_observed_t_sec": null,
+          "candidate_ids": [
+            "atom_fill_0159_Goal_6791882"
+          ],
+          "search_interval": [
+            6701.94,
+            6896.94
+          ],
+          "event_id": "atom_fill_0159_Goal_6791882",
+          "action_t_sec": 6791.882,
+          "media_window": [
+            6791.882,
+            6793.882
+          ],
+          "basis": "unique_live_goal_and_v3r_score_increment",
+          "causal_verified": false,
+          "first_live_verified": false
+        }
+      ],
+      "unresolved_score": [
+        {
+          "path_index": 2,
+          "score_beneficiary": "team_1",
+          "score_before": "0:1",
+          "score_after": "1:1",
+          "confirmation_t_sec": 2660.82,
+          "carrier_event_id": "event_000382",
+          "previous_score_observed_t_sec": null,
+          "candidate_ids": [],
+          "search_interval": [
+            2480.82,
+            2675.82
+          ],
+          "reason": "missing_or_nonunique_goal_localization"
+        }
+      ],
+      "observation_tasks_by_type": {
+        "goal_execution_roles": 4,
+        "missing_goal_localization": 1,
+        "shot_save_roles": 7
+      }
+    }
+  }
+}
