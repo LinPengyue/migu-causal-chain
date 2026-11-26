@@ -51,6 +51,7 @@ def validate_sources(evidence,graph,bundle,score):
 def run(evidence,graph,bundle,score,templates):
     validate_sources(evidence,graph,bundle,score)
     results={}
+    observation_tasks=deepcopy(graph["observation_tasks"])
     for t in templates:
         tid=t["template_id"]
         check(tid not in results,"duplicate template ID")
@@ -65,6 +66,26 @@ def run(evidence,graph,bundle,score,templates):
             candidates=extra.pop("candidates")
         else:
             raise ValueError("unsupported R2b/c operator "+op)
+        for c in candidates:
+            if op not in {"relation_path","phase_change"}:
+                continue
+            task_id="observe:r2bc:"+c["candidate_id"]
+            task={"task_id":task_id,"video_id":evidence["video_id"],"candidate_id":c["candidate_id"],
+                  "preview_only":True,"resolved":False,"media_windows":[]}
+            if op=="relation_path":
+                task.update(task_type="relation_path_verification",
+                    path_alternatives=deepcopy(c["path_alternatives"]),
+                    event_ids=sorted({eid for a in c["path_alternatives"] for eid in a["event_ids"]}),
+                    questions=["verify continuity and actual action roles",
+                               "verify tactical or turnover-to-goal relationship","confirm first live footage"])
+            else:
+                task.update(task_type="phase_switch_verification",
+                    search_interval=c["switch_search_interval"],
+                    event_ids=sorted({eid for n in c["nodes"] for eid in n["event_ids"]}),
+                    questions=["inspect whether the observed threat runs indicate a meaningful attack shift",
+                               "identify the transition or intervening story event","confirm first live footage"])
+            observation_tasks.append(task)
+            c.setdefault("observation_task_ids",[]).append(task_id)
         results[tid]={"schema":"sportscausal_story_anchors_v2","video_id":evidence["video_id"],
             "input_tier":evidence["input_tier"],"template":deepcopy(t),"operator":op,
             "candidates":candidates,**extra,"quality_verified":False,"first_live_verified":False,
@@ -72,7 +93,7 @@ def run(evidence,graph,bundle,score,templates):
     return {"schema":"sportscausal_r2bc_preflight_v1","video_id":evidence["video_id"],
             "input_tier":evidence["input_tier"],"http_calls":0,
             "frozen_r2a4_reused":True,"results":results,
-            "observation_tasks":deepcopy(graph["observation_tasks"]),
+            "observation_tasks":observation_tasks,
             "quality_verified":False,"first_live_verified":False,"release_authorized":False}
 
 def main():
@@ -103,6 +124,7 @@ def main():
         check(tid and all(c.isascii() and (c.isalnum() or c in "_-") for c in tid),"invalid template filename")
         write(out/(tid+".json"),r)
     write(out/"anchor_pack.json",pack)
+    write(out/"observation_tasks.json",{"video_id":pack["video_id"],"tasks":pack["observation_tasks"],"http_calls":0})
     write(out/"summary.json",{"video_id":pack["video_id"],"input_tier":pack["input_tier"],
         "http_calls":0,"frozen_r2a4_reused":True,"n_observation_tasks":len(pack["observation_tasks"]),
         "templates":{tid:{"operator":r["operator"],"n_candidates":len(r["candidates"]),
