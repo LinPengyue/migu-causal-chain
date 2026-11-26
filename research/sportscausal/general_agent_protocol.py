@@ -59,6 +59,7 @@ def validate_cut(rows,duration):
 def task_windows(t,evidence,max_clip_sec):
     # Broad missing-action regions are tiled, never presented as a single
     # clip or silently truncated. The caller controls budget/selection.
+    check(number(max_clip_sec) and max_clip_sec>0,"invalid clip bound")
     windows=[]
     if t.get("search_interval"):
         windows.append(t["search_interval"])
@@ -161,14 +162,20 @@ def trial_revision(rows,plan,observations,evidence,nonlive):
               "no supported observed action window")
         check(not any(overlaps(w,x) for x in nonlive),"observed window overlaps annotated replay")
         check(obs.get("broadcast")=="LIVE","clip not supported as live")
+        if action in {"trim","replace"}:
+            old=[r["media_in"],r["media_out"]]
+            check(overlaps(old,obs["source_window"]) or not r.get("story_node_ids") or
+                  plan.get("anchor_overturn") is True,"unrelated replacement of protected anchor")
         if action=="trim":
             check(r["media_in"]<=w[0]<w[1]<=r["media_out"],"trim outside segment")
+        if r and r.get("story_node_ids") and not overlaps([r["media_in"],r["media_out"]],w):
+            check(plan.get("anchor_overturn") is True,"replacement loses protected anchor")
         ids=[eid for eid in obs.get("event_ids",[]) if eid in evidence["atoms"] and
              overlaps(w,evidence["atoms"][eid]["window"])]
         new=[deepcopy(x) for x in rows if action=="add" or x["segment_id"]!=target]
         new.append({"segment_id":target if action in {"trim","replace"} else "trial:"+str(plan["observation_id"]),
             "video_id":evidence["video_id"],"media_in":w[0],"media_out":w[1],"event_ids":ids,
-            "story_node_ids":list(r.get("story_node_ids",[])) if r else list(obs.get("story_node_ids",[])),
+            "story_node_ids":list(dict.fromkeys((r.get("story_node_ids",[]) if r else [])+obs.get("story_node_ids",[]))),
             "role":r.get("role","context") if r else "context",
             "source_observation_id":plan["observation_id"],"include_in_cut":True,
             "preview_only":True,"first_live_verified":False,"first_live_status":"NOT_VERIFIED",
