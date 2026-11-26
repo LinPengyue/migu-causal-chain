@@ -1,0 +1,649 @@
+{
+  "schema": "v3r_general_r2a3_preflight_pack_v1",
+  "code_sha": "3fd44a845c9edc608e4c7c8a92363c6c404a86b2",
+  "baseline_compare": "3d90a20 / R2a.2 artifacts",
+  "unittest": "38/38 OK",
+  "http_calls": 0,
+  "score_side_mapping_verified": {
+    "A": {
+      "left": "team_1",
+      "right": "team_2"
+    },
+    "B": {
+      "left": "team_1",
+      "right": "team_2"
+    }
+  },
+  "A": {
+    "schema": "v3r_general_r2a3_ablation_v1",
+    "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+    "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+    "http_calls": 0,
+    "arms": {
+      "full": {
+        "n_links": 10,
+        "n_role_inferences": 3,
+        "n_score_bound_goals": 3,
+        "n_unresolved_relations": 3,
+        "patterns": {
+          "keeper_rescue": {
+            "n_predicate_episodes": 8,
+            "candidates": [
+              {
+                "subjects": [
+                  "team_1"
+                ],
+                "actor_runs": null,
+                "event_ids": [
+                  [
+                    "event_000096",
+                    "event_000097"
+                  ],
+                  [
+                    "event_000276",
+                    "event_000277"
+                  ]
+                ]
+              },
+              {
+                "subjects": [
+                  "team_2"
+                ],
+                "actor_runs": null,
+                "event_ids": [
+                  [
+                    "event_000282"
+                  ],
+                  [
+                    "event_000398",
+                    "event_000399",
+                    "event_000400"
+                  ],
+                  [
+                    "event_000416",
+                    "event_000417"
+                  ],
+                  [
+                    "event_000421"
+                  ],
+                  [
+                    "event_000476",
+                    "event_000477"
+                  ],
+                  [
+                    "event_000640",
+                    "event_000641"
+                  ]
+                ]
+              }
+            ]
+          },
+          "alternating_threats": {
+            "n_predicate_episodes": 13,
+            "candidates": [
+              {
+                "subjects": [
+                  "team_1",
+                  "team_2"
+                ],
+                "actor_runs": [
+                  {
+                    "actor": "team_2",
+                    "n_episodes": 3
+                  },
+                  {
+                    "actor": "team_1",
+                    "n_episodes": 9
+                  },
+                  {
+                    "actor": "team_2",
+                    "n_episodes": 1
+                  }
+                ],
+                "event_ids": [
+                  [
+                    "event_000096",
+                    "event_000097"
+                  ],
+                  [
+                    "atom_fill_0003_Shot_1335974",
+                    "atom_fill_0004_Goal_1337123"
+                  ],
+                  [
+                    "event_000276",
+                    "event_000277"
+                  ],
+                  [
+                    "event_000282"
+                  ],
+                  [
+                    "event_000398",
+                    "event_000399",
+                    "event_000400"
+                  ],
+                  [
+                    "event_000416",
+                    "event_000417"
+                  ],
+                  [
+                    "event_000421"
+                  ],
+                  [
+                    "event_000472"
+                  ],
+                  [
+                    "event_000476",
+                    "event_000477"
+                  ],
+                  [
+                    "atom_fill_0074_Shot_6448924",
+                    "atom_fill_0075_Goal_6449644"
+                  ],
+                  [
+                    "event_000640",
+                    "event_000641"
+                  ],
+                  [
+                    "atom_fill_0103_Shot_6841456",
+                    "atom_fill_0104_Goal_6843088"
+                  ],
+                  [
+                    "event_000681"
+                  ]
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "without_chains": {
+        "n_links": 6,
+        "n_role_inferences": 0,
+        "n_score_bound_goals": 3,
+        "n_unresolved_relations": 3,
+        "patterns": {
+          "keeper_rescue": {
+            "n_predicate_episodes": 7,
+            "candidates": [
+              {
+                "subjects": [
+                  "team_1"
+                ],
+                "actor_runs": null,
+                "event_ids": [
+                  [
+                    "event_000096",
+                    "event_000097"
+                  ],
+                  [
+                    "event_000276",
+                    "event_000277"
+                  ]
+                ]
+              },
+              {
+                "subjects": [
+                  "team_2"
+                ],
+                "actor_runs": null,
+                "event_ids": [
+                  [
+                    "event_000282"
+                  ],
+                  [
+                    "event_000416",
+                    "event_000417"
+                  ],
+                  [
+                    "event_000421"
+                  ],
+                  [
+                    "event_000476",
+                    "event_000477"
+                  ],
+                  [
+                    "event_000640",
+                    "event_000641"
+                  ]
+                ]
+              }
+            ]
+          },
+          "alternating_threats": {
+            "n_predicate_episodes": 12,
+            "candidates": [
+              {
+                "subjects": [
+                  "team_1",
+                  "team_2"
+                ],
+                "actor_runs": [
+                  {
+                    "actor": "team_2",
+                    "n_episodes": 3
+                  },
+                  {
+                    "actor": "team_1",
+                    "n_episodes": 8
+                  },
+                  {
+                    "actor": "team_2",
+                    "n_episodes": 1
+                  }
+                ],
+                "event_ids": [
+                  [
+                    "event_000096",
+                    "event_000097"
+                  ],
+                  [
+                    "atom_fill_0004_Goal_1337123"
+                  ],
+                  [
+                    "event_000276",
+                    "event_000277"
+                  ],
+                  [
+                    "event_000282"
+                  ],
+                  [
+                    "event_000416",
+                    "event_000417"
+                  ],
+                  [
+                    "event_000421"
+                  ],
+                  [
+                    "event_000472"
+                  ],
+                  [
+                    "event_000476",
+                    "event_000477"
+                  ],
+                  [
+                    "atom_fill_0075_Goal_6449644"
+                  ],
+                  [
+                    "event_000640",
+                    "event_000641"
+                  ],
+                  [
+                    "atom_fill_0104_Goal_6843088"
+                  ],
+                  [
+                    "event_000681"
+                  ]
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "without_score": {
+        "n_links": 7,
+        "n_role_inferences": 0,
+        "n_score_bound_goals": 0,
+        "n_unresolved_relations": 3,
+        "patterns": {
+          "keeper_rescue": {
+            "n_predicate_episodes": 8,
+            "candidates": [
+              {
+                "subjects": [
+                  "team_1"
+                ],
+                "actor_runs": null,
+                "event_ids": [
+                  [
+                    "event_000096",
+                    "event_000097"
+                  ],
+                  [
+                    "event_000276",
+                    "event_000277"
+                  ]
+                ]
+              },
+              {
+                "subjects": [
+                  "team_2"
+                ],
+                "actor_runs": null,
+                "event_ids": [
+                  [
+                    "event_000282"
+                  ],
+                  [
+                    "event_000398",
+                    "event_000399",
+                    "event_000400"
+                  ],
+                  [
+                    "event_000416",
+                    "event_000417"
+                  ],
+                  [
+                    "event_000421"
+                  ],
+                  [
+                    "event_000476",
+                    "event_000477"
+                  ],
+                  [
+                    "event_000640",
+                    "event_000641"
+                  ]
+                ]
+              }
+            ]
+          },
+          "alternating_threats": {
+            "n_predicate_episodes": 10,
+            "candidates": [
+              {
+                "subjects": [
+                  "team_1",
+                  "team_2"
+                ],
+                "actor_runs": [
+                  {
+                    "actor": "team_2",
+                    "n_episodes": 2
+                  },
+                  {
+                    "actor": "team_1",
+                    "n_episodes": 7
+                  },
+                  {
+                    "actor": "team_2",
+                    "n_episodes": 1
+                  }
+                ],
+                "event_ids": [
+                  [
+                    "event_000096",
+                    "event_000097"
+                  ],
+                  [
+                    "event_000276",
+                    "event_000277"
+                  ],
+                  [
+                    "event_000282"
+                  ],
+                  [
+                    "event_000398",
+                    "event_000399",
+                    "event_000400"
+                  ],
+                  [
+                    "event_000416",
+                    "event_000417"
+                  ],
+                  [
+                    "event_000421"
+                  ],
+                  [
+                    "event_000472"
+                  ],
+                  [
+                    "event_000476",
+                    "event_000477"
+                  ],
+                  [
+                    "event_000640",
+                    "event_000641"
+                  ],
+                  [
+                    "event_000681"
+                  ]
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "quality_verified": false
+  },
+  "B": {
+    "schema": "v3r_general_r2a3_ablation_v1",
+    "video_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+    "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+    "http_calls": 0,
+    "arms": {
+      "full": {
+        "n_links": 6,
+        "n_role_inferences": 4,
+        "n_score_bound_goals": 4,
+        "n_unresolved_relations": 7,
+        "patterns": {
+          "keeper_rescue": {
+            "n_predicate_episodes": 3,
+            "candidates": [
+              {
+                "subjects": [
+                  "team_2"
+                ],
+                "actor_runs": null,
+                "event_ids": [
+                  [
+                    "event_000050"
+                  ],
+                  [
+                    "event_000259",
+                    "event_000260"
+                  ],
+                  [
+                    "event_000586",
+                    "event_000587"
+                  ]
+                ]
+              }
+            ]
+          },
+          "alternating_threats": {
+            "n_predicate_episodes": 7,
+            "candidates": [
+              {
+                "subjects": [
+                  "team_1",
+                  "team_2"
+                ],
+                "actor_runs": [
+                  {
+                    "actor": "team_1",
+                    "n_episodes": 2
+                  },
+                  {
+                    "actor": "team_2",
+                    "n_episodes": 1
+                  },
+                  {
+                    "actor": "team_1",
+                    "n_episodes": 1
+                  },
+                  {
+                    "actor": "team_2",
+                    "n_episodes": 1
+                  },
+                  {
+                    "actor": "team_1",
+                    "n_episodes": 1
+                  },
+                  {
+                    "actor": "team_2",
+                    "n_episodes": 1
+                  }
+                ],
+                "event_ids": [
+                  [
+                    "event_000050"
+                  ],
+                  [
+                    "event_000259",
+                    "event_000260"
+                  ],
+                  [
+                    "atom_fill_0036_Shot_1977587",
+                    "atom_fill_0037_Goal_1979427"
+                  ],
+                  [
+                    "atom_fill_0071_Shot_3132270",
+                    "atom_fill_0072_Goal_3133968"
+                  ],
+                  [
+                    "atom_fill_0115_Shot_5657158",
+                    "atom_fill_0116_Goal_5657621"
+                  ],
+                  [
+                    "event_000586",
+                    "event_000587"
+                  ],
+                  [
+                    "atom_fill_0158_Shot_6790743",
+                    "atom_fill_0159_Goal_6791882"
+                  ]
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "without_chains": {
+        "n_links": 2,
+        "n_role_inferences": 0,
+        "n_score_bound_goals": 4,
+        "n_unresolved_relations": 7,
+        "patterns": {
+          "keeper_rescue": {
+            "n_predicate_episodes": 3,
+            "candidates": [
+              {
+                "subjects": [
+                  "team_2"
+                ],
+                "actor_runs": null,
+                "event_ids": [
+                  [
+                    "event_000050"
+                  ],
+                  [
+                    "event_000259",
+                    "event_000260"
+                  ],
+                  [
+                    "event_000586",
+                    "event_000587"
+                  ]
+                ]
+              }
+            ]
+          },
+          "alternating_threats": {
+            "n_predicate_episodes": 7,
+            "candidates": [
+              {
+                "subjects": [
+                  "team_1",
+                  "team_2"
+                ],
+                "actor_runs": [
+                  {
+                    "actor": "team_1",
+                    "n_episodes": 2
+                  },
+                  {
+                    "actor": "team_2",
+                    "n_episodes": 1
+                  },
+                  {
+                    "actor": "team_1",
+                    "n_episodes": 1
+                  },
+                  {
+                    "actor": "team_2",
+                    "n_episodes": 1
+                  },
+                  {
+                    "actor": "team_1",
+                    "n_episodes": 1
+                  },
+                  {
+                    "actor": "team_2",
+                    "n_episodes": 1
+                  }
+                ],
+                "event_ids": [
+                  [
+                    "event_000050"
+                  ],
+                  [
+                    "event_000259",
+                    "event_000260"
+                  ],
+                  [
+                    "atom_fill_0037_Goal_1979427"
+                  ],
+                  [
+                    "atom_fill_0072_Goal_3133968"
+                  ],
+                  [
+                    "atom_fill_0116_Goal_5657621"
+                  ],
+                  [
+                    "event_000586",
+                    "event_000587"
+                  ],
+                  [
+                    "atom_fill_0159_Goal_6791882"
+                  ]
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "without_score": {
+        "n_links": 2,
+        "n_role_inferences": 0,
+        "n_score_bound_goals": 0,
+        "n_unresolved_relations": 7,
+        "patterns": {
+          "keeper_rescue": {
+            "n_predicate_episodes": 3,
+            "candidates": [
+              {
+                "subjects": [
+                  "team_2"
+                ],
+                "actor_runs": null,
+                "event_ids": [
+                  [
+                    "event_000050"
+                  ],
+                  [
+                    "event_000259",
+                    "event_000260"
+                  ],
+                  [
+                    "event_000586",
+                    "event_000587"
+                  ]
+                ]
+              }
+            ]
+          },
+          "alternating_threats": {
+            "n_predicate_episodes": 3,
+            "candidates": []
+          }
+        }
+      }
+    },
+    "quality_verified": false
+  },
+  "own_goal_audit_A_first_0_1": "SEE REPORT — score beneficiary team_2 used as shot actor; candidate NOT manually altered",
+  "quality_verified": false,
+  "release_authorized": false
+}

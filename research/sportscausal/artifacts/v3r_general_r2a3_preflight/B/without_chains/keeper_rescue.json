@@ -1,0 +1,235 @@
+{
+  "schema": "v3r_general_episode_candidates_v1",
+  "video_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+  "template_id": "keeper_rescue",
+  "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "category": "人物故事链",
+  "subtype": "同队门将多次化险",
+  "narrative_goal": [
+    "表现同队门将反复化解威胁",
+    "挖掘比赛阶段及后续发展"
+  ],
+  "use_chains": false,
+  "n_predicate_episodes": 3,
+  "ambiguous_order_episode_ids": [],
+  "cross_actor_overlapping_media": [],
+  "candidates": [
+    {
+      "candidate_id": "keeper_rescue:1",
+      "subjects": [
+        "team_2"
+      ],
+      "actor_runs": null,
+      "nodes": [
+        {
+          "node_id": "anchor:1",
+          "predicate": "goalkeeper_rescue",
+          "actor": "team_2",
+          "event_ids": [
+            "event_000050"
+          ],
+          "core_event_ids": [
+            "event_000050"
+          ],
+          "anchor_t": 630.08,
+          "window": [
+            625.07,
+            635.19
+          ],
+          "media_windows": [
+            [
+              625.07,
+              635.19
+            ]
+          ],
+          "score_observations": [
+            {
+              "event_id": "event_000050",
+              "score": [
+                0,
+                0
+              ]
+            }
+          ],
+          "relation": null,
+          "causal_verified": false,
+          "distinct_episode_basis": "atomic_window_proxy",
+          "component_id": "attack:event_000050",
+          "predicate_evidence": [
+            {
+              "event_id": "event_000050",
+              "actor": "team_2",
+              "basis": "explicit_opponent_action_in_keeper_note"
+            }
+          ],
+          "goal_score_bindings": [],
+          "episode_id": "episode:3",
+          "story_anchor": true
+        },
+        {
+          "node_id": "anchor:2",
+          "predicate": "goalkeeper_rescue",
+          "actor": "team_2",
+          "event_ids": [
+            "event_000259",
+            "event_000260"
+          ],
+          "core_event_ids": [
+            "event_000260"
+          ],
+          "anchor_t": 1713.28,
+          "window": [
+            1709.34,
+            1719.53
+          ],
+          "media_windows": [
+            [
+              1709.34,
+              1719.53
+            ]
+          ],
+          "score_observations": [
+            {
+              "event_id": "event_000259",
+              "score": [
+                0,
+                0
+              ]
+            },
+            {
+              "event_id": "event_000260",
+              "score": [
+                0,
+                0
+              ]
+            }
+          ],
+          "relation": {
+            "kind": "typed_relation_path",
+            "edges": [
+              {
+                "kind": "delivery_keeper",
+                "event_ids": [
+                  "event_000259",
+                  "event_000260"
+                ],
+                "attacker": "team_1",
+                "keeper": "team_2",
+                "basis": "local_role_compatible_action_pair",
+                "chain_support": [],
+                "causal_verified": false,
+                "inferred_shooter": false,
+                "inferred_keeper": false
+              }
+            ],
+            "causal_verified": false
+          },
+          "causal_verified": false,
+          "distinct_episode_basis": "local_predicted_relation",
+          "component_id": "attack:event_000259",
+          "predicate_evidence": [
+            {
+              "event_id": "event_000260",
+              "actor": "team_2",
+              "basis": "annotated_save_or_critical_interception"
+            }
+          ],
+          "goal_score_bindings": [],
+          "episode_id": "episode:12",
+          "story_anchor": true
+        },
+        {
+          "node_id": "anchor:3",
+          "predicate": "goalkeeper_rescue",
+          "actor": "team_2",
+          "event_ids": [
+            "event_000586",
+            "event_000587"
+          ],
+          "core_event_ids": [
+            "event_000586"
+          ],
+          "anchor_t": 6098.32,
+          "window": [
+            6092.65,
+            6102.68
+          ],
+          "media_windows": [
+            [
+              6092.65,
+              6102.68
+            ]
+          ],
+          "score_observations": [
+            {
+              "event_id": "event_000586",
+              "score": [
+                2,
+                2
+              ]
+            },
+            {
+              "event_id": "event_000587",
+              "score": [
+                2,
+                2
+              ]
+            }
+          ],
+          "relation": {
+            "kind": "typed_relation_path",
+            "edges": [
+              {
+                "kind": "keeper_deflection_followup",
+                "event_ids": [
+                  "event_000586",
+                  "event_000587"
+                ],
+                "attacker": "team_1",
+                "keeper": "team_2",
+                "basis": "explicit_recovery_reference",
+                "chain_support": [],
+                "causal_verified": false
+              }
+            ],
+            "causal_verified": false
+          },
+          "causal_verified": false,
+          "distinct_episode_basis": "local_predicted_relation",
+          "component_id": "attack:event_000586",
+          "predicate_evidence": [
+            {
+              "event_id": "event_000586",
+              "actor": "team_2",
+              "basis": "deflection_and_opponent_followup"
+            }
+          ],
+          "goal_score_bindings": [],
+          "episode_id": "episode:24",
+          "story_anchor": true
+        }
+      ],
+      "edges": [
+        {
+          "from": "anchor:1",
+          "to": "anchor:2",
+          "relation": "temporal_episode_order",
+          "causal_verified": false
+        },
+        {
+          "from": "anchor:2",
+          "to": "anchor:3",
+          "relation": "temporal_episode_order",
+          "causal_verified": false
+        }
+      ],
+      "first_live_verified": false,
+      "quality_verified": false,
+      "release_authorized": false
+    }
+  ],
+  "scope": "whole-match anchor discovery; no dominance or narrative quality claim",
+  "first_live_verified": false,
+  "quality_verified": false,
+  "release_authorized": false
+}
