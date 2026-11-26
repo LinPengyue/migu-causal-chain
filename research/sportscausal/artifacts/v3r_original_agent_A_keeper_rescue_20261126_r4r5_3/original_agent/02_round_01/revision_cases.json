@@ -1,0 +1,68 @@
+{
+  "schema": "v3a_revision_case_bundle_v1",
+  "match_tag": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+  "n_cases": 1,
+  "cases": [
+    {
+      "schema": "v3a_revision_case_v1",
+      "match_tag": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "issue_id": null,
+      "revision_intent_id": "intent_unresolved_1",
+      "original_story_problem": {
+        "observation": null,
+        "missing_information": null,
+        "causal_explanation": null,
+        "story_role": null,
+        "diagnosis_status": null,
+        "story_defect_confirmed": null,
+        "confidence": null,
+        "evidence_sufficiency": null
+      },
+      "video_observation_evidence": null,
+      "defect_cause_hypothesis": null,
+      "target_action": "mark_unresolved",
+      "candidate_footage": {
+        "source_pts": null,
+        "event_ids": null,
+        "why_solves_problem": "Each issue is explicitly marked as a hypothesis needing video verification; no observed story-state change or missing causal/emotional/game-state information has been confirmed in adjacent cuts. Source-time compression alone is not a story defect.",
+        "apply": null
+      },
+      "before_after_video_windows": null,
+      "expected_improvement": "Avoids inventing edits based on unconfirmed structural anomalies; preserves protected goal segments.",
+      "falsification_evidence": null,
+      "actual_observation": null,
+      "verifier_judgment": {
+        "quality_judgment": null,
+        "original_issue_resolved": null,
+        "introduced_new_defect": null,
+        "evidence_refs": null,
+        "confidence": null,
+        "note": "Verifier must check whether the original diagnosed problem was solved, not only which cut looks nicer. BETTER ≠ ACCEPT ≠ IMPROVED."
+      },
+      "pts_safety": {
+        "schema": "v3a_edl_source_pts_monotonic_v1",
+        "ok": true,
+        "n_media_rows": 6,
+        "breaks": [],
+        "gate": "safety",
+        "note": "Monotonic source PTS is a safety constraint, not a quality score."
+      },
+      "final_decision": "REJECT",
+      "failure_reasons": [
+        "verifier_or_pipeline_rejected"
+      ],
+      "formal_final_is_baseline": true,
+      "bindings": {
+        "issue_id": null,
+        "evidence": [
+          "large_source_jump_seg:1_to_seg:2",
+          "large_source_jump_seg:4_to_seg:5",
+          "large_source_jump_seg:5_to_seg:6"
+        ],
+        "edit": "mark_unresolved",
+        "expected_effect": "Avoids inventing edits based on unconfirmed structural anomalies; preserves protected goal segments."
+      },
+      "duration_pad_forbidden_as_quality_proxy": true
+    }
+  ]
+}

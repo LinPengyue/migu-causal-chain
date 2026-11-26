@@ -1,0 +1,54 @@
+{
+  "schema": "v3r_original_agent_A_keeper_rescue_r4r5_3_pack_v1",
+  "code_commit": "1ce808d232938e2af2b28399209b205979693ab9",
+  "frozen_r4_r5_2": "277620a",
+  "story_id": "keeper_rescue:2",
+  "cf397a7_executed": false,
+  "r1_r3_rerun": false,
+  "http_calls": 1,
+  "est_cost_usd": 0.00118,
+  "requested_outer_rounds": 3,
+  "native_outer_comparison": "NO_NATIVE_OUTER_COMPARISON",
+  "first_failure": {
+    "stage": "story_first_p1_generator",
+    "status": "MODEL_CONFIG_MISSING",
+    "reason": "STORY_FIRST_LLM_MODEL_required_for_shared_gateway",
+    "affected_intervals": 5,
+    "proposal_count": 0,
+    "note": "All five adjacent P1 intervals prepared requests but skipped HTTP because STORY_FIRST_LLM_MODEL was unset. No automatic rerun per protocol."
+  },
+  "main_loop": {
+    "max_rounds": 1,
+    "planner_decision": "UNRESOLVED",
+    "revision_applied": false,
+    "candidate_rendered": false
+  },
+  "versions": [
+    {
+      "version_id": "v0",
+      "role": "initial_render_seed",
+      "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_original_agent_A_keeper_rescue_20261126_r4r5_3/candidate_edl.json",
+      "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_original_agent_A_keeper_rescue_20261126_r4r5_3/initial_render/story_clean.mp4",
+      "mp4_sha256": "338e842499cb2d60df0de42d68e2fa05b9e2948f7a8350a3baa30c62eac4ff91",
+      "duration_sec": 70.752,
+      "segments": 6,
+      "quality_claim": "not_evaluated",
+      "first_live_verified": false,
+      "release_authorized": false
+    },
+    {
+      "version_id": "v1",
+      "role": "main_loop_round1_candidate_edl_unchanged",
+      "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_original_agent_A_keeper_rescue_20261126_r4r5_3/original_agent/02_round_01/candidate_edl.json",
+      "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_original_agent_A_keeper_rescue_20261126_r4r5_3/original_agent/01_initial_story/story_clean.mp4",
+      "mp4_note": "points to initial story_clean; candidate was not re-rendered",
+      "safety": "PASS",
+      "quality": "UNCERTAIN",
+      "source": "OFFLINE_RULE"
+    }
+  ],
+  "source_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+  "initial_mp4_sha256": "338e842499cb2d60df0de42d68e2fa05b9e2948f7a8350a3baa30c62eac4ff91",
+  "overlay_original_tree_unchanged": true,
+  "generated_at": "2026-11-26T06:39:02.752095+00:00"
+}

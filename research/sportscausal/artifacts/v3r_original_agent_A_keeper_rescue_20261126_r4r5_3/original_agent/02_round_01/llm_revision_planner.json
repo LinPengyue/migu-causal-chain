@@ -1,0 +1,115 @@
+{
+  "ok": true,
+  "provider_mode": "real",
+  "decision": "UNRESOLVED",
+  "revision_intents": [
+    {
+      "intent_id": "intent_unresolved_1",
+      "action": "mark_unresolved",
+      "target_segment_id": null,
+      "role": null,
+      "narrative_purpose": "Flag that the three large source-time jumps (seg:1→seg:2, seg:4→seg:5, seg:5→seg:6) require video semantic verification before any edit can be justified.",
+      "rationale": "Each issue is explicitly marked as a hypothesis needing video verification; no observed story-state change or missing causal/emotional/game-state information has been confirmed in adjacent cuts. Source-time compression alone is not a story defect.",
+      "expected_improvement": "Avoids inventing edits based on unconfirmed structural anomalies; preserves protected goal segments.",
+      "risk": "None — no mutation performed.",
+      "evidence_refs": [
+        "large_source_jump_seg:1_to_seg:2",
+        "large_source_jump_seg:4_to_seg:5",
+        "large_source_jump_seg:5_to_seg:6"
+      ],
+      "anchor_id": null,
+      "search_windows": null
+    }
+  ],
+  "exploratory_intents": [],
+  "rationale": "All three diagnosed issues are temporal-discontinuity-only hypotheses with diagnosis_status HYPOTHESIS_NEEDS_VIDEO and story_defect_confirmed=false. The VLM critic summary contains no confirmed issues and video_critic_observations is UNAVAILABLE with no visual evidence. No search candidate has FIRST_LIVE_VERIFIED or narrative_fit_status=REVIEW_SUPPORTED. Per constraints, source-time jumps alone do not justify inserts, and no evidence-backed edit is available.",
+  "est_cost_usd": 0.00118035,
+  "usage": {
+    "prompt_tokens": 6365,
+    "completion_tokens": 376,
+    "total_tokens": 6741,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "parsed": {
+    "decision": "UNRESOLVED",
+    "rationale": "All three diagnosed issues are temporal-discontinuity-only hypotheses with diagnosis_status HYPOTHESIS_NEEDS_VIDEO and story_defect_confirmed=false. The VLM critic summary contains no confirmed issues and video_critic_observations is UNAVAILABLE with no visual evidence. No search candidate has FIRST_LIVE_VERIFIED or narrative_fit_status=REVIEW_SUPPORTED. Per constraints, source-time jumps alone do not justify inserts, and no evidence-backed edit is available.",
+    "revision_intents": [
+      {
+        "intent_id": "intent_unresolved_1",
+        "action": "mark_unresolved",
+        "target_segment_id": null,
+        "role": null,
+        "narrative_purpose": "Flag that the three large source-time jumps (seg:1→seg:2, seg:4→seg:5, seg:5→seg:6) require video semantic verification before any edit can be justified.",
+        "rationale": "Each issue is explicitly marked as a hypothesis needing video verification; no observed story-state change or missing causal/emotional/game-state information has been confirmed in adjacent cuts. Source-time compression alone is not a story defect.",
+        "expected_improvement": "Avoids inventing edits based on unconfirmed structural anomalies; preserves protected goal segments.",
+        "risk": "None — no mutation performed.",
+        "evidence_refs": [
+          "large_source_jump_seg:1_to_seg:2",
+          "large_source_jump_seg:4_to_seg:5",
+          "large_source_jump_seg:5_to_seg:6"
+        ],
+        "anchor_id": null,
+        "search_windows": null
+      }
+    ]
+  },
+  "call_audit": {
+    "model": "DeepSeek-V4-Pro-0813",
+    "provider_mode": "real",
+    "logical_role": "revision_planner",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "prompt_tokens": 6365,
+    "completion_tokens": 376,
+    "reasoning_tokens": 0,
+    "text_tokens": null,
+    "finish_reason": "stop",
+    "visible_output_chars": 1505,
+    "est_cost_usd": 0.00118035,
+    "http_ok": true,
+    "empty_content": false
+  },
+  "request_audit": {
+    "role": "planner",
+    "model": "DeepSeek-V4-Pro-0813",
+    "request_profile": "default",
+    "token_param_configured": "max_tokens",
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "temperature_sent": 0.1,
+    "stream_sent": false,
+    "thinking_params_sent": false,
+    "thinking_object_disabled_sent": true,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "sends_both_token_params": false,
+    "sends_both_thinking_formats": false,
+    "message_count": 2,
+    "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+    "paratera_thinking_object_documented": false
+  },
+  "response_audit": {
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "visible_output_chars": 1505,
+    "usage_keys_present": [
+      "completion_tokens",
+      "completion_tokens_details",
+      "prompt_tokens",
+      "prompt_tokens_details",
+      "total_tokens"
+    ],
+    "has_completion_tokens_details": true,
+    "reasoning_content_present": false,
+    "completion_tokens_reported": 376,
+    "output_token_limit": 1200,
+    "output_budget_exceeded": false
+  },
+  "finish_reason": "stop"
+}
