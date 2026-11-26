@@ -1,0 +1,2952 @@
+{
+  "schema": "sportscausal_r2bc_preflight_v1",
+  "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+  "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "http_calls": 0,
+  "frozen_r2a4_reused": true,
+  "results": {
+    "comeback": {
+      "schema": "sportscausal_story_anchors_v2",
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+      "template": {
+        "template_id": "comeback",
+        "category": "战局故事链",
+        "subtype": "逆风翻盘",
+        "narrative_goal": [
+          "表现从落后、追平到反超的战局变化",
+          "后续用首次直播动作及情节支撑故事"
+        ],
+        "pattern": {
+          "operator": "state_transition",
+          "signs": [
+            -1,
+            0,
+            1
+          ],
+          "terminal_sign": 1,
+          "selection": "last"
+        }
+      },
+      "operator": "state_transition",
+      "candidates": [
+        {
+          "candidate_id": "comeback:1",
+          "subjects": [
+            "team_1"
+          ],
+          "nodes": [
+            {
+              "node_id": "score:1",
+              "kind": "score_state",
+              "actor": "team_1",
+              "actor_role": "state_subject",
+              "state_sign": -1,
+              "score": "0:1",
+              "score_path_index": 1,
+              "confirmation_t_sec": 1410.43,
+              "event_ids": [
+                "atom_fill_0003_Shot_1335974",
+                "atom_fill_0004_Goal_1337123"
+              ],
+              "media_windows": [
+                [
+                  1335.974,
+                  1339.123
+                ]
+              ],
+              "story_anchor": true,
+              "score_beneficiary": "team_2",
+              "action_time_interval": [
+                1337.123,
+                1337.123
+              ],
+              "observation_task_ids": [
+                "observe:1"
+              ],
+              "outcome_episode_id": "score_outcome:1",
+              "goal_roles": [
+                {
+                  "score_beneficiary": "team_2",
+                  "goal_executor": null,
+                  "attacking_team": null,
+                  "goal_kind": "untyped_goal",
+                  "execution_status": "UNRESOLVED",
+                  "execution_claims": [],
+                  "role_conflict": false,
+                  "score_binding": {
+                    "path_index": 1,
+                    "score_beneficiary": "team_2",
+                    "score_before": "0:0",
+                    "score_after": "0:1",
+                    "confirmation_t_sec": 1410.43,
+                    "carrier_event_id": "event_000173",
+                    "previous_score_observed_t_sec": null,
+                    "candidate_ids": [
+                      "atom_fill_0004_Goal_1337123"
+                    ],
+                    "search_interval": [
+                      1230.43,
+                      1425.43
+                    ],
+                    "event_id": "atom_fill_0004_Goal_1337123",
+                    "action_t_sec": 1337.123,
+                    "media_window": [
+                      1337.123,
+                      1339.123
+                    ],
+                    "basis": "unique_live_goal_and_v3r_score_increment",
+                    "causal_verified": false,
+                    "first_live_verified": false
+                  },
+                  "first_live_verified": false
+                }
+              ],
+              "anchor_t": 1337.123,
+              "localization_status": "localized_annotation_candidate"
+            },
+            {
+              "node_id": "score:2",
+              "kind": "score_state",
+              "actor": "team_1",
+              "actor_role": "state_subject",
+              "state_sign": 0,
+              "score": "1:1",
+              "score_path_index": 2,
+              "confirmation_t_sec": 6535.62,
+              "event_ids": [
+                "atom_fill_0074_Shot_6448924",
+                "atom_fill_0075_Goal_6449644"
+              ],
+              "media_windows": [
+                [
+                  6448.924,
+                  6451.644
+                ]
+              ],
+              "story_anchor": true,
+              "score_beneficiary": "team_1",
+              "action_time_interval": [
+                6449.644,
+                6449.644
+              ],
+              "observation_task_ids": [
+                "observe:2"
+              ],
+              "outcome_episode_id": "score_outcome:2",
+              "goal_roles": [
+                {
+                  "score_beneficiary": "team_1",
+                  "goal_executor": null,
+                  "attacking_team": null,
+                  "goal_kind": "untyped_goal",
+                  "execution_status": "UNRESOLVED",
+                  "execution_claims": [],
+                  "role_conflict": false,
+                  "score_binding": {
+                    "path_index": 2,
+                    "score_beneficiary": "team_1",
+                    "score_before": "0:1",
+                    "score_after": "1:1",
+                    "confirmation_t_sec": 6535.62,
+                    "carrier_event_id": "event_000637",
+                    "previous_score_observed_t_sec": null,
+                    "candidate_ids": [
+                      "atom_fill_0075_Goal_6449644"
+                    ],
+                    "search_interval": [
+                      6355.62,
+                      6550.62
+                    ],
+                    "event_id": "atom_fill_0075_Goal_6449644",
+                    "action_t_sec": 6449.644,
+                    "media_window": [
+                      6449.644,
+                      6451.644
+                    ],
+                    "basis": "unique_live_goal_and_v3r_score_increment",
+                    "causal_verified": false,
+                    "first_live_verified": false
+                  },
+                  "first_live_verified": false
+                }
+              ],
+              "anchor_t": 6449.644,
+              "localization_status": "localized_annotation_candidate"
+            },
+            {
+              "node_id": "score:3",
+              "kind": "score_state",
+              "actor": "team_1",
+              "actor_role": "state_subject",
+              "state_sign": 1,
+              "score": "2:1",
+              "score_path_index": 3,
+              "confirmation_t_sec": 6957.12,
+              "event_ids": [
+                "atom_fill_0103_Shot_6841456",
+                "atom_fill_0104_Goal_6843088"
+              ],
+              "media_windows": [
+                [
+                  6841.456,
+                  6845.088
+                ]
+              ],
+              "story_anchor": true,
+              "score_beneficiary": "team_1",
+              "action_time_interval": [
+                6843.088,
+                6843.088
+              ],
+              "observation_task_ids": [
+                "observe:3"
+              ],
+              "outcome_episode_id": "score_outcome:3",
+              "goal_roles": [
+                {
+                  "score_beneficiary": "team_1",
+                  "goal_executor": null,
+                  "attacking_team": null,
+                  "goal_kind": "untyped_goal",
+                  "execution_status": "UNRESOLVED",
+                  "execution_claims": [],
+                  "role_conflict": false,
+                  "score_binding": {
+                    "path_index": 3,
+                    "score_beneficiary": "team_1",
+                    "score_before": "1:1",
+                    "score_after": "2:1",
+                    "confirmation_t_sec": 6957.12,
+                    "carrier_event_id": "event_000670",
+                    "previous_score_observed_t_sec": null,
+                    "candidate_ids": [
+                      "atom_fill_0104_Goal_6843088"
+                    ],
+                    "search_interval": [
+                      6777.12,
+                      6972.12
+                    ],
+                    "event_id": "atom_fill_0104_Goal_6843088",
+                    "action_t_sec": 6843.088,
+                    "media_window": [
+                      6843.088,
+                      6845.088
+                    ],
+                    "basis": "unique_live_goal_and_v3r_score_increment",
+                    "causal_verified": false,
+                    "first_live_verified": false
+                  },
+                  "first_live_verified": false
+                }
+              ],
+              "anchor_t": 6843.088,
+              "localization_status": "localized_annotation_candidate"
+            }
+          ],
+          "edges": [
+            {
+              "from": "score:1",
+              "to": "score:2",
+              "relation": "confirmed_score_state_transition",
+              "causal_verified": false
+            },
+            {
+              "from": "score:2",
+              "to": "score:3",
+              "relation": "confirmed_score_state_transition",
+              "causal_verified": false
+            }
+          ],
+          "narrative_goal": [
+            "表现从落后、追平到反超的战局变化",
+            "后续用首次直播动作及情节支撑故事"
+          ],
+          "quality_verified": false,
+          "first_live_verified": false,
+          "release_authorized": false,
+          "interval_context": [
+            {
+              "from": "score:1",
+              "to": "score:2",
+              "certain_interior": [
+                1337.123,
+                6449.644
+              ],
+              "context_candidates": [
+                {
+                  "episode_id": "episode:4",
+                  "predicate": "attacking_threat",
+                  "actor": "team_2",
+                  "actor_role": "attacking_team",
+                  "event_ids": [
+                    "event_000276",
+                    "event_000277"
+                  ],
+                  "media_windows": [
+                    [
+                      1912.32,
+                      1922.55
+                    ]
+                  ]
+                },
+                {
+                  "episode_id": "episode:6",
+                  "predicate": "goalkeeper_rescue",
+                  "actor": "team_1",
+                  "actor_role": "goalkeeper_team",
+                  "event_ids": [
+                    "event_000276",
+                    "event_000277"
+                  ],
+                  "media_windows": [
+                    [
+                      1912.32,
+                      1922.55
+                    ]
+                  ]
+                },
+                {
+                  "episode_id": "episode:7",
+                  "predicate": "attacking_threat",
+                  "actor": "team_1",
+                  "actor_role": "attacking_team",
+                  "event_ids": [
+                    "event_000282"
+                  ],
+                  "media_windows": [
+                    [
+                      1955.54,
+                      1966.45
+                    ]
+                  ]
+                },
+                {
+                  "episode_id": "episode:9",
+                  "predicate": "goalkeeper_rescue",
+                  "actor": "team_2",
+                  "actor_role": "goalkeeper_team",
+                  "event_ids": [
+                    "event_000282"
+                  ],
+                  "media_windows": [
+                    [
+                      1955.54,
+                      1966.45
+                    ]
+                  ]
+                },
+                {
+                  "episode_id": "episode:14",
+                  "predicate": "attacking_threat",
+                  "actor": "team_1",
+                  "actor_role": "attacking_team",
+                  "event_ids": [
+                    "event_000398",
+                    "event_000399",
+                    "event_000400"
+                  ],
+                  "media_windows": [
+                    [
+                      3338.39,
+                      3351.3
+                    ]
+                  ]
+                },
+                {
+                  "episode_id": "episode:16",
+                  "predicate": "goalkeeper_rescue",
+                  "actor": "team_2",
+                  "actor_role": "goalkeeper_team",
+                  "event_ids": [
+                    "event_000398",
+                    "event_000399",
+                    "event_000400"
+                  ],
+                  "media_windows": [
+                    [
+                      3338.39,
+                      3351.3
+                    ]
+                  ]
+                },
+                {
+                  "episode_id": "episode:19",
+                  "predicate": "attacking_threat",
+                  "actor": "team_1",
+                  "actor_role": "attacking_team",
+                  "event_ids": [
+                    "event_000416",
+                    "event_000417"
+                  ],
+                  "media_windows": [
+                    [
+                      3504.14,
+                      3515.83
+                    ]
+                  ]
+                },
+                {
+                  "episode_id": "episode:21",
+                  "predicate": "goalkeeper_rescue",
+                  "actor": "team_2",
+                  "actor_role": "goalkeeper_team",
+                  "event_ids": [
+                    "event_000416",
+                    "event_000417"
+                  ],
+                  "media_windows": [
+                    [
+                      3504.14,
+                      3515.83
+                    ]
+                  ]
+                },
+                {
+                  "episode_id": "episode:22",
+                  "predicate": "attacking_threat",
+                  "actor": "team_1",
+                  "actor_role": "attacking_team",
+                  "event_ids": [
+                    "event_000421"
+                  ],
+                  "media_windows": [
+                    [
+                      3543.01,
+                      3553.57
+                    ]
+                  ]
+                },
+                {
+                  "episode_id": "episode:24",
+                  "predicate": "goalkeeper_rescue",
+                  "actor": "team_2",
+                  "actor_role": "goalkeeper_team",
+                  "event_ids": [
+                    "event_000421"
+                  ],
+                  "media_windows": [
+                    [
+                      3543.01,
+                      3553.57
+                    ]
+                  ]
+                },
+                {
+                  "episode_id": "episode:26",
+                  "predicate": "attacking_threat",
+                  "actor": "team_1",
+                  "actor_role": "attacking_team",
+                  "event_ids": [
+                    "event_000472"
+                  ],
+                  "media_windows": [
+                    [
+                      4702.5,
+                      4714.65
+                    ]
+                  ]
+                },
+                {
+                  "episode_id": "episode:27",
+                  "predicate": "attacking_threat",
+                  "actor": "team_1",
+                  "actor_role": "attacking_team",
+                  "event_ids": [
+                    "event_000476",
+                    "event_000477"
+                  ],
+                  "media_windows": [
+                    [
+                      4755.79,
+                      4769.62
+                    ]
+                  ]
+                },
+                {
+                  "episode_id": "episode:29",
+                  "predicate": "goalkeeper_rescue",
+                  "actor": "team_2",
+                  "actor_role": "goalkeeper_team",
+                  "event_ids": [
+                    "event_000476",
+                    "event_000477"
+                  ],
+                  "media_windows": [
+                    [
+                      4755.79,
+                      4769.62
+                    ]
+                  ]
+                }
+              ],
+              "causal_verified": false
+            },
+            {
+              "from": "score:2",
+              "to": "score:3",
+              "certain_interior": [
+                6449.644,
+                6843.088
+              ],
+              "context_candidates": [
+                {
+                  "episode_id": "episode:33",
+                  "predicate": "attacking_threat",
+                  "actor": "team_1",
+                  "actor_role": "attacking_team",
+                  "event_ids": [
+                    "event_000640",
+                    "event_000641"
+                  ],
+                  "media_windows": [
+                    [
+                      6552.01,
+                      6562.64
+                    ]
+                  ]
+                },
+                {
+                  "episode_id": "episode:35",
+                  "predicate": "goalkeeper_rescue",
+                  "actor": "team_2",
+                  "actor_role": "goalkeeper_team",
+                  "event_ids": [
+                    "event_000640",
+                    "event_000641"
+                  ],
+                  "media_windows": [
+                    [
+                      6552.01,
+                      6562.64
+                    ]
+                  ]
+                }
+              ],
+              "causal_verified": false
+            }
+          ],
+          "terminal_basis": "last_confirmed_score_not_independent_final_whistle",
+          "post_last_anchor_context_candidates": [
+            {
+              "episode_id": "episode:39",
+              "predicate": "attacking_threat",
+              "actor": "team_2",
+              "actor_role": "attacking_team",
+              "event_ids": [
+                "event_000681"
+              ],
+              "media_windows": [
+                [
+                  7133.97,
+                  7145.39
+                ]
+              ]
+            }
+          ],
+          "unlocalized_state_indices": []
+        }
+      ],
+      "quality_verified": false,
+      "first_live_verified": false,
+      "release_authorized": false
+    },
+    "equalization": {
+      "schema": "sportscausal_story_anchors_v2",
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+      "template": {
+        "template_id": "equalization",
+        "category": "战局故事链",
+        "subtype": "落后追平",
+        "narrative_goal": [
+          "落后到追平的阶段性战局变化"
+        ],
+        "pattern": {
+          "operator": "state_transition",
+          "signs": [
+            -1,
+            0
+          ],
+          "terminal_sign": null,
+          "selection": "all"
+        }
+      },
+      "operator": "state_transition",
+      "candidates": [
+        {
+          "candidate_id": "equalization:1",
+          "subjects": [
+            "team_1"
+          ],
+          "nodes": [
+            {
+              "node_id": "score:1",
+              "kind": "score_state",
+              "actor": "team_1",
+              "actor_role": "state_subject",
+              "state_sign": -1,
+              "score": "0:1",
+              "score_path_index": 1,
+              "confirmation_t_sec": 1410.43,
+              "event_ids": [
+                "atom_fill_0003_Shot_1335974",
+                "atom_fill_0004_Goal_1337123"
+              ],
+              "media_windows": [
+                [
+                  1335.974,
+                  1339.123
+                ]
+              ],
+              "story_anchor": true,
+              "score_beneficiary": "team_2",
+              "action_time_interval": [
+                1337.123,
+                1337.123
+              ],
+              "observation_task_ids": [
+                "observe:1"
+              ],
+              "outcome_episode_id": "score_outcome:1",
+              "goal_roles": [
+                {
+                  "score_beneficiary": "team_2",
+                  "goal_executor": null,
+                  "attacking_team": null,
+                  "goal_kind": "untyped_goal",
+                  "execution_status": "UNRESOLVED",
+                  "execution_claims": [],
+                  "role_conflict": false,
+                  "score_binding": {
+                    "path_index": 1,
+                    "score_beneficiary": "team_2",
+                    "score_before": "0:0",
+                    "score_after": "0:1",
+                    "confirmation_t_sec": 1410.43,
+                    "carrier_event_id": "event_000173",
+                    "previous_score_observed_t_sec": null,
+                    "candidate_ids": [
+                      "atom_fill_0004_Goal_1337123"
+                    ],
+                    "search_interval": [
+                      1230.43,
+                      1425.43
+                    ],
+                    "event_id": "atom_fill_0004_Goal_1337123",
+                    "action_t_sec": 1337.123,
+                    "media_window": [
+                      1337.123,
+                      1339.123
+                    ],
+                    "basis": "unique_live_goal_and_v3r_score_increment",
+                    "causal_verified": false,
+                    "first_live_verified": false
+                  },
+                  "first_live_verified": false
+                }
+              ],
+              "anchor_t": 1337.123,
+              "localization_status": "localized_annotation_candidate"
+            },
+            {
+              "node_id": "score:2",
+              "kind": "score_state",
+              "actor": "team_1",
+              "actor_role": "state_subject",
+              "state_sign": 0,
+              "score": "1:1",
+              "score_path_index": 2,
+              "confirmation_t_sec": 6535.62,
+              "event_ids": [
+                "atom_fill_0074_Shot_6448924",
+                "atom_fill_0075_Goal_6449644"
+              ],
+              "media_windows": [
+                [
+                  6448.924,
+                  6451.644
+                ]
+              ],
+              "story_anchor": true,
+              "score_beneficiary": "team_1",
+              "action_time_interval": [
+                6449.644,
+                6449.644
+              ],
+              "observation_task_ids": [
+                "observe:2"
+              ],
+              "outcome_episode_id": "score_outcome:2",
+              "goal_roles": [
+                {
+                  "score_beneficiary": "team_1",
+                  "goal_executor": null,
+                  "attacking_team": null,
+                  "goal_kind": "untyped_goal",
+                  "execution_status": "UNRESOLVED",
+                  "execution_claims": [],
+                  "role_conflict": false,
+                  "score_binding": {
+                    "path_index": 2,
+                    "score_beneficiary": "team_1",
+                    "score_before": "0:1",
+                    "score_after": "1:1",
+                    "confirmation_t_sec": 6535.62,
+                    "carrier_event_id": "event_000637",
+                    "previous_score_observed_t_sec": null,
+                    "candidate_ids": [
+                      "atom_fill_0075_Goal_6449644"
+                    ],
+                    "search_interval": [
+                      6355.62,
+                      6550.62
+                    ],
+                    "event_id": "atom_fill_0075_Goal_6449644",
+                    "action_t_sec": 6449.644,
+                    "media_window": [
+                      6449.644,
+                      6451.644
+                    ],
+                    "basis": "unique_live_goal_and_v3r_score_increment",
+                    "causal_verified": false,
+                    "first_live_verified": false
+                  },
+                  "first_live_verified": false
+                }
+              ],
+              "anchor_t": 6449.644,
+              "localization_status": "localized_annotation_candidate"
+            }
+          ],
+          "edges": [
+            {
+              "from": "score:1",
+              "to": "score:2",
+              "relation": "confirmed_score_state_transition",
+              "causal_verified": false
+            }
+          ],
+          "narrative_goal": [
+            "落后到追平的阶段性战局变化"
+          ],
+          "quality_verified": false,
+          "first_live_verified": false,
+          "release_authorized": false,
+          "interval_context": [
+            {
+              "from": "score:1",
+              "to": "score:2",
+              "certain_interior": [
+                1337.123,
+                6449.644
+              ],
+              "context_candidates": [
+                {
+                  "episode_id": "episode:4",
+                  "predicate": "attacking_threat",
+                  "actor": "team_2",
+                  "actor_role": "attacking_team",
+                  "event_ids": [
+                    "event_000276",
+                    "event_000277"
+                  ],
+                  "media_windows": [
+                    [
+                      1912.32,
+                      1922.55
+                    ]
+                  ]
+                },
+                {
+                  "episode_id": "episode:6",
+                  "predicate": "goalkeeper_rescue",
+                  "actor": "team_1",
+                  "actor_role": "goalkeeper_team",
+                  "event_ids": [
+                    "event_000276",
+                    "event_000277"
+                  ],
+                  "media_windows": [
+                    [
+                      1912.32,
+                      1922.55
+                    ]
+                  ]
+                },
+                {
+                  "episode_id": "episode:7",
+                  "predicate": "attacking_threat",
+                  "actor": "team_1",
+                  "actor_role": "attacking_team",
+                  "event_ids": [
+                    "event_000282"
+                  ],
+                  "media_windows": [
+                    [
+                      1955.54,
+                      1966.45
+                    ]
+                  ]
+                },
+                {
+                  "episode_id": "episode:9",
+                  "predicate": "goalkeeper_rescue",
+                  "actor": "team_2",
+                  "actor_role": "goalkeeper_team",
+                  "event_ids": [
+                    "event_000282"
+                  ],
+                  "media_windows": [
+                    [
+                      1955.54,
+                      1966.45
+                    ]
+                  ]
+                },
+                {
+                  "episode_id": "episode:14",
+                  "predicate": "attacking_threat",
+                  "actor": "team_1",
+                  "actor_role": "attacking_team",
+                  "event_ids": [
+                    "event_000398",
+                    "event_000399",
+                    "event_000400"
+                  ],
+                  "media_windows": [
+                    [
+                      3338.39,
+                      3351.3
+                    ]
+                  ]
+                },
+                {
+                  "episode_id": "episode:16",
+                  "predicate": "goalkeeper_rescue",
+                  "actor": "team_2",
+                  "actor_role": "goalkeeper_team",
+                  "event_ids": [
+                    "event_000398",
+                    "event_000399",
+                    "event_000400"
+                  ],
+                  "media_windows": [
+                    [
+                      3338.39,
+                      3351.3
+                    ]
+                  ]
+                },
+                {
+                  "episode_id": "episode:19",
+                  "predicate": "attacking_threat",
+                  "actor": "team_1",
+                  "actor_role": "attacking_team",
+                  "event_ids": [
+                    "event_000416",
+                    "event_000417"
+                  ],
+                  "media_windows": [
+                    [
+                      3504.14,
+                      3515.83
+                    ]
+                  ]
+                },
+                {
+                  "episode_id": "episode:21",
+                  "predicate": "goalkeeper_rescue",
+                  "actor": "team_2",
+                  "actor_role": "goalkeeper_team",
+                  "event_ids": [
+                    "event_000416",
+                    "event_000417"
+                  ],
+                  "media_windows": [
+                    [
+                      3504.14,
+                      3515.83
+                    ]
+                  ]
+                },
+                {
+                  "episode_id": "episode:22",
+                  "predicate": "attacking_threat",
+                  "actor": "team_1",
+                  "actor_role": "attacking_team",
+                  "event_ids": [
+                    "event_000421"
+                  ],
+                  "media_windows": [
+                    [
+                      3543.01,
+                      3553.57
+                    ]
+                  ]
+                },
+                {
+                  "episode_id": "episode:24",
+                  "predicate": "goalkeeper_rescue",
+                  "actor": "team_2",
+                  "actor_role": "goalkeeper_team",
+                  "event_ids": [
+                    "event_000421"
+                  ],
+                  "media_windows": [
+                    [
+                      3543.01,
+                      3553.57
+                    ]
+                  ]
+                },
+                {
+                  "episode_id": "episode:26",
+                  "predicate": "attacking_threat",
+                  "actor": "team_1",
+                  "actor_role": "attacking_team",
+                  "event_ids": [
+                    "event_000472"
+                  ],
+                  "media_windows": [
+                    [
+                      4702.5,
+                      4714.65
+                    ]
+                  ]
+                },
+                {
+                  "episode_id": "episode:27",
+                  "predicate": "attacking_threat",
+                  "actor": "team_1",
+                  "actor_role": "attacking_team",
+                  "event_ids": [
+                    "event_000476",
+                    "event_000477"
+                  ],
+                  "media_windows": [
+                    [
+                      4755.79,
+                      4769.62
+                    ]
+                  ]
+                },
+                {
+                  "episode_id": "episode:29",
+                  "predicate": "goalkeeper_rescue",
+                  "actor": "team_2",
+                  "actor_role": "goalkeeper_team",
+                  "event_ids": [
+                    "event_000476",
+                    "event_000477"
+                  ],
+                  "media_windows": [
+                    [
+                      4755.79,
+                      4769.62
+                    ]
+                  ]
+                }
+              ],
+              "causal_verified": false
+            }
+          ],
+          "terminal_basis": "last_confirmed_score_not_independent_final_whistle",
+          "post_last_anchor_context_candidates": [
+            {
+              "episode_id": "episode:33",
+              "predicate": "attacking_threat",
+              "actor": "team_1",
+              "actor_role": "attacking_team",
+              "event_ids": [
+                "event_000640",
+                "event_000641"
+              ],
+              "media_windows": [
+                [
+                  6552.01,
+                  6562.64
+                ]
+              ]
+            },
+            {
+              "episode_id": "episode:35",
+              "predicate": "goalkeeper_rescue",
+              "actor": "team_2",
+              "actor_role": "goalkeeper_team",
+              "event_ids": [
+                "event_000640",
+                "event_000641"
+              ],
+              "media_windows": [
+                [
+                  6552.01,
+                  6562.64
+                ]
+              ]
+            },
+            {
+              "episode_id": "episode:39",
+              "predicate": "attacking_threat",
+              "actor": "team_2",
+              "actor_role": "attacking_team",
+              "event_ids": [
+                "event_000681"
+              ],
+              "media_windows": [
+                [
+                  7133.97,
+                  7145.39
+                ]
+              ]
+            }
+          ],
+          "unlocalized_state_indices": []
+        }
+      ],
+      "quality_verified": false,
+      "first_live_verified": false,
+      "release_authorized": false
+    },
+    "lead_preservation": {
+      "schema": "sportscausal_story_anchors_v2",
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+      "template": {
+        "template_id": "lead_preservation",
+        "category": "战局故事链",
+        "subtype": "领先守成",
+        "narrative_goal": [
+          "最后一段领先状态及后续守成素材候选"
+        ],
+        "pattern": {
+          "operator": "state_transition",
+          "signs": [
+            0,
+            1
+          ],
+          "terminal_sign": 1,
+          "selection": "last"
+        }
+      },
+      "operator": "state_transition",
+      "candidates": [
+        {
+          "candidate_id": "lead_preservation:1",
+          "subjects": [
+            "team_1"
+          ],
+          "nodes": [
+            {
+              "node_id": "score:2",
+              "kind": "score_state",
+              "actor": "team_1",
+              "actor_role": "state_subject",
+              "state_sign": 0,
+              "score": "1:1",
+              "score_path_index": 2,
+              "confirmation_t_sec": 6535.62,
+              "event_ids": [
+                "atom_fill_0074_Shot_6448924",
+                "atom_fill_0075_Goal_6449644"
+              ],
+              "media_windows": [
+                [
+                  6448.924,
+                  6451.644
+                ]
+              ],
+              "story_anchor": true,
+              "score_beneficiary": "team_1",
+              "action_time_interval": [
+                6449.644,
+                6449.644
+              ],
+              "observation_task_ids": [
+                "observe:2"
+              ],
+              "outcome_episode_id": "score_outcome:2",
+              "goal_roles": [
+                {
+                  "score_beneficiary": "team_1",
+                  "goal_executor": null,
+                  "attacking_team": null,
+                  "goal_kind": "untyped_goal",
+                  "execution_status": "UNRESOLVED",
+                  "execution_claims": [],
+                  "role_conflict": false,
+                  "score_binding": {
+                    "path_index": 2,
+                    "score_beneficiary": "team_1",
+                    "score_before": "0:1",
+                    "score_after": "1:1",
+                    "confirmation_t_sec": 6535.62,
+                    "carrier_event_id": "event_000637",
+                    "previous_score_observed_t_sec": null,
+                    "candidate_ids": [
+                      "atom_fill_0075_Goal_6449644"
+                    ],
+                    "search_interval": [
+                      6355.62,
+                      6550.62
+                    ],
+                    "event_id": "atom_fill_0075_Goal_6449644",
+                    "action_t_sec": 6449.644,
+                    "media_window": [
+                      6449.644,
+                      6451.644
+                    ],
+                    "basis": "unique_live_goal_and_v3r_score_increment",
+                    "causal_verified": false,
+                    "first_live_verified": false
+                  },
+                  "first_live_verified": false
+                }
+              ],
+              "anchor_t": 6449.644,
+              "localization_status": "localized_annotation_candidate"
+            },
+            {
+              "node_id": "score:3",
+              "kind": "score_state",
+              "actor": "team_1",
+              "actor_role": "state_subject",
+              "state_sign": 1,
+              "score": "2:1",
+              "score_path_index": 3,
+              "confirmation_t_sec": 6957.12,
+              "event_ids": [
+                "atom_fill_0103_Shot_6841456",
+                "atom_fill_0104_Goal_6843088"
+              ],
+              "media_windows": [
+                [
+                  6841.456,
+                  6845.088
+                ]
+              ],
+              "story_anchor": true,
+              "score_beneficiary": "team_1",
+              "action_time_interval": [
+                6843.088,
+                6843.088
+              ],
+              "observation_task_ids": [
+                "observe:3"
+              ],
+              "outcome_episode_id": "score_outcome:3",
+              "goal_roles": [
+                {
+                  "score_beneficiary": "team_1",
+                  "goal_executor": null,
+                  "attacking_team": null,
+                  "goal_kind": "untyped_goal",
+                  "execution_status": "UNRESOLVED",
+                  "execution_claims": [],
+                  "role_conflict": false,
+                  "score_binding": {
+                    "path_index": 3,
+                    "score_beneficiary": "team_1",
+                    "score_before": "1:1",
+                    "score_after": "2:1",
+                    "confirmation_t_sec": 6957.12,
+                    "carrier_event_id": "event_000670",
+                    "previous_score_observed_t_sec": null,
+                    "candidate_ids": [
+                      "atom_fill_0104_Goal_6843088"
+                    ],
+                    "search_interval": [
+                      6777.12,
+                      6972.12
+                    ],
+                    "event_id": "atom_fill_0104_Goal_6843088",
+                    "action_t_sec": 6843.088,
+                    "media_window": [
+                      6843.088,
+                      6845.088
+                    ],
+                    "basis": "unique_live_goal_and_v3r_score_increment",
+                    "causal_verified": false,
+                    "first_live_verified": false
+                  },
+                  "first_live_verified": false
+                }
+              ],
+              "anchor_t": 6843.088,
+              "localization_status": "localized_annotation_candidate"
+            }
+          ],
+          "edges": [
+            {
+              "from": "score:2",
+              "to": "score:3",
+              "relation": "confirmed_score_state_transition",
+              "causal_verified": false
+            }
+          ],
+          "narrative_goal": [
+            "最后一段领先状态及后续守成素材候选"
+          ],
+          "quality_verified": false,
+          "first_live_verified": false,
+          "release_authorized": false,
+          "interval_context": [
+            {
+              "from": "score:2",
+              "to": "score:3",
+              "certain_interior": [
+                6449.644,
+                6843.088
+              ],
+              "context_candidates": [
+                {
+                  "episode_id": "episode:33",
+                  "predicate": "attacking_threat",
+                  "actor": "team_1",
+                  "actor_role": "attacking_team",
+                  "event_ids": [
+                    "event_000640",
+                    "event_000641"
+                  ],
+                  "media_windows": [
+                    [
+                      6552.01,
+                      6562.64
+                    ]
+                  ]
+                },
+                {
+                  "episode_id": "episode:35",
+                  "predicate": "goalkeeper_rescue",
+                  "actor": "team_2",
+                  "actor_role": "goalkeeper_team",
+                  "event_ids": [
+                    "event_000640",
+                    "event_000641"
+                  ],
+                  "media_windows": [
+                    [
+                      6552.01,
+                      6562.64
+                    ]
+                  ]
+                }
+              ],
+              "causal_verified": false
+            }
+          ],
+          "terminal_basis": "last_confirmed_score_not_independent_final_whistle",
+          "post_last_anchor_context_candidates": [
+            {
+              "episode_id": "episode:39",
+              "predicate": "attacking_threat",
+              "actor": "team_2",
+              "actor_role": "attacking_team",
+              "event_ids": [
+                "event_000681"
+              ],
+              "media_windows": [
+                [
+                  7133.97,
+                  7145.39
+                ]
+              ]
+            }
+          ],
+          "unlocalized_state_indices": []
+        }
+      ],
+      "quality_verified": false,
+      "first_live_verified": false,
+      "release_authorized": false
+    },
+    "set_piece_breakthrough": {
+      "schema": "sportscausal_story_anchors_v2",
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+      "template": {
+        "template_id": "set_piece_breakthrough",
+        "category": "关键转折故事链",
+        "subtype": "定位球战术执行与破局",
+        "narrative_goal": [
+          "定位球到比分结果的有序关系路径候选"
+        ],
+        "pattern": {
+          "operator": "relation_path",
+          "start_predicate": "set_piece_execution",
+          "end_predicate": "scoring_outcome",
+          "max_span_sec": 45,
+          "max_edge_gap_sec": 15
+        }
+      },
+      "operator": "relation_path",
+      "candidates": [],
+      "quality_verified": false,
+      "first_live_verified": false,
+      "release_authorized": false
+    },
+    "turnover_to_goal": {
+      "schema": "sportscausal_story_anchors_v2",
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+      "template": {
+        "template_id": "turnover_to_goal",
+        "category": "关键转折故事链",
+        "subtype": "攻守转换与关键破门",
+        "narrative_goal": [
+          "球权夺回到比分结果的关系路径候选"
+        ],
+        "pattern": {
+          "operator": "relation_path",
+          "start_predicate": "turnover_recovery",
+          "end_predicate": "scoring_outcome",
+          "max_span_sec": 45,
+          "max_edge_gap_sec": 15
+        }
+      },
+      "operator": "relation_path",
+      "candidates": [
+        {
+          "candidate_id": "turnover_to_goal:1",
+          "subjects": [
+            "team_1"
+          ],
+          "nodes": [
+            {
+              "node_id": "start",
+              "kind": "relation_start",
+              "actor": "team_1",
+              "actor_role": "ball_recovery_team",
+              "predicate": "turnover_recovery",
+              "event_ids": [
+                "event_000668"
+              ],
+              "anchor_t": 6820.61,
+              "media_windows": [
+                [
+                  6810.16,
+                  6824.07
+                ]
+              ],
+              "story_anchor": true
+            },
+            {
+              "node_id": "outcome",
+              "kind": "score_outcome",
+              "actor": "team_1",
+              "actor_role": "score_beneficiary",
+              "predicate": "scoring_outcome",
+              "event_ids": [
+                "atom_fill_0104_Goal_6843088"
+              ],
+              "anchor_t": 6843.088,
+              "media_windows": [
+                [
+                  6843.088,
+                  6845.088
+                ]
+              ],
+              "goal_roles": [
+                {
+                  "score_beneficiary": "team_1",
+                  "goal_executor": null,
+                  "attacking_team": null,
+                  "goal_kind": "untyped_goal",
+                  "execution_status": "UNRESOLVED",
+                  "execution_claims": [],
+                  "role_conflict": false,
+                  "score_binding": {
+                    "path_index": 3,
+                    "score_beneficiary": "team_1",
+                    "score_before": "1:1",
+                    "score_after": "2:1",
+                    "confirmation_t_sec": 6957.12,
+                    "carrier_event_id": "event_000670",
+                    "previous_score_observed_t_sec": null,
+                    "candidate_ids": [
+                      "atom_fill_0104_Goal_6843088"
+                    ],
+                    "search_interval": [
+                      6777.12,
+                      6972.12
+                    ],
+                    "event_id": "atom_fill_0104_Goal_6843088",
+                    "action_t_sec": 6843.088,
+                    "media_window": [
+                      6843.088,
+                      6845.088
+                    ],
+                    "basis": "unique_live_goal_and_v3r_score_increment",
+                    "causal_verified": false,
+                    "first_live_verified": false
+                  },
+                  "first_live_verified": false
+                }
+              ],
+              "story_anchor": true
+            }
+          ],
+          "edges": [
+            {
+              "from": "start",
+              "to": "outcome",
+              "relation": "predicted_relation_path_hypothesis",
+              "causal_verified": false
+            }
+          ],
+          "path_alternatives": [
+            {
+              "event_ids": [
+                "event_000668",
+                "event_000669",
+                "atom_fill_0100_Pass_6829010",
+                "atom_fill_0101_Win_an_aerial_duel_6831837",
+                "atom_fill_0102_Assist_6836608",
+                "atom_fill_0103_Shot_6841456",
+                "atom_fill_0104_Goal_6843088"
+              ],
+              "path_chain_ids": [
+                "pred_0067",
+                "pred_0068"
+              ],
+              "media_windows": [
+                [
+                  6810.16,
+                  6824.07
+                ],
+                [
+                  6829.01,
+                  6831.01
+                ],
+                [
+                  6831.837,
+                  6833.837
+                ],
+                [
+                  6836.608,
+                  6838.608
+                ],
+                [
+                  6841.456,
+                  6845.088
+                ]
+              ],
+              "links": [
+                {
+                  "from": "event_000668",
+                  "to": "event_000669",
+                  "relation": "ordered_predicted_members",
+                  "chain_support": [
+                    {
+                      "chain_id": "pred_0067",
+                      "state": "PARTIAL",
+                      "subtype": "outcome_other"
+                    },
+                    {
+                      "chain_id": "pred_0068",
+                      "state": "PARTIAL",
+                      "subtype": "rebound_follow_up_goal"
+                    }
+                  ],
+                  "typed_local_relation": null,
+                  "causal_verified": false
+                },
+                {
+                  "from": "event_000669",
+                  "to": "atom_fill_0100_Pass_6829010",
+                  "relation": "ordered_predicted_members",
+                  "chain_support": [
+                    {
+                      "chain_id": "pred_0067",
+                      "state": "PARTIAL",
+                      "subtype": "outcome_other"
+                    },
+                    {
+                      "chain_id": "pred_0068",
+                      "state": "PARTIAL",
+                      "subtype": "rebound_follow_up_goal"
+                    }
+                  ],
+                  "typed_local_relation": null,
+                  "causal_verified": false
+                },
+                {
+                  "from": "atom_fill_0100_Pass_6829010",
+                  "to": "atom_fill_0101_Win_an_aerial_duel_6831837",
+                  "relation": "ordered_predicted_members",
+                  "chain_support": [
+                    {
+                      "chain_id": "pred_0067",
+                      "state": "PARTIAL",
+                      "subtype": "outcome_other"
+                    },
+                    {
+                      "chain_id": "pred_0068",
+                      "state": "PARTIAL",
+                      "subtype": "rebound_follow_up_goal"
+                    }
+                  ],
+                  "typed_local_relation": null,
+                  "causal_verified": false
+                },
+                {
+                  "from": "atom_fill_0101_Win_an_aerial_duel_6831837",
+                  "to": "atom_fill_0102_Assist_6836608",
+                  "relation": "ordered_predicted_members",
+                  "chain_support": [
+                    {
+                      "chain_id": "pred_0067",
+                      "state": "PARTIAL",
+                      "subtype": "outcome_other"
+                    },
+                    {
+                      "chain_id": "pred_0068",
+                      "state": "PARTIAL",
+                      "subtype": "rebound_follow_up_goal"
+                    }
+                  ],
+                  "typed_local_relation": null,
+                  "causal_verified": false
+                },
+                {
+                  "from": "atom_fill_0102_Assist_6836608",
+                  "to": "atom_fill_0103_Shot_6841456",
+                  "relation": "ordered_predicted_members",
+                  "chain_support": [
+                    {
+                      "chain_id": "pred_0067",
+                      "state": "PARTIAL",
+                      "subtype": "outcome_other"
+                    },
+                    {
+                      "chain_id": "pred_0068",
+                      "state": "PARTIAL",
+                      "subtype": "rebound_follow_up_goal"
+                    }
+                  ],
+                  "typed_local_relation": null,
+                  "causal_verified": false
+                },
+                {
+                  "from": "atom_fill_0103_Shot_6841456",
+                  "to": "atom_fill_0104_Goal_6843088",
+                  "relation": "ordered_predicted_members",
+                  "chain_support": [
+                    {
+                      "chain_id": "pred_0067",
+                      "state": "PARTIAL",
+                      "subtype": "outcome_other"
+                    },
+                    {
+                      "chain_id": "pred_0068",
+                      "state": "PARTIAL",
+                      "subtype": "rebound_follow_up_goal"
+                    }
+                  ],
+                  "typed_local_relation": {
+                    "kind": "shot_goal_context",
+                    "event_ids": [
+                      "atom_fill_0103_Shot_6841456",
+                      "atom_fill_0104_Goal_6843088"
+                    ],
+                    "chain_support": [
+                      {
+                        "chain_id": "pred_0067",
+                        "state": "PARTIAL",
+                        "subtype": "outcome_other"
+                      },
+                      {
+                        "chain_id": "pred_0068",
+                        "state": "PARTIAL",
+                        "subtype": "rebound_follow_up_goal"
+                      },
+                      {
+                        "chain_id": "pred_0069",
+                        "state": "PARTIAL",
+                        "subtype": "rebound_follow_up_goal"
+                      }
+                    ],
+                    "shooter": null,
+                    "goal_executor": null,
+                    "score_beneficiary": "team_1",
+                    "attacking_team": null,
+                    "basis": "ordered_local_predicted_members_context_only",
+                    "causal_verified": false,
+                    "first_live_verified": false
+                  },
+                  "causal_verified": false
+                }
+              ],
+              "intermediate_event_ids": [
+                "event_000669",
+                "atom_fill_0100_Pass_6829010",
+                "atom_fill_0101_Win_an_aerial_duel_6831837",
+                "atom_fill_0102_Assist_6836608",
+                "atom_fill_0103_Shot_6841456"
+              ]
+            }
+          ],
+          "observation_task_ids": [
+            "observe:3",
+            "observe:r2bc:turnover_to_goal:1"
+          ],
+          "requires_path_video_verification": true,
+          "scope": "start actor and score beneficiary align; execution and tactical causal link require observation",
+          "quality_verified": false,
+          "first_live_verified": false,
+          "release_authorized": false
+        }
+      ],
+      "quality_verified": false,
+      "first_live_verified": false,
+      "release_authorized": false
+    },
+    "threat_phase_change": {
+      "schema": "sportscausal_story_anchors_v2",
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+      "template": {
+        "template_id": "threat_phase_change",
+        "category": "攻防故事链",
+        "subtype": "攻势换手",
+        "narrative_goal": [
+          "连续观测到的攻防威胁序列发生主体切换"
+        ],
+        "pattern": {
+          "operator": "phase_change",
+          "predicate": "attacking_threat",
+          "min_episodes_per_phase": 2
+        }
+      },
+      "operator": "phase_change",
+      "candidates": [
+        {
+          "candidate_id": "threat_phase_change:1",
+          "subjects": [
+            "team_2",
+            "team_1"
+          ],
+          "nodes": [
+            {
+              "predicate": "attacking_threat",
+              "actor": "team_2",
+              "event_ids": [
+                "event_000096",
+                "event_000097"
+              ],
+              "core_event_ids": [
+                "event_000096",
+                "event_000097"
+              ],
+              "anchor_t": 1054.41,
+              "window": [
+                1049.71,
+                1060.64
+              ],
+              "media_windows": [
+                [
+                  1049.71,
+                  1060.64
+                ]
+              ],
+              "score_observations": [
+                {
+                  "event_id": "event_000096",
+                  "score": [
+                    0,
+                    0
+                  ]
+                },
+                {
+                  "event_id": "event_000097",
+                  "score": [
+                    0,
+                    0
+                  ]
+                }
+              ],
+              "relation": {
+                "kind": "typed_relation_path",
+                "edges": [
+                  {
+                    "kind": "delivery_keeper",
+                    "event_ids": [
+                      "event_000096",
+                      "event_000097"
+                    ],
+                    "attacker": "team_2",
+                    "keeper": "team_1",
+                    "basis": "local_role_compatible_action_pair",
+                    "chain_support": [
+                      {
+                        "chain_id": "pred_0004",
+                        "state": "PARTIAL",
+                        "subtype": "quick_restart_set_piece_chain"
+                      },
+                      {
+                        "chain_id": "pred_0005",
+                        "state": "PARTIAL",
+                        "subtype": "quick_restart_set_piece_chain"
+                      }
+                    ],
+                    "causal_verified": false,
+                    "inferred_shooter": false,
+                    "inferred_keeper": false
+                  }
+                ],
+                "causal_verified": false
+              },
+              "causal_verified": false,
+              "distinct_episode_basis": "local_predicted_relation",
+              "component_id": "attack:event_000096",
+              "predicate_evidence": [
+                {
+                  "event_id": "event_000096",
+                  "actor": "team_2",
+                  "basis": "delivery_to_annotated_rescue"
+                },
+                {
+                  "event_id": "event_000097",
+                  "actor": "team_2",
+                  "basis": "explicit_opponent_action_in_keeper_note"
+                }
+              ],
+              "goal_score_bindings": [],
+              "episode_id": "episode:1",
+              "actor_role": "attacking_team",
+              "goal_roles": [],
+              "node_id": "phase:1:episode:1",
+              "kind": "phase_episode",
+              "phase_index": 1,
+              "story_anchor": true
+            },
+            {
+              "predicate": "attacking_threat",
+              "actor": "team_2",
+              "event_ids": [
+                "event_000276",
+                "event_000277"
+              ],
+              "core_event_ids": [
+                "event_000276",
+                "event_000277"
+              ],
+              "anchor_t": 1916.42,
+              "window": [
+                1912.32,
+                1922.55
+              ],
+              "media_windows": [
+                [
+                  1912.32,
+                  1922.55
+                ]
+              ],
+              "score_observations": [],
+              "relation": {
+                "kind": "typed_relation_path",
+                "edges": [
+                  {
+                    "kind": "delivery_keeper",
+                    "event_ids": [
+                      "event_000276",
+                      "event_000277"
+                    ],
+                    "attacker": "team_2",
+                    "keeper": "team_1",
+                    "basis": "local_role_compatible_action_pair",
+                    "chain_support": [
+                      {
+                        "chain_id": "pred_0015",
+                        "state": "PARTIAL",
+                        "subtype": "goal_line_extreme_save_chain"
+                      },
+                      {
+                        "chain_id": "pred_0016",
+                        "state": "PARTIAL",
+                        "subtype": "shot_save_chain"
+                      }
+                    ],
+                    "causal_verified": false,
+                    "inferred_shooter": false,
+                    "inferred_keeper": false
+                  }
+                ],
+                "causal_verified": false
+              },
+              "causal_verified": false,
+              "distinct_episode_basis": "local_predicted_relation",
+              "component_id": "attack:event_000276",
+              "predicate_evidence": [
+                {
+                  "event_id": "event_000276",
+                  "actor": "team_2",
+                  "basis": "delivery_to_annotated_rescue"
+                },
+                {
+                  "event_id": "event_000277",
+                  "actor": "team_2",
+                  "basis": "explicit_opponent_action_in_keeper_note"
+                }
+              ],
+              "goal_score_bindings": [],
+              "episode_id": "episode:4",
+              "actor_role": "attacking_team",
+              "goal_roles": [],
+              "node_id": "phase:1:episode:4",
+              "kind": "phase_episode",
+              "phase_index": 1,
+              "story_anchor": true
+            },
+            {
+              "predicate": "attacking_threat",
+              "actor": "team_1",
+              "event_ids": [
+                "event_000282"
+              ],
+              "core_event_ids": [
+                "event_000282"
+              ],
+              "anchor_t": 1961.46,
+              "window": [
+                1955.54,
+                1966.45
+              ],
+              "media_windows": [
+                [
+                  1955.54,
+                  1966.45
+                ]
+              ],
+              "score_observations": [
+                {
+                  "event_id": "event_000282",
+                  "score": [
+                    0,
+                    1
+                  ]
+                }
+              ],
+              "relation": null,
+              "causal_verified": false,
+              "distinct_episode_basis": "atomic_window_proxy",
+              "component_id": "attack:event_000282",
+              "predicate_evidence": [
+                {
+                  "event_id": "event_000282",
+                  "actor": "team_1",
+                  "basis": "explicit_opponent_action_in_keeper_note"
+                }
+              ],
+              "goal_score_bindings": [],
+              "episode_id": "episode:7",
+              "actor_role": "attacking_team",
+              "goal_roles": [],
+              "node_id": "phase:2:episode:7",
+              "kind": "phase_episode",
+              "phase_index": 2,
+              "story_anchor": true
+            },
+            {
+              "predicate": "attacking_threat",
+              "actor": "team_1",
+              "event_ids": [
+                "event_000398",
+                "event_000399",
+                "event_000400"
+              ],
+              "core_event_ids": [
+                "event_000398",
+                "event_000400"
+              ],
+              "anchor_t": 3341.84,
+              "window": [
+                3338.39,
+                3351.3
+              ],
+              "media_windows": [
+                [
+                  3338.39,
+                  3351.3
+                ]
+              ],
+              "score_observations": [
+                {
+                  "event_id": "event_000398",
+                  "score": [
+                    0,
+                    1
+                  ]
+                },
+                {
+                  "event_id": "event_000399",
+                  "score": [
+                    0,
+                    1
+                  ]
+                },
+                {
+                  "event_id": "event_000400",
+                  "score": [
+                    0,
+                    1
+                  ]
+                }
+              ],
+              "relation": {
+                "kind": "typed_relation_path",
+                "edges": [
+                  {
+                    "kind": "delivery_keeper",
+                    "event_ids": [
+                      "event_000398",
+                      "event_000399"
+                    ],
+                    "attacker": "team_1",
+                    "keeper": "team_2",
+                    "basis": "local_role_compatible_action_pair",
+                    "chain_support": [
+                      {
+                        "chain_id": "pred_0030",
+                        "state": "PARTIAL",
+                        "subtype": "second_phase_after_frame_chain"
+                      },
+                      {
+                        "chain_id": "pred_0031",
+                        "state": "PARTIAL",
+                        "subtype": "throw_in_build_up_chain"
+                      }
+                    ],
+                    "causal_verified": false,
+                    "inferred_shooter": false,
+                    "inferred_keeper": false
+                  },
+                  {
+                    "kind": "keeper_deflection_followup",
+                    "event_ids": [
+                      "event_000399",
+                      "event_000400"
+                    ],
+                    "attacker": "team_1",
+                    "keeper": "team_2",
+                    "basis": "chain_supported_followup",
+                    "chain_support": [
+                      {
+                        "chain_id": "pred_0030",
+                        "state": "PARTIAL",
+                        "subtype": "second_phase_after_frame_chain"
+                      },
+                      {
+                        "chain_id": "pred_0031",
+                        "state": "PARTIAL",
+                        "subtype": "throw_in_build_up_chain"
+                      }
+                    ],
+                    "causal_verified": false
+                  }
+                ],
+                "causal_verified": false
+              },
+              "causal_verified": false,
+              "distinct_episode_basis": "local_predicted_relation",
+              "component_id": "attack:event_000398",
+              "predicate_evidence": [
+                {
+                  "event_id": "event_000398",
+                  "actor": "team_1",
+                  "basis": "delivery_to_annotated_rescue"
+                },
+                {
+                  "event_id": "event_000400",
+                  "actor": "team_1",
+                  "basis": "opponent_followup_after_keeper_deflection"
+                }
+              ],
+              "goal_score_bindings": [],
+              "episode_id": "episode:14",
+              "actor_role": "attacking_team",
+              "goal_roles": [],
+              "node_id": "phase:2:episode:14",
+              "kind": "phase_episode",
+              "phase_index": 2,
+              "story_anchor": true
+            },
+            {
+              "predicate": "attacking_threat",
+              "actor": "team_1",
+              "event_ids": [
+                "event_000416",
+                "event_000417"
+              ],
+              "core_event_ids": [
+                "event_000416"
+              ],
+              "anchor_t": 3506.24,
+              "window": [
+                3504.14,
+                3515.83
+              ],
+              "media_windows": [
+                [
+                  3504.14,
+                  3515.83
+                ]
+              ],
+              "score_observations": [
+                {
+                  "event_id": "event_000416",
+                  "score": [
+                    0,
+                    1
+                  ]
+                },
+                {
+                  "event_id": "event_000417",
+                  "score": [
+                    0,
+                    1
+                  ]
+                }
+              ],
+              "relation": {
+                "kind": "typed_relation_path",
+                "edges": [
+                  {
+                    "kind": "delivery_keeper",
+                    "event_ids": [
+                      "event_000416",
+                      "event_000417"
+                    ],
+                    "attacker": "team_1",
+                    "keeper": "team_2",
+                    "basis": "local_role_compatible_action_pair",
+                    "chain_support": [
+                      {
+                        "chain_id": "pred_0031",
+                        "state": "PARTIAL",
+                        "subtype": "throw_in_build_up_chain"
+                      },
+                      {
+                        "chain_id": "pred_0032",
+                        "state": "PARTIAL",
+                        "subtype": "shot_save_chain"
+                      }
+                    ],
+                    "causal_verified": false,
+                    "inferred_shooter": false,
+                    "inferred_keeper": false
+                  }
+                ],
+                "causal_verified": false
+              },
+              "causal_verified": false,
+              "distinct_episode_basis": "local_predicted_relation",
+              "component_id": "attack:event_000416",
+              "predicate_evidence": [
+                {
+                  "event_id": "event_000416",
+                  "actor": "team_1",
+                  "basis": "delivery_to_annotated_rescue"
+                }
+              ],
+              "goal_score_bindings": [],
+              "episode_id": "episode:19",
+              "actor_role": "attacking_team",
+              "goal_roles": [],
+              "node_id": "phase:2:episode:19",
+              "kind": "phase_episode",
+              "phase_index": 2,
+              "story_anchor": true
+            },
+            {
+              "predicate": "attacking_threat",
+              "actor": "team_1",
+              "event_ids": [
+                "event_000421"
+              ],
+              "core_event_ids": [
+                "event_000421"
+              ],
+              "anchor_t": 3548.12,
+              "window": [
+                3543.01,
+                3553.57
+              ],
+              "media_windows": [
+                [
+                  3543.01,
+                  3553.57
+                ]
+              ],
+              "score_observations": [
+                {
+                  "event_id": "event_000421",
+                  "score": [
+                    0,
+                    1
+                  ]
+                }
+              ],
+              "relation": null,
+              "causal_verified": false,
+              "distinct_episode_basis": "atomic_window_proxy",
+              "component_id": "attack:event_000421",
+              "predicate_evidence": [
+                {
+                  "event_id": "event_000421",
+                  "actor": "team_1",
+                  "basis": "explicit_opponent_action_in_keeper_note"
+                }
+              ],
+              "goal_score_bindings": [],
+              "episode_id": "episode:22",
+              "actor_role": "attacking_team",
+              "goal_roles": [],
+              "node_id": "phase:2:episode:22",
+              "kind": "phase_episode",
+              "phase_index": 2,
+              "story_anchor": true
+            },
+            {
+              "predicate": "attacking_threat",
+              "actor": "team_1",
+              "event_ids": [
+                "event_000472"
+              ],
+              "core_event_ids": [
+                "event_000472"
+              ],
+              "anchor_t": 4710.45,
+              "window": [
+                4702.5,
+                4714.65
+              ],
+              "media_windows": [
+                [
+                  4702.5,
+                  4714.65
+                ]
+              ],
+              "score_observations": [
+                {
+                  "event_id": "event_000472",
+                  "score": [
+                    0,
+                    1
+                  ]
+                }
+              ],
+              "relation": null,
+              "causal_verified": false,
+              "distinct_episode_basis": "atomic_window_proxy",
+              "component_id": "attack:event_000472",
+              "predicate_evidence": [
+                {
+                  "event_id": "event_000472",
+                  "actor": "team_1",
+                  "basis": "annotated_dangerous_shot_result"
+                }
+              ],
+              "goal_score_bindings": [],
+              "episode_id": "episode:26",
+              "actor_role": "attacking_team",
+              "goal_roles": [],
+              "node_id": "phase:2:episode:26",
+              "kind": "phase_episode",
+              "phase_index": 2,
+              "story_anchor": true
+            },
+            {
+              "predicate": "attacking_threat",
+              "actor": "team_1",
+              "event_ids": [
+                "event_000476",
+                "event_000477"
+              ],
+              "core_event_ids": [
+                "event_000476"
+              ],
+              "anchor_t": 4764.1,
+              "window": [
+                4755.79,
+                4769.62
+              ],
+              "media_windows": [
+                [
+                  4755.79,
+                  4769.62
+                ]
+              ],
+              "score_observations": [
+                {
+                  "event_id": "event_000476",
+                  "score": [
+                    0,
+                    1
+                  ]
+                },
+                {
+                  "event_id": "event_000477",
+                  "score": [
+                    0,
+                    1
+                  ]
+                }
+              ],
+              "relation": {
+                "kind": "typed_relation_path",
+                "edges": [
+                  {
+                    "kind": "delivery_keeper",
+                    "event_ids": [
+                      "event_000476",
+                      "event_000477"
+                    ],
+                    "attacker": "team_1",
+                    "keeper": "team_2",
+                    "basis": "local_role_compatible_action_pair",
+                    "chain_support": [
+                      {
+                        "chain_id": "pred_0042",
+                        "state": "PARTIAL",
+                        "subtype": "shot_save_chain"
+                      },
+                      {
+                        "chain_id": "pred_0043",
+                        "state": "PARTIAL",
+                        "subtype": "shot_save_chain"
+                      }
+                    ],
+                    "causal_verified": false,
+                    "inferred_shooter": false,
+                    "inferred_keeper": false
+                  }
+                ],
+                "causal_verified": false
+              },
+              "causal_verified": false,
+              "distinct_episode_basis": "local_predicted_relation",
+              "component_id": "attack:event_000476",
+              "predicate_evidence": [
+                {
+                  "event_id": "event_000476",
+                  "actor": "team_1",
+                  "basis": "delivery_to_annotated_rescue"
+                }
+              ],
+              "goal_score_bindings": [],
+              "episode_id": "episode:27",
+              "actor_role": "attacking_team",
+              "goal_roles": [],
+              "node_id": "phase:2:episode:27",
+              "kind": "phase_episode",
+              "phase_index": 2,
+              "story_anchor": true
+            },
+            {
+              "predicate": "attacking_threat",
+              "actor": "team_1",
+              "event_ids": [
+                "event_000640",
+                "event_000641"
+              ],
+              "core_event_ids": [
+                "event_000640"
+              ],
+              "anchor_t": 6557.14,
+              "window": [
+                6552.01,
+                6562.64
+              ],
+              "media_windows": [
+                [
+                  6552.01,
+                  6562.64
+                ]
+              ],
+              "score_observations": [
+                {
+                  "event_id": "event_000640",
+                  "score": [
+                    1,
+                    1
+                  ]
+                },
+                {
+                  "event_id": "event_000641",
+                  "score": [
+                    1,
+                    1
+                  ]
+                }
+              ],
+              "relation": {
+                "kind": "typed_relation_path",
+                "edges": [
+                  {
+                    "kind": "shot_save",
+                    "event_ids": [
+                      "event_000640",
+                      "event_000641"
+                    ],
+                    "attacker": "team_1",
+                    "keeper": "team_2",
+                    "basis": "local_role_compatible_action_pair",
+                    "chain_support": [
+                      {
+                        "chain_id": "pred_0063",
+                        "state": "PARTIAL",
+                        "subtype": "outcome_other"
+                      },
+                      {
+                        "chain_id": "pred_0065",
+                        "state": "PARTIAL",
+                        "subtype": "outcome_other"
+                      }
+                    ],
+                    "causal_verified": false,
+                    "inferred_shooter": false,
+                    "inferred_keeper": false
+                  }
+                ],
+                "causal_verified": false
+              },
+              "causal_verified": false,
+              "distinct_episode_basis": "local_predicted_relation",
+              "component_id": "attack:event_000640",
+              "predicate_evidence": [
+                {
+                  "event_id": "event_000640",
+                  "actor": "team_1",
+                  "basis": "annotated_dangerous_shot_result"
+                }
+              ],
+              "goal_score_bindings": [],
+              "episode_id": "episode:33",
+              "actor_role": "attacking_team",
+              "goal_roles": [],
+              "node_id": "phase:2:episode:33",
+              "kind": "phase_episode",
+              "phase_index": 2,
+              "story_anchor": true
+            }
+          ],
+          "edges": [
+            {
+              "from": "phase:1:episode:1",
+              "to": "phase:1:episode:4",
+              "relation": "within_observed_threat_run",
+              "causal_verified": false
+            },
+            {
+              "from": "phase:1:episode:4",
+              "to": "phase:2:episode:7",
+              "relation": "observed_phase_switch",
+              "causal_verified": false
+            },
+            {
+              "from": "phase:2:episode:7",
+              "to": "phase:2:episode:14",
+              "relation": "within_observed_threat_run",
+              "causal_verified": false
+            },
+            {
+              "from": "phase:2:episode:14",
+              "to": "phase:2:episode:19",
+              "relation": "within_observed_threat_run",
+              "causal_verified": false
+            },
+            {
+              "from": "phase:2:episode:19",
+              "to": "phase:2:episode:22",
+              "relation": "within_observed_threat_run",
+              "causal_verified": false
+            },
+            {
+              "from": "phase:2:episode:22",
+              "to": "phase:2:episode:26",
+              "relation": "within_observed_threat_run",
+              "causal_verified": false
+            },
+            {
+              "from": "phase:2:episode:26",
+              "to": "phase:2:episode:27",
+              "relation": "within_observed_threat_run",
+              "causal_verified": false
+            },
+            {
+              "from": "phase:2:episode:27",
+              "to": "phase:2:episode:33",
+              "relation": "within_observed_threat_run",
+              "causal_verified": false
+            }
+          ],
+          "phases": [
+            {
+              "actor": "team_2",
+              "episode_ids": [
+                "episode:1",
+                "episode:4"
+              ],
+              "n_observed_episodes": 2,
+              "observed_interval": [
+                1054.41,
+                1916.42
+              ]
+            },
+            {
+              "actor": "team_1",
+              "episode_ids": [
+                "episode:7",
+                "episode:14",
+                "episode:19",
+                "episode:22",
+                "episode:26",
+                "episode:27",
+                "episode:33"
+              ],
+              "n_observed_episodes": 7,
+              "observed_interval": [
+                1961.46,
+                6557.14
+              ]
+            }
+          ],
+          "switch_search_interval": [
+            1922.55,
+            1955.54
+          ],
+          "score_context": [],
+          "phase_semantics": "observed_sustained_threat_run_change_not_dominance",
+          "quality_verified": false,
+          "first_live_verified": false,
+          "release_authorized": false,
+          "observation_task_ids": [
+            "observe:r2bc:threat_phase_change:1"
+          ]
+        }
+      ],
+      "ambiguous_episode_ids": [],
+      "n_observed_episodes": 10,
+      "min_episodes_per_phase": 2,
+      "quality_verified": false,
+      "first_live_verified": false,
+      "release_authorized": false
+    }
+  },
+  "observation_tasks": [
+    {
+      "task_type": "goal_execution_roles",
+      "event_ids": [
+        "atom_fill_0003_Shot_1335974",
+        "atom_fill_0004_Goal_1337123"
+      ],
+      "goal_event_id": "atom_fill_0004_Goal_1337123",
+      "score_beneficiary": "team_2",
+      "goal_kind": "untyped_goal",
+      "known_executor": null,
+      "known_attacking_team": null,
+      "role_conflict": false,
+      "media_windows": [
+        [
+          1335.974,
+          1339.123
+        ]
+      ],
+      "questions": [
+        "identify actual ball-striking team",
+        "identify attacking team",
+        "ordinary goal, own goal, or other deflection",
+        "confirm first live footage"
+      ],
+      "reason": "separate execution, attack and score roles",
+      "resolved": false,
+      "task_id": "observe:1",
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "preview_only": true
+    },
+    {
+      "task_type": "goal_execution_roles",
+      "event_ids": [
+        "atom_fill_0074_Shot_6448924",
+        "atom_fill_0075_Goal_6449644"
+      ],
+      "goal_event_id": "atom_fill_0075_Goal_6449644",
+      "score_beneficiary": "team_1",
+      "goal_kind": "untyped_goal",
+      "known_executor": null,
+      "known_attacking_team": null,
+      "role_conflict": false,
+      "media_windows": [
+        [
+          6448.924,
+          6451.644
+        ]
+      ],
+      "questions": [
+        "identify actual ball-striking team",
+        "identify attacking team",
+        "ordinary goal, own goal, or other deflection",
+        "confirm first live footage"
+      ],
+      "reason": "separate execution, attack and score roles",
+      "resolved": false,
+      "task_id": "observe:2",
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "preview_only": true
+    },
+    {
+      "task_type": "goal_execution_roles",
+      "event_ids": [
+        "atom_fill_0103_Shot_6841456",
+        "atom_fill_0104_Goal_6843088"
+      ],
+      "goal_event_id": "atom_fill_0104_Goal_6843088",
+      "score_beneficiary": "team_1",
+      "goal_kind": "untyped_goal",
+      "known_executor": null,
+      "known_attacking_team": null,
+      "role_conflict": false,
+      "media_windows": [
+        [
+          6841.456,
+          6845.088
+        ]
+      ],
+      "questions": [
+        "identify actual ball-striking team",
+        "identify attacking team",
+        "ordinary goal, own goal, or other deflection",
+        "confirm first live footage"
+      ],
+      "reason": "separate execution, attack and score roles",
+      "resolved": false,
+      "task_id": "observe:3",
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "preview_only": true
+    },
+    {
+      "task_type": "shot_save_roles",
+      "event_ids": [
+        "atom_fill_0049_Shot_5175752",
+        "atom_fill_0050_Save_5177072"
+      ],
+      "media_windows": [
+        [
+          5175.752,
+          5179.072
+        ]
+      ],
+      "actor_hypotheses": [
+        {
+          "attacker": "team_1",
+          "keeper": "team_2",
+          "conditionally_compatible_clues": [],
+          "conditionally_contrary_clues": [
+            "event_000533"
+          ]
+        },
+        {
+          "attacker": "team_2",
+          "keeper": "team_1",
+          "conditionally_compatible_clues": [
+            "event_000533"
+          ],
+          "conditionally_contrary_clues": []
+        }
+      ],
+      "context_clues": [
+        {
+          "direction": "after",
+          "event_id": "event_000533",
+          "actor": "team_1",
+          "intervening_event_ids": [
+            "event_000532"
+          ],
+          "possible_turnover": true,
+          "continuous_chain_ids": [
+            "pred_0047",
+            "pred_0048"
+          ],
+          "assumption": "keeper_team_retains_ball"
+        }
+      ],
+      "chain_support": [
+        {
+          "chain_id": "pred_0047",
+          "state": "PARTIAL",
+          "subtype": "goal_line_extreme_save_chain"
+        },
+        {
+          "chain_id": "pred_0048",
+          "state": "PARTIAL",
+          "subtype": "shot_save_chain"
+        }
+      ],
+      "reason": "context_continuity_not_established",
+      "questions": [
+        "identify shooting and saving teams",
+        "verify action relation",
+        "confirm first live footage"
+      ],
+      "resolved": false,
+      "task_id": "observe:4",
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "preview_only": true
+    },
+    {
+      "task_type": "shot_save_roles",
+      "event_ids": [
+        "atom_fill_0059_Shot_5360612",
+        "atom_fill_0060_Save_5361641"
+      ],
+      "media_windows": [
+        [
+          5360.612,
+          5363.641
+        ]
+      ],
+      "actor_hypotheses": [
+        {
+          "attacker": "team_1",
+          "keeper": "team_2",
+          "conditionally_compatible_clues": [],
+          "conditionally_contrary_clues": []
+        },
+        {
+          "attacker": "team_2",
+          "keeper": "team_1",
+          "conditionally_compatible_clues": [],
+          "conditionally_contrary_clues": []
+        }
+      ],
+      "context_clues": [],
+      "chain_support": [
+        {
+          "chain_id": "pred_0049",
+          "state": "PARTIAL",
+          "subtype": "shot_save_chain"
+        },
+        {
+          "chain_id": "pred_0050",
+          "state": "PARTIAL",
+          "subtype": "shot_save_chain"
+        }
+      ],
+      "reason": "context_continuity_not_established",
+      "questions": [
+        "identify shooting and saving teams",
+        "verify action relation",
+        "confirm first live footage"
+      ],
+      "resolved": false,
+      "task_id": "observe:5",
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "preview_only": true
+    },
+    {
+      "task_type": "shot_save_roles",
+      "event_ids": [
+        "atom_fill_0091_Shot_6599535",
+        "atom_fill_0092_Save_6600268"
+      ],
+      "media_windows": [
+        [
+          6599.535,
+          6602.268
+        ]
+      ],
+      "actor_hypotheses": [
+        {
+          "attacker": "team_1",
+          "keeper": "team_2",
+          "conditionally_compatible_clues": [],
+          "conditionally_contrary_clues": []
+        },
+        {
+          "attacker": "team_2",
+          "keeper": "team_1",
+          "conditionally_compatible_clues": [],
+          "conditionally_contrary_clues": []
+        }
+      ],
+      "context_clues": [],
+      "chain_support": [
+        {
+          "chain_id": "pred_0065",
+          "state": "PARTIAL",
+          "subtype": "outcome_other"
+        },
+        {
+          "chain_id": "pred_0066",
+          "state": "PARTIAL",
+          "subtype": "throw_in_build_up_chain"
+        }
+      ],
+      "reason": "context_continuity_not_established",
+      "questions": [
+        "identify shooting and saving teams",
+        "verify action relation",
+        "confirm first live footage"
+      ],
+      "resolved": false,
+      "task_id": "observe:6",
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "preview_only": true
+    },
+    {
+      "task_id": "observe:r2bc:turnover_to_goal:1",
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "candidate_id": "turnover_to_goal:1",
+      "preview_only": true,
+      "resolved": false,
+      "media_windows": [],
+      "task_type": "relation_path_verification",
+      "path_alternatives": [
+        {
+          "event_ids": [
+            "event_000668",
+            "event_000669",
+            "atom_fill_0100_Pass_6829010",
+            "atom_fill_0101_Win_an_aerial_duel_6831837",
+            "atom_fill_0102_Assist_6836608",
+            "atom_fill_0103_Shot_6841456",
+            "atom_fill_0104_Goal_6843088"
+          ],
+          "path_chain_ids": [
+            "pred_0067",
+            "pred_0068"
+          ],
+          "media_windows": [
+            [
+              6810.16,
+              6824.07
+            ],
+            [
+              6829.01,
+              6831.01
+            ],
+            [
+              6831.837,
+              6833.837
+            ],
+            [
+              6836.608,
+              6838.608
+            ],
+            [
+              6841.456,
+              6845.088
+            ]
+          ],
+          "links": [
+            {
+              "from": "event_000668",
+              "to": "event_000669",
+              "relation": "ordered_predicted_members",
+              "chain_support": [
+                {
+                  "chain_id": "pred_0067",
+                  "state": "PARTIAL",
+                  "subtype": "outcome_other"
+                },
+                {
+                  "chain_id": "pred_0068",
+                  "state": "PARTIAL",
+                  "subtype": "rebound_follow_up_goal"
+                }
+              ],
+              "typed_local_relation": null,
+              "causal_verified": false
+            },
+            {
+              "from": "event_000669",
+              "to": "atom_fill_0100_Pass_6829010",
+              "relation": "ordered_predicted_members",
+              "chain_support": [
+                {
+                  "chain_id": "pred_0067",
+                  "state": "PARTIAL",
+                  "subtype": "outcome_other"
+                },
+                {
+                  "chain_id": "pred_0068",
+                  "state": "PARTIAL",
+                  "subtype": "rebound_follow_up_goal"
+                }
+              ],
+              "typed_local_relation": null,
+              "causal_verified": false
+            },
+            {
+              "from": "atom_fill_0100_Pass_6829010",
+              "to": "atom_fill_0101_Win_an_aerial_duel_6831837",
+              "relation": "ordered_predicted_members",
+              "chain_support": [
+                {
+                  "chain_id": "pred_0067",
+                  "state": "PARTIAL",
+                  "subtype": "outcome_other"
+                },
+                {
+                  "chain_id": "pred_0068",
+                  "state": "PARTIAL",
+                  "subtype": "rebound_follow_up_goal"
+                }
+              ],
+              "typed_local_relation": null,
+              "causal_verified": false
+            },
+            {
+              "from": "atom_fill_0101_Win_an_aerial_duel_6831837",
+              "to": "atom_fill_0102_Assist_6836608",
+              "relation": "ordered_predicted_members",
+              "chain_support": [
+                {
+                  "chain_id": "pred_0067",
+                  "state": "PARTIAL",
+                  "subtype": "outcome_other"
+                },
+                {
+                  "chain_id": "pred_0068",
+                  "state": "PARTIAL",
+                  "subtype": "rebound_follow_up_goal"
+                }
+              ],
+              "typed_local_relation": null,
+              "causal_verified": false
+            },
+            {
+              "from": "atom_fill_0102_Assist_6836608",
+              "to": "atom_fill_0103_Shot_6841456",
+              "relation": "ordered_predicted_members",
+              "chain_support": [
+                {
+                  "chain_id": "pred_0067",
+                  "state": "PARTIAL",
+                  "subtype": "outcome_other"
+                },
+                {
+                  "chain_id": "pred_0068",
+                  "state": "PARTIAL",
+                  "subtype": "rebound_follow_up_goal"
+                }
+              ],
+              "typed_local_relation": null,
+              "causal_verified": false
+            },
+            {
+              "from": "atom_fill_0103_Shot_6841456",
+              "to": "atom_fill_0104_Goal_6843088",
+              "relation": "ordered_predicted_members",
+              "chain_support": [
+                {
+                  "chain_id": "pred_0067",
+                  "state": "PARTIAL",
+                  "subtype": "outcome_other"
+                },
+                {
+                  "chain_id": "pred_0068",
+                  "state": "PARTIAL",
+                  "subtype": "rebound_follow_up_goal"
+                }
+              ],
+              "typed_local_relation": {
+                "kind": "shot_goal_context",
+                "event_ids": [
+                  "atom_fill_0103_Shot_6841456",
+                  "atom_fill_0104_Goal_6843088"
+                ],
+                "chain_support": [
+                  {
+                    "chain_id": "pred_0067",
+                    "state": "PARTIAL",
+                    "subtype": "outcome_other"
+                  },
+                  {
+                    "chain_id": "pred_0068",
+                    "state": "PARTIAL",
+                    "subtype": "rebound_follow_up_goal"
+                  },
+                  {
+                    "chain_id": "pred_0069",
+                    "state": "PARTIAL",
+                    "subtype": "rebound_follow_up_goal"
+                  }
+                ],
+                "shooter": null,
+                "goal_executor": null,
+                "score_beneficiary": "team_1",
+                "attacking_team": null,
+                "basis": "ordered_local_predicted_members_context_only",
+                "causal_verified": false,
+                "first_live_verified": false
+              },
+              "causal_verified": false
+            }
+          ],
+          "intermediate_event_ids": [
+            "event_000669",
+            "atom_fill_0100_Pass_6829010",
+            "atom_fill_0101_Win_an_aerial_duel_6831837",
+            "atom_fill_0102_Assist_6836608",
+            "atom_fill_0103_Shot_6841456"
+          ]
+        }
+      ],
+      "event_ids": [
+        "atom_fill_0100_Pass_6829010",
+        "atom_fill_0101_Win_an_aerial_duel_6831837",
+        "atom_fill_0102_Assist_6836608",
+        "atom_fill_0103_Shot_6841456",
+        "atom_fill_0104_Goal_6843088",
+        "event_000668",
+        "event_000669"
+      ],
+      "questions": [
+        "verify continuity and actual action roles",
+        "verify tactical or turnover-to-goal relationship",
+        "confirm first live footage"
+      ]
+    },
+    {
+      "task_id": "observe:r2bc:threat_phase_change:1",
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "candidate_id": "threat_phase_change:1",
+      "preview_only": true,
+      "resolved": false,
+      "media_windows": [],
+      "task_type": "phase_switch_verification",
+      "search_interval": [
+        1922.55,
+        1955.54
+      ],
+      "event_ids": [
+        "event_000096",
+        "event_000097",
+        "event_000276",
+        "event_000277",
+        "event_000282",
+        "event_000398",
+        "event_000399",
+        "event_000400",
+        "event_000416",
+        "event_000417",
+        "event_000421",
+        "event_000472",
+        "event_000476",
+        "event_000477",
+        "event_000640",
+        "event_000641"
+      ],
+      "questions": [
+        "inspect whether the observed threat runs indicate a meaningful attack shift",
+        "identify the transition or intervening story event",
+        "confirm first live footage"
+      ]
+    }
+  ],
+  "quality_verified": false,
+  "first_live_verified": false,
+  "release_authorized": false
+}

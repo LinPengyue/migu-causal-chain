@@ -1,0 +1,168 @@
+{
+  "video_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+  "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "http_calls": 0,
+  "frozen_r2a4_reused": true,
+  "n_observation_tasks": 12,
+  "templates": {
+    "comeback": {
+      "operator": "state_transition",
+      "n_candidates": 1,
+      "candidates": [
+        {
+          "candidate_id": "comeback:1",
+          "subjects": [
+            "team_2"
+          ],
+          "nodes": [
+            {
+              "event_ids": [
+                "atom_fill_0071_Shot_3132270",
+                "atom_fill_0072_Goal_3133968"
+              ],
+              "actor": "team_2",
+              "actor_role": "state_subject",
+              "kind": "score_state"
+            },
+            {
+              "event_ids": [
+                "atom_fill_0115_Shot_5657158",
+                "atom_fill_0116_Goal_5657621"
+              ],
+              "actor": "team_2",
+              "actor_role": "state_subject",
+              "kind": "score_state"
+            },
+            {
+              "event_ids": [
+                "atom_fill_0158_Shot_6790743",
+                "atom_fill_0159_Goal_6791882"
+              ],
+              "actor": "team_2",
+              "actor_role": "state_subject",
+              "kind": "score_state"
+            }
+          ],
+          "unlocalized_state_indices": [],
+          "path_alternatives": null,
+          "switch_search_interval": null
+        }
+      ]
+    },
+    "equalization": {
+      "operator": "state_transition",
+      "n_candidates": 2,
+      "candidates": [
+        {
+          "candidate_id": "equalization:1",
+          "subjects": [
+            "team_1"
+          ],
+          "nodes": [
+            {
+              "event_ids": [
+                "atom_fill_0036_Shot_1977587",
+                "atom_fill_0037_Goal_1979427"
+              ],
+              "actor": "team_1",
+              "actor_role": "state_subject",
+              "kind": "score_state"
+            },
+            {
+              "event_ids": [],
+              "actor": "team_1",
+              "actor_role": "state_subject",
+              "kind": "score_state"
+            }
+          ],
+          "unlocalized_state_indices": [
+            2
+          ],
+          "path_alternatives": null,
+          "switch_search_interval": null
+        },
+        {
+          "candidate_id": "equalization:2",
+          "subjects": [
+            "team_2"
+          ],
+          "nodes": [
+            {
+              "event_ids": [
+                "atom_fill_0071_Shot_3132270",
+                "atom_fill_0072_Goal_3133968"
+              ],
+              "actor": "team_2",
+              "actor_role": "state_subject",
+              "kind": "score_state"
+            },
+            {
+              "event_ids": [
+                "atom_fill_0115_Shot_5657158",
+                "atom_fill_0116_Goal_5657621"
+              ],
+              "actor": "team_2",
+              "actor_role": "state_subject",
+              "kind": "score_state"
+            }
+          ],
+          "unlocalized_state_indices": [],
+          "path_alternatives": null,
+          "switch_search_interval": null
+        }
+      ]
+    },
+    "lead_preservation": {
+      "operator": "state_transition",
+      "n_candidates": 1,
+      "candidates": [
+        {
+          "candidate_id": "lead_preservation:1",
+          "subjects": [
+            "team_2"
+          ],
+          "nodes": [
+            {
+              "event_ids": [
+                "atom_fill_0115_Shot_5657158",
+                "atom_fill_0116_Goal_5657621"
+              ],
+              "actor": "team_2",
+              "actor_role": "state_subject",
+              "kind": "score_state"
+            },
+            {
+              "event_ids": [
+                "atom_fill_0158_Shot_6790743",
+                "atom_fill_0159_Goal_6791882"
+              ],
+              "actor": "team_2",
+              "actor_role": "state_subject",
+              "kind": "score_state"
+            }
+          ],
+          "unlocalized_state_indices": [],
+          "path_alternatives": null,
+          "switch_search_interval": null
+        }
+      ]
+    },
+    "set_piece_breakthrough": {
+      "operator": "relation_path",
+      "n_candidates": 0,
+      "candidates": []
+    },
+    "turnover_to_goal": {
+      "operator": "relation_path",
+      "n_candidates": 0,
+      "candidates": []
+    },
+    "threat_phase_change": {
+      "operator": "phase_change",
+      "n_candidates": 0,
+      "candidates": []
+    }
+  },
+  "quality_verified": false,
+  "first_live_verified": false
+}

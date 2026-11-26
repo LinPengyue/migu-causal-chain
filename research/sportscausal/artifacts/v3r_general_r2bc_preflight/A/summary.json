@@ -1,0 +1,454 @@
+{
+  "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+  "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "http_calls": 0,
+  "frozen_r2a4_reused": true,
+  "n_observation_tasks": 8,
+  "templates": {
+    "comeback": {
+      "operator": "state_transition",
+      "n_candidates": 1,
+      "candidates": [
+        {
+          "candidate_id": "comeback:1",
+          "subjects": [
+            "team_1"
+          ],
+          "nodes": [
+            {
+              "event_ids": [
+                "atom_fill_0003_Shot_1335974",
+                "atom_fill_0004_Goal_1337123"
+              ],
+              "actor": "team_1",
+              "actor_role": "state_subject",
+              "kind": "score_state"
+            },
+            {
+              "event_ids": [
+                "atom_fill_0074_Shot_6448924",
+                "atom_fill_0075_Goal_6449644"
+              ],
+              "actor": "team_1",
+              "actor_role": "state_subject",
+              "kind": "score_state"
+            },
+            {
+              "event_ids": [
+                "atom_fill_0103_Shot_6841456",
+                "atom_fill_0104_Goal_6843088"
+              ],
+              "actor": "team_1",
+              "actor_role": "state_subject",
+              "kind": "score_state"
+            }
+          ],
+          "unlocalized_state_indices": [],
+          "path_alternatives": null,
+          "switch_search_interval": null
+        }
+      ]
+    },
+    "equalization": {
+      "operator": "state_transition",
+      "n_candidates": 1,
+      "candidates": [
+        {
+          "candidate_id": "equalization:1",
+          "subjects": [
+            "team_1"
+          ],
+          "nodes": [
+            {
+              "event_ids": [
+                "atom_fill_0003_Shot_1335974",
+                "atom_fill_0004_Goal_1337123"
+              ],
+              "actor": "team_1",
+              "actor_role": "state_subject",
+              "kind": "score_state"
+            },
+            {
+              "event_ids": [
+                "atom_fill_0074_Shot_6448924",
+                "atom_fill_0075_Goal_6449644"
+              ],
+              "actor": "team_1",
+              "actor_role": "state_subject",
+              "kind": "score_state"
+            }
+          ],
+          "unlocalized_state_indices": [],
+          "path_alternatives": null,
+          "switch_search_interval": null
+        }
+      ]
+    },
+    "lead_preservation": {
+      "operator": "state_transition",
+      "n_candidates": 1,
+      "candidates": [
+        {
+          "candidate_id": "lead_preservation:1",
+          "subjects": [
+            "team_1"
+          ],
+          "nodes": [
+            {
+              "event_ids": [
+                "atom_fill_0074_Shot_6448924",
+                "atom_fill_0075_Goal_6449644"
+              ],
+              "actor": "team_1",
+              "actor_role": "state_subject",
+              "kind": "score_state"
+            },
+            {
+              "event_ids": [
+                "atom_fill_0103_Shot_6841456",
+                "atom_fill_0104_Goal_6843088"
+              ],
+              "actor": "team_1",
+              "actor_role": "state_subject",
+              "kind": "score_state"
+            }
+          ],
+          "unlocalized_state_indices": [],
+          "path_alternatives": null,
+          "switch_search_interval": null
+        }
+      ]
+    },
+    "set_piece_breakthrough": {
+      "operator": "relation_path",
+      "n_candidates": 0,
+      "candidates": []
+    },
+    "turnover_to_goal": {
+      "operator": "relation_path",
+      "n_candidates": 1,
+      "candidates": [
+        {
+          "candidate_id": "turnover_to_goal:1",
+          "subjects": [
+            "team_1"
+          ],
+          "nodes": [
+            {
+              "event_ids": [
+                "event_000668"
+              ],
+              "actor": "team_1",
+              "actor_role": "ball_recovery_team",
+              "kind": "relation_start"
+            },
+            {
+              "event_ids": [
+                "atom_fill_0104_Goal_6843088"
+              ],
+              "actor": "team_1",
+              "actor_role": "score_beneficiary",
+              "kind": "score_outcome"
+            }
+          ],
+          "unlocalized_state_indices": null,
+          "path_alternatives": [
+            {
+              "event_ids": [
+                "event_000668",
+                "event_000669",
+                "atom_fill_0100_Pass_6829010",
+                "atom_fill_0101_Win_an_aerial_duel_6831837",
+                "atom_fill_0102_Assist_6836608",
+                "atom_fill_0103_Shot_6841456",
+                "atom_fill_0104_Goal_6843088"
+              ],
+              "path_chain_ids": [
+                "pred_0067",
+                "pred_0068"
+              ],
+              "media_windows": [
+                [
+                  6810.16,
+                  6824.07
+                ],
+                [
+                  6829.01,
+                  6831.01
+                ],
+                [
+                  6831.837,
+                  6833.837
+                ],
+                [
+                  6836.608,
+                  6838.608
+                ],
+                [
+                  6841.456,
+                  6845.088
+                ]
+              ],
+              "links": [
+                {
+                  "from": "event_000668",
+                  "to": "event_000669",
+                  "relation": "ordered_predicted_members",
+                  "chain_support": [
+                    {
+                      "chain_id": "pred_0067",
+                      "state": "PARTIAL",
+                      "subtype": "outcome_other"
+                    },
+                    {
+                      "chain_id": "pred_0068",
+                      "state": "PARTIAL",
+                      "subtype": "rebound_follow_up_goal"
+                    }
+                  ],
+                  "typed_local_relation": null,
+                  "causal_verified": false
+                },
+                {
+                  "from": "event_000669",
+                  "to": "atom_fill_0100_Pass_6829010",
+                  "relation": "ordered_predicted_members",
+                  "chain_support": [
+                    {
+                      "chain_id": "pred_0067",
+                      "state": "PARTIAL",
+                      "subtype": "outcome_other"
+                    },
+                    {
+                      "chain_id": "pred_0068",
+                      "state": "PARTIAL",
+                      "subtype": "rebound_follow_up_goal"
+                    }
+                  ],
+                  "typed_local_relation": null,
+                  "causal_verified": false
+                },
+                {
+                  "from": "atom_fill_0100_Pass_6829010",
+                  "to": "atom_fill_0101_Win_an_aerial_duel_6831837",
+                  "relation": "ordered_predicted_members",
+                  "chain_support": [
+                    {
+                      "chain_id": "pred_0067",
+                      "state": "PARTIAL",
+                      "subtype": "outcome_other"
+                    },
+                    {
+                      "chain_id": "pred_0068",
+                      "state": "PARTIAL",
+                      "subtype": "rebound_follow_up_goal"
+                    }
+                  ],
+                  "typed_local_relation": null,
+                  "causal_verified": false
+                },
+                {
+                  "from": "atom_fill_0101_Win_an_aerial_duel_6831837",
+                  "to": "atom_fill_0102_Assist_6836608",
+                  "relation": "ordered_predicted_members",
+                  "chain_support": [
+                    {
+                      "chain_id": "pred_0067",
+                      "state": "PARTIAL",
+                      "subtype": "outcome_other"
+                    },
+                    {
+                      "chain_id": "pred_0068",
+                      "state": "PARTIAL",
+                      "subtype": "rebound_follow_up_goal"
+                    }
+                  ],
+                  "typed_local_relation": null,
+                  "causal_verified": false
+                },
+                {
+                  "from": "atom_fill_0102_Assist_6836608",
+                  "to": "atom_fill_0103_Shot_6841456",
+                  "relation": "ordered_predicted_members",
+                  "chain_support": [
+                    {
+                      "chain_id": "pred_0067",
+                      "state": "PARTIAL",
+                      "subtype": "outcome_other"
+                    },
+                    {
+                      "chain_id": "pred_0068",
+                      "state": "PARTIAL",
+                      "subtype": "rebound_follow_up_goal"
+                    }
+                  ],
+                  "typed_local_relation": null,
+                  "causal_verified": false
+                },
+                {
+                  "from": "atom_fill_0103_Shot_6841456",
+                  "to": "atom_fill_0104_Goal_6843088",
+                  "relation": "ordered_predicted_members",
+                  "chain_support": [
+                    {
+                      "chain_id": "pred_0067",
+                      "state": "PARTIAL",
+                      "subtype": "outcome_other"
+                    },
+                    {
+                      "chain_id": "pred_0068",
+                      "state": "PARTIAL",
+                      "subtype": "rebound_follow_up_goal"
+                    }
+                  ],
+                  "typed_local_relation": {
+                    "kind": "shot_goal_context",
+                    "event_ids": [
+                      "atom_fill_0103_Shot_6841456",
+                      "atom_fill_0104_Goal_6843088"
+                    ],
+                    "chain_support": [
+                      {
+                        "chain_id": "pred_0067",
+                        "state": "PARTIAL",
+                        "subtype": "outcome_other"
+                      },
+                      {
+                        "chain_id": "pred_0068",
+                        "state": "PARTIAL",
+                        "subtype": "rebound_follow_up_goal"
+                      },
+                      {
+                        "chain_id": "pred_0069",
+                        "state": "PARTIAL",
+                        "subtype": "rebound_follow_up_goal"
+                      }
+                    ],
+                    "shooter": null,
+                    "goal_executor": null,
+                    "score_beneficiary": "team_1",
+                    "attacking_team": null,
+                    "basis": "ordered_local_predicted_members_context_only",
+                    "causal_verified": false,
+                    "first_live_verified": false
+                  },
+                  "causal_verified": false
+                }
+              ],
+              "intermediate_event_ids": [
+                "event_000669",
+                "atom_fill_0100_Pass_6829010",
+                "atom_fill_0101_Win_an_aerial_duel_6831837",
+                "atom_fill_0102_Assist_6836608",
+                "atom_fill_0103_Shot_6841456"
+              ]
+            }
+          ],
+          "switch_search_interval": null
+        }
+      ]
+    },
+    "threat_phase_change": {
+      "operator": "phase_change",
+      "n_candidates": 1,
+      "candidates": [
+        {
+          "candidate_id": "threat_phase_change:1",
+          "subjects": [
+            "team_2",
+            "team_1"
+          ],
+          "nodes": [
+            {
+              "event_ids": [
+                "event_000096",
+                "event_000097"
+              ],
+              "actor": "team_2",
+              "actor_role": "attacking_team",
+              "kind": "phase_episode"
+            },
+            {
+              "event_ids": [
+                "event_000276",
+                "event_000277"
+              ],
+              "actor": "team_2",
+              "actor_role": "attacking_team",
+              "kind": "phase_episode"
+            },
+            {
+              "event_ids": [
+                "event_000282"
+              ],
+              "actor": "team_1",
+              "actor_role": "attacking_team",
+              "kind": "phase_episode"
+            },
+            {
+              "event_ids": [
+                "event_000398",
+                "event_000399",
+                "event_000400"
+              ],
+              "actor": "team_1",
+              "actor_role": "attacking_team",
+              "kind": "phase_episode"
+            },
+            {
+              "event_ids": [
+                "event_000416",
+                "event_000417"
+              ],
+              "actor": "team_1",
+              "actor_role": "attacking_team",
+              "kind": "phase_episode"
+            },
+            {
+              "event_ids": [
+                "event_000421"
+              ],
+              "actor": "team_1",
+              "actor_role": "attacking_team",
+              "kind": "phase_episode"
+            },
+            {
+              "event_ids": [
+                "event_000472"
+              ],
+              "actor": "team_1",
+              "actor_role": "attacking_team",
+              "kind": "phase_episode"
+            },
+            {
+              "event_ids": [
+                "event_000476",
+                "event_000477"
+              ],
+              "actor": "team_1",
+              "actor_role": "attacking_team",
+              "kind": "phase_episode"
+            },
+            {
+              "event_ids": [
+                "event_000640",
+                "event_000641"
+              ],
+              "actor": "team_1",
+              "actor_role": "attacking_team",
+              "kind": "phase_episode"
+            }
+          ],
+          "unlocalized_state_indices": null,
+          "path_alternatives": null,
+          "switch_search_interval": [
+            1922.55,
+            1955.54
+          ]
+        }
+      ]
+    }
+  },
+  "quality_verified": false,
+  "first_live_verified": false
+}

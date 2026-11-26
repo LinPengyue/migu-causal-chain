@@ -1,0 +1,100 @@
+{
+  "schema": "v3r_general_r2bc_preflight_pack_v1",
+  "code_commit": "b59fa2d7e87f7d2e8f0300793d2e50511225e7d3",
+  "frozen_r2a4_baseline": "0bba8b799e39d35305663d2497683c2602690950",
+  "http_calls": 0,
+  "paid_models": false,
+  "video_render": false,
+  "r2a_history_rerun": false,
+  "unittest": {
+    "module": "test_r2bc_patterns",
+    "ran": 20,
+    "ok": 20
+  },
+  "inputs": {
+    "A_evidence": "artifacts/stage1_2_evidence_preflight_20261125/A_uae_oman/keeper_rescue/evidence.json",
+    "B_evidence": "artifacts/stage1_2_evidence_preflight_20261125/B_osasuna_celta/keeper_rescue/evidence.json",
+    "A_r2a4_graph": "artifacts/v3r_general_r2a4_preflight/A/relation_graph.json",
+    "A_r2a4_episodes": "artifacts/v3r_general_r2a4_preflight/A/causal_episodes.json",
+    "A_r2a4_tasks": "artifacts/v3r_general_r2a4_preflight/A/observation_tasks.json",
+    "B_r2a4_graph": "artifacts/v3r_general_r2a4_preflight/B/relation_graph.json",
+    "B_r2a4_episodes": "artifacts/v3r_general_r2a4_preflight/B/causal_episodes.json",
+    "B_r2a4_tasks": "artifacts/v3r_general_r2a4_preflight/B/observation_tasks.json",
+    "A_score": "artifacts/v3r_general_r2a3_preflight/inputs_prepared/A_score_path_from_t01.json",
+    "B_score": "artifacts/v3r_general_r2a3_preflight/inputs_prepared/B_score_path_from_t01.json"
+  },
+  "input_sha256": {
+    "A_evidence": "9322933a9c3ef15a990c9377ed498e97b73cb20350bbfe279114bf2f3b4043fc",
+    "B_evidence": "a673769fe1b81f93a34f9c987302af49f8988cbf02c429ad97b1317bf7b33292",
+    "A_r2a4_graph": "05dd0cfcc61556d2e0b9aeb8f89d52b2c4bdc80f8cca15f59423b7b7e925f05d",
+    "A_r2a4_episodes": "9f54e404a18c0c4d95f5b9ffd2fcd3af193f9784d5aa003f6e48d7cdf1bd3b62",
+    "A_r2a4_tasks": "fbda183c33d5a7b2e3a44fb800e5f6706e0c0ff55917a6846cb382c0555b80a4",
+    "B_r2a4_graph": "71baf210706ea081002f6c27b61592e964daa61df1f5fd1aeec53bd75c3e56c8",
+    "B_r2a4_episodes": "91610d0cd3517f399dd4a5e5287444c7d77c4b46d4ff806db44d4716ba824d40",
+    "B_r2a4_tasks": "14b022a883f4c4a5d9d62899b11778a342522762dc211861716fbff6564d5e0e",
+    "A_score": "0c55b3a03dabda4ec14eeed150bf6ef22342f14503a82c5ef369770d2b5782ac",
+    "B_score": "fef9d22228d34f5348bc771b752470cd96da5a1c7ff5c2baf146284cfc6fb635"
+  },
+  "sides": {
+    "A": {
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "n_observation_tasks": 8,
+      "templates": {
+        "comeback": {
+          "operator": "state_transition",
+          "n_candidates": 1
+        },
+        "equalization": {
+          "operator": "state_transition",
+          "n_candidates": 1
+        },
+        "lead_preservation": {
+          "operator": "state_transition",
+          "n_candidates": 1
+        },
+        "set_piece_breakthrough": {
+          "operator": "relation_path",
+          "n_candidates": 0
+        },
+        "turnover_to_goal": {
+          "operator": "relation_path",
+          "n_candidates": 1
+        },
+        "threat_phase_change": {
+          "operator": "phase_change",
+          "n_candidates": 1
+        }
+      }
+    },
+    "B": {
+      "video_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+      "n_observation_tasks": 12,
+      "templates": {
+        "comeback": {
+          "operator": "state_transition",
+          "n_candidates": 1
+        },
+        "equalization": {
+          "operator": "state_transition",
+          "n_candidates": 2
+        },
+        "lead_preservation": {
+          "operator": "state_transition",
+          "n_candidates": 1
+        },
+        "set_piece_breakthrough": {
+          "operator": "relation_path",
+          "n_candidates": 0
+        },
+        "turnover_to_goal": {
+          "operator": "relation_path",
+          "n_candidates": 0
+        },
+        "threat_phase_change": {
+          "operator": "phase_change",
+          "n_candidates": 0
+        }
+      }
+    }
+  }
+}
