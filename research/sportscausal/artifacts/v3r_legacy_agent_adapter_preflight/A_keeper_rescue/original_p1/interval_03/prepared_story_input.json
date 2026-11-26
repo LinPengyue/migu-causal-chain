@@ -1,0 +1,1154 @@
+{
+  "counts": {
+    "distinct_events_inside_scope": 2,
+    "events_dropped_by_context_cap": 0,
+    "events_in_full_inventory": 2,
+    "events_in_llm_context": 2,
+    "events_not_in_rich_detail_context": 0,
+    "events_omitted_entirely_from_prompt": 0,
+    "events_with_missing_ids": 0,
+    "gap_probes": 0,
+    "observation_probes": 2,
+    "supplied_event_rows": 879,
+    "timed_events_inside_scope": 2
+  },
+  "current_edl": [
+    {
+      "beat": "goalkeeper_rescue",
+      "event_ids": [
+        "event_000282"
+      ],
+      "is_replay": false,
+      "media_in": 1955.54,
+      "media_out": 1966.45,
+      "role": "goalkeeper_rescue",
+      "segment_id": "seg:1",
+      "shot_kind": "live"
+    },
+    {
+      "beat": "goalkeeper_rescue",
+      "event_ids": [
+        "event_000398",
+        "event_000399",
+        "event_000400"
+      ],
+      "is_replay": false,
+      "media_in": 3338.39,
+      "media_out": 3351.3,
+      "role": "goalkeeper_rescue",
+      "segment_id": "seg:2",
+      "shot_kind": "live"
+    },
+    {
+      "beat": "goalkeeper_rescue",
+      "event_ids": [
+        "event_000416",
+        "event_000417"
+      ],
+      "is_replay": false,
+      "media_in": 3504.14,
+      "media_out": 3515.83,
+      "role": "goalkeeper_rescue",
+      "segment_id": "seg:3",
+      "shot_kind": "live"
+    },
+    {
+      "beat": "goalkeeper_rescue",
+      "event_ids": [
+        "event_000421"
+      ],
+      "is_replay": false,
+      "media_in": 3543.01,
+      "media_out": 3553.57,
+      "role": "goalkeeper_rescue",
+      "segment_id": "seg:4",
+      "shot_kind": "live"
+    },
+    {
+      "beat": "goalkeeper_rescue",
+      "event_ids": [
+        "event_000476",
+        "event_000477"
+      ],
+      "is_replay": false,
+      "media_in": 4755.79,
+      "media_out": 4769.62,
+      "role": "goalkeeper_rescue",
+      "segment_id": "seg:5",
+      "shot_kind": "live"
+    },
+    {
+      "beat": "goalkeeper_rescue",
+      "event_ids": [
+        "event_000640",
+        "event_000641"
+      ],
+      "is_replay": false,
+      "media_in": 6552.01,
+      "media_out": 6562.64,
+      "role": "goalkeeper_rescue",
+      "segment_id": "seg:6",
+      "shot_kind": "live"
+    }
+  ],
+  "data_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "edl_modified": false,
+  "event_annotations": {
+    "event_000418": {
+      "description": "",
+      "notes": "2队守门员长传组织进攻"
+    },
+    "event_000419": {
+      "description": "",
+      "notes": "2队球员截获1队球员的传球"
+    }
+  },
+  "event_inventory": [
+    {
+      "comment_label": "Long_Pass",
+      "event_id": "event_000418",
+      "event_type": "Pass",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 3523.29
+    },
+    {
+      "comment_label": "Interception",
+      "event_id": "event_000419",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 3533.68
+    }
+  ],
+  "events": [
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Long_Pass",
+      "description": "",
+      "event_id": "event_000418",
+      "event_type": "Pass",
+      "event_type_zh": "传球",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3521.5,
+        3536.19
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 3523.29
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Interception",
+      "description": "",
+      "event_id": "event_000419",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        3521.5,
+        3536.19
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 3533.68
+    }
+  ],
+  "first_live_certified": false,
+  "frozen_story_plan": {
+    "algorithm": "R3",
+    "beats": [
+      {
+        "actor": "team_2",
+        "actor_role": "goalkeeper_team",
+        "event_ids": [
+          "event_000282"
+        ],
+        "media_windows": [
+          [
+            1955.54,
+            1966.45
+          ]
+        ],
+        "node_id": "anchor:1",
+        "node_type": "anchor",
+        "observation_task_ids": [],
+        "predicate": "goalkeeper_rescue",
+        "required": true,
+        "role": "goalkeeper_rescue"
+      },
+      {
+        "actor": "team_2",
+        "actor_role": "goalkeeper_team",
+        "event_ids": [
+          "event_000398",
+          "event_000399",
+          "event_000400"
+        ],
+        "media_windows": [
+          [
+            3338.39,
+            3351.3
+          ]
+        ],
+        "node_id": "anchor:2",
+        "node_type": "anchor",
+        "observation_task_ids": [],
+        "predicate": "goalkeeper_rescue",
+        "required": true,
+        "role": "goalkeeper_rescue"
+      },
+      {
+        "actor": "team_2",
+        "actor_role": "goalkeeper_team",
+        "event_ids": [
+          "event_000416",
+          "event_000417"
+        ],
+        "media_windows": [
+          [
+            3504.14,
+            3515.83
+          ]
+        ],
+        "node_id": "anchor:3",
+        "node_type": "anchor",
+        "observation_task_ids": [],
+        "predicate": "goalkeeper_rescue",
+        "required": true,
+        "role": "goalkeeper_rescue"
+      },
+      {
+        "actor": "team_2",
+        "actor_role": "goalkeeper_team",
+        "event_ids": [
+          "event_000421"
+        ],
+        "media_windows": [
+          [
+            3543.01,
+            3553.57
+          ]
+        ],
+        "node_id": "anchor:4",
+        "node_type": "anchor",
+        "observation_task_ids": [],
+        "predicate": "goalkeeper_rescue",
+        "required": true,
+        "role": "goalkeeper_rescue"
+      },
+      {
+        "actor": "team_2",
+        "actor_role": "goalkeeper_team",
+        "event_ids": [
+          "event_000476",
+          "event_000477"
+        ],
+        "media_windows": [
+          [
+            4755.79,
+            4769.62
+          ]
+        ],
+        "node_id": "anchor:5",
+        "node_type": "anchor",
+        "observation_task_ids": [],
+        "predicate": "goalkeeper_rescue",
+        "required": true,
+        "role": "goalkeeper_rescue"
+      },
+      {
+        "actor": "team_2",
+        "actor_role": "goalkeeper_team",
+        "event_ids": [
+          "event_000640",
+          "event_000641"
+        ],
+        "media_windows": [
+          [
+            6552.01,
+            6562.64
+          ]
+        ],
+        "node_id": "anchor:6",
+        "node_type": "anchor",
+        "observation_task_ids": [],
+        "predicate": "goalkeeper_rescue",
+        "required": true,
+        "role": "goalkeeper_rescue"
+      }
+    ],
+    "candidate_edl": [
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 1,
+        "event_ids": [
+          "event_000282"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 1955.54,
+        "media_out": 1966.45,
+        "narrative_order": 1,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:1"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:1",
+        "short_chain_ids": [
+          "pred_0015",
+          "pred_0016"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:1",
+        "source_media_order": 1955.54,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:1"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 2,
+        "event_ids": [
+          "event_000398",
+          "event_000399",
+          "event_000400"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 3338.39,
+        "media_out": 3351.3,
+        "narrative_order": 2,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:2"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:2",
+        "short_chain_ids": [
+          "pred_0030",
+          "pred_0031"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:2",
+        "source_media_order": 3338.39,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:2"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 3,
+        "event_ids": [
+          "event_000416",
+          "event_000417"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 3504.14,
+        "media_out": 3515.83,
+        "narrative_order": 3,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:3"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:3",
+        "short_chain_ids": [
+          "pred_0031",
+          "pred_0032"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:3",
+        "source_media_order": 3504.14,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:3"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 4,
+        "event_ids": [
+          "event_000421"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 3543.01,
+        "media_out": 3553.57,
+        "narrative_order": 4,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:4"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:4",
+        "short_chain_ids": [
+          "pred_0032",
+          "pred_0033"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:4",
+        "source_media_order": 3543.01,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:4"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 5,
+        "event_ids": [
+          "event_000476",
+          "event_000477"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 4755.79,
+        "media_out": 4769.62,
+        "narrative_order": 5,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:5"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:5",
+        "short_chain_ids": [
+          "pred_0042",
+          "pred_0043"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:5",
+        "source_media_order": 4755.79,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:5"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 6,
+        "event_ids": [
+          "event_000640",
+          "event_000641"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 6552.01,
+        "media_out": 6562.64,
+        "narrative_order": 6,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:6"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:6",
+        "short_chain_ids": [
+          "pred_0063",
+          "pred_0065"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:6",
+        "source_media_order": 6552.01,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:6"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      }
+    ],
+    "edl": [
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 1,
+        "event_ids": [
+          "event_000282"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 1955.54,
+        "media_out": 1966.45,
+        "narrative_order": 1,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:1"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:1",
+        "short_chain_ids": [
+          "pred_0015",
+          "pred_0016"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:1",
+        "source_media_order": 1955.54,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:1"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 2,
+        "event_ids": [
+          "event_000398",
+          "event_000399",
+          "event_000400"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 3338.39,
+        "media_out": 3351.3,
+        "narrative_order": 2,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:2"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:2",
+        "short_chain_ids": [
+          "pred_0030",
+          "pred_0031"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:2",
+        "source_media_order": 3338.39,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:2"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 3,
+        "event_ids": [
+          "event_000416",
+          "event_000417"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 3504.14,
+        "media_out": 3515.83,
+        "narrative_order": 3,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:3"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:3",
+        "short_chain_ids": [
+          "pred_0031",
+          "pred_0032"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:3",
+        "source_media_order": 3504.14,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:3"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 4,
+        "event_ids": [
+          "event_000421"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 3543.01,
+        "media_out": 3553.57,
+        "narrative_order": 4,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:4"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:4",
+        "short_chain_ids": [
+          "pred_0032",
+          "pred_0033"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:4",
+        "source_media_order": 3543.01,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:4"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 5,
+        "event_ids": [
+          "event_000476",
+          "event_000477"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 4755.79,
+        "media_out": 4769.62,
+        "narrative_order": 5,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:5"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:5",
+        "short_chain_ids": [
+          "pred_0042",
+          "pred_0043"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:5",
+        "source_media_order": 4755.79,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:5"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 6,
+        "event_ids": [
+          "event_000640",
+          "event_000641"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 6552.01,
+        "media_out": 6562.64,
+        "narrative_order": 6,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:6"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:6",
+        "short_chain_ids": [
+          "pred_0063",
+          "pred_0065"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:6",
+        "source_media_order": 6552.01,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:6"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      }
+    ],
+    "first_live_verified": false,
+    "match_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+    "missing_evidence": [],
+    "protagonist": {
+      "side": "right",
+      "team_name": "阿曼",
+      "teams": {
+        "left": "阿联酋",
+        "right": "阿曼"
+      }
+    },
+    "r3_adapter": {
+      "anchor_bindings": [
+        {
+          "all_segment_ids": [
+            "seg:1"
+          ],
+          "node_id": "anchor:1",
+          "segment_id": "seg:1"
+        },
+        {
+          "all_segment_ids": [
+            "seg:2"
+          ],
+          "node_id": "anchor:2",
+          "segment_id": "seg:2"
+        },
+        {
+          "all_segment_ids": [
+            "seg:3"
+          ],
+          "node_id": "anchor:3",
+          "segment_id": "seg:3"
+        },
+        {
+          "all_segment_ids": [
+            "seg:4"
+          ],
+          "node_id": "anchor:4",
+          "segment_id": "seg:4"
+        },
+        {
+          "all_segment_ids": [
+            "seg:5"
+          ],
+          "node_id": "anchor:5",
+          "segment_id": "seg:5"
+        },
+        {
+          "all_segment_ids": [
+            "seg:6"
+          ],
+          "node_id": "anchor:6",
+          "segment_id": "seg:6"
+        }
+      ],
+      "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+      "missing_node_ids": [],
+      "schema": "sportscausal_r3_legacy_adapter_v1",
+      "seed_basis": "r3_anchor_materials",
+      "story_id": "keeper_rescue:2"
+    },
+    "release_authorized": false,
+    "render_ready": false,
+    "render_ready_edl": [],
+    "schema_version": "r3_legacy_agent_input_v1",
+    "segments": [
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 1,
+        "event_ids": [
+          "event_000282"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 1955.54,
+        "media_out": 1966.45,
+        "narrative_order": 1,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:1"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:1",
+        "short_chain_ids": [
+          "pred_0015",
+          "pred_0016"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:1",
+        "source_media_order": 1955.54,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:1"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 2,
+        "event_ids": [
+          "event_000398",
+          "event_000399",
+          "event_000400"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 3338.39,
+        "media_out": 3351.3,
+        "narrative_order": 2,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:2"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:2",
+        "short_chain_ids": [
+          "pred_0030",
+          "pred_0031"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:2",
+        "source_media_order": 3338.39,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:2"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 3,
+        "event_ids": [
+          "event_000416",
+          "event_000417"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 3504.14,
+        "media_out": 3515.83,
+        "narrative_order": 3,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:3"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:3",
+        "short_chain_ids": [
+          "pred_0031",
+          "pred_0032"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:3",
+        "source_media_order": 3504.14,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:3"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 4,
+        "event_ids": [
+          "event_000421"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 3543.01,
+        "media_out": 3553.57,
+        "narrative_order": 4,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:4"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:4",
+        "short_chain_ids": [
+          "pred_0032",
+          "pred_0033"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:4",
+        "source_media_order": 3543.01,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:4"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 5,
+        "event_ids": [
+          "event_000476",
+          "event_000477"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 4755.79,
+        "media_out": 4769.62,
+        "narrative_order": 5,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:5"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:5",
+        "short_chain_ids": [
+          "pred_0042",
+          "pred_0043"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:5",
+        "source_media_order": 4755.79,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:5"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "r3_anchor_materials",
+        "beat": "goalkeeper_rescue",
+        "edl_index": 6,
+        "event_ids": [
+          "event_000640",
+          "event_000641"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "include_in_cut": true,
+        "is_replay": false,
+        "media_in": 6552.01,
+        "media_out": 6562.64,
+        "narrative_order": 6,
+        "preview_only": true,
+        "required_story_node_ids": [
+          "anchor:6"
+        ],
+        "role": "goalkeeper_rescue",
+        "segment_id": "seg:6",
+        "short_chain_ids": [
+          "pred_0063",
+          "pred_0065"
+        ],
+        "shot_kind": "live",
+        "source_material_id": "material:6",
+        "source_media_order": 6552.01,
+        "story_anchor": true,
+        "story_node_ids": [
+          "anchor:6"
+        ],
+        "time_provenance": {
+          "basis": "union_of_source_atomic_windows"
+        },
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      }
+    ],
+    "story_tier": "HUMAN_ATOM_ENRICHED_DEV",
+    "template": {
+      "category": "人物故事链",
+      "narrative_edges": [
+        {
+          "causal_verified": false,
+          "edge_type": "temporal_episode_order",
+          "from": "anchor:1",
+          "relation": "temporal_episode_order",
+          "to": "anchor:2"
+        },
+        {
+          "causal_verified": false,
+          "edge_type": "temporal_episode_order",
+          "from": "anchor:2",
+          "relation": "temporal_episode_order",
+          "to": "anchor:3"
+        },
+        {
+          "causal_verified": false,
+          "edge_type": "temporal_episode_order",
+          "from": "anchor:3",
+          "relation": "temporal_episode_order",
+          "to": "anchor:4"
+        },
+        {
+          "causal_verified": false,
+          "edge_type": "temporal_episode_order",
+          "from": "anchor:4",
+          "relation": "temporal_episode_order",
+          "to": "anchor:5"
+        },
+        {
+          "causal_verified": false,
+          "edge_type": "temporal_episode_order",
+          "from": "anchor:5",
+          "relation": "temporal_episode_order",
+          "to": "anchor:6"
+        }
+      ],
+      "narrative_goal": [
+        "表现同队门将反复化解威胁",
+        "挖掘比赛阶段及后续发展"
+      ],
+      "subjects": [
+        "team_2"
+      ],
+      "subtype": "同队门将多次化险"
+    },
+    "template_id": "keeper_rescue",
+    "template_name": "同队门将多次化险",
+    "title": "同队门将多次化险",
+    "verification_status": "not_render_ready"
+  },
+  "observation_only": true,
+  "probes": [
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000418",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000418",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        3515.83,
+        3531.29
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000419",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000419",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        3525.68,
+        3541.68
+      ]
+    }
+  ],
+  "rich_context_selection": "all_events",
+  "schema": "story_first_hypotheses_poc_v1",
+  "scope": {
+    "anchor_source": "existing_v3r_edl",
+    "from_role": "goalkeeper_rescue",
+    "from_segment_id": "seg:3",
+    "no_assumed_causality": true,
+    "source_interval_sec": [
+      3515.83,
+      3543.01
+    ],
+    "to_role": "goalkeeper_rescue",
+    "to_segment_id": "seg:4"
+  },
+  "story_plan_reference": "{\"algorithm\": \"R3\", \"beats\": [{\"actor\": \"team_2\", \"actor_role\": \"goalkeeper_team\", \"event_ids\": [\"event_000282\"], \"media_windows\": [[1955.54, 1966.45]], \"node_id\": \"anchor:1\", \"node_type\": \"anchor\", \"observation_task_ids\": [], \"predicate\": \"goalkeeper_rescue\", \"required\": true, \"role\": \"goalkeeper_rescue\"}, {\"actor\": \"team_2\", \"actor_role\": \"goalkeeper_team\", \"event_ids\": [\"event_000398\", \"event_000399\", \"event_000400\"], \"media_windows\": [[3338.39, 3351.3]], \"node_id\": \"anchor:2\", \"node_type\": \"anchor\", \"observation_task_ids\": [], \"predicate\": \"goalkeeper_rescue\", \"required\": true, \"role\": \"goalkeeper_rescue\"}, {\"actor\": \"team_2\", \"actor_role\": \"goalkeeper_team\", \"event_ids\": [\"event_000416\", \"event_000417\"], \"media_windows\": [[3504.14, 3515.83]], \"node_id\": \"anchor:3\", \"node_type\": \"anchor\", \"observation_task_ids\": [], \"predicate\": \"goalkeeper_rescue\", \"required\": true, \"role\": \"goalkeeper_rescue\"}, {\"actor\": \"team_2\", \"actor_role\": \"goalkeeper_team\", \"event_ids\": [\"event_000421\"], \"media_windows\": [[3543.01, 3553.57]], \"node_id\": \"anchor:4\", \"node_type\": \"anchor\", \"observation_task_ids\": [], \"predicate\": \"goalkeeper_rescue\", \"required\": true, \"role\": \"goalkeeper_rescue\"}, {\"actor\": \"team_2\", \"actor_role\": \"goalkeeper_team\", \"event_ids\": [\"event_000476\", \"event_000477\"], \"media_windows\": [[4755.79, 4769.62]], \"node_id\": \"anchor:5\", \"node_type\": \"anchor\", \"observation_task_ids\": [], \"predicate\": \"goalkeeper_rescue\", \"required\": true, \"role\": \"goalkeeper_rescue\"}, {\"actor\": \"team_2\", \"actor_role\": \"goalkeeper_team\", \"event_ids\": [\"event_000640\", \"event_000641\"], \"media_windows\": [[6552.01, 6562.64]], \"node_id\": \"anchor:6\", \"node_type\": \"anchor\", \"observation_task_ids\": [], \"predicate\": \"goalkeeper_rescue\", \"required\": true, \"role\": \"goalkeeper_rescue\"}], \"candidate_edl\": [{\"adapter_seed_basis\": \"r3_anchor_materials\", \"beat\": \"goalkeeper_rescue\", \"edl_index\": 1, \"event_ids\": [\"event_000282\"], \"first_live_status\": \"NOT_VERIFIED\", \"first_live_verified\": false, \"include_in_cut\": true, \"is_replay\": false, \"media_in\": 1955.54, \"media_out\": 1966.45, \"narrative_order\": 1, \"preview_only\": true, \"required_story_node_ids\": [\"anchor:1\"], \"role\": \"goalkeeper_rescue\", \"segment_id\": \"seg:1\", \"short_chain_ids\": [\"pred_0015\", \"pred_0016\"], \"shot_kind\": \"live\", \"source_material_id\": \"material:1\", \"source_media_order\": 1955.54, \"story_anchor\": true, \"story_node_ids\": [\"anchor:1\"], \"time_provenance\": {\"basis\": \"union_of_source_atomic_windows\"}, \"verification_status\": \"draft\", \"video_id\": \"10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语\"}, {\"adapter_seed_basis\": \"r3_anchor_materials\", \"beat\": \"goalkeeper_rescue\", \"edl_index\": 2, \"event_ids\": [\"event_000398\", \"event_000399\", \"event_000400\"], \"first_live_status\": \"NOT_VERIFIED\", \"first_live_verified\": false, \"include_in_cut\": true, \"is_replay\": false, \"media_in\": 3338.39, \"media_out\": 3351.3, \"narrative_order\": 2, \"preview_only\": true, \"required_story_node_ids\": [\"anchor:2\"], \"role\": \"goalkeeper_rescue\", \"segment_id\": \"seg:2\", \"short_chain_ids\": [\"pred_0030\", \"pred_0031\"], \"shot_kind\": \"live\", \"source_material_id\": \"material:2\", \"source_media_order\": 3338.39, \"story_anchor\": true, \"story_node_ids\": [\"anchor:2\"], \"time_provenance\": {\"basis\": \"union_of_source_atomic_windows\"}, \"verification_status\": \"draft\", \"video_id\": \"10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语\"}, {\"adapter_seed_basis\": \"r3_anchor_materials\", \"beat\": \"goalkeeper_rescue\", \"edl_index\": 3, \"event_ids\": [\"event_000416\", \"event_000417\"], \"first_live_status\": \"NOT_VERIFIED\", \"first_live_verified\": false, \"include_in_cut\": true, \"is_replay\": false, \"media_in\": 3504.14, \"media_out\": 3515.83, \"narrative_order\": 3, \"preview_only\": true, \"required_story_node_ids\": [\"anchor:3\"], \"role\": \"goalkeeper_rescue\", \"segment_id\": \"seg:3\", \"short_chain_ids\": [\"pred_0031\", \"pred_0032\"], \"shot_kind\": \"live\", \"source_material_id\": \"material:3\", \"source_media_order\": 3504.14, \"story_anchor\": true, \"story_node_ids\": [\"anchor:3\"], \"time_provenance\": {\"basis\": \"union_of_source_atomic_windows\"}, \"verification_status\": \"draft\", \"video_id\": \"10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语\"}, {\"adapter_seed_basis\": \"r3_anchor_materials\", \"beat\": \"goalkeeper_rescue\", \"edl_index\": 4, \"event_ids\": [\"event_000421\"], \"first_live_status\": \"NOT_VERIFIED\", \"first_live_verified\": false, \"include_in_cut\": true, \"is_replay\": false, \"media_in\": 3543.01, \"media_out\": 3553.57, \"narrative_order\": 4, \"preview_only\": true, \"required_story_node_ids\": [\"anchor:4\"], \"role\": \"goalkeeper_rescue\", \"segment_id\": \"seg:4\", \"short_chain_ids\": [\"pred_0032\", \"pred_0033\"], \"shot_kind\": \"live\", \"source_material_id\": \"material:4\", \"source_media_order\": 3543.01, \"story_anchor\": true, \"story_node_ids\": [\"anchor:4\"], \"time_provenance\": {\"basis\": \"union_of_source_atomic_windows\"}, \"verification_status\": \"draft\", \"video_id\": \"10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语\"}, {\"adapter_seed_basis\": \"r3_anchor_materials\", \"beat\": \"goalkeeper_rescue\", \"edl_index\": 5, \"event_ids\": [\"event_000476\", \"event_000477\"], \"first_live_status\": \"NOT_VERIFIED\", \"first_live_verified\": false, \"include_in_cut\": true, \"is_replay\": false, \"media_in\": 4755.79, \"media_out\": 4769.62, \"narrative_order\": 5, \"preview_only\": true, \"required_story_node_ids\": [\"anchor:5\"], \"role\": \"goalkeeper_rescue\", \"segment_id\": \"seg:5\", \"short_chain_ids\": [\"pred_0042\", \"pred_0043\"], \"shot_kind\": \"live\", \"source_material_id\": \"material:5\", \"source_media_order\": 4755.79, \"story_anchor\": true, \"story_node_ids\": [\"anchor:5\"], \"time_provenance\": {\"basis\": \"union_of_source_atomic_windows\"}, \"verification_status\": \"draft\", \"video_id\": \"10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语\"}, {\"adapter_seed_basis\": \"r3_anchor_materials\", \"beat\": \"goalkeeper_rescue\", \"edl_index\": 6, \"event_ids\": [\"event_000640\", \"event_000641\"], \"first_live_status\": \"NOT_VERIFIED\", \"first_live_verified\": false, \"include_in_cut\": true, \"is_replay\": false, \"media_in\": 6552.01, \"media_out\": 6562.64, \"narrative_order\": 6, \"preview_only\": true, \"required_story_node_ids\": [\"anchor:6\"], \"role\": \"goalkeeper_rescue\", \"segment_id\": \"seg:6\", \"short_chain_ids\": [\"pred_0063\", \"pred_0065\"], \"shot_kind\": \"live\", \"source_material_id\": \"material:6\", \"source_media_order\": 6552.01, \"story_anchor\": true, \"story_node_ids\": [\"anchor:6\"], \"time_provenance\": {\"basis\": \"union_of_source_atomic_windows\"}, \"verification_status\": \"draft\", \"video_id\": \"10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语\"}], \"edl\": [{\"adapter_seed_basis\": \"r3_anchor_materials\", \"beat\": \"goalkeeper_rescue\", \"edl_index\": 1, \"event_ids\": [\"event_000282\"], \"first_live_status\": \"NOT_VERIFIED\", \"first_live_verified\": false, \"include_in_cut\": true, \"is_replay\": false, \"media_in\": 1955.54, \"media_out\": 1966.45, \"narrative_order\": 1, \"preview_only\": true, \"required_story_node_ids\": [\"anchor:1\"], \"role\": \"goalkeeper_rescue\", \"segment_id\": \"seg:1\", \"short_chain_ids\": [\"pred_0015\", \"pred_0016\"], \"shot_kind\": \"live\", \"source_material_id\": \"material:1\", \"source_media_order\": 1955.54, \"story_anchor\": true, \"story_node_ids\": [\"anchor:1\"], \"time_provenance\": {\"basis\": \"union_of_source_atomic_windows\"}, \"verification_status\": \"draft\", \"video_id\": \"10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语\"}, {\"adapter_seed_basis\": \"r3_anchor_materials\", \"beat\": \"goalkeeper_rescue\", \"edl_index\": 2, \"event_ids\": [\"event_000398\", \"event_000399\", \"event_000400\"], \"first_live_status\": \"NOT_VERIFIED\", \"first_live_verified\": false, \"include_in_cut\": true, \"is_replay\": false, \"media_in\": 3338.39, \"media_out\": 3351.3, \"narrative_order\": 2, \"preview_only\": true, \"required_story_node_ids\": [\"anchor:2\"], \"role\": \"goalkeeper_rescue\", \"segment_id\": \"seg:2\", \"short_chain_ids\": [\"pred_0030\", \"pred_0031\"], \"shot_kind\": \"live\", \"source_material_id\": \"material:2\", \"source_media_order\": 3338.39, \"story_anchor\": true, \"story_node_ids\": [\"anchor:2\"], \"time_provenance\": {\"basis\": \"union_of_source_atomic_windows\"}, \"verification_status\": \"draft\", \"video_id\": \"10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语\"}, {\"adapter_seed_basis\": \"r3_anchor_materials\", \"beat\": \"goalkeeper_rescue\", \"edl_index\": 3, \"event_ids\": [\"event_000416\", \"event_000417\"], \"first_live_status\": \"NOT_VERIFIED\", \"first_live_verified\": false, \"include_in_cut\": true, \"is_replay\": false, \"media_in\": 3504.14, \"media_out\": 3515.83, \"narrative_order\": 3, \"preview_only\": true, \"required_story_node_ids\": [\"anchor:3\"], \"role\": \"goalkeeper_rescue\", \"segment_id\": \"seg:3\", \"short_chain_ids\": [\"pred_0031\", \"pred_0032\"], \"shot_kind\": \"live\", \"source_material_id\": \"material:3\", \"source_media_order\": 3504.14, \"story_anchor\": true, \"story_node_ids\": [\"anchor:3\"], \"time_provenance\": {\"basis\": \"union_of_source_atomic_windows\"}, \"verification_status\": \"draft\", \"video_id\": \"10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语\"}, {\"adapter_seed_basis\": \"r3_anchor_materials\", \"beat\": \"goalkeeper_rescue\", \"edl_index\": 4, \"event_ids\": [\"event_000421\"], \"first_live_status\": \"NOT_VERIFIED\", \"first_live_verified\": false, \"include_in_cut\": true, \"is_replay\": false, \"media_in\": 3543.01, \"media_out\": 3553.57, \"narrative_order\": 4, \"preview_only\": true, \"required_story_node_ids\": [\"anchor:4\"], \"role\": \"goalke",
+  "verified_long_range_causal_links": 0
+}

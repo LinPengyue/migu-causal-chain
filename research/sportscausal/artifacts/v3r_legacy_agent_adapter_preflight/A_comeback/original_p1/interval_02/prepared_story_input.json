@@ -1,0 +1,3215 @@
+{
+  "counts": {
+    "distinct_events_inside_scope": 58,
+    "events_dropped_by_context_cap": 0,
+    "events_in_full_inventory": 58,
+    "events_in_llm_context": 58,
+    "events_not_in_rich_detail_context": 0,
+    "events_omitted_entirely_from_prompt": 0,
+    "events_with_missing_ids": 0,
+    "gap_probes": 0,
+    "observation_probes": 34,
+    "supplied_event_rows": 879,
+    "timed_events_inside_scope": 58
+  },
+  "current_edl": [
+    {
+      "beat": "铺垫",
+      "event_ids": [
+        "atom_fill_0000_Throw_in_1327559",
+        "atom_fill_0001_Pass_1329476",
+        "atom_fill_0002_Pass_1331566",
+        "atom_fill_0003_Shot_1335974",
+        "atom_fill_0004_Goal_1337123"
+      ],
+      "is_replay": false,
+      "linked_live_event_id": null,
+      "media_in": 1325.123,
+      "media_out": 1347.123,
+      "narration": "率先失球动作 causal:pred_0007:atom_fill_0004_Goal_1337123 @ 1337.123s（相对 0:1 记分牌 Δ=-73.307s；非记分牌时间）。",
+      "role": "opponent_opening_goal_action",
+      "segment_id": "seg_opponent_opening_goal_action",
+      "shot_kind": "live"
+    },
+    {
+      "beat": "蓄力",
+      "event_ids": [
+        "event_000472"
+      ],
+      "is_replay": false,
+      "linked_live_event_id": null,
+      "media_in": 4706.45,
+      "media_out": 4718.45,
+      "narration": "蓄力动作 射门（live，event_ms 未校准成片）。",
+      "role": "buildup_action",
+      "segment_id": "seg_buildup_event_000472",
+      "shot_kind": "live"
+    },
+    {
+      "beat": "转折",
+      "event_ids": [
+        "atom_fill_0071_Pass_6442874",
+        "atom_fill_0072_Pass_6444487",
+        "atom_fill_0073_Assist_6447042",
+        "atom_fill_0074_Shot_6448924",
+        "atom_fill_0075_Goal_6449644"
+      ],
+      "is_replay": false,
+      "linked_live_event_id": null,
+      "media_in": 6436.924,
+      "media_out": 6458.924,
+      "narration": "equalizer 进球动作候选 v3_goal_goalcand_01_01_to_11 @ 6448.924s（相对记分牌 Δ=-86.696s）。",
+      "role": "equalizer_goal_action",
+      "segment_id": "seg_equalizer_goal_action",
+      "shot_kind": "live"
+    },
+    {
+      "beat": "高潮",
+      "event_ids": [
+        "atom_fill_0101_Win_an_aerial_duel_6831837",
+        "atom_fill_0102_Assist_6836608",
+        "atom_fill_0103_Shot_6841456",
+        "atom_fill_0104_Goal_6843088"
+      ],
+      "is_replay": false,
+      "linked_live_event_id": null,
+      "media_in": 6829.456,
+      "media_out": 6851.456,
+      "narration": "go_ahead 进球动作候选 v3_goal_goalcand_02_11_to_21 @ 6841.456s（相对记分牌 Δ=-115.664s）。",
+      "role": "go_ahead_goal_action",
+      "segment_id": "seg_go_ahead_goal_action",
+      "shot_kind": "live"
+    }
+  ],
+  "data_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "edl_modified": false,
+  "event_annotations": {
+    "event_000637": {
+      "description": "",
+      "notes": "2队球员争顶成功"
+    },
+    "event_000638": {
+      "description": "",
+      "notes": "1队球员与2队球员为争抢球权展开身体对抗"
+    },
+    "event_000639": {
+      "description": "",
+      "notes": "1队球员与2队球员为争抢球权展开身体对抗"
+    },
+    "event_000640": {
+      "description": "",
+      "notes": "1队球员带球射门"
+    },
+    "event_000641": {
+      "description": "",
+      "notes": "2队守门员关键拦截"
+    },
+    "event_000642": {
+      "description": "",
+      "notes": "1队2号球员射门"
+    },
+    "event_000643": {
+      "description": "",
+      "notes": "2队守门员关键拦截"
+    },
+    "event_000644": {
+      "description": "",
+      "notes": "2队球员截获1队球员传球"
+    },
+    "event_000645": {
+      "description": "",
+      "notes": "2队球员带球过人"
+    },
+    "event_000646": {
+      "description": "",
+      "notes": "1队球员抢断2队球员带球"
+    },
+    "event_000647": {
+      "description": "",
+      "notes": "2队19号手抛界外球"
+    },
+    "event_000648": {
+      "description": "",
+      "notes": "2队14号传球给队友控制球权"
+    },
+    "event_000649": {
+      "description": "",
+      "notes": "2队球员传球给队友，控制球权"
+    },
+    "event_000650": {
+      "description": "",
+      "notes": "1队球员与2队球员争抢球权"
+    },
+    "event_000651": {
+      "description": "",
+      "notes": "1队球员与2队球员争抢球权"
+    },
+    "event_000652": {
+      "description": "",
+      "notes": "1队球员截获2队球员传球"
+    },
+    "event_000653": {
+      "description": "",
+      "notes": "1队球员传球给队友"
+    },
+    "event_000654": {
+      "description": "",
+      "notes": "2队球员抢断1队球员带球"
+    },
+    "event_000655": {
+      "description": "",
+      "notes": "2队球员带球射门"
+    },
+    "event_000656": {
+      "description": "",
+      "notes": "1队球员把2队球员射门用身体挡出"
+    },
+    "event_000657": {
+      "description": "",
+      "notes": "2队19号手抛界外球"
+    },
+    "event_000658": {
+      "description": "",
+      "notes": "1队11号对2队6号造成犯规"
+    },
+    "event_000659": {
+      "description": "",
+      "notes": "2队球员发任意球"
+    },
+    "event_000660": {
+      "description": "",
+      "notes": "2队球员争顶成功"
+    },
+    "event_000661": {
+      "description": "",
+      "notes": "2队15号射门打偏"
+    },
+    "event_000662": {
+      "description": "",
+      "notes": "2队球员争顶成功"
+    },
+    "event_000663": {
+      "description": "",
+      "notes": "2队15号射门打偏"
+    },
+    "event_000664": {
+      "description": "",
+      "notes": "2队15号射门打偏"
+    },
+    "event_000665": {
+      "description": "",
+      "notes": "1队球员长传给队友"
+    },
+    "event_000666": {
+      "description": "",
+      "notes": "1队球员争顶成功"
+    },
+    "event_000667": {
+      "description": "",
+      "notes": "2队球员带球过人"
+    },
+    "event_000668": {
+      "description": "",
+      "notes": "1队球员截获2队球权"
+    },
+    "event_000669": {
+      "description": "",
+      "notes": "1队球员与2队球员发生身体对抗"
+    }
+  },
+  "event_inventory": [
+    {
+      "comment_label": "Ball_possession",
+      "event_id": "atom_fill_0076_Ball_possession_6487469",
+      "event_type": "Ball_possession",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 6487.469
+    },
+    {
+      "comment_label": "Assist",
+      "event_id": "atom_fill_0077_Assist_6490223",
+      "event_type": "Assist",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 6490.223
+    },
+    {
+      "comment_label": "Shot",
+      "event_id": "atom_fill_0078_Shot_6492085",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 6492.085
+    },
+    {
+      "comment_label": "Goal",
+      "event_id": "atom_fill_0079_Goal_6492706",
+      "event_type": "Goal",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 6492.706
+    },
+    {
+      "comment_label": "Assist",
+      "event_id": "atom_fill_0080_Assist_6494755",
+      "event_type": "Assist",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 6494.755
+    },
+    {
+      "comment_label": "Shot",
+      "event_id": "atom_fill_0081_Shot_6497314",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 6497.314
+    },
+    {
+      "comment_label": "Goal",
+      "event_id": "atom_fill_0082_Goal_6498224",
+      "event_type": "Goal",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 6498.224
+    },
+    {
+      "comment_label": "Assist",
+      "event_id": "atom_fill_0083_Assist_6501496",
+      "event_type": "Assist",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 6501.496
+    },
+    {
+      "comment_label": "Shot",
+      "event_id": "atom_fill_0084_Shot_6504936",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 6504.936
+    },
+    {
+      "comment_label": "Goal",
+      "event_id": "atom_fill_0085_Goal_6506107",
+      "event_type": "Goal",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 6506.107
+    },
+    {
+      "comment_label": "Shot",
+      "event_id": "atom_fill_0086_Shot_6508776",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 6508.776
+    },
+    {
+      "comment_label": "Goal",
+      "event_id": "atom_fill_0087_Goal_6510070",
+      "event_type": "Goal",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 6510.07
+    },
+    {
+      "comment_label": "Win_an_aerial_duel",
+      "event_id": "event_000637",
+      "event_type": "Win_an_aerial_duel",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6535.62
+    },
+    {
+      "comment_label": "Physical_Challenge",
+      "event_id": "event_000638",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6540.09
+    },
+    {
+      "comment_label": "Physical_Challenge",
+      "event_id": "event_000639",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6545.37
+    },
+    {
+      "comment_label": "Regular_Shot",
+      "event_id": "event_000640",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6557.14
+    },
+    {
+      "comment_label": "Interception",
+      "event_id": "event_000641",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6557.97
+    },
+    {
+      "comment_label": "Regular_Shot",
+      "event_id": "event_000642",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6566.81
+    },
+    {
+      "comment_label": "Interception",
+      "event_id": "event_000643",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6567.9
+    },
+    {
+      "comment_label": "Defensive_action",
+      "event_id": "atom_fill_0088_Defensive_action_6589555",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {},
+      "source_pts_sec": 6589.555
+    },
+    {
+      "comment_label": "Pass",
+      "event_id": "atom_fill_0089_Pass_6597206",
+      "event_type": "Pass",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {},
+      "source_pts_sec": 6597.206
+    },
+    {
+      "comment_label": "Defensive_action",
+      "event_id": "atom_fill_0090_Defensive_action_6598591",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {},
+      "source_pts_sec": 6598.591
+    },
+    {
+      "comment_label": "Shot",
+      "event_id": "atom_fill_0091_Shot_6599535",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {},
+      "source_pts_sec": 6599.535
+    },
+    {
+      "comment_label": "Save",
+      "event_id": "atom_fill_0092_Save_6600268",
+      "event_type": "Save",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {},
+      "source_pts_sec": 6600.268
+    },
+    {
+      "comment_label": "Interception",
+      "event_id": "event_000644",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6627.72
+    },
+    {
+      "comment_label": "Dribble_Break",
+      "event_id": "event_000645",
+      "event_type": "Dribble_past",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6631.33
+    },
+    {
+      "comment_label": "Tackle",
+      "event_id": "event_000646",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6632.81
+    },
+    {
+      "comment_label": "Throw_in",
+      "event_id": "event_000647",
+      "event_type": "Throw_in",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6644.39
+    },
+    {
+      "comment_label": "Ball_possession",
+      "event_id": "event_000648",
+      "event_type": "Ball_possession",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6648.31
+    },
+    {
+      "comment_label": "Ball_possession",
+      "event_id": "event_000649",
+      "event_type": "Ball_possession",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 1.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 1.0
+      },
+      "source_pts_sec": 6655.54
+    },
+    {
+      "comment_label": "Physical_Challenge",
+      "event_id": "event_000650",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6658.19
+    },
+    {
+      "comment_label": "Physical_Challenge",
+      "event_id": "event_000651",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6659.69
+    },
+    {
+      "comment_label": "Interception",
+      "event_id": "event_000652",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6660.67
+    },
+    {
+      "comment_label": "Short_Pass",
+      "event_id": "event_000653",
+      "event_type": "Pass",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6680.46
+    },
+    {
+      "comment_label": "Tackle",
+      "event_id": "event_000654",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6693.73
+    },
+    {
+      "comment_label": "Regular_Shot",
+      "event_id": "event_000655",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6703.22
+    },
+    {
+      "comment_label": "Clearance",
+      "event_id": "event_000656",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6703.56
+    },
+    {
+      "comment_label": "Throw_in",
+      "event_id": "event_000657",
+      "event_type": "Throw_in",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6719.99
+    },
+    {
+      "comment_label": "Dangerous_Play",
+      "event_id": "event_000658",
+      "event_type": "Foul_Being_fouled",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6724.31
+    },
+    {
+      "comment_label": "Pass",
+      "event_id": "atom_fill_0093_Pass_6738258",
+      "event_type": "Pass",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 6738.258
+    },
+    {
+      "comment_label": "Shot",
+      "event_id": "atom_fill_0094_Shot_6740495",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 6740.495
+    },
+    {
+      "comment_label": "Save",
+      "event_id": "atom_fill_0095_Save_6741037",
+      "event_type": "Save",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 6741.037
+    },
+    {
+      "comment_label": "Shot",
+      "event_id": "atom_fill_0096_Shot_6743344",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 6743.344
+    },
+    {
+      "comment_label": "Save",
+      "event_id": "atom_fill_0097_Save_6745154",
+      "event_type": "Save",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 6745.154
+    },
+    {
+      "comment_label": "Shot",
+      "event_id": "atom_fill_0098_Shot_6747661",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 6747.661
+    },
+    {
+      "comment_label": "Save",
+      "event_id": "atom_fill_0099_Save_6749672",
+      "event_type": "Save",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {},
+      "source_pts_sec": 6749.672
+    },
+    {
+      "comment_label": "Direct_Free_Kick",
+      "event_id": "event_000659",
+      "event_type": "Free_kick",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6768.94
+    },
+    {
+      "comment_label": "Win_an_aerial_duel",
+      "event_id": "event_000660",
+      "event_type": "Win_an_aerial_duel",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6772.02
+    },
+    {
+      "comment_label": "Regular_Shot",
+      "event_id": "event_000661",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6774.49
+    },
+    {
+      "comment_label": "Win_an_aerial_duel",
+      "event_id": "event_000662",
+      "event_type": "Win_an_aerial_duel",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6783.66
+    },
+    {
+      "comment_label": "Regular_Shot",
+      "event_id": "event_000663",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6785.96
+    },
+    {
+      "comment_label": "Regular_Shot",
+      "event_id": "event_000664",
+      "event_type": "Shot",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": true,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6788.92
+    },
+    {
+      "comment_label": "Long_Pass",
+      "event_id": "event_000665",
+      "event_type": "Pass",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6799.93
+    },
+    {
+      "comment_label": "Win_an_aerial_duel",
+      "event_id": "event_000666",
+      "event_type": "Win_an_aerial_duel",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6803.48
+    },
+    {
+      "comment_label": "Dribble_Break",
+      "event_id": "event_000667",
+      "event_type": "Dribble_past",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6813.28
+    },
+    {
+      "comment_label": "Interception",
+      "event_id": "event_000668",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6820.61
+    },
+    {
+      "comment_label": "Physical_Challenge",
+      "event_id": "event_000669",
+      "event_type": "Defensive_action",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6821.96
+    },
+    {
+      "comment_label": "Pass",
+      "event_id": "atom_fill_0100_Pass_6829010",
+      "event_type": "Pass",
+      "is_rich_context": true,
+      "known_replay_or_slowmo": false,
+      "scores_metadata": {},
+      "source_pts_sec": 6829.01
+    }
+  ],
+  "events": [
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Ball_possession",
+      "description": "",
+      "event_id": "atom_fill_0076_Ball_possession_6487469",
+      "event_type": "Ball_possession",
+      "event_type_zh": "控球",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6487.469,
+        6489.469
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 6487.469
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Assist",
+      "description": "",
+      "event_id": "atom_fill_0077_Assist_6490223",
+      "event_type": "Assist",
+      "event_type_zh": "助攻",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6490.223,
+        6492.223
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 6490.223
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Shot",
+      "description": "",
+      "event_id": "atom_fill_0078_Shot_6492085",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6492.085,
+        6494.085
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 6492.085
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Goal",
+      "description": "",
+      "event_id": "atom_fill_0079_Goal_6492706",
+      "event_type": "Goal",
+      "event_type_zh": "进球",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6492.706,
+        6494.706
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 6492.706
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Assist",
+      "description": "",
+      "event_id": "atom_fill_0080_Assist_6494755",
+      "event_type": "Assist",
+      "event_type_zh": "助攻",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6494.755,
+        6496.755
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 6494.755
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Shot",
+      "description": "",
+      "event_id": "atom_fill_0081_Shot_6497314",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6497.314,
+        6499.314
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 6497.314
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Goal",
+      "description": "",
+      "event_id": "atom_fill_0082_Goal_6498224",
+      "event_type": "Goal",
+      "event_type_zh": "进球",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6498.224,
+        6500.224
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 6498.224
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Assist",
+      "description": "",
+      "event_id": "atom_fill_0083_Assist_6501496",
+      "event_type": "Assist",
+      "event_type_zh": "助攻",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6501.496,
+        6503.496
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 6501.496
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Shot",
+      "description": "",
+      "event_id": "atom_fill_0084_Shot_6504936",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6504.936,
+        6506.936
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 6504.936
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Goal",
+      "description": "",
+      "event_id": "atom_fill_0085_Goal_6506107",
+      "event_type": "Goal",
+      "event_type_zh": "进球",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6506.107,
+        6508.107
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 6506.107
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Shot",
+      "description": "",
+      "event_id": "atom_fill_0086_Shot_6508776",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6508.776,
+        6510.776
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 6508.776
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Goal",
+      "description": "",
+      "event_id": "atom_fill_0087_Goal_6510070",
+      "event_type": "Goal",
+      "event_type_zh": "进球",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6510.07,
+        6512.07
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 6510.07
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Win_an_aerial_duel",
+      "description": "",
+      "event_id": "event_000637",
+      "event_type": "Win_an_aerial_duel",
+      "event_type_zh": "争顶成功",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6532.7,
+        6548.57
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6535.62
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Physical_Challenge",
+      "description": "",
+      "event_id": "event_000638",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6532.7,
+        6548.57
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6540.09
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Physical_Challenge",
+      "description": "",
+      "event_id": "event_000639",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6532.7,
+        6548.57
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6545.37
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Regular_Shot",
+      "description": "",
+      "event_id": "event_000640",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6552.01,
+        6562.64
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6557.14
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Interception",
+      "description": "",
+      "event_id": "event_000641",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6552.01,
+        6562.64
+      ],
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6557.97
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Regular_Shot",
+      "description": "",
+      "event_id": "event_000642",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6563.69,
+        6574.02
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6566.81
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Interception",
+      "description": "",
+      "event_id": "event_000643",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6563.69,
+        6574.02
+      ],
+      "scores_metadata": {
+        "criticality_score": 3.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6567.9
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Defensive_action",
+      "description": "",
+      "event_id": "atom_fill_0088_Defensive_action_6589555",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6589.555,
+        6591.555
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 6589.555
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Pass",
+      "description": "",
+      "event_id": "atom_fill_0089_Pass_6597206",
+      "event_type": "Pass",
+      "event_type_zh": "传球",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6597.206,
+        6599.206
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 6597.206
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Defensive_action",
+      "description": "",
+      "event_id": "atom_fill_0090_Defensive_action_6598591",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6598.591,
+        6600.591
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 6598.591
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Shot",
+      "description": "",
+      "event_id": "atom_fill_0091_Shot_6599535",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6599.535,
+        6601.535
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 6599.535
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Save",
+      "description": "",
+      "event_id": "atom_fill_0092_Save_6600268",
+      "event_type": "Save",
+      "event_type_zh": "扑救",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6600.268,
+        6602.268
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 6600.268
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Interception",
+      "description": "",
+      "event_id": "event_000644",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6622.03,
+        6635.05
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6627.72
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Dribble_Break",
+      "description": "",
+      "event_id": "event_000645",
+      "event_type": "Dribble_past",
+      "event_type_zh": "过人",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6622.03,
+        6635.05
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6631.33
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Tackle",
+      "description": "",
+      "event_id": "event_000646",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6622.03,
+        6635.05
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6632.81
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Throw_in",
+      "description": "",
+      "event_id": "event_000647",
+      "event_type": "Throw_in",
+      "event_type_zh": "界外球",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6638.94,
+        6650.4
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6644.39
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Ball_possession",
+      "description": "",
+      "event_id": "event_000648",
+      "event_type": "Ball_possession",
+      "event_type_zh": "控球",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6638.94,
+        6650.4
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6648.31
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Ball_possession",
+      "description": "",
+      "event_id": "event_000649",
+      "event_type": "Ball_possession",
+      "event_type_zh": "控球",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6652.97,
+        6665.39
+      ],
+      "scores_metadata": {
+        "criticality_score": 1.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 1.0
+      },
+      "source_pts_sec": 6655.54
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Physical_Challenge",
+      "description": "",
+      "event_id": "event_000650",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6652.97,
+        6665.39
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6658.19
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Physical_Challenge",
+      "description": "",
+      "event_id": "event_000651",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6652.97,
+        6665.39
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6659.69
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Interception",
+      "description": "",
+      "event_id": "event_000652",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6652.97,
+        6665.39
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6660.67
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Short_Pass",
+      "description": "",
+      "event_id": "event_000653",
+      "event_type": "Pass",
+      "event_type_zh": "传球",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6671.46,
+        6684.26
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6680.46
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Tackle",
+      "description": "",
+      "event_id": "event_000654",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6686.6,
+        6697.46
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6693.73
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Regular_Shot",
+      "description": "",
+      "event_id": "event_000655",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6699.03,
+        6710.26
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6703.22
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Clearance",
+      "description": "",
+      "event_id": "event_000656",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6699.03,
+        6710.26
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6703.56
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Throw_in",
+      "description": "",
+      "event_id": "event_000657",
+      "event_type": "Throw_in",
+      "event_type_zh": "界外球",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6715.35,
+        6727.17
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6719.99
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Dangerous_Play",
+      "description": "",
+      "event_id": "event_000658",
+      "event_type": "Foul_Being_fouled",
+      "event_type_zh": "犯规/被犯规",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6715.35,
+        6727.17
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6724.31
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Pass",
+      "description": "",
+      "event_id": "atom_fill_0093_Pass_6738258",
+      "event_type": "Pass",
+      "event_type_zh": "传球",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6738.258,
+        6740.258
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 6738.258
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Shot",
+      "description": "",
+      "event_id": "atom_fill_0094_Shot_6740495",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6740.495,
+        6742.495
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 6740.495
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Save",
+      "description": "",
+      "event_id": "atom_fill_0095_Save_6741037",
+      "event_type": "Save",
+      "event_type_zh": "扑救",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6741.037,
+        6743.037
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 6741.037
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Shot",
+      "description": "",
+      "event_id": "atom_fill_0096_Shot_6743344",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6743.344,
+        6745.344
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 6743.344
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Save",
+      "description": "",
+      "event_id": "atom_fill_0097_Save_6745154",
+      "event_type": "Save",
+      "event_type_zh": "扑救",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6745.154,
+        6747.154
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 6745.154
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Shot",
+      "description": "",
+      "event_id": "atom_fill_0098_Shot_6747661",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6747.661,
+        6749.661
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 6747.661
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Save",
+      "description": "",
+      "event_id": "atom_fill_0099_Save_6749672",
+      "event_type": "Save",
+      "event_type_zh": "扑救",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6749.672,
+        6751.672
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 6749.672
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Direct_Free_Kick",
+      "description": "",
+      "event_id": "event_000659",
+      "event_type": "Free_kick",
+      "event_type_zh": "任意球",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6767.67,
+        6778.15
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6768.94
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Win_an_aerial_duel",
+      "description": "",
+      "event_id": "event_000660",
+      "event_type": "Win_an_aerial_duel",
+      "event_type_zh": "争顶成功",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6767.67,
+        6778.15
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6772.02
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Regular_Shot",
+      "description": "",
+      "event_id": "event_000661",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6767.67,
+        6778.15
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6774.49
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Win_an_aerial_duel",
+      "description": "",
+      "event_id": "event_000662",
+      "event_type": "Win_an_aerial_duel",
+      "event_type_zh": "争顶成功",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6781.53,
+        6792.26
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6783.66
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Regular_Shot",
+      "description": "",
+      "event_id": "event_000663",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6781.53,
+        6792.26
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6785.96
+    },
+    {
+      "broadcast_phase_metadata": "REPLAY",
+      "comment_label": "Regular_Shot",
+      "description": "",
+      "event_id": "event_000664",
+      "event_type": "Shot",
+      "event_type_zh": "射门",
+      "is_replay_metadata": true,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6781.53,
+        6792.26
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 3.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6788.92
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Long_Pass",
+      "description": "",
+      "event_id": "event_000665",
+      "event_type": "Pass",
+      "event_type_zh": "传球",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6797.2,
+        6808.45
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6799.93
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Win_an_aerial_duel",
+      "description": "",
+      "event_id": "event_000666",
+      "event_type": "Win_an_aerial_duel",
+      "event_type_zh": "争顶成功",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6797.2,
+        6808.45
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6803.48
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Dribble_Break",
+      "description": "",
+      "event_id": "event_000667",
+      "event_type": "Dribble_past",
+      "event_type_zh": "过人",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6810.16,
+        6824.07
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6813.28
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Interception",
+      "description": "",
+      "event_id": "event_000668",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6810.16,
+        6824.07
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6820.61
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Physical_Challenge",
+      "description": "",
+      "event_id": "event_000669",
+      "event_type": "Defensive_action",
+      "event_type_zh": "防守动作",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6810.16,
+        6824.07
+      ],
+      "scores_metadata": {
+        "criticality_score": 2.0,
+        "emotional_heat_score": 2.0,
+        "overall_score": 2.0
+      },
+      "source_pts_sec": 6821.96
+    },
+    {
+      "broadcast_phase_metadata": "LIVE",
+      "comment_label": "Pass",
+      "description": "",
+      "event_id": "atom_fill_0100_Pass_6829010",
+      "event_type": "Pass",
+      "event_type_zh": "传球",
+      "is_replay_metadata": false,
+      "is_slow_motion_metadata": false,
+      "media_span_sec": [
+        6829.01,
+        6831.01
+      ],
+      "scores_metadata": {},
+      "source_pts_sec": 6829.01
+    }
+  ],
+  "first_live_certified": false,
+  "frozen_story_plan": {
+    "algorithm": "R3",
+    "beats": [
+      {
+        "action_time_interval": [
+          1337.123,
+          1337.123
+        ],
+        "actor": "team_1",
+        "actor_role": "state_subject",
+        "event_ids": [
+          "atom_fill_0003_Shot_1335974",
+          "atom_fill_0004_Goal_1337123"
+        ],
+        "kind": "score_state",
+        "localization_status": "localized_annotation_candidate",
+        "media_windows": [
+          [
+            1335.974,
+            1339.123
+          ]
+        ],
+        "node_id": "score:1",
+        "node_type": "anchor",
+        "observation_task_ids": [
+          "observe:1"
+        ],
+        "required": true,
+        "role": "opponent_opening_goal_action",
+        "score": "0:1",
+        "score_beneficiary": "team_2",
+        "state_sign": -1
+      },
+      {
+        "action_time_interval": [
+          6449.644,
+          6449.644
+        ],
+        "actor": "team_1",
+        "actor_role": "state_subject",
+        "event_ids": [
+          "atom_fill_0074_Shot_6448924",
+          "atom_fill_0075_Goal_6449644"
+        ],
+        "kind": "score_state",
+        "localization_status": "localized_annotation_candidate",
+        "media_windows": [
+          [
+            6448.924,
+            6451.644
+          ]
+        ],
+        "node_id": "score:2",
+        "node_type": "anchor",
+        "observation_task_ids": [
+          "observe:2"
+        ],
+        "required": true,
+        "role": "equalizer_goal_action",
+        "score": "1:1",
+        "score_beneficiary": "team_1",
+        "state_sign": 0
+      },
+      {
+        "action_time_interval": [
+          6843.088,
+          6843.088
+        ],
+        "actor": "team_1",
+        "actor_role": "state_subject",
+        "event_ids": [
+          "atom_fill_0103_Shot_6841456",
+          "atom_fill_0104_Goal_6843088"
+        ],
+        "kind": "score_state",
+        "localization_status": "localized_annotation_candidate",
+        "media_windows": [
+          [
+            6841.456,
+            6845.088
+          ]
+        ],
+        "node_id": "score:3",
+        "node_type": "anchor",
+        "observation_task_ids": [
+          "observe:3"
+        ],
+        "required": true,
+        "role": "go_ahead_goal_action",
+        "score": "2:1",
+        "score_beneficiary": "team_1",
+        "state_sign": 1
+      }
+    ],
+    "candidate_edl": [
+      {
+        "adapter_seed_basis": "legacy_action_candidates",
+        "beat": "铺垫",
+        "blocking_reasons": [
+          "awaiting_internal_media_verification"
+        ],
+        "confidence": 0.593,
+        "edl_index": 1,
+        "event_ids": [
+          "atom_fill_0000_Throw_in_1327559",
+          "atom_fill_0001_Pass_1329476",
+          "atom_fill_0002_Pass_1331566",
+          "atom_fill_0003_Shot_1335974",
+          "atom_fill_0004_Goal_1337123"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "frame_ids": [],
+        "include_in_cut": true,
+        "is_replay": false,
+        "legacy_event_ids": [
+          "causal:pred_0007:atom_fill_0004_Goal_1337123"
+        ],
+        "linked_live_event_id": null,
+        "media_in": 1325.123,
+        "media_out": 1347.123,
+        "narration": "率先失球动作 causal:pred_0007:atom_fill_0004_Goal_1337123 @ 1337.123s（相对 0:1 记分牌 Δ=-73.307s；非记分牌时间）。",
+        "narrative_order": 1,
+        "preview_only": true,
+        "render_eligibility": "candidate_only",
+        "required_story_node_ids": [
+          "score:1"
+        ],
+        "role": "opponent_opening_goal_action",
+        "segment_id": "seg_opponent_opening_goal_action",
+        "selection_reason": "opponent_opening_goal_near_behind_scoreboard",
+        "shot_kind": "live",
+        "source_media_order": 1325.123,
+        "story_anchor": true,
+        "story_node_ids": [
+          "score:1"
+        ],
+        "time_provenance": {
+          "granted_by": null,
+          "pipeline_verified": false,
+          "score_anchor_t_sec": 1410.43,
+          "source": "linked_live_goal_event",
+          "t_sec": 1337.123
+        },
+        "time_status": "linked_event_ms",
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "legacy_action_candidates",
+        "beat": "蓄力",
+        "blocking_reasons": [
+          "unverified_event_ms"
+        ],
+        "confidence": 0.55,
+        "edl_index": 2,
+        "event_ids": [
+          "event_000472"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "frame_ids": [],
+        "include_in_cut": true,
+        "is_replay": false,
+        "legacy_event_ids": [
+          "event_000472"
+        ],
+        "linked_live_event_id": null,
+        "media_in": 4706.45,
+        "media_out": 4718.45,
+        "narration": "蓄力动作 射门（live，event_ms 未校准成片）。",
+        "narrative_order": 2,
+        "preview_only": true,
+        "render_eligibility": "candidate_only",
+        "required_story_node_ids": [],
+        "role": "buildup_action",
+        "segment_id": "seg_buildup_event_000472",
+        "selection_reason": "live_buildup_between_behind_and_equalizer",
+        "shot_kind": "live",
+        "source_media_order": 4706.45,
+        "story_anchor": false,
+        "story_node_ids": [],
+        "time_provenance": {
+          "pipeline_verified": false,
+          "source": "event_ms",
+          "t_sec": 4710.45
+        },
+        "time_status": "event_ms",
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "legacy_action_candidates",
+        "beat": "转折",
+        "blocking_reasons": [
+          "awaiting_internal_media_verification"
+        ],
+        "confidence": 0.518,
+        "edl_index": 3,
+        "event_ids": [
+          "atom_fill_0071_Pass_6442874",
+          "atom_fill_0072_Pass_6444487",
+          "atom_fill_0073_Assist_6447042",
+          "atom_fill_0074_Shot_6448924",
+          "atom_fill_0075_Goal_6449644"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "frame_ids": [],
+        "include_in_cut": true,
+        "is_replay": false,
+        "legacy_event_ids": [
+          "v3_goal_goalcand_01_01_to_11"
+        ],
+        "linked_live_event_id": null,
+        "media_in": 6436.924,
+        "media_out": 6458.924,
+        "narration": "equalizer 进球动作候选 v3_goal_goalcand_01_01_to_11 @ 6448.924s（相对记分牌 Δ=-86.696s）。",
+        "narrative_order": 3,
+        "preview_only": true,
+        "render_eligibility": "candidate_only",
+        "required_story_node_ids": [
+          "score:2"
+        ],
+        "role": "equalizer_goal_action",
+        "segment_id": "seg_equalizer_goal_action",
+        "selection_reason": "live_goal_near_scoreboard_anchor",
+        "shot_kind": "live",
+        "source_media_order": 6436.924,
+        "story_anchor": true,
+        "story_node_ids": [
+          "score:2"
+        ],
+        "time_provenance": {
+          "granted_by": null,
+          "pipeline_verified": false,
+          "score_anchor_t_sec": 6535.62,
+          "source": "linked_live_goal_event",
+          "t_sec": 6448.924
+        },
+        "time_status": "linked_event_ms",
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "legacy_action_candidates",
+        "beat": "高潮",
+        "blocking_reasons": [
+          "awaiting_internal_media_verification"
+        ],
+        "confidence": 0.357,
+        "edl_index": 4,
+        "event_ids": [
+          "atom_fill_0101_Win_an_aerial_duel_6831837",
+          "atom_fill_0102_Assist_6836608",
+          "atom_fill_0103_Shot_6841456",
+          "atom_fill_0104_Goal_6843088"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "frame_ids": [],
+        "include_in_cut": true,
+        "is_replay": false,
+        "legacy_event_ids": [
+          "v3_goal_goalcand_02_11_to_21"
+        ],
+        "linked_live_event_id": null,
+        "media_in": 6829.456,
+        "media_out": 6851.456,
+        "narration": "go_ahead 进球动作候选 v3_goal_goalcand_02_11_to_21 @ 6841.456s（相对记分牌 Δ=-115.664s）。",
+        "narrative_order": 4,
+        "preview_only": true,
+        "render_eligibility": "candidate_only",
+        "required_story_node_ids": [
+          "score:3"
+        ],
+        "role": "go_ahead_goal_action",
+        "segment_id": "seg_go_ahead_goal_action",
+        "selection_reason": "live_goal_near_scoreboard_anchor",
+        "shot_kind": "live",
+        "source_media_order": 6829.456,
+        "story_anchor": true,
+        "story_node_ids": [
+          "score:3"
+        ],
+        "time_provenance": {
+          "granted_by": null,
+          "pipeline_verified": false,
+          "score_anchor_t_sec": 6957.12,
+          "source": "linked_live_goal_event",
+          "t_sec": 6841.456
+        },
+        "time_status": "linked_event_ms",
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      }
+    ],
+    "edl": [
+      {
+        "adapter_seed_basis": "legacy_action_candidates",
+        "beat": "铺垫",
+        "blocking_reasons": [
+          "awaiting_internal_media_verification"
+        ],
+        "confidence": 0.593,
+        "edl_index": 1,
+        "event_ids": [
+          "atom_fill_0000_Throw_in_1327559",
+          "atom_fill_0001_Pass_1329476",
+          "atom_fill_0002_Pass_1331566",
+          "atom_fill_0003_Shot_1335974",
+          "atom_fill_0004_Goal_1337123"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "frame_ids": [],
+        "include_in_cut": true,
+        "is_replay": false,
+        "legacy_event_ids": [
+          "causal:pred_0007:atom_fill_0004_Goal_1337123"
+        ],
+        "linked_live_event_id": null,
+        "media_in": 1325.123,
+        "media_out": 1347.123,
+        "narration": "率先失球动作 causal:pred_0007:atom_fill_0004_Goal_1337123 @ 1337.123s（相对 0:1 记分牌 Δ=-73.307s；非记分牌时间）。",
+        "narrative_order": 1,
+        "preview_only": true,
+        "render_eligibility": "candidate_only",
+        "required_story_node_ids": [
+          "score:1"
+        ],
+        "role": "opponent_opening_goal_action",
+        "segment_id": "seg_opponent_opening_goal_action",
+        "selection_reason": "opponent_opening_goal_near_behind_scoreboard",
+        "shot_kind": "live",
+        "source_media_order": 1325.123,
+        "story_anchor": true,
+        "story_node_ids": [
+          "score:1"
+        ],
+        "time_provenance": {
+          "granted_by": null,
+          "pipeline_verified": false,
+          "score_anchor_t_sec": 1410.43,
+          "source": "linked_live_goal_event",
+          "t_sec": 1337.123
+        },
+        "time_status": "linked_event_ms",
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "legacy_action_candidates",
+        "beat": "蓄力",
+        "blocking_reasons": [
+          "unverified_event_ms"
+        ],
+        "confidence": 0.55,
+        "edl_index": 2,
+        "event_ids": [
+          "event_000472"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "frame_ids": [],
+        "include_in_cut": true,
+        "is_replay": false,
+        "legacy_event_ids": [
+          "event_000472"
+        ],
+        "linked_live_event_id": null,
+        "media_in": 4706.45,
+        "media_out": 4718.45,
+        "narration": "蓄力动作 射门（live，event_ms 未校准成片）。",
+        "narrative_order": 2,
+        "preview_only": true,
+        "render_eligibility": "candidate_only",
+        "required_story_node_ids": [],
+        "role": "buildup_action",
+        "segment_id": "seg_buildup_event_000472",
+        "selection_reason": "live_buildup_between_behind_and_equalizer",
+        "shot_kind": "live",
+        "source_media_order": 4706.45,
+        "story_anchor": false,
+        "story_node_ids": [],
+        "time_provenance": {
+          "pipeline_verified": false,
+          "source": "event_ms",
+          "t_sec": 4710.45
+        },
+        "time_status": "event_ms",
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "legacy_action_candidates",
+        "beat": "转折",
+        "blocking_reasons": [
+          "awaiting_internal_media_verification"
+        ],
+        "confidence": 0.518,
+        "edl_index": 3,
+        "event_ids": [
+          "atom_fill_0071_Pass_6442874",
+          "atom_fill_0072_Pass_6444487",
+          "atom_fill_0073_Assist_6447042",
+          "atom_fill_0074_Shot_6448924",
+          "atom_fill_0075_Goal_6449644"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "frame_ids": [],
+        "include_in_cut": true,
+        "is_replay": false,
+        "legacy_event_ids": [
+          "v3_goal_goalcand_01_01_to_11"
+        ],
+        "linked_live_event_id": null,
+        "media_in": 6436.924,
+        "media_out": 6458.924,
+        "narration": "equalizer 进球动作候选 v3_goal_goalcand_01_01_to_11 @ 6448.924s（相对记分牌 Δ=-86.696s）。",
+        "narrative_order": 3,
+        "preview_only": true,
+        "render_eligibility": "candidate_only",
+        "required_story_node_ids": [
+          "score:2"
+        ],
+        "role": "equalizer_goal_action",
+        "segment_id": "seg_equalizer_goal_action",
+        "selection_reason": "live_goal_near_scoreboard_anchor",
+        "shot_kind": "live",
+        "source_media_order": 6436.924,
+        "story_anchor": true,
+        "story_node_ids": [
+          "score:2"
+        ],
+        "time_provenance": {
+          "granted_by": null,
+          "pipeline_verified": false,
+          "score_anchor_t_sec": 6535.62,
+          "source": "linked_live_goal_event",
+          "t_sec": 6448.924
+        },
+        "time_status": "linked_event_ms",
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "legacy_action_candidates",
+        "beat": "高潮",
+        "blocking_reasons": [
+          "awaiting_internal_media_verification"
+        ],
+        "confidence": 0.357,
+        "edl_index": 4,
+        "event_ids": [
+          "atom_fill_0101_Win_an_aerial_duel_6831837",
+          "atom_fill_0102_Assist_6836608",
+          "atom_fill_0103_Shot_6841456",
+          "atom_fill_0104_Goal_6843088"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "frame_ids": [],
+        "include_in_cut": true,
+        "is_replay": false,
+        "legacy_event_ids": [
+          "v3_goal_goalcand_02_11_to_21"
+        ],
+        "linked_live_event_id": null,
+        "media_in": 6829.456,
+        "media_out": 6851.456,
+        "narration": "go_ahead 进球动作候选 v3_goal_goalcand_02_11_to_21 @ 6841.456s（相对记分牌 Δ=-115.664s）。",
+        "narrative_order": 4,
+        "preview_only": true,
+        "render_eligibility": "candidate_only",
+        "required_story_node_ids": [
+          "score:3"
+        ],
+        "role": "go_ahead_goal_action",
+        "segment_id": "seg_go_ahead_goal_action",
+        "selection_reason": "live_goal_near_scoreboard_anchor",
+        "shot_kind": "live",
+        "source_media_order": 6829.456,
+        "story_anchor": true,
+        "story_node_ids": [
+          "score:3"
+        ],
+        "time_provenance": {
+          "granted_by": null,
+          "pipeline_verified": false,
+          "score_anchor_t_sec": 6957.12,
+          "source": "linked_live_goal_event",
+          "t_sec": 6841.456
+        },
+        "time_status": "linked_event_ms",
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      }
+    ],
+    "first_live_verified": false,
+    "match_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+    "missing_evidence": [],
+    "protagonist": {
+      "side": "left",
+      "team_name": "阿联酋",
+      "teams": {
+        "left": "阿联酋",
+        "right": "阿曼"
+      }
+    },
+    "r3_adapter": {
+      "anchor_bindings": [
+        {
+          "all_segment_ids": [
+            "seg_opponent_opening_goal_action"
+          ],
+          "node_id": "score:1",
+          "segment_id": "seg_opponent_opening_goal_action"
+        },
+        {
+          "all_segment_ids": [
+            "seg_equalizer_goal_action"
+          ],
+          "node_id": "score:2",
+          "segment_id": "seg_equalizer_goal_action"
+        },
+        {
+          "all_segment_ids": [
+            "seg_go_ahead_goal_action"
+          ],
+          "node_id": "score:3",
+          "segment_id": "seg_go_ahead_goal_action"
+        }
+      ],
+      "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+      "missing_node_ids": [],
+      "schema": "sportscausal_r3_legacy_adapter_v1",
+      "seed_basis": "legacy_action_candidates",
+      "story_id": "comeback:1"
+    },
+    "release_authorized": false,
+    "render_ready": false,
+    "render_ready_edl": [],
+    "schema_version": "r3_legacy_agent_input_v1",
+    "segments": [
+      {
+        "adapter_seed_basis": "legacy_action_candidates",
+        "beat": "铺垫",
+        "blocking_reasons": [
+          "awaiting_internal_media_verification"
+        ],
+        "confidence": 0.593,
+        "edl_index": 1,
+        "event_ids": [
+          "atom_fill_0000_Throw_in_1327559",
+          "atom_fill_0001_Pass_1329476",
+          "atom_fill_0002_Pass_1331566",
+          "atom_fill_0003_Shot_1335974",
+          "atom_fill_0004_Goal_1337123"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "frame_ids": [],
+        "include_in_cut": true,
+        "is_replay": false,
+        "legacy_event_ids": [
+          "causal:pred_0007:atom_fill_0004_Goal_1337123"
+        ],
+        "linked_live_event_id": null,
+        "media_in": 1325.123,
+        "media_out": 1347.123,
+        "narration": "率先失球动作 causal:pred_0007:atom_fill_0004_Goal_1337123 @ 1337.123s（相对 0:1 记分牌 Δ=-73.307s；非记分牌时间）。",
+        "narrative_order": 1,
+        "preview_only": true,
+        "render_eligibility": "candidate_only",
+        "required_story_node_ids": [
+          "score:1"
+        ],
+        "role": "opponent_opening_goal_action",
+        "segment_id": "seg_opponent_opening_goal_action",
+        "selection_reason": "opponent_opening_goal_near_behind_scoreboard",
+        "shot_kind": "live",
+        "source_media_order": 1325.123,
+        "story_anchor": true,
+        "story_node_ids": [
+          "score:1"
+        ],
+        "time_provenance": {
+          "granted_by": null,
+          "pipeline_verified": false,
+          "score_anchor_t_sec": 1410.43,
+          "source": "linked_live_goal_event",
+          "t_sec": 1337.123
+        },
+        "time_status": "linked_event_ms",
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "legacy_action_candidates",
+        "beat": "蓄力",
+        "blocking_reasons": [
+          "unverified_event_ms"
+        ],
+        "confidence": 0.55,
+        "edl_index": 2,
+        "event_ids": [
+          "event_000472"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "frame_ids": [],
+        "include_in_cut": true,
+        "is_replay": false,
+        "legacy_event_ids": [
+          "event_000472"
+        ],
+        "linked_live_event_id": null,
+        "media_in": 4706.45,
+        "media_out": 4718.45,
+        "narration": "蓄力动作 射门（live，event_ms 未校准成片）。",
+        "narrative_order": 2,
+        "preview_only": true,
+        "render_eligibility": "candidate_only",
+        "required_story_node_ids": [],
+        "role": "buildup_action",
+        "segment_id": "seg_buildup_event_000472",
+        "selection_reason": "live_buildup_between_behind_and_equalizer",
+        "shot_kind": "live",
+        "source_media_order": 4706.45,
+        "story_anchor": false,
+        "story_node_ids": [],
+        "time_provenance": {
+          "pipeline_verified": false,
+          "source": "event_ms",
+          "t_sec": 4710.45
+        },
+        "time_status": "event_ms",
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "legacy_action_candidates",
+        "beat": "转折",
+        "blocking_reasons": [
+          "awaiting_internal_media_verification"
+        ],
+        "confidence": 0.518,
+        "edl_index": 3,
+        "event_ids": [
+          "atom_fill_0071_Pass_6442874",
+          "atom_fill_0072_Pass_6444487",
+          "atom_fill_0073_Assist_6447042",
+          "atom_fill_0074_Shot_6448924",
+          "atom_fill_0075_Goal_6449644"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "frame_ids": [],
+        "include_in_cut": true,
+        "is_replay": false,
+        "legacy_event_ids": [
+          "v3_goal_goalcand_01_01_to_11"
+        ],
+        "linked_live_event_id": null,
+        "media_in": 6436.924,
+        "media_out": 6458.924,
+        "narration": "equalizer 进球动作候选 v3_goal_goalcand_01_01_to_11 @ 6448.924s（相对记分牌 Δ=-86.696s）。",
+        "narrative_order": 3,
+        "preview_only": true,
+        "render_eligibility": "candidate_only",
+        "required_story_node_ids": [
+          "score:2"
+        ],
+        "role": "equalizer_goal_action",
+        "segment_id": "seg_equalizer_goal_action",
+        "selection_reason": "live_goal_near_scoreboard_anchor",
+        "shot_kind": "live",
+        "source_media_order": 6436.924,
+        "story_anchor": true,
+        "story_node_ids": [
+          "score:2"
+        ],
+        "time_provenance": {
+          "granted_by": null,
+          "pipeline_verified": false,
+          "score_anchor_t_sec": 6535.62,
+          "source": "linked_live_goal_event",
+          "t_sec": 6448.924
+        },
+        "time_status": "linked_event_ms",
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      },
+      {
+        "adapter_seed_basis": "legacy_action_candidates",
+        "beat": "高潮",
+        "blocking_reasons": [
+          "awaiting_internal_media_verification"
+        ],
+        "confidence": 0.357,
+        "edl_index": 4,
+        "event_ids": [
+          "atom_fill_0101_Win_an_aerial_duel_6831837",
+          "atom_fill_0102_Assist_6836608",
+          "atom_fill_0103_Shot_6841456",
+          "atom_fill_0104_Goal_6843088"
+        ],
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_verified": false,
+        "frame_ids": [],
+        "include_in_cut": true,
+        "is_replay": false,
+        "legacy_event_ids": [
+          "v3_goal_goalcand_02_11_to_21"
+        ],
+        "linked_live_event_id": null,
+        "media_in": 6829.456,
+        "media_out": 6851.456,
+        "narration": "go_ahead 进球动作候选 v3_goal_goalcand_02_11_to_21 @ 6841.456s（相对记分牌 Δ=-115.664s）。",
+        "narrative_order": 4,
+        "preview_only": true,
+        "render_eligibility": "candidate_only",
+        "required_story_node_ids": [
+          "score:3"
+        ],
+        "role": "go_ahead_goal_action",
+        "segment_id": "seg_go_ahead_goal_action",
+        "selection_reason": "live_goal_near_scoreboard_anchor",
+        "shot_kind": "live",
+        "source_media_order": 6829.456,
+        "story_anchor": true,
+        "story_node_ids": [
+          "score:3"
+        ],
+        "time_provenance": {
+          "granted_by": null,
+          "pipeline_verified": false,
+          "score_anchor_t_sec": 6957.12,
+          "source": "linked_live_goal_event",
+          "t_sec": 6841.456
+        },
+        "time_status": "linked_event_ms",
+        "verification_status": "draft",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语"
+      }
+    ],
+    "story_tier": "HUMAN_ATOM_ENRICHED_DEV",
+    "template": {
+      "category": "战局故事链",
+      "narrative_edges": [
+        {
+          "causal_verified": false,
+          "edge_type": "confirmed_score_state_transition",
+          "from": "score:1",
+          "relation": "confirmed_score_state_transition",
+          "to": "score:2"
+        },
+        {
+          "causal_verified": false,
+          "edge_type": "confirmed_score_state_transition",
+          "from": "score:2",
+          "relation": "confirmed_score_state_transition",
+          "to": "score:3"
+        }
+      ],
+      "narrative_goal": [
+        "表现从落后、追平到反超的战局变化",
+        "后续用首次直播动作及情节支撑故事"
+      ],
+      "subjects": [
+        "team_1"
+      ],
+      "subtype": "逆风翻盘"
+    },
+    "template_id": "comeback",
+    "template_name": "逆风翻盘",
+    "title": "逆风翻盘",
+    "verification_status": "not_render_ready"
+  },
+  "observation_only": true,
+  "probes": [
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000637",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000637",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6527.62,
+        6543.62
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000638",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000638",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6532.09,
+        6548.09
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000639",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000639",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6537.37,
+        6553.37
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000640",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000640",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6549.14,
+        6565.14
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000641",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000641",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6549.97,
+        6565.97
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "atom_fill_0088_Defensive_action_6589555",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:atom_fill_0088_Defensive_action_6589555",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6581.555,
+        6597.555
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "atom_fill_0089_Pass_6597206",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:atom_fill_0089_Pass_6597206",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6589.206,
+        6605.206
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "atom_fill_0090_Defensive_action_6598591",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:atom_fill_0090_Defensive_action_6598591",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6590.591,
+        6606.591
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "atom_fill_0091_Shot_6599535",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:atom_fill_0091_Shot_6599535",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6591.535,
+        6607.535
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "atom_fill_0092_Save_6600268",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:atom_fill_0092_Save_6600268",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6592.268,
+        6608.268
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000644",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000644",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6619.72,
+        6635.72
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000645",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000645",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6623.33,
+        6639.33
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000646",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000646",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6624.81,
+        6640.81
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000647",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000647",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6636.39,
+        6652.39
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000648",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000648",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6640.31,
+        6656.31
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000649",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000649",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6647.54,
+        6663.54
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000650",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000650",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6650.19,
+        6666.19
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000651",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000651",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6651.69,
+        6667.69
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000652",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000652",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6652.67,
+        6668.67
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000653",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000653",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6672.46,
+        6688.46
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000654",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000654",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6685.73,
+        6701.73
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000655",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000655",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6695.22,
+        6711.22
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000656",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000656",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6695.56,
+        6711.56
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000657",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000657",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6711.99,
+        6727.99
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000658",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000658",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6716.31,
+        6732.31
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000659",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000659",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6760.94,
+        6776.94
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000660",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000660",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6764.02,
+        6780.02
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000661",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000661",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6766.49,
+        6782.49
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000665",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000665",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6791.93,
+        6807.93
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000666",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000666",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6795.48,
+        6811.48
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000667",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000667",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6805.28,
+        6821.28
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000668",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000668",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6812.61,
+        6828.61
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000669",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000669",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6813.96,
+        6829.456
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "atom_fill_0100_Pass_6829010",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:atom_fill_0100_Pass_6829010",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        6821.01,
+        6829.456
+      ]
+    }
+  ],
+  "rich_context_selection": "all_events",
+  "schema": "story_first_hypotheses_poc_v1",
+  "scope": {
+    "anchor_source": "existing_v3r_edl",
+    "from_role": "equalizer_goal_action",
+    "from_segment_id": "seg_equalizer_goal_action",
+    "no_assumed_causality": true,
+    "source_interval_sec": [
+      6458.924,
+      6829.456
+    ],
+    "to_role": "go_ahead_goal_action",
+    "to_segment_id": "seg_go_ahead_goal_action"
+  },
+  "story_plan_reference": "{\"algorithm\": \"R3\", \"beats\": [{\"action_time_interval\": [1337.123, 1337.123], \"actor\": \"team_1\", \"actor_role\": \"state_subject\", \"event_ids\": [\"atom_fill_0003_Shot_1335974\", \"atom_fill_0004_Goal_1337123\"], \"kind\": \"score_state\", \"localization_status\": \"localized_annotation_candidate\", \"media_windows\": [[1335.974, 1339.123]], \"node_id\": \"score:1\", \"node_type\": \"anchor\", \"observation_task_ids\": [\"observe:1\"], \"required\": true, \"role\": \"opponent_opening_goal_action\", \"score\": \"0:1\", \"score_beneficiary\": \"team_2\", \"state_sign\": -1}, {\"action_time_interval\": [6449.644, 6449.644], \"actor\": \"team_1\", \"actor_role\": \"state_subject\", \"event_ids\": [\"atom_fill_0074_Shot_6448924\", \"atom_fill_0075_Goal_6449644\"], \"kind\": \"score_state\", \"localization_status\": \"localized_annotation_candidate\", \"media_windows\": [[6448.924, 6451.644]], \"node_id\": \"score:2\", \"node_type\": \"anchor\", \"observation_task_ids\": [\"observe:2\"], \"required\": true, \"role\": \"equalizer_goal_action\", \"score\": \"1:1\", \"score_beneficiary\": \"team_1\", \"state_sign\": 0}, {\"action_time_interval\": [6843.088, 6843.088], \"actor\": \"team_1\", \"actor_role\": \"state_subject\", \"event_ids\": [\"atom_fill_0103_Shot_6841456\", \"atom_fill_0104_Goal_6843088\"], \"kind\": \"score_state\", \"localization_status\": \"localized_annotation_candidate\", \"media_windows\": [[6841.456, 6845.088]], \"node_id\": \"score:3\", \"node_type\": \"anchor\", \"observation_task_ids\": [\"observe:3\"], \"required\": true, \"role\": \"go_ahead_goal_action\", \"score\": \"2:1\", \"score_beneficiary\": \"team_1\", \"state_sign\": 1}], \"candidate_edl\": [{\"adapter_seed_basis\": \"legacy_action_candidates\", \"beat\": \"铺垫\", \"blocking_reasons\": [\"awaiting_internal_media_verification\"], \"confidence\": 0.593, \"edl_index\": 1, \"event_ids\": [\"atom_fill_0000_Throw_in_1327559\", \"atom_fill_0001_Pass_1329476\", \"atom_fill_0002_Pass_1331566\", \"atom_fill_0003_Shot_1335974\", \"atom_fill_0004_Goal_1337123\"], \"first_live_status\": \"NOT_VERIFIED\", \"first_live_verified\": false, \"frame_ids\": [], \"include_in_cut\": true, \"is_replay\": false, \"legacy_event_ids\": [\"causal:pred_0007:atom_fill_0004_Goal_1337123\"], \"linked_live_event_id\": null, \"media_in\": 1325.123, \"media_out\": 1347.123, \"narration\": \"率先失球动作 causal:pred_0007:atom_fill_0004_Goal_1337123 @ 1337.123s（相对 0:1 记分牌 Δ=-73.307s；非记分牌时间）。\", \"narrative_order\": 1, \"preview_only\": true, \"render_eligibility\": \"candidate_only\", \"required_story_node_ids\": [\"score:1\"], \"role\": \"opponent_opening_goal_action\", \"segment_id\": \"seg_opponent_opening_goal_action\", \"selection_reason\": \"opponent_opening_goal_near_behind_scoreboard\", \"shot_kind\": \"live\", \"source_media_order\": 1325.123, \"story_anchor\": true, \"story_node_ids\": [\"score:1\"], \"time_provenance\": {\"granted_by\": null, \"pipeline_verified\": false, \"score_anchor_t_sec\": 1410.43, \"source\": \"linked_live_goal_event\", \"t_sec\": 1337.123}, \"time_status\": \"linked_event_ms\", \"verification_status\": \"draft\", \"video_id\": \"10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语\"}, {\"adapter_seed_basis\": \"legacy_action_candidates\", \"beat\": \"蓄力\", \"blocking_reasons\": [\"unverified_event_ms\"], \"confidence\": 0.55, \"edl_index\": 2, \"event_ids\": [\"event_000472\"], \"first_live_status\": \"NOT_VERIFIED\", \"first_live_verified\": false, \"frame_ids\": [], \"include_in_cut\": true, \"is_replay\": false, \"legacy_event_ids\": [\"event_000472\"], \"linked_live_event_id\": null, \"media_in\": 4706.45, \"media_out\": 4718.45, \"narration\": \"蓄力动作 射门（live，event_ms 未校准成片）。\", \"narrative_order\": 2, \"preview_only\": true, \"render_eligibility\": \"candidate_only\", \"required_story_node_ids\": [], \"role\": \"buildup_action\", \"segment_id\": \"seg_buildup_event_000472\", \"selection_reason\": \"live_buildup_between_behind_and_equalizer\", \"shot_kind\": \"live\", \"source_media_order\": 4706.45, \"story_anchor\": false, \"story_node_ids\": [], \"time_provenance\": {\"pipeline_verified\": false, \"source\": \"event_ms\", \"t_sec\": 4710.45}, \"time_status\": \"event_ms\", \"verification_status\": \"draft\", \"video_id\": \"10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语\"}, {\"adapter_seed_basis\": \"legacy_action_candidates\", \"beat\": \"转折\", \"blocking_reasons\": [\"awaiting_internal_media_verification\"], \"confidence\": 0.518, \"edl_index\": 3, \"event_ids\": [\"atom_fill_0071_Pass_6442874\", \"atom_fill_0072_Pass_6444487\", \"atom_fill_0073_Assist_6447042\", \"atom_fill_0074_Shot_6448924\", \"atom_fill_0075_Goal_6449644\"], \"first_live_status\": \"NOT_VERIFIED\", \"first_live_verified\": false, \"frame_ids\": [], \"include_in_cut\": true, \"is_replay\": false, \"legacy_event_ids\": [\"v3_goal_goalcand_01_01_to_11\"], \"linked_live_event_id\": null, \"media_in\": 6436.924, \"media_out\": 6458.924, \"narration\": \"equalizer 进球动作候选 v3_goal_goalcand_01_01_to_11 @ 6448.924s（相对记分牌 Δ=-86.696s）。\", \"narrative_order\": 3, \"preview_only\": true, \"render_eligibility\": \"candidate_only\", \"required_story_node_ids\": [\"score:2\"], \"role\": \"equalizer_goal_action\", \"segment_id\": \"seg_equalizer_goal_action\", \"selection_reason\": \"live_goal_near_scoreboard_anchor\", \"shot_kind\": \"live\", \"source_media_order\": 6436.924, \"story_anchor\": true, \"story_node_ids\": [\"score:2\"], \"time_provenance\": {\"granted_by\": null, \"pipeline_verified\": false, \"score_anchor_t_sec\": 6535.62, \"source\": \"linked_live_goal_event\", \"t_sec\": 6448.924}, \"time_status\": \"linked_event_ms\", \"verification_status\": \"draft\", \"video_id\": \"10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语\"}, {\"adapter_seed_basis\": \"legacy_action_candidates\", \"beat\": \"高潮\", \"blocking_reasons\": [\"awaiting_internal_media_verification\"], \"confidence\": 0.357, \"edl_index\": 4, \"event_ids\": [\"atom_fill_0101_Win_an_aerial_duel_6831837\", \"atom_fill_0102_Assist_6836608\", \"atom_fill_0103_Shot_6841456\", \"atom_fill_0104_Goal_6843088\"], \"first_live_status\": \"NOT_VERIFIED\", \"first_live_verified\": false, \"frame_ids\": [], \"include_in_cut\": true, \"is_replay\": false, \"legacy_event_ids\": [\"v3_goal_goalcand_02_11_to_21\"], \"linked_live_event_id\": null, \"media_in\": 6829.456, \"media_out\": 6851.456, \"narration\": \"go_ahead 进球动作候选 v3_goal_goalcand_02_11_to_21 @ 6841.456s（相对记分牌 Δ=-115.664s）。\", \"narrative_order\": 4, \"preview_only\": true, \"render_eligibility\": \"candidate_only\", \"required_story_node_ids\": [\"score:3\"], \"role\": \"go_ahead_goal_action\", \"segment_id\": \"seg_go_ahead_goal_action\", \"selection_reason\": \"live_goal_near_scoreboard_anchor\", \"shot_kind\": \"live\", \"source_media_order\": 6829.456, \"story_anchor\": true, \"story_node_ids\": [\"score:3\"], \"time_provenance\": {\"granted_by\": null, \"pipeline_verified\": false, \"score_anchor_t_sec\": 6957.12, \"source\": \"linked_live_goal_event\", \"t_sec\": 6841.456}, \"time_status\": \"linked_event_ms\", \"verification_status\": \"draft\", \"video_id\": \"10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语\"}], \"edl\": [{\"adapter_seed_basis\": \"legacy_action_candidates\", \"beat\": \"铺垫\", \"blocking_reasons\": [\"awaiting_internal_media_verification\"], \"confidence\": 0.593, \"edl_index\": 1, \"event_ids\": [\"atom_fill_0000_Throw_in_1327559\", \"atom_fill_0001_Pass_1329476\", \"atom_fill_0002_Pass_1331566\", \"atom_fill_0003_Shot_1335974\", \"atom_fill_0004_Goal_1337123\"], \"first_live_status\": \"NOT_VERIFIED\", \"first_live_verified\": false, \"frame_ids\": [], \"include_in_cut\": true, \"is_replay\": false, \"legacy_event_ids\": [\"causal:pred_0007:atom_fill_0004_Goal_1337123\"], \"linked_live_event_id\": null, \"media_in\": 1325.123, \"media_out\": 1347.123, \"narration\": \"率先失球动作 causal:pred_0007:atom_fill_0004_Goal_1337123 @ 1337.123s（相对 0:1 记分牌 Δ=-73.307s；非记分牌时间）。\", \"narrative_order\": 1, \"preview_only\": true, \"render_eligibility\": \"candidate_only\", \"required_story_node_ids\": [\"score:1\"], \"role\": \"opponent_opening_goal_action\", \"segment_id\": \"seg_opponent_opening_goal_action\", \"selection_reason\": \"opponent_opening_goal_near_behind_scoreboard\", \"shot_kind\": \"live\", \"source_media_order\": 1325.123, \"story_anchor\": true, \"story_node_ids\": [\"score:1\"], \"time_provenance\": {\"granted_by\": null, \"pipeline_verified\": false, \"score_anchor_t_sec\": 1410.43, \"source\": \"linked_live_goal_event\", \"t_sec\": 1337.123}, \"time_status\": \"linked_event_ms\", \"verification_status\": \"draft\", \"video_id\": \"10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语\"}, {\"adapter_seed_basis\": \"legacy_action_candidates\", \"beat\": \"蓄力\", \"blocking_reasons\": [\"unverified_event_ms\"], \"confidence\": 0.55, \"edl_index\": 2, \"event_ids\": [\"event_000472\"], \"first_live_status\": \"NOT_VERIFIED\", \"first_live_verified\": false, \"frame_ids\": [], \"include_in_cut\": true, \"is_replay\": false, \"legacy_event_ids\": [\"event_000472\"], \"linked_live_event_id\": null, \"media_in\": 4706.45, \"media_out\": 4718.45, \"narration\": \"蓄力动作 射门（live，event_ms 未校准成片）。\", \"narrative_order\": 2, \"preview_only\": true, \"render_eligibility\": \"candidate_only\", \"required_story_node_ids\": [], \"role\": \"buildup_action\", \"segment_id\": \"seg_buildup_event_000472\", \"selection_reason\": \"live_buildup_between_behind_and_equalizer\", \"shot_kind\": \"live\", \"source_media_order\": 4706.45, \"story_anchor\": false, \"story_node_ids\": [], \"time_provenance\": {\"pipeline_verified\": false, \"source\": \"event_ms\", \"t_sec\": 4710.45}, \"time_status\": \"event_ms\", \"verification_status\": \"draft\", \"video_id\": \"10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语\"}, {\"adapter_seed_basis\": \"legacy_action_candidates\", \"beat\": \"转折\", \"blocking_reasons\": [\"aw",
+  "verified_long_range_causal_links": 0
+}

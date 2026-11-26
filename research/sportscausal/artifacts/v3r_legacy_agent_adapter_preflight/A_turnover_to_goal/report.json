@@ -1,0 +1,56 @@
+{
+  "schema": "sportscausal_r3_legacy_adapter_v1",
+  "status": "ADAPTER_PREPARED_ZERO_HTTP",
+  "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+  "story_id": "turnover_to_goal:1",
+  "seed_basis": "r3_anchor_materials",
+  "n_segments": 5,
+  "duration_sec": 23.54199999999946,
+  "n_anchor_bindings": 2,
+  "n_observation_tasks": 2,
+  "annotated_nonlive_overlaps": [],
+  "input_hashes": {
+    "artifacts/stage1_2_evidence_preflight_20261125/A_uae_oman/keeper_rescue/evidence.json": "9322933a9c3ef15a990c9377ed498e97b73cb20350bbfe279114bf2f3b4043fc",
+    "/data2/lpy1/_story_va_outputs/v3/plan2/full_e2e_A_strict_lin_20261108_095704/01_to_04_fresh_v3r/01_enrich/events_enriched.json": "33958b106f3daddd8830e8735f7583527b3aa3f39ca4b6a805b6b3cfe0fb0299",
+    "artifacts/v3r_general_r3_preflight/A/turnover_to_goal__1/story_graph.json": "8a026218d409eceb694a6a839d4440c3d0626a4bfd050cefbec8423699493c23",
+    "artifacts/v3r_general_r3_preflight/A/turnover_to_goal__1/initial_edl.json": "04c3e1197c705ec28342cc2d16c41cb99e80b3d0e90b92d378a3a4ec050a4d35",
+    "artifacts/v3r_general_r3_preflight/A/turnover_to_goal__1/observation_tasks.json": "04bd3cc55803d1561e69b3347953fa8e3d46959af558288fc80f5e540580346a",
+    "artifacts/v3r_general_r3_preflight/A/turnover_to_goal__1/context_pool.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+  },
+  "original_p1": {
+    "pairs": [
+      [
+        "seg:1",
+        "seg:5"
+      ]
+    ],
+    "intervals": [
+      {
+        "interval_id": "interval_01",
+        "from_segment_id": "seg:1",
+        "to_segment_id": "seg:5",
+        "score_status": "OFFLINE_RESEARCH_ONLY",
+        "scope": {
+          "from_segment_id": "seg:1",
+          "from_role": "turnover_recovery",
+          "to_segment_id": "seg:5",
+          "to_role": "scoring_goal_action",
+          "source_interval_sec": [
+            6824.07,
+            6841.456
+          ],
+          "anchor_source": "existing_v3r_edl",
+          "no_assumed_causality": true
+        },
+        "status": "PREPARED_ONLY",
+        "reason": null
+      }
+    ],
+    "proposals": 0,
+    "http_calls": 0,
+    "p1_function": "story_first_search.discover_story_first",
+    "missing_nodes_not_p1_anchors": []
+  },
+  "first_live_verified": false,
+  "release_authorized": false
+}

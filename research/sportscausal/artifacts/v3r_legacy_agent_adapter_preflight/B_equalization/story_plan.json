@@ -1,0 +1,285 @@
+{
+  "schema_version": "r3_legacy_agent_input_v1",
+  "algorithm": "R3",
+  "template_id": "equalization",
+  "template_name": "落后追平",
+  "template": {
+    "category": "战局故事链",
+    "subtype": "落后追平",
+    "narrative_goal": [
+      "落后到追平的阶段性战局变化"
+    ],
+    "subjects": [
+      "team_1"
+    ],
+    "narrative_edges": [
+      {
+        "from": "score:1",
+        "to": "score:2",
+        "edge_type": "confirmed_score_state_transition",
+        "relation": "confirmed_score_state_transition",
+        "causal_verified": false
+      }
+    ]
+  },
+  "title": "落后追平",
+  "match_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+  "protagonist": {
+    "side": "left",
+    "team_name": "奥萨苏纳",
+    "teams": {
+      "left": "奥萨苏纳",
+      "right": "塞尔塔维戈"
+    }
+  },
+  "beats": [
+    {
+      "node_id": "score:1",
+      "node_type": "anchor",
+      "kind": "score_state",
+      "actor": "team_1",
+      "actor_role": "state_subject",
+      "required": true,
+      "score": "0:1",
+      "state_sign": -1,
+      "score_beneficiary": "team_2",
+      "event_ids": [
+        "atom_fill_0036_Shot_1977587",
+        "atom_fill_0037_Goal_1979427"
+      ],
+      "media_windows": [
+        [
+          1977.587,
+          1981.427
+        ]
+      ],
+      "action_time_interval": [
+        1979.427,
+        1979.427
+      ],
+      "observation_task_ids": [
+        "observe:1"
+      ],
+      "localization_status": "localized_annotation_candidate",
+      "role": "opponent_opening_goal_action"
+    },
+    {
+      "node_id": "score:2",
+      "node_type": "missing",
+      "kind": "score_state",
+      "actor": "team_1",
+      "actor_role": "state_subject",
+      "required": true,
+      "score": "1:1",
+      "state_sign": 0,
+      "score_beneficiary": "team_1",
+      "event_ids": [],
+      "media_windows": [],
+      "action_time_interval": [
+        2480.82,
+        2675.82
+      ],
+      "observation_task_ids": [
+        "observe:5"
+      ],
+      "localization_status": "missing_action",
+      "role": "equalizer_goal_action"
+    }
+  ],
+  "story_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "missing_evidence": [
+    {
+      "node": {
+        "node_id": "score:2",
+        "node_type": "missing",
+        "kind": "score_state",
+        "actor": "team_1",
+        "actor_role": "state_subject",
+        "required": true,
+        "score": "1:1",
+        "state_sign": 0,
+        "score_beneficiary": "team_1",
+        "event_ids": [],
+        "media_windows": [],
+        "action_time_interval": [
+          2480.82,
+          2675.82
+        ],
+        "observation_task_ids": [
+          "observe:5"
+        ],
+        "localization_status": "missing_action"
+      },
+      "tasks": [
+        {
+          "task_type": "missing_goal_localization",
+          "event_ids": [],
+          "score_beneficiary": "team_1",
+          "score_path_index": 2,
+          "score_before": "0:1",
+          "score_after": "1:1",
+          "search_interval": [
+            2480.82,
+            2675.82
+          ],
+          "confirmation_t_sec": 2660.82,
+          "carrier_event_id": "event_000382",
+          "media_windows": [],
+          "reason": "missing_or_nonunique_goal_localization",
+          "questions": [
+            "locate actual goal action and its buildup",
+            "verify first live footage",
+            "identify execution and attack roles"
+          ],
+          "resolved": false,
+          "task_id": "observe:5",
+          "video_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+          "preview_only": true
+        }
+      ]
+    }
+  ],
+  "segments": [
+    {
+      "segment_id": "seg:1",
+      "source_material_id": "material:1",
+      "video_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+      "media_in": 1977.587,
+      "media_out": 1981.427,
+      "event_ids": [
+        "atom_fill_0036_Shot_1977587",
+        "atom_fill_0037_Goal_1979427"
+      ],
+      "short_chain_ids": [
+        "pred_0017",
+        "pred_0018"
+      ],
+      "story_node_ids": [
+        "score:1"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 1,
+      "narrative_order": 1,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "score:1"
+      ],
+      "role": "opponent_opening_goal_action",
+      "beat": "opponent_opening_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 1977.587,
+      "adapter_seed_basis": "r3_anchor_materials"
+    }
+  ],
+  "edl": [
+    {
+      "segment_id": "seg:1",
+      "source_material_id": "material:1",
+      "video_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+      "media_in": 1977.587,
+      "media_out": 1981.427,
+      "event_ids": [
+        "atom_fill_0036_Shot_1977587",
+        "atom_fill_0037_Goal_1979427"
+      ],
+      "short_chain_ids": [
+        "pred_0017",
+        "pred_0018"
+      ],
+      "story_node_ids": [
+        "score:1"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 1,
+      "narrative_order": 1,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "score:1"
+      ],
+      "role": "opponent_opening_goal_action",
+      "beat": "opponent_opening_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 1977.587,
+      "adapter_seed_basis": "r3_anchor_materials"
+    }
+  ],
+  "candidate_edl": [
+    {
+      "segment_id": "seg:1",
+      "source_material_id": "material:1",
+      "video_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+      "media_in": 1977.587,
+      "media_out": 1981.427,
+      "event_ids": [
+        "atom_fill_0036_Shot_1977587",
+        "atom_fill_0037_Goal_1979427"
+      ],
+      "short_chain_ids": [
+        "pred_0017",
+        "pred_0018"
+      ],
+      "story_node_ids": [
+        "score:1"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 1,
+      "narrative_order": 1,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "score:1"
+      ],
+      "role": "opponent_opening_goal_action",
+      "beat": "opponent_opening_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 1977.587,
+      "adapter_seed_basis": "r3_anchor_materials"
+    }
+  ],
+  "render_ready_edl": [],
+  "render_ready": false,
+  "first_live_verified": false,
+  "release_authorized": false,
+  "verification_status": "not_render_ready",
+  "r3_adapter": {
+    "schema": "sportscausal_r3_legacy_adapter_v1",
+    "story_id": "equalization:1",
+    "seed_basis": "r3_anchor_materials",
+    "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+    "anchor_bindings": [
+      {
+        "node_id": "score:1",
+        "segment_id": "seg:1",
+        "all_segment_ids": [
+          "seg:1"
+        ]
+      }
+    ],
+    "missing_node_ids": [
+      "score:2"
+    ]
+  }
+}

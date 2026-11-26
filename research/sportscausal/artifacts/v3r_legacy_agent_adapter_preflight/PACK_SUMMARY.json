@@ -1,0 +1,129 @@
+{
+  "schema": "v3r_legacy_agent_adapter_preflight_pack_v1",
+  "code_commit": "03c67e8129e635ce7c4b28dae8f3686a0419698b",
+  "frozen_r3": "539c421",
+  "route": "original_P1_P2_P3_double_loop_unchanged",
+  "cf397a7_single_loop_executed": false,
+  "http_calls": 0,
+  "video_decode": false,
+  "render": false,
+  "history_rerun": false,
+  "unittest": {
+    "module": "test_r3_legacy_agent_adapter",
+    "ran": 8,
+    "ok": 8
+  },
+  "algo_git_clean": true,
+  "p1_function": "story_first_search.discover_story_first",
+  "inputs": {
+    "A_evidence": "artifacts/stage1_2_evidence_preflight_20261125/A_uae_oman/keeper_rescue/evidence.json",
+    "B_evidence": "artifacts/stage1_2_evidence_preflight_20261125/B_osasuna_celta/keeper_rescue/evidence.json",
+    "A_events": "/data2/lpy1/_story_va_outputs/v3/plan2/full_e2e_A_strict_lin_20261108_095704/01_to_04_fresh_v3r/01_enrich/events_enriched.json",
+    "B_events": "/data2/lpy1/_story_va_outputs/v3/plan2/full_e2e_B_strict_lin_20261108_095704/01_to_04_fresh_v3r/01_enrich/events_enriched.json",
+    "A_comeback_story": "artifacts/v3r_general_r3_preflight/A/comeback__1/story_graph.json",
+    "A_keeper_story": "artifacts/v3r_general_r3_preflight/A/keeper_rescue__2/story_graph.json",
+    "A_turnover_story": "artifacts/v3r_general_r3_preflight/A/turnover_to_goal__1/story_graph.json",
+    "B_eq_story": "artifacts/v3r_general_r3_preflight/B/equalization__1/story_graph.json",
+    "A_legacy_seed": "artifacts/v3r_general_r3_preflight/A/comeback__1/legacy_seed.json",
+    "algo_story_first_search": "../../11.20sstory_chain/algo/story_video_agent_v3/story_first_search.py"
+  },
+  "input_sha256": {
+    "A_evidence": "9322933a9c3ef15a990c9377ed498e97b73cb20350bbfe279114bf2f3b4043fc",
+    "B_evidence": "a673769fe1b81f93a34f9c987302af49f8988cbf02c429ad97b1317bf7b33292",
+    "A_events": "33958b106f3daddd8830e8735f7583527b3aa3f39ca4b6a805b6b3cfe0fb0299",
+    "B_events": "c47015ccc7009c1a5869174709ce76e73454a6c6fa4b34bc3a34cd8812e19b6e",
+    "A_comeback_story": "24ee0c469c950a95d5009f9326f391a72ac48cb6e99e77533bb67689098b47b4",
+    "A_keeper_story": "9742e9395c835d478879480bc93bf11e1bece9ab2420b2696dbdd3532977251a",
+    "A_turnover_story": "8a026218d409eceb694a6a839d4440c3d0626a4bfd050cefbec8423699493c23",
+    "B_eq_story": "f072887bb676893a4359e1e2180d4ebf91e58393af62f4cb18e689b5f0072431",
+    "A_legacy_seed": "dec28e8e9d82825167e1ef0ac56f068a0b84578a7116f683e17b625d9f4a9274",
+    "algo_story_first_search": "f7270f3d4fb83f260e4736faee453140cbcd295a881aebfdba637a8ae1c8f433"
+  },
+  "stories": {
+    "A_comeback": {
+      "story_id": "comeback:1",
+      "seed_basis": "legacy_action_candidates",
+      "n_segments": 4,
+      "duration_sec": 78.0,
+      "n_anchor_bindings": 3,
+      "n_intervals": 2,
+      "pairs": [
+        [
+          "seg_opponent_opening_goal_action",
+          "seg_equalizer_goal_action"
+        ],
+        [
+          "seg_equalizer_goal_action",
+          "seg_go_ahead_goal_action"
+        ]
+      ],
+      "missing_nodes_not_p1_anchors": [],
+      "template_id": "comeback",
+      "template_name": "逆风翻盘"
+    },
+    "A_keeper_rescue": {
+      "story_id": "keeper_rescue:2",
+      "seed_basis": "r3_anchor_materials",
+      "n_segments": 6,
+      "duration_sec": 70.53000000000043,
+      "n_anchor_bindings": 6,
+      "n_intervals": 5,
+      "pairs": [
+        [
+          "seg:1",
+          "seg:2"
+        ],
+        [
+          "seg:2",
+          "seg:3"
+        ],
+        [
+          "seg:3",
+          "seg:4"
+        ],
+        [
+          "seg:4",
+          "seg:5"
+        ],
+        [
+          "seg:5",
+          "seg:6"
+        ]
+      ],
+      "missing_nodes_not_p1_anchors": [],
+      "template_id": "keeper_rescue",
+      "template_name": "同队门将多次化险"
+    },
+    "A_turnover_to_goal": {
+      "story_id": "turnover_to_goal:1",
+      "seed_basis": "r3_anchor_materials",
+      "n_segments": 5,
+      "duration_sec": 23.54199999999946,
+      "n_anchor_bindings": 2,
+      "n_intervals": 1,
+      "pairs": [
+        [
+          "seg:1",
+          "seg:5"
+        ]
+      ],
+      "missing_nodes_not_p1_anchors": [],
+      "template_id": "turnover_to_goal",
+      "template_name": "攻守转换与关键破门"
+    },
+    "B_equalization": {
+      "story_id": "equalization:1",
+      "seed_basis": "r3_anchor_materials",
+      "n_segments": 1,
+      "duration_sec": 3.839999999999918,
+      "n_anchor_bindings": 1,
+      "n_intervals": 0,
+      "pairs": [],
+      "missing_nodes_not_p1_anchors": [
+        "score:2"
+      ],
+      "template_id": "equalization",
+      "template_name": "落后追平"
+    }
+  }
+}

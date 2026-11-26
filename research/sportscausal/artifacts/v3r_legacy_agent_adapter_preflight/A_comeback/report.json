@@ -1,0 +1,81 @@
+{
+  "schema": "sportscausal_r3_legacy_adapter_v1",
+  "status": "ADAPTER_PREPARED_ZERO_HTTP",
+  "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+  "story_id": "comeback:1",
+  "seed_basis": "legacy_action_candidates",
+  "n_segments": 4,
+  "duration_sec": 78.0,
+  "n_anchor_bindings": 3,
+  "n_observation_tasks": 8,
+  "annotated_nonlive_overlaps": [],
+  "input_hashes": {
+    "artifacts/stage1_2_evidence_preflight_20261125/A_uae_oman/keeper_rescue/evidence.json": "9322933a9c3ef15a990c9377ed498e97b73cb20350bbfe279114bf2f3b4043fc",
+    "/data2/lpy1/_story_va_outputs/v3/plan2/full_e2e_A_strict_lin_20261108_095704/01_to_04_fresh_v3r/01_enrich/events_enriched.json": "33958b106f3daddd8830e8735f7583527b3aa3f39ca4b6a805b6b3cfe0fb0299",
+    "artifacts/v3r_general_r3_preflight/A/comeback__1/story_graph.json": "24ee0c469c950a95d5009f9326f391a72ac48cb6e99e77533bb67689098b47b4",
+    "artifacts/v3r_general_r3_preflight/A/comeback__1/initial_edl.json": "fff13718aa9957943a6a710cc5271068d9e21685b36fcabd7250d98f4ab63f60",
+    "artifacts/v3r_general_r3_preflight/A/comeback__1/observation_tasks.json": "d7d77facd34914401404f7205d26884c063f7447cc959ae30f8929af72529488",
+    "artifacts/v3r_general_r3_preflight/A/comeback__1/context_pool.json": "2e809d63de9490ba1f8bdd89c1e8607b3df1022164413e48591724deff566ecb",
+    "artifacts/v3r_general_r3_preflight/A/comeback__1/legacy_seed.json": "dec28e8e9d82825167e1ef0ac56f068a0b84578a7116f683e17b625d9f4a9274"
+  },
+  "original_p1": {
+    "pairs": [
+      [
+        "seg_opponent_opening_goal_action",
+        "seg_equalizer_goal_action"
+      ],
+      [
+        "seg_equalizer_goal_action",
+        "seg_go_ahead_goal_action"
+      ]
+    ],
+    "intervals": [
+      {
+        "interval_id": "interval_01",
+        "from_segment_id": "seg_opponent_opening_goal_action",
+        "to_segment_id": "seg_equalizer_goal_action",
+        "score_status": "OFFLINE_RESEARCH_ONLY",
+        "scope": {
+          "from_segment_id": "seg_opponent_opening_goal_action",
+          "from_role": "opponent_opening_goal_action",
+          "to_segment_id": "seg_equalizer_goal_action",
+          "to_role": "equalizer_goal_action",
+          "source_interval_sec": [
+            1347.123,
+            6436.924
+          ],
+          "anchor_source": "existing_v3r_edl",
+          "no_assumed_causality": true
+        },
+        "status": "PREPARED_ONLY",
+        "reason": null
+      },
+      {
+        "interval_id": "interval_02",
+        "from_segment_id": "seg_equalizer_goal_action",
+        "to_segment_id": "seg_go_ahead_goal_action",
+        "score_status": "OFFLINE_RESEARCH_ONLY",
+        "scope": {
+          "from_segment_id": "seg_equalizer_goal_action",
+          "from_role": "equalizer_goal_action",
+          "to_segment_id": "seg_go_ahead_goal_action",
+          "to_role": "go_ahead_goal_action",
+          "source_interval_sec": [
+            6458.924,
+            6829.456
+          ],
+          "anchor_source": "existing_v3r_edl",
+          "no_assumed_causality": true
+        },
+        "status": "PREPARED_ONLY",
+        "reason": null
+      }
+    ],
+    "proposals": 0,
+    "http_calls": 0,
+    "p1_function": "story_first_search.discover_story_first",
+    "missing_nodes_not_p1_anchors": []
+  },
+  "first_live_verified": false,
+  "release_authorized": false
+}
