@@ -96,9 +96,15 @@ def state_candidates(template,score_doc,bundle):
             gaps.append({"from":a["node_id"],"to":b["node_id"],
                 "certain_interior":[left[1],right[0]] if left and right and left[1]<right[0] else None,
                 "context_candidates":context,"causal_verified":False})
+        last=nodes[-1]["action_time_interval"]
+        tail=[{"episode_id":ep["episode_id"],"predicate":ep["predicate"],"actor":ep["actor"],
+               "actor_role":ep["actor_role"],"event_ids":ep["event_ids"],"media_windows":ep["media_windows"]}
+              for ep in bundle["episodes"] if last and ep["predicate"] in {"attacking_threat","goalkeeper_rescue"}
+              and not set(ep["event_ids"]) & used and all(last[1]<w[0] for w in ep["media_windows"])]
         result.append({**c,"nodes":nodes,"edges":[{"from":a["node_id"],"to":b["node_id"],
             "relation":"confirmed_score_state_transition","causal_verified":False}
             for a,b in zip(nodes,nodes[1:])],"interval_context":gaps,
             "terminal_basis":"last_confirmed_score_not_independent_final_whistle",
+            "post_last_anchor_context_candidates":tail,
             "unlocalized_state_indices":[n["score_path_index"] for n in nodes if n["localization_status"]=="missing_action"]})
     return result
