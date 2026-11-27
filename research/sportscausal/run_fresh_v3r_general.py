@@ -122,6 +122,10 @@ def run(args):
     video_id = args.video_id or video.stem
     check(isinstance(video_id, str) and video_id.strip(), "empty video ID")
     selected = set(args.template_id or [])
+    legacy_path = Path(args.legacy_seed_manifest).resolve(strict=True) if args.legacy_seed_manifest else None
+    check(not legacy_path or not selected or "comeback" in selected,
+          "legacy seed supplied but comeback excluded")
+    legacy = r3_story_pipeline.load_seed_manifest(legacy_path)
     defaults = r2bc_patterns.default_templates()
     supported = {"keeper_rescue", "alternating_threats"} | {t["template_id"] for t in defaults}
     check(selected <= supported, "unknown/unimplemented template: " + str(sorted(selected - supported)))
@@ -157,6 +161,8 @@ def run(args):
         "identity_note": "Input paths and hashes record caller-selected pairing; not visual identity proof.",
         "entry_sha256": sha256(Path(__file__).resolve()),
         "requested_templates": sorted(selected) if selected else sorted(supported),
+        "legacy_seed_manifest": {"path": str(legacy_path), "sha256": sha256(legacy_path)} if legacy_path else None,
+        "legacy_seed_policy": "explicit_existing_source_matched_seed_only; no automatic T01 rerun",
         "stages": [], "paid_api_enabled": False, "http_calls": 0,
         "quality_verified": False, "first_live_verified": False, "release_authorized": False,
         "argv": sys.argv,
@@ -236,13 +242,13 @@ def run(args):
         aresults = {tid: read(a4dir / (tid + ".json")) for tid in r3_story_pipeline.R2A_RESULTS}
         # Compile the unchanged complete pack, then restrict materialized outputs
         # only if requested. Keep mixed score-context strictly separate from the 8 types.
-        pack = r3_story_pipeline.compile_pack(evidence, aresults, bc)
+        pack = r3_story_pipeline.compile_pack(evidence, aresults, bc, legacy=legacy)
         if selected:
             pack["stories"] = {sid: b for sid,b in pack["stories"].items()
                                if b["story_graph"]["template_id"] in selected}
             pack["template_counts"] = {k:v for k,v in pack["template_counts"].items() if k in selected}
         r3dir = out / "08_r3"
-        r3_story_pipeline.write_pack(r3dir, pack, {})
+        r3_story_pipeline.write_pack(r3dir, pack, legacy)
         completed("08_r3", n_stories=len(pack["stories"]), template_counts=pack["template_counts"])
         audit["status"] = "COMPLETE"
         audit["artifacts"] = {str(p.relative_to(out)): sha256(p) for p in sorted(out.rglob("*.json"))
@@ -271,6 +277,7 @@ def parser():
     p.add_argument("--expected-events-sha256")
     p.add_argument("--expected-atom-source-sha256")
     p.add_argument("--template-id", action="append", help="Optional output filter; default all 8 + separate mixed hypothesis")
+    p.add_argument("--legacy-seed-manifest", help="Explicit existing native comeback seed manifest; preserve original bytes")
     return p
 
 
