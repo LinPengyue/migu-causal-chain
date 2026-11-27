@@ -39,8 +39,45 @@ def validate_source_events(evidence,doc):
         check(not known_nonlive(index[eid]),"evidence atom is annotated nonlive: "+eid)
     return events
 
-def _role(n):
+def _role(n, template_id=None):
     if n.get("kind") in ("score_state","score_outcome"):
+        # State sign describes the scoreboard AFTER a goal, not the goal's
+        # narrative function. A continuous lead can contain several distinct
+        # score changes. Derive each positive-state goal role from its
+        # already bound transition, never from a new clip or a case name.
+        # Keep other templates and historical legacy seed roles unchanged.
+        if (template_id=="lead_preservation" and n.get("kind")=="score_state"
+                and n.get("state_sign")==1 and n.get("node_type")=="anchor"):
+            roles=n.get("goal_roles") or []
+            check(len(roles)==1,"lead anchor requires one bound goal transition")
+            b=roles[0].get("score_binding") or {}
+            i=b.get("path_index")
+            check(type(i) is int and i>0 and i==n.get("score_path_index"),
+                  "lead anchor score transition identity mismatch")
+            check(b.get("score_after")==n.get("score") and b.get("event_id") in n.get("event_ids",[]),
+                  "lead anchor score/event binding mismatch")
+            actor=n.get("actor")
+            beneficiary=b.get("score_beneficiary")
+            check(actor in {"team_1","team_2"} and beneficiary in {"team_1","team_2"},
+                  "lead anchor requires bound teams")
+            def scores(value):
+                parts=str(value).split(":")
+                check(len(parts)==2 and all(p.isdigit() for p in parts),"invalid bound score")
+                return tuple(int(p) for p in parts)
+            before,after=scores(b.get("score_before")),scores(b.get("score_after"))
+            delta=tuple(a-z for a,z in zip(after,before))
+            check(delta in {(1,0),(0,1)},"not a single-goal score transition")
+            scoring_side=delta.index(1)
+            subject_side=scoring_side if actor==beneficiary else 1-scoring_side
+            pre=before[subject_side]-before[1-subject_side]
+            post=after[subject_side]-after[1-subject_side]
+            check(post>0,"lead anchor contradicts bound score transition")
+            if pre==0 and actor==beneficiary:
+                return "go_ahead_goal_action"
+            check(pre>0,"lead anchor has incompatible previous score")
+            if actor==beneficiary:
+                return f"lead_extend_{i}_goal_action"
+            return f"opponent_reduce_lead_{i}_goal_action"
         return {-1:"opponent_opening_goal_action",0:"equalizer_goal_action",
                 1:"go_ahead_goal_action"}.get(n.get("state_sign"),"scoring_goal_action")
     return n.get("predicate") or "required_path_context"
@@ -80,7 +117,7 @@ def compact_story_context(graph,rows,tasks,evidence):
     # Full graph/EDL remains separately available. Only include compact
     # chain IDs/known membership, not unsupported causal claims.
     required=[{"node_id":n["node_id"],"type":n["node_type"],
-               "role":_role(n) if n["node_type"] in {"anchor","missing"} else n["node_type"],
+               "role":_role(n,graph["template_id"]) if n["node_type"] in {"anchor","missing"} else n["node_type"],
                "actor":n.get("actor"),"score":n.get("score"),
                "segment_ids":[r["segment_id"] for r in rows if n["node_id"] in r["required_story_node_ids"]]}
               for n in graph["nodes"] if n["required"]]
@@ -138,7 +175,7 @@ def adapt(graph,initial,legacy,tasks,context,evidence,events,*,seed="auto"):
         # The same physical segment may represent several semantic nodes.
         required=[nid for nid in bound if nodes[nid]["required"]]
         anchors=[nid for nid in required if nodes[nid]["node_type"]=="anchor"]
-        role=r.get("role") if use_legacy else (_role(nodes[anchors[0]]) if anchors else "story_context")
+        role=r.get("role") if use_legacy else (_role(nodes[anchors[0]],graph["template_id"]) if anchors else "story_context")
         check(isinstance(role,str) and role,"missing native role")
         row={**deepcopy(r),"segment_id":sid,"video_id":graph["video_id"],"event_ids":event_ids,
              "story_node_ids":bound,"required_story_node_ids":required,
@@ -204,7 +241,7 @@ def adapt(graph,initial,legacy,tasks,context,evidence,events,*,seed="auto"):
                       "narrative_edges":[{k:edge[k] for k in ("from","to","edge_type","relation","causal_verified") if k in edge}
                                          for edge in graph.get("edges",[]) if edge.get("selected") is not False]},
           "title":graph["subtype"],"match_id":graph["video_id"],"protagonist":protagonist,
-          "beats":[{**_node_summary(n),"role":_role(n) if n["node_type"] in {"anchor","missing"} else n["node_type"]}
+          "beats":[{**_node_summary(n),"role":_role(n,graph["template_id"]) if n["node_type"] in {"anchor","missing"} else n["node_type"]}
                    for n in nodes.values() if n["required"] or n["node_type"]=="transition"],
           "story_tier":graph["input_tier"],"missing_evidence":missing,
           "segments":deepcopy(rows),"edl":deepcopy(rows),"candidate_edl":deepcopy(rows),
