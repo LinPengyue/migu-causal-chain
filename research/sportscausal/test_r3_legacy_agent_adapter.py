@@ -1,6 +1,6 @@
 import unittest
 from copy import deepcopy
-from r3_legacy_agent_adapter import adapt, validate_source_events
+from r3_legacy_agent_adapter import adapt, validate_source_events, _role
 
 def fixture():
     e={"video_id":"v","input_tier":"RAW_EVENTS_ONLY","duration_sec":300,
@@ -87,6 +87,42 @@ class AdapterTests(unittest.TestCase):
         before=deepcopy((g,r,e,events))
         adapt(g,r,None,[],[],e,events)
         self.assertEqual((g,r,e,events),before)
+
+    def test_lead_roles_from_bound_score_changes(self):
+        g,r,e,events=fixture()
+        g["template_id"]="lead_preservation"
+        def node(i,before,after,beneficiary,subject,eid):
+            return {"kind":"score_state","node_type":"anchor","state_sign":1,
+                    "score_path_index":i,"score":after,"actor":subject,
+                    "event_ids":[eid],"goal_roles":[{"score_binding":{
+                        "path_index":i,"score_before":before,"score_after":after,
+                        "score_beneficiary":beneficiary,"event_id":eid}}]}
+        for idx,(before,after) in enumerate([("0:0","0:1"),("0:1","0:2")]):
+            eid=["a","b"][idx]
+            g["nodes"][idx].update(node(idx+1,before,after,"team_2","team_2",eid))
+        g["subjects"]=["team_2"]
+        b=adapt(g,r,None,[],[],e,events)
+        expected=["go_ahead_goal_action","lead_extend_2_goal_action"]
+        self.assertEqual([x["role"] for x in b["edl"]],expected)
+        self.assertEqual([x["role"] for x in b["plan"]["beats"]],expected)
+        self.assertEqual([x["role"] for x in b["plan"]["agent_story_context"]["required_nodes"]],expected)
+        self.assertEqual([(x["media_in"],x["media_out"],x["event_ids"]) for x in b["edl"]],
+                         [(x["media_in"],x["media_out"],x["event_ids"]) for x in r])
+        # A further lead extension is a different scoring transition, not
+        # the same goal duplicated. A later opposition score narrows the lead.
+        self.assertEqual(_role(node(3,"0:2","0:3","team_2","team_2","c"),"lead_preservation"),
+                         "lead_extend_3_goal_action")
+        self.assertEqual(_role(node(4,"0:3","1:3","team_1","team_2","d"),"lead_preservation"),
+                         "opponent_reduce_lead_4_goal_action")
+        # Scoreboard column orientation follows the observed increment,
+        # not a hardcoded team_1=left assumption.
+        self.assertEqual(_role(node(3,"2:0","3:0","team_2","team_2","c"),"lead_preservation"),
+                         "lead_extend_3_goal_action")
+        self.assertEqual(_role(g["nodes"][1],"comeback"),"go_ahead_goal_action")
+        wrong=deepcopy(g["nodes"][1])
+        wrong["goal_roles"][0]["score_binding"]["event_id"]="not_b"
+        with self.assertRaises(ValueError):
+            _role(wrong,"lead_preservation")
 
 if __name__=="__main__":
     unittest.main()
