@@ -1,0 +1,25 @@
+{
+  "schema": "sportscausal_story_anchors_v2",
+  "video_id": "10月20日 25-26赛季西甲第9轮 莱万特VS巴列卡诺 国语",
+  "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "template": {
+    "template_id": "turnover_to_goal",
+    "category": "关键转折故事链",
+    "subtype": "攻守转换与关键破门",
+    "narrative_goal": [
+      "球权夺回到比分结果的关系路径候选"
+    ],
+    "pattern": {
+      "operator": "relation_path",
+      "start_predicate": "turnover_recovery",
+      "end_predicate": "scoring_outcome",
+      "max_span_sec": 45,
+      "max_edge_gap_sec": 15
+    }
+  },
+  "operator": "relation_path",
+  "candidates": [],
+  "quality_verified": false,
+  "first_live_verified": false,
+  "release_authorized": false
+}

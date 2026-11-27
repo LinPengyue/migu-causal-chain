@@ -1,0 +1,168 @@
+{
+  "schema": "sportscausal_fresh_v3r_general_v1",
+  "status": "COMPLETE",
+  "git_head": "0e83213f2850d3e2cddc0b8291c197c9a83ef425",
+  "delivery_ref": "93804fbf9591b54d86fb170385491ed4ced024bd",
+  "video_id": "10月20日 25-26赛季西甲第9轮 莱万特VS巴列卡诺 国语",
+  "duration_sec": 7764.074,
+  "inputs": {
+    "match_json": {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/data/交付_out/10月20日_25-26赛季西甲第9轮_莱万特VS巴列卡诺_国语.json",
+      "sha256": "cffe1f86aa386e668b6ad3ce8a654113a814783b9343db4ce63bb6ebb5f2e9c6"
+    },
+    "source_mp4": {
+      "path": "/mnt/data4/migu/10月20日 25-26赛季西甲第9轮 莱万特VS巴列卡诺 国语.mp4",
+      "sha256": "5ab8ee77ed0d0cb56f020348d4c73b4c27c738f6285db941e1797f87bb1d4d73"
+    },
+    "causal_atoms_json": {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/data/交付_out/10月20日_25-26赛季西甲第9轮_莱万特VS巴列卡诺_国语_causal.json",
+      "sha256": "e88ce072fcd22c2a723abd3374b9c29f6ef5584fe8ac0bd6431e4c84decfdbd1"
+    }
+  },
+  "score_side_mapping": {
+    "left": "team_1",
+    "right": "team_2"
+  },
+  "score_mapping_provenance": "independently_cross_checked_intake_FH-35DA83FD: left scoreboard column = team_1 莱万特, right = team_2 巴列卡诺; matches T01 score_path 0:0→0:1→0:2→0:3 with delta_side=right for Rayo goals",
+  "n_raw_valid_media_windows": 443,
+  "n_raw_events": 443,
+  "identity_note": "Input paths and hashes record caller-selected pairing; not visual identity proof.",
+  "entry_sha256": "1a079f03346d6758bd0565a56594097e43d2770b889bea90c3df25aed2a87899",
+  "requested_templates": [
+    "alternating_threats",
+    "comeback",
+    "equalization",
+    "keeper_rescue",
+    "lead_preservation",
+    "set_piece_breakthrough",
+    "threat_phase_change",
+    "turnover_to_goal"
+  ],
+  "stages": [
+    {
+      "stage": "01_enrich",
+      "n_raw": 443,
+      "n_enriched": 567,
+      "n_injected": 124,
+      "sha256": "8dd1dce98898dfbd9c0ae1bcb3bda0e8034e5b226de814ae328dde7acce4eff6"
+    },
+    {
+      "stage": "02_strip831",
+      "n_events": 567,
+      "n_chains": 78,
+      "sha256": "dccef2e76ab61659f501c8e80deeaab4b47f1acb086149703183c83e462c54d9"
+    },
+    {
+      "stage": "03_v1_adapt",
+      "n_chains": 80,
+      "sha256": "27da952886846cc7df375e0ae609a09cbf440b1ac099a5b74947d7d44b825f34"
+    },
+    {
+      "stage": "04_evidence",
+      "n_atoms": 409,
+      "n_chains": 80,
+      "n_score_nodes": 4,
+      "sha256": "69b1c04072bd6d63f1b709096d6ddeebd302906f75c94074f83794f4eff24548"
+    },
+    {
+      "stage": "05_r1",
+      "n_atoms": 409
+    },
+    {
+      "stage": "06_r2a4"
+    },
+    {
+      "stage": "07_r2bc",
+      "candidate_counts": {
+        "comeback": 0,
+        "equalization": 0,
+        "lead_preservation": 1,
+        "set_piece_breakthrough": 0,
+        "turnover_to_goal": 0,
+        "threat_phase_change": 0
+      }
+    },
+    {
+      "stage": "08_r3",
+      "n_stories": 1,
+      "template_counts": {
+        "keeper_rescue": 0,
+        "alternating_threats": 0,
+        "alternating_threats_score_context": 0,
+        "comeback": 0,
+        "equalization": 0,
+        "lead_preservation": 1,
+        "set_piece_breakthrough": 0,
+        "turnover_to_goal": 0,
+        "threat_phase_change": 0
+      }
+    }
+  ],
+  "paid_api_enabled": false,
+  "http_calls": 0,
+  "quality_verified": false,
+  "first_live_verified": false,
+  "release_authorized": false,
+  "argv": [
+    "run_fresh_v3r_general.py",
+    "--match-json",
+    "/data2/lpy1/worktrees/migu-sportscausal-template-gen/data/交付_out/10月20日_25-26赛季西甲第9轮_莱万特VS巴列卡诺_国语.json",
+    "--causal-atoms-json",
+    "/data2/lpy1/worktrees/migu-sportscausal-template-gen/data/交付_out/10月20日_25-26赛季西甲第9轮_莱万特VS巴列卡诺_国语_causal.json",
+    "--allow-dev",
+    "--source-mp4",
+    "/mnt/data4/migu/10月20日 25-26赛季西甲第9轮 莱万特VS巴列卡诺 国语.mp4",
+    "--expected-source-sha256",
+    "5ab8ee77ed0d0cb56f020348d4c73b4c27c738f6285db941e1797f87bb1d4d73",
+    "--expected-events-sha256",
+    "cffe1f86aa386e668b6ad3ce8a654113a814783b9343db4ce63bb6ebb5f2e9c6",
+    "--expected-atom-source-sha256",
+    "e88ce072fcd22c2a723abd3374b9c29f6ef5584fe8ac0bd6431e4c84decfdbd1",
+    "--score-left-team",
+    "team_1",
+    "--score-mapping-provenance",
+    "independently_cross_checked_intake_FH-35DA83FD: left scoreboard column = team_1 莱万特, right = team_2 巴列卡诺; matches T01 score_path 0:0→0:1→0:2→0:3 with delta_side=right for Rayo goals",
+    "--video-id",
+    "10月20日 25-26赛季西甲第9轮 莱万特VS巴列卡诺 国语",
+    "--out-dir",
+    "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_C_levante_rayo/fresh_general_v1"
+  ],
+  "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "artifacts": {
+    "01_enrich/enrich_report.json": "10ebbd25ec78de0dc078223f64a03833d424754adda82e93fb441a8fe2d20047",
+    "01_enrich/events_enriched.json": "8dd1dce98898dfbd9c0ae1bcb3bda0e8034e5b226de814ae328dde7acce4eff6",
+    "02_strip831/strip_A_original.json": "dccef2e76ab61659f501c8e80deeaab4b47f1acb086149703183c83e462c54d9",
+    "02_strip831/timeline_enriched.json": "f789df01ed03deb626392a5f508ff25faa713eca9ba1c3119e20a0f84c17a770",
+    "03_v1_adapt/goal_recovery.json": "f937825ef4baf68923cc878f26ca461e1badd00d958ec79694f1a401814a6ee7",
+    "03_v1_adapt/predicted_causal.json": "27da952886846cc7df375e0ae609a09cbf440b1ac099a5b74947d7d44b825f34",
+    "04_evidence/evidence.json": "69b1c04072bd6d63f1b709096d6ddeebd302906f75c94074f83794f4eff24548",
+    "04_evidence/score_path.json": "90569755a344af8f3884b3c1892c02d45c85be1b0f83bea0081be04c7e5d8b91",
+    "05_r1/normalized_semantics.json": "1fadf8d660763e64419837c93aa528cc09d0ebb3e6d9a58a377b8a33ee8ab090",
+    "06_r2a4/alternating_threats.json": "a1aca62f76149b5791f182dea7ccc6f78d805e2e43e23c6b7b6c2dbaeffb0ae6",
+    "06_r2a4/alternating_threats_score_context.json": "fa132e5b6a2b37cf9157590cc3bd85822e0026dab2e9ccc3a966c08be837be4f",
+    "06_r2a4/causal_episodes.json": "9e2677719d3b55ca85fcaa817694ae16c0b76d34fe4ae36951f680f530b7dee2",
+    "06_r2a4/keeper_rescue.json": "7ef70beb283e5a7b0ddb0c8fb5c5100fb5e0a39d5d22904155958bced3e9132c",
+    "06_r2a4/observation_tasks.json": "f6a9622be28bffc0d6a80d957d14cfd35f8ec32693990934c87cafc3c9d7763b",
+    "06_r2a4/relation_graph.json": "7a30ba233424ed4dc26bb55098249f41f87a5833875e1bfd56e1932f1634ab83",
+    "06_r2a4/scoring_outcomes.json": "982ceae4443af26269098ca151e08ab1a130f5e7e95e894f0dc09b63f8a014a9",
+    "06_r2a4/summary.json": "98adf8aa770eaa41d2d9de317dbb71168960dfb686cfc94a3567ab99c8376fa1",
+    "07_r2bc/anchor_pack.json": "5b056962a4719c27e9aca803259ce1ba572b939b8c8363c9633457c3a6827e1a",
+    "07_r2bc/comeback.json": "6e072758be93941ba98d41b1e33e6fcc27d0995725adc416b2c79d29a8812d58",
+    "07_r2bc/equalization.json": "e9c4980640b297389c5f25f54ae915339e8cb85ec465723958c4389716212746",
+    "07_r2bc/lead_preservation.json": "fb0a6570d87796a348177506d76249af5b2a9695254bc41903bcccb0948eeec8",
+    "07_r2bc/observation_tasks.json": "27bf55b3a4a47ede408339a07f735f633af519ab5eb53a9a61b4a1b79557e509",
+    "07_r2bc/set_piece_breakthrough.json": "655cd33c0c998708af40e23aef8a13e8b288101c95716368168f84d33663ec99",
+    "07_r2bc/threat_phase_change.json": "315f03917ab5c276ca71ec389660b5ca18f3ec624a548661a651bf1834c5db4d",
+    "07_r2bc/turnover_to_goal.json": "b681309f32251f43d9bdedfe358049585cc7e4a40b855eef304d056d78e215c3",
+    "08_r3/lead_preservation__1/context_pool.json": "335ef8d97e3069f39964587559e41ea3a6eb5dc1406e13276c1ba8daaff4594c",
+    "08_r3/lead_preservation__1/initial_edl.json": "92cc5cc63604f5faf7c725a5be127a6631b7d6542d4eb2c47332129d5c8a7d9a",
+    "08_r3/lead_preservation__1/legacy_seed_metadata.json": "90a604aca928e5a1443130f40b9e8ce670e3c07b7de298ed69fa180a77783cea",
+    "08_r3/lead_preservation__1/materials.json": "b8572b023b394646a05c46cd7de5f4e4f00d4f8db344c52a5190b23623e2a89d",
+    "08_r3/lead_preservation__1/observation_tasks.json": "e5c53640c7c664d434d38c850a39f896932325cd10fb4294b53516d516a3a412",
+    "08_r3/lead_preservation__1/story_diagnostics.json": "c3087144ac1b4edaad8885d9116833b99955346fc18d35d08877e1dcb7d3509f",
+    "08_r3/lead_preservation__1/story_graph.json": "f3b71723626899a282f296931dabb26f75c968361add9cb872a8407c00ae917c",
+    "08_r3/observation_tasks.json": "937c8884e2186ec3c75caca9b66573ea4c954a0c56f684997d024cba216d968e",
+    "08_r3/summary.json": "b525cdbd5ae33e2ee1db8e5e02fb245019887f5df982d0d7af5011083dcea857",
+    "ffprobe.json": "a47367846d8bd8ae3e04c31b4eb6b81aea6cb54214e78a9c854ea02bf55238b1"
+  }
+}

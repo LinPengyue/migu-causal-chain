@@ -1,0 +1,52 @@
+{
+  "video_id": "10月20日 25-26赛季西甲第9轮 莱万特VS巴列卡诺 国语",
+  "score_side_mapping": {
+    "left": "team_1",
+    "right": "team_2"
+  },
+  "score_mapping_provenance": "independently_cross_checked_intake_FH-35DA83FD: left scoreboard column = team_1 莱万特, right = team_2 巴列卡诺; matches T01 score_path 0:0→0:1→0:2→0:3 with delta_side=right for Rayo goals",
+  "score_path": [
+    {
+      "t_sec": 614.01,
+      "score": "0:0",
+      "opening": true,
+      "delta_side": null,
+      "carrier_event_id": "event_000005"
+    },
+    {
+      "t_sec": 1359.22,
+      "score": "0:1",
+      "opening": false,
+      "delta_side": "right",
+      "carrier_event_id": "event_000135",
+      "previous_score_observed_t_sec": 1207.59
+    },
+    {
+      "t_sec": 2163.38,
+      "score": "0:2",
+      "opening": false,
+      "delta_side": "right",
+      "carrier_event_id": "event_000171",
+      "previous_score_observed_t_sec": 2011.24
+    },
+    {
+      "t_sec": 5789.37,
+      "score": "0:3",
+      "opening": false,
+      "delta_side": "right",
+      "carrier_event_id": "event_000349",
+      "previous_score_observed_t_sec": 5649.71
+    }
+  ],
+  "source": "11.20 story_chain.score_path.build_score_path on enriched native events",
+  "teams_from_evidence": {
+    "team_1": {
+      "name": "莱万特",
+      "color": "蓝色"
+    },
+    "team_2": {
+      "name": "巴列卡诺",
+      "color": "白色"
+    }
+  }
+}
