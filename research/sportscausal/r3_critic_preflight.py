@@ -18,8 +18,12 @@ def run(bundle,events,algo_dir,out):
     from story_video_agent_v3.story_first_hypotheses import (
         adjacent_story_anchor_pairs,prepare_story_input,model_messages,_text)
     from story_video_agent_v3.story_revision_planner import _protect_filter
+    from story_video_agent_v3.fresh_e2e_cli import validate_render_rows
     from r3_critic_adapter import protect_planner_intents
     plan,rows=bundle["plan"],bundle["edl"]
+    # Run the exact native render validator before a pack is reported ready.
+    # This is the existing safety check, not a new gate or renderer change.
+    validate_render_rows(rows)
     d=Path(out); d.mkdir(parents=True,exist_ok=False)
     # Confirm the exact legacy serialization, not merely prepared metadata.
     expected=plan["a_story_template_context"]
@@ -63,6 +67,7 @@ def run(bundle,events,algo_dir,out):
     write(d/"planner_diagnosis.json",planner)
     write(d/"report.json",{"story_id":bundle["graph"]["story_id"],
         "video_id":bundle["graph"]["video_id"],"template_context_survives_actual_p1_cap":True,
+        "native_render_rows_validated":True,
         "p1_request_prepared":request is not None,"n_p1_pairs":len(pairs),
         "original_goal_issues":[i["issue_id"] for i in original.get("issues",[]) if i.get("category")=="goal_coverage"],
         "native_goal_search_targets":targets,"scope_audit":scoped["r3_scope_audit"],
