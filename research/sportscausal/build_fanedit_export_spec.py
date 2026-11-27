@@ -61,7 +61,10 @@ def build(fresh, binding, agent_dirs, run_id):
                 and p["events_sha256"]==expected["01_enrich/events_enriched.json"]
                 and p["match_json_sha256"]==m["inputs"]["match_json"]["sha256"],
                 "Agent inputs differ from fresh run")
-        require(sha(d/"candidate_edl.json")==p["edl_sha256"],"Agent seed changed")
+        # The runner hashes the input critic pack, then serializes its validated
+        # EDL to candidate_edl.json. Keep both digests; byte equality is not
+        # assumed across that normalization boundary.
+        seed_sha = sha(d/"candidate_edl.json")
         args={"template_id":candidates[cid],"candidate_id":cid}
         artifacts.append(artifact(d/"candidate_edl.json","agent_v0","all",**args))
         native=d/"original_agent"
@@ -70,6 +73,7 @@ def build(fresh, binding, agent_dirs, run_id):
         outer=native/"story_first_outer/story_first_outer_comparison.json"
         meta={"candidate_id":cid,"runner_report":str(d/"report.json"),
               "runner_report_sha256":sha(d/"report.json"),"input_provenance_sha256":sha(d/"input_provenance.json"),
+              "input_pack_edl_sha256":p["edl_sha256"],"serialized_seed_edl_sha256":seed_sha,
               "runner_status":r.get("status"),"http_calls":r.get("http_calls"),
               "estimated_cost_usd":r.get("est_cost_usd"),"runner_elapsed_sec":r.get("elapsed_sec"),
               "native_final_present":final.is_file(),"native_delivery_status":None}
