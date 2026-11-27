@@ -1,0 +1,555 @@
+{
+  "story_template": {
+    "template_id": "equalization",
+    "template": {
+      "category": "战局故事链",
+      "subtype": "落后追平",
+      "narrative_goal": [
+        "落后到追平的阶段性战局变化"
+      ],
+      "subjects": [
+        "team_2"
+      ],
+      "narrative_edges": [
+        {
+          "from": "score:3",
+          "to": "score:4",
+          "edge_type": "confirmed_score_state_transition",
+          "relation": "confirmed_score_state_transition",
+          "causal_verified": false
+        }
+      ]
+    },
+    "template_name": "落后追平",
+    "title": "落后追平",
+    "beats": [
+      {
+        "node_id": "score:3",
+        "node_type": "anchor",
+        "kind": "score_state",
+        "actor": "team_2",
+        "actor_role": "state_subject",
+        "required": true,
+        "score": "2:1",
+        "state_sign": -1,
+        "score_beneficiary": "team_1",
+        "event_ids": [
+          "atom_fill_0071_Shot_3132270",
+          "atom_fill_0072_Goal_3133968"
+        ],
+        "media_windows": [
+          [
+            3132.27,
+            3135.968
+          ]
+        ],
+        "action_time_interval": [
+          3133.968,
+          3133.968
+        ],
+        "observation_task_ids": [
+          "observe:2"
+        ],
+        "localization_status": "localized_annotation_candidate",
+        "role": "opponent_opening_goal_action"
+      },
+      {
+        "node_id": "score:4",
+        "node_type": "anchor",
+        "kind": "score_state",
+        "actor": "team_2",
+        "actor_role": "state_subject",
+        "required": true,
+        "score": "2:2",
+        "state_sign": 0,
+        "score_beneficiary": "team_2",
+        "event_ids": [
+          "atom_fill_0115_Shot_5657158",
+          "atom_fill_0116_Goal_5657621"
+        ],
+        "media_windows": [
+          [
+            5657.158,
+            5659.621
+          ]
+        ],
+        "action_time_interval": [
+          5657.621,
+          5657.621
+        ],
+        "observation_task_ids": [
+          "observe:3"
+        ],
+        "localization_status": "localized_annotation_candidate",
+        "role": "equalizer_goal_action"
+      }
+    ]
+  },
+  "accepted_cut": [
+    {
+      "segment_id": "seg:1",
+      "source_material_id": "material:1",
+      "video_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+      "media_in": 3132.27,
+      "media_out": 3135.968,
+      "event_ids": [
+        "atom_fill_0071_Shot_3132270",
+        "atom_fill_0072_Goal_3133968"
+      ],
+      "short_chain_ids": [
+        "pred_0030",
+        "pred_0031",
+        "pred_0032"
+      ],
+      "story_node_ids": [
+        "score:3"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 1,
+      "narrative_order": 1,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "score:3"
+      ],
+      "role": "opponent_opening_goal_action",
+      "beat": "opponent_opening_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 3132.27,
+      "adapter_seed_basis": "r3_anchor_materials"
+    },
+    {
+      "segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_01",
+      "role": "buildup_bridge_action",
+      "media_in": 5577.63,
+      "media_out": 5593.63,
+      "include_in_cut": true,
+      "is_replay": false,
+      "shot_kind": "search_bridge",
+      "goal_action_complete": false,
+      "event_ids": [
+        "event_000555"
+      ],
+      "agent_bound": true,
+      "agent_search_bound": true,
+      "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+      "first_live_status": "NOT_VERIFIED",
+      "agent_auto_verified": false,
+      "anchor_id": "search:story_first_b47e4b6a45d1a02720cf0385_01",
+      "narrative_purpose": "H4 is the most compact proposal with the clearest potential narrative link to the equalizer: a free kick at 5585.63s and a corner kick at 5655.418s immediately precede the equalizer goal at 5657.621s. If video shows these belong to the same attacking sequence, this could provide a concrete causal/emotional bridge across the source-time jump. The selection is limited to two events and one hypothesized relation, minimizing observation cost while directly testing whether the gap hides meaningful build-up to the equalizer.",
+      "search_issue_id": "story_first:b47e4b6a45d1a02720cf0385"
+    },
+    {
+      "segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_02",
+      "role": "buildup_bridge_action",
+      "media_in": 5647.418,
+      "media_out": 5657.158,
+      "include_in_cut": true,
+      "is_replay": false,
+      "shot_kind": "search_bridge",
+      "goal_action_complete": false,
+      "event_ids": [
+        "atom_fill_0114_Corner_kick_5655418"
+      ],
+      "agent_bound": true,
+      "agent_search_bound": true,
+      "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+      "first_live_status": "NOT_VERIFIED",
+      "agent_auto_verified": false,
+      "anchor_id": "search:story_first_b47e4b6a45d1a02720cf0385_02",
+      "narrative_purpose": "H4 is the most compact proposal with the clearest potential narrative link to the equalizer: a free kick at 5585.63s and a corner kick at 5655.418s immediately precede the equalizer goal at 5657.621s. If video shows these belong to the same attacking sequence, this could provide a concrete causal/emotional bridge across the source-time jump. The selection is limited to two events and one hypothesized relation, minimizing observation cost while directly testing whether the gap hides meaningful build-up to the equalizer.",
+      "search_issue_id": "story_first:b47e4b6a45d1a02720cf0385"
+    },
+    {
+      "segment_id": "seg:2",
+      "source_material_id": "material:2",
+      "video_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+      "media_in": 5657.158,
+      "media_out": 5659.621,
+      "event_ids": [
+        "atom_fill_0115_Shot_5657158",
+        "atom_fill_0116_Goal_5657621"
+      ],
+      "short_chain_ids": [
+        "pred_0053",
+        "pred_0054"
+      ],
+      "story_node_ids": [
+        "score:4"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 2,
+      "narrative_order": 2,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "score:4"
+      ],
+      "role": "equalizer_goal_action",
+      "beat": "equalizer_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 5657.158,
+      "adapter_seed_basis": "r3_anchor_materials"
+    }
+  ],
+  "fresh_p1_candidates": [
+    {
+      "proposal_id": "interval_01:H2",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "opponent_opening_goal_action",
+        "to_segment_id": "seg:2",
+        "to_role": "equalizer_goal_action",
+        "source_interval_sec": [
+          3135.968,
+          5657.158
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "下半场多次犯规与黄牌打断节奏，塞尔塔在尾声阶段重新组织并扳平。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000539",
+          "source_pts_sec": 5257.34,
+          "event_type": "Receive_a_card",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员在防守三区犯规2队9号球员倒地，裁判向1队24号球员出示黄牌"
+          }
+        },
+        {
+          "event_id": "event_000553",
+          "source_pts_sec": 5505.11,
+          "event_type": "Receive_a_card",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队7号球员犯规1队24号球员倒地，裁判向2队7号球员出示黄牌"
+          }
+        },
+        {
+          "event_id": "event_000555",
+          "source_pts_sec": 5585.63,
+          "event_type": "Free_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员在中场三区开出任意球"
+          }
+        },
+        {
+          "event_id": "atom_fill_0114_Corner_kick_5655418",
+          "source_pts_sec": 5655.418,
+          "event_type": "Corner_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": null
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000553",
+          "target_event_id": "atom_fill_0114_Corner_kick_5655418",
+          "relation_type": "narrative_association",
+          "claim": "黄牌后比赛恢复，塞尔塔随后获角球，属推测",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若黄牌后无塞尔塔控球推进镜头则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000553",
+          "question": "黄牌后球权归属哪队？",
+          "discriminating_signal": "恢复后控球方颜色"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_01:H3",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "opponent_opening_goal_action",
+        "to_segment_id": "seg:2",
+        "to_role": "equalizer_goal_action",
+        "source_interval_sec": [
+          3135.968,
+          5657.158
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "塞尔塔多次定位球机会未果，最终由角球完成扳平，形成重复尝试模式。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000542",
+          "source_pts_sec": 5385.78,
+          "event_type": "Free_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队22号球员在防守三区开出直接任意球"
+          }
+        },
+        {
+          "event_id": "event_000551",
+          "source_pts_sec": 5495.01,
+          "event_type": "Free_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员在中场三区开出任意球"
+          }
+        },
+        {
+          "event_id": "event_000555",
+          "source_pts_sec": 5585.63,
+          "event_type": "Free_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员在中场三区开出任意球"
+          }
+        },
+        {
+          "event_id": "atom_fill_0114_Corner_kick_5655418",
+          "source_pts_sec": 5655.418,
+          "event_type": "Corner_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": null
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000555",
+          "target_event_id": "atom_fill_0114_Corner_kick_5655418",
+          "relation_type": "narrative_association",
+          "claim": "连续定位球尝试后角球得分，属推测",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若此前定位球均非塞尔塔主罚则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000555",
+          "question": "该任意球由哪队主罚？",
+          "discriminating_signal": "主罚方球衣颜色"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_01:H4",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "opponent_opening_goal_action",
+        "to_segment_id": "seg:2",
+        "to_role": "equalizer_goal_action",
+        "source_interval_sec": [
+          3135.968,
+          5657.158
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "塞尔塔多次解围化解对方攻势，随后由角球机会完成扳平进球。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000545",
+          "source_pts_sec": 5422.74,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员在中场三区将球解围出去"
+          }
+        },
+        {
+          "event_id": "event_000548",
+          "source_pts_sec": 5456.32,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员在防守三区将球截获"
+          }
+        },
+        {
+          "event_id": "event_000556",
+          "source_pts_sec": 5587.9,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员在中场三区将球截获"
+          }
+        },
+        {
+          "event_id": "atom_fill_0114_Corner_kick_5655418",
+          "source_pts_sec": 5655.418,
+          "event_type": "Corner_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": null
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000556",
+          "target_event_id": "atom_fill_0114_Corner_kick_5655418",
+          "relation_type": "narrative_association",
+          "claim": "解围后塞尔塔获角球，攻防转换属推测",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若解围方非塞尔塔则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000556",
+          "question": "该拦截由哪队完成？",
+          "discriminating_signal": "拦截方球衣颜色"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_01:H5",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "opponent_opening_goal_action",
+        "to_segment_id": "seg:2",
+        "to_role": "equalizer_goal_action",
+        "source_interval_sec": [
+          3135.968,
+          5657.158
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "塞尔塔在尾声阶段夺回控球并制造角球，最终由角球攻势扳平比分。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000559",
+          "source_pts_sec": 5607.36,
+          "event_type": "Ball_possession",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员在防守三区控球前进"
+          }
+        },
+        {
+          "event_id": "atom_fill_0112_Ball_possession_5615435",
+          "source_pts_sec": 5615.435,
+          "event_type": "Ball_possession",
+          "known_replay_or_slowmo": false,
+          "annotation": null
+        },
+        {
+          "event_id": "atom_fill_0113_Defensive_action_5622136",
+          "source_pts_sec": 5622.136,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": null
+        },
+        {
+          "event_id": "atom_fill_0114_Corner_kick_5655418",
+          "source_pts_sec": 5655.418,
+          "event_type": "Corner_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": null
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "atom_fill_0112_Ball_possession_5615435",
+          "target_event_id": "atom_fill_0114_Corner_kick_5655418",
+          "relation_type": "narrative_association",
+          "claim": "控球后连续推进获角球，属推测",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若控球方非塞尔塔则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:atom_fill_0112_Ball_possession_5615435",
+          "question": "该控球由哪队保持？",
+          "discriminating_signal": "控球方球衣颜色"
+        }
+      ]
+    }
+  ],
+  "prior_round_feedback": {
+    "previous_rounds": [
+      {
+        "round": 1,
+        "status": "ACCEPTED_PREVIEW",
+        "source_advisory": [],
+        "p3_stop_reason": "PLANNER_KEEP",
+        "local_trims": 0,
+        "accepted_source_windows_sec": [
+          [
+            5577.63,
+            5593.63
+          ],
+          [
+            5647.418,
+            5657.158
+          ]
+        ],
+        "local_decisions": [
+          {
+            "action": "KEEP",
+            "rationale": "The first bridge segment (seg_story_first_b47e4b6a45d1a02720cf0385_01) provides a clear visual transition from the opening goal to the equalizer build-up. The working cut caption shows a sideline bench scene with the scoreboard reading OSA 2 - CEL 1 at 66:43, which establishes the score state and the passage of time between the two goals. This functions as setup and context for the equalizer, and the visible observation supports its inclusion without claiming any unseen action. No concrete pacing or clarity improvement justifies a trim."
+          }
+        ]
+      }
+    ],
+    "tried_source_windows_sec": [
+      [
+        5577.63,
+        5593.63
+      ],
+      [
+        5647.418,
+        5657.158
+      ]
+    ],
+    "tried_event_ids": [
+      "atom_fill_0114_Corner_kick_5655418",
+      "event_000555"
+    ],
+    "instruction": "Propose new story footage. Covered and tried events may provide context, but every story must include an untried uncovered event."
+  }
+}

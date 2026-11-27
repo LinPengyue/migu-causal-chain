@@ -1,0 +1,39 @@
+{
+  "error": null,
+  "parsed": {
+    "actions": [
+      {
+        "action": "KEEP",
+        "rationale": "The bridge segment seg_story_first_919c8d9c0f04e984b2c0ba12_01 is placed between seg:2 (team_2 attacking threat at 1912.32-1922.55) and seg:3 (team_1 attacking threat at 1955.54-1966.45), directly covering the template's observed_phase_switch transition. The working cut caption shows part_01 (story 16.16-21.16) visually confirms a corner kick by the white team being cleared, and part_02 (story 46.62-57.53) visually confirms a white-team shot saved by the yellow-kit goalkeeper. These observations provide concrete setup and context for the phase switch without claiming an outcome for the MISSING insert phase (story 21.16-46.62). The bridge preserves the baseline mainline order and does not introduce causal claims beyond the visible evidence. No concrete pacing or clarity improvement justifies a TRIM."
+      },
+      {
+        "action": "KEEP",
+        "rationale": "The bridge functions as a transition buffer between the final team_2 threat (seg:2) and the first team_1 threat (seg:3). The visible part_01 observation shows team_2's corner kick being cleared, which supports the narrative that team_2's attack ended before team_1's phase began. The visible part_02 observation shows team_1 (white) attacking and being saved, which sets up the subsequent team_1 attacking_threat anchors. Trimming would risk removing either the closure of team_2's phase or the setup of team_1's phase, both of which are essential to the template's phase_switch function. The MISSING insert phase is correctly preserved as uncertain."
+      },
+      {
+        "action": "KEEP",
+        "rationale": "The bridge's source window [1927.24, 1952.7] sits entirely within the interval between seg:2 and seg:3, and the working cut caption confirms both described phases are visually grounded. The part_01 description (corner kick, clearance, goalkeeper holding ball) provides closure for team_2's attacking run, while part_02 (white-team shot, yellow-kit goalkeeper save) provides tension and context for team_1's emerging threat. No TRIM is warranted because the visible observations align with the template's protected goals of showing the attacking threat sequence switching from team_2 to team_1, and the MISSING middle section is already flagged as uncertain rather than falsely claimed."
+      }
+    ]
+  },
+  "call_audit": {
+    "model": "DeepSeek-V4-Pro-0813",
+    "provider_mode": "real",
+    "logical_role": "story_first_p3_planner",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "prompt_tokens": 20249,
+    "completion_tokens": 565,
+    "reasoning_tokens": 0,
+    "text_tokens": null,
+    "finish_reason": "stop",
+    "visible_output_chars": 2354,
+    "est_cost_usd": 0.0033763499999999998,
+    "http_ok": true,
+    "empty_content": false
+  }
+}

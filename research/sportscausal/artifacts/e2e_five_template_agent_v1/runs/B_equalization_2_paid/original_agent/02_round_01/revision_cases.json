@@ -1,0 +1,197 @@
+{
+  "schema": "v3a_revision_case_bundle_v1",
+  "match_tag": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+  "n_cases": 2,
+  "cases": [
+    {
+      "schema": "v3a_revision_case_v1",
+      "match_tag": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+      "issue_id": "story_first:b47e4b6a45d1a02720cf0385",
+      "revision_intent_id": "story_first_b47e4b6a45d1a02720cf0385_02",
+      "original_story_problem": {
+        "observation": null,
+        "missing_information": null,
+        "causal_explanation": null,
+        "story_role": null,
+        "diagnosis_status": null,
+        "story_defect_confirmed": null,
+        "confidence": null,
+        "evidence_sufficiency": null
+      },
+      "video_observation_evidence": null,
+      "defect_cause_hypothesis": null,
+      "target_action": "search_add",
+      "candidate_footage": {
+        "source_pts": {
+          "start": 5647.418,
+          "end": 5657.158
+        },
+        "event_ids": [
+          "atom_fill_0114_Corner_kick_5655418"
+        ],
+        "why_solves_problem": null,
+        "apply": {
+          "intent": "story_first_b47e4b6a45d1a02720cf0385_02",
+          "action": "search_add",
+          "status": "applied_evidence_bound",
+          "segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_02",
+          "media_in": 5647.418,
+          "media_out": 5657.158,
+          "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+          "first_live_status": "NOT_VERIFIED",
+          "authorization": {
+            "allow": true,
+            "denies": [],
+            "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+            "method": "bound_source_window"
+          },
+          "observation_ref": "search:story_first_b47e4b6a45d1a02720cf0385_02",
+          "insert_after_segment_id": "seg:1"
+        }
+      },
+      "story_first_trial_id": "b47e4b6a45d1a02720cf0385",
+      "source_event_observations": [
+        {
+          "event_id": "atom_fill_0114_Corner_kick_5655418",
+          "status": "SUPPORTED",
+          "reason": "Frame f6 captures the moment of a corner kick being taken from the corner arc into the penalty area, matching the event type and timing.",
+          "frame_ids": [
+            "f6"
+          ]
+        }
+      ],
+      "before_after_video_windows": null,
+      "expected_improvement": "H4 is the most compact proposal with the clearest potential narrative link to the equalizer: a free kick at 5585.63s and a corner kick at 5655.418s immediately precede the equalizer goal at 5657.621s. If video shows these belong to the same attacking sequence, this could provide a concrete causal/emotional bridge across the source-time jump. The selection is limited to two events and one hypothesized relation, minimizing observation cost while directly testing whether the gap hides meaningful build-up to the equalizer.",
+      "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+      "actual_observation": null,
+      "verifier_judgment": {
+        "quality_judgment": null,
+        "original_issue_resolved": null,
+        "introduced_new_defect": null,
+        "evidence_refs": null,
+        "confidence": null,
+        "note": "Verifier must check whether the original diagnosed problem was solved, not only which cut looks nicer. BETTER ≠ ACCEPT ≠ IMPROVED."
+      },
+      "pts_safety": {
+        "schema": "v3a_edl_source_pts_monotonic_v1",
+        "ok": true,
+        "n_media_rows": 4,
+        "breaks": [],
+        "gate": "safety",
+        "note": "Monotonic source PTS is a safety constraint, not a quality score."
+      },
+      "final_decision": "REJECT",
+      "failure_reasons": [
+        "verifier_or_pipeline_rejected"
+      ],
+      "formal_final_is_baseline": true,
+      "bindings": {
+        "issue_id": "story_first:b47e4b6a45d1a02720cf0385",
+        "evidence": [
+          {
+            "kind": "story_first_source_review",
+            "ref": "story_first_b47e4b6a45d1a02720cf0385_02"
+          }
+        ],
+        "edit": "search_add",
+        "expected_effect": "H4 is the most compact proposal with the clearest potential narrative link to the equalizer: a free kick at 5585.63s and a corner kick at 5655.418s immediately precede the equalizer goal at 5657.621s. If video shows these belong to the same attacking sequence, this could provide a concrete causal/emotional bridge across the source-time jump. The selection is limited to two events and one hypothesized relation, minimizing observation cost while directly testing whether the gap hides meaningful build-up to the equalizer."
+      },
+      "duration_pad_forbidden_as_quality_proxy": true
+    },
+    {
+      "schema": "v3a_revision_case_v1",
+      "match_tag": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+      "issue_id": "story_first:b47e4b6a45d1a02720cf0385",
+      "revision_intent_id": "story_first_b47e4b6a45d1a02720cf0385_01",
+      "original_story_problem": {
+        "observation": null,
+        "missing_information": null,
+        "causal_explanation": null,
+        "story_role": null,
+        "diagnosis_status": null,
+        "story_defect_confirmed": null,
+        "confidence": null,
+        "evidence_sufficiency": null
+      },
+      "video_observation_evidence": null,
+      "defect_cause_hypothesis": null,
+      "target_action": "search_add",
+      "candidate_footage": {
+        "source_pts": {
+          "start": 5577.63,
+          "end": 5593.63
+        },
+        "event_ids": [
+          "event_000555"
+        ],
+        "why_solves_problem": null,
+        "apply": {
+          "intent": "story_first_b47e4b6a45d1a02720cf0385_01",
+          "action": "search_add",
+          "status": "applied_evidence_bound",
+          "segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_01",
+          "media_in": 5577.63,
+          "media_out": 5593.63,
+          "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+          "first_live_status": "NOT_VERIFIED",
+          "authorization": {
+            "allow": true,
+            "denies": [],
+            "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+            "method": "bound_source_window"
+          },
+          "observation_ref": "search:story_first_b47e4b6a45d1a02720cf0385_01",
+          "insert_after_segment_id": "seg:1"
+        }
+      },
+      "story_first_trial_id": "b47e4b6a45d1a02720cf0385",
+      "source_event_observations": [
+        {
+          "event_id": "event_000555",
+          "status": "SUPPORTED",
+          "reason": "Frame f2 shows a player in red (Team 1) kicking the ball from a stationary position in the midfield circle, consistent with a free kick execution at the annotated timestamp.",
+          "frame_ids": [
+            "f2"
+          ]
+        }
+      ],
+      "before_after_video_windows": null,
+      "expected_improvement": "H4 is the most compact proposal with the clearest potential narrative link to the equalizer: a free kick at 5585.63s and a corner kick at 5655.418s immediately precede the equalizer goal at 5657.621s. If video shows these belong to the same attacking sequence, this could provide a concrete causal/emotional bridge across the source-time jump. The selection is limited to two events and one hypothesized relation, minimizing observation cost while directly testing whether the gap hides meaningful build-up to the equalizer.",
+      "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+      "actual_observation": null,
+      "verifier_judgment": {
+        "quality_judgment": null,
+        "original_issue_resolved": null,
+        "introduced_new_defect": null,
+        "evidence_refs": null,
+        "confidence": null,
+        "note": "Verifier must check whether the original diagnosed problem was solved, not only which cut looks nicer. BETTER ≠ ACCEPT ≠ IMPROVED."
+      },
+      "pts_safety": {
+        "schema": "v3a_edl_source_pts_monotonic_v1",
+        "ok": true,
+        "n_media_rows": 4,
+        "breaks": [],
+        "gate": "safety",
+        "note": "Monotonic source PTS is a safety constraint, not a quality score."
+      },
+      "final_decision": "REJECT",
+      "failure_reasons": [
+        "verifier_or_pipeline_rejected"
+      ],
+      "formal_final_is_baseline": true,
+      "bindings": {
+        "issue_id": "story_first:b47e4b6a45d1a02720cf0385",
+        "evidence": [
+          {
+            "kind": "story_first_source_review",
+            "ref": "story_first_b47e4b6a45d1a02720cf0385_01"
+          }
+        ],
+        "edit": "search_add",
+        "expected_effect": "H4 is the most compact proposal with the clearest potential narrative link to the equalizer: a free kick at 5585.63s and a corner kick at 5655.418s immediately precede the equalizer goal at 5657.621s. If video shows these belong to the same attacking sequence, this could provide a concrete causal/emotional bridge across the source-time jump. The selection is limited to two events and one hypothesized relation, minimizing observation cost while directly testing whether the gap hides meaningful build-up to the equalizer."
+      },
+      "duration_pad_forbidden_as_quality_proxy": true
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "schema": "v3a_first_live_window_ledger_v1",
+  "source_sha": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+  "windows": [
+    {
+      "key": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c|1927.240:1952.700",
+      "source_sha": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+      "source_pts_start": 1927.24,
+      "source_pts_end": 1952.7,
+      "status": "NOT_VERIFIED",
+      "binding_status": "BINDING_INVALID",
+      "first_live_status": "NOT_VERIFIED",
+      "method": "unverified_new_window",
+      "segment_id": "seg_story_first_919c8d9c0f04e984b2c0ba12_01",
+      "claimed_status": "NOT_VERIFIED",
+      "candidate_class": "unbound_or_invalid",
+      "validation": {
+        "ok": false,
+        "binding_valid": false,
+        "first_live_verified": false,
+        "replay_confirmed": false,
+        "reason": "missing_evidence_record",
+        "manifest_digest": null,
+        "frame_sha256": null,
+        "method": "frame_binding_only"
+      },
+      "validated_evidence": null,
+      "broadcast_timeline_review": null,
+      "origin": "apply_report"
+    }
+  ],
+  "n_windows": 1,
+  "all_windows_verified": false,
+  "any_window_unverified": true,
+  "any_replay_confirmed": false,
+  "any_frame_bound_pending_timeline": false,
+  "aggregate_status": "NOT_VERIFIED",
+  "note": "FRAME_BOUND_VALID ≠ FIRST_LIVE_VERIFIED. Hard-safety PASS needs independent broadcast-timeline review on every new window; binding-only stays UNKNOWN; REPLAY_CONFIRMED ⇒ FAIL."
+}

@@ -1,0 +1,884 @@
+{
+  "story_template": {
+    "template_id": "equalization",
+    "template": {
+      "category": "战局故事链",
+      "subtype": "落后追平",
+      "narrative_goal": [
+        "落后到追平的阶段性战局变化"
+      ],
+      "subjects": [
+        "team_2"
+      ],
+      "narrative_edges": [
+        {
+          "from": "score:3",
+          "to": "score:4",
+          "edge_type": "confirmed_score_state_transition",
+          "relation": "confirmed_score_state_transition",
+          "causal_verified": false
+        }
+      ]
+    },
+    "template_name": "落后追平",
+    "title": "落后追平",
+    "beats": [
+      {
+        "node_id": "score:3",
+        "node_type": "anchor",
+        "kind": "score_state",
+        "actor": "team_2",
+        "actor_role": "state_subject",
+        "required": true,
+        "score": "2:1",
+        "state_sign": -1,
+        "score_beneficiary": "team_1",
+        "event_ids": [
+          "atom_fill_0071_Shot_3132270",
+          "atom_fill_0072_Goal_3133968"
+        ],
+        "media_windows": [
+          [
+            3132.27,
+            3135.968
+          ]
+        ],
+        "action_time_interval": [
+          3133.968,
+          3133.968
+        ],
+        "observation_task_ids": [
+          "observe:2"
+        ],
+        "localization_status": "localized_annotation_candidate",
+        "role": "opponent_opening_goal_action"
+      },
+      {
+        "node_id": "score:4",
+        "node_type": "anchor",
+        "kind": "score_state",
+        "actor": "team_2",
+        "actor_role": "state_subject",
+        "required": true,
+        "score": "2:2",
+        "state_sign": 0,
+        "score_beneficiary": "team_2",
+        "event_ids": [
+          "atom_fill_0115_Shot_5657158",
+          "atom_fill_0116_Goal_5657621"
+        ],
+        "media_windows": [
+          [
+            5657.158,
+            5659.621
+          ]
+        ],
+        "action_time_interval": [
+          5657.621,
+          5657.621
+        ],
+        "observation_task_ids": [
+          "observe:3"
+        ],
+        "localization_status": "localized_annotation_candidate",
+        "role": "equalizer_goal_action"
+      }
+    ]
+  },
+  "baseline_timeline": [
+    {
+      "index": 0,
+      "segment_id": "seg:1",
+      "role": "opponent_opening_goal_action",
+      "beat": "opponent_opening_goal_action",
+      "story_in": 0.0,
+      "story_out": 3.698,
+      "duration_sec": 3.698,
+      "media_in": 3132.27,
+      "media_out": 3135.968,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "live"
+    },
+    {
+      "index": 1,
+      "segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_01",
+      "role": "buildup_bridge_action",
+      "beat": null,
+      "story_in": 3.698,
+      "story_out": 19.698,
+      "duration_sec": 16.0,
+      "media_in": 5577.63,
+      "media_out": 5593.63,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "search_bridge"
+    },
+    {
+      "index": 2,
+      "segment_id": "seg_story_first_7ffdeab55407af24c1ea0eaa_01",
+      "role": "buildup_bridge_action",
+      "beat": null,
+      "story_in": 19.698,
+      "story_out": 50.474,
+      "duration_sec": 30.776,
+      "media_in": 5599.36,
+      "media_out": 5630.136,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "search_bridge"
+    },
+    {
+      "index": 3,
+      "segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_02",
+      "role": "buildup_bridge_action",
+      "beat": null,
+      "story_in": 50.474,
+      "story_out": 60.214,
+      "duration_sec": 9.74,
+      "media_in": 5647.418,
+      "media_out": 5657.158,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "search_bridge"
+    },
+    {
+      "index": 4,
+      "segment_id": "seg:2",
+      "role": "equalizer_goal_action",
+      "beat": "equalizer_goal_action",
+      "story_in": 60.214,
+      "story_out": 62.677,
+      "duration_sec": 2.463,
+      "media_in": 5657.158,
+      "media_out": 5659.621,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "live"
+    }
+  ],
+  "working_timeline": [
+    {
+      "index": 0,
+      "segment_id": "seg:1",
+      "role": "opponent_opening_goal_action",
+      "beat": "opponent_opening_goal_action",
+      "story_in": 0.0,
+      "story_out": 3.698,
+      "duration_sec": 3.698,
+      "media_in": 3132.27,
+      "media_out": 3135.968,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "live"
+    },
+    {
+      "index": 1,
+      "segment_id": "seg_story_first_942add53ba3893580a1cf17d_01",
+      "role": "buildup_bridge_action",
+      "beat": null,
+      "story_in": 3.698,
+      "story_out": 22.658,
+      "duration_sec": 18.96,
+      "media_in": 5246.38,
+      "media_out": 5265.34,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "search_bridge"
+    },
+    {
+      "index": 2,
+      "segment_id": "seg_story_first_942add53ba3893580a1cf17d_02",
+      "role": "buildup_bridge_action",
+      "beat": null,
+      "story_in": 22.658,
+      "story_out": 42.548,
+      "duration_sec": 19.89,
+      "media_in": 5493.22,
+      "media_out": 5513.11,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "search_bridge"
+    },
+    {
+      "index": 3,
+      "segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_01",
+      "role": "buildup_bridge_action",
+      "beat": null,
+      "story_in": 42.548,
+      "story_out": 58.548,
+      "duration_sec": 16.0,
+      "media_in": 5577.63,
+      "media_out": 5593.63,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "search_bridge"
+    },
+    {
+      "index": 4,
+      "segment_id": "seg_story_first_7ffdeab55407af24c1ea0eaa_01",
+      "role": "buildup_bridge_action",
+      "beat": null,
+      "story_in": 58.548,
+      "story_out": 89.324,
+      "duration_sec": 30.776,
+      "media_in": 5599.36,
+      "media_out": 5630.136,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "search_bridge"
+    },
+    {
+      "index": 5,
+      "segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_02",
+      "role": "buildup_bridge_action",
+      "beat": null,
+      "story_in": 89.324,
+      "story_out": 99.064,
+      "duration_sec": 9.74,
+      "media_in": 5647.418,
+      "media_out": 5657.158,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "search_bridge"
+    },
+    {
+      "index": 6,
+      "segment_id": "seg:2",
+      "role": "equalizer_goal_action",
+      "beat": "equalizer_goal_action",
+      "story_in": 99.064,
+      "story_out": 101.527,
+      "duration_sec": 2.463,
+      "media_in": 5657.158,
+      "media_out": 5659.621,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "live"
+    }
+  ],
+  "working_cut_caption": {
+    "scope": "FULL_RENDER_NATIVE_VIDEO",
+    "audio_included": false,
+    "render_mp4_sha256": "9851cb43f07c198ccd5ac5d2d3fcc046571864ef9e7eecf9a61aecd75f11edb7",
+    "observations": [
+      {
+        "clip_id": "part_01",
+        "story_range_sec": [
+          0,
+          3.698
+        ],
+        "description": "Wide shot of a football match showing a goal being scored by the team in red jerseys. The scoreboard reads OSA 1 - CEL 1 at 45:08. A player in red celebrates with arms outstretched near the goal.",
+        "phase_id": "1:before"
+      },
+      {
+        "clip_id": "part_01",
+        "story_range_sec": [
+          3.698,
+          22.658
+        ],
+        "description": "Cut to a wide view of the pitch with the score now OSA 2 - CEL 1 at 61:12. Players in light blue pass the ball in midfield. A foul occurs, and the referee shows a yellow card to a player in light blue. Players from both teams gather around the referee.",
+        "phase_id": "1:insert"
+      },
+      {
+        "clip_id": "part_01",
+        "story_range_sec": [
+          22.658,
+          37.658
+        ],
+        "description": "The scene cuts to a restart at the center circle with the score still 2-1 at 65:19. The team in light blue kicks off and passes the ball backwards. Play continues in the midfield with players moving into position.",
+        "phase_id": "1:after"
+      },
+      {
+        "clip_id": "part_01",
+        "story_range_sec": [
+          17.658,
+          22.658
+        ],
+        "description": "Close-up shots of players arguing with the referee after the yellow card incident. A player in light blue with a beard gestures while talking to the referee. Another player in red is also visible nearby.",
+        "phase_id": "2:before"
+      }
+    ],
+    "coverage": [
+      {
+        "phase_id": "1:before",
+        "target_segment_id": "seg_story_first_942add53ba3893580a1cf17d_01",
+        "phase": "before",
+        "story_range_sec": [
+          0,
+          3.698
+        ],
+        "observation_indices": [
+          0
+        ],
+        "status": "DESCRIBED"
+      },
+      {
+        "phase_id": "1:insert",
+        "target_segment_id": "seg_story_first_942add53ba3893580a1cf17d_01",
+        "phase": "insert",
+        "story_range_sec": [
+          3.698,
+          22.658
+        ],
+        "observation_indices": [
+          1
+        ],
+        "status": "DESCRIBED"
+      },
+      {
+        "phase_id": "1:after",
+        "target_segment_id": "seg_story_first_942add53ba3893580a1cf17d_01",
+        "phase": "after",
+        "story_range_sec": [
+          22.658,
+          37.658
+        ],
+        "observation_indices": [
+          2
+        ],
+        "status": "DESCRIBED"
+      },
+      {
+        "phase_id": "2:before",
+        "target_segment_id": "seg_story_first_942add53ba3893580a1cf17d_02",
+        "phase": "before",
+        "story_range_sec": [
+          17.658,
+          22.658
+        ],
+        "observation_indices": [
+          3
+        ],
+        "status": "DESCRIBED"
+      },
+      {
+        "phase_id": "2:insert",
+        "target_segment_id": "seg_story_first_942add53ba3893580a1cf17d_02",
+        "phase": "insert",
+        "story_range_sec": [
+          22.658,
+          42.548
+        ],
+        "observation_indices": [],
+        "status": "MISSING"
+      },
+      {
+        "phase_id": "2:after",
+        "target_segment_id": "seg_story_first_942add53ba3893580a1cf17d_02",
+        "phase": "after",
+        "story_range_sec": [
+          42.548,
+          57.548
+        ],
+        "observation_indices": [],
+        "status": "MISSING"
+      }
+    ],
+    "uncertainties": [
+      "Exact identity of players due to resolution and distance.",
+      "Specific dialogue during arguments with the referee is inaudible.",
+      "Precise trajectory of the ball during the corner kick header is partially obscured by players."
+    ],
+    "reason_if_no_observations": null
+  },
+  "candidate_search_results": [
+    {
+      "proposal_id": "interval_01:H1",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "opponent_opening_goal_action",
+        "to_segment_id": "seg:2",
+        "to_role": "equalizer_goal_action",
+        "source_interval_sec": [
+          3135.968,
+          5657.158
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "塞尔塔维戈在追平前经历多次犯规与黄牌累积，比赛对抗强度逐步升高。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000538",
+          "source_pts_sec": 5254.38,
+          "event_type": "Foul_Being_fouled",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员在防守三区犯规2队9号球员倒地"
+          }
+        },
+        {
+          "event_id": "event_000539",
+          "source_pts_sec": 5257.34,
+          "event_type": "Receive_a_card",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员在防守三区犯规2队9号球员倒地，裁判向1队24号球员出示黄牌"
+          }
+        },
+        {
+          "event_id": "event_000552",
+          "source_pts_sec": 5501.22,
+          "event_type": "Foul_Being_fouled",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队7号球员犯规1队24号球员倒地"
+          }
+        },
+        {
+          "event_id": "event_000553",
+          "source_pts_sec": 5505.11,
+          "event_type": "Receive_a_card",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队7号球员犯规1队24号球员倒地，裁判向2队7号球员出示黄牌"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000538",
+          "target_event_id": "event_000553",
+          "relation_type": "narrative_association",
+          "claim": "犯规与黄牌交替出现或反映对抗升级",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若两次黄牌间无任何对抗升级画面则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000552",
+          "question": "这次犯规是否紧接前次黄牌后的对抗升级？",
+          "discriminating_signal": "对抗强度与判罚连续性"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_01:H2",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "opponent_opening_goal_action",
+        "to_segment_id": "seg:2",
+        "to_role": "equalizer_goal_action",
+        "source_interval_sec": [
+          3135.968,
+          5657.158
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "三次换人后塞尔塔维戈的进攻组织出现变化，为后续角球与追平埋下伏笔。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000534",
+          "source_pts_sec": 5196.1,
+          "event_type": "Substitution",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队12号球员换下3号球员换上"
+          }
+        },
+        {
+          "event_id": "event_000535",
+          "source_pts_sec": 5199.41,
+          "event_type": "Substitution",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队14号球员换下22号球员换上"
+          }
+        },
+        {
+          "event_id": "event_000536",
+          "source_pts_sec": 5210.18,
+          "event_type": "Substitution",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队21号球员换下39号球员换上"
+          }
+        },
+        {
+          "event_id": "atom_fill_0114_Corner_kick_5655418",
+          "source_pts_sec": 5655.418,
+          "event_type": "Corner_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": null
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000536",
+          "target_event_id": "atom_fill_0114_Corner_kick_5655418",
+          "relation_type": "causal_hypothesis",
+          "claim": "换人调整或与随后角球进攻存在关联",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若换人后至角球前无任何进攻组织变化则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:atom_fill_0114_Corner_kick_5655418",
+          "question": "角球前是否可见换人带来的进攻组织变化？",
+          "discriminating_signal": "换人后进攻参与度变化"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_01:H3",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "opponent_opening_goal_action",
+        "to_segment_id": "seg:2",
+        "to_role": "equalizer_goal_action",
+        "source_interval_sec": [
+          3135.968,
+          5657.158
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "塞尔塔维戈连续出现射门失误后，通过角球机会继续施压并最终追平。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000531",
+          "source_pts_sec": 5173.88,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队14号球员在防守三区射门"
+          }
+        },
+        {
+          "event_id": "event_000534",
+          "source_pts_sec": 5196.1,
+          "event_type": "Substitution",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队12号球员换下3号球员换上"
+          }
+        },
+        {
+          "event_id": "atom_fill_0112_Ball_possession_5615435",
+          "source_pts_sec": 5615.435,
+          "event_type": "Ball_possession",
+          "known_replay_or_slowmo": false,
+          "annotation": null
+        },
+        {
+          "event_id": "atom_fill_0114_Corner_kick_5655418",
+          "source_pts_sec": 5655.418,
+          "event_type": "Corner_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": null
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000531",
+          "target_event_id": "atom_fill_0114_Corner_kick_5655418",
+          "relation_type": "narrative_association",
+          "claim": "射门失误后球队仍持续获得进攻机会",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若失误后至角球前无任何进攻延续画面则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:atom_fill_0112_Ball_possession_5615435",
+          "question": "失误后球队是否仍保持进攻控球？",
+          "discriminating_signal": "控球方向与进攻推进"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_01:H4",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "opponent_opening_goal_action",
+        "to_segment_id": "seg:2",
+        "to_role": "equalizer_goal_action",
+        "source_interval_sec": [
+          3135.968,
+          5657.158
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "塞尔塔维戈在追平前多次获得定位球机会，最终由角球完成追平。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000542",
+          "source_pts_sec": 5385.78,
+          "event_type": "Free_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队22号球员在防守三区开出直接任意球"
+          }
+        },
+        {
+          "event_id": "event_000551",
+          "source_pts_sec": 5495.01,
+          "event_type": "Free_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员在中场三区开出任意球"
+          }
+        },
+        {
+          "event_id": "event_000555",
+          "source_pts_sec": 5585.63,
+          "event_type": "Free_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员在中场三区开出任意球"
+          }
+        },
+        {
+          "event_id": "atom_fill_0114_Corner_kick_5655418",
+          "source_pts_sec": 5655.418,
+          "event_type": "Corner_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": null
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000555",
+          "target_event_id": "atom_fill_0114_Corner_kick_5655418",
+          "relation_type": "narrative_association",
+          "claim": "连续定位球机会或为角球追平积累前奏",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若定位球与角球间无进攻延续画面则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000555",
+          "question": "这次任意球是否延续了此前的定位球进攻模式？",
+          "discriminating_signal": "定位球进攻组织相似性"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_01:H5",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "opponent_opening_goal_action",
+        "to_segment_id": "seg:2",
+        "to_role": "equalizer_goal_action",
+        "source_interval_sec": [
+          3135.968,
+          5657.158
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "塞尔塔维戈追平前经历多次防守解围与拦截，比赛在攻防转换中反复拉锯。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000545",
+          "source_pts_sec": 5422.74,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员在中场三区将球解围出去"
+          }
+        },
+        {
+          "event_id": "event_000548",
+          "source_pts_sec": 5456.32,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员在防守三区将球截获"
+          }
+        },
+        {
+          "event_id": "event_000556",
+          "source_pts_sec": 5587.9,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员在中场三区将球截获"
+          }
+        },
+        {
+          "event_id": "event_000557",
+          "source_pts_sec": 5593.26,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员和2队球员在中场三区对抗"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000545",
+          "target_event_id": "event_000557",
+          "relation_type": "narrative_association",
+          "claim": "防守解围与拦截交替或反映攻防拉锯状态",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若解围与拦截间无攻防转换画面则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000556",
+          "question": "这次拦截是否紧接前次解围后的攻防转换？",
+          "discriminating_signal": "攻防转换节奏与方向"
+        }
+      ]
+    }
+  ],
+  "prior_feedback": [
+    {
+      "round": 1,
+      "status": "ACCEPTED_PREVIEW",
+      "source_advisory": [],
+      "p3_stop_reason": "PLANNER_KEEP",
+      "local_trims": 0,
+      "accepted_source_windows_sec": [
+        [
+          5577.63,
+          5593.63
+        ],
+        [
+          5647.418,
+          5657.158
+        ]
+      ],
+      "local_decisions": [
+        {
+          "action": "KEEP",
+          "rationale": "The first bridge segment (seg_story_first_b47e4b6a45d1a02720cf0385_01) provides a clear visual transition from the opening goal to the equalizer build-up. The working cut caption shows a sideline bench scene with the scoreboard reading OSA 2 - CEL 1 at 66:43, which establishes the score state and the passage of time between the two goals. This functions as setup and context for the equalizer, and the visible observation supports its inclusion without claiming any unseen action. No concrete pacing or clarity improvement justifies a trim."
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "parent_mp4_sha256": "acc1e575b973369f1d83519ebf1a9777e053ca8804c3261cc8edb6b2b8731319",
+      "p1_proposals": 4,
+      "new_proposals": 4,
+      "trial_id": "7ffdeab55407af24c1ea0eaa",
+      "source_windows_sec": [
+        [
+          5599.36,
+          5630.136
+        ]
+      ],
+      "event_ids": [
+        "atom_fill_0112_Ball_possession_5615435",
+        "atom_fill_0113_Defensive_action_5622136",
+        "event_000559"
+      ],
+      "status": "ACCEPTED_PREVIEW",
+      "source_feedback": [],
+      "source_advisory": [],
+      "p3_stop_reason": "PLANNER_KEEP",
+      "local_trims": 0,
+      "accepted_source_windows_sec": [
+        [
+          5599.36,
+          5630.136
+        ]
+      ],
+      "local_decisions": [
+        {
+          "action": "KEEP",
+          "rationale": "The working cut caption for seg_story_first_7ffdeab55407af24c1ea0eaa_01 shows a wide shot of midfield passing with the scoreboard OSA 2 - CEL 1 at 66:58 in the 'before' phase, and the corner kick leading to the equalizer with the scoreboard updating to OSA 2 - CEL 2 at 68:04 in the 'after' phase. The 'insert' phase between 19.698 and 50.474 is MISSING, so the clip's internal continuity is not fully verified. However, the visible observations provide clear setup and context for the equalizer without claiming unseen action. The clip functions as a bridge between the opening goal and the equalizer, and no concrete pacing or clarity improvement justifies a trim."
+        }
+      ]
+    }
+  ],
+  "editable_trial_segment_ids_and_source_bounds": {
+    "seg_story_first_942add53ba3893580a1cf17d_01": [
+      5246.38,
+      5265.34
+    ],
+    "seg_story_first_942add53ba3893580a1cf17d_02": [
+      5493.22,
+      5513.11
+    ]
+  },
+  "current_source_review_advisory": [],
+  "following_rounds_available": 3,
+  "http_calls_available_after_this_plan": 9
+}

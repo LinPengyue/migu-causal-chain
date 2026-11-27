@@ -1,0 +1,183 @@
+{
+  "schema": "v3a_story_revision_plan_v1",
+  "decision": "REVISE",
+  "rationale": "该提案覆盖 seg:3→seg:4 大跳跃区间内的局部子故事：任意球→空中争顶→射门，事件时间紧凑（2277.94–2285.84s），且 event_000313 与 search_candidate cand_event_000313_2273 重叠，观察结果可直接服务于未来是否插入该候选的决策。选择此单一紧凑试验以最小化观察成本。",
+  "offline": false,
+  "semantic_confirmation": false,
+  "search_confirmation": false,
+  "narrative_fit_required": true,
+  "narrative_fit_confirmation": false,
+  "event_pts_search_available": true,
+  "protected_goal_segment_ids": [
+    "seg:1",
+    "seg:10",
+    "seg:2",
+    "seg:3",
+    "seg:4",
+    "seg:5",
+    "seg:6",
+    "seg:7",
+    "seg:8",
+    "seg:9"
+  ],
+  "revision_intents": [
+    {
+      "intent_id": "story_first_4268996b2fb5cc4e177e1ede_01",
+      "action": "search_add",
+      "role": "buildup_bridge_action",
+      "issue_id": "story_first:4268996b2fb5cc4e177e1ede",
+      "story_first_trial_id": "4268996b2fb5cc4e177e1ede",
+      "story_first_preview_only": true,
+      "anchor_id": "search:story_first_4268996b2fb5cc4e177e1ede_01",
+      "new_segment_id": "seg_story_first_4268996b2fb5cc4e177e1ede_01",
+      "insert_after_segment_id": "seg:3",
+      "before_segment_id": "seg:4",
+      "bound_source_window": {
+        "start": 2269.94,
+        "end": 2293.84
+      },
+      "event_ids": [
+        "event_000311",
+        "event_000312",
+        "event_000313"
+      ],
+      "narrative_purpose": "该提案覆盖 seg:3→seg:4 大跳跃区间内的局部子故事：任意球→空中争顶→射门，事件时间紧凑（2277.94–2285.84s），且 event_000313 与 search_candidate cand_event_000313_2273 重叠，观察结果可直接服务于未来是否插入该候选的决策。选择此单一紧凑试验以最小化观察成本。",
+      "source_event_observations": [
+        {
+          "event_id": "event_000311",
+          "status": "SUPPORTED",
+          "reason": "Frame f2 shows a player in white (Team 1) striking the ball from a stationary position outside the penalty area, consistent with a free kick execution at the annotated timestamp.",
+          "frame_ids": [
+            "f2"
+          ]
+        },
+        {
+          "event_id": "event_000312",
+          "status": "SUPPORTED",
+          "reason": "Frame f3 captures a player in red (Team 2) jumping and making contact with the ball via header amidst opponents, confirming the aerial duel win.",
+          "frame_ids": [
+            "f3"
+          ]
+        },
+        {
+          "event_id": "event_000313",
+          "status": "SUPPORTED",
+          "reason": "Frame f4 depicts a player in white (Team 1) executing a long-range shot from outside the box, matching the description of an外围 (peripheral/long-range) shot.",
+          "frame_ids": [
+            "f4"
+          ]
+        }
+      ],
+      "expected_observable_improvement": "该提案覆盖 seg:3→seg:4 大跳跃区间内的局部子故事：任意球→空中争顶→射门，事件时间紧凑（2277.94–2285.84s），且 event_000313 与 search_candidate cand_event_000313_2273 重叠，观察结果可直接服务于未来是否插入该候选的决策。选择此单一紧凑试验以最小化观察成本。",
+      "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+      "evidence_refs": [
+        {
+          "kind": "story_first_source_review",
+          "ref": "story_first_4268996b2fb5cc4e177e1ede_01"
+        }
+      ]
+    }
+  ],
+  "feedback_context": {
+    "schema": "v3a_phase8_feedback_summary_v1",
+    "n_records": 0,
+    "tried_revisions": [],
+    "confirmed_negatives": [],
+    "uncertain_or_unverified": [],
+    "technical_failures": [],
+    "positives": [],
+    "current_issue_signatures": [],
+    "forbid_identical_retry_without_new_evidence": true,
+    "never_permanently_ban_pts": true,
+    "opaque_reject_is_not_confirmed_negative": true
+  },
+  "fullcut_learning_enabled": true,
+  "fullcut_edit_selection": null,
+  "agent_narrative_graph_context": {
+    "data_role": "AGENT_INFERRED",
+    "edl_sha256": "95a338e34dcdea3c678a1b8a0291c4596cf888ef6735cd6975bb8f7b19428851",
+    "summary": {
+      "node_count": 10,
+      "edge_count": 9,
+      "event_or_short_chain_reference_links": 36,
+      "event_reference_links": 17,
+      "short_chain_prediction_reference_links": 19,
+      "unclassified_reference_count": 0,
+      "unreviewed_narrative_transitions": 0,
+      "model_reviewed_transitions": 0
+    },
+    "authorizes_revision": false
+  },
+  "budget": {
+    "max_rounds": 3,
+    "round_idx": 1,
+    "max_calls": 24,
+    "max_cost_usd": 0.1,
+    "http_calls_so_far": 9,
+    "est_cost_usd_so_far": 0.025949
+  },
+  "phase6_rules": {
+    "no_auto_add_on_large_source_gap_alone": true,
+    "duration_pad_not_quality_proxy": true,
+    "require_confirmed_defect_for_search_add": true,
+    "require_narrative_fit_triplet_before_insert": true,
+    "temporal_jump_alone_can_be_kept": true,
+    "one_confirmed_edit_per_round": true,
+    "hypothesis_status": "HYPOTHESIS_NEEDS_VIDEO"
+  },
+  "phase8_rules": {
+    "use_prior_round_feedback": true,
+    "block_identical_pts_action_without_new_evidence": true,
+    "never_permanently_ban_pts": true,
+    "unverified_reject_is_not_confirmed_negative": true,
+    "stop_if_no_narrative_live_after_filter": true
+  },
+  "narrative_purposes_supported": [
+    "supplement_buildup",
+    "adjust_non_goal_segments",
+    "repair_transitions",
+    "drop_redundant_or_meaningless",
+    "improve_ending_closure",
+    "preserve_true_match_time_and_causality",
+    "protect_confirmed_goal_anchors"
+  ],
+  "constraints": {
+    "no_replay_or_slowmo": true,
+    "no_scoreboard_time_as_goal_action": true,
+    "new_footage_must_trace_to_source_pts": true,
+    "max_rounds": 3
+  },
+  "search_feedback_filter": {
+    "filtered_count": 0,
+    "kept_count": 10
+  },
+  "provider_mode": "real",
+  "llm_overlay_note": "llm_unresolved_or_keep_only_honored",
+  "llm_rationale": "两个诊断问题均为 temporal_discontinuity_only 的 HYPOTHESIS_NEEDS_VIDEO，story_defect_confirmed=false。VLM critic 无任何观察结果（UNAVAILABLE），无视觉证据支持插入。所有 search_candidates 的 first_live_status 均为 NOT_VERIFIED 且 narrative_fit_status=NEEDS_VIDEO_REVIEW，不满足 search_add 的前置条件。约束明确禁止仅因 source-time gap 插入。因此不执行任何编辑，标记为 UNRESOLVED 以请求后续视频观察。",
+  "search_revise_suppressed_by_llm": false,
+  "suppressed_search_intents": [],
+  "nonadditive_apply_gate": {
+    "required": true,
+    "blocked_intents": [],
+    "n_blocked": 0,
+    "explicitly_protected_goals": []
+  },
+  "narrative_fit_apply_gate": {
+    "required": true,
+    "approved_candidate_count": 0,
+    "blocked_intents": [],
+    "n_blocked": 0
+  },
+  "one_edit_apply_gate": {
+    "required": true,
+    "selected_intent_id": null,
+    "deferred_intents": [],
+    "n_deferred": 0
+  },
+  "story_first_trial_id": "4268996b2fb5cc4e177e1ede",
+  "goal_coverage_mutation_gate": {
+    "blocked": [],
+    "n_blocked": 0,
+    "no_auto_goal_from_scoreboard": true
+  }
+}

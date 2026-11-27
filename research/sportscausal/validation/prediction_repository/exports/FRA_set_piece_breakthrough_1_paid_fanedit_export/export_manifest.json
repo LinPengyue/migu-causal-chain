@@ -1,0 +1,230 @@
+{
+  "schema": "sportscausal_prediction_export_result_v1",
+  "benchmark_ref": "e67d7c9f596db5b3cd5618f4692733126e68b1c1",
+  "evaluator_ref": "db25a77fe7d6b66f28abf8e9ae20ade67df1be98",
+  "run_metadata": {
+    "schema": "sportscausal_prediction_export_v1",
+    "run_id": "FRA_set_piece_breakthrough_1_paid",
+    "algorithm_commit": "cc86f2c7609706cab4cc8c5f57650ef477575024",
+    "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+    "match_id": "FH-34B9C8A4",
+    "source": {
+      "match_id": "FH-34B9C8A4",
+      "video_id": "FH-34B9C8A4-Vdb63a4c31513",
+      "native_video_id": "2022年11月23日 法国vs澳大利亚",
+      "source_sha256": "67462dbafb7aa73240230aacce4aa07cc61b6cd60c7f7d59fc60f9b023e6e978",
+      "identity_provenance": "FanEdit match_id FH-34B9C8A4 paired to native 交付_out + /mnt/data4/migu/2022年11月23日 法国vs澳大利亚.mp4; sha recomputed 2026-11-27; score left=team_1 from phase5 FIRST_RUN_NOTES",
+      "timeline": "source_video_media_seconds"
+    },
+    "fresh_manifest": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_FRA_france_australia/fresh_general_v1/run_manifest.json",
+    "fresh_manifest_sha256": "467e4cc7f555b1c71c21f475542338010b4147f9574a8c81c554ed531e0a906d",
+    "input_hashes": {
+      "match_json": {
+        "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/data/交付_out/2022年11月23日 法国vs澳大利亚.json",
+        "sha256": "8756bb820e92a9970a772583966058f53563b6f50d2b9fe0d9e6489561797d3f"
+      },
+      "source_mp4": {
+        "path": "/mnt/data4/migu/2022年11月23日 法国vs澳大利亚.mp4",
+        "sha256": "67462dbafb7aa73240230aacce4aa07cc61b6cd60c7f7d59fc60f9b023e6e978"
+      },
+      "causal_atoms_json": {
+        "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/data/交付_out/2022年11月23日 法国vs澳大利亚_causal.json",
+        "sha256": "86c19aec3a7a1d5b51d3c2a0110200ba05be3ce192dd6f451d7ca8d2516e2390"
+      }
+    },
+    "r3_template_counts": {
+      "keeper_rescue": 0,
+      "alternating_threats": 0,
+      "alternating_threats_score_context": 0,
+      "comeback": 1,
+      "equalization": 1,
+      "lead_preservation": 1,
+      "set_piece_breakthrough": 2,
+      "turnover_to_goal": 0,
+      "threat_phase_change": 0
+    },
+    "n_r3_predictions": 5,
+    "n_agent_attempts": 1,
+    "agent_coverage_complete": false,
+    "unattempted_candidate_ids": [
+      "comeback:1",
+      "equalization:1",
+      "lead_preservation:1",
+      "set_piece_breakthrough:2"
+    ],
+    "agent_runs": [
+      {
+        "candidate_id": "set_piece_breakthrough:1",
+        "runner_report": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/report.json",
+        "runner_report_sha256": "65771330856a86a065b648df015febb27fa753d224e104ef9817fc8a50f0ad29",
+        "input_provenance_sha256": "d9d5cc5a7e52da7c9b3c8aac936ea75846c763afa3da7345fb2cdd1771a94c64",
+        "input_pack_edl_sha256": "3d8b2cae170ac7999a918ec71274ef32af0a78c8bb930ba69e87d062f77d8615",
+        "serialized_seed_edl_sha256": "3d8b2cae170ac7999a918ec71274ef32af0a78c8bb930ba69e87d062f77d8615",
+        "runner_status": "ORIGINAL_AGENT_RETURNED",
+        "http_calls": 1,
+        "estimated_cost_usd": 0.000349,
+        "runner_elapsed_sec": 72.984,
+        "native_final_present": true,
+        "native_delivery_status": "BLOCKED",
+        "native_audit": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/story_e2e_audit.json",
+        "native_audit_sha256": "9c89918e89aa8157117a275171fe83e0121066cd2b66fa0a28f3479e5a7a4b5f",
+        "native_delivery": false,
+        "native_agent_elapsed_sec": 72.9
+      }
+    ],
+    "mixed_diagnostic_artifacts": [],
+    "scope": "template-conditioned development if known reference type selected; do not treat missing runs as complete batch"
+  },
+  "artifacts": [
+    {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_FRA_france_australia/fresh_general_v1/02_strip831/strip_A_original.json",
+      "sha256": "f28e9af6c28b92ab4f4ffce4e5e340b34ce62782f95dbfc157390942bba4dba8",
+      "stage": "strip831",
+      "variant": "all",
+      "original_path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_FRA_france_australia/fresh_general_v1/02_strip831/strip_A_original.json",
+      "archived_path": "native/000.json",
+      "n_predictions": 68
+    },
+    {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_FRA_france_australia/fresh_general_v1/03_v1_adapt/predicted_causal.json",
+      "sha256": "b2b99479c2c987e26a6da647375e48ca32a82f78bc44b836169976440acbefdf",
+      "stage": "adapted_causal",
+      "variant": "all",
+      "original_path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_FRA_france_australia/fresh_general_v1/03_v1_adapt/predicted_causal.json",
+      "archived_path": "native/001.json",
+      "n_predictions": 72
+    },
+    {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_FRA_france_australia/fresh_general_v1/08_r3/comeback__1/initial_edl.json",
+      "sha256": "71b4e081aa2a1535143364790c20d168199675c2ef20b294da1dc47615fd7551",
+      "stage": "r3_initial",
+      "variant": "all",
+      "template_id": "comeback",
+      "candidate_id": "comeback:1",
+      "original_path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_FRA_france_australia/fresh_general_v1/08_r3/comeback__1/initial_edl.json",
+      "archived_path": "native/002.json",
+      "n_predictions": 1
+    },
+    {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_FRA_france_australia/fresh_general_v1/08_r3/equalization__1/initial_edl.json",
+      "sha256": "ccfa436d63c47bc441bc80962c5cf94cc8bfe6cd9902b9d951ad043b75c4afd5",
+      "stage": "r3_initial",
+      "variant": "all",
+      "template_id": "equalization",
+      "candidate_id": "equalization:1",
+      "original_path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_FRA_france_australia/fresh_general_v1/08_r3/equalization__1/initial_edl.json",
+      "archived_path": "native/003.json",
+      "n_predictions": 1
+    },
+    {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_FRA_france_australia/fresh_general_v1/08_r3/lead_preservation__1/initial_edl.json",
+      "sha256": "71b4e081aa2a1535143364790c20d168199675c2ef20b294da1dc47615fd7551",
+      "stage": "r3_initial",
+      "variant": "all",
+      "template_id": "lead_preservation",
+      "candidate_id": "lead_preservation:1",
+      "original_path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_FRA_france_australia/fresh_general_v1/08_r3/lead_preservation__1/initial_edl.json",
+      "archived_path": "native/004.json",
+      "n_predictions": 1
+    },
+    {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_FRA_france_australia/fresh_general_v1/08_r3/set_piece_breakthrough__1/initial_edl.json",
+      "sha256": "8b8c32b126fb920be5249a055444d0276e45fc3ad2f3f91309f42ae56086775a",
+      "stage": "r3_initial",
+      "variant": "all",
+      "template_id": "set_piece_breakthrough",
+      "candidate_id": "set_piece_breakthrough:1",
+      "original_path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_FRA_france_australia/fresh_general_v1/08_r3/set_piece_breakthrough__1/initial_edl.json",
+      "archived_path": "native/005.json",
+      "n_predictions": 1
+    },
+    {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_FRA_france_australia/fresh_general_v1/08_r3/set_piece_breakthrough__2/initial_edl.json",
+      "sha256": "4a1b5c19d48c97f15406bac2a74caffe3804aae072aeb122db0f28a80c4d8e36",
+      "stage": "r3_initial",
+      "variant": "all",
+      "template_id": "set_piece_breakthrough",
+      "candidate_id": "set_piece_breakthrough:2",
+      "original_path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_FRA_france_australia/fresh_general_v1/08_r3/set_piece_breakthrough__2/initial_edl.json",
+      "archived_path": "native/006.json",
+      "n_predictions": 1
+    },
+    {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/candidate_edl.json",
+      "sha256": "3d8b2cae170ac7999a918ec71274ef32af0a78c8bb930ba69e87d062f77d8615",
+      "stage": "agent_v0",
+      "variant": "all",
+      "template_id": "set_piece_breakthrough",
+      "candidate_id": "set_piece_breakthrough:1",
+      "original_path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/candidate_edl.json",
+      "archived_path": "native/007.json",
+      "n_predictions": 1
+    },
+    {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/99_final/final_edl.json",
+      "sha256": "3d8b2cae170ac7999a918ec71274ef32af0a78c8bb930ba69e87d062f77d8615",
+      "stage": "agent_native_final",
+      "variant": "all",
+      "template_id": "set_piece_breakthrough",
+      "candidate_id": "set_piece_breakthrough:1",
+      "original_path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/99_final/final_edl.json",
+      "archived_path": "native/008.json",
+      "n_predictions": 1
+    }
+  ],
+  "groups": [
+    {
+      "task": "causal",
+      "stage": "strip831",
+      "variant": "all",
+      "n_predictions": 68,
+      "n_blocked_predictions": 68,
+      "strict_path": null,
+      "status": "BLOCKED_MAPPING",
+      "audit_path": "causal__strip831__all.audit.jsonl"
+    },
+    {
+      "task": "causal",
+      "stage": "adapted_causal",
+      "variant": "all",
+      "n_predictions": 72,
+      "n_blocked_predictions": 72,
+      "strict_path": null,
+      "status": "BLOCKED_MAPPING",
+      "audit_path": "causal__adapted_causal__all.audit.jsonl"
+    },
+    {
+      "task": "story",
+      "stage": "r3_initial",
+      "variant": "all",
+      "n_predictions": 5,
+      "n_blocked_predictions": 5,
+      "strict_path": null,
+      "status": "BLOCKED_MAPPING",
+      "audit_path": "story__r3_initial__all.audit.jsonl"
+    },
+    {
+      "task": "story",
+      "stage": "agent_v0",
+      "variant": "all",
+      "n_predictions": 1,
+      "n_blocked_predictions": 1,
+      "strict_path": null,
+      "status": "BLOCKED_MAPPING",
+      "audit_path": "story__agent_v0__all.audit.jsonl"
+    },
+    {
+      "task": "story",
+      "stage": "agent_native_final",
+      "variant": "all",
+      "n_predictions": 1,
+      "n_blocked_predictions": 1,
+      "strict_path": null,
+      "status": "BLOCKED_MAPPING",
+      "audit_path": "story__agent_native_final__all.audit.jsonl"
+    }
+  ],
+  "http_calls": 0,
+  "metrics_computed": false,
+  "warning": "Projection readiness is format validity only, not benchmark eligibility or story quality."
+}

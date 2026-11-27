@@ -1,0 +1,1097 @@
+{
+  "story_template": {
+    "template_id": "threat_phase_change",
+    "template": {
+      "category": "攻防故事链",
+      "subtype": "攻势换手",
+      "narrative_goal": [
+        "连续观测到的攻防威胁序列发生主体切换"
+      ],
+      "subjects": [
+        "team_2",
+        "team_1"
+      ],
+      "narrative_edges": [
+        {
+          "from": "phase:1:episode:1",
+          "to": "phase:1:episode:4",
+          "edge_type": "within_observed_threat_run",
+          "relation": "within_observed_threat_run",
+          "causal_verified": false
+        },
+        {
+          "from": "phase:1:episode:4",
+          "to": "phase:2:episode:7",
+          "edge_type": "observed_phase_switch",
+          "relation": "observed_phase_switch",
+          "causal_verified": false
+        },
+        {
+          "from": "phase:2:episode:7",
+          "to": "phase:2:episode:14",
+          "edge_type": "within_observed_threat_run",
+          "relation": "within_observed_threat_run",
+          "causal_verified": false
+        },
+        {
+          "from": "phase:2:episode:14",
+          "to": "phase:2:episode:19",
+          "edge_type": "within_observed_threat_run",
+          "relation": "within_observed_threat_run",
+          "causal_verified": false
+        },
+        {
+          "from": "phase:2:episode:19",
+          "to": "phase:2:episode:22",
+          "edge_type": "within_observed_threat_run",
+          "relation": "within_observed_threat_run",
+          "causal_verified": false
+        },
+        {
+          "from": "phase:2:episode:22",
+          "to": "phase:2:episode:26",
+          "edge_type": "within_observed_threat_run",
+          "relation": "within_observed_threat_run",
+          "causal_verified": false
+        },
+        {
+          "from": "phase:2:episode:26",
+          "to": "phase:2:episode:27",
+          "edge_type": "within_observed_threat_run",
+          "relation": "within_observed_threat_run",
+          "causal_verified": false
+        },
+        {
+          "from": "phase:2:episode:27",
+          "to": "phase:2:episode:33",
+          "edge_type": "within_observed_threat_run",
+          "relation": "within_observed_threat_run",
+          "causal_verified": false
+        },
+        {
+          "from": "phase:1:episode:4",
+          "to": "phase_switch",
+          "edge_type": "transition_hypothesis",
+          "causal_verified": false
+        },
+        {
+          "from": "phase_switch",
+          "to": "phase:2:episode:7",
+          "edge_type": "transition_hypothesis",
+          "causal_verified": false
+        }
+      ]
+    },
+    "template_name": "攻势换手",
+    "title": "攻势换手",
+    "beats": [
+      {
+        "node_id": "phase:1:episode:1",
+        "node_type": "anchor",
+        "kind": "phase_episode",
+        "predicate": "attacking_threat",
+        "actor": "team_2",
+        "actor_role": "attacking_team",
+        "required": true,
+        "event_ids": [
+          "event_000096",
+          "event_000097"
+        ],
+        "media_windows": [
+          [
+            1049.71,
+            1060.64
+          ]
+        ],
+        "observation_task_ids": [],
+        "role": "attacking_threat"
+      },
+      {
+        "node_id": "phase:1:episode:4",
+        "node_type": "anchor",
+        "kind": "phase_episode",
+        "predicate": "attacking_threat",
+        "actor": "team_2",
+        "actor_role": "attacking_team",
+        "required": true,
+        "event_ids": [
+          "event_000276",
+          "event_000277"
+        ],
+        "media_windows": [
+          [
+            1912.32,
+            1922.55
+          ]
+        ],
+        "observation_task_ids": [],
+        "role": "attacking_threat"
+      },
+      {
+        "node_id": "phase:2:episode:7",
+        "node_type": "anchor",
+        "kind": "phase_episode",
+        "predicate": "attacking_threat",
+        "actor": "team_1",
+        "actor_role": "attacking_team",
+        "required": true,
+        "event_ids": [
+          "event_000282"
+        ],
+        "media_windows": [
+          [
+            1955.54,
+            1966.45
+          ]
+        ],
+        "observation_task_ids": [],
+        "role": "attacking_threat"
+      },
+      {
+        "node_id": "phase:2:episode:14",
+        "node_type": "anchor",
+        "kind": "phase_episode",
+        "predicate": "attacking_threat",
+        "actor": "team_1",
+        "actor_role": "attacking_team",
+        "required": true,
+        "event_ids": [
+          "event_000398",
+          "event_000399",
+          "event_000400"
+        ],
+        "media_windows": [
+          [
+            3338.39,
+            3351.3
+          ]
+        ],
+        "observation_task_ids": [],
+        "role": "attacking_threat"
+      },
+      {
+        "node_id": "phase:2:episode:19",
+        "node_type": "anchor",
+        "kind": "phase_episode",
+        "predicate": "attacking_threat",
+        "actor": "team_1",
+        "actor_role": "attacking_team",
+        "required": true,
+        "event_ids": [
+          "event_000416",
+          "event_000417"
+        ],
+        "media_windows": [
+          [
+            3504.14,
+            3515.83
+          ]
+        ],
+        "observation_task_ids": [],
+        "role": "attacking_threat"
+      },
+      {
+        "node_id": "phase:2:episode:22",
+        "node_type": "anchor",
+        "kind": "phase_episode",
+        "predicate": "attacking_threat",
+        "actor": "team_1",
+        "actor_role": "attacking_team",
+        "required": true,
+        "event_ids": [
+          "event_000421"
+        ],
+        "media_windows": [
+          [
+            3543.01,
+            3553.57
+          ]
+        ],
+        "observation_task_ids": [],
+        "role": "attacking_threat"
+      },
+      {
+        "node_id": "phase:2:episode:26",
+        "node_type": "anchor",
+        "kind": "phase_episode",
+        "predicate": "attacking_threat",
+        "actor": "team_1",
+        "actor_role": "attacking_team",
+        "required": true,
+        "event_ids": [
+          "event_000472"
+        ],
+        "media_windows": [
+          [
+            4702.5,
+            4714.65
+          ]
+        ],
+        "observation_task_ids": [],
+        "role": "attacking_threat"
+      },
+      {
+        "node_id": "phase:2:episode:27",
+        "node_type": "anchor",
+        "kind": "phase_episode",
+        "predicate": "attacking_threat",
+        "actor": "team_1",
+        "actor_role": "attacking_team",
+        "required": true,
+        "event_ids": [
+          "event_000476",
+          "event_000477"
+        ],
+        "media_windows": [
+          [
+            4755.79,
+            4769.62
+          ]
+        ],
+        "observation_task_ids": [],
+        "role": "attacking_threat"
+      },
+      {
+        "node_id": "phase:2:episode:33",
+        "node_type": "anchor",
+        "kind": "phase_episode",
+        "predicate": "attacking_threat",
+        "actor": "team_1",
+        "actor_role": "attacking_team",
+        "required": true,
+        "event_ids": [
+          "event_000640",
+          "event_000641"
+        ],
+        "media_windows": [
+          [
+            6552.01,
+            6562.64
+          ]
+        ],
+        "observation_task_ids": [],
+        "role": "attacking_threat"
+      },
+      {
+        "node_id": "phase_switch",
+        "node_type": "transition",
+        "required": false,
+        "event_ids": [],
+        "media_windows": [],
+        "observation_task_ids": [
+          "observe:r2bc:threat_phase_change:1"
+        ],
+        "role": "transition"
+      }
+    ]
+  },
+  "accepted_cut": [
+    {
+      "segment_id": "seg:1",
+      "source_material_id": "material:1",
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "media_in": 1049.71,
+      "media_out": 1060.64,
+      "event_ids": [
+        "event_000096",
+        "event_000097"
+      ],
+      "short_chain_ids": [
+        "pred_0004",
+        "pred_0005"
+      ],
+      "story_node_ids": [
+        "phase:1:episode:1"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 1,
+      "narrative_order": 1,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "phase:1:episode:1"
+      ],
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 1049.71,
+      "adapter_seed_basis": "r3_anchor_materials"
+    },
+    {
+      "segment_id": "seg_story_first_a8a7af824acc5aa63d92ab1d_01",
+      "role": "buildup_bridge_action",
+      "media_in": 1292.92,
+      "media_out": 1319.0,
+      "include_in_cut": true,
+      "is_replay": false,
+      "shot_kind": "search_bridge",
+      "goal_action_complete": false,
+      "event_ids": [
+        "event_000169",
+        "event_000171",
+        "event_000172"
+      ],
+      "agent_bound": true,
+      "agent_search_bound": true,
+      "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+      "first_live_status": "NOT_VERIFIED",
+      "agent_auto_verified": false,
+      "anchor_id": "search:story_first_a8a7af824acc5aa63d92ab1d_01",
+      "narrative_purpose": "The accepted cut preserves the existing template anchors, including the phase switch from team_2 (seg:2) to team_1 (seg:3). The prior bridge segment already covers the immediate transition interval [1927.24, 1952.7]. To add at most one local story that contributes to the existing template without duplicating tried footage, I evaluated the fresh P1 candidates. interval_01:H1 is the strongest choice: it sits between seg:1 and seg:2, both team_2 attacking_threat anchors, and provides a non-replay, uncovered sequence of defensive recovery, dribble, defensive action, and shot. This reinforces the p",
+      "search_issue_id": "story_first:a8a7af824acc5aa63d92ab1d"
+    },
+    {
+      "segment_id": "seg_story_first_a8a7af824acc5aa63d92ab1d_02",
+      "role": "buildup_bridge_action",
+      "media_in": 1327.974,
+      "media_out": 1343.974,
+      "include_in_cut": true,
+      "is_replay": false,
+      "shot_kind": "search_bridge",
+      "goal_action_complete": false,
+      "event_ids": [
+        "atom_fill_0003_Shot_1335974"
+      ],
+      "agent_bound": true,
+      "agent_search_bound": true,
+      "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+      "first_live_status": "NOT_VERIFIED",
+      "agent_auto_verified": false,
+      "anchor_id": "search:story_first_a8a7af824acc5aa63d92ab1d_02",
+      "narrative_purpose": "The accepted cut preserves the existing template anchors, including the phase switch from team_2 (seg:2) to team_1 (seg:3). The prior bridge segment already covers the immediate transition interval [1927.24, 1952.7]. To add at most one local story that contributes to the existing template without duplicating tried footage, I evaluated the fresh P1 candidates. interval_01:H1 is the strongest choice: it sits between seg:1 and seg:2, both team_2 attacking_threat anchors, and provides a non-replay, uncovered sequence of defensive recovery, dribble, defensive action, and shot. This reinforces the p",
+      "search_issue_id": "story_first:a8a7af824acc5aa63d92ab1d"
+    },
+    {
+      "segment_id": "seg:2",
+      "source_material_id": "material:2",
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "media_in": 1912.32,
+      "media_out": 1922.55,
+      "event_ids": [
+        "event_000276",
+        "event_000277"
+      ],
+      "short_chain_ids": [
+        "pred_0015",
+        "pred_0016"
+      ],
+      "story_node_ids": [
+        "phase:1:episode:4"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 2,
+      "narrative_order": 2,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "phase:1:episode:4"
+      ],
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 1912.32,
+      "adapter_seed_basis": "r3_anchor_materials"
+    },
+    {
+      "segment_id": "seg_story_first_919c8d9c0f04e984b2c0ba12_01",
+      "role": "buildup_bridge_action",
+      "media_in": 1927.24,
+      "media_out": 1952.7,
+      "include_in_cut": true,
+      "is_replay": false,
+      "shot_kind": "search_bridge",
+      "goal_action_complete": false,
+      "event_ids": [
+        "event_000278",
+        "event_000279",
+        "event_000280"
+      ],
+      "agent_bound": true,
+      "agent_search_bound": true,
+      "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+      "first_live_status": "NOT_VERIFIED",
+      "agent_auto_verified": false,
+      "anchor_id": "search:story_first_919c8d9c0f04e984b2c0ba12_01",
+      "narrative_purpose": "seg:2 到 seg:3 是模板中攻势换手的关键过渡区间（team_2 攻势结束，team_1 攻势开始）。interval_02:H1 覆盖该区间内长传、身体对抗与拦截的连续事件，且所有事件均为非回放、未覆盖的新素材。该候选不引入因果断言，仅以叙事关联呈现攻势在换手前被终结的过程，与模板的 observed_phase_switch 节点形成自然衔接。其他候选要么包含已确认的回放事件（如 interval_03:H1 的 event_000285/event_000287 被标记为 REPLAY_CONFIRMED），要么事件间隔过大或与模板攻防换手主题关联较弱。因此选择 interval_02:H1 作为唯一新增局部故事。",
+      "search_issue_id": "story_first:919c8d9c0f04e984b2c0ba12"
+    },
+    {
+      "segment_id": "seg:3",
+      "source_material_id": "material:3",
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "media_in": 1955.54,
+      "media_out": 1966.45,
+      "event_ids": [
+        "event_000282"
+      ],
+      "short_chain_ids": [
+        "pred_0015",
+        "pred_0016"
+      ],
+      "story_node_ids": [
+        "phase:2:episode:7"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 3,
+      "narrative_order": 3,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "phase:2:episode:7"
+      ],
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 1955.54,
+      "adapter_seed_basis": "r3_anchor_materials"
+    },
+    {
+      "segment_id": "seg:4",
+      "source_material_id": "material:4",
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "media_in": 3338.39,
+      "media_out": 3351.3,
+      "event_ids": [
+        "event_000398",
+        "event_000399",
+        "event_000400"
+      ],
+      "short_chain_ids": [
+        "pred_0030",
+        "pred_0031"
+      ],
+      "story_node_ids": [
+        "phase:2:episode:14"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 4,
+      "narrative_order": 4,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "phase:2:episode:14"
+      ],
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 3338.39,
+      "adapter_seed_basis": "r3_anchor_materials"
+    },
+    {
+      "segment_id": "seg:5",
+      "source_material_id": "material:5",
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "media_in": 3504.14,
+      "media_out": 3515.83,
+      "event_ids": [
+        "event_000416",
+        "event_000417"
+      ],
+      "short_chain_ids": [
+        "pred_0031",
+        "pred_0032"
+      ],
+      "story_node_ids": [
+        "phase:2:episode:19"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 5,
+      "narrative_order": 5,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "phase:2:episode:19"
+      ],
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 3504.14,
+      "adapter_seed_basis": "r3_anchor_materials"
+    },
+    {
+      "segment_id": "seg:6",
+      "source_material_id": "material:6",
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "media_in": 3543.01,
+      "media_out": 3553.57,
+      "event_ids": [
+        "event_000421"
+      ],
+      "short_chain_ids": [
+        "pred_0032",
+        "pred_0033"
+      ],
+      "story_node_ids": [
+        "phase:2:episode:22"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 6,
+      "narrative_order": 6,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "phase:2:episode:22"
+      ],
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 3543.01,
+      "adapter_seed_basis": "r3_anchor_materials"
+    },
+    {
+      "segment_id": "seg:7",
+      "source_material_id": "material:7",
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "media_in": 4702.5,
+      "media_out": 4714.65,
+      "event_ids": [
+        "event_000472"
+      ],
+      "short_chain_ids": [
+        "pred_0042",
+        "pred_0043"
+      ],
+      "story_node_ids": [
+        "phase:2:episode:26"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 7,
+      "narrative_order": 7,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "phase:2:episode:26"
+      ],
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 4702.5,
+      "adapter_seed_basis": "r3_anchor_materials"
+    },
+    {
+      "segment_id": "seg:8",
+      "source_material_id": "material:8",
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "media_in": 4755.79,
+      "media_out": 4769.62,
+      "event_ids": [
+        "event_000476",
+        "event_000477"
+      ],
+      "short_chain_ids": [
+        "pred_0042",
+        "pred_0043"
+      ],
+      "story_node_ids": [
+        "phase:2:episode:27"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 8,
+      "narrative_order": 8,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "phase:2:episode:27"
+      ],
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 4755.79,
+      "adapter_seed_basis": "r3_anchor_materials"
+    },
+    {
+      "segment_id": "seg:9",
+      "source_material_id": "material:9",
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "media_in": 6552.01,
+      "media_out": 6562.64,
+      "event_ids": [
+        "event_000640",
+        "event_000641"
+      ],
+      "short_chain_ids": [
+        "pred_0063",
+        "pred_0065"
+      ],
+      "story_node_ids": [
+        "phase:2:episode:33"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 9,
+      "narrative_order": 9,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "phase:2:episode:33"
+      ],
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 6552.01,
+      "adapter_seed_basis": "r3_anchor_materials"
+    }
+  ],
+  "fresh_p1_candidates": [
+    {
+      "proposal_id": "interval_01:H2",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:2",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          1060.64,
+          1912.32
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "两次突破过人相隔较远，或反映同一侧持续的个人突破尝试。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000104",
+          "source_pts_sec": 1066.8,
+          "event_type": "Dribble_past",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队6号截获球之后带球过人"
+          }
+        },
+        {
+          "event_id": "event_000171",
+          "source_pts_sec": 1305.71,
+          "event_type": "Dribble_past",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队21号拿球后盘带过人"
+          }
+        },
+        {
+          "event_id": "event_000231",
+          "source_pts_sec": 1660.35,
+          "event_type": "Dribble_past",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队15号带球过人"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000104",
+          "target_event_id": "event_000231",
+          "relation_type": "narrative_association",
+          "claim": "两次突破或属同类模式，非因果",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若两次突破方向与区域明显不同则证伪"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000231",
+          "question": "突破是否与早前突破同侧？",
+          "discriminating_signal": "突破发生区域是否一致"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_01:H3",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:2",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          1060.64,
+          1912.32
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "多次危险动作犯规集中出现，可能标志对抗强度上升的时段。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000216",
+          "source_pts_sec": 1569.08,
+          "event_type": "Foul_Being_fouled",
+          "known_replay_or_slowmo": true,
+          "annotation": {
+            "description": "",
+            "notes": "面对2队21号的带球前进，1队16号果断上前拦截，造成犯规"
+          }
+        },
+        {
+          "event_id": "event_000243",
+          "source_pts_sec": 1704.05,
+          "event_type": "Foul_Being_fouled",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队14号把拿球的2队23号绊倒，造成犯规"
+          }
+        },
+        {
+          "event_id": "event_000244",
+          "source_pts_sec": 1715.07,
+          "event_type": "Foul_Being_fouled",
+          "known_replay_or_slowmo": true,
+          "annotation": {
+            "description": "",
+            "notes": "1队14号把拿球的2队23号绊倒，造成犯规"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000216",
+          "target_event_id": "event_000243",
+          "relation_type": "narrative_association",
+          "claim": "犯规聚集或反映对抗升级，未验证",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若犯规间无身体对抗画面则证伪"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000243",
+          "question": "该犯规前是否有连续对抗？",
+          "discriminating_signal": "犯规前身体接触频率"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_01:H4",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:2",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          1060.64,
+          1912.32
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "解围后紧接传球失误，可能形成危险区域的球权转换。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000270",
+          "source_pts_sec": 1831.07,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队16号在禁区里抢断了一次进攻"
+          }
+        },
+        {
+          "event_id": "event_000271",
+          "source_pts_sec": 1834.28,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员踢到1队球员身上，弹出界外，造成界外球·"
+          }
+        },
+        {
+          "event_id": "event_000274",
+          "source_pts_sec": 1874.76,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队2队球员为争夺球权发生身体对抗"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000270",
+          "target_event_id": "event_000271",
+          "relation_type": "causal_hypothesis",
+          "claim": "解围后失误或致危险，属推测",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若解围与失误间无关联画面则证伪"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000271",
+          "question": "失误是否紧随解围发生？",
+          "discriminating_signal": "解围到失误的时间与位置"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_01:H5",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:2",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          1060.64,
+          1912.32
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "多次长传尝试分布全场，或反映反复的转移进攻意图。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000108",
+          "source_pts_sec": 1078.3,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员接过队友的传球后，直接大脚长传"
+          }
+        },
+        {
+          "event_id": "event_000131",
+          "source_pts_sec": 1158.46,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队17号接到队友的传球并大脚长传出去"
+          }
+        },
+        {
+          "event_id": "event_000260",
+          "source_pts_sec": 1793.94,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队3号把球长传给队友"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000131",
+          "target_event_id": "event_000260",
+          "relation_type": "narrative_association",
+          "claim": "长传重复或属转移模式，非因果",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若长传落点无接应画面则证伪"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000260",
+          "question": "长传是否有明确接应目标？",
+          "discriminating_signal": "长传落点与接应球员"
+        }
+      ]
+    }
+  ],
+  "prior_round_feedback": {
+    "previous_rounds": [
+      {
+        "round": 1,
+        "status": "ACCEPTED_PREVIEW",
+        "source_advisory": [],
+        "p3_stop_reason": "PLANNER_KEEP",
+        "local_trims": 0,
+        "accepted_source_windows_sec": [
+          [
+            1927.24,
+            1952.7
+          ]
+        ],
+        "local_decisions": [
+          {
+            "action": "KEEP",
+            "rationale": "The bridge segment seg_story_first_919c8d9c0f04e984b2c0ba12_01 is placed between seg:2 (team_2 attacking threat at 1912.32-1922.55) and seg:3 (team_1 attacking threat at 1955.54-1966.45), directly covering the template's observed_phase_switch transition. The working cut caption shows part_01 (story 16.16-21.16) visually confirms a corner kick by the white team being cleared, and part_02 (story 46.62-57.53) visually confirms a white-team shot saved by the yellow-kit goalkeeper. These observations provide concrete setup and context for the phase switch without claiming an outcome for the MISSING insert phase (story 21.16-46.62). The bridge preserves the baseline mainline order and does not int"
+          }
+        ],
+        "replay_replacements": [
+          {
+            "proposal_id": "interval_03:H1",
+            "status": "REPLACED",
+            "removed_event_ids": [],
+            "window_edits": [
+              {
+                "event_ids": [
+                  "event_000285",
+                  "event_000287"
+                ],
+                "removed_event_ids": [],
+                "original_source_window_sec": [
+                  1981.0,
+                  2001.18
+                ],
+                "removed_source_windows_sec": [
+                  [
+                    2000.13,
+                    2011.73
+                  ]
+                ],
+                "retained_source_windows_sec": [
+                  [
+                    1981.0,
+                    2000.13
+                  ]
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "round": 2,
+        "parent_mp4_sha256": "3fb4d4e113ded309633c2bb5501a671e14e6fc50f76c07c3a680f13669bb49ee",
+        "p1_proposals": 18,
+        "new_proposals": 15,
+        "trial_id": "a8a7af824acc5aa63d92ab1d",
+        "source_windows_sec": [
+          [
+            1292.92,
+            1319.0
+          ],
+          [
+            1327.974,
+            1343.974
+          ]
+        ],
+        "event_ids": [
+          "atom_fill_0003_Shot_1335974",
+          "event_000169",
+          "event_000171",
+          "event_000172"
+        ],
+        "status": "ACCEPTED_PREVIEW",
+        "source_feedback": [],
+        "source_advisory": [],
+        "p3_stop_reason": "API_BUDGET",
+        "local_trims": 0,
+        "accepted_source_windows_sec": [
+          [
+            1292.92,
+            1319.0
+          ],
+          [
+            1327.974,
+            1343.974
+          ]
+        ],
+        "local_decisions": []
+      }
+    ],
+    "tried_source_windows_sec": [
+      [
+        1292.92,
+        1319.0
+      ],
+      [
+        1327.974,
+        1343.974
+      ],
+      [
+        1927.24,
+        1952.7
+      ]
+    ],
+    "tried_event_ids": [
+      "atom_fill_0003_Shot_1335974",
+      "event_000169",
+      "event_000171",
+      "event_000172",
+      "event_000278",
+      "event_000279",
+      "event_000280"
+    ],
+    "instruction": "Propose new story footage. Covered and tried events may provide context, but every story must include an untried uncovered event."
+  }
+}

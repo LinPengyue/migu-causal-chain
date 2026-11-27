@@ -1,0 +1,39 @@
+{
+  "error": null,
+  "parsed": {
+    "selection": {
+      "selections": [
+        {
+          "proposal_id": "interval_01:H4",
+          "event_ids": [
+            "event_000270",
+            "event_000271",
+            "event_000274"
+          ],
+          "relation_ids": []
+        }
+      ],
+      "rationale": "The accepted cut preserves all template anchors and the existing bridge segments. The prior bridge already covers the phase-switch transition [1927.24, 1952.7], and the earlier bridge covers [1292.92, 1343.974]. Among the fresh P1 candidates, interval_01:H4 is the strongest addition: it sits between seg:1 and seg:2, both team_2 attacking_threat anchors, and provides a non-replay, uncovered sequence of defensive action, pass, and defensive action. This reinforces the team_2 threat phase without duplicating tried footage. interval_01:H2 includes event_000171, which is already tried; interval_01:H3 contains known replay/slowmo events; interval_01:H5 is weaker thematically for the attacking_threat run. No causal relations are asserted, keeping the contribution hypothetical and consistent with the template."
+    }
+  },
+  "call_audit": {
+    "model": "DeepSeek-V4-Pro-0813",
+    "provider_mode": "real",
+    "logical_role": "story_first_p35_planner",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "prompt_tokens": 8275,
+    "completion_tokens": 257,
+    "reasoning_tokens": 0,
+    "text_tokens": null,
+    "finish_reason": "stop",
+    "visible_output_chars": 1051,
+    "est_cost_usd": 0.00139545,
+    "http_ok": true,
+    "empty_content": false
+  }
+}

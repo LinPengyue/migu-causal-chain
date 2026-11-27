@@ -1,0 +1,2801 @@
+{
+  "story_template": {
+    "template_id": "threat_phase_change",
+    "template": {
+      "category": "攻防故事链",
+      "subtype": "攻势换手",
+      "narrative_goal": [
+        "连续观测到的攻防威胁序列发生主体切换"
+      ],
+      "subjects": [
+        "team_2",
+        "team_1"
+      ],
+      "narrative_edges": [
+        {
+          "from": "phase:1:episode:1",
+          "to": "phase:1:episode:4",
+          "edge_type": "within_observed_threat_run",
+          "relation": "within_observed_threat_run",
+          "causal_verified": false
+        },
+        {
+          "from": "phase:1:episode:4",
+          "to": "phase:2:episode:7",
+          "edge_type": "observed_phase_switch",
+          "relation": "observed_phase_switch",
+          "causal_verified": false
+        },
+        {
+          "from": "phase:2:episode:7",
+          "to": "phase:2:episode:14",
+          "edge_type": "within_observed_threat_run",
+          "relation": "within_observed_threat_run",
+          "causal_verified": false
+        },
+        {
+          "from": "phase:2:episode:14",
+          "to": "phase:2:episode:19",
+          "edge_type": "within_observed_threat_run",
+          "relation": "within_observed_threat_run",
+          "causal_verified": false
+        },
+        {
+          "from": "phase:2:episode:19",
+          "to": "phase:2:episode:22",
+          "edge_type": "within_observed_threat_run",
+          "relation": "within_observed_threat_run",
+          "causal_verified": false
+        },
+        {
+          "from": "phase:2:episode:22",
+          "to": "phase:2:episode:26",
+          "edge_type": "within_observed_threat_run",
+          "relation": "within_observed_threat_run",
+          "causal_verified": false
+        },
+        {
+          "from": "phase:2:episode:26",
+          "to": "phase:2:episode:27",
+          "edge_type": "within_observed_threat_run",
+          "relation": "within_observed_threat_run",
+          "causal_verified": false
+        },
+        {
+          "from": "phase:2:episode:27",
+          "to": "phase:2:episode:33",
+          "edge_type": "within_observed_threat_run",
+          "relation": "within_observed_threat_run",
+          "causal_verified": false
+        },
+        {
+          "from": "phase:1:episode:4",
+          "to": "phase_switch",
+          "edge_type": "transition_hypothesis",
+          "causal_verified": false
+        },
+        {
+          "from": "phase_switch",
+          "to": "phase:2:episode:7",
+          "edge_type": "transition_hypothesis",
+          "causal_verified": false
+        }
+      ]
+    },
+    "template_name": "攻势换手",
+    "title": "攻势换手",
+    "beats": [
+      {
+        "node_id": "phase:1:episode:1",
+        "node_type": "anchor",
+        "kind": "phase_episode",
+        "predicate": "attacking_threat",
+        "actor": "team_2",
+        "actor_role": "attacking_team",
+        "required": true,
+        "event_ids": [
+          "event_000096",
+          "event_000097"
+        ],
+        "media_windows": [
+          [
+            1049.71,
+            1060.64
+          ]
+        ],
+        "observation_task_ids": [],
+        "role": "attacking_threat"
+      },
+      {
+        "node_id": "phase:1:episode:4",
+        "node_type": "anchor",
+        "kind": "phase_episode",
+        "predicate": "attacking_threat",
+        "actor": "team_2",
+        "actor_role": "attacking_team",
+        "required": true,
+        "event_ids": [
+          "event_000276",
+          "event_000277"
+        ],
+        "media_windows": [
+          [
+            1912.32,
+            1922.55
+          ]
+        ],
+        "observation_task_ids": [],
+        "role": "attacking_threat"
+      },
+      {
+        "node_id": "phase:2:episode:7",
+        "node_type": "anchor",
+        "kind": "phase_episode",
+        "predicate": "attacking_threat",
+        "actor": "team_1",
+        "actor_role": "attacking_team",
+        "required": true,
+        "event_ids": [
+          "event_000282"
+        ],
+        "media_windows": [
+          [
+            1955.54,
+            1966.45
+          ]
+        ],
+        "observation_task_ids": [],
+        "role": "attacking_threat"
+      },
+      {
+        "node_id": "phase:2:episode:14",
+        "node_type": "anchor",
+        "kind": "phase_episode",
+        "predicate": "attacking_threat",
+        "actor": "team_1",
+        "actor_role": "attacking_team",
+        "required": true,
+        "event_ids": [
+          "event_000398",
+          "event_000399",
+          "event_000400"
+        ],
+        "media_windows": [
+          [
+            3338.39,
+            3351.3
+          ]
+        ],
+        "observation_task_ids": [],
+        "role": "attacking_threat"
+      },
+      {
+        "node_id": "phase:2:episode:19",
+        "node_type": "anchor",
+        "kind": "phase_episode",
+        "predicate": "attacking_threat",
+        "actor": "team_1",
+        "actor_role": "attacking_team",
+        "required": true,
+        "event_ids": [
+          "event_000416",
+          "event_000417"
+        ],
+        "media_windows": [
+          [
+            3504.14,
+            3515.83
+          ]
+        ],
+        "observation_task_ids": [],
+        "role": "attacking_threat"
+      },
+      {
+        "node_id": "phase:2:episode:22",
+        "node_type": "anchor",
+        "kind": "phase_episode",
+        "predicate": "attacking_threat",
+        "actor": "team_1",
+        "actor_role": "attacking_team",
+        "required": true,
+        "event_ids": [
+          "event_000421"
+        ],
+        "media_windows": [
+          [
+            3543.01,
+            3553.57
+          ]
+        ],
+        "observation_task_ids": [],
+        "role": "attacking_threat"
+      },
+      {
+        "node_id": "phase:2:episode:26",
+        "node_type": "anchor",
+        "kind": "phase_episode",
+        "predicate": "attacking_threat",
+        "actor": "team_1",
+        "actor_role": "attacking_team",
+        "required": true,
+        "event_ids": [
+          "event_000472"
+        ],
+        "media_windows": [
+          [
+            4702.5,
+            4714.65
+          ]
+        ],
+        "observation_task_ids": [],
+        "role": "attacking_threat"
+      },
+      {
+        "node_id": "phase:2:episode:27",
+        "node_type": "anchor",
+        "kind": "phase_episode",
+        "predicate": "attacking_threat",
+        "actor": "team_1",
+        "actor_role": "attacking_team",
+        "required": true,
+        "event_ids": [
+          "event_000476",
+          "event_000477"
+        ],
+        "media_windows": [
+          [
+            4755.79,
+            4769.62
+          ]
+        ],
+        "observation_task_ids": [],
+        "role": "attacking_threat"
+      },
+      {
+        "node_id": "phase:2:episode:33",
+        "node_type": "anchor",
+        "kind": "phase_episode",
+        "predicate": "attacking_threat",
+        "actor": "team_1",
+        "actor_role": "attacking_team",
+        "required": true,
+        "event_ids": [
+          "event_000640",
+          "event_000641"
+        ],
+        "media_windows": [
+          [
+            6552.01,
+            6562.64
+          ]
+        ],
+        "observation_task_ids": [],
+        "role": "attacking_threat"
+      },
+      {
+        "node_id": "phase_switch",
+        "node_type": "transition",
+        "required": false,
+        "event_ids": [],
+        "media_windows": [],
+        "observation_task_ids": [
+          "observe:r2bc:threat_phase_change:1"
+        ],
+        "role": "transition"
+      }
+    ]
+  },
+  "baseline_timeline": [
+    {
+      "index": 0,
+      "segment_id": "seg:1",
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "story_in": 0.0,
+      "story_out": 10.93,
+      "duration_sec": 10.93,
+      "media_in": 1049.71,
+      "media_out": 1060.64,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "live"
+    },
+    {
+      "index": 1,
+      "segment_id": "seg:2",
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "story_in": 10.93,
+      "story_out": 21.16,
+      "duration_sec": 10.23,
+      "media_in": 1912.32,
+      "media_out": 1922.55,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "live"
+    },
+    {
+      "index": 2,
+      "segment_id": "seg:3",
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "story_in": 21.16,
+      "story_out": 32.07,
+      "duration_sec": 10.91,
+      "media_in": 1955.54,
+      "media_out": 1966.45,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "live"
+    },
+    {
+      "index": 3,
+      "segment_id": "seg:4",
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "story_in": 32.07,
+      "story_out": 44.98,
+      "duration_sec": 12.91,
+      "media_in": 3338.39,
+      "media_out": 3351.3,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "live"
+    },
+    {
+      "index": 4,
+      "segment_id": "seg:5",
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "story_in": 44.98,
+      "story_out": 56.67,
+      "duration_sec": 11.69,
+      "media_in": 3504.14,
+      "media_out": 3515.83,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "live"
+    },
+    {
+      "index": 5,
+      "segment_id": "seg:6",
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "story_in": 56.67,
+      "story_out": 67.23,
+      "duration_sec": 10.56,
+      "media_in": 3543.01,
+      "media_out": 3553.57,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "live"
+    },
+    {
+      "index": 6,
+      "segment_id": "seg:7",
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "story_in": 67.23,
+      "story_out": 79.38,
+      "duration_sec": 12.15,
+      "media_in": 4702.5,
+      "media_out": 4714.65,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "live"
+    },
+    {
+      "index": 7,
+      "segment_id": "seg:8",
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "story_in": 79.38,
+      "story_out": 93.21,
+      "duration_sec": 13.83,
+      "media_in": 4755.79,
+      "media_out": 4769.62,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "live"
+    },
+    {
+      "index": 8,
+      "segment_id": "seg:9",
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "story_in": 93.21,
+      "story_out": 103.84,
+      "duration_sec": 10.63,
+      "media_in": 6552.01,
+      "media_out": 6562.64,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "live"
+    }
+  ],
+  "working_timeline": [
+    {
+      "index": 0,
+      "segment_id": "seg:1",
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "story_in": 0.0,
+      "story_out": 10.93,
+      "duration_sec": 10.93,
+      "media_in": 1049.71,
+      "media_out": 1060.64,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "live"
+    },
+    {
+      "index": 1,
+      "segment_id": "seg:2",
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "story_in": 10.93,
+      "story_out": 21.16,
+      "duration_sec": 10.23,
+      "media_in": 1912.32,
+      "media_out": 1922.55,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "live"
+    },
+    {
+      "index": 2,
+      "segment_id": "seg_story_first_919c8d9c0f04e984b2c0ba12_01",
+      "role": "buildup_bridge_action",
+      "beat": null,
+      "story_in": 21.16,
+      "story_out": 46.62,
+      "duration_sec": 25.46,
+      "media_in": 1927.24,
+      "media_out": 1952.7,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "search_bridge"
+    },
+    {
+      "index": 3,
+      "segment_id": "seg:3",
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "story_in": 46.62,
+      "story_out": 57.53,
+      "duration_sec": 10.91,
+      "media_in": 1955.54,
+      "media_out": 1966.45,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "live"
+    },
+    {
+      "index": 4,
+      "segment_id": "seg:4",
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "story_in": 57.53,
+      "story_out": 70.44,
+      "duration_sec": 12.91,
+      "media_in": 3338.39,
+      "media_out": 3351.3,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "live"
+    },
+    {
+      "index": 5,
+      "segment_id": "seg:5",
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "story_in": 70.44,
+      "story_out": 82.13,
+      "duration_sec": 11.69,
+      "media_in": 3504.14,
+      "media_out": 3515.83,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "live"
+    },
+    {
+      "index": 6,
+      "segment_id": "seg:6",
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "story_in": 82.13,
+      "story_out": 92.69,
+      "duration_sec": 10.56,
+      "media_in": 3543.01,
+      "media_out": 3553.57,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "live"
+    },
+    {
+      "index": 7,
+      "segment_id": "seg:7",
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "story_in": 92.69,
+      "story_out": 104.84,
+      "duration_sec": 12.15,
+      "media_in": 4702.5,
+      "media_out": 4714.65,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "live"
+    },
+    {
+      "index": 8,
+      "segment_id": "seg:8",
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "story_in": 104.84,
+      "story_out": 118.67,
+      "duration_sec": 13.83,
+      "media_in": 4755.79,
+      "media_out": 4769.62,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "live"
+    },
+    {
+      "index": 9,
+      "segment_id": "seg:9",
+      "role": "attacking_threat",
+      "beat": "attacking_threat",
+      "story_in": 118.67,
+      "story_out": 129.3,
+      "duration_sec": 10.63,
+      "media_in": 6552.01,
+      "media_out": 6562.64,
+      "has_media_window": true,
+      "is_placeholder": false,
+      "placeholder_sec": null,
+      "is_replay": false,
+      "first_live_status": "NOT_VERIFIED",
+      "shot_kind": "live"
+    }
+  ],
+  "working_cut_caption": {
+    "scope": "FULL_RENDER_NATIVE_VIDEO",
+    "audio_included": false,
+    "render_mp4_sha256": "3fb4d4e113ded309633c2bb5501a671e14e6fc50f76c07c3a680f13669bb49ee",
+    "observations": [
+      {
+        "clip_id": "part_01",
+        "story_range_sec": [
+          16.16,
+          21.16
+        ],
+        "description": "A wide shot shows a corner kick being taken by the white team. The ball is crossed into the penalty area where players from both teams jump to head it. The ball is cleared away from the goal. The camera then cuts to a close-up of the goalkeeper in a dark blue kit holding the ball and looking towards the field.",
+        "phase_id": "2:before"
+      },
+      {
+        "clip_id": "part_02",
+        "story_range_sec": [
+          46.62,
+          57.53
+        ],
+        "description": "The scene cuts to a wide shot of an attack near the goal. A player in white receives a pass inside the penalty box and shoots the ball towards the goal. The goalkeeper in a bright yellow kit dives to his left and makes a save, pushing the ball away. The camera follows the ball as it goes out of play, and the goalkeeper gets up.",
+        "phase_id": "2:after"
+      }
+    ],
+    "coverage": [
+      {
+        "phase_id": "2:before",
+        "target_segment_id": "seg_story_first_919c8d9c0f04e984b2c0ba12_01",
+        "phase": "before",
+        "story_range_sec": [
+          16.16,
+          21.16
+        ],
+        "observation_indices": [
+          0
+        ],
+        "status": "DESCRIBED"
+      },
+      {
+        "phase_id": "2:insert",
+        "target_segment_id": "seg_story_first_919c8d9c0f04e984b2c0ba12_01",
+        "phase": "insert",
+        "story_range_sec": [
+          21.16,
+          46.62
+        ],
+        "observation_indices": [],
+        "status": "MISSING"
+      },
+      {
+        "phase_id": "2:after",
+        "target_segment_id": "seg_story_first_919c8d9c0f04e984b2c0ba12_01",
+        "phase": "after",
+        "story_range_sec": [
+          46.62,
+          57.53
+        ],
+        "observation_indices": [
+          1
+        ],
+        "status": "DESCRIBED"
+      }
+    ],
+    "uncertainties": [],
+    "reason_if_no_observations": null
+  },
+  "candidate_search_results": [
+    {
+      "proposal_id": "interval_01:H1",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:2",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          1060.64,
+          1912.32
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "断球后连续传递推进，最终形成射门并进球，构成一次由防守转换到得分的完整链条。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000169",
+          "source_pts_sec": 1300.92,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队10号截获失误的2队4号的球"
+          }
+        },
+        {
+          "event_id": "event_000171",
+          "source_pts_sec": 1305.71,
+          "event_type": "Dribble_past",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队21号拿球后盘带过人"
+          }
+        },
+        {
+          "event_id": "atom_fill_0003_Shot_1335974",
+          "source_pts_sec": 1335.974,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "annotation": null
+        },
+        {
+          "event_id": "atom_fill_0004_Goal_1337123",
+          "source_pts_sec": 1337.123,
+          "event_type": "Goal",
+          "known_replay_or_slowmo": false,
+          "annotation": null
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000169",
+          "target_event_id": "atom_fill_0004_Goal_1337123",
+          "relation_type": "causal_hypothesis",
+          "claim": "断球后推进或促成随后进球，尚待验证",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若断球与进球间无连续控球推进则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000171",
+          "question": "断球后是否立即形成突破推进？",
+          "discriminating_signal": "突破后球权是否延续至射门"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_01:H2",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:2",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          1060.64,
+          1912.32
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "两次突破过人事件相隔较远，可能反映同一类个人突破反复出现的进攻模式。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000104",
+          "source_pts_sec": 1066.8,
+          "event_type": "Dribble_past",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队6号截获球之后带球过人"
+          }
+        },
+        {
+          "event_id": "event_000171",
+          "source_pts_sec": 1305.71,
+          "event_type": "Dribble_past",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队21号拿球后盘带过人"
+          }
+        },
+        {
+          "event_id": "event_000231",
+          "source_pts_sec": 1660.35,
+          "event_type": "Dribble_past",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队15号带球过人"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000104",
+          "target_event_id": "event_000231",
+          "relation_type": "narrative_association",
+          "claim": "两次突破或属同类反复模式，非因果",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若两次突破由不同队或不同方式完成则关联弱"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000231",
+          "question": "该突破是否与早前突破方式相似？",
+          "discriminating_signal": "突破方向与防守反应是否一致"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_01:H3",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:2",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          1060.64,
+          1912.32
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "两次危险犯规被标记为回放，可能提示同一时段内犯规判罚的重复呈现。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000216",
+          "source_pts_sec": 1569.08,
+          "event_type": "Foul_Being_fouled",
+          "known_replay_or_slowmo": true,
+          "annotation": {
+            "description": "",
+            "notes": "面对2队21号的带球前进，1队16号果断上前拦截，造成犯规"
+          }
+        },
+        {
+          "event_id": "event_000217",
+          "source_pts_sec": 1572.84,
+          "event_type": "Foul_Being_fouled",
+          "known_replay_or_slowmo": true,
+          "annotation": {
+            "description": "",
+            "notes": "面对2队21号的带球前进，1队16号果断上前拦截，造成犯规"
+          }
+        },
+        {
+          "event_id": "event_000244",
+          "source_pts_sec": 1715.07,
+          "event_type": "Foul_Being_fouled",
+          "known_replay_or_slowmo": true,
+          "annotation": {
+            "description": "",
+            "notes": "1队14号把拿球的2队23号绊倒，造成犯规"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000216",
+          "target_event_id": "event_000244",
+          "relation_type": "narrative_association",
+          "claim": "两次犯规回放或属同一判罚主题，非因果",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若两次犯规涉及不同队或不同判罚类型则关联弱"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000243",
+          "question": "该犯规是否与早前回放犯规同类？",
+          "discriminating_signal": "犯规地点与判罚是否一致"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_01:H4",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:2",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          1060.64,
+          1912.32
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "解围后紧接传球失误，可能显示后段防守处理球的不稳定序列。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000270",
+          "source_pts_sec": 1831.07,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队16号在禁区里抢断了一次进攻"
+          }
+        },
+        {
+          "event_id": "event_000271",
+          "source_pts_sec": 1834.28,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员踢到1队球员身上，弹出界外，造成界外球·"
+          }
+        },
+        {
+          "event_id": "event_000274",
+          "source_pts_sec": 1874.76,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队2队球员为争夺球权发生身体对抗"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000270",
+          "target_event_id": "event_000271",
+          "relation_type": "state_transition",
+          "claim": "解围后紧接失误或反映处理球不稳，待验证",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若解围与失误由不同队完成则序列不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000271",
+          "question": "解围后是否立即出现传球失误？",
+          "discriminating_signal": "失误是否紧随解围发生"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_01:H5",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:2",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          1060.64,
+          1912.32
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "长传后出现争顶成功，可能构成一次由长传发起的空中对抗序列。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000239",
+          "source_pts_sec": 1695.67,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队守门员长传给中路队友"
+          }
+        },
+        {
+          "event_id": "event_000240",
+          "source_pts_sec": 1698.63,
+          "event_type": "Win_an_aerial_duel",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队队员发现2队队员传球之后与其他2队球员头球争顶，1队球员争顶成功"
+          }
+        },
+        {
+          "event_id": "event_000245",
+          "source_pts_sec": 1723.48,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员发长传球"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000239",
+          "target_event_id": "event_000240",
+          "relation_type": "causal_hypothesis",
+          "claim": "长传或直接导致随后争顶，尚待验证",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若长传落点与争顶位置不符则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000240",
+          "question": "争顶是否源自此前长传？",
+          "discriminating_signal": "长传落点与争顶位置是否吻合"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_02:H1",
+      "scope": {
+        "from_segment_id": "seg:2",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:3",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          1922.55,
+          1955.54
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "阿曼长传发起后经身体对抗被拦截，攻势在换手前被终结。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000278",
+          "source_pts_sec": 1935.24,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队守门员长传给队友"
+          }
+        },
+        {
+          "event_id": "event_000279",
+          "source_pts_sec": 1938.76,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员与2队球员为争夺球权，展开身体对抗"
+          }
+        },
+        {
+          "event_id": "event_000280",
+          "source_pts_sec": 1944.7,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员截获2队球员的球权"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000278",
+          "target_event_id": "event_000280",
+          "relation_type": "narrative_association",
+          "claim": "长传后经对抗被拦截，或为攻势终结序列",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若event_000280画面非拦截该长传落点则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000280",
+          "question": "该拦截是否针对长传落点？",
+          "discriminating_signal": "拦截方向与长传落点一致"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_02:H2",
+      "scope": {
+        "from_segment_id": "seg:2",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:3",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          1922.55,
+          1955.54
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "身体对抗后紧接拦截，防守动作连续出现或标志阿曼攻势受阻。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000279",
+          "source_pts_sec": 1938.76,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员与2队球员为争夺球权，展开身体对抗"
+          }
+        },
+        {
+          "event_id": "event_000280",
+          "source_pts_sec": 1944.7,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员截获2队球员的球权"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000279",
+          "target_event_id": "event_000280",
+          "relation_type": "state_transition",
+          "claim": "对抗后拦截或显示防守方连续夺回球权",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若两事件分属不同球队或不同回合则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000279",
+          "question": "对抗双方球衣颜色是否一致？",
+          "discriminating_signal": "同队或异队对抗"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_03:H1",
+      "scope": {
+        "from_segment_id": "seg:3",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:4",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          1966.45,
+          3338.39
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "角球与任意球连续制造空中争夺，随后出现一次射门，构成定位球施压的叙事关联。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000285",
+          "source_pts_sec": 1989.0,
+          "event_type": "Corner_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队14号发出角球"
+          }
+        },
+        {
+          "event_id": "event_000287",
+          "source_pts_sec": 1993.18,
+          "event_type": "Win_an_aerial_duel",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员争顶成功"
+          }
+        },
+        {
+          "event_id": "event_000311",
+          "source_pts_sec": 2277.94,
+          "event_type": "Free_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员发任意球"
+          }
+        },
+        {
+          "event_id": "event_000313",
+          "source_pts_sec": 2285.84,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员外围一脚远射，射偏"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000285",
+          "target_event_id": "event_000313",
+          "relation_type": "narrative_association",
+          "claim": "角球后的空中争夺或与后续射门相关，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若event_000313前无任何定位球或空中争夺画面则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000313",
+          "question": "该射门是否源自定位球二次进攻？",
+          "discriminating_signal": "射门前是否紧接角球或任意球"
+        }
+      ],
+      "replay_window_edits": [
+        {
+          "event_ids": [
+            "event_000285",
+            "event_000287"
+          ],
+          "removed_event_ids": [],
+          "original_source_window_sec": [
+            1981.0,
+            2001.18
+          ],
+          "removed_source_windows_sec": [
+            [
+              2000.13,
+              2011.73
+            ]
+          ],
+          "retained_source_windows_sec": [
+            [
+              1981.0,
+              2000.13
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_03:H2",
+      "scope": {
+        "from_segment_id": "seg:3",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:4",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          1966.45,
+          3338.39
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "多次被犯规与危险动作打断比赛节奏，可能削弱一方连续进攻的组织性。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000334",
+          "source_pts_sec": 2465.99,
+          "event_type": "Foul_Being_fouled",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员抢球犯规"
+          }
+        },
+        {
+          "event_id": "event_000343",
+          "source_pts_sec": 2595.73,
+          "event_type": "Foul_Being_fouled",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队20号带球被2队6号碰倒"
+          }
+        },
+        {
+          "event_id": "event_000363",
+          "source_pts_sec": 2974.1,
+          "event_type": "Foul_Being_fouled",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队17号在争抢球权的过程中，撞倒1队10号，造成犯规"
+          }
+        },
+        {
+          "event_id": "event_000365",
+          "source_pts_sec": 2993.94,
+          "event_type": "Foul_Being_fouled",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队17号在争抢球权的过程中，撞倒1队10号，造成犯规"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000334",
+          "target_event_id": "event_000365",
+          "relation_type": "narrative_association",
+          "claim": "连续被犯规或与进攻节奏中断相关，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若这些被犯规之间无球权转换或停顿画面则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000363",
+          "question": "此次被犯规前是否已有多次类似中断？",
+          "discriminating_signal": "犯规间隔与球权变化"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_03:H3",
+      "scope": {
+        "from_segment_id": "seg:3",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:4",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          1966.45,
+          3338.39
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "换人之后出现连续传球与射门，可能反映进攻组织方式的调整，但因果关系未证实。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000357",
+          "source_pts_sec": 2918.91,
+          "event_type": "Substitution",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队20号换1队7号上场"
+          }
+        },
+        {
+          "event_id": "event_000362",
+          "source_pts_sec": 2969.24,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队16号球员传球，组织进攻"
+          }
+        },
+        {
+          "event_id": "event_000374",
+          "source_pts_sec": 3079.65,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员看到进攻机会，选择打门"
+          }
+        },
+        {
+          "event_id": "event_000375",
+          "source_pts_sec": 3091.41,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": true,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员看到进攻机会，选择打门"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000357",
+          "target_event_id": "event_000374",
+          "relation_type": "causal_hypothesis",
+          "claim": "换人或与随后射门序列相关，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若换人后无连续传球或射门画面则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000374",
+          "question": "该射门是否发生在换人后的连续进攻中？",
+          "discriminating_signal": "换人后传球次数与射门间隔"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_03:H4",
+      "scope": {
+        "from_segment_id": "seg:3",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:4",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          1966.45,
+          3338.39
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "解围与任意球后出现角球和空中争夺，可能形成一次防守反击后的再施压。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000367",
+          "source_pts_sec": 3020.38,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队7号将球解围"
+          }
+        },
+        {
+          "event_id": "event_000370",
+          "source_pts_sec": 3049.14,
+          "event_type": "Corner_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队14号角球"
+          }
+        },
+        {
+          "event_id": "event_000371",
+          "source_pts_sec": 3050.29,
+          "event_type": "Win_an_aerial_duel",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员争顶成功"
+          }
+        },
+        {
+          "event_id": "event_000374",
+          "source_pts_sec": 3079.65,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员看到进攻机会，选择打门"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000367",
+          "target_event_id": "event_000370",
+          "relation_type": "narrative_association",
+          "claim": "解围后角球或为同一攻防回合延续，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若解围与角球之间无球权转换画面则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000370",
+          "question": "角球是否紧接此前解围形成？",
+          "discriminating_signal": "解围到角球的球权路径"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_03:H5",
+      "scope": {
+        "from_segment_id": "seg:3",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:4",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          1966.45,
+          3338.39
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "传中、空中争夺与解围连续出现，可能构成一次边路进攻被化解的叙事链。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000395",
+          "source_pts_sec": 3313.6,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员把球传到中路"
+          }
+        },
+        {
+          "event_id": "event_000396",
+          "source_pts_sec": 3314.99,
+          "event_type": "Win_an_aerial_duel",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员头球"
+          }
+        },
+        {
+          "event_id": "event_000397",
+          "source_pts_sec": 3321.77,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员用身体挡出了1队球员的传中"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000395",
+          "target_event_id": "event_000397",
+          "relation_type": "narrative_association",
+          "claim": "传中经空中争夺后被解围，关联未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若传中后无空中争夺或解围画面则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000397",
+          "question": "解围是否直接来自此前传中的空中争夺？",
+          "discriminating_signal": "传中落点与解围动作衔接"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_04:H1",
+      "scope": {
+        "from_segment_id": "seg:4",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:5",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          3351.3,
+          3504.14
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "角球与门线事件后，同一方连续两次一对一射门尝试，构成重复攻门模式。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000401",
+          "source_pts_sec": 3363.92,
+          "event_type": "Corner_kick",
+          "known_replay_or_slowmo": true,
+          "annotation": {
+            "description": "",
+            "notes": "1队10号发角球"
+          }
+        },
+        {
+          "event_id": "event_000411",
+          "source_pts_sec": 3446.75,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员带球打门"
+          }
+        },
+        {
+          "event_id": "event_000412",
+          "source_pts_sec": 3462.13,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": true,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员带球打门"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000401",
+          "target_event_id": "event_000411",
+          "relation_type": "narrative_association",
+          "claim": "角球后是否形成连续攻门尚不确定",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若两次射门分属不同进攻方则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000411",
+          "question": "该射门是否与先前角球同一进攻方？",
+          "discriminating_signal": "进攻方向与球衣颜色"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_04:H2",
+      "scope": {
+        "from_segment_id": "seg:4",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:5",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          3351.3,
+          3504.14
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "连续抢断与过人突破后出现射门，可能是防守被逐步瓦解的叙事关联。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000404",
+          "source_pts_sec": 3382.1,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员抢断1队球员带球"
+          }
+        },
+        {
+          "event_id": "event_000405",
+          "source_pts_sec": 3386.59,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员抢断2对球员的带球"
+          }
+        },
+        {
+          "event_id": "event_000407",
+          "source_pts_sec": 3398.91,
+          "event_type": "Dribble_past",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员带球突破"
+          }
+        },
+        {
+          "event_id": "event_000411",
+          "source_pts_sec": 3446.75,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员带球打门"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000407",
+          "target_event_id": "event_000411",
+          "relation_type": "causal_hypothesis",
+          "claim": "过人突破是否直接导致射门尚不确定",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若突破与射门间隔多次球权转换则关联弱"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000407",
+          "question": "突破后球权是否直接转为射门？",
+          "discriminating_signal": "突破后控球方连续性"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_04:H3",
+      "scope": {
+        "from_segment_id": "seg:4",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:5",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          3351.3,
+          3504.14
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "多次短传与控球串联后出现射门，可能是同一控球阶段的推进叙事。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000403",
+          "source_pts_sec": 3379.35,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员传球给队友"
+          }
+        },
+        {
+          "event_id": "event_000408",
+          "source_pts_sec": 3411.45,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员传球给队友"
+          }
+        },
+        {
+          "event_id": "event_000410",
+          "source_pts_sec": 3437.43,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员传球给队友"
+          }
+        },
+        {
+          "event_id": "event_000411",
+          "source_pts_sec": 3446.75,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员带球打门"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000410",
+          "target_event_id": "event_000411",
+          "relation_type": "causal_hypothesis",
+          "claim": "短传是否直接制造射门机会尚不确定",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若射门前发生抢断或球权丢失则链条断裂"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000410",
+          "question": "该传球是否直接导向射门？",
+          "discriminating_signal": "传球后接球者动作"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_04:H4",
+      "scope": {
+        "from_segment_id": "seg:4",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:5",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          3351.3,
+          3504.14
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "射门后出现两次控球事件，可能是攻门未果后的球权重置叙事。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000411",
+          "source_pts_sec": 3446.75,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员带球打门"
+          }
+        },
+        {
+          "event_id": "event_000413",
+          "source_pts_sec": 3468.68,
+          "event_type": "Ball_possession",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员带球前进"
+          }
+        },
+        {
+          "event_id": "event_000414",
+          "source_pts_sec": 3478.92,
+          "event_type": "Ball_possession",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员传球给队友，控制球权"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000411",
+          "target_event_id": "event_000413",
+          "relation_type": "state_transition",
+          "claim": "射门后是否转为对方控球尚不确定",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若控球方与射门方相同则重置假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000413",
+          "question": "射门后控球方是否发生转换？",
+          "discriminating_signal": "控球方球衣颜色"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_05:H1",
+      "scope": {
+        "from_segment_id": "seg:5",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:6",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          3515.83,
+          3543.01
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "阿联酋一次长传尝试后随即被拦截，攻势在推进环节被打断。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000418",
+          "source_pts_sec": 3523.29,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队守门员长传组织进攻"
+          }
+        },
+        {
+          "event_id": "event_000419",
+          "source_pts_sec": 3533.68,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员截获1队球员的传球"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000418",
+          "target_event_id": "event_000419",
+          "relation_type": "causal_hypothesis",
+          "claim": "长传可能直接导致随后的拦截",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若拦截发生在长传之前或与长传无球权关联则证伪"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000419",
+          "question": "拦截是否针对该长传落点？",
+          "discriminating_signal": "拦截者与落点位置关系"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_06:H1",
+      "scope": {
+        "from_segment_id": "seg:6",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:7",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          3553.57,
+          4702.5
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "上半场末段疑似死球与换人打断后，下半场以长传与争顶重新启动攻势。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000451",
+          "source_pts_sec": 4037.49,
+          "event_type": "Free_kick",
+          "known_replay_or_slowmo": true,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员任意球发球"
+          }
+        },
+        {
+          "event_id": "event_000458",
+          "source_pts_sec": 4562.65,
+          "event_type": "Substitution",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队连续换15号，9号，11号三人入场，换下8号，10号，6号。"
+          }
+        },
+        {
+          "event_id": "event_000464",
+          "source_pts_sec": 4654.24,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队守门员长传"
+          }
+        },
+        {
+          "event_id": "event_000465",
+          "source_pts_sec": 4659.78,
+          "event_type": "Win_an_aerial_duel",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员头球争顶成功"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000451",
+          "target_event_id": "event_000464",
+          "relation_type": "narrative_association",
+          "claim": "死球后经换人再由长传重启，属推测",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若换人后首次触球非长传或争顶则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000464",
+          "question": "换人后是否立即出现长传重启？",
+          "discriminating_signal": "长传落点与争顶衔接"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_06:H2",
+      "scope": {
+        "from_segment_id": "seg:6",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:7",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          3553.57,
+          4702.5
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "下半场连续争顶与长传构成空中对抗链，可能延续上半场末段的进攻节奏。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000460",
+          "source_pts_sec": 4601.84,
+          "event_type": "Win_an_aerial_duel",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队队员发现2队队员传球之后与其他2队球员头球争顶，1队球员争顶成功"
+          }
+        },
+        {
+          "event_id": "event_000465",
+          "source_pts_sec": 4659.78,
+          "event_type": "Win_an_aerial_duel",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员头球争顶成功"
+          }
+        },
+        {
+          "event_id": "event_000467",
+          "source_pts_sec": 4679.11,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员面对2队球员的防守，长传给队友"
+          }
+        },
+        {
+          "event_id": "event_000468",
+          "source_pts_sec": 4682.65,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员抢断了1队球员的球权"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000460",
+          "target_event_id": "event_000467",
+          "relation_type": "narrative_association",
+          "claim": "连续争顶后长传再被拦截，关联性待验证",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若争顶后未出现长传或拦截则链条不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000467",
+          "question": "争顶后是否紧接长传？",
+          "discriminating_signal": "争顶到长传的间隔"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_06:H3",
+      "scope": {
+        "from_segment_id": "seg:6",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:7",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          3553.57,
+          4702.5
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "下半场控球与过人交替出现，可能标志球权在双方间反复转换。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000466",
+          "source_pts_sec": 4671.24,
+          "event_type": "Ball_possession",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员传球给队友，控制球权"
+          }
+        },
+        {
+          "event_id": "event_000469",
+          "source_pts_sec": 4691.2,
+          "event_type": "Dribble_past",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员挑球过人"
+          }
+        },
+        {
+          "event_id": "event_000470",
+          "source_pts_sec": 4698.0,
+          "event_type": "Ball_possession",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员传球给队友，控制球权"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000466",
+          "target_event_id": "event_000469",
+          "relation_type": "state_transition",
+          "claim": "控球后出现过人，或为球权转换节点",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若控球与过人之间无球权变化则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000469",
+          "question": "控球后是否立即出现过人？",
+          "discriminating_signal": "控球到过人的连续性"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_06:H5",
+      "scope": {
+        "from_segment_id": "seg:6",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:7",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          3553.57,
+          4702.5
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "下半场长传与争顶后紧接抢断，可能显示由空中对抗转入地面防守。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000464",
+          "source_pts_sec": 4654.24,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队守门员长传"
+          }
+        },
+        {
+          "event_id": "event_000465",
+          "source_pts_sec": 4659.78,
+          "event_type": "Win_an_aerial_duel",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员头球争顶成功"
+          }
+        },
+        {
+          "event_id": "event_000468",
+          "source_pts_sec": 4682.65,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员抢断了1队球员的球权"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000465",
+          "target_event_id": "event_000468",
+          "relation_type": "state_transition",
+          "claim": "争顶后转为抢断，或为攻防转换节点",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若争顶后未出现抢断则转换假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000468",
+          "question": "争顶后是否紧接抢断？",
+          "discriminating_signal": "争顶到抢断的间隔"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_07:H1",
+      "scope": {
+        "from_segment_id": "seg:7",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:8",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          4714.65,
+          4755.79
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "回放片段显示连续射门与扑救后，直播画面出现回传与争顶，或为攻势重启的过渡。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "atom_fill_0043_Shot_4730216",
+          "source_pts_sec": 4730.216,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": true,
+          "annotation": null
+        },
+        {
+          "event_id": "atom_fill_0044_Save_4733699",
+          "source_pts_sec": 4733.699,
+          "event_type": "Save",
+          "known_replay_or_slowmo": true,
+          "annotation": null
+        },
+        {
+          "event_id": "event_000473",
+          "source_pts_sec": 4743.29,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员把球回传给门将"
+          }
+        },
+        {
+          "event_id": "event_000474",
+          "source_pts_sec": 4749.59,
+          "event_type": "Win_an_aerial_duel",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员争顶成功"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "atom_fill_0044_Save_4733699",
+          "target_event_id": "event_000473",
+          "relation_type": "narrative_association",
+          "claim": "扑救回放后直播出现回传，或为攻势重启",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若回传前无任何射门回放铺垫则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000473",
+          "question": "回传是否紧接扑救回放后出现？",
+          "discriminating_signal": "回放结束与回传间隔"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_07:H2",
+      "scope": {
+        "from_segment_id": "seg:7",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:8",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          4714.65,
+          4755.79
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "直播中的争顶成功可能承接此前回放中的射门序列，构成攻势延续的中间环节。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "atom_fill_0041_Shot_4726398",
+          "source_pts_sec": 4726.398,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": true,
+          "annotation": null
+        },
+        {
+          "event_id": "atom_fill_0043_Shot_4730216",
+          "source_pts_sec": 4730.216,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": true,
+          "annotation": null
+        },
+        {
+          "event_id": "event_000474",
+          "source_pts_sec": 4749.59,
+          "event_type": "Win_an_aerial_duel",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员争顶成功"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "atom_fill_0043_Shot_4730216",
+          "target_event_id": "event_000474",
+          "relation_type": "causal_hypothesis",
+          "claim": "射门回放后争顶或为攻势延续，但不确定",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若争顶与射门回放间存在明显中断则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000474",
+          "question": "争顶是否发生在射门回放之后？",
+          "discriminating_signal": "争顶与回放的时间衔接"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_07:H4",
+      "scope": {
+        "from_segment_id": "seg:7",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:8",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          4714.65,
+          4755.79
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "直播中回传后紧接争顶成功，可能标志攻势从地面转向空中。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000473",
+          "source_pts_sec": 4743.29,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员把球回传给门将"
+          }
+        },
+        {
+          "event_id": "event_000474",
+          "source_pts_sec": 4749.59,
+          "event_type": "Win_an_aerial_duel",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员争顶成功"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000473",
+          "target_event_id": "event_000474",
+          "relation_type": "state_transition",
+          "claim": "回传后争顶或标志攻势方式转变，但不确定",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若回传与争顶间无球权变化则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000474",
+          "question": "争顶是否紧接回传之后？",
+          "discriminating_signal": "回传与争顶的间隔"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_07:H5",
+      "scope": {
+        "from_segment_id": "seg:7",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:8",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          4714.65,
+          4755.79
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "回放中两次射门与扑救的配对，可能与直播中回传争顶形成镜像式攻势结构。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "atom_fill_0041_Shot_4726398",
+          "source_pts_sec": 4726.398,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": true,
+          "annotation": null
+        },
+        {
+          "event_id": "atom_fill_0042_Save_4726999",
+          "source_pts_sec": 4726.999,
+          "event_type": "Save",
+          "known_replay_or_slowmo": true,
+          "annotation": null
+        },
+        {
+          "event_id": "event_000473",
+          "source_pts_sec": 4743.29,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员把球回传给门将"
+          }
+        },
+        {
+          "event_id": "event_000474",
+          "source_pts_sec": 4749.59,
+          "event_type": "Win_an_aerial_duel",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员争顶成功"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "atom_fill_0042_Save_4726999",
+          "target_event_id": "event_000474",
+          "relation_type": "narrative_association",
+          "claim": "扑救回放与直播争顶或构成镜像攻势，不确定",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若回放与直播事件无结构对应则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000474",
+          "question": "直播争顶是否与回放扑救形成对应？",
+          "discriminating_signal": "回放与直播事件的结构相似性"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_08:H2",
+      "scope": {
+        "from_segment_id": "seg:8",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:9",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          4769.62,
+          6552.01
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "多次带球突破与抢断交替出现，形成持续的攻防拉锯。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000575",
+          "source_pts_sec": 5671.58,
+          "event_type": "Dribble_past",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员带球过人"
+          }
+        },
+        {
+          "event_id": "event_000584",
+          "source_pts_sec": 5733.13,
+          "event_type": "Dribble_past",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队7号带球过人"
+          }
+        },
+        {
+          "event_id": "event_000590",
+          "source_pts_sec": 5788.08,
+          "event_type": "Dribble_past",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员带球过人"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000575",
+          "target_event_id": "event_000590",
+          "relation_type": "state_transition",
+          "claim": "突破与抢断交替或反映攻防拉锯，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "核查三次突破是否同一进攻方向与同一球员"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000590",
+          "question": "该突破是否延续此前突破的同一进攻方向？",
+          "discriminating_signal": "突破起点区域是否一致"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_08:H3",
+      "scope": {
+        "from_segment_id": "seg:8",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:9",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          4769.62,
+          6552.01
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "换人之后防守动作密集出现，或反映阵型调整后的防守加强。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000563",
+          "source_pts_sec": 5557.6,
+          "event_type": "Substitution",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队9号换下2队7号"
+          }
+        },
+        {
+          "event_id": "event_000569",
+          "source_pts_sec": 5643.54,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员2队球员为争夺球权发生身体对抗"
+          }
+        },
+        {
+          "event_id": "event_000574",
+          "source_pts_sec": 5669.15,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员抢断2队球员带球"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000563",
+          "target_event_id": "event_000574",
+          "relation_type": "causal_hypothesis",
+          "claim": "换人或导致随后防守动作增多，属推测",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "核查换人前后防守动作频率是否显著变化"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000574",
+          "question": "该抢断是否发生在换人后的同一防守回合？",
+          "discriminating_signal": "换人后防守站位是否变化"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_08:H5",
+      "scope": {
+        "from_segment_id": "seg:8",
+        "from_role": "attacking_threat",
+        "to_segment_id": "seg:9",
+        "to_role": "attacking_threat",
+        "source_interval_sec": [
+          4769.62,
+          6552.01
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "多次长传被拦截，或显示一方推进受阻、另一方防守稳固。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000598",
+          "source_pts_sec": 5841.34,
+          "event_type": "Pass",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队守门员长传"
+          }
+        },
+        {
+          "event_id": "event_000600",
+          "source_pts_sec": 5847.9,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员截获2队球员传球"
+          }
+        },
+        {
+          "event_id": "event_000601",
+          "source_pts_sec": 5850.82,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员截获1队球员传球"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000598",
+          "target_event_id": "event_000601",
+          "relation_type": "narrative_association",
+          "claim": "长传后连续拦截或反映推进受阻，属推测",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "核查两次拦截是否针对同一长传进攻方"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000601",
+          "question": "该拦截是否针对此前长传的同一进攻方？",
+          "discriminating_signal": "拦截位置是否在长传落点区域"
+        }
+      ]
+    }
+  ],
+  "prior_feedback": [
+    {
+      "round": 1,
+      "selection": {
+        "selections": [
+          {
+            "proposal_id": "interval_03:H1",
+            "event_ids": [
+              "event_000285",
+              "event_000287",
+              "event_000311",
+              "event_000313"
+            ],
+            "relation_ids": [
+              "r1"
+            ]
+          }
+        ],
+        "rationale": "seg:3 到 seg:4 之间存在 1371.9s 源时间跳跃，interval_03:H1 覆盖该区间内角球、空中争夺、任意球与射门的潜在叙事关联，可用于验证跳跃前后是否存在可理解的攻防延续。选择该 trial 以观察定位球施压序列是否构成可插入的叙事桥接。",
+        "revised_relations": [
+          {
+            "source_event_id": "event_000285",
+            "target_event_id": "event_000313",
+            "relation_type": "narrative_association",
+            "claim": "角球后的空中争夺或与后续射门相关，未证实"
+          }
+        ]
+      },
+      "stage": "SOURCE_REVIEW",
+      "status": "NEEDS_REVISION",
+      "findings": [
+        {
+          "window_id": "story_first_5b503c8dab061ba2f81d7fc9_01",
+          "event_ids": [
+            "event_000285",
+            "event_000287"
+          ],
+          "status": "REPLAY_CONFIRMED",
+          "reason": "window_overlaps_replay_or_slowmo_annotation",
+          "replay_event_ids": [
+            "event_000288"
+          ]
+        }
+      ],
+      "advisory": []
+    },
+    {
+      "round": 2,
+      "selection": {
+        "selections": [
+          {
+            "proposal_id": "interval_02:H1",
+            "event_ids": [
+              "event_000278",
+              "event_000279",
+              "event_000280"
+            ],
+            "relation_ids": []
+          }
+        ],
+        "rationale": "seg:2 到 seg:3 是模板中攻势换手的关键过渡区间（team_2 攻势结束，team_1 攻势开始）。interval_02:H1 覆盖该区间内长传、身体对抗与拦截的连续事件，且所有事件均为非回放、未覆盖的新素材。该候选不引入因果断言，仅以叙事关联呈现攻势在换手前被终结的过程，与模板的 observed_phase_switch 节点形成自然衔接。其他候选要么包含已确认的回放事件（如 interval_03:H1 的 event_000285/event_000287 被标记为 REPLAY_CONFIRMED），要么事件间隔过大或与模板攻防换手主题关联较弱。因此选择 interval_02:H1 作为唯一新增局部故事。"
+      },
+      "stage": "SOURCE_REVIEW",
+      "status": "READY_FOR_TRIAL",
+      "findings": [],
+      "advisory": []
+    }
+  ],
+  "editable_trial_segment_ids_and_source_bounds": {
+    "seg_story_first_919c8d9c0f04e984b2c0ba12_01": [
+      1927.24,
+      1952.7
+    ]
+  },
+  "current_source_review_advisory": [],
+  "following_rounds_available": 3,
+  "http_calls_available_after_this_plan": 3
+}

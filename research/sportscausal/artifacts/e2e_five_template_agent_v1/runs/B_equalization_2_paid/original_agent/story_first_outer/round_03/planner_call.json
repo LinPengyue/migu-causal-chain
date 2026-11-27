@@ -1,0 +1,40 @@
+{
+  "error": null,
+  "parsed": {
+    "selection": {
+      "selections": [
+        {
+          "proposal_id": "interval_01:H1",
+          "event_ids": [
+            "event_000538",
+            "event_000539",
+            "event_000552",
+            "event_000553"
+          ],
+          "relation_ids": []
+        }
+      ],
+      "rationale": "H1 is selected because it introduces fresh, uncovered, non-replay events (event_000538, event_000539, event_000552, event_000553) that contribute to the existing '落后追平' template by showing escalating match intensity through fouls and yellow cards before the equalizer. These events are not in the tried_event_ids list and their source windows do not overlap with the accepted cut or previously tried windows. The narrative contribution is a plausible tension-building bridge between the opening goal and the equalizer, without asserting unverified causality. Other candidates either rely on already tried events (H4 uses event_000555 and atom_fill_0114_Corner_kick_5655418, both tried; H5 uses event_000545, event_000556, event_000557, but its relation claim is weaker and less directly tied to the equalizer build-up) or include events already covered by accepted segments (H2 and H3 include atom_fill_0114_Corner_kick_5655418, which is in the accepted cut). H1's events are all fresh and its observation query is focused on verifying the escalation pattern, making it the most viable new footage for this round."
+    }
+  },
+  "call_audit": {
+    "model": "DeepSeek-V4-Pro-0813",
+    "provider_mode": "real",
+    "logical_role": "story_first_p35_planner",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "prompt_tokens": 6026,
+    "completion_tokens": 338,
+    "reasoning_tokens": 0,
+    "text_tokens": null,
+    "finish_reason": "stop",
+    "visible_output_chars": 1417,
+    "est_cost_usd": 0.0011067,
+    "http_ok": true,
+    "empty_content": false
+  }
+}

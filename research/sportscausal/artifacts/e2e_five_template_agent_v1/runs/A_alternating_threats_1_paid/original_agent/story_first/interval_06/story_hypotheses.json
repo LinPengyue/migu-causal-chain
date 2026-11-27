@@ -1,0 +1,159 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若换人后至469秒间无向前传递或推进画面则证伪"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "substitution_then_live_buildup",
+      "narrative_summary": "换人后阿联酋由后场长传与争顶逐步推进，最终在禁区前形成射门威胁。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "向前长传落点与接应",
+          "question": "长传是否指向进攻方向并形成接应？",
+          "target_id": "event:event_000464"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "换人或为后续推进铺垫，尚待验证",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000458",
+          "target_event_id": "event_000469"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000458",
+        "event_000464",
+        "event_000467",
+        "event_000469"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若争顶与突破之间球权已丢失则关联不成立"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "aerial_duel_chain_to_dribble",
+      "narrative_summary": "阿联酋连续赢得空中对抗并完成带球突破，构成一段由争顶到持球推进的链条。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "争顶后控球方归属",
+          "question": "争顶后球权是否由同队继续控制？",
+          "target_id": "event:event_000465"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "争顶成功与随后突破或属同一推进段",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000465",
+          "target_event_id": "event_000469"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000460",
+        "event_000465",
+        "event_000468",
+        "event_000469"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若回传后仍为短传倒脚而无长传则证伪"
+      ],
+      "hypothesis_id": "H4",
+      "mechanism_key": "backpass_reset_to_longball",
+      "narrative_summary": "一次回传后阿联酋改用长传与争顶重新组织，可能体现由后向前的推进方式变化。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "回传至长传的传递序列",
+          "question": "长传前是否出现回传组织的画面？",
+          "target_id": "event:event_000467"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "回传后转为长传推进，仅为叙事关联",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000459",
+          "target_event_id": "event_000467"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000459",
+        "event_000464",
+        "event_000467",
+        "event_000470"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若抢断后球权仍属对方则状态转换不成立"
+      ],
+      "hypothesis_id": "H5",
+      "mechanism_key": "tackle_then_possession_retention",
+      "narrative_summary": "对方抢断后阿联酋仍完成带球与控球，可能显示丢球后迅速重新获得球权。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "控球方队服颜色",
+          "question": "控球事件是否由阿联酋球员完成？",
+          "target_id": "event:event_000470"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "抢断后球权归属变化，尚不确定",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "state_transition",
+          "source_event_id": "event_000468",
+          "target_event_id": "event_000470"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000468",
+        "event_000469",
+        "event_000470"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [
+    {
+      "index": 2,
+      "reason": "invalid_observation_probe"
+    }
+  ],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

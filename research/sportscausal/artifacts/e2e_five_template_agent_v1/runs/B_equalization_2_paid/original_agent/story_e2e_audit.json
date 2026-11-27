@@ -1,0 +1,2738 @@
+{
+  "schema": "v3a_story_e2e_run_v1",
+  "unified_main_chain": {
+    "id": "v3a_unified_story_self_revise_main_v1",
+    "entry": "run_story_e2e",
+    "does_not_call_run_self_revise": true,
+    "reuses": [
+      "structural_diagnosis",
+      "observe_layers",
+      "apply_semantic_diagnosis_layer",
+      "run_story_evidence_search",
+      "plan_from_diagnosis",
+      "apply_candidate_revision",
+      "check_source_pts_monotonic",
+      "verify_story_revision",
+      "build_revision_cases_for_round",
+      "recover_per_revision_judgments"
+    ],
+    "specialized_lab_entry": "run_self_revise",
+    "phase6": {
+      "semantic_hypothesis_layer": true,
+      "no_auto_add_on_large_source_gap_alone": true,
+      "BETTER_not_auto_IMPROVED": true,
+      "revision_case_closed_loop": true
+    },
+    "phase8": {
+      "failure_aware_iterative_revision": true,
+      "modules": [
+        "story_revision_feedback",
+        "story_loop_policy"
+      ],
+      "accept_candidate_does_not_drive_loop": true,
+      "phase8_paid_multi_round_default": false
+    }
+  },
+  "started_unix": 1795786817.2514427,
+  "out_dir": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent",
+  "inputs": {
+    "match_json": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/data/交付_out/10月27日_25-26赛季西甲第10轮_奥萨苏纳VS塞尔塔_国语.json",
+    "source_mp4": "/mnt/data4/migu/10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语.mp4",
+    "phase5_dir": null,
+    "skip_vlm": false,
+    "enable_real_api": true,
+    "i_approve_budget": true,
+    "phase8_paid_multi_round": true,
+    "phase10_explore": false,
+    "phase10_explore_fixture": false,
+    "enable_story_first": true,
+    "story_first_outer_rounds": 3,
+    "story_first_artifacts_dir": null,
+    "first_live_evidence_dir": null,
+    "narrative_fit_evidence_dir": null,
+    "goal_repair_evidence_dir": null,
+    "human_assisted_preview_requested": false,
+    "run_fresh_v3r": false,
+    "max_rounds": 3,
+    "max_calls": 24,
+    "max_cost_usd": 0.1
+  },
+  "http_calls": 15,
+  "est_cost_usd": 0.037347,
+  "rounds": [
+    {
+      "round": 1,
+      "diagnosis_issue_count": 1,
+      "semantic_observation_claimed": false,
+      "agent_narrative_graph": {
+        "schema": "v3a_agent_inferred_narrative_graph_v1",
+        "node_count": 2,
+        "unreviewed_transition_count": 1,
+        "model_reviewed_transition_count": 0,
+        "observation_target_count": 1,
+        "benchmark_gold_used": false
+      },
+      "api_usage_after_narrative_fit": {
+        "http_attempts": 0,
+        "max_calls": 24,
+        "max_cost_usd": 0.1,
+        "est_cost_usd_real": 0,
+        "by_role": {
+          "planner": {
+            "http_attempts": 0,
+            "tokens": 0,
+            "est_cost_usd": 0,
+            "output_budget_exceeded": false
+          },
+          "vision": {
+            "http_attempts": 0,
+            "tokens": 0,
+            "est_cost_usd": 0,
+            "output_budget_exceeded": false
+          }
+        },
+        "cost_is_estimate_not_invoice_cap": true,
+        "max_retries": 0,
+        "request_preflight": {
+          "planner": {
+            "model": "DeepSeek-V4-Pro-0813",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "planner",
+              "model": "DeepSeek-V4-Pro-0813",
+              "request_profile": "default",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          },
+          "vision": {
+            "model": "Qwen3.7-Plus",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "vision",
+              "model": "Qwen3.7-Plus",
+              "request_profile": "video_rsi",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          }
+        },
+        "env_thinking_overrides": {
+          "before": {
+            "STORY_API_MAX_CALLS": "24",
+            "STORY_API_MAX_COST_USD": "0.10",
+            "STORY_API_MAX_COMPLETION_TOKENS": "512",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": null,
+            "STORY_VLM_REQUEST_PROFILE": null,
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+            "STORY_VLM_TOKEN_PARAM": null,
+            "STORY_API_TOKEN_PARAM": "max_tokens"
+          },
+          "after": {
+            "STORY_API_MAX_CALLS": "24",
+            "STORY_API_MAX_COST_USD": "0.1",
+            "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+            "STORY_VLM_TOKEN_PARAM": "max_tokens",
+            "STORY_API_TOKEN_PARAM": "max_tokens",
+            "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+          },
+          "disable_thinking": true
+        }
+      },
+      "proactive_turn_context_targets": 0,
+      "native_broadcast_phase_observation": {
+        "enabled": false,
+        "status": "NOT_EXECUTED_NO_APPROVED_REAL_SEMANTIC_SOURCE",
+        "native_video_input": false,
+        "first_live_verified": false,
+        "edl_modified": false,
+        "additional_real_http_calls": 0
+      },
+      "goal_video_review_queue": {
+        "status": "NO_GOAL_GAP_ISSUES",
+        "issue_count": 0,
+        "video_semantic_observation": null,
+        "first_live_verified": false
+      },
+      "search_success": true,
+      "search_verified_count": 5,
+      "api_usage_after_story_first_search": {
+        "http_attempts": 1,
+        "max_calls": 24,
+        "max_cost_usd": 0.1,
+        "est_cost_usd_real": 0.004588,
+        "by_role": {
+          "story_first_generator": {
+            "http_attempts": 1,
+            "tokens": 27420,
+            "est_cost_usd": 0.004588,
+            "output_budget_exceeded": false
+          }
+        },
+        "cost_is_estimate_not_invoice_cap": true,
+        "max_retries": 0,
+        "request_preflight": {
+          "planner": {
+            "model": "DeepSeek-V4-Pro-0813",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "planner",
+              "model": "DeepSeek-V4-Pro-0813",
+              "request_profile": "default",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          },
+          "vision": {
+            "model": "Qwen3.7-Plus",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "vision",
+              "model": "Qwen3.7-Plus",
+              "request_profile": "video_rsi",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          }
+        },
+        "env_thinking_overrides": {
+          "before": {
+            "STORY_API_MAX_CALLS": "24",
+            "STORY_API_MAX_COST_USD": "0.10",
+            "STORY_API_MAX_COMPLETION_TOKENS": "512",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": null,
+            "STORY_VLM_REQUEST_PROFILE": null,
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+            "STORY_VLM_TOKEN_PARAM": null,
+            "STORY_API_TOKEN_PARAM": "max_tokens"
+          },
+          "after": {
+            "STORY_API_MAX_CALLS": "24",
+            "STORY_API_MAX_COST_USD": "0.1",
+            "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+            "STORY_VLM_TOKEN_PARAM": "max_tokens",
+            "STORY_API_TOKEN_PARAM": "max_tokens",
+            "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+          },
+          "disable_thinking": true
+        }
+      },
+      "api_usage_after_rp": {
+        "http_attempts": 2,
+        "max_calls": 24,
+        "max_cost_usd": 0.1,
+        "est_cost_usd_real": 0.005922,
+        "by_role": {
+          "revision_planner": {
+            "http_attempts": 1,
+            "tokens": 7567,
+            "est_cost_usd": 0.001334,
+            "output_budget_exceeded": false
+          },
+          "story_first_generator": {
+            "http_attempts": 1,
+            "tokens": 27420,
+            "est_cost_usd": 0.004588,
+            "output_budget_exceeded": false
+          }
+        },
+        "cost_is_estimate_not_invoice_cap": true,
+        "max_retries": 0,
+        "request_preflight": {
+          "planner": {
+            "model": "DeepSeek-V4-Pro-0813",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "planner",
+              "model": "DeepSeek-V4-Pro-0813",
+              "request_profile": "default",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          },
+          "vision": {
+            "model": "Qwen3.7-Plus",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "vision",
+              "model": "Qwen3.7-Plus",
+              "request_profile": "video_rsi",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          }
+        },
+        "env_thinking_overrides": {
+          "before": {
+            "STORY_API_MAX_CALLS": "24",
+            "STORY_API_MAX_COST_USD": "0.10",
+            "STORY_API_MAX_COMPLETION_TOKENS": "512",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": null,
+            "STORY_VLM_REQUEST_PROFILE": null,
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+            "STORY_VLM_TOKEN_PARAM": null,
+            "STORY_API_TOKEN_PARAM": "max_tokens"
+          },
+          "after": {
+            "STORY_API_MAX_CALLS": "24",
+            "STORY_API_MAX_COST_USD": "0.1",
+            "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+            "STORY_VLM_TOKEN_PARAM": "max_tokens",
+            "STORY_API_TOKEN_PARAM": "max_tokens",
+            "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+          },
+          "disable_thinking": true
+        }
+      },
+      "api_usage_after_story_first_review": {
+        "http_attempts": 3,
+        "max_calls": 24,
+        "max_cost_usd": 0.1,
+        "est_cost_usd_real": 0.00819,
+        "by_role": {
+          "revision_planner": {
+            "http_attempts": 1,
+            "tokens": 7567,
+            "est_cost_usd": 0.001334,
+            "output_budget_exceeded": false
+          },
+          "story_first_generator": {
+            "http_attempts": 1,
+            "tokens": 27420,
+            "est_cost_usd": 0.004588,
+            "output_budget_exceeded": false
+          },
+          "vision": {
+            "http_attempts": 1,
+            "tokens": 14535,
+            "est_cost_usd": 0.002268,
+            "output_budget_exceeded": false
+          }
+        },
+        "cost_is_estimate_not_invoice_cap": true,
+        "max_retries": 0,
+        "request_preflight": {
+          "planner": {
+            "model": "DeepSeek-V4-Pro-0813",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "planner",
+              "model": "DeepSeek-V4-Pro-0813",
+              "request_profile": "default",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          },
+          "vision": {
+            "model": "Qwen3.7-Plus",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "vision",
+              "model": "Qwen3.7-Plus",
+              "request_profile": "video_rsi",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          }
+        },
+        "env_thinking_overrides": {
+          "before": {
+            "STORY_API_MAX_CALLS": "24",
+            "STORY_API_MAX_COST_USD": "0.10",
+            "STORY_API_MAX_COMPLETION_TOKENS": "512",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": null,
+            "STORY_VLM_REQUEST_PROFILE": null,
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+            "STORY_VLM_TOKEN_PARAM": null,
+            "STORY_API_TOKEN_PARAM": "max_tokens"
+          },
+          "after": {
+            "STORY_API_MAX_CALLS": "24",
+            "STORY_API_MAX_COST_USD": "0.1",
+            "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+            "STORY_VLM_TOKEN_PARAM": "max_tokens",
+            "STORY_API_TOKEN_PARAM": "max_tokens",
+            "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+          },
+          "disable_thinking": true
+        }
+      },
+      "decision": "REVISE",
+      "edl_pts_safety_ok": true,
+      "story_first_p3": {
+        "schema": "story_first_p3_caption_revision_v1",
+        "release_authorized": false,
+        "promote_best": false,
+        "preview_only": true,
+        "baseline_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/01_initial_story/story_clean.mp4",
+        "baseline_mp4_sha256": "b66d17baf9aefafb49cd4eeaeac10265e95aefab6624905835f11690614e6efe",
+        "selected_preview_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/02_round_01/candidate_render/story_clean.mp4",
+        "rounds": [
+          {
+            "round": 1,
+            "working_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/02_round_01/candidate_render/story_clean.mp4",
+            "rejected_actions": [],
+            "action": "KEEP",
+            "rationale": "The first bridge segment (seg_story_first_b47e4b6a45d1a02720cf0385_01) provides a clear visual transition from the opening goal to the equalizer build-up. The working cut caption shows a sideline bench scene with the scoreboard reading OSA 2 - CEL 1 at 66:43, which establishes the score state and the passage of time between the two goals. This functions as setup and context for the equalizer, and the visible observation supports its inclusion without claiming any unseen action. No concrete pacing or clarity improvement justifies a trim."
+          }
+        ],
+        "http_calls": 2,
+        "edit_count_comparison": [
+          {
+            "completed_edits": 0,
+            "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/02_round_01/candidate_render/story_clean.mp4",
+            "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/02_round_01/story_first_p3/initial_trial_edl.json",
+            "duration_sec": 32.067
+          }
+        ],
+        "stop_reason": "PLANNER_KEEP",
+        "preview_accepted": true,
+        "max_local_trims": 3,
+        "api_usage": {
+          "http_attempts": 5,
+          "max_calls": 24,
+          "max_cost_usd": 0.1,
+          "est_cost_usd_real": 0.01098,
+          "by_role": {
+            "revision_planner": {
+              "http_attempts": 1,
+              "tokens": 7567,
+              "est_cost_usd": 0.001334,
+              "output_budget_exceeded": false
+            },
+            "story_first_generator": {
+              "http_attempts": 1,
+              "tokens": 27420,
+              "est_cost_usd": 0.004588,
+              "output_budget_exceeded": false
+            },
+            "story_first_p3_caption": {
+              "http_attempts": 1,
+              "tokens": 8742,
+              "est_cost_usd": 0.001658,
+              "output_budget_exceeded": false
+            },
+            "story_first_p3_planner": {
+              "http_attempts": 1,
+              "tokens": 6421,
+              "est_cost_usd": 0.001131,
+              "output_budget_exceeded": false
+            },
+            "vision": {
+              "http_attempts": 1,
+              "tokens": 14535,
+              "est_cost_usd": 0.002268,
+              "output_budget_exceeded": false
+            }
+          },
+          "cost_is_estimate_not_invoice_cap": true,
+          "max_retries": 0,
+          "request_preflight": {
+            "planner": {
+              "model": "DeepSeek-V4-Pro-0813",
+              "thinking_in_body": {
+                "type": "disabled"
+              },
+              "max_tokens_in_body": 1200,
+              "max_completion_tokens_in_body": null,
+              "enable_thinking_in_body": null,
+              "thinking_budget_in_body": null,
+              "request_audit": {
+                "role": "planner",
+                "model": "DeepSeek-V4-Pro-0813",
+                "request_profile": "default",
+                "token_param_configured": "max_tokens",
+                "token_param_sent": "max_tokens",
+                "token_limit_sent": 1200,
+                "temperature_sent": 0.0,
+                "stream_sent": false,
+                "thinking_params_sent": false,
+                "thinking_object_disabled_sent": true,
+                "enable_thinking_sent": null,
+                "thinking_budget_sent": null,
+                "sends_both_token_params": false,
+                "sends_both_thinking_formats": false,
+                "message_count": 1,
+                "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+                "paratera_thinking_object_documented": false
+              },
+              "thinking_object_disabled_cfg": true,
+              "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+            },
+            "vision": {
+              "model": "Qwen3.7-Plus",
+              "thinking_in_body": {
+                "type": "disabled"
+              },
+              "max_tokens_in_body": 1200,
+              "max_completion_tokens_in_body": null,
+              "enable_thinking_in_body": null,
+              "thinking_budget_in_body": null,
+              "request_audit": {
+                "role": "vision",
+                "model": "Qwen3.7-Plus",
+                "request_profile": "video_rsi",
+                "token_param_configured": "max_tokens",
+                "token_param_sent": "max_tokens",
+                "token_limit_sent": 1200,
+                "temperature_sent": 0.0,
+                "stream_sent": false,
+                "thinking_params_sent": false,
+                "thinking_object_disabled_sent": true,
+                "enable_thinking_sent": null,
+                "thinking_budget_sent": null,
+                "sends_both_token_params": false,
+                "sends_both_thinking_formats": false,
+                "message_count": 1,
+                "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+                "paratera_thinking_object_documented": false
+              },
+              "thinking_object_disabled_cfg": true,
+              "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+            }
+          },
+          "env_thinking_overrides": {
+            "before": {
+              "STORY_API_MAX_CALLS": "24",
+              "STORY_API_MAX_COST_USD": "0.10",
+              "STORY_API_MAX_COMPLETION_TOKENS": "512",
+              "STORY_VLM_MAX_COMPLETION_TOKENS": null,
+              "STORY_VLM_REQUEST_PROFILE": null,
+              "STORY_VLM_SEND_THINKING": null,
+              "STORY_VLM_ENABLE_THINKING": null,
+              "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+              "STORY_VLM_TOKEN_PARAM": null,
+              "STORY_API_TOKEN_PARAM": "max_tokens"
+            },
+            "after": {
+              "STORY_API_MAX_CALLS": "24",
+              "STORY_API_MAX_COST_USD": "0.1",
+              "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+              "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+              "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+              "STORY_VLM_SEND_THINKING": null,
+              "STORY_VLM_ENABLE_THINKING": null,
+              "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+              "STORY_VLM_TOKEN_PARAM": "max_tokens",
+              "STORY_API_TOKEN_PARAM": "max_tokens",
+              "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+              "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+              "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+            },
+            "disable_thinking": true
+          }
+        },
+        "selected_preview_mp4_sha256": "acc1e575b973369f1d83519ebf1a9777e053ca8804c3261cc8edb6b2b8731319",
+        "completed_edits": 0
+      },
+      "story_first_preview_only": true,
+      "fullcut_delta_report": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/02_round_01/fullcut_delta_report.json",
+      "verdict_provenance": "OFFLINE_RULE",
+      "accepted": false,
+      "retain_baseline": true,
+      "revision_status": {
+        "schema": "v3a_revision_status_v1",
+        "APPLIED": true,
+        "VERIFIED": false,
+        "IMPROVED": false,
+        "safety_ok": true,
+        "edl_changed": true,
+        "candidate_rendered": true,
+        "candidate_accepted": false,
+        "vision_backed": false,
+        "semantic_passed": false,
+        "quality_delta": "NOT_EVALUATED",
+        "BETTER_not_auto_IMPROVED": true,
+        "note": "APPLIED=EDL mutated under safety; VERIFIED=accepted with vision; IMPROVED=verified+accepted+vision+semantic+safety+quality_delta. One model BETTER never auto-upgrades to IMPROVED. PTS/first-live/goal gates cannot be overridden by BETTER."
+      },
+      "revision_case_count": 2,
+      "fullcut_feedback_entries": 0,
+      "deferred_confirmed_alternatives": 0,
+      "story_first_trial_status": "READY_FOR_TRIAL",
+      "phase8_transition": {
+        "schema": "v3a_phase8_transition_v1",
+        "next_action": "STOP_NO_ACTION",
+        "working_ref": "v0",
+        "best_ref": "v0",
+        "reason_codes": [
+          "story_first_p3_caption_revision_finished"
+        ],
+        "promote": false,
+        "stop_reason": "PLANNER_KEEP",
+        "continue_allowed": false,
+        "current_round_outcome": "REPLAN_FROM_BEST",
+        "record_confirmed_negative": false,
+        "candidate_version_id": "v1",
+        "parent_version_id": "v0",
+        "safety": "UNKNOWN",
+        "quality": "UNCERTAIN",
+        "evidence": "INSUFFICIENT",
+        "accept_candidate_ignored": true,
+        "compared_against_best": true,
+        "note": "candidate_accepted boolean does not drive this policy; formal release remains stricter than exploration. Budget does not discard the just-finished round outcome."
+      },
+      "phase8_verdict": {
+        "schema": "v3a_phase8_verdict_v1",
+        "safety": "UNKNOWN",
+        "hard_safety": {
+          "safety": "UNKNOWN",
+          "reasons": [
+            "first_live_per_window_proof_incomplete"
+          ],
+          "accept_candidate_ignored": true,
+          "first_live_status": "NOT_VERIFIED",
+          "first_live_ledger": {
+            "schema": "v3a_first_live_window_ledger_v1",
+            "source_sha": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa",
+            "windows": [
+              {
+                "key": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa|5577.630:5593.630",
+                "source_sha": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa",
+                "source_pts_start": 5577.63,
+                "source_pts_end": 5593.63,
+                "status": "NOT_VERIFIED",
+                "binding_status": "BINDING_INVALID",
+                "first_live_status": "NOT_VERIFIED",
+                "method": "unverified_new_window",
+                "segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_01",
+                "claimed_status": "NOT_VERIFIED",
+                "candidate_class": "unbound_or_invalid",
+                "validation": {
+                  "ok": false,
+                  "binding_valid": false,
+                  "first_live_verified": false,
+                  "replay_confirmed": false,
+                  "reason": "missing_evidence_record",
+                  "manifest_digest": null,
+                  "frame_sha256": null,
+                  "method": "frame_binding_only"
+                },
+                "validated_evidence": null,
+                "broadcast_timeline_review": null,
+                "origin": "apply_report"
+              },
+              {
+                "key": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa|5647.418:5657.158",
+                "source_sha": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa",
+                "source_pts_start": 5647.418,
+                "source_pts_end": 5657.158,
+                "status": "NOT_VERIFIED",
+                "binding_status": "BINDING_INVALID",
+                "first_live_status": "NOT_VERIFIED",
+                "method": "unverified_new_window",
+                "segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_02",
+                "claimed_status": "NOT_VERIFIED",
+                "candidate_class": "unbound_or_invalid",
+                "validation": {
+                  "ok": false,
+                  "binding_valid": false,
+                  "first_live_verified": false,
+                  "replay_confirmed": false,
+                  "reason": "missing_evidence_record",
+                  "manifest_digest": null,
+                  "frame_sha256": null,
+                  "method": "frame_binding_only"
+                },
+                "validated_evidence": null,
+                "broadcast_timeline_review": null,
+                "origin": "apply_report"
+              }
+            ],
+            "n_windows": 2,
+            "all_windows_verified": false,
+            "any_window_unverified": true,
+            "any_replay_confirmed": false,
+            "any_frame_bound_pending_timeline": false,
+            "aggregate_status": "NOT_VERIFIED",
+            "note": "FRAME_BOUND_VALID ≠ FIRST_LIVE_VERIFIED. Hard-safety PASS needs independent broadcast-timeline review on every new window; binding-only stays UNKNOWN; REPLAY_CONFIRMED ⇒ FAIL."
+          },
+          "candidate_class": "unbound_or_invalid",
+          "note": "FRAME_BOUND_VALID ≠ FIRST_LIVE_VERIFIED. Hard-safety PASS needs independent broadcast-timeline review on every new window; otherwise UNKNOWN."
+        },
+        "quality": "UNCERTAIN",
+        "evidence": "INSUFFICIENT",
+        "issue_effect": "UNOBSERVED",
+        "global_regression": "UNKNOWN",
+        "focus_issue_id": null,
+        "evidence_refs": [],
+        "observed_changes": null,
+        "unresolved_questions": [],
+        "suggested_next_evidence": null,
+        "failure_class": "TECHNICAL_FAILURE",
+        "compared_parent_version_id": null,
+        "verdict_provenance": "OFFLINE_RULE",
+        "source_kind": "OFFLINE_RULE",
+        "accept_candidate_raw": false,
+        "accept_not_synthesized_from_promising": true,
+        "safety_independent_of_accept_candidate": true,
+        "note": "Hard safety is independent of narrative accept_candidate. FIXTURE/OFFLINE_RULE never establish real IMPROVED; REAL_VLM requires recorded successful provider call + frame bindings.",
+        "candidate_accepted": false,
+        "preview_only": true,
+        "best_comparison_status": "COMPARED_PARENT_IS_BEST",
+        "compared_against_best": true
+      },
+      "parent_version_id": "v0",
+      "candidate_version_id": "v1",
+      "working_version_id": "v0",
+      "best_verified_version_id": "v0",
+      "gates_snapshot": {
+        "workflow_completed": false,
+        "story_diagnosis_valid": true,
+        "revision_applied": true,
+        "candidate_rendered": true,
+        "semantic_verification_passed": false,
+        "release_authorized": false,
+        "final_mp4_exists": false
+      },
+      "edl_changed": true
+    }
+  ],
+  "status_gates": {
+    "workflow_completed": true,
+    "story_diagnosis_valid": true,
+    "revision_applied": true,
+    "candidate_rendered": true,
+    "semantic_verification_passed": false,
+    "release_authorized": false,
+    "final_mp4_exists": true
+  },
+  "revision_status_totals": {
+    "APPLIED": 1,
+    "VERIFIED": 0,
+    "IMPROVED": 0
+  },
+  "disclaimer": "Offline/dry-run does not claim real multimodal story understanding. release_authorized stays false unless hard gates + semantic pass. APPLIED ≠ VERIFIED ≠ IMPROVED.",
+  "api_preflight": {
+    "configured": true,
+    "max_calls": 24,
+    "max_cost_usd_estimate": 0.1,
+    "max_retries": 0,
+    "cost_is_estimate_not_invoice_cap": true,
+    "max_completion_tokens": 1200,
+    "request_body_preflight": {
+      "planner": {
+        "model": "DeepSeek-V4-Pro-0813",
+        "thinking_in_body": {
+          "type": "disabled"
+        },
+        "max_tokens_in_body": 1200,
+        "max_completion_tokens_in_body": null,
+        "enable_thinking_in_body": null,
+        "thinking_budget_in_body": null,
+        "request_audit": {
+          "role": "planner",
+          "model": "DeepSeek-V4-Pro-0813",
+          "request_profile": "default",
+          "token_param_configured": "max_tokens",
+          "token_param_sent": "max_tokens",
+          "token_limit_sent": 1200,
+          "temperature_sent": 0.0,
+          "stream_sent": false,
+          "thinking_params_sent": false,
+          "thinking_object_disabled_sent": true,
+          "enable_thinking_sent": null,
+          "thinking_budget_sent": null,
+          "sends_both_token_params": false,
+          "sends_both_thinking_formats": false,
+          "message_count": 1,
+          "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+          "paratera_thinking_object_documented": false
+        },
+        "thinking_object_disabled_cfg": true,
+        "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+      },
+      "vision": {
+        "model": "Qwen3.7-Plus",
+        "thinking_in_body": {
+          "type": "disabled"
+        },
+        "max_tokens_in_body": 1200,
+        "max_completion_tokens_in_body": null,
+        "enable_thinking_in_body": null,
+        "thinking_budget_in_body": null,
+        "request_audit": {
+          "role": "vision",
+          "model": "Qwen3.7-Plus",
+          "request_profile": "video_rsi",
+          "token_param_configured": "max_tokens",
+          "token_param_sent": "max_tokens",
+          "token_limit_sent": 1200,
+          "temperature_sent": 0.0,
+          "stream_sent": false,
+          "thinking_params_sent": false,
+          "thinking_object_disabled_sent": true,
+          "enable_thinking_sent": null,
+          "thinking_budget_sent": null,
+          "sends_both_token_params": false,
+          "sends_both_thinking_formats": false,
+          "message_count": 1,
+          "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+          "paratera_thinking_object_documented": false
+        },
+        "thinking_object_disabled_cfg": true,
+        "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+      }
+    },
+    "env_thinking_overrides": {
+      "before": {
+        "STORY_API_MAX_CALLS": "24",
+        "STORY_API_MAX_COST_USD": "0.10",
+        "STORY_API_MAX_COMPLETION_TOKENS": "512",
+        "STORY_VLM_MAX_COMPLETION_TOKENS": null,
+        "STORY_VLM_REQUEST_PROFILE": null,
+        "STORY_VLM_SEND_THINKING": null,
+        "STORY_VLM_ENABLE_THINKING": null,
+        "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+        "STORY_VLM_TOKEN_PARAM": null,
+        "STORY_API_TOKEN_PARAM": "max_tokens"
+      },
+      "after": {
+        "STORY_API_MAX_CALLS": "24",
+        "STORY_API_MAX_COST_USD": "0.1",
+        "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+        "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+        "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+        "STORY_VLM_SEND_THINKING": null,
+        "STORY_VLM_ENABLE_THINKING": null,
+        "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+        "STORY_VLM_TOKEN_PARAM": "max_tokens",
+        "STORY_API_TOKEN_PARAM": "max_tokens",
+        "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+        "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+        "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+      },
+      "disable_thinking": true
+    },
+    "usage_snapshot": {
+      "http_attempts": 0,
+      "max_calls": 24,
+      "max_cost_usd": 0.1,
+      "est_cost_usd_real": 0,
+      "by_role": {
+        "planner": {
+          "http_attempts": 0,
+          "tokens": 0,
+          "est_cost_usd": 0,
+          "output_budget_exceeded": false
+        },
+        "vision": {
+          "http_attempts": 0,
+          "tokens": 0,
+          "est_cost_usd": 0,
+          "output_budget_exceeded": false
+        }
+      },
+      "cost_is_estimate_not_invoice_cap": true,
+      "max_retries": 0,
+      "request_preflight": {
+        "planner": {
+          "model": "DeepSeek-V4-Pro-0813",
+          "thinking_in_body": {
+            "type": "disabled"
+          },
+          "max_tokens_in_body": 1200,
+          "max_completion_tokens_in_body": null,
+          "enable_thinking_in_body": null,
+          "thinking_budget_in_body": null,
+          "request_audit": {
+            "role": "planner",
+            "model": "DeepSeek-V4-Pro-0813",
+            "request_profile": "default",
+            "token_param_configured": "max_tokens",
+            "token_param_sent": "max_tokens",
+            "token_limit_sent": 1200,
+            "temperature_sent": 0.0,
+            "stream_sent": false,
+            "thinking_params_sent": false,
+            "thinking_object_disabled_sent": true,
+            "enable_thinking_sent": null,
+            "thinking_budget_sent": null,
+            "sends_both_token_params": false,
+            "sends_both_thinking_formats": false,
+            "message_count": 1,
+            "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+            "paratera_thinking_object_documented": false
+          },
+          "thinking_object_disabled_cfg": true,
+          "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+        },
+        "vision": {
+          "model": "Qwen3.7-Plus",
+          "thinking_in_body": {
+            "type": "disabled"
+          },
+          "max_tokens_in_body": 1200,
+          "max_completion_tokens_in_body": null,
+          "enable_thinking_in_body": null,
+          "thinking_budget_in_body": null,
+          "request_audit": {
+            "role": "vision",
+            "model": "Qwen3.7-Plus",
+            "request_profile": "video_rsi",
+            "token_param_configured": "max_tokens",
+            "token_param_sent": "max_tokens",
+            "token_limit_sent": 1200,
+            "temperature_sent": 0.0,
+            "stream_sent": false,
+            "thinking_params_sent": false,
+            "thinking_object_disabled_sent": true,
+            "enable_thinking_sent": null,
+            "thinking_budget_sent": null,
+            "sends_both_token_params": false,
+            "sends_both_thinking_formats": false,
+            "message_count": 1,
+            "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+            "paratera_thinking_object_documented": false
+          },
+          "thinking_object_disabled_cfg": true,
+          "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+        }
+      },
+      "env_thinking_overrides": {
+        "before": {
+          "STORY_API_MAX_CALLS": "24",
+          "STORY_API_MAX_COST_USD": "0.10",
+          "STORY_API_MAX_COMPLETION_TOKENS": "512",
+          "STORY_VLM_MAX_COMPLETION_TOKENS": null,
+          "STORY_VLM_REQUEST_PROFILE": null,
+          "STORY_VLM_SEND_THINKING": null,
+          "STORY_VLM_ENABLE_THINKING": null,
+          "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+          "STORY_VLM_TOKEN_PARAM": null,
+          "STORY_API_TOKEN_PARAM": "max_tokens"
+        },
+        "after": {
+          "STORY_API_MAX_CALLS": "24",
+          "STORY_API_MAX_COST_USD": "0.1",
+          "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+          "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+          "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+          "STORY_VLM_SEND_THINKING": null,
+          "STORY_VLM_ENABLE_THINKING": null,
+          "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+          "STORY_VLM_TOKEN_PARAM": "max_tokens",
+          "STORY_API_TOKEN_PARAM": "max_tokens",
+          "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+          "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+          "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+        },
+        "disable_thinking": true
+      }
+    }
+  },
+  "input_edl_pts_safety": {
+    "schema": "v3a_edl_source_pts_monotonic_v1",
+    "ok": true,
+    "n_media_rows": 2,
+    "breaks": [],
+    "gate": "safety",
+    "note": "Monotonic source PTS is a safety constraint, not a quality score."
+  },
+  "render_smoke": null,
+  "baseline_duplicate_audit": {
+    "finding_count": 0,
+    "auto_drop_segment_ids": [],
+    "human_review_count": 0,
+    "applied": {
+      "changed": false,
+      "dropped": [],
+      "drop_ledger": [],
+      "refused_goal_drops": []
+    }
+  },
+  "narrative_fit_required": true,
+  "narrative_fit_review_store_n": 0,
+  "first_live_evidence_store_n": 0,
+  "phase8_loop_state": {
+    "schema": "v3a_phase8_loop_v1",
+    "initial_baseline_version_id": "v0",
+    "best_verified_version_id": "v0",
+    "best_verification_tier": "BASELINE_UNVERIFIED",
+    "working_version_id": "v0",
+    "versions": {
+      "v0": {
+        "parent_version_id": null,
+        "edl_path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/01_initial_story/candidate_edl.json",
+        "mp4_path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/01_initial_story/story_clean.mp4",
+        "safety": "UNKNOWN",
+        "quality": "BASELINE_UNVERIFIED",
+        "source": "V3R_BASELINE",
+        "semantic_evidence_refs": []
+      },
+      "v1": {
+        "parent_version_id": "v0",
+        "edl_path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/02_round_01/candidate_edl.json",
+        "mp4_path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/02_round_01/candidate_render/story_clean.mp4",
+        "safety": "UNKNOWN",
+        "quality": "UNCERTAIN",
+        "source": "OFFLINE_RULE",
+        "semantic_evidence_refs": [],
+        "round_idx": 1
+      }
+    },
+    "feedback_memory_path": "phase8_feedback_memory.json",
+    "round_history": [
+      {
+        "next_action": "STOP_NO_ACTION",
+        "reason_codes": [
+          "story_first_p3_caption_revision_finished"
+        ],
+        "candidate_version_id": "v1",
+        "working_ref": "v0",
+        "best_ref": "v0",
+        "quality": "UNCERTAIN",
+        "safety": "UNKNOWN"
+      }
+    ],
+    "stop_reason": "PLANNER_KEEP",
+    "delivery_version_id": "v0",
+    "uncertain_reobserve_count": 0,
+    "promising_depth": 0,
+    "max_uncertain_reobserve": 1,
+    "max_promising_depth": 2
+  },
+  "phase8_feedback_memory": {
+    "schema": "v3a_phase8_feedback_memory_v1",
+    "n_records": 2,
+    "records": [
+      {
+        "schema": "v3a_phase8_feedback_v1",
+        "round": 1,
+        "issue_signature": {
+          "template_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+          "category": "unknown",
+          "story_role": null,
+          "anchor_segment_ids": [
+            "seg:1"
+          ],
+          "missing_narrative_info": "unspecified",
+          "issue_id_raw": "story_first:b47e4b6a45d1a02720cf0385"
+        },
+        "intent_id": "story_first_b47e4b6a45d1a02720cf0385_02",
+        "action": "search_add",
+        "source_pts": [
+          5647.418,
+          5657.158
+        ],
+        "parent_version_id": "v0",
+        "candidate_version_id": "v1",
+        "quality": "UNCERTAIN",
+        "evidence_status": "INSUFFICIENT",
+        "failure_class": "TECHNICAL_FAILURE",
+        "observation": "No independently confirmed narrative benefit",
+        "next_search_requirement": "Reobserve edit-locus continuous context; do not treat as semantic negative",
+        "source_kind": "OFFLINE_RULE",
+        "evidence_refs": [],
+        "new_evidence_required_for_retry": true,
+        "candidate_identity": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语|10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语|unknown|seg:1|unspecified|v0|search_add|5647.418:5657.158|seg:1",
+        "legacy_final_decision": "REJECT",
+        "legacy_failure_reasons": [
+          "verifier_or_pipeline_rejected"
+        ],
+        "legacy_accept_candidate": false,
+        "pts_permanently_banned": false,
+        "sent_frame_ids": [],
+        "evidence_token": "sha:0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa|5647.418:5657.158",
+        "apply_status": "applied_evidence_bound",
+        "observation_limitations": [
+          "claims_full_video_watch=false",
+          "sparse_or_truncated_verifier_must_not_become_confirmed_negative"
+        ]
+      },
+      {
+        "schema": "v3a_phase8_feedback_v1",
+        "round": 1,
+        "issue_signature": {
+          "template_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+          "category": "unknown",
+          "story_role": null,
+          "anchor_segment_ids": [
+            "seg:1"
+          ],
+          "missing_narrative_info": "unspecified",
+          "issue_id_raw": "story_first:b47e4b6a45d1a02720cf0385"
+        },
+        "intent_id": "story_first_b47e4b6a45d1a02720cf0385_01",
+        "action": "search_add",
+        "source_pts": [
+          5577.63,
+          5593.63
+        ],
+        "parent_version_id": "v0",
+        "candidate_version_id": "v1",
+        "quality": "UNCERTAIN",
+        "evidence_status": "INSUFFICIENT",
+        "failure_class": "TECHNICAL_FAILURE",
+        "observation": "No independently confirmed narrative benefit",
+        "next_search_requirement": "Reobserve edit-locus continuous context; do not treat as semantic negative",
+        "source_kind": "OFFLINE_RULE",
+        "evidence_refs": [],
+        "new_evidence_required_for_retry": true,
+        "candidate_identity": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语|10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语|unknown|seg:1|unspecified|v0|search_add|5577.630:5593.630|seg:1",
+        "legacy_final_decision": "REJECT",
+        "legacy_failure_reasons": [
+          "verifier_or_pipeline_rejected"
+        ],
+        "legacy_accept_candidate": false,
+        "pts_permanently_banned": false,
+        "sent_frame_ids": [],
+        "evidence_token": "sha:0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa|5647.418:5657.158",
+        "apply_status": "applied_evidence_bound",
+        "observation_limitations": [
+          "claims_full_video_watch=false",
+          "sparse_or_truncated_verifier_must_not_become_confirmed_negative"
+        ]
+      }
+    ],
+    "summary": {
+      "schema": "v3a_phase8_feedback_summary_v1",
+      "n_records": 2,
+      "tried_revisions": [
+        {
+          "round": 1,
+          "action": "search_add",
+          "source_pts": [
+            5647.418,
+            5657.158
+          ],
+          "quality": "UNCERTAIN",
+          "failure_class": "TECHNICAL_FAILURE",
+          "issue_signature": {
+            "template_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+            "category": "unknown",
+            "story_role": null,
+            "anchor_segment_ids": [
+              "seg:1"
+            ],
+            "missing_narrative_info": "unspecified",
+            "issue_id_raw": "story_first:b47e4b6a45d1a02720cf0385"
+          },
+          "next_search_requirement": "Reobserve edit-locus continuous context; do not treat as semantic negative",
+          "new_evidence_required_for_retry": true
+        },
+        {
+          "round": 1,
+          "action": "search_add",
+          "source_pts": [
+            5577.63,
+            5593.63
+          ],
+          "quality": "UNCERTAIN",
+          "failure_class": "TECHNICAL_FAILURE",
+          "issue_signature": {
+            "template_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+            "category": "unknown",
+            "story_role": null,
+            "anchor_segment_ids": [
+              "seg:1"
+            ],
+            "missing_narrative_info": "unspecified",
+            "issue_id_raw": "story_first:b47e4b6a45d1a02720cf0385"
+          },
+          "next_search_requirement": "Reobserve edit-locus continuous context; do not treat as semantic negative",
+          "new_evidence_required_for_retry": true
+        }
+      ],
+      "confirmed_negatives": [],
+      "uncertain_or_unverified": [],
+      "technical_failures": [
+        {
+          "schema": "v3a_phase8_feedback_v1",
+          "round": 1,
+          "issue_signature": {
+            "template_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+            "category": "unknown",
+            "story_role": null,
+            "anchor_segment_ids": [
+              "seg:1"
+            ],
+            "missing_narrative_info": "unspecified",
+            "issue_id_raw": "story_first:b47e4b6a45d1a02720cf0385"
+          },
+          "intent_id": "story_first_b47e4b6a45d1a02720cf0385_02",
+          "action": "search_add",
+          "source_pts": [
+            5647.418,
+            5657.158
+          ],
+          "parent_version_id": "v0",
+          "candidate_version_id": "v1",
+          "quality": "UNCERTAIN",
+          "evidence_status": "INSUFFICIENT",
+          "failure_class": "TECHNICAL_FAILURE",
+          "observation": "No independently confirmed narrative benefit",
+          "next_search_requirement": "Reobserve edit-locus continuous context; do not treat as semantic negative",
+          "source_kind": "OFFLINE_RULE",
+          "evidence_refs": [],
+          "new_evidence_required_for_retry": true,
+          "candidate_identity": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语|10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语|unknown|seg:1|unspecified|v0|search_add|5647.418:5657.158|seg:1",
+          "legacy_final_decision": "REJECT",
+          "legacy_failure_reasons": [
+            "verifier_or_pipeline_rejected"
+          ],
+          "legacy_accept_candidate": false,
+          "pts_permanently_banned": false,
+          "sent_frame_ids": [],
+          "evidence_token": "sha:0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa|5647.418:5657.158",
+          "apply_status": "applied_evidence_bound",
+          "observation_limitations": [
+            "claims_full_video_watch=false",
+            "sparse_or_truncated_verifier_must_not_become_confirmed_negative"
+          ]
+        },
+        {
+          "schema": "v3a_phase8_feedback_v1",
+          "round": 1,
+          "issue_signature": {
+            "template_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+            "category": "unknown",
+            "story_role": null,
+            "anchor_segment_ids": [
+              "seg:1"
+            ],
+            "missing_narrative_info": "unspecified",
+            "issue_id_raw": "story_first:b47e4b6a45d1a02720cf0385"
+          },
+          "intent_id": "story_first_b47e4b6a45d1a02720cf0385_01",
+          "action": "search_add",
+          "source_pts": [
+            5577.63,
+            5593.63
+          ],
+          "parent_version_id": "v0",
+          "candidate_version_id": "v1",
+          "quality": "UNCERTAIN",
+          "evidence_status": "INSUFFICIENT",
+          "failure_class": "TECHNICAL_FAILURE",
+          "observation": "No independently confirmed narrative benefit",
+          "next_search_requirement": "Reobserve edit-locus continuous context; do not treat as semantic negative",
+          "source_kind": "OFFLINE_RULE",
+          "evidence_refs": [],
+          "new_evidence_required_for_retry": true,
+          "candidate_identity": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语|10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语|unknown|seg:1|unspecified|v0|search_add|5577.630:5593.630|seg:1",
+          "legacy_final_decision": "REJECT",
+          "legacy_failure_reasons": [
+            "verifier_or_pipeline_rejected"
+          ],
+          "legacy_accept_candidate": false,
+          "pts_permanently_banned": false,
+          "sent_frame_ids": [],
+          "evidence_token": "sha:0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa|5647.418:5657.158",
+          "apply_status": "applied_evidence_bound",
+          "observation_limitations": [
+            "claims_full_video_watch=false",
+            "sparse_or_truncated_verifier_must_not_become_confirmed_negative"
+          ]
+        }
+      ],
+      "positives": [],
+      "current_issue_signatures": [],
+      "forbid_identical_retry_without_new_evidence": true,
+      "never_permanently_ban_pts": true,
+      "opaque_reject_is_not_confirmed_negative": true
+    }
+  },
+  "source_sha256": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa",
+  "story_first_search": {
+    "intervals": [
+      {
+        "interval_id": "interval_01",
+        "from_segment_id": "seg:1",
+        "to_segment_id": "seg:2",
+        "score_status": "OFFLINE_RESEARCH_ONLY",
+        "scope": {
+          "from_segment_id": "seg:1",
+          "from_role": "opponent_opening_goal_action",
+          "to_segment_id": "seg:2",
+          "to_role": "equalizer_goal_action",
+          "source_interval_sec": [
+            3135.968,
+            5657.158
+          ],
+          "anchor_source": "existing_v3r_edl",
+          "no_assumed_causality": true
+        },
+        "status": "GENERATED",
+        "candidate_count": 5
+      }
+    ],
+    "proposal_count": 5
+  },
+  "story_first_outer": {
+    "schema": "story_first_outer_comparison_v1",
+    "preview_only": true,
+    "release_authorized": false,
+    "requested_outer_rounds": 3,
+    "attempted_outer_rounds": 3,
+    "accepted_changes": 3,
+    "http_calls_added_by_continuation": 10,
+    "api_usage": {
+      "http_attempts": 15,
+      "max_calls": 24,
+      "max_cost_usd": 0.1,
+      "est_cost_usd_real": 0.037347,
+      "by_role": {
+        "revision_planner": {
+          "http_attempts": 1,
+          "tokens": 7567,
+          "est_cost_usd": 0.001334,
+          "output_budget_exceeded": false
+        },
+        "story_first_generator": {
+          "http_attempts": 3,
+          "tokens": 83434,
+          "est_cost_usd": 0.014004,
+          "output_budget_exceeded": false
+        },
+        "story_first_p35_planner": {
+          "http_attempts": 2,
+          "tokens": 11266,
+          "est_cost_usd": 0.001992,
+          "output_budget_exceeded": false
+        },
+        "story_first_p3_caption": {
+          "http_attempts": 3,
+          "tokens": 48589,
+          "est_cost_usd": 0.008175,
+          "output_budget_exceeded": false
+        },
+        "story_first_p3_planner": {
+          "http_attempts": 3,
+          "tokens": 19660,
+          "est_cost_usd": 0.003554,
+          "output_budget_exceeded": false
+        },
+        "vision": {
+          "http_attempts": 3,
+          "tokens": 52544,
+          "est_cost_usd": 0.008287,
+          "output_budget_exceeded": false
+        }
+      },
+      "cost_is_estimate_not_invoice_cap": true,
+      "max_retries": 0,
+      "request_preflight": {
+        "planner": {
+          "model": "DeepSeek-V4-Pro-0813",
+          "thinking_in_body": {
+            "type": "disabled"
+          },
+          "max_tokens_in_body": 1200,
+          "max_completion_tokens_in_body": null,
+          "enable_thinking_in_body": null,
+          "thinking_budget_in_body": null,
+          "request_audit": {
+            "role": "planner",
+            "model": "DeepSeek-V4-Pro-0813",
+            "request_profile": "default",
+            "token_param_configured": "max_tokens",
+            "token_param_sent": "max_tokens",
+            "token_limit_sent": 1200,
+            "temperature_sent": 0.0,
+            "stream_sent": false,
+            "thinking_params_sent": false,
+            "thinking_object_disabled_sent": true,
+            "enable_thinking_sent": null,
+            "thinking_budget_sent": null,
+            "sends_both_token_params": false,
+            "sends_both_thinking_formats": false,
+            "message_count": 1,
+            "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+            "paratera_thinking_object_documented": false
+          },
+          "thinking_object_disabled_cfg": true,
+          "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+        },
+        "vision": {
+          "model": "Qwen3.7-Plus",
+          "thinking_in_body": {
+            "type": "disabled"
+          },
+          "max_tokens_in_body": 1200,
+          "max_completion_tokens_in_body": null,
+          "enable_thinking_in_body": null,
+          "thinking_budget_in_body": null,
+          "request_audit": {
+            "role": "vision",
+            "model": "Qwen3.7-Plus",
+            "request_profile": "video_rsi",
+            "token_param_configured": "max_tokens",
+            "token_param_sent": "max_tokens",
+            "token_limit_sent": 1200,
+            "temperature_sent": 0.0,
+            "stream_sent": false,
+            "thinking_params_sent": false,
+            "thinking_object_disabled_sent": true,
+            "enable_thinking_sent": null,
+            "thinking_budget_sent": null,
+            "sends_both_token_params": false,
+            "sends_both_thinking_formats": false,
+            "message_count": 1,
+            "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+            "paratera_thinking_object_documented": false
+          },
+          "thinking_object_disabled_cfg": true,
+          "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+        }
+      },
+      "env_thinking_overrides": {
+        "before": {
+          "STORY_API_MAX_CALLS": "24",
+          "STORY_API_MAX_COST_USD": "0.10",
+          "STORY_API_MAX_COMPLETION_TOKENS": "512",
+          "STORY_VLM_MAX_COMPLETION_TOKENS": null,
+          "STORY_VLM_REQUEST_PROFILE": null,
+          "STORY_VLM_SEND_THINKING": null,
+          "STORY_VLM_ENABLE_THINKING": null,
+          "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+          "STORY_VLM_TOKEN_PARAM": null,
+          "STORY_API_TOKEN_PARAM": "max_tokens"
+        },
+        "after": {
+          "STORY_API_MAX_CALLS": "24",
+          "STORY_API_MAX_COST_USD": "0.1",
+          "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+          "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+          "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+          "STORY_VLM_SEND_THINKING": null,
+          "STORY_VLM_ENABLE_THINKING": null,
+          "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+          "STORY_VLM_TOKEN_PARAM": "max_tokens",
+          "STORY_API_TOKEN_PARAM": "max_tokens",
+          "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+          "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+          "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+        },
+        "disable_thinking": true
+      }
+    },
+    "round_history": [
+      {
+        "round": 1,
+        "status": "ACCEPTED_PREVIEW",
+        "source_advisory": [],
+        "p3_stop_reason": "PLANNER_KEEP",
+        "local_trims": 0,
+        "accepted_source_windows_sec": [
+          [
+            5577.63,
+            5593.63
+          ],
+          [
+            5647.418,
+            5657.158
+          ]
+        ],
+        "local_decisions": [
+          {
+            "action": "KEEP",
+            "rationale": "The first bridge segment (seg_story_first_b47e4b6a45d1a02720cf0385_01) provides a clear visual transition from the opening goal to the equalizer build-up. The working cut caption shows a sideline bench scene with the scoreboard reading OSA 2 - CEL 1 at 66:43, which establishes the score state and the passage of time between the two goals. This functions as setup and context for the equalizer, and the visible observation supports its inclusion without claiming any unseen action. No concrete pacing or clarity improvement justifies a trim."
+          }
+        ]
+      },
+      {
+        "round": 2,
+        "parent_mp4_sha256": "acc1e575b973369f1d83519ebf1a9777e053ca8804c3261cc8edb6b2b8731319",
+        "p1_proposals": 4,
+        "new_proposals": 4,
+        "trial_id": "7ffdeab55407af24c1ea0eaa",
+        "source_windows_sec": [
+          [
+            5599.36,
+            5630.136
+          ]
+        ],
+        "event_ids": [
+          "atom_fill_0112_Ball_possession_5615435",
+          "atom_fill_0113_Defensive_action_5622136",
+          "event_000559"
+        ],
+        "status": "ACCEPTED_PREVIEW",
+        "source_feedback": [],
+        "source_advisory": [],
+        "p3_stop_reason": "PLANNER_KEEP",
+        "local_trims": 0,
+        "accepted_source_windows_sec": [
+          [
+            5599.36,
+            5630.136
+          ]
+        ],
+        "local_decisions": [
+          {
+            "action": "KEEP",
+            "rationale": "The working cut caption for seg_story_first_7ffdeab55407af24c1ea0eaa_01 shows a wide shot of midfield passing with the scoreboard OSA 2 - CEL 1 at 66:58 in the 'before' phase, and the corner kick leading to the equalizer with the scoreboard updating to OSA 2 - CEL 2 at 68:04 in the 'after' phase. The 'insert' phase between 19.698 and 50.474 is MISSING, so the clip's internal continuity is not fully verified. However, the visible observations provide clear setup and context for the equalizer without claiming unseen action. The clip functions as a bridge between the opening goal and the equalizer, and no concrete pacing or clarity improvement justifies a trim."
+          }
+        ]
+      },
+      {
+        "round": 3,
+        "parent_mp4_sha256": "87dd00c5e4908ac2410bc12b85b43d7031c474ef9db766f8fd1503c17388df80",
+        "p1_proposals": 5,
+        "new_proposals": 5,
+        "trial_id": "942add53ba3893580a1cf17d",
+        "source_windows_sec": [
+          [
+            5246.38,
+            5265.34
+          ],
+          [
+            5493.22,
+            5513.11
+          ]
+        ],
+        "event_ids": [
+          "event_000538",
+          "event_000539",
+          "event_000552",
+          "event_000553"
+        ],
+        "status": "ACCEPTED_PREVIEW",
+        "source_feedback": [],
+        "source_advisory": [],
+        "p3_stop_reason": "PLANNER_KEEP",
+        "local_trims": 0,
+        "accepted_source_windows_sec": [
+          [
+            5246.38,
+            5265.34
+          ],
+          [
+            5493.22,
+            5513.11
+          ]
+        ],
+        "local_decisions": [
+          {
+            "action": "KEEP",
+            "rationale": "The first bridge segment (seg_story_first_942add53ba3893580a1cf17d_01) provides a clear visual transition from the opening goal to the equalizer build-up. The working cut caption shows a wide view of the pitch with the scoreboard reading OSA 2 - CEL 1 at 61:12, followed by a foul and yellow card incident. This establishes the score state and the passage of time between the two goals, functioning as setup and context for the equalizer. The visible observations support its inclusion without claiming any unseen action. No concrete pacing or clarity improvement justifies a trim."
+          }
+        ]
+      }
+    ],
+    "comparison": [
+      {
+        "outer_rounds": 0,
+        "status": "V3_R",
+        "accepted_changes": 0,
+        "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/story_first_outer/v0_edl.json",
+        "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/01_initial_story/story_clean.mp4",
+        "mp4_sha256": "b66d17baf9aefafb49cd4eeaeac10265e95aefab6624905835f11690614e6efe",
+        "duration_sec": 6.247
+      },
+      {
+        "outer_rounds": 1,
+        "status": "ACCEPTED_PREVIEW",
+        "accepted_changes": 1,
+        "local_trims": 0,
+        "p3_stop_reason": "PLANNER_KEEP",
+        "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/story_first_outer/v1_edl.json",
+        "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/02_round_01/candidate_render/story_clean.mp4",
+        "mp4_sha256": "acc1e575b973369f1d83519ebf1a9777e053ca8804c3261cc8edb6b2b8731319",
+        "duration_sec": 32.067
+      },
+      {
+        "outer_rounds": 2,
+        "status": "ACCEPTED_PREVIEW",
+        "accepted_changes": 2,
+        "changed_from_previous_round": true,
+        "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/story_first_outer/v2_edl.json",
+        "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/story_first_outer/round_02/trial_render/story_clean.mp4",
+        "mp4_sha256": "87dd00c5e4908ac2410bc12b85b43d7031c474ef9db766f8fd1503c17388df80",
+        "duration_sec": 62.857
+      },
+      {
+        "outer_rounds": 3,
+        "status": "ACCEPTED_PREVIEW",
+        "accepted_changes": 3,
+        "changed_from_previous_round": true,
+        "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/story_first_outer/v3_edl.json",
+        "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/story_first_outer/round_03/trial_render/story_clean.mp4",
+        "mp4_sha256": "9851cb43f07c198ccd5ac5d2d3fcc046571864ef9e7eecf9a61aecd75f11edb7",
+        "duration_sec": 101.774
+      }
+    ],
+    "selected_preview": {
+      "outer_rounds": 3,
+      "status": "ACCEPTED_PREVIEW",
+      "accepted_changes": 3,
+      "changed_from_previous_round": true,
+      "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/story_first_outer/v3_edl.json",
+      "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/story_first_outer/round_03/trial_render/story_clean.mp4",
+      "mp4_sha256": "9851cb43f07c198ccd5ac5d2d3fcc046571864ef9e7eecf9a61aecd75f11edb7",
+      "duration_sec": 101.774
+    }
+  },
+  "story_first_p3": {
+    "schema": "story_first_p3_caption_revision_v1",
+    "release_authorized": false,
+    "promote_best": false,
+    "preview_only": true,
+    "baseline_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/01_initial_story/story_clean.mp4",
+    "baseline_mp4_sha256": "b66d17baf9aefafb49cd4eeaeac10265e95aefab6624905835f11690614e6efe",
+    "selected_preview_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/02_round_01/candidate_render/story_clean.mp4",
+    "rounds": [
+      {
+        "round": 1,
+        "working_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/02_round_01/candidate_render/story_clean.mp4",
+        "rejected_actions": [],
+        "action": "KEEP",
+        "rationale": "The first bridge segment (seg_story_first_b47e4b6a45d1a02720cf0385_01) provides a clear visual transition from the opening goal to the equalizer build-up. The working cut caption shows a sideline bench scene with the scoreboard reading OSA 2 - CEL 1 at 66:43, which establishes the score state and the passage of time between the two goals. This functions as setup and context for the equalizer, and the visible observation supports its inclusion without claiming any unseen action. No concrete pacing or clarity improvement justifies a trim."
+      }
+    ],
+    "http_calls": 2,
+    "edit_count_comparison": [
+      {
+        "completed_edits": 0,
+        "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/02_round_01/candidate_render/story_clean.mp4",
+        "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/02_round_01/story_first_p3/initial_trial_edl.json",
+        "duration_sec": 32.067
+      }
+    ],
+    "stop_reason": "PLANNER_KEEP",
+    "preview_accepted": true,
+    "max_local_trims": 3,
+    "api_usage": {
+      "http_attempts": 5,
+      "max_calls": 24,
+      "max_cost_usd": 0.1,
+      "est_cost_usd_real": 0.01098,
+      "by_role": {
+        "revision_planner": {
+          "http_attempts": 1,
+          "tokens": 7567,
+          "est_cost_usd": 0.001334,
+          "output_budget_exceeded": false
+        },
+        "story_first_generator": {
+          "http_attempts": 1,
+          "tokens": 27420,
+          "est_cost_usd": 0.004588,
+          "output_budget_exceeded": false
+        },
+        "story_first_p3_caption": {
+          "http_attempts": 1,
+          "tokens": 8742,
+          "est_cost_usd": 0.001658,
+          "output_budget_exceeded": false
+        },
+        "story_first_p3_planner": {
+          "http_attempts": 1,
+          "tokens": 6421,
+          "est_cost_usd": 0.001131,
+          "output_budget_exceeded": false
+        },
+        "vision": {
+          "http_attempts": 1,
+          "tokens": 14535,
+          "est_cost_usd": 0.002268,
+          "output_budget_exceeded": false
+        }
+      },
+      "cost_is_estimate_not_invoice_cap": true,
+      "max_retries": 0,
+      "request_preflight": {
+        "planner": {
+          "model": "DeepSeek-V4-Pro-0813",
+          "thinking_in_body": {
+            "type": "disabled"
+          },
+          "max_tokens_in_body": 1200,
+          "max_completion_tokens_in_body": null,
+          "enable_thinking_in_body": null,
+          "thinking_budget_in_body": null,
+          "request_audit": {
+            "role": "planner",
+            "model": "DeepSeek-V4-Pro-0813",
+            "request_profile": "default",
+            "token_param_configured": "max_tokens",
+            "token_param_sent": "max_tokens",
+            "token_limit_sent": 1200,
+            "temperature_sent": 0.0,
+            "stream_sent": false,
+            "thinking_params_sent": false,
+            "thinking_object_disabled_sent": true,
+            "enable_thinking_sent": null,
+            "thinking_budget_sent": null,
+            "sends_both_token_params": false,
+            "sends_both_thinking_formats": false,
+            "message_count": 1,
+            "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+            "paratera_thinking_object_documented": false
+          },
+          "thinking_object_disabled_cfg": true,
+          "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+        },
+        "vision": {
+          "model": "Qwen3.7-Plus",
+          "thinking_in_body": {
+            "type": "disabled"
+          },
+          "max_tokens_in_body": 1200,
+          "max_completion_tokens_in_body": null,
+          "enable_thinking_in_body": null,
+          "thinking_budget_in_body": null,
+          "request_audit": {
+            "role": "vision",
+            "model": "Qwen3.7-Plus",
+            "request_profile": "video_rsi",
+            "token_param_configured": "max_tokens",
+            "token_param_sent": "max_tokens",
+            "token_limit_sent": 1200,
+            "temperature_sent": 0.0,
+            "stream_sent": false,
+            "thinking_params_sent": false,
+            "thinking_object_disabled_sent": true,
+            "enable_thinking_sent": null,
+            "thinking_budget_sent": null,
+            "sends_both_token_params": false,
+            "sends_both_thinking_formats": false,
+            "message_count": 1,
+            "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+            "paratera_thinking_object_documented": false
+          },
+          "thinking_object_disabled_cfg": true,
+          "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+        }
+      },
+      "env_thinking_overrides": {
+        "before": {
+          "STORY_API_MAX_CALLS": "24",
+          "STORY_API_MAX_COST_USD": "0.10",
+          "STORY_API_MAX_COMPLETION_TOKENS": "512",
+          "STORY_VLM_MAX_COMPLETION_TOKENS": null,
+          "STORY_VLM_REQUEST_PROFILE": null,
+          "STORY_VLM_SEND_THINKING": null,
+          "STORY_VLM_ENABLE_THINKING": null,
+          "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+          "STORY_VLM_TOKEN_PARAM": null,
+          "STORY_API_TOKEN_PARAM": "max_tokens"
+        },
+        "after": {
+          "STORY_API_MAX_CALLS": "24",
+          "STORY_API_MAX_COST_USD": "0.1",
+          "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+          "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+          "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+          "STORY_VLM_SEND_THINKING": null,
+          "STORY_VLM_ENABLE_THINKING": null,
+          "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+          "STORY_VLM_TOKEN_PARAM": "max_tokens",
+          "STORY_API_TOKEN_PARAM": "max_tokens",
+          "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+          "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+          "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+        },
+        "disable_thinking": true
+      }
+    },
+    "selected_preview_mp4_sha256": "acc1e575b973369f1d83519ebf1a9777e053ca8804c3261cc8edb6b2b8731319",
+    "completed_edits": 0
+  },
+  "last_revision_cases": {
+    "schema": "v3a_revision_case_bundle_v1",
+    "match_tag": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+    "n_cases": 2,
+    "cases": [
+      {
+        "schema": "v3a_revision_case_v1",
+        "match_tag": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+        "issue_id": "story_first:b47e4b6a45d1a02720cf0385",
+        "revision_intent_id": "story_first_b47e4b6a45d1a02720cf0385_02",
+        "original_story_problem": {
+          "observation": null,
+          "missing_information": null,
+          "causal_explanation": null,
+          "story_role": null,
+          "diagnosis_status": null,
+          "story_defect_confirmed": null,
+          "confidence": null,
+          "evidence_sufficiency": null
+        },
+        "video_observation_evidence": null,
+        "defect_cause_hypothesis": null,
+        "target_action": "search_add",
+        "candidate_footage": {
+          "source_pts": {
+            "start": 5647.418,
+            "end": 5657.158
+          },
+          "event_ids": [
+            "atom_fill_0114_Corner_kick_5655418"
+          ],
+          "why_solves_problem": null,
+          "apply": {
+            "intent": "story_first_b47e4b6a45d1a02720cf0385_02",
+            "action": "search_add",
+            "status": "applied_evidence_bound",
+            "segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_02",
+            "media_in": 5647.418,
+            "media_out": 5657.158,
+            "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+            "first_live_status": "NOT_VERIFIED",
+            "authorization": {
+              "allow": true,
+              "denies": [],
+              "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+              "method": "bound_source_window"
+            },
+            "observation_ref": "search:story_first_b47e4b6a45d1a02720cf0385_02",
+            "insert_after_segment_id": "seg:1"
+          }
+        },
+        "story_first_trial_id": "b47e4b6a45d1a02720cf0385",
+        "source_event_observations": [
+          {
+            "event_id": "atom_fill_0114_Corner_kick_5655418",
+            "status": "SUPPORTED",
+            "reason": "Frame f6 captures the moment of a corner kick being taken from the corner arc into the penalty area, matching the event type and timing.",
+            "frame_ids": [
+              "f6"
+            ]
+          }
+        ],
+        "before_after_video_windows": null,
+        "expected_improvement": "H4 is the most compact proposal with the clearest potential narrative link to the equalizer: a free kick at 5585.63s and a corner kick at 5655.418s immediately precede the equalizer goal at 5657.621s. If video shows these belong to the same attacking sequence, this could provide a concrete causal/emotional bridge across the source-time jump. The selection is limited to two events and one hypothesized relation, minimizing observation cost while directly testing whether the gap hides meaningful build-up to the equalizer.",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "actual_observation": null,
+        "verifier_judgment": {
+          "quality_judgment": null,
+          "original_issue_resolved": null,
+          "introduced_new_defect": null,
+          "evidence_refs": null,
+          "confidence": null,
+          "note": "Verifier must check whether the original diagnosed problem was solved, not only which cut looks nicer. BETTER ≠ ACCEPT ≠ IMPROVED."
+        },
+        "pts_safety": {
+          "schema": "v3a_edl_source_pts_monotonic_v1",
+          "ok": true,
+          "n_media_rows": 4,
+          "breaks": [],
+          "gate": "safety",
+          "note": "Monotonic source PTS is a safety constraint, not a quality score."
+        },
+        "final_decision": "REJECT",
+        "failure_reasons": [
+          "verifier_or_pipeline_rejected"
+        ],
+        "formal_final_is_baseline": true,
+        "bindings": {
+          "issue_id": "story_first:b47e4b6a45d1a02720cf0385",
+          "evidence": [
+            {
+              "kind": "story_first_source_review",
+              "ref": "story_first_b47e4b6a45d1a02720cf0385_02"
+            }
+          ],
+          "edit": "search_add",
+          "expected_effect": "H4 is the most compact proposal with the clearest potential narrative link to the equalizer: a free kick at 5585.63s and a corner kick at 5655.418s immediately precede the equalizer goal at 5657.621s. If video shows these belong to the same attacking sequence, this could provide a concrete causal/emotional bridge across the source-time jump. The selection is limited to two events and one hypothesized relation, minimizing observation cost while directly testing whether the gap hides meaningful build-up to the equalizer."
+        },
+        "duration_pad_forbidden_as_quality_proxy": true
+      },
+      {
+        "schema": "v3a_revision_case_v1",
+        "match_tag": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+        "issue_id": "story_first:b47e4b6a45d1a02720cf0385",
+        "revision_intent_id": "story_first_b47e4b6a45d1a02720cf0385_01",
+        "original_story_problem": {
+          "observation": null,
+          "missing_information": null,
+          "causal_explanation": null,
+          "story_role": null,
+          "diagnosis_status": null,
+          "story_defect_confirmed": null,
+          "confidence": null,
+          "evidence_sufficiency": null
+        },
+        "video_observation_evidence": null,
+        "defect_cause_hypothesis": null,
+        "target_action": "search_add",
+        "candidate_footage": {
+          "source_pts": {
+            "start": 5577.63,
+            "end": 5593.63
+          },
+          "event_ids": [
+            "event_000555"
+          ],
+          "why_solves_problem": null,
+          "apply": {
+            "intent": "story_first_b47e4b6a45d1a02720cf0385_01",
+            "action": "search_add",
+            "status": "applied_evidence_bound",
+            "segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_01",
+            "media_in": 5577.63,
+            "media_out": 5593.63,
+            "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+            "first_live_status": "NOT_VERIFIED",
+            "authorization": {
+              "allow": true,
+              "denies": [],
+              "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+              "method": "bound_source_window"
+            },
+            "observation_ref": "search:story_first_b47e4b6a45d1a02720cf0385_01",
+            "insert_after_segment_id": "seg:1"
+          }
+        },
+        "story_first_trial_id": "b47e4b6a45d1a02720cf0385",
+        "source_event_observations": [
+          {
+            "event_id": "event_000555",
+            "status": "SUPPORTED",
+            "reason": "Frame f2 shows a player in red (Team 1) kicking the ball from a stationary position in the midfield circle, consistent with a free kick execution at the annotated timestamp.",
+            "frame_ids": [
+              "f2"
+            ]
+          }
+        ],
+        "before_after_video_windows": null,
+        "expected_improvement": "H4 is the most compact proposal with the clearest potential narrative link to the equalizer: a free kick at 5585.63s and a corner kick at 5655.418s immediately precede the equalizer goal at 5657.621s. If video shows these belong to the same attacking sequence, this could provide a concrete causal/emotional bridge across the source-time jump. The selection is limited to two events and one hypothesized relation, minimizing observation cost while directly testing whether the gap hides meaningful build-up to the equalizer.",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "actual_observation": null,
+        "verifier_judgment": {
+          "quality_judgment": null,
+          "original_issue_resolved": null,
+          "introduced_new_defect": null,
+          "evidence_refs": null,
+          "confidence": null,
+          "note": "Verifier must check whether the original diagnosed problem was solved, not only which cut looks nicer. BETTER ≠ ACCEPT ≠ IMPROVED."
+        },
+        "pts_safety": {
+          "schema": "v3a_edl_source_pts_monotonic_v1",
+          "ok": true,
+          "n_media_rows": 4,
+          "breaks": [],
+          "gate": "safety",
+          "note": "Monotonic source PTS is a safety constraint, not a quality score."
+        },
+        "final_decision": "REJECT",
+        "failure_reasons": [
+          "verifier_or_pipeline_rejected"
+        ],
+        "formal_final_is_baseline": true,
+        "bindings": {
+          "issue_id": "story_first:b47e4b6a45d1a02720cf0385",
+          "evidence": [
+            {
+              "kind": "story_first_source_review",
+              "ref": "story_first_b47e4b6a45d1a02720cf0385_01"
+            }
+          ],
+          "edit": "search_add",
+          "expected_effect": "H4 is the most compact proposal with the clearest potential narrative link to the equalizer: a free kick at 5585.63s and a corner kick at 5655.418s immediately precede the equalizer goal at 5657.621s. If video shows these belong to the same attacking sequence, this could provide a concrete causal/emotional bridge across the source-time jump. The selection is limited to two events and one hypothesized relation, minimizing observation cost while directly testing whether the gap hides meaningful build-up to the equalizer."
+        },
+        "duration_pad_forbidden_as_quality_proxy": true
+      }
+    ]
+  },
+  "last_verifier": {
+    "candidate_accepted": false,
+    "sent_frame_ids": [],
+    "hard_vetoes": [],
+    "goal_protection": {
+      "baseline_goals": {
+        "seg:1": [
+          3132.27,
+          3135.968
+        ],
+        "seg:2": [
+          5657.158,
+          5659.621
+        ]
+      },
+      "candidate_goals": {
+        "seg:1": [
+          3132.27,
+          3135.968
+        ],
+        "seg:2": [
+          5657.158,
+          5659.621
+        ]
+      },
+      "intact": true
+    },
+    "warnings": [
+      "vision_backed_explicitly_false",
+      "refuse_accept_without_semantic_verification",
+      "refuse_accept_without_dual_video_frames"
+    ],
+    "phase8_verdict": {
+      "schema": "v3a_phase8_verdict_v1",
+      "safety": "UNKNOWN",
+      "hard_safety": {
+        "safety": "UNKNOWN",
+        "reasons": [
+          "first_live_per_window_proof_incomplete"
+        ],
+        "accept_candidate_ignored": true,
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_ledger": {
+          "schema": "v3a_first_live_window_ledger_v1",
+          "source_sha": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa",
+          "windows": [
+            {
+              "key": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa|5577.630:5593.630",
+              "source_sha": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa",
+              "source_pts_start": 5577.63,
+              "source_pts_end": 5593.63,
+              "status": "NOT_VERIFIED",
+              "binding_status": "BINDING_INVALID",
+              "first_live_status": "NOT_VERIFIED",
+              "method": "unverified_new_window",
+              "segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_01",
+              "claimed_status": "NOT_VERIFIED",
+              "candidate_class": "unbound_or_invalid",
+              "validation": {
+                "ok": false,
+                "binding_valid": false,
+                "first_live_verified": false,
+                "replay_confirmed": false,
+                "reason": "missing_evidence_record",
+                "manifest_digest": null,
+                "frame_sha256": null,
+                "method": "frame_binding_only"
+              },
+              "validated_evidence": null,
+              "broadcast_timeline_review": null,
+              "origin": "apply_report"
+            },
+            {
+              "key": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa|5647.418:5657.158",
+              "source_sha": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa",
+              "source_pts_start": 5647.418,
+              "source_pts_end": 5657.158,
+              "status": "NOT_VERIFIED",
+              "binding_status": "BINDING_INVALID",
+              "first_live_status": "NOT_VERIFIED",
+              "method": "unverified_new_window",
+              "segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_02",
+              "claimed_status": "NOT_VERIFIED",
+              "candidate_class": "unbound_or_invalid",
+              "validation": {
+                "ok": false,
+                "binding_valid": false,
+                "first_live_verified": false,
+                "replay_confirmed": false,
+                "reason": "missing_evidence_record",
+                "manifest_digest": null,
+                "frame_sha256": null,
+                "method": "frame_binding_only"
+              },
+              "validated_evidence": null,
+              "broadcast_timeline_review": null,
+              "origin": "apply_report"
+            }
+          ],
+          "n_windows": 2,
+          "all_windows_verified": false,
+          "any_window_unverified": true,
+          "any_replay_confirmed": false,
+          "any_frame_bound_pending_timeline": false,
+          "aggregate_status": "NOT_VERIFIED",
+          "note": "FRAME_BOUND_VALID ≠ FIRST_LIVE_VERIFIED. Hard-safety PASS needs independent broadcast-timeline review on every new window; binding-only stays UNKNOWN; REPLAY_CONFIRMED ⇒ FAIL."
+        },
+        "candidate_class": "unbound_or_invalid",
+        "note": "FRAME_BOUND_VALID ≠ FIRST_LIVE_VERIFIED. Hard-safety PASS needs independent broadcast-timeline review on every new window; otherwise UNKNOWN."
+      },
+      "quality": "UNCERTAIN",
+      "evidence": "INSUFFICIENT",
+      "issue_effect": "UNOBSERVED",
+      "global_regression": "UNKNOWN",
+      "focus_issue_id": null,
+      "evidence_refs": [],
+      "observed_changes": null,
+      "unresolved_questions": [],
+      "suggested_next_evidence": null,
+      "failure_class": "TECHNICAL_FAILURE",
+      "compared_parent_version_id": null,
+      "verdict_provenance": "OFFLINE_RULE",
+      "source_kind": "OFFLINE_RULE",
+      "accept_candidate_raw": false,
+      "accept_not_synthesized_from_promising": true,
+      "safety_independent_of_accept_candidate": true,
+      "note": "Hard safety is independent of narrative accept_candidate. FIXTURE/OFFLINE_RULE never establish real IMPROVED; REAL_VLM requires recorded successful provider call + frame bindings.",
+      "candidate_accepted": false,
+      "preview_only": true,
+      "best_comparison_status": "COMPARED_PARENT_IS_BEST",
+      "compared_against_best": true
+    },
+    "compared_parent_version_id": "v0",
+    "version_id": "v1"
+  },
+  "last_diagnosis_issues": [
+    {
+      "issue_id": "large_source_jump_seg:1_to_seg:2",
+      "story_time_range": [
+        3.198,
+        4.198
+      ],
+      "segment_ids": [
+        "seg:1",
+        "seg:2"
+      ],
+      "observation": "Adjacent cuts jump 2521.2s in source PTS (3135.968 → 5657.158) while contiguous on story timeline.",
+      "narrative_problem": "Source-time compression alone is not a story defect. Only propose an insert if video shows specific omitted causal, emotional, or game-state information necessary to understand the next beat.",
+      "severity": "info",
+      "suggested_fix": "verify_story_state_before_and_after;keep_if_coherent",
+      "evidence_sufficiency": "needs_video_verify",
+      "category": "transition",
+      "temporal_discontinuity_only": true,
+      "source_gap_sec": 2521.19,
+      "required_missing_information_evidence": "specific_unexplained_story_state_change_observed_in_both_adjacent_cuts",
+      "story_role": "transition_break",
+      "observed_evidence": "Adjacent cuts jump 2521.2s in source PTS (3135.968 → 5657.158) while contiguous on story timeline.",
+      "missing_information": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+      "causal_explanation": "Source-time compression alone is not a story defect. Only propose an insert if video shows specific omitted causal, emotional, or game-state information necessary to understand the next beat.",
+      "confidence": 0.35,
+      "confirmation_basis": [],
+      "model_confidence_alone_insufficient": true,
+      "frame_cited_alone_insufficient": true,
+      "diagnosis_status": "HYPOTHESIS_NEEDS_VIDEO",
+      "story_defect_confirmed": false,
+      "note": "Structural anomaly is a hypothesis only; not a confirmed story-quality defect."
+    }
+  ],
+  "edl_changed_any": true,
+  "phase8_delivery_version_id": "v0",
+  "first_live_visual": {
+    "authority": "final_delivery_edl",
+    "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/99_final/final_goal_evidence_manifest.json",
+    "status_counts": {
+      "FIRST_LIVE_VERIFIED": 0,
+      "POSSIBLE_FIRST_LIVE": 0,
+      "REPLAY_DETECTED": 0,
+      "UNRESOLVED": 2
+    },
+    "n_goal_anchors": 2,
+    "any_first_live_verified": false,
+    "any_replay_on_retained": false,
+    "n_inherited": 0,
+    "n_reverified": 2,
+    "goals": [
+      {
+        "segment_id": "seg:1",
+        "role": "opponent_opening_goal_action",
+        "first_live_status": "UNRESOLVED",
+        "source_media_in": 3132.27,
+        "source_media_out": 3135.968,
+        "evidence_binding": "reverified_after_window_or_subject_change",
+        "inherited": false
+      },
+      {
+        "segment_id": "seg:2",
+        "role": "equalizer_goal_action",
+        "first_live_status": "UNRESOLVED",
+        "source_media_in": 5657.158,
+        "source_media_out": 5659.621,
+        "evidence_binding": "reverified_after_window_or_subject_change",
+        "inherited": false
+      }
+    ],
+    "candidate_separate": {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/99_final/candidate_goal_evidence_manifest.json",
+      "status_counts": {
+        "FIRST_LIVE_VERIFIED": 0,
+        "POSSIBLE_FIRST_LIVE": 0,
+        "REPLAY_DETECTED": 0,
+        "UNRESOLVED": 2
+      },
+      "n_goal_anchors": 2
+    },
+    "v3r_historical_ref": null
+  },
+  "goal_lineage": {
+    "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/99_final/goal_lineage_report.json",
+    "n_final_goal_segments": 2,
+    "n_strict_complete": 0,
+    "n_inferred": 0,
+    "n_unresolved": 2,
+    "n_structurally_traced_to_mp4": 0,
+    "duplicate_segment_ids": [],
+    "prior_source_trust": {
+      "prior_provided": false,
+      "prior_has_trusted_sha": false,
+      "stamped_current_sha_onto_prior": false
+    },
+    "candidate_delivery_binding": {
+      "schema": "v3a_candidate_delivery_video_binding_v1",
+      "same_source_video_sha256": true,
+      "delivery_sha256": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa",
+      "candidate_sha256": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa",
+      "shared_goal_segments": [
+        "seg:1",
+        "seg:2"
+      ],
+      "window_changed_segments": [],
+      "candidate_only_goal_segments": [],
+      "delivery_only_goal_segments": [],
+      "note": "Candidate and delivery manifests must not share verification conclusions across changed windows; both must bind to the same source video SHA."
+    }
+  },
+  "delivery": {
+    "release_authorized": false,
+    "delivery_label": "HUMAN_REVIEW_REQUIRED",
+    "delivery_status": "HUMAN_REVIEW_REQUIRED",
+    "blocked_reasons": [],
+    "human_review": {
+      "required": true,
+      "label": "HUMAN_REVIEW_REQUIRED",
+      "safe_playable_preview": true,
+      "human_assisted_preview_only": false,
+      "story_first_preview_only": true,
+      "cut_boundaries_human_verified": null,
+      "automatic_first_live_verified": null,
+      "auto_release_forbidden": true,
+      "dir": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/99_final/human_review_candidate",
+      "v3r_baseline_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/99_final/human_review_candidate/v3r_baseline.mp4",
+      "v3a_candidate_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/99_final/human_review_candidate/v3a_candidate.mp4",
+      "bundle": {
+        "round": 1,
+        "round_dir": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/02_round_01",
+        "baseline_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/01_initial_story/story_clean.mp4",
+        "baseline_edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/02_round_01/parent_working_edl.json",
+        "parent_version_id": "v0",
+        "candidate_version_id": "v1",
+        "initial_baseline_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/01_initial_story/story_clean.mp4",
+        "initial_baseline_edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/01_initial_story/candidate_edl.json",
+        "candidate_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/02_round_01/candidate_render/story_clean.mp4",
+        "candidate_edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/02_round_01/candidate_edl.json",
+        "edl_diff": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/02_round_01/edl_diff.json",
+        "evidence_search": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/02_round_01/evidence_search.json",
+        "revision_plan": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/02_round_01/revision_plan.json",
+        "verifier_report": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/02_round_01/verifier_report.json",
+        "story_diagnosis": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/02_round_01/story_diagnosis.json",
+        "goal_anchors_intact": true,
+        "hard_vetoes": [],
+        "semantic_status": "NOT_EVALUATED",
+        "candidate_accepted": false,
+        "human_assisted_preview_only": false,
+        "story_first_preview_only": true,
+        "pts_ok": true,
+        "phase8_verdict": {
+          "schema": "v3a_phase8_verdict_v1",
+          "safety": "UNKNOWN",
+          "hard_safety": {
+            "safety": "UNKNOWN",
+            "reasons": [
+              "first_live_per_window_proof_incomplete"
+            ],
+            "accept_candidate_ignored": true,
+            "first_live_status": "NOT_VERIFIED",
+            "first_live_ledger": {
+              "schema": "v3a_first_live_window_ledger_v1",
+              "source_sha": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa",
+              "windows": [
+                {
+                  "key": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa|5577.630:5593.630",
+                  "source_sha": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa",
+                  "source_pts_start": 5577.63,
+                  "source_pts_end": 5593.63,
+                  "status": "NOT_VERIFIED",
+                  "binding_status": "BINDING_INVALID",
+                  "first_live_status": "NOT_VERIFIED",
+                  "method": "unverified_new_window",
+                  "segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_01",
+                  "claimed_status": "NOT_VERIFIED",
+                  "candidate_class": "unbound_or_invalid",
+                  "validation": {
+                    "ok": false,
+                    "binding_valid": false,
+                    "first_live_verified": false,
+                    "replay_confirmed": false,
+                    "reason": "missing_evidence_record",
+                    "manifest_digest": null,
+                    "frame_sha256": null,
+                    "method": "frame_binding_only"
+                  },
+                  "validated_evidence": null,
+                  "broadcast_timeline_review": null,
+                  "origin": "apply_report"
+                },
+                {
+                  "key": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa|5647.418:5657.158",
+                  "source_sha": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa",
+                  "source_pts_start": 5647.418,
+                  "source_pts_end": 5657.158,
+                  "status": "NOT_VERIFIED",
+                  "binding_status": "BINDING_INVALID",
+                  "first_live_status": "NOT_VERIFIED",
+                  "method": "unverified_new_window",
+                  "segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_02",
+                  "claimed_status": "NOT_VERIFIED",
+                  "candidate_class": "unbound_or_invalid",
+                  "validation": {
+                    "ok": false,
+                    "binding_valid": false,
+                    "first_live_verified": false,
+                    "replay_confirmed": false,
+                    "reason": "missing_evidence_record",
+                    "manifest_digest": null,
+                    "frame_sha256": null,
+                    "method": "frame_binding_only"
+                  },
+                  "validated_evidence": null,
+                  "broadcast_timeline_review": null,
+                  "origin": "apply_report"
+                }
+              ],
+              "n_windows": 2,
+              "all_windows_verified": false,
+              "any_window_unverified": true,
+              "any_replay_confirmed": false,
+              "any_frame_bound_pending_timeline": false,
+              "aggregate_status": "NOT_VERIFIED",
+              "note": "FRAME_BOUND_VALID ≠ FIRST_LIVE_VERIFIED. Hard-safety PASS needs independent broadcast-timeline review on every new window; binding-only stays UNKNOWN; REPLAY_CONFIRMED ⇒ FAIL."
+            },
+            "candidate_class": "unbound_or_invalid",
+            "note": "FRAME_BOUND_VALID ≠ FIRST_LIVE_VERIFIED. Hard-safety PASS needs independent broadcast-timeline review on every new window; otherwise UNKNOWN."
+          },
+          "quality": "UNCERTAIN",
+          "evidence": "INSUFFICIENT",
+          "issue_effect": "UNOBSERVED",
+          "global_regression": "UNKNOWN",
+          "focus_issue_id": null,
+          "evidence_refs": [],
+          "observed_changes": null,
+          "unresolved_questions": [],
+          "suggested_next_evidence": null,
+          "failure_class": "TECHNICAL_FAILURE",
+          "compared_parent_version_id": null,
+          "verdict_provenance": "OFFLINE_RULE",
+          "source_kind": "OFFLINE_RULE",
+          "accept_candidate_raw": false,
+          "accept_not_synthesized_from_promising": true,
+          "safety_independent_of_accept_candidate": true,
+          "note": "Hard safety is independent of narrative accept_candidate. FIXTURE/OFFLINE_RULE never establish real IMPROVED; REAL_VLM requires recorded successful provider call + frame bindings.",
+          "candidate_accepted": false,
+          "preview_only": true,
+          "best_comparison_status": "COMPARED_PARENT_IS_BEST",
+          "compared_against_best": true
+        },
+        "phase8_transition": {
+          "schema": "v3a_phase8_transition_v1",
+          "next_action": "STOP_NO_ACTION",
+          "working_ref": "v0",
+          "best_ref": "v0",
+          "reason_codes": [
+            "story_first_p3_caption_revision_finished"
+          ],
+          "promote": false,
+          "stop_reason": "PLANNER_KEEP",
+          "continue_allowed": false,
+          "current_round_outcome": "REPLAN_FROM_BEST",
+          "record_confirmed_negative": false,
+          "candidate_version_id": "v1",
+          "parent_version_id": "v0",
+          "safety": "UNKNOWN",
+          "quality": "UNCERTAIN",
+          "evidence": "INSUFFICIENT",
+          "accept_candidate_ignored": true,
+          "compared_against_best": true,
+          "note": "candidate_accepted boolean does not drive this policy; formal release remains stricter than exploration. Budget does not discard the just-finished round outcome."
+        },
+        "revision_status": {
+          "schema": "v3a_revision_status_v1",
+          "APPLIED": true,
+          "VERIFIED": false,
+          "IMPROVED": false,
+          "safety_ok": true,
+          "edl_changed": true,
+          "candidate_rendered": true,
+          "candidate_accepted": false,
+          "vision_backed": false,
+          "semantic_passed": false,
+          "quality_delta": "NOT_EVALUATED",
+          "BETTER_not_auto_IMPROVED": true,
+          "note": "APPLIED=EDL mutated under safety; VERIFIED=accepted with vision; IMPROVED=verified+accepted+vision+semantic+safety+quality_delta. One model BETTER never auto-upgrades to IMPROVED. PTS/first-live/goal gates cannot be overridden by BETTER."
+        },
+        "modified_source_pts": [
+          {
+            "segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_02",
+            "media_in": 5647.418,
+            "media_out": 5657.158,
+            "action": "search_add"
+          },
+          {
+            "segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_01",
+            "media_in": 5577.63,
+            "media_out": 5593.63,
+            "action": "search_add"
+          }
+        ]
+      },
+      "note": "Candidate is for human story judgment only. For B1 the proposed clip boundaries and replay-free content still require direct human viewing; no formal release. Uncertainty must not be auto-labeled success or failure."
+    },
+    "final_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/99_final/story_final.mp4",
+    "final_edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/99_final/final_edl.json",
+    "decision": "REVISE",
+    "release_gate": {
+      "release_authorized": false,
+      "reasons": [
+        "edl_unchanged",
+        "candidate_not_rendered",
+        "candidate_not_accepted",
+        "semantic_verification_not_passed",
+        "decision_not_revise",
+        "fixture_or_offline_source_not_releasable"
+      ],
+      "final_mp4_duration_sec": 6.247,
+      "edl_hard_ok": true,
+      "blocking_issue_ids": [],
+      "note": "workflow_completed/final_mp4_exists/semantic_verification_passed alone never authorize formal release.",
+      "delivery_version_id": "v0",
+      "delivery_snapshot": {
+        "version_id": "v0",
+        "parent_version_id": null,
+        "safety": "UNKNOWN",
+        "quality": "BASELINE_UNVERIFIED",
+        "verdict_provenance": "OFFLINE_RULE",
+        "semantic_verification_passed": false,
+        "candidate_rendered": true,
+        "compared_against_best": null,
+        "mp4_path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/01_initial_story/story_clean.mp4",
+        "edl_path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/01_initial_story/candidate_edl.json"
+      },
+      "delivery_source": "OFFLINE_RULE",
+      "last_round_ignored_for_release": true,
+      "last_verifier_version_id": "v1",
+      "note_phase8": "Release authorization is version-specific from delivery snapshot; a later rejected/uncertain round does not revoke or grant release of selected best.",
+      "delivery_digest_check": {
+        "source_sha256_expected": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa",
+        "edl_sha256_expected": "ccd7e8935a346898d8259ef694fa86a774176326aab9be28d1f173acf41c8f49",
+        "mp4_sha256_expected": "b66d17baf9aefafb49cd4eeaeac10265e95aefab6624905835f11690614e6efe",
+        "edl_sha256_now": "ccd7e8935a346898d8259ef694fa86a774176326aab9be28d1f173acf41c8f49",
+        "mp4_sha256_now": "b66d17baf9aefafb49cd4eeaeac10265e95aefab6624905835f11690614e6efe",
+        "ok": true,
+        "reasons": []
+      }
+    },
+    "metrics": {
+      "revise_proposed": 1,
+      "edl_changed_rounds": 1,
+      "candidate_rendered": 1,
+      "candidate_accepted": 0,
+      "search_success_rounds": 1,
+      "invalid_candidate": 0,
+      "goal_damage_flags": 0,
+      "false_or_unverified_improve_claims": 0
+    },
+    "timeline_mp4_alignment": {
+      "aligned": true,
+      "mp4_duration_sec": 6.247,
+      "story_duration_sec": 6.161,
+      "media_duration_sec": 6.161,
+      "placeholder_duration_sec": 0.0,
+      "delta_sec": 0.086,
+      "root_cause_hint": "media_only"
+    },
+    "first_live_visual": {
+      "authority": "final_delivery_edl",
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/99_final/final_goal_evidence_manifest.json",
+      "status_counts": {
+        "FIRST_LIVE_VERIFIED": 0,
+        "POSSIBLE_FIRST_LIVE": 0,
+        "REPLAY_DETECTED": 0,
+        "UNRESOLVED": 2
+      },
+      "n_goal_anchors": 2,
+      "any_first_live_verified": false,
+      "any_replay_on_retained": false,
+      "n_inherited": 0,
+      "n_reverified": 2,
+      "goals": [
+        {
+          "segment_id": "seg:1",
+          "role": "opponent_opening_goal_action",
+          "first_live_status": "UNRESOLVED",
+          "source_media_in": 3132.27,
+          "source_media_out": 3135.968,
+          "evidence_binding": "reverified_after_window_or_subject_change",
+          "inherited": false
+        },
+        {
+          "segment_id": "seg:2",
+          "role": "equalizer_goal_action",
+          "first_live_status": "UNRESOLVED",
+          "source_media_in": 5657.158,
+          "source_media_out": 5659.621,
+          "evidence_binding": "reverified_after_window_or_subject_change",
+          "inherited": false
+        }
+      ],
+      "candidate_separate": {
+        "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/99_final/candidate_goal_evidence_manifest.json",
+        "status_counts": {
+          "FIRST_LIVE_VERIFIED": 0,
+          "POSSIBLE_FIRST_LIVE": 0,
+          "REPLAY_DETECTED": 0,
+          "UNRESOLVED": 2
+        },
+        "n_goal_anchors": 2
+      },
+      "v3r_historical_ref": null
+    },
+    "final_goal_evidence_manifest": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/99_final/final_goal_evidence_manifest.json",
+    "goal_lineage_report": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/99_final/goal_lineage_report.json",
+    "goal_lineage": {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/99_final/goal_lineage_report.json",
+      "n_final_goal_segments": 2,
+      "n_strict_complete": 0,
+      "n_inferred": 0,
+      "n_unresolved": 2,
+      "n_structurally_traced_to_mp4": 0,
+      "duplicate_segment_ids": [],
+      "prior_source_trust": {
+        "prior_provided": false,
+        "prior_has_trusted_sha": false,
+        "stamped_current_sha_onto_prior": false
+      },
+      "candidate_delivery_binding": {
+        "schema": "v3a_candidate_delivery_video_binding_v1",
+        "same_source_video_sha256": true,
+        "delivery_sha256": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa",
+        "candidate_sha256": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa",
+        "shared_goal_segments": [
+          "seg:1",
+          "seg:2"
+        ],
+        "window_changed_segments": [],
+        "candidate_only_goal_segments": [],
+        "delivery_only_goal_segments": [],
+        "note": "Candidate and delivery manifests must not share verification conclusions across changed windows; both must bind to the same source video SHA."
+      }
+    },
+    "note": "Formal delivery requires release_authorized=true under full conjunction gates. workflow_completed / final_mp4_exists / semantic_verification_passed alone never authorize. HUMAN_REVIEW_REQUIRED means a safe candidate preview exists for human judgment. RELEASE_READY requires FIRST_LIVE_VERIFIED on every final-delivery EDL goal (final_goal_evidence_manifest), not V3-R historical first-live stats."
+  },
+  "metrics": {
+    "revise_proposed": 1,
+    "edl_changed_rounds": 1,
+    "candidate_rendered": 1,
+    "candidate_accepted": 0,
+    "search_success_rounds": 1,
+    "invalid_candidate": 0,
+    "goal_damage_flags": 0,
+    "false_or_unverified_improve_claims": 0
+  },
+  "baseline": {
+    "initial_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/01_initial_story/story_clean.mp4",
+    "records": {
+      "initial": {
+        "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/initial_render/story_clean.mp4",
+        "exists": true,
+        "size_bytes": 2663363,
+        "sha256": "b66d17baf9aefafb49cd4eeaeac10265e95aefab6624905835f11690614e6efe"
+      },
+      "final": {
+        "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/initial_render/story_clean.mp4",
+        "exists": true,
+        "size_bytes": 2663363,
+        "sha256": "b66d17baf9aefafb49cd4eeaeac10265e95aefab6624905835f11690614e6efe"
+      },
+      "smoke": {
+        "path": "/__none__",
+        "exists": false,
+        "sha256": null
+      }
+    }
+  },
+  "elapsed_sec": 557.699,
+  "ok": true
+}

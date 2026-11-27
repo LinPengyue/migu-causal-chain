@@ -1,0 +1,252 @@
+{
+  "schema": "v3a_agent_inferred_narrative_graph_v1",
+  "data_role": "AGENT_INFERRED",
+  "edl_sha256": "ccd7e8935a346898d8259ef694fa86a774176326aab9be28d1f173acf41c8f49",
+  "source_sha256": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa",
+  "story_plan_sha256": "a2e8739395f682aea6bc86c5f65870dc5ca21435ece77df087f17471f74b7e14",
+  "story_goal_hint": "落后追平",
+  "nodes": [
+    {
+      "node_id": "edl:seg:1",
+      "segment_id": "seg:1",
+      "role_hint": "opponent_opening_goal_action",
+      "narrative_slot_hint": "opening",
+      "story_time_range": [
+        0.0,
+        3.698
+      ],
+      "source_window": [
+        3132.27,
+        3135.968
+      ],
+      "event_ids": [
+        "atom_fill_0071_Shot_3132270",
+        "atom_fill_0072_Goal_3133968"
+      ],
+      "short_chain_ids": [
+        "pred_0030",
+        "pred_0031",
+        "pred_0032"
+      ],
+      "typed_reference_provenance": [
+        {
+          "ref_type": "atom_event",
+          "ref_id": "atom_fill_0071_Shot_3132270",
+          "raw_source_ref": "atom_fill_0071_Shot_3132270",
+          "extraction": "explicit_edl_or_plan_event_id",
+          "validated_against_event_inventory": false
+        },
+        {
+          "ref_type": "atom_event",
+          "ref_id": "atom_fill_0072_Goal_3133968",
+          "raw_source_ref": "atom_fill_0072_Goal_3133968",
+          "extraction": "explicit_edl_or_plan_event_id",
+          "validated_against_event_inventory": false
+        },
+        {
+          "ref_type": "predicted_short_chain",
+          "ref_id": "pred_0030",
+          "raw_source_ref": "pred_0030",
+          "extraction": "explicit_edl_or_plan_short_chain_id",
+          "validated_against_short_chain_inventory": false
+        },
+        {
+          "ref_type": "predicted_short_chain",
+          "ref_id": "pred_0031",
+          "raw_source_ref": "pred_0031",
+          "extraction": "explicit_edl_or_plan_short_chain_id",
+          "validated_against_short_chain_inventory": false
+        },
+        {
+          "ref_type": "predicted_short_chain",
+          "ref_id": "pred_0032",
+          "raw_source_ref": "pred_0032",
+          "extraction": "explicit_edl_or_plan_short_chain_id",
+          "validated_against_short_chain_inventory": false
+        }
+      ],
+      "unclassified_source_refs": [],
+      "source_binding": "EDL_WINDOW_NOT_LIVE_VERIFIED",
+      "semantic_status": "UNOBSERVED_ROLE_HYPOTHESIS",
+      "protected_goal_action_hint": true
+    },
+    {
+      "node_id": "edl:seg:2",
+      "segment_id": "seg:2",
+      "role_hint": "equalizer_goal_action",
+      "narrative_slot_hint": "turn",
+      "story_time_range": [
+        3.698,
+        6.161
+      ],
+      "source_window": [
+        5657.158,
+        5659.621
+      ],
+      "event_ids": [
+        "atom_fill_0115_Shot_5657158",
+        "atom_fill_0116_Goal_5657621"
+      ],
+      "short_chain_ids": [
+        "pred_0053",
+        "pred_0054"
+      ],
+      "typed_reference_provenance": [
+        {
+          "ref_type": "atom_event",
+          "ref_id": "atom_fill_0115_Shot_5657158",
+          "raw_source_ref": "atom_fill_0115_Shot_5657158",
+          "extraction": "explicit_edl_or_plan_event_id",
+          "validated_against_event_inventory": false
+        },
+        {
+          "ref_type": "atom_event",
+          "ref_id": "atom_fill_0116_Goal_5657621",
+          "raw_source_ref": "atom_fill_0116_Goal_5657621",
+          "extraction": "explicit_edl_or_plan_event_id",
+          "validated_against_event_inventory": false
+        },
+        {
+          "ref_type": "predicted_short_chain",
+          "ref_id": "pred_0053",
+          "raw_source_ref": "pred_0053",
+          "extraction": "explicit_edl_or_plan_short_chain_id",
+          "validated_against_short_chain_inventory": false
+        },
+        {
+          "ref_type": "predicted_short_chain",
+          "ref_id": "pred_0054",
+          "raw_source_ref": "pred_0054",
+          "extraction": "explicit_edl_or_plan_short_chain_id",
+          "validated_against_short_chain_inventory": false
+        }
+      ],
+      "unclassified_source_refs": [],
+      "source_binding": "EDL_WINDOW_NOT_LIVE_VERIFIED",
+      "semantic_status": "UNOBSERVED_ROLE_HYPOTHESIS",
+      "protected_goal_action_hint": true
+    }
+  ],
+  "edges": [
+    {
+      "edge_id": "adj:ad0c1deba694a1f1",
+      "from_node": "edl:seg:1",
+      "to_node": "edl:seg:2",
+      "relation": "editorial_adjacency",
+      "relation_status": "EDL_ORDER_ONLY",
+      "narrative_transition_hypothesis": true,
+      "narrative_evidence_status": "NOT_REVIEWED",
+      "semantic_evidence": [],
+      "is_match_causal_claim": false
+    }
+  ],
+  "evidence_links": [
+    {
+      "from_node": "event:atom_fill_0071_Shot_3132270",
+      "to_node": "edl:seg:1",
+      "relation": "referenced_as_story_material",
+      "relation_status": "INPUT_REFERENCE_ONLY",
+      "raw_source_ref": "atom_fill_0071_Shot_3132270",
+      "extraction": "explicit_edl_or_plan_event_id",
+      "validated_against_source_inventory": false,
+      "is_match_causal_claim": false
+    },
+    {
+      "from_node": "event:atom_fill_0072_Goal_3133968",
+      "to_node": "edl:seg:1",
+      "relation": "referenced_as_story_material",
+      "relation_status": "INPUT_REFERENCE_ONLY",
+      "raw_source_ref": "atom_fill_0072_Goal_3133968",
+      "extraction": "explicit_edl_or_plan_event_id",
+      "validated_against_source_inventory": false,
+      "is_match_causal_claim": false
+    },
+    {
+      "from_node": "short_chain:pred_0030",
+      "to_node": "edl:seg:1",
+      "relation": "referenced_as_story_material",
+      "relation_status": "INPUT_REFERENCE_ONLY",
+      "raw_source_ref": "pred_0030",
+      "extraction": "explicit_edl_or_plan_short_chain_id",
+      "validated_against_source_inventory": false,
+      "is_match_causal_claim": false
+    },
+    {
+      "from_node": "short_chain:pred_0031",
+      "to_node": "edl:seg:1",
+      "relation": "referenced_as_story_material",
+      "relation_status": "INPUT_REFERENCE_ONLY",
+      "raw_source_ref": "pred_0031",
+      "extraction": "explicit_edl_or_plan_short_chain_id",
+      "validated_against_source_inventory": false,
+      "is_match_causal_claim": false
+    },
+    {
+      "from_node": "short_chain:pred_0032",
+      "to_node": "edl:seg:1",
+      "relation": "referenced_as_story_material",
+      "relation_status": "INPUT_REFERENCE_ONLY",
+      "raw_source_ref": "pred_0032",
+      "extraction": "explicit_edl_or_plan_short_chain_id",
+      "validated_against_source_inventory": false,
+      "is_match_causal_claim": false
+    },
+    {
+      "from_node": "event:atom_fill_0115_Shot_5657158",
+      "to_node": "edl:seg:2",
+      "relation": "referenced_as_story_material",
+      "relation_status": "INPUT_REFERENCE_ONLY",
+      "raw_source_ref": "atom_fill_0115_Shot_5657158",
+      "extraction": "explicit_edl_or_plan_event_id",
+      "validated_against_source_inventory": false,
+      "is_match_causal_claim": false
+    },
+    {
+      "from_node": "event:atom_fill_0116_Goal_5657621",
+      "to_node": "edl:seg:2",
+      "relation": "referenced_as_story_material",
+      "relation_status": "INPUT_REFERENCE_ONLY",
+      "raw_source_ref": "atom_fill_0116_Goal_5657621",
+      "extraction": "explicit_edl_or_plan_event_id",
+      "validated_against_source_inventory": false,
+      "is_match_causal_claim": false
+    },
+    {
+      "from_node": "short_chain:pred_0053",
+      "to_node": "edl:seg:2",
+      "relation": "referenced_as_story_material",
+      "relation_status": "INPUT_REFERENCE_ONLY",
+      "raw_source_ref": "pred_0053",
+      "extraction": "explicit_edl_or_plan_short_chain_id",
+      "validated_against_source_inventory": false,
+      "is_match_causal_claim": false
+    },
+    {
+      "from_node": "short_chain:pred_0054",
+      "to_node": "edl:seg:2",
+      "relation": "referenced_as_story_material",
+      "relation_status": "INPUT_REFERENCE_ONLY",
+      "raw_source_ref": "pred_0054",
+      "extraction": "explicit_edl_or_plan_short_chain_id",
+      "validated_against_source_inventory": false,
+      "is_match_causal_claim": false
+    }
+  ],
+  "summary": {
+    "node_count": 2,
+    "edge_count": 1,
+    "event_or_short_chain_reference_links": 9,
+    "event_reference_links": 4,
+    "short_chain_prediction_reference_links": 5,
+    "unclassified_reference_count": 0,
+    "unreviewed_narrative_transitions": 1,
+    "model_reviewed_transitions": 0
+  },
+  "limitations": [
+    "EDL adjacency/role annotations are not verified match causality or narrative quality.",
+    "Embedded causal:pred_*:atom_fill_* references yield unverified predicted-chain and atom pointers, NOT confirmed 18-class causal labels.",
+    "No Benchmark gold chain, annotated test EDL or human review is an Agent input.",
+    "This graph alone never confirms a story defect or authorizes an edit."
+  ],
+  "prior_graph_reused": false
+}

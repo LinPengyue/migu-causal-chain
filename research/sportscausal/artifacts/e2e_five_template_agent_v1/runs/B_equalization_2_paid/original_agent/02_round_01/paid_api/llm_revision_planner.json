@@ -1,0 +1,96 @@
+{
+  "raw_excerpt": "{\n  \"decision\": \"UNRESOLVED\",\n  \"rationale\": \"The only diagnosed issue is a source-time jump between seg:1 and seg:2, which is explicitly flagged as temporal_discontinuity_only with severity info and story_defect_confirmed=false. The VLM critic summary is empty and video_critic_observations are UNAVAILABLE, so there is no cited observed fact confirming a story defect. No search candidate has FIRST_LIVE_VERIFIED or narrative_fit_status=REVIEW_SUPPORTED; all are NOT_VERIFIED/NEEDS_VIDEO_REVIEW. Constraints prohibit search_add without a review-supported triplet and prohibit inserting for source-time gap alone. Both segments are protected goal segments. Therefore no executable edit is justified.\",\n  \"revision_intents\": [],\n  \"story_first_trial\": {\n    \"selections\": [\n      {\n        \"proposal_id\": \"interval_01:H4\",\n        \"event_ids\": [\n          \"event_000555\",\n          \"atom_fill_0114_Corner_kick_5655418\"\n        ],\n        \"relation_ids\": [\n          \"r1\"\n        ]\n      }\n    ],\n    \"rationale\": \"H4 is the most compact proposal with the clearest potential narrative link to the equalizer: a free kick at 5585.63s and a corner kick at 5655.418s immediately precede the equalizer goal at 5657.621s. If video shows these belong to the same attacking sequence, this could provide a concrete causal/emotional bridge across the source-time jump. The selection is limited to two events and one hypothesized relation, minimizing observation cost while directly testing whether the gap hides meaningful build-up to the equalizer.\",\n    \"revised_relations\": [\n      {\n        \"source_event_id\": \"event_000555\",\n        \"target_event_id\": \"atom_fill_0114_Corner_kick_5655418\",\n        \"relation_type\": \"narrative_association\",\n        \"claim\": \"任意球到角球或属同一压迫段，未证实\"\n      }\n    ]\n  }\n}",
+  "parsed": {
+    "decision": "UNRESOLVED",
+    "rationale": "The only diagnosed issue is a source-time jump between seg:1 and seg:2, which is explicitly flagged as temporal_discontinuity_only with severity info and story_defect_confirmed=false. The VLM critic summary is empty and video_critic_observations are UNAVAILABLE, so there is no cited observed fact confirming a story defect. No search candidate has FIRST_LIVE_VERIFIED or narrative_fit_status=REVIEW_SUPPORTED; all are NOT_VERIFIED/NEEDS_VIDEO_REVIEW. Constraints prohibit search_add without a review-supported triplet and prohibit inserting for source-time gap alone. Both segments are protected goal segments. Therefore no executable edit is justified.",
+    "revision_intents": [],
+    "story_first_trial": {
+      "selections": [
+        {
+          "proposal_id": "interval_01:H4",
+          "event_ids": [
+            "event_000555",
+            "atom_fill_0114_Corner_kick_5655418"
+          ],
+          "relation_ids": [
+            "r1"
+          ]
+        }
+      ],
+      "rationale": "H4 is the most compact proposal with the clearest potential narrative link to the equalizer: a free kick at 5585.63s and a corner kick at 5655.418s immediately precede the equalizer goal at 5657.621s. If video shows these belong to the same attacking sequence, this could provide a concrete causal/emotional bridge across the source-time jump. The selection is limited to two events and one hypothesized relation, minimizing observation cost while directly testing whether the gap hides meaningful build-up to the equalizer.",
+      "revised_relations": [
+        {
+          "source_event_id": "event_000555",
+          "target_event_id": "atom_fill_0114_Corner_kick_5655418",
+          "relation_type": "narrative_association",
+          "claim": "任意球到角球或属同一压迫段，未证实"
+        }
+      ]
+    }
+  },
+  "usage": {
+    "prompt_tokens": 7125,
+    "completion_tokens": 442,
+    "total_tokens": 7567,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "call_audit": {
+    "model": "DeepSeek-V4-Pro-0813",
+    "provider_mode": "real",
+    "logical_role": "revision_planner",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "prompt_tokens": 7125,
+    "completion_tokens": 442,
+    "reasoning_tokens": 0,
+    "text_tokens": null,
+    "finish_reason": "stop",
+    "visible_output_chars": 1790,
+    "est_cost_usd": 0.00133395,
+    "http_ok": true,
+    "empty_content": false
+  },
+  "request_audit": {
+    "role": "planner",
+    "model": "DeepSeek-V4-Pro-0813",
+    "request_profile": "default",
+    "token_param_configured": "max_tokens",
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "temperature_sent": 0.1,
+    "stream_sent": false,
+    "thinking_params_sent": false,
+    "thinking_object_disabled_sent": true,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "sends_both_token_params": false,
+    "sends_both_thinking_formats": false,
+    "message_count": 2,
+    "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+    "paratera_thinking_object_documented": false
+  },
+  "response_audit": {
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "visible_output_chars": 1790,
+    "usage_keys_present": [
+      "completion_tokens",
+      "completion_tokens_details",
+      "prompt_tokens",
+      "prompt_tokens_details",
+      "total_tokens"
+    ],
+    "has_completion_tokens_details": true,
+    "reasoning_content_present": false,
+    "completion_tokens_reported": 442,
+    "output_token_limit": 1200,
+    "output_budget_exceeded": false
+  },
+  "finish_reason": "stop"
+}

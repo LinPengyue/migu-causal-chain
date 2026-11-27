@@ -1,0 +1,55 @@
+{
+  "schema": "v3a_goal_lineage_report_v1",
+  "n_final_goal_segments": 1,
+  "n_strict_complete": 0,
+  "n_inferred": 0,
+  "n_unresolved": 1,
+  "n_structurally_traced_to_mp4": 0,
+  "n_lineage_rows": 1,
+  "entered_predicted_causal_alone_insufficient": true,
+  "nearest_pts_alone_insufficient_for_strict": true,
+  "goals": [
+    {
+      "segment_id": "seg:3",
+      "role": "scoring_goal_action",
+      "lineage_class": "UNRESOLVED",
+      "recovery_candidate_id": null,
+      "recovery_link": "no_explicit_recovery_id",
+      "recovery_link_class": null,
+      "score_before": null,
+      "score_after": null,
+      "goal_action_sec": null,
+      "score_confirmation_sec": null,
+      "source_media_in": 2407.334,
+      "source_media_out": 2412.091,
+      "predicted_causal_chain_id": null,
+      "prediction_source": null,
+      "causal_link": "no_explicit_causal_chain",
+      "causal_link_class": null,
+      "causal_event_ids": [
+        "atom_fill_0016_Assist_2407334",
+        "atom_fill_0017_Pass_2407522",
+        "atom_fill_0018_Shot_2409235",
+        "atom_fill_0019_Goal_2410091"
+      ],
+      "story_graph_segment_node": null,
+      "story_graph_event_node": null,
+      "story_in": 11.91,
+      "story_out": 16.667,
+      "in_final_mp4": true,
+      "final_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/99_final/story_final.mp4",
+      "first_live_status": "UNRESOLVED",
+      "evidence_binding": "reverified_after_window_or_subject_change",
+      "strict_complete": false,
+      "gaps": [
+        "no_explicit_recovery_link",
+        "no_explicit_causal_chain",
+        "missing_story_graph_segment",
+        "missing_story_graph_event_node",
+        "first_live_unresolved"
+      ]
+    }
+  ],
+  "duplicate_segment_ids": [],
+  "note": "STRICT_COMPLETE requires explicit Recovery/Causal/Graph/EDL/timeline links. Nearest-PTS recovery matches are INFERRED only and never count as STRICT."
+}

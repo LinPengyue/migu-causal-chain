@@ -1,0 +1,241 @@
+{
+  "trial": {
+    "trial_id": "fc564198b612763049ada617",
+    "proposal_ids": [
+      "interval_01:H4"
+    ],
+    "events": [
+      {
+        "event_id": "event_000270",
+        "source_pts_sec": 1831.07,
+        "event_type": "Defensive_action",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "2队16号在禁区里抢断了一次进攻"
+        }
+      },
+      {
+        "event_id": "event_000271",
+        "source_pts_sec": 1834.28,
+        "event_type": "Pass",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "2队球员踢到1队球员身上，弹出界外，造成界外球·"
+        }
+      },
+      {
+        "event_id": "event_000274",
+        "source_pts_sec": 1874.76,
+        "event_type": "Defensive_action",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "1队2队球员为争夺球权发生身体对抗"
+        }
+      }
+    ],
+    "relations": [],
+    "story_context": [
+      {
+        "proposal_id": "interval_01:H4",
+        "summary": "解围后紧接传球失误，可能形成危险区域的球权转换。",
+        "expected_story_contribution": "",
+        "falsification_conditions": [
+          "若解围与失误间无关联画面则证伪"
+        ]
+      }
+    ],
+    "windows": [
+      {
+        "event_ids": [
+          "event_000270",
+          "event_000271"
+        ],
+        "source_pts_start": 1823.07,
+        "source_pts_end": 1842.28,
+        "insert_after_segment_id": "seg_story_first_a8a7af824acc5aa63d92ab1d_02",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_fc564198b612763049ada617_01",
+        "issue_id": "story_first:fc564198b612763049ada617"
+      },
+      {
+        "event_ids": [
+          "event_000274"
+        ],
+        "source_pts_start": 1866.76,
+        "source_pts_end": 1882.76,
+        "insert_after_segment_id": "seg_story_first_a8a7af824acc5aa63d92ab1d_02",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_fc564198b612763049ada617_02",
+        "issue_id": "story_first:fc564198b612763049ada617"
+      }
+    ],
+    "narrative_purpose": "The accepted cut preserves all template anchors and the existing bridge segments. The prior bridge already covers the phase-switch transition [1927.24, 1952.7], and the earlier bridge covers [1292.92, 1343.974]. Among the fresh P1 candidates, interval_01:H4 is the strongest addition: it sits between seg:1 and seg:2, both team_2 attacking_threat anchors, and provides a non-replay, uncovered sequence of defensive action, pass, and defensive action. This reinforces the team_2 threat phase without duplicating tried footage. interval_01:H2 includes event_000171, which is already tried; interval_01:"
+  },
+  "review": {
+    "status": "READY_FOR_TRIAL",
+    "feedback": [],
+    "advisory": [],
+    "annotation_supported_event_ids": [
+      "event_000270",
+      "event_000271",
+      "event_000274"
+    ],
+    "event_observations": [
+      {
+        "event_id": "event_000270",
+        "status": "SUPPORTED",
+        "reason": "Frame f2 shows a red-shirted defender (Team 2) executing a sliding tackle/clearance on a white-shirted attacker inside the penalty area, matching the annotation.",
+        "frame_ids": [
+          "f2"
+        ]
+      },
+      {
+        "event_id": "event_000271",
+        "status": "SUPPORTED",
+        "reason": "Frame f3 shows the ball deflecting off a player and traveling towards the sideline near the corner flag, consistent with a deflection resulting in a throw-in.",
+        "frame_ids": [
+          "f3"
+        ]
+      },
+      {
+        "event_id": "event_000274",
+        "status": "SUPPORTED",
+        "reason": "Frame f6 captures a clear physical challenge where a red-shirted player and a white-shirted player are contesting the ball near the touchline.",
+        "frame_ids": [
+          "f6"
+        ]
+      }
+    ],
+    "candidates": [
+      {
+        "event_ids": [
+          "event_000270",
+          "event_000271"
+        ],
+        "source_pts_start": 1823.07,
+        "source_pts_end": 1842.28,
+        "insert_after_segment_id": "seg_story_first_a8a7af824acc5aa63d92ab1d_02",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_fc564198b612763049ada617_01",
+        "issue_id": "story_first:fc564198b612763049ada617",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "fc564198b612763049ada617",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      },
+      {
+        "event_ids": [
+          "event_000274"
+        ],
+        "source_pts_start": 1866.76,
+        "source_pts_end": 1882.76,
+        "insert_after_segment_id": "seg_story_first_a8a7af824acc5aa63d92ab1d_02",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_fc564198b612763049ada617_02",
+        "issue_id": "story_first:fc564198b612763049ada617",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "fc564198b612763049ada617",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      }
+    ],
+    "intents": [
+      {
+        "intent_id": "story_first_fc564198b612763049ada617_02",
+        "action": "search_add",
+        "role": "buildup_bridge_action",
+        "issue_id": "story_first:fc564198b612763049ada617",
+        "story_first_trial_id": "fc564198b612763049ada617",
+        "story_first_preview_only": true,
+        "anchor_id": "search:story_first_fc564198b612763049ada617_02",
+        "new_segment_id": "seg_story_first_fc564198b612763049ada617_02",
+        "insert_after_segment_id": "seg_story_first_a8a7af824acc5aa63d92ab1d_02",
+        "before_segment_id": "seg:2",
+        "bound_source_window": {
+          "start": 1866.76,
+          "end": 1882.76
+        },
+        "event_ids": [
+          "event_000274"
+        ],
+        "narrative_purpose": "The accepted cut preserves all template anchors and the existing bridge segments. The prior bridge already covers the phase-switch transition [1927.24, 1952.7], and the earlier bridge covers [1292.92, 1343.974]. Among the fresh P1 candidates, interval_01:H4 is the strongest addition: it sits between seg:1 and seg:2, both team_2 attacking_threat anchors, and provides a non-replay, uncovered sequence of defensive action, pass, and defensive action. This reinforces the team_2 threat phase without duplicating tried footage. interval_01:H2 includes event_000171, which is already tried; interval_01:",
+        "source_event_observations": [
+          {
+            "event_id": "event_000274",
+            "status": "SUPPORTED",
+            "reason": "Frame f6 captures a clear physical challenge where a red-shirted player and a white-shirted player are contesting the ball near the touchline.",
+            "frame_ids": [
+              "f6"
+            ]
+          }
+        ],
+        "expected_observable_improvement": "The accepted cut preserves all template anchors and the existing bridge segments. The prior bridge already covers the phase-switch transition [1927.24, 1952.7], and the earlier bridge covers [1292.92, 1343.974]. Among the fresh P1 candidates, interval_01:H4 is the strongest addition: it sits between seg:1 and seg:2, both team_2 attacking_threat anchors, and provides a non-replay, uncovered sequence of defensive action, pass, and defensive action. This reinforces the team_2 threat phase without duplicating tried footage. interval_01:H2 includes event_000171, which is already tried; interval_01:",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "evidence_refs": [
+          {
+            "kind": "story_first_source_review",
+            "ref": "story_first_fc564198b612763049ada617_02"
+          }
+        ]
+      },
+      {
+        "intent_id": "story_first_fc564198b612763049ada617_01",
+        "action": "search_add",
+        "role": "buildup_bridge_action",
+        "issue_id": "story_first:fc564198b612763049ada617",
+        "story_first_trial_id": "fc564198b612763049ada617",
+        "story_first_preview_only": true,
+        "anchor_id": "search:story_first_fc564198b612763049ada617_01",
+        "new_segment_id": "seg_story_first_fc564198b612763049ada617_01",
+        "insert_after_segment_id": "seg_story_first_a8a7af824acc5aa63d92ab1d_02",
+        "before_segment_id": "seg:2",
+        "bound_source_window": {
+          "start": 1823.07,
+          "end": 1842.28
+        },
+        "event_ids": [
+          "event_000270",
+          "event_000271"
+        ],
+        "narrative_purpose": "The accepted cut preserves all template anchors and the existing bridge segments. The prior bridge already covers the phase-switch transition [1927.24, 1952.7], and the earlier bridge covers [1292.92, 1343.974]. Among the fresh P1 candidates, interval_01:H4 is the strongest addition: it sits between seg:1 and seg:2, both team_2 attacking_threat anchors, and provides a non-replay, uncovered sequence of defensive action, pass, and defensive action. This reinforces the team_2 threat phase without duplicating tried footage. interval_01:H2 includes event_000171, which is already tried; interval_01:",
+        "source_event_observations": [
+          {
+            "event_id": "event_000270",
+            "status": "SUPPORTED",
+            "reason": "Frame f2 shows a red-shirted defender (Team 2) executing a sliding tackle/clearance on a white-shirted attacker inside the penalty area, matching the annotation.",
+            "frame_ids": [
+              "f2"
+            ]
+          },
+          {
+            "event_id": "event_000271",
+            "status": "SUPPORTED",
+            "reason": "Frame f3 shows the ball deflecting off a player and traveling towards the sideline near the corner flag, consistent with a deflection resulting in a throw-in.",
+            "frame_ids": [
+              "f3"
+            ]
+          }
+        ],
+        "expected_observable_improvement": "The accepted cut preserves all template anchors and the existing bridge segments. The prior bridge already covers the phase-switch transition [1927.24, 1952.7], and the earlier bridge covers [1292.92, 1343.974]. Among the fresh P1 candidates, interval_01:H4 is the strongest addition: it sits between seg:1 and seg:2, both team_2 attacking_threat anchors, and provides a non-replay, uncovered sequence of defensive action, pass, and defensive action. This reinforces the team_2 threat phase without duplicating tried footage. interval_01:H2 includes event_000171, which is already tried; interval_01:",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "evidence_refs": [
+          {
+            "kind": "story_first_source_review",
+            "ref": "story_first_fc564198b612763049ada617_01"
+          }
+        ]
+      }
+    ]
+  }
+}

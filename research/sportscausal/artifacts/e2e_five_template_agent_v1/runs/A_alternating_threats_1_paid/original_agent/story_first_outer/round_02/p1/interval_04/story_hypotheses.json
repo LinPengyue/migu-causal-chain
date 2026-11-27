@@ -1,0 +1,191 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若403至411间无向前推进画面则假设不成立"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "corner_rebound_second_wave",
+      "narrative_summary": "角球与门线事件后，阿联酋连续短传与突破形成二次进攻波。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "突破位置与方向",
+          "question": "突破是否发生在进攻三区？",
+          "target_id": "event:event_000407"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "短传组织或与后续单刀射门相关，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000403",
+          "target_event_id": "event_000411"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000403",
+        "event_000407",
+        "event_000408",
+        "event_000411"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若抢断后球权未保持至射门则假设被削弱"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "tackle_break_then_shot_sequence",
+      "narrative_summary": "阿联酋两次抢断后由短传转为射门，构成防守转攻的连续片段。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "传球方与方向",
+          "question": "短传是否由抢断方发起？",
+          "target_id": "event:event_000410"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "抢断后快速转换或促成射门，属推测",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000405",
+          "target_event_id": "event_000411"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000404",
+        "event_000405",
+        "event_000410",
+        "event_000411"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若界外球后球权迅速丢失则关联不成立"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "throw_in_to_dribble_progression",
+      "narrative_summary": "界外球恢复后阿联酋经突破与传球推进，形成一次射门尝试。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "控球区域变化",
+          "question": "控球是否延续同一进攻方向？",
+          "target_id": "event:event_000409"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "界外球后推进链或延续至射门，未验证",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000406",
+          "target_event_id": "event_000411"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000406",
+        "event_000407",
+        "event_000409",
+        "event_000411"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若控球后无射门画面则过渡假设不成立"
+      ],
+      "hypothesis_id": "H4",
+      "mechanism_key": "possession_chain_before_shot",
+      "narrative_summary": "两次控球事件夹在传球之间，或显示阿联酋在射门前保持球权。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "传球方向与接球点",
+          "question": "传球是否指向进攻方向？",
+          "target_id": "event:event_000408"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "控球状态或过渡为射门机会，属假设",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "state_transition",
+          "source_event_id": "event_000409",
+          "target_event_id": "event_000411"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000408",
+        "event_000409",
+        "event_000410",
+        "event_000411"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若抢断方与射门方相同则假设不成立"
+      ],
+      "hypothesis_id": "H5",
+      "mechanism_key": "late_tackle_after_shot_attempts",
+      "narrative_summary": "射门尝试后出现控球与抢断，或反映阿曼在末段夺回球权。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "控球方队服颜色",
+          "question": "控球方是否与射门方不同？",
+          "target_id": "event:event_000413"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "射门后对方抢断或为反击起点，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000411",
+          "target_event_id": "event_000415"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000411",
+        "event_000413",
+        "event_000414",
+        "event_000415"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

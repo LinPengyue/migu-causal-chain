@@ -1,0 +1,126 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若event_000411前无角球后续控球画面则假设不成立"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "corner_incident_to_shot_sequence",
+      "narrative_summary": "角球与门线事件后，同一阶段出现连续射门尝试，可能构成一次未果的进攻波。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "角球后连续控球推进",
+          "question": "射门前是否源自角球后续进攻？",
+          "target_id": "event:event_000411"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "角球后进攻延续至射门，属推测",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000401",
+          "target_event_id": "event_000411"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000401",
+        "event_000403",
+        "event_000411"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若抢断后无重新组织传球则假设不成立"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "defensive_tackles_interrupting_buildup",
+      "narrative_summary": "多次抢断与界外球交替出现，可能打断进攻节奏，形成攻防拉锯。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "抢断后短传推进",
+          "question": "抢断后是否重新组织进攻？",
+          "target_id": "event:event_000410"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "抢断后重新组织，属推测关联",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000404",
+          "target_event_id": "event_000410"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000404",
+        "event_000405",
+        "event_000406",
+        "event_000410"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若控球事件间无球权转换画面则假设不成立"
+      ],
+      "hypothesis_id": "H4",
+      "mechanism_key": "possession_alternation_between_phases",
+      "narrative_summary": "控球权在短传与控球事件间多次转换，可能体现双方交替掌控节奏。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "球权归属变化",
+          "question": "控球权是否发生转换？",
+          "target_id": "event:event_000414"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "控球权多次转换，转换原因未验证",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "state_transition",
+          "source_event_id": "event_000409",
+          "target_event_id": "event_000414"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000409",
+        "event_000413",
+        "event_000414"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [
+    {
+      "index": 1,
+      "reason": "invalid_observation_probe"
+    },
+    {
+      "index": 4,
+      "reason": "invalid_observation_probe"
+    }
+  ],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

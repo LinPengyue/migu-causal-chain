@@ -1,0 +1,157 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若回传前无任何射门回放铺垫则假设不成立"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "live_restart_after_replay_shot_sequence",
+      "narrative_summary": "回放片段显示连续射门与扑救后，直播画面出现回传与争顶，或为攻势重启的过渡。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "回放结束与回传间隔",
+          "question": "回传是否紧接扑救回放后出现？",
+          "target_id": "event:event_000473"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "扑救回放后直播出现回传，或为攻势重启",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "atom_fill_0044_Save_4733699",
+          "target_event_id": "event_000473"
+        }
+      ],
+      "supporting_event_ids": [
+        "atom_fill_0043_Shot_4730216",
+        "atom_fill_0044_Save_4733699",
+        "event_000473",
+        "event_000474"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若争顶与射门回放间存在明显中断则假设不成立"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "aerial_duel_as_phase_bridge",
+      "narrative_summary": "直播中的争顶成功可能承接此前回放中的射门序列，构成攻势延续的中间环节。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "争顶与回放的时间衔接",
+          "question": "争顶是否发生在射门回放之后？",
+          "target_id": "event:event_000474"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "射门回放后争顶或为攻势延续，但不确定",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "atom_fill_0043_Shot_4730216",
+          "target_event_id": "event_000474"
+        }
+      ],
+      "supporting_event_ids": [
+        "atom_fill_0041_Shot_4726398",
+        "atom_fill_0043_Shot_4730216",
+        "event_000474"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若回传与争顶间无球权变化则假设不成立"
+      ],
+      "hypothesis_id": "H4",
+      "mechanism_key": "backpass_to_aerial_switch",
+      "narrative_summary": "直播中回传后紧接争顶成功，可能标志攻势从地面转向空中。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "回传与争顶的间隔",
+          "question": "争顶是否紧接回传之后？",
+          "target_id": "event:event_000474"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "回传后争顶或标志攻势方式转变，但不确定",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "state_transition",
+          "source_event_id": "event_000473",
+          "target_event_id": "event_000474"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000473",
+        "event_000474"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若回放与直播事件无结构对应则假设不成立"
+      ],
+      "hypothesis_id": "H5",
+      "mechanism_key": "replay_shot_pair_mirrors_live_sequence",
+      "narrative_summary": "回放中两次射门与扑救的配对，可能与直播中回传争顶形成镜像式攻势结构。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "回放与直播事件的结构相似性",
+          "question": "直播争顶是否与回放扑救形成对应？",
+          "target_id": "event:event_000474"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "扑救回放与直播争顶或构成镜像攻势，不确定",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "atom_fill_0042_Save_4726999",
+          "target_event_id": "event_000474"
+        }
+      ],
+      "supporting_event_ids": [
+        "atom_fill_0041_Shot_4726398",
+        "atom_fill_0042_Save_4726999",
+        "event_000473",
+        "event_000474"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [
+    {
+      "index": 2,
+      "reason": "invalid_observation_probe"
+    }
+  ],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

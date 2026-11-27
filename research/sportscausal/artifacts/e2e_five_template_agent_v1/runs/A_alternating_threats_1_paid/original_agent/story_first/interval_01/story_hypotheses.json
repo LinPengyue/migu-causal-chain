@@ -1,0 +1,191 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若两事件间无任何抢断或突破动作则假设不成立"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "turnover_chain_after_interception",
+      "narrative_summary": "阿曼进攻被拦截后，双方在中场反复抢断与传球，形成一段拉锯。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "突破前是否出现抢断",
+          "question": "该突破是否紧接一次抢断后发生？",
+          "target_id": "event:event_000171"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "拦截后中场多次突破尝试或有关联",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000100",
+          "target_event_id": "event_000171"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000100",
+        "event_000104",
+        "event_000121",
+        "event_000171"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若失误后未出现对方拦截或抢断则假设不成立"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "repeated_mistake_turnover_cycle",
+      "narrative_summary": "多次传球失误与拦截交替出现，可能构成双方反复丢失球权的循环。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "失误前是否有拦截",
+          "question": "该失误前是否刚发生一次拦截？",
+          "target_id": "event:event_000198"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "失误与拦截交替或反映球权反复易手",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000110",
+          "target_event_id": "event_000198"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000110",
+        "event_000134",
+        "event_000174",
+        "event_000198"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若其间无其他犯规或身体对抗事件则假设不成立"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "foul_escalation_sequence",
+      "narrative_summary": "危险动作犯规在数分钟内重复出现，可能标志对抗强度上升的叙事节点。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "对抗前犯规次数",
+          "question": "该对抗前是否已有多次犯规记录？",
+          "target_id": "event:event_000274"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "早期犯规与后期身体对抗或属同一升级序列",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000216",
+          "target_event_id": "event_000274"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000216",
+        "event_000243",
+        "event_000244",
+        "event_000274"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若长传后均无接应或推进动作则假设不成立"
+      ],
+      "hypothesis_id": "H4",
+      "mechanism_key": "long_pass_switch_pattern",
+      "narrative_summary": "长传多次出现于不同阶段，可能反映双方反复尝试快速转移进攻方向。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "长传出现频率",
+          "question": "该长传前是否已有多次长传尝试？",
+          "target_id": "event:event_000260"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "长传在不同阶段重复或暗示转移进攻的尝试",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000109",
+          "target_event_id": "event_000260"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000109",
+        "event_000131",
+        "event_000226",
+        "event_000260"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若界外球之间无其他中断事件则假设不成立"
+      ],
+      "hypothesis_id": "H5",
+      "mechanism_key": "throw_in_restart_rhythm",
+      "narrative_summary": "界外球在多个时间点出现，可能构成比赛节奏反复中断与重启的叙事线索。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "界外球出现次数",
+          "question": "该界外球前是否已有多次界外球？",
+          "target_id": "event:event_000258"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "界外球反复出现或标志比赛节奏的多次中断",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000135",
+          "target_event_id": "event_000258"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000135",
+        "event_000220",
+        "event_000228",
+        "event_000258"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

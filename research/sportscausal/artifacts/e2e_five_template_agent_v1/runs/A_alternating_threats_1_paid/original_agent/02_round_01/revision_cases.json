@@ -1,0 +1,120 @@
+{
+  "schema": "v3a_revision_case_bundle_v1",
+  "match_tag": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+  "n_cases": 1,
+  "cases": [
+    {
+      "schema": "v3a_revision_case_v1",
+      "match_tag": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "issue_id": "story_first:4268996b2fb5cc4e177e1ede",
+      "revision_intent_id": "story_first_4268996b2fb5cc4e177e1ede_01",
+      "original_story_problem": {
+        "observation": null,
+        "missing_information": null,
+        "causal_explanation": null,
+        "story_role": null,
+        "diagnosis_status": null,
+        "story_defect_confirmed": null,
+        "confidence": null,
+        "evidence_sufficiency": null
+      },
+      "video_observation_evidence": null,
+      "defect_cause_hypothesis": null,
+      "target_action": "search_add",
+      "candidate_footage": {
+        "source_pts": {
+          "start": 2269.94,
+          "end": 2293.84
+        },
+        "event_ids": [
+          "event_000311",
+          "event_000312",
+          "event_000313"
+        ],
+        "why_solves_problem": null,
+        "apply": {
+          "intent": "story_first_4268996b2fb5cc4e177e1ede_01",
+          "action": "search_add",
+          "status": "applied_evidence_bound",
+          "segment_id": "seg_story_first_4268996b2fb5cc4e177e1ede_01",
+          "media_in": 2269.94,
+          "media_out": 2293.84,
+          "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+          "first_live_status": "NOT_VERIFIED",
+          "authorization": {
+            "allow": true,
+            "denies": [],
+            "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+            "method": "bound_source_window"
+          },
+          "observation_ref": "search:story_first_4268996b2fb5cc4e177e1ede_01",
+          "insert_after_segment_id": "seg:3"
+        }
+      },
+      "story_first_trial_id": "4268996b2fb5cc4e177e1ede",
+      "source_event_observations": [
+        {
+          "event_id": "event_000311",
+          "status": "SUPPORTED",
+          "reason": "Frame f2 shows a player in white (Team 1) striking the ball from a stationary position outside the penalty area, consistent with a free kick execution at the annotated timestamp.",
+          "frame_ids": [
+            "f2"
+          ]
+        },
+        {
+          "event_id": "event_000312",
+          "status": "SUPPORTED",
+          "reason": "Frame f3 captures a player in red (Team 2) jumping and making contact with the ball via header amidst opponents, confirming the aerial duel win.",
+          "frame_ids": [
+            "f3"
+          ]
+        },
+        {
+          "event_id": "event_000313",
+          "status": "SUPPORTED",
+          "reason": "Frame f4 depicts a player in white (Team 1) executing a long-range shot from outside the box, matching the description of an外围 (peripheral/long-range) shot.",
+          "frame_ids": [
+            "f4"
+          ]
+        }
+      ],
+      "before_after_video_windows": null,
+      "expected_improvement": "该提案覆盖 seg:3→seg:4 大跳跃区间内的局部子故事：任意球→空中争顶→射门，事件时间紧凑（2277.94–2285.84s），且 event_000313 与 search_candidate cand_event_000313_2273 重叠，观察结果可直接服务于未来是否插入该候选的决策。选择此单一紧凑试验以最小化观察成本。",
+      "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+      "actual_observation": null,
+      "verifier_judgment": {
+        "quality_judgment": null,
+        "original_issue_resolved": null,
+        "introduced_new_defect": null,
+        "evidence_refs": null,
+        "confidence": null,
+        "note": "Verifier must check whether the original diagnosed problem was solved, not only which cut looks nicer. BETTER ≠ ACCEPT ≠ IMPROVED."
+      },
+      "pts_safety": {
+        "schema": "v3a_edl_source_pts_monotonic_v1",
+        "ok": true,
+        "n_media_rows": 11,
+        "breaks": [],
+        "gate": "safety",
+        "note": "Monotonic source PTS is a safety constraint, not a quality score."
+      },
+      "final_decision": "REJECT",
+      "failure_reasons": [
+        "verifier_or_pipeline_rejected"
+      ],
+      "formal_final_is_baseline": true,
+      "bindings": {
+        "issue_id": "story_first:4268996b2fb5cc4e177e1ede",
+        "evidence": [
+          {
+            "kind": "story_first_source_review",
+            "ref": "story_first_4268996b2fb5cc4e177e1ede_01"
+          }
+        ],
+        "edit": "search_add",
+        "expected_effect": "该提案覆盖 seg:3→seg:4 大跳跃区间内的局部子故事：任意球→空中争顶→射门，事件时间紧凑（2277.94–2285.84s），且 event_000313 与 search_candidate cand_event_000313_2273 重叠，观察结果可直接服务于未来是否插入该候选的决策。选择此单一紧凑试验以最小化观察成本。"
+      },
+      "duration_pad_forbidden_as_quality_proxy": true
+    }
+  ]
+}

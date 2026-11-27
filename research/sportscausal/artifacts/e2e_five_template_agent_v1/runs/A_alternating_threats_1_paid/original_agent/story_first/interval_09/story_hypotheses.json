@@ -1,0 +1,191 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若6843秒前进球前无任何进攻方射门或传球事件则假设不成立"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "live_shot_save_sequence_before_goal",
+      "narrative_summary": "禁区内连续射门被扑出后，进攻方通过传球与争顶最终完成进球。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "传球后短时间出现射门",
+          "question": "这次传球是否直接导致后续射门？",
+          "target_id": "event:atom_fill_0100_Pass_6829010"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "扑救后进攻方持续施压并最终破门，尚待验证",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "atom_fill_0092_Save_6600268",
+          "target_event_id": "atom_fill_0104_Goal_6843088"
+        }
+      ],
+      "supporting_event_ids": [
+        "atom_fill_0091_Shot_6599535",
+        "atom_fill_0092_Save_6600268",
+        "atom_fill_0100_Pass_6829010",
+        "atom_fill_0104_Goal_6843088"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若任意球后无争顶或射门事件则假设不成立"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "foul_free_kick_aerial_shot_chain",
+      "narrative_summary": "犯规获得任意球后，通过争顶与射门形成威胁，构成定位球进攻链条。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "任意球后紧接争顶",
+          "question": "争顶是否来自该任意球？",
+          "target_id": "event:event_000660"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "任意球开出后经争顶形成射门，因果关系待验证",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000659",
+          "target_event_id": "event_000661"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000658",
+        "event_000659",
+        "event_000660",
+        "event_000661"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若两次射门之间无防守方扑救或解围事件则假设不成立"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "repeated_live_shots_saved_sequence",
+      "narrative_summary": "多次射门被扑出，显示进攻方反复制造威胁但未能得分。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "射门后出现扑救或解围",
+          "question": "这次射门是否也被防守方化解？",
+          "target_id": "event:event_000655"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "两次射门均被防守化解，构成重复威胁模式，尚待验证",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "atom_fill_0091_Shot_6599535",
+          "target_event_id": "event_000655"
+        }
+      ],
+      "supporting_event_ids": [
+        "atom_fill_0091_Shot_6599535",
+        "atom_fill_0092_Save_6600268",
+        "event_000655",
+        "event_000656"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若黄牌后无换人或定位球事件则假设不成立"
+      ],
+      "hypothesis_id": "H4",
+      "mechanism_key": "card_then_substitution_then_attack",
+      "narrative_summary": "黄牌后双方换人，随后出现任意球与争顶，可能形成新的攻防节奏。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "换人后出现任意球争顶",
+          "question": "争顶是否发生在换人后的定位球中？",
+          "target_id": "event:event_000674"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "黄牌与换人后出现定位球争顶，关联性待验证",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000676",
+          "target_event_id": "event_000674"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000676",
+        "event_000677",
+        "event_000673",
+        "event_000674"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若突破后无抢断或拦截事件则假设不成立"
+      ],
+      "hypothesis_id": "H5",
+      "mechanism_key": "dribble_tackle_interception_sequence",
+      "narrative_summary": "突破被断后连续出现抢断与拦截，防守方多次化解进攻。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "突破后立即出现抢断",
+          "question": "抢断是否紧接该突破发生？",
+          "target_id": "event:event_000646"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "突破后防守方连续抢断拦截，形成防守回应模式，待验证",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000645",
+          "target_event_id": "event_000654"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000645",
+        "event_000646",
+        "event_000652",
+        "event_000654"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

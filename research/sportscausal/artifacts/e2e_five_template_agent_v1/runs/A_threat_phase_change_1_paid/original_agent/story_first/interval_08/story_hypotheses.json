@@ -1,0 +1,125 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "核查三次突破是否同一进攻方向与同一球员"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "repeated_dribble_break_vs_tackle_duel",
+      "narrative_summary": "多次带球突破与抢断交替出现，形成持续的攻防拉锯。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "突破起点区域是否一致",
+          "question": "该突破是否延续此前突破的同一进攻方向？",
+          "target_id": "event:event_000590"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "突破与抢断交替或反映攻防拉锯，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "state_transition",
+          "source_event_id": "event_000575",
+          "target_event_id": "event_000590"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000575",
+        "event_000584",
+        "event_000590"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "核查换人前后防守动作频率是否显著变化"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "substitution_then_defensive_consolidation",
+      "narrative_summary": "换人之后防守动作密集出现，或反映阵型调整后的防守加强。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "换人后防守站位是否变化",
+          "question": "该抢断是否发生在换人后的同一防守回合？",
+          "target_id": "event:event_000574"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "换人或导致随后防守动作增多，属推测",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000563",
+          "target_event_id": "event_000574"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000563",
+        "event_000569",
+        "event_000574"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "核查两次拦截是否针对同一长传进攻方"
+      ],
+      "hypothesis_id": "H5",
+      "mechanism_key": "long_pass_interception_sequence",
+      "narrative_summary": "多次长传被拦截，或显示一方推进受阻、另一方防守稳固。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "拦截位置是否在长传落点区域",
+          "question": "该拦截是否针对此前长传的同一进攻方？",
+          "target_id": "event:event_000601"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "长传后连续拦截或反映推进受阻，属推测",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000598",
+          "target_event_id": "event_000601"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000598",
+        "event_000600",
+        "event_000601"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [
+    {
+      "index": 0,
+      "reason": "unrecognized_event_id"
+    },
+    {
+      "index": 3,
+      "reason": "causal_relation_reverse_or_missing_pts"
+    }
+  ],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

@@ -1,0 +1,91 @@
+{
+  "schema": "v3a_first_live_chain_audit_v1",
+  "source_video": "/mnt/data4/migu/2022年11月23日 法国vs澳大利亚.mp4",
+  "source_video_sha256": null,
+  "n_goal_anchors": 1,
+  "status_counts": {
+    "FIRST_LIVE_VERIFIED": 0,
+    "POSSIBLE_FIRST_LIVE": 0,
+    "REPLAY_DETECTED": 0,
+    "UNRESOLVED": 1
+  },
+  "any_first_live_verified": false,
+  "any_replay_on_retained": false,
+  "all_resolved_verified": false,
+  "paid_api_calls": 0,
+  "enable_paid_vlm": false,
+  "goals": [
+    {
+      "segment_id": "seg:3",
+      "role": "scoring_goal_action",
+      "event_ids": [
+        "atom_fill_0016_Assist_2407334",
+        "atom_fill_0017_Pass_2407522",
+        "atom_fill_0018_Shot_2409235",
+        "atom_fill_0019_Goal_2410091"
+      ],
+      "media_in": 2407.334,
+      "media_out": 2412.091,
+      "source_pts": {
+        "media_in": 2407.334,
+        "media_out": 2412.091
+      },
+      "observation_window": {
+        "media_in": 2407.334,
+        "media_out": 2412.091
+      },
+      "evidence_window": {
+        "media_in": 2407.334,
+        "media_out": 2412.091
+      },
+      "clip_export": {
+        "ok": true,
+        "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/99_final/goal_evidence/delivery/reaudit/roles/scoring_goal_action/clips/seg:3_2407_continuous_accurate.mp4",
+        "media_in": 2407.334,
+        "media_out": 2412.091,
+        "duration_sec": 4.757,
+        "sha256": "24c7329cf2b0991e673786bca03db9261a2f1dfbd6098b492ef1d0d4fc4122ae",
+        "bytes": 4676894,
+        "continuous_source": true,
+        "stitched": false,
+        "accurate_decode": true,
+        "stream_copy": false,
+        "elapsed_sec": 49.877,
+        "stderr_tail": "",
+        "reason": null
+      },
+      "score_before": null,
+      "score_after": null,
+      "score_confirmation_sec": null,
+      "goal_recovery_candidate_id": null,
+      "goal_action_sec": null,
+      "score_confirm_collision": false,
+      "first_live_status": "UNRESOLVED",
+      "semantic_label": "unresolved",
+      "classification_reason": "insufficient_signals",
+      "candidate_extracted_ok": true,
+      "clip_path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/99_final/goal_evidence/delivery/reaudit/roles/scoring_goal_action/clips/seg:3_2407_continuous_accurate.mp4",
+      "frame_paths": [
+        "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/99_final/goal_evidence/delivery/reaudit/roles/scoring_goal_action/frames/seg:3_2407_f0_2408334.jpg",
+        "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/99_final/goal_evidence/delivery/reaudit/roles/scoring_goal_action/frames/seg:3_2407_f1_2409712.jpg",
+        "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/99_final/goal_evidence/delivery/reaudit/roles/scoring_goal_action/frames/seg:3_2407_f2_2410591.jpg"
+      ],
+      "n_dense_frames": 2,
+      "evidence_gaps": [
+        "observed_shot_unconfirmed",
+        "observed_net_unconfirmed",
+        "first_live_unconfirmed",
+        "attacking_team_unconfirmed"
+      ],
+      "agent_auto_verified": false,
+      "goal_action_verified_ok": false,
+      "visual_verified": false,
+      "source_video_sha256": null,
+      "paid_vlm_used": false,
+      "note": "Zero-cost structural+frame extraction audit; metadata/ffmpeg/score-flip alone never certify FIRST_LIVE_VERIFIED"
+    }
+  ],
+  "render_ready": false,
+  "success_claimed": false,
+  "note": "Extraction and score/event heuristics produce POSSIBLE/REPLAY/UNRESOLVED. FIRST_LIVE_VERIFIED requires verified semantic proof (not enabled in zero-cost)."
+}

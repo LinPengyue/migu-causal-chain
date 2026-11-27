@@ -1,0 +1,3236 @@
+{
+  "schema": "v3a_story_e2e_run_v1",
+  "unified_main_chain": {
+    "id": "v3a_unified_story_self_revise_main_v1",
+    "entry": "run_story_e2e",
+    "does_not_call_run_self_revise": true,
+    "reuses": [
+      "structural_diagnosis",
+      "observe_layers",
+      "apply_semantic_diagnosis_layer",
+      "run_story_evidence_search",
+      "plan_from_diagnosis",
+      "apply_candidate_revision",
+      "check_source_pts_monotonic",
+      "verify_story_revision",
+      "build_revision_cases_for_round",
+      "recover_per_revision_judgments"
+    ],
+    "specialized_lab_entry": "run_self_revise",
+    "phase6": {
+      "semantic_hypothesis_layer": true,
+      "no_auto_add_on_large_source_gap_alone": true,
+      "BETTER_not_auto_IMPROVED": true,
+      "revision_case_closed_loop": true
+    },
+    "phase8": {
+      "failure_aware_iterative_revision": true,
+      "modules": [
+        "story_revision_feedback",
+        "story_loop_policy"
+      ],
+      "accept_candidate_does_not_drive_loop": true,
+      "phase8_paid_multi_round_default": false
+    }
+  },
+  "started_unix": 1795787514.7979362,
+  "out_dir": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent",
+  "inputs": {
+    "match_json": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/data/交付_out/10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语.json",
+    "source_mp4": "/mnt/data4/migu/10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语.mp4",
+    "phase5_dir": null,
+    "skip_vlm": false,
+    "enable_real_api": true,
+    "i_approve_budget": true,
+    "phase8_paid_multi_round": true,
+    "phase10_explore": false,
+    "phase10_explore_fixture": false,
+    "enable_story_first": true,
+    "story_first_outer_rounds": 3,
+    "story_first_artifacts_dir": null,
+    "first_live_evidence_dir": null,
+    "narrative_fit_evidence_dir": null,
+    "goal_repair_evidence_dir": null,
+    "human_assisted_preview_requested": false,
+    "run_fresh_v3r": false,
+    "max_rounds": 3,
+    "max_calls": 24,
+    "max_cost_usd": 0.1
+  },
+  "http_calls": 24,
+  "est_cost_usd": 0.076406,
+  "rounds": [
+    {
+      "round": 1,
+      "diagnosis_issue_count": 2,
+      "semantic_observation_claimed": false,
+      "agent_narrative_graph": {
+        "schema": "v3a_agent_inferred_narrative_graph_v1",
+        "node_count": 9,
+        "unreviewed_transition_count": 0,
+        "model_reviewed_transition_count": 0,
+        "observation_target_count": 0,
+        "benchmark_gold_used": false
+      },
+      "api_usage_after_narrative_fit": {
+        "http_attempts": 0,
+        "max_calls": 24,
+        "max_cost_usd": 0.1,
+        "est_cost_usd_real": 0,
+        "by_role": {
+          "planner": {
+            "http_attempts": 0,
+            "tokens": 0,
+            "est_cost_usd": 0,
+            "output_budget_exceeded": false
+          },
+          "vision": {
+            "http_attempts": 0,
+            "tokens": 0,
+            "est_cost_usd": 0,
+            "output_budget_exceeded": false
+          }
+        },
+        "cost_is_estimate_not_invoice_cap": true,
+        "max_retries": 0,
+        "request_preflight": {
+          "planner": {
+            "model": "DeepSeek-V4-Pro-0813",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "planner",
+              "model": "DeepSeek-V4-Pro-0813",
+              "request_profile": "default",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          },
+          "vision": {
+            "model": "Qwen3.7-Plus",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "vision",
+              "model": "Qwen3.7-Plus",
+              "request_profile": "video_rsi",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          }
+        },
+        "env_thinking_overrides": {
+          "before": {
+            "STORY_API_MAX_CALLS": "24",
+            "STORY_API_MAX_COST_USD": "0.10",
+            "STORY_API_MAX_COMPLETION_TOKENS": "512",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": null,
+            "STORY_VLM_REQUEST_PROFILE": null,
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+            "STORY_VLM_TOKEN_PARAM": null,
+            "STORY_API_TOKEN_PARAM": "max_tokens"
+          },
+          "after": {
+            "STORY_API_MAX_CALLS": "24",
+            "STORY_API_MAX_COST_USD": "0.1",
+            "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+            "STORY_VLM_TOKEN_PARAM": "max_tokens",
+            "STORY_API_TOKEN_PARAM": "max_tokens",
+            "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+          },
+          "disable_thinking": true
+        }
+      },
+      "proactive_turn_context_targets": 0,
+      "native_broadcast_phase_observation": {
+        "enabled": false,
+        "status": "NOT_EXECUTED_NO_APPROVED_REAL_SEMANTIC_SOURCE",
+        "native_video_input": false,
+        "first_live_verified": false,
+        "edl_modified": false,
+        "additional_real_http_calls": 0
+      },
+      "goal_video_review_queue": {
+        "status": "NO_GOAL_GAP_ISSUES",
+        "issue_count": 0,
+        "video_semantic_observation": null,
+        "first_live_verified": false
+      },
+      "search_success": true,
+      "search_verified_count": 10,
+      "api_usage_after_story_first_search": {
+        "http_attempts": 8,
+        "max_calls": 24,
+        "max_cost_usd": 0.1,
+        "est_cost_usd_real": 0.023435,
+        "by_role": {
+          "story_first_generator": {
+            "http_attempts": 8,
+            "tokens": 136573,
+            "est_cost_usd": 0.023435,
+            "output_budget_exceeded": false
+          }
+        },
+        "cost_is_estimate_not_invoice_cap": true,
+        "max_retries": 0,
+        "request_preflight": {
+          "planner": {
+            "model": "DeepSeek-V4-Pro-0813",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "planner",
+              "model": "DeepSeek-V4-Pro-0813",
+              "request_profile": "default",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          },
+          "vision": {
+            "model": "Qwen3.7-Plus",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "vision",
+              "model": "Qwen3.7-Plus",
+              "request_profile": "video_rsi",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          }
+        },
+        "env_thinking_overrides": {
+          "before": {
+            "STORY_API_MAX_CALLS": "24",
+            "STORY_API_MAX_COST_USD": "0.10",
+            "STORY_API_MAX_COMPLETION_TOKENS": "512",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": null,
+            "STORY_VLM_REQUEST_PROFILE": null,
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+            "STORY_VLM_TOKEN_PARAM": null,
+            "STORY_API_TOKEN_PARAM": "max_tokens"
+          },
+          "after": {
+            "STORY_API_MAX_CALLS": "24",
+            "STORY_API_MAX_COST_USD": "0.1",
+            "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+            "STORY_VLM_TOKEN_PARAM": "max_tokens",
+            "STORY_API_TOKEN_PARAM": "max_tokens",
+            "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+          },
+          "disable_thinking": true
+        }
+      },
+      "api_usage_after_rp": {
+        "http_attempts": 9,
+        "max_calls": 24,
+        "max_cost_usd": 0.1,
+        "est_cost_usd_real": 0.026832,
+        "by_role": {
+          "revision_planner": {
+            "http_attempts": 1,
+            "tokens": 21567,
+            "est_cost_usd": 0.003397,
+            "output_budget_exceeded": false
+          },
+          "story_first_generator": {
+            "http_attempts": 8,
+            "tokens": 136573,
+            "est_cost_usd": 0.023435,
+            "output_budget_exceeded": false
+          }
+        },
+        "cost_is_estimate_not_invoice_cap": true,
+        "max_retries": 0,
+        "request_preflight": {
+          "planner": {
+            "model": "DeepSeek-V4-Pro-0813",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "planner",
+              "model": "DeepSeek-V4-Pro-0813",
+              "request_profile": "default",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          },
+          "vision": {
+            "model": "Qwen3.7-Plus",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "vision",
+              "model": "Qwen3.7-Plus",
+              "request_profile": "video_rsi",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          }
+        },
+        "env_thinking_overrides": {
+          "before": {
+            "STORY_API_MAX_CALLS": "24",
+            "STORY_API_MAX_COST_USD": "0.10",
+            "STORY_API_MAX_COMPLETION_TOKENS": "512",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": null,
+            "STORY_VLM_REQUEST_PROFILE": null,
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+            "STORY_VLM_TOKEN_PARAM": null,
+            "STORY_API_TOKEN_PARAM": "max_tokens"
+          },
+          "after": {
+            "STORY_API_MAX_CALLS": "24",
+            "STORY_API_MAX_COST_USD": "0.1",
+            "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+            "STORY_VLM_TOKEN_PARAM": "max_tokens",
+            "STORY_API_TOKEN_PARAM": "max_tokens",
+            "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+          },
+          "disable_thinking": true
+        }
+      },
+      "story_first_replay_replacements": [
+        {
+          "proposal_id": "interval_03:H1",
+          "status": "REPLACED",
+          "removed_event_ids": [],
+          "window_edits": [
+            {
+              "event_ids": [
+                "event_000285",
+                "event_000287"
+              ],
+              "removed_event_ids": [],
+              "original_source_window_sec": [
+                1981.0,
+                2001.18
+              ],
+              "removed_source_windows_sec": [
+                [
+                  2000.13,
+                  2011.73
+                ]
+              ],
+              "retained_source_windows_sec": [
+                [
+                  1981.0,
+                  2000.13
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "api_usage_after_story_first_review": {
+        "http_attempts": 9,
+        "max_calls": 24,
+        "max_cost_usd": 0.1,
+        "est_cost_usd_real": 0.026832,
+        "by_role": {
+          "revision_planner": {
+            "http_attempts": 1,
+            "tokens": 21567,
+            "est_cost_usd": 0.003397,
+            "output_budget_exceeded": false
+          },
+          "story_first_generator": {
+            "http_attempts": 8,
+            "tokens": 136573,
+            "est_cost_usd": 0.023435,
+            "output_budget_exceeded": false
+          }
+        },
+        "cost_is_estimate_not_invoice_cap": true,
+        "max_retries": 0,
+        "request_preflight": {
+          "planner": {
+            "model": "DeepSeek-V4-Pro-0813",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "planner",
+              "model": "DeepSeek-V4-Pro-0813",
+              "request_profile": "default",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          },
+          "vision": {
+            "model": "Qwen3.7-Plus",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "vision",
+              "model": "Qwen3.7-Plus",
+              "request_profile": "video_rsi",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          }
+        },
+        "env_thinking_overrides": {
+          "before": {
+            "STORY_API_MAX_CALLS": "24",
+            "STORY_API_MAX_COST_USD": "0.10",
+            "STORY_API_MAX_COMPLETION_TOKENS": "512",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": null,
+            "STORY_VLM_REQUEST_PROFILE": null,
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+            "STORY_VLM_TOKEN_PARAM": null,
+            "STORY_API_TOKEN_PARAM": "max_tokens"
+          },
+          "after": {
+            "STORY_API_MAX_CALLS": "24",
+            "STORY_API_MAX_COST_USD": "0.1",
+            "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+            "STORY_VLM_TOKEN_PARAM": "max_tokens",
+            "STORY_API_TOKEN_PARAM": "max_tokens",
+            "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+          },
+          "disable_thinking": true
+        }
+      },
+      "decision": "UNRESOLVED",
+      "edl_pts_safety_ok": true,
+      "fullcut_delta_report": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_01/fullcut_delta_report.json",
+      "verdict_provenance": "OFFLINE_RULE",
+      "accepted": false,
+      "retain_baseline": true,
+      "revision_status": {
+        "schema": "v3a_revision_status_v1",
+        "APPLIED": false,
+        "VERIFIED": false,
+        "IMPROVED": false,
+        "safety_ok": true,
+        "edl_changed": false,
+        "candidate_rendered": false,
+        "candidate_accepted": false,
+        "vision_backed": false,
+        "semantic_passed": false,
+        "quality_delta": "NOT_EVALUATED",
+        "BETTER_not_auto_IMPROVED": true,
+        "note": "APPLIED=EDL mutated under safety; VERIFIED=accepted with vision; IMPROVED=verified+accepted+vision+semantic+safety+quality_delta. One model BETTER never auto-upgrades to IMPROVED. PTS/first-live/goal gates cannot be overridden by BETTER."
+      },
+      "revision_case_count": 0,
+      "fullcut_feedback_entries": 0,
+      "deferred_confirmed_alternatives": 0,
+      "story_first_trial_status": "NEEDS_REVISION",
+      "phase8_transition": {
+        "schema": "v3a_phase8_transition_v1",
+        "next_action": "REPLAN_FROM_BEST",
+        "working_ref": "v0",
+        "best_ref": "v0",
+        "reason_codes": [
+          "story_first_source_feedback_can_inform_revision"
+        ],
+        "promote": false,
+        "stop_reason": null,
+        "continue_allowed": true,
+        "current_round_outcome": "STOP_NO_ACTION",
+        "record_confirmed_negative": false,
+        "candidate_version_id": "v1",
+        "parent_version_id": "v0",
+        "safety": "PASS",
+        "quality": "UNCERTAIN",
+        "evidence": "INSUFFICIENT",
+        "accept_candidate_ignored": true,
+        "compared_against_best": true,
+        "note": "candidate_accepted boolean does not drive this policy; formal release remains stricter than exploration. Budget does not discard the just-finished round outcome."
+      },
+      "phase8_verdict": {
+        "schema": "v3a_phase8_verdict_v1",
+        "safety": "PASS",
+        "hard_safety": {
+          "safety": "PASS",
+          "reasons": [],
+          "accept_candidate_ignored": true,
+          "first_live_status": "N_A_NO_NEW_FOOTAGE",
+          "first_live_ledger": {
+            "schema": "v3a_first_live_window_ledger_v1",
+            "source_sha": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+            "windows": [],
+            "n_windows": 0,
+            "all_windows_verified": false,
+            "any_window_unverified": false,
+            "any_replay_confirmed": false,
+            "any_frame_bound_pending_timeline": false,
+            "aggregate_status": "N_A_NO_NEW_WINDOWS",
+            "note": "FRAME_BOUND_VALID ≠ FIRST_LIVE_VERIFIED. Hard-safety PASS needs independent broadcast-timeline review on every new window; binding-only stays UNKNOWN; REPLAY_CONFIRMED ⇒ FAIL."
+          }
+        },
+        "quality": "UNCERTAIN",
+        "evidence": "INSUFFICIENT",
+        "issue_effect": "UNOBSERVED",
+        "global_regression": "UNKNOWN",
+        "focus_issue_id": null,
+        "evidence_refs": [],
+        "observed_changes": null,
+        "unresolved_questions": [],
+        "suggested_next_evidence": null,
+        "failure_class": "TECHNICAL_FAILURE",
+        "compared_parent_version_id": null,
+        "verdict_provenance": "OFFLINE_RULE",
+        "source_kind": "OFFLINE_RULE",
+        "accept_candidate_raw": false,
+        "accept_not_synthesized_from_promising": true,
+        "safety_independent_of_accept_candidate": true,
+        "note": "Hard safety is independent of narrative accept_candidate. FIXTURE/OFFLINE_RULE never establish real IMPROVED; REAL_VLM requires recorded successful provider call + frame bindings.",
+        "best_comparison_status": "COMPARED_PARENT_IS_BEST",
+        "compared_against_best": true
+      },
+      "parent_version_id": "v0",
+      "candidate_version_id": "v1",
+      "working_version_id": "v0",
+      "best_verified_version_id": "v0",
+      "gates_snapshot": {
+        "workflow_completed": false,
+        "story_diagnosis_valid": true,
+        "revision_applied": false,
+        "candidate_rendered": false,
+        "semantic_verification_passed": false,
+        "release_authorized": false,
+        "final_mp4_exists": false
+      },
+      "edl_changed": false
+    },
+    {
+      "round": 2,
+      "diagnosis_issue_count": 2,
+      "semantic_observation_claimed": false,
+      "agent_narrative_graph": {
+        "schema": "v3a_agent_inferred_narrative_graph_v1",
+        "node_count": 9,
+        "unreviewed_transition_count": 0,
+        "model_reviewed_transition_count": 0,
+        "observation_target_count": 0,
+        "benchmark_gold_used": false
+      },
+      "api_usage_after_narrative_fit": {
+        "http_attempts": 9,
+        "max_calls": 24,
+        "max_cost_usd": 0.1,
+        "est_cost_usd_real": 0.026832,
+        "by_role": {
+          "revision_planner": {
+            "http_attempts": 1,
+            "tokens": 21567,
+            "est_cost_usd": 0.003397,
+            "output_budget_exceeded": false
+          },
+          "story_first_generator": {
+            "http_attempts": 8,
+            "tokens": 136573,
+            "est_cost_usd": 0.023435,
+            "output_budget_exceeded": false
+          }
+        },
+        "cost_is_estimate_not_invoice_cap": true,
+        "max_retries": 0,
+        "request_preflight": {
+          "planner": {
+            "model": "DeepSeek-V4-Pro-0813",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "planner",
+              "model": "DeepSeek-V4-Pro-0813",
+              "request_profile": "default",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          },
+          "vision": {
+            "model": "Qwen3.7-Plus",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "vision",
+              "model": "Qwen3.7-Plus",
+              "request_profile": "video_rsi",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          }
+        },
+        "env_thinking_overrides": {
+          "before": {
+            "STORY_API_MAX_CALLS": "24",
+            "STORY_API_MAX_COST_USD": "0.10",
+            "STORY_API_MAX_COMPLETION_TOKENS": "512",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": null,
+            "STORY_VLM_REQUEST_PROFILE": null,
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+            "STORY_VLM_TOKEN_PARAM": null,
+            "STORY_API_TOKEN_PARAM": "max_tokens"
+          },
+          "after": {
+            "STORY_API_MAX_CALLS": "24",
+            "STORY_API_MAX_COST_USD": "0.1",
+            "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+            "STORY_VLM_TOKEN_PARAM": "max_tokens",
+            "STORY_API_TOKEN_PARAM": "max_tokens",
+            "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+          },
+          "disable_thinking": true
+        }
+      },
+      "proactive_turn_context_targets": 0,
+      "native_broadcast_phase_observation": {
+        "enabled": false,
+        "status": "NOT_EXECUTED_NO_APPROVED_REAL_SEMANTIC_SOURCE",
+        "native_video_input": false,
+        "first_live_verified": false,
+        "edl_modified": false,
+        "additional_real_http_calls": 0
+      },
+      "goal_video_review_queue": {
+        "status": "SKIPPED_AFTER_FIRST_ROUND_REUSE_EXISTING_EVIDENCE",
+        "issue_count": 0,
+        "video_semantic_observation": null,
+        "first_live_verified": false
+      },
+      "search_success": true,
+      "search_verified_count": 10,
+      "api_usage_after_rp": {
+        "http_attempts": 10,
+        "max_calls": 24,
+        "max_cost_usd": 0.1,
+        "est_cost_usd_real": 0.029871,
+        "by_role": {
+          "revision_planner": {
+            "http_attempts": 1,
+            "tokens": 21567,
+            "est_cost_usd": 0.003397,
+            "output_budget_exceeded": false
+          },
+          "story_first_generator": {
+            "http_attempts": 8,
+            "tokens": 136573,
+            "est_cost_usd": 0.023435,
+            "output_budget_exceeded": false
+          },
+          "story_first_p35_planner": {
+            "http_attempts": 1,
+            "tokens": 19535,
+            "est_cost_usd": 0.003039,
+            "output_budget_exceeded": false
+          }
+        },
+        "cost_is_estimate_not_invoice_cap": true,
+        "max_retries": 0,
+        "request_preflight": {
+          "planner": {
+            "model": "DeepSeek-V4-Pro-0813",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "planner",
+              "model": "DeepSeek-V4-Pro-0813",
+              "request_profile": "default",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          },
+          "vision": {
+            "model": "Qwen3.7-Plus",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "vision",
+              "model": "Qwen3.7-Plus",
+              "request_profile": "video_rsi",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          }
+        },
+        "env_thinking_overrides": {
+          "before": {
+            "STORY_API_MAX_CALLS": "24",
+            "STORY_API_MAX_COST_USD": "0.10",
+            "STORY_API_MAX_COMPLETION_TOKENS": "512",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": null,
+            "STORY_VLM_REQUEST_PROFILE": null,
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+            "STORY_VLM_TOKEN_PARAM": null,
+            "STORY_API_TOKEN_PARAM": "max_tokens"
+          },
+          "after": {
+            "STORY_API_MAX_CALLS": "24",
+            "STORY_API_MAX_COST_USD": "0.1",
+            "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+            "STORY_VLM_TOKEN_PARAM": "max_tokens",
+            "STORY_API_TOKEN_PARAM": "max_tokens",
+            "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+          },
+          "disable_thinking": true
+        }
+      },
+      "api_usage_after_story_first_review": {
+        "http_attempts": 11,
+        "max_calls": 24,
+        "max_cost_usd": 0.1,
+        "est_cost_usd_real": 0.031801,
+        "by_role": {
+          "revision_planner": {
+            "http_attempts": 1,
+            "tokens": 21567,
+            "est_cost_usd": 0.003397,
+            "output_budget_exceeded": false
+          },
+          "story_first_generator": {
+            "http_attempts": 8,
+            "tokens": 136573,
+            "est_cost_usd": 0.023435,
+            "output_budget_exceeded": false
+          },
+          "story_first_p35_planner": {
+            "http_attempts": 1,
+            "tokens": 19535,
+            "est_cost_usd": 0.003039,
+            "output_budget_exceeded": false
+          },
+          "vision": {
+            "http_attempts": 1,
+            "tokens": 12049,
+            "est_cost_usd": 0.00193,
+            "output_budget_exceeded": false
+          }
+        },
+        "cost_is_estimate_not_invoice_cap": true,
+        "max_retries": 0,
+        "request_preflight": {
+          "planner": {
+            "model": "DeepSeek-V4-Pro-0813",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "planner",
+              "model": "DeepSeek-V4-Pro-0813",
+              "request_profile": "default",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          },
+          "vision": {
+            "model": "Qwen3.7-Plus",
+            "thinking_in_body": {
+              "type": "disabled"
+            },
+            "max_tokens_in_body": 1200,
+            "max_completion_tokens_in_body": null,
+            "enable_thinking_in_body": null,
+            "thinking_budget_in_body": null,
+            "request_audit": {
+              "role": "vision",
+              "model": "Qwen3.7-Plus",
+              "request_profile": "video_rsi",
+              "token_param_configured": "max_tokens",
+              "token_param_sent": "max_tokens",
+              "token_limit_sent": 1200,
+              "temperature_sent": 0.0,
+              "stream_sent": false,
+              "thinking_params_sent": false,
+              "thinking_object_disabled_sent": true,
+              "enable_thinking_sent": null,
+              "thinking_budget_sent": null,
+              "sends_both_token_params": false,
+              "sends_both_thinking_formats": false,
+              "message_count": 1,
+              "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+              "paratera_thinking_object_documented": false
+            },
+            "thinking_object_disabled_cfg": true,
+            "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+          }
+        },
+        "env_thinking_overrides": {
+          "before": {
+            "STORY_API_MAX_CALLS": "24",
+            "STORY_API_MAX_COST_USD": "0.10",
+            "STORY_API_MAX_COMPLETION_TOKENS": "512",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": null,
+            "STORY_VLM_REQUEST_PROFILE": null,
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+            "STORY_VLM_TOKEN_PARAM": null,
+            "STORY_API_TOKEN_PARAM": "max_tokens"
+          },
+          "after": {
+            "STORY_API_MAX_CALLS": "24",
+            "STORY_API_MAX_COST_USD": "0.1",
+            "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+            "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+            "STORY_VLM_SEND_THINKING": null,
+            "STORY_VLM_ENABLE_THINKING": null,
+            "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+            "STORY_VLM_TOKEN_PARAM": "max_tokens",
+            "STORY_API_TOKEN_PARAM": "max_tokens",
+            "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+            "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+          },
+          "disable_thinking": true
+        }
+      },
+      "decision": "REVISE",
+      "edl_pts_safety_ok": true,
+      "story_first_p3": {
+        "schema": "story_first_p3_caption_revision_v1",
+        "release_authorized": false,
+        "promote_best": false,
+        "preview_only": true,
+        "baseline_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/01_initial_story/story_clean.mp4",
+        "baseline_mp4_sha256": "dcedaeee59281392aeebfa7f7179f5ef22736072ecddcb7b6da31350118b3190",
+        "selected_preview_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02/candidate_render/story_clean.mp4",
+        "rounds": [
+          {
+            "round": 1,
+            "working_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02/candidate_render/story_clean.mp4",
+            "rejected_actions": [],
+            "action": "KEEP",
+            "rationale": "The bridge segment seg_story_first_919c8d9c0f04e984b2c0ba12_01 is placed between seg:2 (team_2 attacking threat at 1912.32-1922.55) and seg:3 (team_1 attacking threat at 1955.54-1966.45), directly covering the template's observed_phase_switch transition. The working cut caption shows part_01 (story 16.16-21.16) visually confirms a corner kick by the white team being cleared, and part_02 (story 46.62-57.53) visually confirms a white-team shot saved by the yellow-kit goalkeeper. These observations provide concrete setup and context for the phase switch without claiming an outcome for the MISSING insert phase (story 21.16-46.62). The bridge preserves the baseline mainline order and does not int"
+          }
+        ],
+        "http_calls": 2,
+        "edit_count_comparison": [
+          {
+            "completed_edits": 0,
+            "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02/candidate_render/story_clean.mp4",
+            "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02/story_first_p3/initial_trial_edl.json",
+            "duration_sec": 129.614
+          }
+        ],
+        "stop_reason": "PLANNER_KEEP",
+        "preview_accepted": true,
+        "max_local_trims": 3,
+        "api_usage": {
+          "http_attempts": 13,
+          "max_calls": 24,
+          "max_cost_usd": 0.1,
+          "est_cost_usd_real": 0.039939,
+          "by_role": {
+            "revision_planner": {
+              "http_attempts": 1,
+              "tokens": 21567,
+              "est_cost_usd": 0.003397,
+              "output_budget_exceeded": false
+            },
+            "story_first_generator": {
+              "http_attempts": 8,
+              "tokens": 136573,
+              "est_cost_usd": 0.023435,
+              "output_budget_exceeded": false
+            },
+            "story_first_p35_planner": {
+              "http_attempts": 1,
+              "tokens": 19535,
+              "est_cost_usd": 0.003039,
+              "output_budget_exceeded": false
+            },
+            "story_first_p3_caption": {
+              "http_attempts": 1,
+              "tokens": 30475,
+              "est_cost_usd": 0.004762,
+              "output_budget_exceeded": false
+            },
+            "story_first_p3_planner": {
+              "http_attempts": 1,
+              "tokens": 20814,
+              "est_cost_usd": 0.003376,
+              "output_budget_exceeded": false
+            },
+            "vision": {
+              "http_attempts": 1,
+              "tokens": 12049,
+              "est_cost_usd": 0.00193,
+              "output_budget_exceeded": false
+            }
+          },
+          "cost_is_estimate_not_invoice_cap": true,
+          "max_retries": 0,
+          "request_preflight": {
+            "planner": {
+              "model": "DeepSeek-V4-Pro-0813",
+              "thinking_in_body": {
+                "type": "disabled"
+              },
+              "max_tokens_in_body": 1200,
+              "max_completion_tokens_in_body": null,
+              "enable_thinking_in_body": null,
+              "thinking_budget_in_body": null,
+              "request_audit": {
+                "role": "planner",
+                "model": "DeepSeek-V4-Pro-0813",
+                "request_profile": "default",
+                "token_param_configured": "max_tokens",
+                "token_param_sent": "max_tokens",
+                "token_limit_sent": 1200,
+                "temperature_sent": 0.0,
+                "stream_sent": false,
+                "thinking_params_sent": false,
+                "thinking_object_disabled_sent": true,
+                "enable_thinking_sent": null,
+                "thinking_budget_sent": null,
+                "sends_both_token_params": false,
+                "sends_both_thinking_formats": false,
+                "message_count": 1,
+                "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+                "paratera_thinking_object_documented": false
+              },
+              "thinking_object_disabled_cfg": true,
+              "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+            },
+            "vision": {
+              "model": "Qwen3.7-Plus",
+              "thinking_in_body": {
+                "type": "disabled"
+              },
+              "max_tokens_in_body": 1200,
+              "max_completion_tokens_in_body": null,
+              "enable_thinking_in_body": null,
+              "thinking_budget_in_body": null,
+              "request_audit": {
+                "role": "vision",
+                "model": "Qwen3.7-Plus",
+                "request_profile": "video_rsi",
+                "token_param_configured": "max_tokens",
+                "token_param_sent": "max_tokens",
+                "token_limit_sent": 1200,
+                "temperature_sent": 0.0,
+                "stream_sent": false,
+                "thinking_params_sent": false,
+                "thinking_object_disabled_sent": true,
+                "enable_thinking_sent": null,
+                "thinking_budget_sent": null,
+                "sends_both_token_params": false,
+                "sends_both_thinking_formats": false,
+                "message_count": 1,
+                "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+                "paratera_thinking_object_documented": false
+              },
+              "thinking_object_disabled_cfg": true,
+              "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+            }
+          },
+          "env_thinking_overrides": {
+            "before": {
+              "STORY_API_MAX_CALLS": "24",
+              "STORY_API_MAX_COST_USD": "0.10",
+              "STORY_API_MAX_COMPLETION_TOKENS": "512",
+              "STORY_VLM_MAX_COMPLETION_TOKENS": null,
+              "STORY_VLM_REQUEST_PROFILE": null,
+              "STORY_VLM_SEND_THINKING": null,
+              "STORY_VLM_ENABLE_THINKING": null,
+              "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+              "STORY_VLM_TOKEN_PARAM": null,
+              "STORY_API_TOKEN_PARAM": "max_tokens"
+            },
+            "after": {
+              "STORY_API_MAX_CALLS": "24",
+              "STORY_API_MAX_COST_USD": "0.1",
+              "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+              "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+              "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+              "STORY_VLM_SEND_THINKING": null,
+              "STORY_VLM_ENABLE_THINKING": null,
+              "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+              "STORY_VLM_TOKEN_PARAM": "max_tokens",
+              "STORY_API_TOKEN_PARAM": "max_tokens",
+              "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+              "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+              "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+            },
+            "disable_thinking": true
+          }
+        },
+        "selected_preview_mp4_sha256": "3fb4d4e113ded309633c2bb5501a671e14e6fc50f76c07c3a680f13669bb49ee",
+        "completed_edits": 0
+      },
+      "story_first_preview_only": true,
+      "fullcut_delta_report": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02/fullcut_delta_report.json",
+      "verdict_provenance": "OFFLINE_RULE",
+      "accepted": false,
+      "retain_baseline": true,
+      "revision_status": {
+        "schema": "v3a_revision_status_v1",
+        "APPLIED": true,
+        "VERIFIED": false,
+        "IMPROVED": false,
+        "safety_ok": true,
+        "edl_changed": true,
+        "candidate_rendered": true,
+        "candidate_accepted": false,
+        "vision_backed": false,
+        "semantic_passed": false,
+        "quality_delta": "NOT_EVALUATED",
+        "BETTER_not_auto_IMPROVED": true,
+        "note": "APPLIED=EDL mutated under safety; VERIFIED=accepted with vision; IMPROVED=verified+accepted+vision+semantic+safety+quality_delta. One model BETTER never auto-upgrades to IMPROVED. PTS/first-live/goal gates cannot be overridden by BETTER."
+      },
+      "revision_case_count": 1,
+      "fullcut_feedback_entries": 0,
+      "deferred_confirmed_alternatives": 0,
+      "story_first_trial_status": "READY_FOR_TRIAL",
+      "phase8_transition": {
+        "schema": "v3a_phase8_transition_v1",
+        "next_action": "STOP_NO_ACTION",
+        "working_ref": "v0",
+        "best_ref": "v0",
+        "reason_codes": [
+          "story_first_p3_caption_revision_finished"
+        ],
+        "promote": false,
+        "stop_reason": "PLANNER_KEEP",
+        "continue_allowed": false,
+        "current_round_outcome": "REPLAN_FROM_BEST",
+        "record_confirmed_negative": false,
+        "candidate_version_id": "v2",
+        "parent_version_id": "v0",
+        "safety": "UNKNOWN",
+        "quality": "UNCERTAIN",
+        "evidence": "INSUFFICIENT",
+        "accept_candidate_ignored": true,
+        "compared_against_best": true,
+        "note": "candidate_accepted boolean does not drive this policy; formal release remains stricter than exploration. Budget does not discard the just-finished round outcome."
+      },
+      "phase8_verdict": {
+        "schema": "v3a_phase8_verdict_v1",
+        "safety": "UNKNOWN",
+        "hard_safety": {
+          "safety": "UNKNOWN",
+          "reasons": [
+            "first_live_per_window_proof_incomplete"
+          ],
+          "accept_candidate_ignored": true,
+          "first_live_status": "NOT_VERIFIED",
+          "first_live_ledger": {
+            "schema": "v3a_first_live_window_ledger_v1",
+            "source_sha": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+            "windows": [
+              {
+                "key": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c|1927.240:1952.700",
+                "source_sha": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+                "source_pts_start": 1927.24,
+                "source_pts_end": 1952.7,
+                "status": "NOT_VERIFIED",
+                "binding_status": "BINDING_INVALID",
+                "first_live_status": "NOT_VERIFIED",
+                "method": "unverified_new_window",
+                "segment_id": "seg_story_first_919c8d9c0f04e984b2c0ba12_01",
+                "claimed_status": "NOT_VERIFIED",
+                "candidate_class": "unbound_or_invalid",
+                "validation": {
+                  "ok": false,
+                  "binding_valid": false,
+                  "first_live_verified": false,
+                  "replay_confirmed": false,
+                  "reason": "missing_evidence_record",
+                  "manifest_digest": null,
+                  "frame_sha256": null,
+                  "method": "frame_binding_only"
+                },
+                "validated_evidence": null,
+                "broadcast_timeline_review": null,
+                "origin": "apply_report"
+              }
+            ],
+            "n_windows": 1,
+            "all_windows_verified": false,
+            "any_window_unverified": true,
+            "any_replay_confirmed": false,
+            "any_frame_bound_pending_timeline": false,
+            "aggregate_status": "NOT_VERIFIED",
+            "note": "FRAME_BOUND_VALID ≠ FIRST_LIVE_VERIFIED. Hard-safety PASS needs independent broadcast-timeline review on every new window; binding-only stays UNKNOWN; REPLAY_CONFIRMED ⇒ FAIL."
+          },
+          "candidate_class": "unbound_or_invalid",
+          "note": "FRAME_BOUND_VALID ≠ FIRST_LIVE_VERIFIED. Hard-safety PASS needs independent broadcast-timeline review on every new window; otherwise UNKNOWN."
+        },
+        "quality": "UNCERTAIN",
+        "evidence": "INSUFFICIENT",
+        "issue_effect": "UNOBSERVED",
+        "global_regression": "UNKNOWN",
+        "focus_issue_id": null,
+        "evidence_refs": [],
+        "observed_changes": null,
+        "unresolved_questions": [],
+        "suggested_next_evidence": null,
+        "failure_class": "TECHNICAL_FAILURE",
+        "compared_parent_version_id": null,
+        "verdict_provenance": "OFFLINE_RULE",
+        "source_kind": "OFFLINE_RULE",
+        "accept_candidate_raw": false,
+        "accept_not_synthesized_from_promising": true,
+        "safety_independent_of_accept_candidate": true,
+        "note": "Hard safety is independent of narrative accept_candidate. FIXTURE/OFFLINE_RULE never establish real IMPROVED; REAL_VLM requires recorded successful provider call + frame bindings.",
+        "candidate_accepted": false,
+        "preview_only": true,
+        "best_comparison_status": "COMPARED_PARENT_IS_BEST",
+        "compared_against_best": true
+      },
+      "parent_version_id": "v0",
+      "candidate_version_id": "v2",
+      "working_version_id": "v0",
+      "best_verified_version_id": "v0",
+      "gates_snapshot": {
+        "workflow_completed": false,
+        "story_diagnosis_valid": true,
+        "revision_applied": true,
+        "candidate_rendered": true,
+        "semantic_verification_passed": false,
+        "release_authorized": false,
+        "final_mp4_exists": false
+      },
+      "edl_changed": true
+    }
+  ],
+  "status_gates": {
+    "workflow_completed": true,
+    "story_diagnosis_valid": true,
+    "revision_applied": true,
+    "candidate_rendered": true,
+    "semantic_verification_passed": false,
+    "release_authorized": false,
+    "final_mp4_exists": true
+  },
+  "revision_status_totals": {
+    "APPLIED": 1,
+    "VERIFIED": 0,
+    "IMPROVED": 0
+  },
+  "disclaimer": "Offline/dry-run does not claim real multimodal story understanding. release_authorized stays false unless hard gates + semantic pass. APPLIED ≠ VERIFIED ≠ IMPROVED.",
+  "api_preflight": {
+    "configured": true,
+    "max_calls": 24,
+    "max_cost_usd_estimate": 0.1,
+    "max_retries": 0,
+    "cost_is_estimate_not_invoice_cap": true,
+    "max_completion_tokens": 1200,
+    "request_body_preflight": {
+      "planner": {
+        "model": "DeepSeek-V4-Pro-0813",
+        "thinking_in_body": {
+          "type": "disabled"
+        },
+        "max_tokens_in_body": 1200,
+        "max_completion_tokens_in_body": null,
+        "enable_thinking_in_body": null,
+        "thinking_budget_in_body": null,
+        "request_audit": {
+          "role": "planner",
+          "model": "DeepSeek-V4-Pro-0813",
+          "request_profile": "default",
+          "token_param_configured": "max_tokens",
+          "token_param_sent": "max_tokens",
+          "token_limit_sent": 1200,
+          "temperature_sent": 0.0,
+          "stream_sent": false,
+          "thinking_params_sent": false,
+          "thinking_object_disabled_sent": true,
+          "enable_thinking_sent": null,
+          "thinking_budget_sent": null,
+          "sends_both_token_params": false,
+          "sends_both_thinking_formats": false,
+          "message_count": 1,
+          "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+          "paratera_thinking_object_documented": false
+        },
+        "thinking_object_disabled_cfg": true,
+        "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+      },
+      "vision": {
+        "model": "Qwen3.7-Plus",
+        "thinking_in_body": {
+          "type": "disabled"
+        },
+        "max_tokens_in_body": 1200,
+        "max_completion_tokens_in_body": null,
+        "enable_thinking_in_body": null,
+        "thinking_budget_in_body": null,
+        "request_audit": {
+          "role": "vision",
+          "model": "Qwen3.7-Plus",
+          "request_profile": "video_rsi",
+          "token_param_configured": "max_tokens",
+          "token_param_sent": "max_tokens",
+          "token_limit_sent": 1200,
+          "temperature_sent": 0.0,
+          "stream_sent": false,
+          "thinking_params_sent": false,
+          "thinking_object_disabled_sent": true,
+          "enable_thinking_sent": null,
+          "thinking_budget_sent": null,
+          "sends_both_token_params": false,
+          "sends_both_thinking_formats": false,
+          "message_count": 1,
+          "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+          "paratera_thinking_object_documented": false
+        },
+        "thinking_object_disabled_cfg": true,
+        "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+      }
+    },
+    "env_thinking_overrides": {
+      "before": {
+        "STORY_API_MAX_CALLS": "24",
+        "STORY_API_MAX_COST_USD": "0.10",
+        "STORY_API_MAX_COMPLETION_TOKENS": "512",
+        "STORY_VLM_MAX_COMPLETION_TOKENS": null,
+        "STORY_VLM_REQUEST_PROFILE": null,
+        "STORY_VLM_SEND_THINKING": null,
+        "STORY_VLM_ENABLE_THINKING": null,
+        "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+        "STORY_VLM_TOKEN_PARAM": null,
+        "STORY_API_TOKEN_PARAM": "max_tokens"
+      },
+      "after": {
+        "STORY_API_MAX_CALLS": "24",
+        "STORY_API_MAX_COST_USD": "0.1",
+        "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+        "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+        "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+        "STORY_VLM_SEND_THINKING": null,
+        "STORY_VLM_ENABLE_THINKING": null,
+        "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+        "STORY_VLM_TOKEN_PARAM": "max_tokens",
+        "STORY_API_TOKEN_PARAM": "max_tokens",
+        "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+        "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+        "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+      },
+      "disable_thinking": true
+    },
+    "usage_snapshot": {
+      "http_attempts": 0,
+      "max_calls": 24,
+      "max_cost_usd": 0.1,
+      "est_cost_usd_real": 0,
+      "by_role": {
+        "planner": {
+          "http_attempts": 0,
+          "tokens": 0,
+          "est_cost_usd": 0,
+          "output_budget_exceeded": false
+        },
+        "vision": {
+          "http_attempts": 0,
+          "tokens": 0,
+          "est_cost_usd": 0,
+          "output_budget_exceeded": false
+        }
+      },
+      "cost_is_estimate_not_invoice_cap": true,
+      "max_retries": 0,
+      "request_preflight": {
+        "planner": {
+          "model": "DeepSeek-V4-Pro-0813",
+          "thinking_in_body": {
+            "type": "disabled"
+          },
+          "max_tokens_in_body": 1200,
+          "max_completion_tokens_in_body": null,
+          "enable_thinking_in_body": null,
+          "thinking_budget_in_body": null,
+          "request_audit": {
+            "role": "planner",
+            "model": "DeepSeek-V4-Pro-0813",
+            "request_profile": "default",
+            "token_param_configured": "max_tokens",
+            "token_param_sent": "max_tokens",
+            "token_limit_sent": 1200,
+            "temperature_sent": 0.0,
+            "stream_sent": false,
+            "thinking_params_sent": false,
+            "thinking_object_disabled_sent": true,
+            "enable_thinking_sent": null,
+            "thinking_budget_sent": null,
+            "sends_both_token_params": false,
+            "sends_both_thinking_formats": false,
+            "message_count": 1,
+            "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+            "paratera_thinking_object_documented": false
+          },
+          "thinking_object_disabled_cfg": true,
+          "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+        },
+        "vision": {
+          "model": "Qwen3.7-Plus",
+          "thinking_in_body": {
+            "type": "disabled"
+          },
+          "max_tokens_in_body": 1200,
+          "max_completion_tokens_in_body": null,
+          "enable_thinking_in_body": null,
+          "thinking_budget_in_body": null,
+          "request_audit": {
+            "role": "vision",
+            "model": "Qwen3.7-Plus",
+            "request_profile": "video_rsi",
+            "token_param_configured": "max_tokens",
+            "token_param_sent": "max_tokens",
+            "token_limit_sent": 1200,
+            "temperature_sent": 0.0,
+            "stream_sent": false,
+            "thinking_params_sent": false,
+            "thinking_object_disabled_sent": true,
+            "enable_thinking_sent": null,
+            "thinking_budget_sent": null,
+            "sends_both_token_params": false,
+            "sends_both_thinking_formats": false,
+            "message_count": 1,
+            "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+            "paratera_thinking_object_documented": false
+          },
+          "thinking_object_disabled_cfg": true,
+          "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+        }
+      },
+      "env_thinking_overrides": {
+        "before": {
+          "STORY_API_MAX_CALLS": "24",
+          "STORY_API_MAX_COST_USD": "0.10",
+          "STORY_API_MAX_COMPLETION_TOKENS": "512",
+          "STORY_VLM_MAX_COMPLETION_TOKENS": null,
+          "STORY_VLM_REQUEST_PROFILE": null,
+          "STORY_VLM_SEND_THINKING": null,
+          "STORY_VLM_ENABLE_THINKING": null,
+          "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+          "STORY_VLM_TOKEN_PARAM": null,
+          "STORY_API_TOKEN_PARAM": "max_tokens"
+        },
+        "after": {
+          "STORY_API_MAX_CALLS": "24",
+          "STORY_API_MAX_COST_USD": "0.1",
+          "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+          "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+          "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+          "STORY_VLM_SEND_THINKING": null,
+          "STORY_VLM_ENABLE_THINKING": null,
+          "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+          "STORY_VLM_TOKEN_PARAM": "max_tokens",
+          "STORY_API_TOKEN_PARAM": "max_tokens",
+          "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+          "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+          "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+        },
+        "disable_thinking": true
+      }
+    }
+  },
+  "input_edl_pts_safety": {
+    "schema": "v3a_edl_source_pts_monotonic_v1",
+    "ok": true,
+    "n_media_rows": 9,
+    "breaks": [],
+    "gate": "safety",
+    "note": "Monotonic source PTS is a safety constraint, not a quality score."
+  },
+  "render_smoke": null,
+  "baseline_duplicate_audit": {
+    "finding_count": 0,
+    "auto_drop_segment_ids": [],
+    "human_review_count": 0,
+    "applied": {
+      "changed": false,
+      "dropped": [],
+      "drop_ledger": [],
+      "refused_goal_drops": []
+    }
+  },
+  "narrative_fit_required": true,
+  "narrative_fit_review_store_n": 0,
+  "first_live_evidence_store_n": 0,
+  "phase8_loop_state": {
+    "schema": "v3a_phase8_loop_v1",
+    "initial_baseline_version_id": "v0",
+    "best_verified_version_id": "v0",
+    "best_verification_tier": "BASELINE_UNVERIFIED",
+    "working_version_id": "v0",
+    "versions": {
+      "v0": {
+        "parent_version_id": null,
+        "edl_path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/01_initial_story/candidate_edl.json",
+        "mp4_path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/01_initial_story/story_clean.mp4",
+        "safety": "UNKNOWN",
+        "quality": "BASELINE_UNVERIFIED",
+        "source": "V3R_BASELINE",
+        "semantic_evidence_refs": []
+      },
+      "v1": {
+        "parent_version_id": "v0",
+        "edl_path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_01/candidate_edl.json",
+        "mp4_path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/01_initial_story/story_clean.mp4",
+        "safety": "PASS",
+        "quality": "UNCERTAIN",
+        "source": "OFFLINE_RULE",
+        "semantic_evidence_refs": [],
+        "round_idx": 1
+      },
+      "v2": {
+        "parent_version_id": "v0",
+        "edl_path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02/candidate_edl.json",
+        "mp4_path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02/candidate_render/story_clean.mp4",
+        "safety": "UNKNOWN",
+        "quality": "UNCERTAIN",
+        "source": "OFFLINE_RULE",
+        "semantic_evidence_refs": [],
+        "round_idx": 2
+      }
+    },
+    "feedback_memory_path": "phase8_feedback_memory.json",
+    "round_history": [
+      {
+        "next_action": "REPLAN_FROM_BEST",
+        "reason_codes": [
+          "story_first_source_feedback_can_inform_revision"
+        ],
+        "candidate_version_id": "v1",
+        "working_ref": "v0",
+        "best_ref": "v0",
+        "quality": "UNCERTAIN",
+        "safety": "PASS"
+      },
+      {
+        "next_action": "STOP_NO_ACTION",
+        "reason_codes": [
+          "story_first_p3_caption_revision_finished"
+        ],
+        "candidate_version_id": "v2",
+        "working_ref": "v0",
+        "best_ref": "v0",
+        "quality": "UNCERTAIN",
+        "safety": "UNKNOWN"
+      }
+    ],
+    "stop_reason": "PLANNER_KEEP",
+    "delivery_version_id": "v0",
+    "uncertain_reobserve_count": 0,
+    "promising_depth": 0,
+    "max_uncertain_reobserve": 1,
+    "max_promising_depth": 2
+  },
+  "phase8_feedback_memory": {
+    "schema": "v3a_phase8_feedback_memory_v1",
+    "n_records": 2,
+    "records": [
+      {
+        "schema": "v3a_phase8_feedback_v1",
+        "round": 1,
+        "issue_signature": {
+          "template_id": "unknown",
+          "category": "unknown",
+          "anchor_segment_ids": [],
+          "missing_narrative_info": "unspecified"
+        },
+        "intent_id": null,
+        "action": null,
+        "source_pts": null,
+        "parent_version_id": "v0",
+        "candidate_version_id": "v1",
+        "quality": "UNCERTAIN",
+        "evidence_status": "INSUFFICIENT",
+        "failure_class": "TECHNICAL_FAILURE",
+        "observation": "no_revision_cases; verifier-level feedback only",
+        "next_search_requirement": "prefer_alternate_live_with_visible_narrative_function",
+        "source_kind": "OFFLINE_RULE",
+        "evidence_refs": [],
+        "new_evidence_required_for_retry": true,
+        "legacy_accept_candidate": false,
+        "sent_frame_ids": [],
+        "observation_limitations": [
+          "sparse_dual_frames_not_full_video_watch",
+          "api_verifier_not_authorized"
+        ],
+        "pts_permanently_banned": false
+      },
+      {
+        "schema": "v3a_phase8_feedback_v1",
+        "round": 2,
+        "issue_signature": {
+          "template_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+          "category": "unknown",
+          "story_role": null,
+          "anchor_segment_ids": [
+            "seg:2"
+          ],
+          "missing_narrative_info": "unspecified",
+          "issue_id_raw": "story_first:919c8d9c0f04e984b2c0ba12"
+        },
+        "intent_id": "story_first_919c8d9c0f04e984b2c0ba12_01",
+        "action": "search_add",
+        "source_pts": [
+          1927.24,
+          1952.7
+        ],
+        "parent_version_id": "v0",
+        "candidate_version_id": "v2",
+        "quality": "UNCERTAIN",
+        "evidence_status": "INSUFFICIENT",
+        "failure_class": "TECHNICAL_FAILURE",
+        "observation": "No independently confirmed narrative benefit",
+        "next_search_requirement": "Reobserve edit-locus continuous context; do not treat as semantic negative",
+        "source_kind": "OFFLINE_RULE",
+        "evidence_refs": [],
+        "new_evidence_required_for_retry": true,
+        "candidate_identity": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语|10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语|unknown|seg:2|unspecified|v0|search_add|1927.240:1952.700|seg:2",
+        "legacy_final_decision": "REJECT",
+        "legacy_failure_reasons": [
+          "verifier_or_pipeline_rejected"
+        ],
+        "legacy_accept_candidate": false,
+        "pts_permanently_banned": false,
+        "sent_frame_ids": [],
+        "evidence_token": "sha:a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c|1927.240:1952.700",
+        "apply_status": "applied_evidence_bound",
+        "observation_limitations": [
+          "claims_full_video_watch=false",
+          "sparse_or_truncated_verifier_must_not_become_confirmed_negative"
+        ]
+      }
+    ],
+    "summary": {
+      "schema": "v3a_phase8_feedback_summary_v1",
+      "n_records": 2,
+      "tried_revisions": [
+        {
+          "round": 1,
+          "action": null,
+          "source_pts": null,
+          "quality": "UNCERTAIN",
+          "failure_class": "TECHNICAL_FAILURE",
+          "issue_signature": {
+            "template_id": "unknown",
+            "category": "unknown",
+            "anchor_segment_ids": [],
+            "missing_narrative_info": "unspecified"
+          },
+          "next_search_requirement": "prefer_alternate_live_with_visible_narrative_function",
+          "new_evidence_required_for_retry": true
+        },
+        {
+          "round": 2,
+          "action": "search_add",
+          "source_pts": [
+            1927.24,
+            1952.7
+          ],
+          "quality": "UNCERTAIN",
+          "failure_class": "TECHNICAL_FAILURE",
+          "issue_signature": {
+            "template_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+            "category": "unknown",
+            "story_role": null,
+            "anchor_segment_ids": [
+              "seg:2"
+            ],
+            "missing_narrative_info": "unspecified",
+            "issue_id_raw": "story_first:919c8d9c0f04e984b2c0ba12"
+          },
+          "next_search_requirement": "Reobserve edit-locus continuous context; do not treat as semantic negative",
+          "new_evidence_required_for_retry": true
+        }
+      ],
+      "confirmed_negatives": [],
+      "uncertain_or_unverified": [],
+      "technical_failures": [
+        {
+          "schema": "v3a_phase8_feedback_v1",
+          "round": 1,
+          "issue_signature": {
+            "template_id": "unknown",
+            "category": "unknown",
+            "anchor_segment_ids": [],
+            "missing_narrative_info": "unspecified"
+          },
+          "intent_id": null,
+          "action": null,
+          "source_pts": null,
+          "parent_version_id": "v0",
+          "candidate_version_id": "v1",
+          "quality": "UNCERTAIN",
+          "evidence_status": "INSUFFICIENT",
+          "failure_class": "TECHNICAL_FAILURE",
+          "observation": "no_revision_cases; verifier-level feedback only",
+          "next_search_requirement": "prefer_alternate_live_with_visible_narrative_function",
+          "source_kind": "OFFLINE_RULE",
+          "evidence_refs": [],
+          "new_evidence_required_for_retry": true,
+          "legacy_accept_candidate": false,
+          "sent_frame_ids": [],
+          "observation_limitations": [
+            "sparse_dual_frames_not_full_video_watch",
+            "api_verifier_not_authorized"
+          ],
+          "pts_permanently_banned": false
+        },
+        {
+          "schema": "v3a_phase8_feedback_v1",
+          "round": 2,
+          "issue_signature": {
+            "template_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+            "category": "unknown",
+            "story_role": null,
+            "anchor_segment_ids": [
+              "seg:2"
+            ],
+            "missing_narrative_info": "unspecified",
+            "issue_id_raw": "story_first:919c8d9c0f04e984b2c0ba12"
+          },
+          "intent_id": "story_first_919c8d9c0f04e984b2c0ba12_01",
+          "action": "search_add",
+          "source_pts": [
+            1927.24,
+            1952.7
+          ],
+          "parent_version_id": "v0",
+          "candidate_version_id": "v2",
+          "quality": "UNCERTAIN",
+          "evidence_status": "INSUFFICIENT",
+          "failure_class": "TECHNICAL_FAILURE",
+          "observation": "No independently confirmed narrative benefit",
+          "next_search_requirement": "Reobserve edit-locus continuous context; do not treat as semantic negative",
+          "source_kind": "OFFLINE_RULE",
+          "evidence_refs": [],
+          "new_evidence_required_for_retry": true,
+          "candidate_identity": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语|10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语|unknown|seg:2|unspecified|v0|search_add|1927.240:1952.700|seg:2",
+          "legacy_final_decision": "REJECT",
+          "legacy_failure_reasons": [
+            "verifier_or_pipeline_rejected"
+          ],
+          "legacy_accept_candidate": false,
+          "pts_permanently_banned": false,
+          "sent_frame_ids": [],
+          "evidence_token": "sha:a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c|1927.240:1952.700",
+          "apply_status": "applied_evidence_bound",
+          "observation_limitations": [
+            "claims_full_video_watch=false",
+            "sparse_or_truncated_verifier_must_not_become_confirmed_negative"
+          ]
+        }
+      ],
+      "positives": [],
+      "current_issue_signatures": [],
+      "forbid_identical_retry_without_new_evidence": true,
+      "never_permanently_ban_pts": true,
+      "opaque_reject_is_not_confirmed_negative": true
+    }
+  },
+  "source_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+  "story_first_search": {
+    "intervals": [
+      {
+        "interval_id": "interval_01",
+        "from_segment_id": "seg:1",
+        "to_segment_id": "seg:2",
+        "score_status": "OFFLINE_RESEARCH_ONLY",
+        "scope": {
+          "from_segment_id": "seg:1",
+          "from_role": "attacking_threat",
+          "to_segment_id": "seg:2",
+          "to_role": "attacking_threat",
+          "source_interval_sec": [
+            1060.64,
+            1912.32
+          ],
+          "anchor_source": "existing_v3r_edl",
+          "no_assumed_causality": true
+        },
+        "status": "GENERATED",
+        "candidate_count": 5
+      },
+      {
+        "interval_id": "interval_02",
+        "from_segment_id": "seg:2",
+        "to_segment_id": "seg:3",
+        "score_status": "OFFLINE_RESEARCH_ONLY",
+        "scope": {
+          "from_segment_id": "seg:2",
+          "from_role": "attacking_threat",
+          "to_segment_id": "seg:3",
+          "to_role": "attacking_threat",
+          "source_interval_sec": [
+            1922.55,
+            1955.54
+          ],
+          "anchor_source": "existing_v3r_edl",
+          "no_assumed_causality": true
+        },
+        "status": "GENERATED",
+        "candidate_count": 2
+      },
+      {
+        "interval_id": "interval_03",
+        "from_segment_id": "seg:3",
+        "to_segment_id": "seg:4",
+        "score_status": "OFFLINE_RESEARCH_ONLY",
+        "scope": {
+          "from_segment_id": "seg:3",
+          "from_role": "attacking_threat",
+          "to_segment_id": "seg:4",
+          "to_role": "attacking_threat",
+          "source_interval_sec": [
+            1966.45,
+            3338.39
+          ],
+          "anchor_source": "existing_v3r_edl",
+          "no_assumed_causality": true
+        },
+        "status": "GENERATED",
+        "candidate_count": 5
+      },
+      {
+        "interval_id": "interval_04",
+        "from_segment_id": "seg:4",
+        "to_segment_id": "seg:5",
+        "score_status": "OFFLINE_RESEARCH_ONLY",
+        "scope": {
+          "from_segment_id": "seg:4",
+          "from_role": "attacking_threat",
+          "to_segment_id": "seg:5",
+          "to_role": "attacking_threat",
+          "source_interval_sec": [
+            3351.3,
+            3504.14
+          ],
+          "anchor_source": "existing_v3r_edl",
+          "no_assumed_causality": true
+        },
+        "status": "GENERATED",
+        "candidate_count": 4
+      },
+      {
+        "interval_id": "interval_05",
+        "from_segment_id": "seg:5",
+        "to_segment_id": "seg:6",
+        "score_status": "OFFLINE_RESEARCH_ONLY",
+        "scope": {
+          "from_segment_id": "seg:5",
+          "from_role": "attacking_threat",
+          "to_segment_id": "seg:6",
+          "to_role": "attacking_threat",
+          "source_interval_sec": [
+            3515.83,
+            3543.01
+          ],
+          "anchor_source": "existing_v3r_edl",
+          "no_assumed_causality": true
+        },
+        "status": "GENERATED",
+        "candidate_count": 1
+      },
+      {
+        "interval_id": "interval_06",
+        "from_segment_id": "seg:6",
+        "to_segment_id": "seg:7",
+        "score_status": "OFFLINE_RESEARCH_ONLY",
+        "scope": {
+          "from_segment_id": "seg:6",
+          "from_role": "attacking_threat",
+          "to_segment_id": "seg:7",
+          "to_role": "attacking_threat",
+          "source_interval_sec": [
+            3553.57,
+            4702.5
+          ],
+          "anchor_source": "existing_v3r_edl",
+          "no_assumed_causality": true
+        },
+        "status": "GENERATED",
+        "candidate_count": 4
+      },
+      {
+        "interval_id": "interval_07",
+        "from_segment_id": "seg:7",
+        "to_segment_id": "seg:8",
+        "score_status": "OFFLINE_RESEARCH_ONLY",
+        "scope": {
+          "from_segment_id": "seg:7",
+          "from_role": "attacking_threat",
+          "to_segment_id": "seg:8",
+          "to_role": "attacking_threat",
+          "source_interval_sec": [
+            4714.65,
+            4755.79
+          ],
+          "anchor_source": "existing_v3r_edl",
+          "no_assumed_causality": true
+        },
+        "status": "GENERATED",
+        "candidate_count": 4
+      },
+      {
+        "interval_id": "interval_08",
+        "from_segment_id": "seg:8",
+        "to_segment_id": "seg:9",
+        "score_status": "OFFLINE_RESEARCH_ONLY",
+        "scope": {
+          "from_segment_id": "seg:8",
+          "from_role": "attacking_threat",
+          "to_segment_id": "seg:9",
+          "to_role": "attacking_threat",
+          "source_interval_sec": [
+            4769.62,
+            6552.01
+          ],
+          "anchor_source": "existing_v3r_edl",
+          "no_assumed_causality": true
+        },
+        "status": "GENERATED",
+        "candidate_count": 3
+      }
+    ],
+    "proposal_count": 28
+  },
+  "last_revision_cases": {
+    "schema": "v3a_revision_case_bundle_v1",
+    "match_tag": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+    "n_cases": 1,
+    "cases": [
+      {
+        "schema": "v3a_revision_case_v1",
+        "match_tag": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+        "issue_id": "story_first:919c8d9c0f04e984b2c0ba12",
+        "revision_intent_id": "story_first_919c8d9c0f04e984b2c0ba12_01",
+        "original_story_problem": {
+          "observation": null,
+          "missing_information": null,
+          "causal_explanation": null,
+          "story_role": null,
+          "diagnosis_status": null,
+          "story_defect_confirmed": null,
+          "confidence": null,
+          "evidence_sufficiency": null
+        },
+        "video_observation_evidence": null,
+        "defect_cause_hypothesis": null,
+        "target_action": "search_add",
+        "candidate_footage": {
+          "source_pts": {
+            "start": 1927.24,
+            "end": 1952.7
+          },
+          "event_ids": [
+            "event_000278",
+            "event_000279",
+            "event_000280"
+          ],
+          "why_solves_problem": null,
+          "apply": {
+            "intent": "story_first_919c8d9c0f04e984b2c0ba12_01",
+            "action": "search_add",
+            "status": "applied_evidence_bound",
+            "segment_id": "seg_story_first_919c8d9c0f04e984b2c0ba12_01",
+            "media_in": 1927.24,
+            "media_out": 1952.7,
+            "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+            "first_live_status": "NOT_VERIFIED",
+            "authorization": {
+              "allow": true,
+              "denies": [],
+              "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+              "method": "bound_source_window"
+            },
+            "observation_ref": "search:story_first_919c8d9c0f04e984b2c0ba12_01",
+            "insert_after_segment_id": "seg:2"
+          }
+        },
+        "story_first_trial_id": "919c8d9c0f04e984b2c0ba12",
+        "source_event_observations": [
+          {
+            "event_id": "event_000278",
+            "status": "SUPPORTED",
+            "reason": "Frame f2 shows the goalkeeper in black (Team 1) executing a long kick/pass from the penalty area, consistent with the annotation.",
+            "frame_ids": [
+              "f2"
+            ]
+          },
+          {
+            "event_id": "event_000279",
+            "status": "SUPPORTED",
+            "reason": "Frame f3 captures a white-shirted player (Team 1) and a red-shirted player (Team 2) in close physical contact contesting the ball near the center circle.",
+            "frame_ids": [
+              "f3"
+            ]
+          },
+          {
+            "event_id": "event_000280",
+            "status": "SUPPORTED",
+            "reason": "Frame f4 shows a white-shirted player (Team 1) intercepting the ball from a red-shirted opponent (Team 2) in the midfield area.",
+            "frame_ids": [
+              "f4"
+            ]
+          }
+        ],
+        "before_after_video_windows": null,
+        "expected_improvement": "seg:2 到 seg:3 是模板中攻势换手的关键过渡区间（team_2 攻势结束，team_1 攻势开始）。interval_02:H1 覆盖该区间内长传、身体对抗与拦截的连续事件，且所有事件均为非回放、未覆盖的新素材。该候选不引入因果断言，仅以叙事关联呈现攻势在换手前被终结的过程，与模板的 observed_phase_switch 节点形成自然衔接。其他候选要么包含已确认的回放事件（如 interval_03:H1 的 event_000285/event_000287 被标记为 REPLAY_CONFIRMED），要么事件间隔过大或与模板攻防换手主题关联较弱。因此选择 interval_02:H1 作为唯一新增局部故事。",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "actual_observation": null,
+        "verifier_judgment": {
+          "quality_judgment": null,
+          "original_issue_resolved": null,
+          "introduced_new_defect": null,
+          "evidence_refs": null,
+          "confidence": null,
+          "note": "Verifier must check whether the original diagnosed problem was solved, not only which cut looks nicer. BETTER ≠ ACCEPT ≠ IMPROVED."
+        },
+        "pts_safety": {
+          "schema": "v3a_edl_source_pts_monotonic_v1",
+          "ok": true,
+          "n_media_rows": 10,
+          "breaks": [],
+          "gate": "safety",
+          "note": "Monotonic source PTS is a safety constraint, not a quality score."
+        },
+        "final_decision": "REJECT",
+        "failure_reasons": [
+          "verifier_or_pipeline_rejected"
+        ],
+        "formal_final_is_baseline": true,
+        "bindings": {
+          "issue_id": "story_first:919c8d9c0f04e984b2c0ba12",
+          "evidence": [
+            {
+              "kind": "story_first_source_review",
+              "ref": "story_first_919c8d9c0f04e984b2c0ba12_01"
+            }
+          ],
+          "edit": "search_add",
+          "expected_effect": "seg:2 到 seg:3 是模板中攻势换手的关键过渡区间（team_2 攻势结束，team_1 攻势开始）。interval_02:H1 覆盖该区间内长传、身体对抗与拦截的连续事件，且所有事件均为非回放、未覆盖的新素材。该候选不引入因果断言，仅以叙事关联呈现攻势在换手前被终结的过程，与模板的 observed_phase_switch 节点形成自然衔接。其他候选要么包含已确认的回放事件（如 interval_03:H1 的 event_000285/event_000287 被标记为 REPLAY_CONFIRMED），要么事件间隔过大或与模板攻防换手主题关联较弱。因此选择 interval_02:H1 作为唯一新增局部故事。"
+        },
+        "duration_pad_forbidden_as_quality_proxy": true
+      }
+    ]
+  },
+  "last_verifier": {
+    "candidate_accepted": false,
+    "sent_frame_ids": [],
+    "hard_vetoes": [],
+    "goal_protection": {
+      "baseline_goals": {},
+      "candidate_goals": {},
+      "intact": true
+    },
+    "warnings": [
+      "vision_backed_explicitly_false",
+      "refuse_accept_without_semantic_verification",
+      "refuse_accept_without_dual_video_frames"
+    ],
+    "phase8_verdict": {
+      "schema": "v3a_phase8_verdict_v1",
+      "safety": "UNKNOWN",
+      "hard_safety": {
+        "safety": "UNKNOWN",
+        "reasons": [
+          "first_live_per_window_proof_incomplete"
+        ],
+        "accept_candidate_ignored": true,
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_ledger": {
+          "schema": "v3a_first_live_window_ledger_v1",
+          "source_sha": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+          "windows": [
+            {
+              "key": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c|1927.240:1952.700",
+              "source_sha": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+              "source_pts_start": 1927.24,
+              "source_pts_end": 1952.7,
+              "status": "NOT_VERIFIED",
+              "binding_status": "BINDING_INVALID",
+              "first_live_status": "NOT_VERIFIED",
+              "method": "unverified_new_window",
+              "segment_id": "seg_story_first_919c8d9c0f04e984b2c0ba12_01",
+              "claimed_status": "NOT_VERIFIED",
+              "candidate_class": "unbound_or_invalid",
+              "validation": {
+                "ok": false,
+                "binding_valid": false,
+                "first_live_verified": false,
+                "replay_confirmed": false,
+                "reason": "missing_evidence_record",
+                "manifest_digest": null,
+                "frame_sha256": null,
+                "method": "frame_binding_only"
+              },
+              "validated_evidence": null,
+              "broadcast_timeline_review": null,
+              "origin": "apply_report"
+            }
+          ],
+          "n_windows": 1,
+          "all_windows_verified": false,
+          "any_window_unverified": true,
+          "any_replay_confirmed": false,
+          "any_frame_bound_pending_timeline": false,
+          "aggregate_status": "NOT_VERIFIED",
+          "note": "FRAME_BOUND_VALID ≠ FIRST_LIVE_VERIFIED. Hard-safety PASS needs independent broadcast-timeline review on every new window; binding-only stays UNKNOWN; REPLAY_CONFIRMED ⇒ FAIL."
+        },
+        "candidate_class": "unbound_or_invalid",
+        "note": "FRAME_BOUND_VALID ≠ FIRST_LIVE_VERIFIED. Hard-safety PASS needs independent broadcast-timeline review on every new window; otherwise UNKNOWN."
+      },
+      "quality": "UNCERTAIN",
+      "evidence": "INSUFFICIENT",
+      "issue_effect": "UNOBSERVED",
+      "global_regression": "UNKNOWN",
+      "focus_issue_id": null,
+      "evidence_refs": [],
+      "observed_changes": null,
+      "unresolved_questions": [],
+      "suggested_next_evidence": null,
+      "failure_class": "TECHNICAL_FAILURE",
+      "compared_parent_version_id": null,
+      "verdict_provenance": "OFFLINE_RULE",
+      "source_kind": "OFFLINE_RULE",
+      "accept_candidate_raw": false,
+      "accept_not_synthesized_from_promising": true,
+      "safety_independent_of_accept_candidate": true,
+      "note": "Hard safety is independent of narrative accept_candidate. FIXTURE/OFFLINE_RULE never establish real IMPROVED; REAL_VLM requires recorded successful provider call + frame bindings.",
+      "candidate_accepted": false,
+      "preview_only": true,
+      "best_comparison_status": "COMPARED_PARENT_IS_BEST",
+      "compared_against_best": true
+    },
+    "compared_parent_version_id": "v0",
+    "version_id": "v2"
+  },
+  "last_diagnosis_issues": [
+    {
+      "issue_id": "large_source_jump_seg:3_to_seg:4",
+      "story_time_range": [
+        31.57,
+        32.57
+      ],
+      "segment_ids": [
+        "seg:3",
+        "seg:4"
+      ],
+      "observation": "Adjacent cuts jump 1371.9s in source PTS (1966.45 → 3338.39) while contiguous on story timeline.",
+      "narrative_problem": "Source-time compression alone is not a story defect. Only propose an insert if video shows specific omitted causal, emotional, or game-state information necessary to understand the next beat.",
+      "severity": "info",
+      "suggested_fix": "verify_story_state_before_and_after;keep_if_coherent",
+      "evidence_sufficiency": "needs_video_verify",
+      "category": "transition",
+      "temporal_discontinuity_only": true,
+      "source_gap_sec": 1371.94,
+      "required_missing_information_evidence": "specific_unexplained_story_state_change_observed_in_both_adjacent_cuts",
+      "story_role": "transition_break",
+      "observed_evidence": "Adjacent cuts jump 1371.9s in source PTS (1966.45 → 3338.39) while contiguous on story timeline.",
+      "missing_information": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+      "causal_explanation": "Source-time compression alone is not a story defect. Only propose an insert if video shows specific omitted causal, emotional, or game-state information necessary to understand the next beat.",
+      "confidence": 0.35,
+      "confirmation_basis": [],
+      "model_confidence_alone_insufficient": true,
+      "frame_cited_alone_insufficient": true,
+      "diagnosis_status": "HYPOTHESIS_NEEDS_VIDEO",
+      "story_defect_confirmed": false,
+      "note": "Structural anomaly is a hypothesis only; not a confirmed story-quality defect."
+    },
+    {
+      "issue_id": "large_source_jump_seg:8_to_seg:9",
+      "story_time_range": [
+        92.71,
+        93.71
+      ],
+      "segment_ids": [
+        "seg:8",
+        "seg:9"
+      ],
+      "observation": "Adjacent cuts jump 1782.4s in source PTS (4769.62 → 6552.01) while contiguous on story timeline.",
+      "narrative_problem": "Source-time compression alone is not a story defect. Only propose an insert if video shows specific omitted causal, emotional, or game-state information necessary to understand the next beat.",
+      "severity": "info",
+      "suggested_fix": "verify_story_state_before_and_after;keep_if_coherent",
+      "evidence_sufficiency": "needs_video_verify",
+      "category": "transition",
+      "temporal_discontinuity_only": true,
+      "source_gap_sec": 1782.39,
+      "required_missing_information_evidence": "specific_unexplained_story_state_change_observed_in_both_adjacent_cuts",
+      "story_role": "transition_break",
+      "observed_evidence": "Adjacent cuts jump 1782.4s in source PTS (4769.62 → 6552.01) while contiguous on story timeline.",
+      "missing_information": "Whether the structural gap actually harms audience story understanding is unknown without video semantic observation.",
+      "causal_explanation": "Source-time compression alone is not a story defect. Only propose an insert if video shows specific omitted causal, emotional, or game-state information necessary to understand the next beat.",
+      "confidence": 0.35,
+      "confirmation_basis": [],
+      "model_confidence_alone_insufficient": true,
+      "frame_cited_alone_insufficient": true,
+      "diagnosis_status": "HYPOTHESIS_NEEDS_VIDEO",
+      "story_defect_confirmed": false,
+      "note": "Structural anomaly is a hypothesis only; not a confirmed story-quality defect."
+    }
+  ],
+  "edl_changed_any": true,
+  "story_first_outer": {
+    "schema": "story_first_outer_comparison_v1",
+    "preview_only": true,
+    "release_authorized": false,
+    "requested_outer_rounds": 3,
+    "attempted_outer_rounds": 3,
+    "accepted_changes": 3,
+    "http_calls_added_by_continuation": 11,
+    "api_usage": {
+      "http_attempts": 24,
+      "max_calls": 24,
+      "max_cost_usd": 0.1,
+      "est_cost_usd_real": 0.076406,
+      "by_role": {
+        "revision_planner": {
+          "http_attempts": 1,
+          "tokens": 21567,
+          "est_cost_usd": 0.003397,
+          "output_budget_exceeded": false
+        },
+        "story_first_generator": {
+          "http_attempts": 13,
+          "tokens": 246606,
+          "est_cost_usd": 0.041949,
+          "output_budget_exceeded": false
+        },
+        "story_first_p35_planner": {
+          "http_attempts": 3,
+          "tokens": 41759,
+          "est_cost_usd": 0.006645,
+          "output_budget_exceeded": false
+        },
+        "story_first_p3_caption": {
+          "http_attempts": 3,
+          "tokens": 83890,
+          "est_cost_usd": 0.013442,
+          "output_budget_exceeded": false
+        },
+        "story_first_p3_planner": {
+          "http_attempts": 1,
+          "tokens": 20814,
+          "est_cost_usd": 0.003376,
+          "output_budget_exceeded": false
+        },
+        "vision": {
+          "http_attempts": 3,
+          "tokens": 48006,
+          "est_cost_usd": 0.007597,
+          "output_budget_exceeded": false
+        }
+      },
+      "cost_is_estimate_not_invoice_cap": true,
+      "max_retries": 0,
+      "request_preflight": {
+        "planner": {
+          "model": "DeepSeek-V4-Pro-0813",
+          "thinking_in_body": {
+            "type": "disabled"
+          },
+          "max_tokens_in_body": 1200,
+          "max_completion_tokens_in_body": null,
+          "enable_thinking_in_body": null,
+          "thinking_budget_in_body": null,
+          "request_audit": {
+            "role": "planner",
+            "model": "DeepSeek-V4-Pro-0813",
+            "request_profile": "default",
+            "token_param_configured": "max_tokens",
+            "token_param_sent": "max_tokens",
+            "token_limit_sent": 1200,
+            "temperature_sent": 0.0,
+            "stream_sent": false,
+            "thinking_params_sent": false,
+            "thinking_object_disabled_sent": true,
+            "enable_thinking_sent": null,
+            "thinking_budget_sent": null,
+            "sends_both_token_params": false,
+            "sends_both_thinking_formats": false,
+            "message_count": 1,
+            "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+            "paratera_thinking_object_documented": false
+          },
+          "thinking_object_disabled_cfg": true,
+          "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+        },
+        "vision": {
+          "model": "Qwen3.7-Plus",
+          "thinking_in_body": {
+            "type": "disabled"
+          },
+          "max_tokens_in_body": 1200,
+          "max_completion_tokens_in_body": null,
+          "enable_thinking_in_body": null,
+          "thinking_budget_in_body": null,
+          "request_audit": {
+            "role": "vision",
+            "model": "Qwen3.7-Plus",
+            "request_profile": "video_rsi",
+            "token_param_configured": "max_tokens",
+            "token_param_sent": "max_tokens",
+            "token_limit_sent": 1200,
+            "temperature_sent": 0.0,
+            "stream_sent": false,
+            "thinking_params_sent": false,
+            "thinking_object_disabled_sent": true,
+            "enable_thinking_sent": null,
+            "thinking_budget_sent": null,
+            "sends_both_token_params": false,
+            "sends_both_thinking_formats": false,
+            "message_count": 1,
+            "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+            "paratera_thinking_object_documented": false
+          },
+          "thinking_object_disabled_cfg": true,
+          "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+        }
+      },
+      "env_thinking_overrides": {
+        "before": {
+          "STORY_API_MAX_CALLS": "24",
+          "STORY_API_MAX_COST_USD": "0.10",
+          "STORY_API_MAX_COMPLETION_TOKENS": "512",
+          "STORY_VLM_MAX_COMPLETION_TOKENS": null,
+          "STORY_VLM_REQUEST_PROFILE": null,
+          "STORY_VLM_SEND_THINKING": null,
+          "STORY_VLM_ENABLE_THINKING": null,
+          "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+          "STORY_VLM_TOKEN_PARAM": null,
+          "STORY_API_TOKEN_PARAM": "max_tokens"
+        },
+        "after": {
+          "STORY_API_MAX_CALLS": "24",
+          "STORY_API_MAX_COST_USD": "0.1",
+          "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+          "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+          "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+          "STORY_VLM_SEND_THINKING": null,
+          "STORY_VLM_ENABLE_THINKING": null,
+          "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+          "STORY_VLM_TOKEN_PARAM": "max_tokens",
+          "STORY_API_TOKEN_PARAM": "max_tokens",
+          "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+          "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+          "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+        },
+        "disable_thinking": true
+      }
+    },
+    "round_history": [
+      {
+        "round": 1,
+        "status": "ACCEPTED_PREVIEW",
+        "source_advisory": [],
+        "p3_stop_reason": "PLANNER_KEEP",
+        "local_trims": 0,
+        "accepted_source_windows_sec": [
+          [
+            1927.24,
+            1952.7
+          ]
+        ],
+        "local_decisions": [
+          {
+            "action": "KEEP",
+            "rationale": "The bridge segment seg_story_first_919c8d9c0f04e984b2c0ba12_01 is placed between seg:2 (team_2 attacking threat at 1912.32-1922.55) and seg:3 (team_1 attacking threat at 1955.54-1966.45), directly covering the template's observed_phase_switch transition. The working cut caption shows part_01 (story 16.16-21.16) visually confirms a corner kick by the white team being cleared, and part_02 (story 46.62-57.53) visually confirms a white-team shot saved by the yellow-kit goalkeeper. These observations provide concrete setup and context for the phase switch without claiming an outcome for the MISSING insert phase (story 21.16-46.62). The bridge preserves the baseline mainline order and does not int"
+          }
+        ],
+        "replay_replacements": [
+          {
+            "proposal_id": "interval_03:H1",
+            "status": "REPLACED",
+            "removed_event_ids": [],
+            "window_edits": [
+              {
+                "event_ids": [
+                  "event_000285",
+                  "event_000287"
+                ],
+                "removed_event_ids": [],
+                "original_source_window_sec": [
+                  1981.0,
+                  2001.18
+                ],
+                "removed_source_windows_sec": [
+                  [
+                    2000.13,
+                    2011.73
+                  ]
+                ],
+                "retained_source_windows_sec": [
+                  [
+                    1981.0,
+                    2000.13
+                  ]
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "round": 2,
+        "parent_mp4_sha256": "3fb4d4e113ded309633c2bb5501a671e14e6fc50f76c07c3a680f13669bb49ee",
+        "p1_proposals": 18,
+        "new_proposals": 15,
+        "trial_id": "a8a7af824acc5aa63d92ab1d",
+        "source_windows_sec": [
+          [
+            1292.92,
+            1319.0
+          ],
+          [
+            1327.974,
+            1343.974
+          ]
+        ],
+        "event_ids": [
+          "atom_fill_0003_Shot_1335974",
+          "event_000169",
+          "event_000171",
+          "event_000172"
+        ],
+        "status": "ACCEPTED_PREVIEW",
+        "source_feedback": [],
+        "source_advisory": [],
+        "p3_stop_reason": "API_BUDGET",
+        "local_trims": 0,
+        "accepted_source_windows_sec": [
+          [
+            1292.92,
+            1319.0
+          ],
+          [
+            1327.974,
+            1343.974
+          ]
+        ],
+        "local_decisions": []
+      },
+      {
+        "round": 3,
+        "parent_mp4_sha256": "21c8a58ef6ed6c05364c81fa339c7cd13e6c23cf5b5820cccb9733e485305086",
+        "p1_proposals": 5,
+        "new_proposals": 4,
+        "trial_id": "fc564198b612763049ada617",
+        "source_windows_sec": [
+          [
+            1823.07,
+            1842.28
+          ],
+          [
+            1866.76,
+            1882.76
+          ]
+        ],
+        "event_ids": [
+          "event_000270",
+          "event_000271",
+          "event_000274"
+        ],
+        "status": "ACCEPTED_PREVIEW",
+        "source_feedback": [],
+        "source_advisory": [],
+        "p3_stop_reason": "API_BUDGET",
+        "local_trims": 0,
+        "accepted_source_windows_sec": [
+          [
+            1823.07,
+            1842.28
+          ],
+          [
+            1866.76,
+            1882.76
+          ]
+        ],
+        "local_decisions": []
+      }
+    ],
+    "comparison": [
+      {
+        "outer_rounds": 0,
+        "status": "V3_R",
+        "accepted_changes": 0,
+        "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/story_first_outer/v0_edl.json",
+        "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/01_initial_story/story_clean.mp4",
+        "mp4_sha256": "dcedaeee59281392aeebfa7f7179f5ef22736072ecddcb7b6da31350118b3190",
+        "duration_sec": 104.142
+      },
+      {
+        "outer_rounds": 1,
+        "status": "ACCEPTED_PREVIEW",
+        "accepted_changes": 1,
+        "local_trims": 0,
+        "p3_stop_reason": "PLANNER_KEEP",
+        "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/story_first_outer/v1_edl.json",
+        "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02/candidate_render/story_clean.mp4",
+        "mp4_sha256": "3fb4d4e113ded309633c2bb5501a671e14e6fc50f76c07c3a680f13669bb49ee",
+        "duration_sec": 129.614
+      },
+      {
+        "outer_rounds": 2,
+        "status": "ACCEPTED_PREVIEW",
+        "accepted_changes": 2,
+        "changed_from_previous_round": true,
+        "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/story_first_outer/v2_edl.json",
+        "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/story_first_outer/round_02/trial_render/story_clean.mp4",
+        "mp4_sha256": "21c8a58ef6ed6c05364c81fa339c7cd13e6c23cf5b5820cccb9733e485305086",
+        "duration_sec": 171.782
+      },
+      {
+        "outer_rounds": 3,
+        "status": "ACCEPTED_PREVIEW",
+        "accepted_changes": 3,
+        "changed_from_previous_round": true,
+        "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/story_first_outer/v3_edl.json",
+        "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/story_first_outer/round_03/trial_render/story_clean.mp4",
+        "mp4_sha256": "b3c5d524cac6b34308a38b2727900976cef4676170f9f4a1283640b84952182e",
+        "duration_sec": 207.053
+      }
+    ],
+    "selected_preview": {
+      "outer_rounds": 3,
+      "status": "ACCEPTED_PREVIEW",
+      "accepted_changes": 3,
+      "changed_from_previous_round": true,
+      "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/story_first_outer/v3_edl.json",
+      "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/story_first_outer/round_03/trial_render/story_clean.mp4",
+      "mp4_sha256": "b3c5d524cac6b34308a38b2727900976cef4676170f9f4a1283640b84952182e",
+      "duration_sec": 207.053
+    }
+  },
+  "story_first_p3": {
+    "schema": "story_first_p3_caption_revision_v1",
+    "release_authorized": false,
+    "promote_best": false,
+    "preview_only": true,
+    "baseline_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/01_initial_story/story_clean.mp4",
+    "baseline_mp4_sha256": "dcedaeee59281392aeebfa7f7179f5ef22736072ecddcb7b6da31350118b3190",
+    "selected_preview_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02/candidate_render/story_clean.mp4",
+    "rounds": [
+      {
+        "round": 1,
+        "working_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02/candidate_render/story_clean.mp4",
+        "rejected_actions": [],
+        "action": "KEEP",
+        "rationale": "The bridge segment seg_story_first_919c8d9c0f04e984b2c0ba12_01 is placed between seg:2 (team_2 attacking threat at 1912.32-1922.55) and seg:3 (team_1 attacking threat at 1955.54-1966.45), directly covering the template's observed_phase_switch transition. The working cut caption shows part_01 (story 16.16-21.16) visually confirms a corner kick by the white team being cleared, and part_02 (story 46.62-57.53) visually confirms a white-team shot saved by the yellow-kit goalkeeper. These observations provide concrete setup and context for the phase switch without claiming an outcome for the MISSING insert phase (story 21.16-46.62). The bridge preserves the baseline mainline order and does not int"
+      }
+    ],
+    "http_calls": 2,
+    "edit_count_comparison": [
+      {
+        "completed_edits": 0,
+        "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02/candidate_render/story_clean.mp4",
+        "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02/story_first_p3/initial_trial_edl.json",
+        "duration_sec": 129.614
+      }
+    ],
+    "stop_reason": "PLANNER_KEEP",
+    "preview_accepted": true,
+    "max_local_trims": 3,
+    "api_usage": {
+      "http_attempts": 13,
+      "max_calls": 24,
+      "max_cost_usd": 0.1,
+      "est_cost_usd_real": 0.039939,
+      "by_role": {
+        "revision_planner": {
+          "http_attempts": 1,
+          "tokens": 21567,
+          "est_cost_usd": 0.003397,
+          "output_budget_exceeded": false
+        },
+        "story_first_generator": {
+          "http_attempts": 8,
+          "tokens": 136573,
+          "est_cost_usd": 0.023435,
+          "output_budget_exceeded": false
+        },
+        "story_first_p35_planner": {
+          "http_attempts": 1,
+          "tokens": 19535,
+          "est_cost_usd": 0.003039,
+          "output_budget_exceeded": false
+        },
+        "story_first_p3_caption": {
+          "http_attempts": 1,
+          "tokens": 30475,
+          "est_cost_usd": 0.004762,
+          "output_budget_exceeded": false
+        },
+        "story_first_p3_planner": {
+          "http_attempts": 1,
+          "tokens": 20814,
+          "est_cost_usd": 0.003376,
+          "output_budget_exceeded": false
+        },
+        "vision": {
+          "http_attempts": 1,
+          "tokens": 12049,
+          "est_cost_usd": 0.00193,
+          "output_budget_exceeded": false
+        }
+      },
+      "cost_is_estimate_not_invoice_cap": true,
+      "max_retries": 0,
+      "request_preflight": {
+        "planner": {
+          "model": "DeepSeek-V4-Pro-0813",
+          "thinking_in_body": {
+            "type": "disabled"
+          },
+          "max_tokens_in_body": 1200,
+          "max_completion_tokens_in_body": null,
+          "enable_thinking_in_body": null,
+          "thinking_budget_in_body": null,
+          "request_audit": {
+            "role": "planner",
+            "model": "DeepSeek-V4-Pro-0813",
+            "request_profile": "default",
+            "token_param_configured": "max_tokens",
+            "token_param_sent": "max_tokens",
+            "token_limit_sent": 1200,
+            "temperature_sent": 0.0,
+            "stream_sent": false,
+            "thinking_params_sent": false,
+            "thinking_object_disabled_sent": true,
+            "enable_thinking_sent": null,
+            "thinking_budget_sent": null,
+            "sends_both_token_params": false,
+            "sends_both_thinking_formats": false,
+            "message_count": 1,
+            "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+            "paratera_thinking_object_documented": false
+          },
+          "thinking_object_disabled_cfg": true,
+          "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+        },
+        "vision": {
+          "model": "Qwen3.7-Plus",
+          "thinking_in_body": {
+            "type": "disabled"
+          },
+          "max_tokens_in_body": 1200,
+          "max_completion_tokens_in_body": null,
+          "enable_thinking_in_body": null,
+          "thinking_budget_in_body": null,
+          "request_audit": {
+            "role": "vision",
+            "model": "Qwen3.7-Plus",
+            "request_profile": "video_rsi",
+            "token_param_configured": "max_tokens",
+            "token_param_sent": "max_tokens",
+            "token_limit_sent": 1200,
+            "temperature_sent": 0.0,
+            "stream_sent": false,
+            "thinking_params_sent": false,
+            "thinking_object_disabled_sent": true,
+            "enable_thinking_sent": null,
+            "thinking_budget_sent": null,
+            "sends_both_token_params": false,
+            "sends_both_thinking_formats": false,
+            "message_count": 1,
+            "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+            "paratera_thinking_object_documented": false
+          },
+          "thinking_object_disabled_cfg": true,
+          "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+        }
+      },
+      "env_thinking_overrides": {
+        "before": {
+          "STORY_API_MAX_CALLS": "24",
+          "STORY_API_MAX_COST_USD": "0.10",
+          "STORY_API_MAX_COMPLETION_TOKENS": "512",
+          "STORY_VLM_MAX_COMPLETION_TOKENS": null,
+          "STORY_VLM_REQUEST_PROFILE": null,
+          "STORY_VLM_SEND_THINKING": null,
+          "STORY_VLM_ENABLE_THINKING": null,
+          "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+          "STORY_VLM_TOKEN_PARAM": null,
+          "STORY_API_TOKEN_PARAM": "max_tokens"
+        },
+        "after": {
+          "STORY_API_MAX_CALLS": "24",
+          "STORY_API_MAX_COST_USD": "0.1",
+          "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+          "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+          "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+          "STORY_VLM_SEND_THINKING": null,
+          "STORY_VLM_ENABLE_THINKING": null,
+          "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+          "STORY_VLM_TOKEN_PARAM": "max_tokens",
+          "STORY_API_TOKEN_PARAM": "max_tokens",
+          "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+          "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+          "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+        },
+        "disable_thinking": true
+      }
+    },
+    "selected_preview_mp4_sha256": "3fb4d4e113ded309633c2bb5501a671e14e6fc50f76c07c3a680f13669bb49ee",
+    "completed_edits": 0
+  },
+  "phase8_delivery_version_id": "v0",
+  "first_live_visual": {
+    "authority": "final_delivery_edl",
+    "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/99_final/final_goal_evidence_manifest.json",
+    "status_counts": {
+      "FIRST_LIVE_VERIFIED": 0,
+      "POSSIBLE_FIRST_LIVE": 0,
+      "REPLAY_DETECTED": 0,
+      "UNRESOLVED": 0
+    },
+    "n_goal_anchors": 0,
+    "any_first_live_verified": false,
+    "any_replay_on_retained": false,
+    "n_inherited": 0,
+    "n_reverified": 0,
+    "goals": [],
+    "candidate_separate": {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/99_final/candidate_goal_evidence_manifest.json",
+      "status_counts": {
+        "FIRST_LIVE_VERIFIED": 0,
+        "POSSIBLE_FIRST_LIVE": 0,
+        "REPLAY_DETECTED": 0,
+        "UNRESOLVED": 0
+      },
+      "n_goal_anchors": 0
+    },
+    "v3r_historical_ref": null
+  },
+  "goal_lineage": {
+    "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/99_final/goal_lineage_report.json",
+    "n_final_goal_segments": 0,
+    "n_strict_complete": 0,
+    "n_inferred": 0,
+    "n_unresolved": 0,
+    "n_structurally_traced_to_mp4": 0,
+    "duplicate_segment_ids": [],
+    "prior_source_trust": {
+      "prior_provided": false,
+      "prior_has_trusted_sha": false,
+      "stamped_current_sha_onto_prior": false
+    },
+    "candidate_delivery_binding": {
+      "schema": "v3a_candidate_delivery_video_binding_v1",
+      "same_source_video_sha256": true,
+      "delivery_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+      "candidate_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+      "shared_goal_segments": [],
+      "window_changed_segments": [],
+      "candidate_only_goal_segments": [],
+      "delivery_only_goal_segments": [],
+      "note": "Candidate and delivery manifests must not share verification conclusions across changed windows; both must bind to the same source video SHA."
+    }
+  },
+  "delivery": {
+    "release_authorized": false,
+    "delivery_label": "BLOCKED",
+    "delivery_status": "BLOCKED",
+    "blocked_reasons": [
+      "final_edl_missing_goal_anchors"
+    ],
+    "human_review": {
+      "required": true,
+      "label": "HUMAN_REVIEW_REQUIRED",
+      "safe_playable_preview": true,
+      "human_assisted_preview_only": false,
+      "story_first_preview_only": true,
+      "cut_boundaries_human_verified": null,
+      "automatic_first_live_verified": null,
+      "auto_release_forbidden": true,
+      "dir": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/99_final/human_review_candidate",
+      "v3r_baseline_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/99_final/human_review_candidate/v3r_baseline.mp4",
+      "v3a_candidate_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/99_final/human_review_candidate/v3a_candidate.mp4",
+      "bundle": {
+        "round": 2,
+        "round_dir": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02",
+        "baseline_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/01_initial_story/story_clean.mp4",
+        "baseline_edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02/parent_working_edl.json",
+        "parent_version_id": "v0",
+        "candidate_version_id": "v2",
+        "initial_baseline_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/01_initial_story/story_clean.mp4",
+        "initial_baseline_edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/01_initial_story/candidate_edl.json",
+        "candidate_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02/candidate_render/story_clean.mp4",
+        "candidate_edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02/candidate_edl.json",
+        "edl_diff": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02/edl_diff.json",
+        "evidence_search": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02/evidence_search.json",
+        "revision_plan": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02/revision_plan.json",
+        "verifier_report": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02/verifier_report.json",
+        "story_diagnosis": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02/story_diagnosis.json",
+        "goal_anchors_intact": true,
+        "hard_vetoes": [],
+        "semantic_status": "NOT_EVALUATED",
+        "candidate_accepted": false,
+        "human_assisted_preview_only": false,
+        "story_first_preview_only": true,
+        "pts_ok": true,
+        "phase8_verdict": {
+          "schema": "v3a_phase8_verdict_v1",
+          "safety": "UNKNOWN",
+          "hard_safety": {
+            "safety": "UNKNOWN",
+            "reasons": [
+              "first_live_per_window_proof_incomplete"
+            ],
+            "accept_candidate_ignored": true,
+            "first_live_status": "NOT_VERIFIED",
+            "first_live_ledger": {
+              "schema": "v3a_first_live_window_ledger_v1",
+              "source_sha": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+              "windows": [
+                {
+                  "key": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c|1927.240:1952.700",
+                  "source_sha": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+                  "source_pts_start": 1927.24,
+                  "source_pts_end": 1952.7,
+                  "status": "NOT_VERIFIED",
+                  "binding_status": "BINDING_INVALID",
+                  "first_live_status": "NOT_VERIFIED",
+                  "method": "unverified_new_window",
+                  "segment_id": "seg_story_first_919c8d9c0f04e984b2c0ba12_01",
+                  "claimed_status": "NOT_VERIFIED",
+                  "candidate_class": "unbound_or_invalid",
+                  "validation": {
+                    "ok": false,
+                    "binding_valid": false,
+                    "first_live_verified": false,
+                    "replay_confirmed": false,
+                    "reason": "missing_evidence_record",
+                    "manifest_digest": null,
+                    "frame_sha256": null,
+                    "method": "frame_binding_only"
+                  },
+                  "validated_evidence": null,
+                  "broadcast_timeline_review": null,
+                  "origin": "apply_report"
+                }
+              ],
+              "n_windows": 1,
+              "all_windows_verified": false,
+              "any_window_unverified": true,
+              "any_replay_confirmed": false,
+              "any_frame_bound_pending_timeline": false,
+              "aggregate_status": "NOT_VERIFIED",
+              "note": "FRAME_BOUND_VALID ≠ FIRST_LIVE_VERIFIED. Hard-safety PASS needs independent broadcast-timeline review on every new window; binding-only stays UNKNOWN; REPLAY_CONFIRMED ⇒ FAIL."
+            },
+            "candidate_class": "unbound_or_invalid",
+            "note": "FRAME_BOUND_VALID ≠ FIRST_LIVE_VERIFIED. Hard-safety PASS needs independent broadcast-timeline review on every new window; otherwise UNKNOWN."
+          },
+          "quality": "UNCERTAIN",
+          "evidence": "INSUFFICIENT",
+          "issue_effect": "UNOBSERVED",
+          "global_regression": "UNKNOWN",
+          "focus_issue_id": null,
+          "evidence_refs": [],
+          "observed_changes": null,
+          "unresolved_questions": [],
+          "suggested_next_evidence": null,
+          "failure_class": "TECHNICAL_FAILURE",
+          "compared_parent_version_id": null,
+          "verdict_provenance": "OFFLINE_RULE",
+          "source_kind": "OFFLINE_RULE",
+          "accept_candidate_raw": false,
+          "accept_not_synthesized_from_promising": true,
+          "safety_independent_of_accept_candidate": true,
+          "note": "Hard safety is independent of narrative accept_candidate. FIXTURE/OFFLINE_RULE never establish real IMPROVED; REAL_VLM requires recorded successful provider call + frame bindings.",
+          "candidate_accepted": false,
+          "preview_only": true,
+          "best_comparison_status": "COMPARED_PARENT_IS_BEST",
+          "compared_against_best": true
+        },
+        "phase8_transition": {
+          "schema": "v3a_phase8_transition_v1",
+          "next_action": "STOP_NO_ACTION",
+          "working_ref": "v0",
+          "best_ref": "v0",
+          "reason_codes": [
+            "story_first_p3_caption_revision_finished"
+          ],
+          "promote": false,
+          "stop_reason": "PLANNER_KEEP",
+          "continue_allowed": false,
+          "current_round_outcome": "REPLAN_FROM_BEST",
+          "record_confirmed_negative": false,
+          "candidate_version_id": "v2",
+          "parent_version_id": "v0",
+          "safety": "UNKNOWN",
+          "quality": "UNCERTAIN",
+          "evidence": "INSUFFICIENT",
+          "accept_candidate_ignored": true,
+          "compared_against_best": true,
+          "note": "candidate_accepted boolean does not drive this policy; formal release remains stricter than exploration. Budget does not discard the just-finished round outcome."
+        },
+        "revision_status": {
+          "schema": "v3a_revision_status_v1",
+          "APPLIED": true,
+          "VERIFIED": false,
+          "IMPROVED": false,
+          "safety_ok": true,
+          "edl_changed": true,
+          "candidate_rendered": true,
+          "candidate_accepted": false,
+          "vision_backed": false,
+          "semantic_passed": false,
+          "quality_delta": "NOT_EVALUATED",
+          "BETTER_not_auto_IMPROVED": true,
+          "note": "APPLIED=EDL mutated under safety; VERIFIED=accepted with vision; IMPROVED=verified+accepted+vision+semantic+safety+quality_delta. One model BETTER never auto-upgrades to IMPROVED. PTS/first-live/goal gates cannot be overridden by BETTER."
+        },
+        "modified_source_pts": [
+          {
+            "segment_id": "seg_story_first_919c8d9c0f04e984b2c0ba12_01",
+            "media_in": 1927.24,
+            "media_out": 1952.7,
+            "action": "search_add"
+          }
+        ]
+      },
+      "note": "Candidate is for human story judgment only. For B1 the proposed clip boundaries and replay-free content still require direct human viewing; no formal release. Uncertainty must not be auto-labeled success or failure."
+    },
+    "final_mp4": null,
+    "final_edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/99_final/final_edl.json",
+    "decision": "REVISE",
+    "release_gate": {
+      "release_authorized": false,
+      "reasons": [
+        "edl_unchanged",
+        "candidate_not_rendered",
+        "candidate_not_accepted",
+        "semantic_verification_not_passed",
+        "decision_not_revise",
+        "fixture_or_offline_source_not_releasable"
+      ],
+      "final_mp4_duration_sec": 104.142,
+      "edl_hard_ok": true,
+      "blocking_issue_ids": [],
+      "note": "workflow_completed/final_mp4_exists/semantic_verification_passed alone never authorize formal release.",
+      "delivery_version_id": "v0",
+      "delivery_snapshot": {
+        "version_id": "v0",
+        "parent_version_id": null,
+        "safety": "UNKNOWN",
+        "quality": "BASELINE_UNVERIFIED",
+        "verdict_provenance": "OFFLINE_RULE",
+        "semantic_verification_passed": false,
+        "candidate_rendered": true,
+        "compared_against_best": null,
+        "mp4_path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/01_initial_story/story_clean.mp4",
+        "edl_path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/01_initial_story/candidate_edl.json"
+      },
+      "delivery_source": "OFFLINE_RULE",
+      "last_round_ignored_for_release": true,
+      "last_verifier_version_id": "v2",
+      "note_phase8": "Release authorization is version-specific from delivery snapshot; a later rejected/uncertain round does not revoke or grant release of selected best.",
+      "delivery_digest_check": {
+        "source_sha256_expected": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+        "edl_sha256_expected": "70dab98917ae3cfcd8d6227e93a1065b2985440db14f236044590493ea3a972d",
+        "mp4_sha256_expected": "dcedaeee59281392aeebfa7f7179f5ef22736072ecddcb7b6da31350118b3190",
+        "edl_sha256_now": "70dab98917ae3cfcd8d6227e93a1065b2985440db14f236044590493ea3a972d",
+        "mp4_sha256_now": "dcedaeee59281392aeebfa7f7179f5ef22736072ecddcb7b6da31350118b3190",
+        "ok": true,
+        "reasons": []
+      }
+    },
+    "metrics": {
+      "revise_proposed": 1,
+      "edl_changed_rounds": 1,
+      "candidate_rendered": 1,
+      "candidate_accepted": 0,
+      "search_success_rounds": 2,
+      "invalid_candidate": 0,
+      "goal_damage_flags": 0,
+      "false_or_unverified_improve_claims": 0
+    },
+    "timeline_mp4_alignment": {
+      "aligned": true,
+      "mp4_duration_sec": 104.142,
+      "story_duration_sec": 103.84,
+      "media_duration_sec": 103.84,
+      "placeholder_duration_sec": 0.0,
+      "delta_sec": 0.302,
+      "root_cause_hint": "media_only"
+    },
+    "first_live_visual": {
+      "authority": "final_delivery_edl",
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/99_final/final_goal_evidence_manifest.json",
+      "status_counts": {
+        "FIRST_LIVE_VERIFIED": 0,
+        "POSSIBLE_FIRST_LIVE": 0,
+        "REPLAY_DETECTED": 0,
+        "UNRESOLVED": 0
+      },
+      "n_goal_anchors": 0,
+      "any_first_live_verified": false,
+      "any_replay_on_retained": false,
+      "n_inherited": 0,
+      "n_reverified": 0,
+      "goals": [],
+      "candidate_separate": {
+        "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/99_final/candidate_goal_evidence_manifest.json",
+        "status_counts": {
+          "FIRST_LIVE_VERIFIED": 0,
+          "POSSIBLE_FIRST_LIVE": 0,
+          "REPLAY_DETECTED": 0,
+          "UNRESOLVED": 0
+        },
+        "n_goal_anchors": 0
+      },
+      "v3r_historical_ref": null
+    },
+    "final_goal_evidence_manifest": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/99_final/final_goal_evidence_manifest.json",
+    "goal_lineage_report": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/99_final/goal_lineage_report.json",
+    "goal_lineage": {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/99_final/goal_lineage_report.json",
+      "n_final_goal_segments": 0,
+      "n_strict_complete": 0,
+      "n_inferred": 0,
+      "n_unresolved": 0,
+      "n_structurally_traced_to_mp4": 0,
+      "duplicate_segment_ids": [],
+      "prior_source_trust": {
+        "prior_provided": false,
+        "prior_has_trusted_sha": false,
+        "stamped_current_sha_onto_prior": false
+      },
+      "candidate_delivery_binding": {
+        "schema": "v3a_candidate_delivery_video_binding_v1",
+        "same_source_video_sha256": true,
+        "delivery_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+        "candidate_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+        "shared_goal_segments": [],
+        "window_changed_segments": [],
+        "candidate_only_goal_segments": [],
+        "delivery_only_goal_segments": [],
+        "note": "Candidate and delivery manifests must not share verification conclusions across changed windows; both must bind to the same source video SHA."
+      }
+    },
+    "note": "Formal delivery requires release_authorized=true under full conjunction gates. workflow_completed / final_mp4_exists / semantic_verification_passed alone never authorize. HUMAN_REVIEW_REQUIRED means a safe candidate preview exists for human judgment. RELEASE_READY requires FIRST_LIVE_VERIFIED on every final-delivery EDL goal (final_goal_evidence_manifest), not V3-R historical first-live stats."
+  },
+  "metrics": {
+    "revise_proposed": 1,
+    "edl_changed_rounds": 1,
+    "candidate_rendered": 1,
+    "candidate_accepted": 0,
+    "search_success_rounds": 2,
+    "invalid_candidate": 0,
+    "goal_damage_flags": 0,
+    "false_or_unverified_improve_claims": 0
+  },
+  "baseline": {
+    "initial_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/01_initial_story/story_clean.mp4",
+    "records": {
+      "initial": {
+        "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/initial_render/story_clean.mp4",
+        "exists": true,
+        "size_bytes": 41663326,
+        "sha256": "dcedaeee59281392aeebfa7f7179f5ef22736072ecddcb7b6da31350118b3190"
+      },
+      "final": {
+        "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/initial_render/story_clean.mp4",
+        "exists": true,
+        "size_bytes": 41663326,
+        "sha256": "dcedaeee59281392aeebfa7f7179f5ef22736072ecddcb7b6da31350118b3190"
+      },
+      "smoke": {
+        "path": "/__none__",
+        "exists": false,
+        "sha256": null
+      }
+    }
+  },
+  "elapsed_sec": 750.273,
+  "ok": true
+}

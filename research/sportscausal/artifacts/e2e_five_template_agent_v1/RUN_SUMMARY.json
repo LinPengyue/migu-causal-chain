@@ -1,0 +1,205 @@
+{
+  "schema": "e2e_five_template_agent_v1_summary",
+  "baseline_commit": "1391e82",
+  "prep_commit": "29eb98a",
+  "budget": {
+    "per_case_max_usd": 0.1,
+    "cohort_max_usd": 0.5,
+    "no_auto_retry": true
+  },
+  "fra_selection": {
+    "selected": "set_piece_breakthrough:1",
+    "reason": "score 0:1→1:1 equalizer; start event_000080 Corner_kick; linked pred_0016 corner_coop_goal",
+    "rejected": "set_piece_breakthrough:2 (3:1→4:1 lead extend)",
+    "render_only_sp1": {
+      "dir": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/fra_set_piece_compare/render_only_sp1",
+      "mp4_sha256": "1de6b60ca99ec0f315d73a6a8575457b92bb53cac787a6e917030360c3f73ab3",
+      "duration_sec": 16.789
+    },
+    "render_only_sp2": {
+      "dir": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/fra_set_piece_compare/render_only_sp2",
+      "mp4_sha256": "6064f92900655e19bf12ddad1d302c86ad78003267883d26720fe997dd94a42f",
+      "duration_sec": 22.71
+    }
+  },
+  "cases": [
+    {
+      "run": "A_alternating_threats_1_paid",
+      "status": "ORIGINAL_AGENT_RETURNED",
+      "http_calls": 24,
+      "est_cost_usd": 0.073981,
+      "elapsed_sec": 1223.109,
+      "outer_status": "NATIVE_OUTER_COMPARISON",
+      "versions": [
+        {
+          "outer_rounds": 0,
+          "status": "V3_R",
+          "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_alternating_threats_1_paid/original_agent/01_initial_story/story_clean.mp4",
+          "mp4_sha256": "6160cdf8962d37b9ebeab7c33bea5781f3ba6fb1841422cf4d8b86c27e09de76",
+          "duration_sec": 115.589,
+          "segments": 10,
+          "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_alternating_threats_1_paid/original_agent/story_first_outer/v0_edl.json"
+        },
+        {
+          "outer_rounds": 1,
+          "status": "ACCEPTED_PREVIEW",
+          "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_alternating_threats_1_paid/original_agent/02_round_01/candidate_render/story_clean.mp4",
+          "mp4_sha256": "cd6dfabe2e86cb240b512de6ec51677e101d169ba66d0a2ad08f99010bd60871",
+          "duration_sec": 139.529,
+          "segments": 11,
+          "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_alternating_threats_1_paid/original_agent/story_first_outer/v1_edl.json"
+        },
+        {
+          "outer_rounds": 2,
+          "status": "ACCEPTED_PREVIEW",
+          "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_alternating_threats_1_paid/original_agent/story_first_outer/round_02/trial_render/story_clean.mp4",
+          "mp4_sha256": "681abdb749840bd6bb865258bf0005623b49bdbfd59e36fa353783e6f03c47a7",
+          "duration_sec": 175.868,
+          "segments": 13,
+          "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_alternating_threats_1_paid/original_agent/story_first_outer/v2_edl.json"
+        },
+        {
+          "outer_rounds": 3,
+          "status": "ACCEPTED_PREVIEW",
+          "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_alternating_threats_1_paid/original_agent/story_first_outer/round_03/trial_render/story_clean.mp4",
+          "mp4_sha256": "2f3478908f371d5bb2969c486ad3537bcb07d0332fb4a7645afdab2a35608c40",
+          "duration_sec": 207.958,
+          "segments": 15,
+          "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_alternating_threats_1_paid/original_agent/story_first_outer/v3_edl.json"
+        }
+      ],
+      "native_delivery_status": "BLOCKED",
+      "release_authorized": false,
+      "media_persistent": true,
+      "export_dir": "validation/prediction_repository/exports/A_alternating_threats_1_paid_fanedit_export"
+    },
+    {
+      "run": "FRA_set_piece_breakthrough_1_paid",
+      "status": "ORIGINAL_AGENT_RETURNED",
+      "http_calls": 1,
+      "est_cost_usd": 0.000349,
+      "elapsed_sec": 72.984,
+      "outer_status": "NO_NATIVE_OUTER_COMPARISON",
+      "versions": [],
+      "native_delivery_status": "BLOCKED",
+      "release_authorized": false,
+      "media_persistent": true,
+      "export_dir": "validation/prediction_repository/exports/FRA_set_piece_breakthrough_1_paid_fanedit_export"
+    },
+    {
+      "run": "B_equalization_2_paid",
+      "status": "ORIGINAL_AGENT_RETURNED",
+      "http_calls": 15,
+      "est_cost_usd": 0.037347,
+      "elapsed_sec": 580.639,
+      "outer_status": "NATIVE_OUTER_COMPARISON",
+      "versions": [
+        {
+          "outer_rounds": 0,
+          "status": "V3_R",
+          "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/01_initial_story/story_clean.mp4",
+          "mp4_sha256": "b66d17baf9aefafb49cd4eeaeac10265e95aefab6624905835f11690614e6efe",
+          "duration_sec": 6.247,
+          "segments": 2,
+          "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/story_first_outer/v0_edl.json"
+        },
+        {
+          "outer_rounds": 1,
+          "status": "ACCEPTED_PREVIEW",
+          "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/02_round_01/candidate_render/story_clean.mp4",
+          "mp4_sha256": "acc1e575b973369f1d83519ebf1a9777e053ca8804c3261cc8edb6b2b8731319",
+          "duration_sec": 32.067,
+          "segments": 4,
+          "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/story_first_outer/v1_edl.json"
+        },
+        {
+          "outer_rounds": 2,
+          "status": "ACCEPTED_PREVIEW",
+          "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/story_first_outer/round_02/trial_render/story_clean.mp4",
+          "mp4_sha256": "87dd00c5e4908ac2410bc12b85b43d7031c474ef9db766f8fd1503c17388df80",
+          "duration_sec": 62.857,
+          "segments": 5,
+          "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/story_first_outer/v2_edl.json"
+        },
+        {
+          "outer_rounds": 3,
+          "status": "ACCEPTED_PREVIEW",
+          "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/story_first_outer/round_03/trial_render/story_clean.mp4",
+          "mp4_sha256": "9851cb43f07c198ccd5ac5d2d3fcc046571864ef9e7eecf9a61aecd75f11edb7",
+          "duration_sec": 101.774,
+          "segments": 7,
+          "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/story_first_outer/v3_edl.json"
+        }
+      ],
+      "native_delivery_status": "HUMAN_REVIEW_REQUIRED",
+      "release_authorized": false,
+      "media_persistent": true,
+      "export_dir": "validation/prediction_repository/exports/B_equalization_2_paid_fanedit_export"
+    },
+    {
+      "run": "A_threat_phase_change_1_paid",
+      "status": "ORIGINAL_AGENT_RETURNED",
+      "http_calls": 24,
+      "est_cost_usd": 0.076406,
+      "elapsed_sec": 871.848,
+      "outer_status": "NATIVE_OUTER_COMPARISON",
+      "versions": [
+        {
+          "outer_rounds": 0,
+          "status": "V3_R",
+          "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/01_initial_story/story_clean.mp4",
+          "mp4_sha256": "dcedaeee59281392aeebfa7f7179f5ef22736072ecddcb7b6da31350118b3190",
+          "duration_sec": 104.142,
+          "segments": 9,
+          "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/story_first_outer/v0_edl.json"
+        },
+        {
+          "outer_rounds": 1,
+          "status": "ACCEPTED_PREVIEW",
+          "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02/candidate_render/story_clean.mp4",
+          "mp4_sha256": "3fb4d4e113ded309633c2bb5501a671e14e6fc50f76c07c3a680f13669bb49ee",
+          "duration_sec": 129.614,
+          "segments": 10,
+          "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/story_first_outer/v1_edl.json"
+        },
+        {
+          "outer_rounds": 2,
+          "status": "ACCEPTED_PREVIEW",
+          "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/story_first_outer/round_02/trial_render/story_clean.mp4",
+          "mp4_sha256": "21c8a58ef6ed6c05364c81fa339c7cd13e6c23cf5b5820cccb9733e485305086",
+          "duration_sec": 171.782,
+          "segments": 12,
+          "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/story_first_outer/v2_edl.json"
+        },
+        {
+          "outer_rounds": 3,
+          "status": "ACCEPTED_PREVIEW",
+          "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/story_first_outer/round_03/trial_render/story_clean.mp4",
+          "mp4_sha256": "b3c5d524cac6b34308a38b2727900976cef4676170f9f4a1283640b84952182e",
+          "duration_sec": 207.053,
+          "segments": 14,
+          "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/story_first_outer/v3_edl.json"
+        }
+      ],
+      "native_delivery_status": "BLOCKED",
+      "release_authorized": false,
+      "media_persistent": true,
+      "export_dir": "validation/prediction_repository/exports/A_threat_phase_change_1_paid_fanedit_export"
+    },
+    {
+      "case": "C_lead_preservation_1",
+      "status": "SEED_VALIDATION_FAILED_BEFORE_PAID",
+      "http_calls": 0,
+      "est_cost_usd": 0,
+      "error": "ValueError: Refusing duplicate goal cuts: duplicate_canonical_role go_ahead_goal_action on seg:1/2/3",
+      "interpretation": "R3 lead_preservation seed for Rayo multi-goal lead labels three goal anchors with the same canonical role; original validate_render_rows refuses before Agent. No algo/EDL force-edit performed.",
+      "focus_question": "whether Agent can add post-lead defensive preservation beyond three goals — not answerable until seed role labeling is resolved upstream without silent EDL invention"
+    }
+  ],
+  "totals": {
+    "http_calls": 64,
+    "est_cost_usd": 0.188083,
+    "within_cohort_budget": true
+  },
+  "c_lead_preservation_note": "Blocked before paid Agent by original validate_render_rows: three goal anchors all role=go_ahead_goal_action. Cannot test post-lead defensive enrichment without upstream seed role differentiation; no EDL/operator edits performed."
+}

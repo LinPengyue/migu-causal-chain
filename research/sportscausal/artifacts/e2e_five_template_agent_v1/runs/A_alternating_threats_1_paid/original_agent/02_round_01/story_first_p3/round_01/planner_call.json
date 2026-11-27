@@ -1,0 +1,39 @@
+{
+  "error": null,
+  "parsed": {
+    "actions": [
+      {
+        "action": "KEEP",
+        "rationale": "The bridge segment seg_story_first_4268996b2fb5cc4e177e1ede_01 is currently inserted between seg:3 and seg:4 to cover a large temporal gap (1966.45s to 3338.39s). The working cut caption shows that the 'before' phase (27.07-32.07s story time) provides a clear visual setup: a wide shot of a free kick with the scoreboard reading UAE 0 - 1 OMA, establishing the match context and a set-piece threat. The 'after' phase (55.97-68.88s story time) shows open play with a cross and a blocked shot, providing closure for the inserted action. The insert phase itself is marked MISSING, meaning we have no visual evidence for the core action of the bridge. Since the bridge's function is to provide context and continuity across a large gap, and the available observations at both joins are coherent and serve the story (setup and closure), there is no concrete visual evidence to justify a TRIM. Trimming without observing the missing insert phase risks removing the bridge's intended function of connecting the two distant anchors. Defaulting to KEEP preserves the current structure and the uncertainty of the MISSING phase."
+      },
+      {
+        "action": "KEEP",
+        "rationale": "The bridge segment's source window is [2269.94, 2293.84], which corresponds to the interval_03:H2 proposal (events: Free_kick at 2277.94, Win_an_aerial_duel at 2279.93, Shot at 2285.84). The prior feedback selected this proposal for a trial, indicating its potential value. The working cut caption's 'before' observation shows a free kick being prepared, which aligns with the start of this event sequence. The 'after' observation shows a blocked shot, which could be the outcome of the shot event at 2285.84. The bridge thus appears to be a compact, coherent sub-story of a set-piece threat. Without visual evidence from the MISSING insert phase, we cannot confirm the exact action, but the surrounding observations support the bridge's function. A TRIM would require a concrete pacing or clarity improvement, but the current 23.9s duration is reasonable for a bridge covering a large gap, and no visible redundancy or confusion is evident from the provided observations. KEEP is the safest action to preserve the trial's integrity."
+      },
+      {
+        "action": "KEEP",
+        "rationale": "The bridge segment is the only editable trial segment, and its source bounds are [2269.94, 2293.84]. The working cut caption shows that the 'before' phase ends at 32.07s story time and the 'after' phase begins at 55.97s, leaving a 23.9s insert phase that is MISSING. Since we have no observations for the insert phase, we cannot identify any specific visual content to trim. The bridge's function is to provide a narrative link between seg:3 (team_1 attacking threat) and seg:4 (team_1 attacking threat), and the available observations at the joins suggest a coherent set-piece sequence. Trimming without visual evidence would be speculative and could disrupt the chronological order or the protected mainline. The default action is KEEP, and no concrete improvement to pacing or clarity can be cited from the provided observations. Therefore, KEEP is the only justified action."
+      }
+    ]
+  },
+  "call_audit": {
+    "model": "DeepSeek-V4-Pro-0813",
+    "provider_mode": "real",
+    "logical_role": "story_first_p3_planner",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "prompt_tokens": 22959,
+    "completion_tokens": 754,
+    "reasoning_tokens": 0,
+    "text_tokens": null,
+    "finish_reason": "stop",
+    "visible_output_chars": 3238,
+    "est_cost_usd": 0.00389625,
+    "http_ok": true,
+    "empty_content": false
+  }
+}

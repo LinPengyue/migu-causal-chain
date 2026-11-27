@@ -1,0 +1,706 @@
+{
+  "story_template": {
+    "template_id": "equalization",
+    "template": {
+      "category": "战局故事链",
+      "subtype": "落后追平",
+      "narrative_goal": [
+        "落后到追平的阶段性战局变化"
+      ],
+      "subjects": [
+        "team_2"
+      ],
+      "narrative_edges": [
+        {
+          "from": "score:3",
+          "to": "score:4",
+          "edge_type": "confirmed_score_state_transition",
+          "relation": "confirmed_score_state_transition",
+          "causal_verified": false
+        }
+      ]
+    },
+    "template_name": "落后追平",
+    "title": "落后追平",
+    "beats": [
+      {
+        "node_id": "score:3",
+        "node_type": "anchor",
+        "kind": "score_state",
+        "actor": "team_2",
+        "actor_role": "state_subject",
+        "required": true,
+        "score": "2:1",
+        "state_sign": -1,
+        "score_beneficiary": "team_1",
+        "event_ids": [
+          "atom_fill_0071_Shot_3132270",
+          "atom_fill_0072_Goal_3133968"
+        ],
+        "media_windows": [
+          [
+            3132.27,
+            3135.968
+          ]
+        ],
+        "action_time_interval": [
+          3133.968,
+          3133.968
+        ],
+        "observation_task_ids": [
+          "observe:2"
+        ],
+        "localization_status": "localized_annotation_candidate",
+        "role": "opponent_opening_goal_action"
+      },
+      {
+        "node_id": "score:4",
+        "node_type": "anchor",
+        "kind": "score_state",
+        "actor": "team_2",
+        "actor_role": "state_subject",
+        "required": true,
+        "score": "2:2",
+        "state_sign": 0,
+        "score_beneficiary": "team_2",
+        "event_ids": [
+          "atom_fill_0115_Shot_5657158",
+          "atom_fill_0116_Goal_5657621"
+        ],
+        "media_windows": [
+          [
+            5657.158,
+            5659.621
+          ]
+        ],
+        "action_time_interval": [
+          5657.621,
+          5657.621
+        ],
+        "observation_task_ids": [
+          "observe:3"
+        ],
+        "localization_status": "localized_annotation_candidate",
+        "role": "equalizer_goal_action"
+      }
+    ]
+  },
+  "accepted_cut": [
+    {
+      "segment_id": "seg:1",
+      "source_material_id": "material:1",
+      "video_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+      "media_in": 3132.27,
+      "media_out": 3135.968,
+      "event_ids": [
+        "atom_fill_0071_Shot_3132270",
+        "atom_fill_0072_Goal_3133968"
+      ],
+      "short_chain_ids": [
+        "pred_0030",
+        "pred_0031",
+        "pred_0032"
+      ],
+      "story_node_ids": [
+        "score:3"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 1,
+      "narrative_order": 1,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "score:3"
+      ],
+      "role": "opponent_opening_goal_action",
+      "beat": "opponent_opening_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 3132.27,
+      "adapter_seed_basis": "r3_anchor_materials"
+    },
+    {
+      "segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_01",
+      "role": "buildup_bridge_action",
+      "media_in": 5577.63,
+      "media_out": 5593.63,
+      "include_in_cut": true,
+      "is_replay": false,
+      "shot_kind": "search_bridge",
+      "goal_action_complete": false,
+      "event_ids": [
+        "event_000555"
+      ],
+      "agent_bound": true,
+      "agent_search_bound": true,
+      "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+      "first_live_status": "NOT_VERIFIED",
+      "agent_auto_verified": false,
+      "anchor_id": "search:story_first_b47e4b6a45d1a02720cf0385_01",
+      "narrative_purpose": "H4 is the most compact proposal with the clearest potential narrative link to the equalizer: a free kick at 5585.63s and a corner kick at 5655.418s immediately precede the equalizer goal at 5657.621s. If video shows these belong to the same attacking sequence, this could provide a concrete causal/emotional bridge across the source-time jump. The selection is limited to two events and one hypothesized relation, minimizing observation cost while directly testing whether the gap hides meaningful build-up to the equalizer.",
+      "search_issue_id": "story_first:b47e4b6a45d1a02720cf0385"
+    },
+    {
+      "segment_id": "seg_story_first_7ffdeab55407af24c1ea0eaa_01",
+      "role": "buildup_bridge_action",
+      "media_in": 5599.36,
+      "media_out": 5630.136,
+      "include_in_cut": true,
+      "is_replay": false,
+      "shot_kind": "search_bridge",
+      "goal_action_complete": false,
+      "event_ids": [
+        "atom_fill_0112_Ball_possession_5615435",
+        "atom_fill_0113_Defensive_action_5622136",
+        "event_000559"
+      ],
+      "agent_bound": true,
+      "agent_search_bound": true,
+      "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+      "first_live_status": "NOT_VERIFIED",
+      "agent_auto_verified": false,
+      "anchor_id": "search:story_first_7ffdeab55407af24c1ea0eaa_01",
+      "narrative_purpose": "H5 is the strongest candidate because it provides the most direct narrative bridge to the equalizer: a sequence of Celta Vigo possession and defensive recovery in the final minutes, leading to the corner kick that immediately precedes the goal. The events at 5607.36s, 5615.435s, and 5622.136s are all uncovered and non-replay, satisfying the requirement for fresh footage. The corner kick at 5655.418s is already covered by the accepted cut, but including it here as the endpoint of the new footage creates a seamless transition into the existing equalizer segment. The relation is kept hypothetical",
+      "search_issue_id": "story_first:7ffdeab55407af24c1ea0eaa"
+    },
+    {
+      "segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_02",
+      "role": "buildup_bridge_action",
+      "media_in": 5647.418,
+      "media_out": 5657.158,
+      "include_in_cut": true,
+      "is_replay": false,
+      "shot_kind": "search_bridge",
+      "goal_action_complete": false,
+      "event_ids": [
+        "atom_fill_0114_Corner_kick_5655418"
+      ],
+      "agent_bound": true,
+      "agent_search_bound": true,
+      "evidence_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+      "first_live_status": "NOT_VERIFIED",
+      "agent_auto_verified": false,
+      "anchor_id": "search:story_first_b47e4b6a45d1a02720cf0385_02",
+      "narrative_purpose": "H4 is the most compact proposal with the clearest potential narrative link to the equalizer: a free kick at 5585.63s and a corner kick at 5655.418s immediately precede the equalizer goal at 5657.621s. If video shows these belong to the same attacking sequence, this could provide a concrete causal/emotional bridge across the source-time jump. The selection is limited to two events and one hypothesized relation, minimizing observation cost while directly testing whether the gap hides meaningful build-up to the equalizer.",
+      "search_issue_id": "story_first:b47e4b6a45d1a02720cf0385"
+    },
+    {
+      "segment_id": "seg:2",
+      "source_material_id": "material:2",
+      "video_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+      "media_in": 5657.158,
+      "media_out": 5659.621,
+      "event_ids": [
+        "atom_fill_0115_Shot_5657158",
+        "atom_fill_0116_Goal_5657621"
+      ],
+      "short_chain_ids": [
+        "pred_0053",
+        "pred_0054"
+      ],
+      "story_node_ids": [
+        "score:4"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 2,
+      "narrative_order": 2,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "score:4"
+      ],
+      "role": "equalizer_goal_action",
+      "beat": "equalizer_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 5657.158,
+      "adapter_seed_basis": "r3_anchor_materials"
+    }
+  ],
+  "fresh_p1_candidates": [
+    {
+      "proposal_id": "interval_01:H1",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "opponent_opening_goal_action",
+        "to_segment_id": "seg:2",
+        "to_role": "equalizer_goal_action",
+        "source_interval_sec": [
+          3135.968,
+          5657.158
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "塞尔塔维戈在追平前经历多次犯规与黄牌累积，比赛对抗强度逐步升高。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000538",
+          "source_pts_sec": 5254.38,
+          "event_type": "Foul_Being_fouled",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员在防守三区犯规2队9号球员倒地"
+          }
+        },
+        {
+          "event_id": "event_000539",
+          "source_pts_sec": 5257.34,
+          "event_type": "Receive_a_card",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员在防守三区犯规2队9号球员倒地，裁判向1队24号球员出示黄牌"
+          }
+        },
+        {
+          "event_id": "event_000552",
+          "source_pts_sec": 5501.22,
+          "event_type": "Foul_Being_fouled",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队7号球员犯规1队24号球员倒地"
+          }
+        },
+        {
+          "event_id": "event_000553",
+          "source_pts_sec": 5505.11,
+          "event_type": "Receive_a_card",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队7号球员犯规1队24号球员倒地，裁判向2队7号球员出示黄牌"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000538",
+          "target_event_id": "event_000553",
+          "relation_type": "narrative_association",
+          "claim": "犯规与黄牌交替出现或反映对抗升级",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若两次黄牌间无任何对抗升级画面则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000552",
+          "question": "这次犯规是否紧接前次黄牌后的对抗升级？",
+          "discriminating_signal": "对抗强度与判罚连续性"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_01:H2",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "opponent_opening_goal_action",
+        "to_segment_id": "seg:2",
+        "to_role": "equalizer_goal_action",
+        "source_interval_sec": [
+          3135.968,
+          5657.158
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "三次换人后塞尔塔维戈的进攻组织出现变化，为后续角球与追平埋下伏笔。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000534",
+          "source_pts_sec": 5196.1,
+          "event_type": "Substitution",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队12号球员换下3号球员换上"
+          }
+        },
+        {
+          "event_id": "event_000535",
+          "source_pts_sec": 5199.41,
+          "event_type": "Substitution",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队14号球员换下22号球员换上"
+          }
+        },
+        {
+          "event_id": "event_000536",
+          "source_pts_sec": 5210.18,
+          "event_type": "Substitution",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队21号球员换下39号球员换上"
+          }
+        },
+        {
+          "event_id": "atom_fill_0114_Corner_kick_5655418",
+          "source_pts_sec": 5655.418,
+          "event_type": "Corner_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": null
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000536",
+          "target_event_id": "atom_fill_0114_Corner_kick_5655418",
+          "relation_type": "causal_hypothesis",
+          "claim": "换人调整或与随后角球进攻存在关联",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若换人后至角球前无任何进攻组织变化则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:atom_fill_0114_Corner_kick_5655418",
+          "question": "角球前是否可见换人带来的进攻组织变化？",
+          "discriminating_signal": "换人后进攻参与度变化"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_01:H3",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "opponent_opening_goal_action",
+        "to_segment_id": "seg:2",
+        "to_role": "equalizer_goal_action",
+        "source_interval_sec": [
+          3135.968,
+          5657.158
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "塞尔塔维戈连续出现射门失误后，通过角球机会继续施压并最终追平。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000531",
+          "source_pts_sec": 5173.88,
+          "event_type": "Shot",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队14号球员在防守三区射门"
+          }
+        },
+        {
+          "event_id": "event_000534",
+          "source_pts_sec": 5196.1,
+          "event_type": "Substitution",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队12号球员换下3号球员换上"
+          }
+        },
+        {
+          "event_id": "atom_fill_0112_Ball_possession_5615435",
+          "source_pts_sec": 5615.435,
+          "event_type": "Ball_possession",
+          "known_replay_or_slowmo": false,
+          "annotation": null
+        },
+        {
+          "event_id": "atom_fill_0114_Corner_kick_5655418",
+          "source_pts_sec": 5655.418,
+          "event_type": "Corner_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": null
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000531",
+          "target_event_id": "atom_fill_0114_Corner_kick_5655418",
+          "relation_type": "narrative_association",
+          "claim": "射门失误后球队仍持续获得进攻机会",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若失误后至角球前无任何进攻延续画面则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:atom_fill_0112_Ball_possession_5615435",
+          "question": "失误后球队是否仍保持进攻控球？",
+          "discriminating_signal": "控球方向与进攻推进"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_01:H4",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "opponent_opening_goal_action",
+        "to_segment_id": "seg:2",
+        "to_role": "equalizer_goal_action",
+        "source_interval_sec": [
+          3135.968,
+          5657.158
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "塞尔塔维戈在追平前多次获得定位球机会，最终由角球完成追平。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000542",
+          "source_pts_sec": 5385.78,
+          "event_type": "Free_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队22号球员在防守三区开出直接任意球"
+          }
+        },
+        {
+          "event_id": "event_000551",
+          "source_pts_sec": 5495.01,
+          "event_type": "Free_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员在中场三区开出任意球"
+          }
+        },
+        {
+          "event_id": "event_000555",
+          "source_pts_sec": 5585.63,
+          "event_type": "Free_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员在中场三区开出任意球"
+          }
+        },
+        {
+          "event_id": "atom_fill_0114_Corner_kick_5655418",
+          "source_pts_sec": 5655.418,
+          "event_type": "Corner_kick",
+          "known_replay_or_slowmo": false,
+          "annotation": null
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000555",
+          "target_event_id": "atom_fill_0114_Corner_kick_5655418",
+          "relation_type": "narrative_association",
+          "claim": "连续定位球机会或为角球追平积累前奏",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若定位球与角球间无进攻延续画面则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000555",
+          "question": "这次任意球是否延续了此前的定位球进攻模式？",
+          "discriminating_signal": "定位球进攻组织相似性"
+        }
+      ]
+    },
+    {
+      "proposal_id": "interval_01:H5",
+      "scope": {
+        "from_segment_id": "seg:1",
+        "from_role": "opponent_opening_goal_action",
+        "to_segment_id": "seg:2",
+        "to_role": "equalizer_goal_action",
+        "source_interval_sec": [
+          3135.968,
+          5657.158
+        ],
+        "anchor_source": "existing_v3r_edl",
+        "no_assumed_causality": true
+      },
+      "evidence_status": "UNVERIFIED",
+      "summary": "塞尔塔维戈追平前经历多次防守解围与拦截，比赛在攻防转换中反复拉锯。",
+      "expected_story_contribution": "",
+      "events": [
+        {
+          "event_id": "event_000545",
+          "source_pts_sec": 5422.74,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员在中场三区将球解围出去"
+          }
+        },
+        {
+          "event_id": "event_000548",
+          "source_pts_sec": 5456.32,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员在防守三区将球截获"
+          }
+        },
+        {
+          "event_id": "event_000556",
+          "source_pts_sec": 5587.9,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "2队球员在中场三区将球截获"
+          }
+        },
+        {
+          "event_id": "event_000557",
+          "source_pts_sec": 5593.26,
+          "event_type": "Defensive_action",
+          "known_replay_or_slowmo": false,
+          "annotation": {
+            "description": "",
+            "notes": "1队球员和2队球员在中场三区对抗"
+          }
+        }
+      ],
+      "relations": [
+        {
+          "relation_id": "r1",
+          "source_event_id": "event_000545",
+          "target_event_id": "event_000557",
+          "relation_type": "narrative_association",
+          "claim": "防守解围与拦截交替或反映攻防拉锯状态",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+        }
+      ],
+      "falsification_conditions": [
+        "若解围与拦截间无攻防转换画面则假设不成立"
+      ],
+      "observation_queries": [
+        {
+          "target_id": "event:event_000556",
+          "question": "这次拦截是否紧接前次解围后的攻防转换？",
+          "discriminating_signal": "攻防转换节奏与方向"
+        }
+      ]
+    }
+  ],
+  "prior_round_feedback": {
+    "previous_rounds": [
+      {
+        "round": 1,
+        "status": "ACCEPTED_PREVIEW",
+        "source_advisory": [],
+        "p3_stop_reason": "PLANNER_KEEP",
+        "local_trims": 0,
+        "accepted_source_windows_sec": [
+          [
+            5577.63,
+            5593.63
+          ],
+          [
+            5647.418,
+            5657.158
+          ]
+        ],
+        "local_decisions": [
+          {
+            "action": "KEEP",
+            "rationale": "The first bridge segment (seg_story_first_b47e4b6a45d1a02720cf0385_01) provides a clear visual transition from the opening goal to the equalizer build-up. The working cut caption shows a sideline bench scene with the scoreboard reading OSA 2 - CEL 1 at 66:43, which establishes the score state and the passage of time between the two goals. This functions as setup and context for the equalizer, and the visible observation supports its inclusion without claiming any unseen action. No concrete pacing or clarity improvement justifies a trim."
+          }
+        ]
+      },
+      {
+        "round": 2,
+        "parent_mp4_sha256": "acc1e575b973369f1d83519ebf1a9777e053ca8804c3261cc8edb6b2b8731319",
+        "p1_proposals": 4,
+        "new_proposals": 4,
+        "trial_id": "7ffdeab55407af24c1ea0eaa",
+        "source_windows_sec": [
+          [
+            5599.36,
+            5630.136
+          ]
+        ],
+        "event_ids": [
+          "atom_fill_0112_Ball_possession_5615435",
+          "atom_fill_0113_Defensive_action_5622136",
+          "event_000559"
+        ],
+        "status": "ACCEPTED_PREVIEW",
+        "source_feedback": [],
+        "source_advisory": [],
+        "p3_stop_reason": "PLANNER_KEEP",
+        "local_trims": 0,
+        "accepted_source_windows_sec": [
+          [
+            5599.36,
+            5630.136
+          ]
+        ],
+        "local_decisions": [
+          {
+            "action": "KEEP",
+            "rationale": "The working cut caption for seg_story_first_7ffdeab55407af24c1ea0eaa_01 shows a wide shot of midfield passing with the scoreboard OSA 2 - CEL 1 at 66:58 in the 'before' phase, and the corner kick leading to the equalizer with the scoreboard updating to OSA 2 - CEL 2 at 68:04 in the 'after' phase. The 'insert' phase between 19.698 and 50.474 is MISSING, so the clip's internal continuity is not fully verified. However, the visible observations provide clear setup and context for the equalizer without claiming unseen action. The clip functions as a bridge between the opening goal and the equalizer, and no concrete pacing or clarity improvement justifies a trim."
+          }
+        ]
+      }
+    ],
+    "tried_source_windows_sec": [
+      [
+        5577.63,
+        5593.63
+      ],
+      [
+        5599.36,
+        5630.136
+      ],
+      [
+        5647.418,
+        5657.158
+      ]
+    ],
+    "tried_event_ids": [
+      "atom_fill_0112_Ball_possession_5615435",
+      "atom_fill_0113_Defensive_action_5622136",
+      "atom_fill_0114_Corner_kick_5655418",
+      "event_000555",
+      "event_000559"
+    ],
+    "instruction": "Propose new story footage. Covered and tried events may provide context, but every story must include an untried uncovered event."
+  }
+}

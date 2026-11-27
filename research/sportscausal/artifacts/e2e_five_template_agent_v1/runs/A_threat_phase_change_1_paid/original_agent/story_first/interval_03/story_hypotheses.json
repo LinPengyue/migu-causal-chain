@@ -1,0 +1,190 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若event_000313前无任何定位球或空中争夺画面则假设不成立"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "setpiece_chain_to_open_shot",
+      "narrative_summary": "角球与任意球连续制造空中争夺，随后出现一次射门，构成定位球施压的叙事关联。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "射门前是否紧接角球或任意球",
+          "question": "该射门是否源自定位球二次进攻？",
+          "target_id": "event:event_000313"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "角球后的空中争夺或与后续射门相关，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000285",
+          "target_event_id": "event_000313"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000285",
+        "event_000287",
+        "event_000311",
+        "event_000313"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若这些被犯规之间无球权转换或停顿画面则假设不成立"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "repeated_fouls_break_rhythm",
+      "narrative_summary": "多次被犯规与危险动作打断比赛节奏，可能削弱一方连续进攻的组织性。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "犯规间隔与球权变化",
+          "question": "此次被犯规前是否已有多次类似中断？",
+          "target_id": "event:event_000363"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "连续被犯规或与进攻节奏中断相关，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000334",
+          "target_event_id": "event_000365"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000334",
+        "event_000343",
+        "event_000363",
+        "event_000365"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若换人后无连续传球或射门画面则假设不成立"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "substitution_then_shot_sequence",
+      "narrative_summary": "换人之后出现连续传球与射门，可能反映进攻组织方式的调整，但因果关系未证实。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "换人后传球次数与射门间隔",
+          "question": "该射门是否发生在换人后的连续进攻中？",
+          "target_id": "event:event_000374"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "换人或与随后射门序列相关，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000357",
+          "target_event_id": "event_000374"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000357",
+        "event_000362",
+        "event_000374",
+        "event_000375"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若解围与角球之间无球权转换画面则假设不成立"
+      ],
+      "hypothesis_id": "H4",
+      "mechanism_key": "clearance_to_corner_pressure",
+      "narrative_summary": "解围与任意球后出现角球和空中争夺，可能形成一次防守反击后的再施压。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "解围到角球的球权路径",
+          "question": "角球是否紧接此前解围形成？",
+          "target_id": "event:event_000370"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "解围后角球或为同一攻防回合延续，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000367",
+          "target_event_id": "event_000370"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000367",
+        "event_000370",
+        "event_000371",
+        "event_000374"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若传中后无空中争夺或解围画面则假设不成立"
+      ],
+      "hypothesis_id": "H5",
+      "mechanism_key": "cross_aerial_clearance_sequence",
+      "narrative_summary": "传中、空中争夺与解围连续出现，可能构成一次边路进攻被化解的叙事链。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "传中落点与解围动作衔接",
+          "question": "解围是否直接来自此前传中的空中争夺？",
+          "target_id": "event:event_000397"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "传中经空中争夺后被解围，关联未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000395",
+          "target_event_id": "event_000397"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000395",
+        "event_000396",
+        "event_000397"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

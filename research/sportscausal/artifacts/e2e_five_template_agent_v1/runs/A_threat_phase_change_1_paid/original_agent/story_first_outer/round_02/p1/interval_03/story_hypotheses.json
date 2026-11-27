@@ -1,0 +1,191 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "检查1989-2286秒间是否无同一队连续进攻画面"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "setpiece_sequence_to_open_shot",
+      "narrative_summary": "角球与空中争顶连续出现后，白色队随后形成一次射门，可能构成定位球攻势的延续。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "进攻方向与球权连续性",
+          "question": "该射门是否源自此前角球攻势？",
+          "target_id": "event:event_000296"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "角球后攻势或延续至后续射门，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000285",
+          "target_event_id": "event_000313"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000285",
+        "event_000287",
+        "event_000296",
+        "event_000313"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "核对任意球与射门是否同一队且连续无中断"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "foul_free_kick_shot_chain",
+      "narrative_summary": "多次犯规判罚后出现直接任意球与射门，可能反映同一方持续制造定位球威胁。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "犯规地点与任意球位置一致",
+          "question": "任意球是否由该犯规直接产生？",
+          "target_id": "event:event_000311"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "犯规获任意球后形成射门，因果未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000310",
+          "target_event_id": "event_000313"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000310",
+        "event_000311",
+        "event_000312",
+        "event_000313"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "检查2542-3091秒射门是否属同一队连续进攻"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "repeated_shot_blocked_sequence",
+      "narrative_summary": "短时间内多次射门与封堵交替出现，可能显示一方连续施压但被防守化解。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "球权归属与进攻方向一致",
+          "question": "该射门是否延续此前射门攻势？",
+          "target_id": "event:event_000374"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "多次射门或属同一波攻势，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000340",
+          "target_event_id": "event_000375"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000340",
+        "event_000342",
+        "event_000374",
+        "event_000375"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "对比换人前后同队进攻推进方式是否不同"
+      ],
+      "hypothesis_id": "H4",
+      "mechanism_key": "substitution_then_attacking_shift",
+      "narrative_summary": "换人之后出现连续传球与射门，可能标志进攻组织方式发生变化。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "传球区域与推进距离变化",
+          "question": "换人后传球组织是否更靠前？",
+          "target_id": "event:event_000362"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "换人后进攻组织或改变，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "state_transition",
+          "source_event_id": "event_000357",
+          "target_event_id": "event_000374"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000357",
+        "event_000362",
+        "event_000374",
+        "event_000375"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "检查3049-3322秒传中与解围是否同一队攻防"
+      ],
+      "hypothesis_id": "H5",
+      "mechanism_key": "cross_aerial_clearance_cycle",
+      "narrative_summary": "传中与空中争顶后紧接解围，可能形成反复的边路传中与防守解围循环。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "传中来源与进攻方向一致",
+          "question": "该传中是否延续此前角球攻势？",
+          "target_id": "event:event_000395"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "角球传中后解围或属同一攻防循环，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000370",
+          "target_event_id": "event_000397"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000370",
+        "event_000371",
+        "event_000395",
+        "event_000397"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

@@ -1,0 +1,122 @@
+{
+  "raw_excerpt": "{\n  \"decision\": \"UNRESOLVED\",\n  \"rationale\": \"两个诊断问题均为 temporal_discontinuity_only 的 HYPOTHESIS_NEEDS_VIDEO，story_defect_confirmed=false。VLM critic 无任何观察结果（UNAVAILABLE），无视觉证据支持插入。所有 search_candidates 的 first_live_status 均为 NOT_VERIFIED 且 narrative_fit_status=NEEDS_VIDEO_REVIEW，不满足 search_add 的前置条件。约束明确禁止仅因 source-time gap 插入。因此不执行任何编辑，标记为 UNRESOLVED 以请求后续视频观察。\",\n  \"revision_intents\": [\n    {\n      \"intent_id\": \"mark_unresolved_1\",\n      \"action\": \"mark_unresolved\",\n      \"target_segment_id\": \"seg:3\",\n      \"narrative_purpose\": \"标记 seg:3→seg:4 过渡为待视频验证，不执行编辑。\",\n      \"rationale\": \"issue large_source_jump_seg:3_to_seg:4 仅为结构性时间跳跃假设，无视频语义证据确认故事缺陷。\",\n      \"expected_improvement\": \"避免在无证据情况下破坏现有叙事连贯性。\",\n      \"risk\": \"若实际存在故事状态断裂，则问题保留至下一轮观察。\",\n      \"evidence_refs\": [\"large_source_jump_seg:3_to_seg:4\"]\n    },\n    {\n      \"intent_id\": \"mark_unresolved_2\",\n      \"action\": \"mark_unresolved\",\n      \"target_segment_id\": \"seg:8\",\n      \"narrative_purpose\": \"标记 seg:8→seg:9 过渡为待视频验证，不执行编辑。\",\n      \"rationale\": \"issue large_source_jump_seg:8_to_seg:9 仅为结构性时间跳跃假设，无视频语义证据确认故事缺陷。\",\n      \"expected_improvement\": \"避免在无证据情况下破坏现有叙事连贯性。\",\n      \"risk\": \"若实际存在故事状态断裂，则问题保留至下一轮观察。\",\n      \"evidence_refs\": [\"large_source_jump_seg:8_to_seg:9\"]\n    }\n  ],\n  \"story_first_trial\": {\n    \"selections\": [\n      {\n        \"proposal_id\": \"interval_03:H2\",\n        \"event_ids\": [\"event_000311\", \"event_000312\", \"event_000313\"],\n        \"relation_ids\": [\"r1\"]\n      }\n    ],\n    \"rationale\": \"该提案覆盖 seg:3→seg:4 大跳跃区间内的局部子故事：任意球→空中争顶→射门，事件时间紧凑（2277.94–2285.84s），且 event_000313 与 search_candidate cand_event_000313_2273 重叠，观察结果可直接服务于未来是否插入该候选的决策。选择此单一紧凑试验以最小化观察成本。\",\n    \"revised_relations\": [\n      {\n        \"source_event_id\": \"event_000311\",\n        \"target_event_id\": \"event_000313\",\n        \"relation_type\": \"causal_hypothesis\",\n        \"claim\": \"任意球进攻可能直接导致随后射门，需视频确认同一进攻序列。\"\n      }\n    ]\n  }\n}",
+  "parsed": {
+    "decision": "UNRESOLVED",
+    "rationale": "两个诊断问题均为 temporal_discontinuity_only 的 HYPOTHESIS_NEEDS_VIDEO，story_defect_confirmed=false。VLM critic 无任何观察结果（UNAVAILABLE），无视觉证据支持插入。所有 search_candidates 的 first_live_status 均为 NOT_VERIFIED 且 narrative_fit_status=NEEDS_VIDEO_REVIEW，不满足 search_add 的前置条件。约束明确禁止仅因 source-time gap 插入。因此不执行任何编辑，标记为 UNRESOLVED 以请求后续视频观察。",
+    "revision_intents": [
+      {
+        "intent_id": "mark_unresolved_1",
+        "action": "mark_unresolved",
+        "target_segment_id": "seg:3",
+        "narrative_purpose": "标记 seg:3→seg:4 过渡为待视频验证，不执行编辑。",
+        "rationale": "issue large_source_jump_seg:3_to_seg:4 仅为结构性时间跳跃假设，无视频语义证据确认故事缺陷。",
+        "expected_improvement": "避免在无证据情况下破坏现有叙事连贯性。",
+        "risk": "若实际存在故事状态断裂，则问题保留至下一轮观察。",
+        "evidence_refs": [
+          "large_source_jump_seg:3_to_seg:4"
+        ]
+      },
+      {
+        "intent_id": "mark_unresolved_2",
+        "action": "mark_unresolved",
+        "target_segment_id": "seg:8",
+        "narrative_purpose": "标记 seg:8→seg:9 过渡为待视频验证，不执行编辑。",
+        "rationale": "issue large_source_jump_seg:8_to_seg:9 仅为结构性时间跳跃假设，无视频语义证据确认故事缺陷。",
+        "expected_improvement": "避免在无证据情况下破坏现有叙事连贯性。",
+        "risk": "若实际存在故事状态断裂，则问题保留至下一轮观察。",
+        "evidence_refs": [
+          "large_source_jump_seg:8_to_seg:9"
+        ]
+      }
+    ],
+    "story_first_trial": {
+      "selections": [
+        {
+          "proposal_id": "interval_03:H2",
+          "event_ids": [
+            "event_000311",
+            "event_000312",
+            "event_000313"
+          ],
+          "relation_ids": [
+            "r1"
+          ]
+        }
+      ],
+      "rationale": "该提案覆盖 seg:3→seg:4 大跳跃区间内的局部子故事：任意球→空中争顶→射门，事件时间紧凑（2277.94–2285.84s），且 event_000313 与 search_candidate cand_event_000313_2273 重叠，观察结果可直接服务于未来是否插入该候选的决策。选择此单一紧凑试验以最小化观察成本。",
+      "revised_relations": [
+        {
+          "source_event_id": "event_000311",
+          "target_event_id": "event_000313",
+          "relation_type": "causal_hypothesis",
+          "claim": "任意球进攻可能直接导致随后射门，需视频确认同一进攻序列。"
+        }
+      ]
+    }
+  },
+  "usage": {
+    "prompt_tokens": 24406,
+    "completion_tokens": 716,
+    "total_tokens": 25122,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "call_audit": {
+    "model": "DeepSeek-V4-Pro-0813",
+    "provider_mode": "real",
+    "logical_role": "revision_planner",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "prompt_tokens": 24406,
+    "completion_tokens": 716,
+    "reasoning_tokens": 0,
+    "text_tokens": null,
+    "finish_reason": "stop",
+    "visible_output_chars": 1884,
+    "est_cost_usd": 0.0040904999999999995,
+    "http_ok": true,
+    "empty_content": false
+  },
+  "request_audit": {
+    "role": "planner",
+    "model": "DeepSeek-V4-Pro-0813",
+    "request_profile": "default",
+    "token_param_configured": "max_tokens",
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "temperature_sent": 0.1,
+    "stream_sent": false,
+    "thinking_params_sent": false,
+    "thinking_object_disabled_sent": true,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "sends_both_token_params": false,
+    "sends_both_thinking_formats": false,
+    "message_count": 2,
+    "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+    "paratera_thinking_object_documented": false
+  },
+  "response_audit": {
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "visible_output_chars": 1884,
+    "usage_keys_present": [
+      "completion_tokens",
+      "completion_tokens_details",
+      "prompt_tokens",
+      "prompt_tokens_details",
+      "total_tokens"
+    ],
+    "has_completion_tokens_details": true,
+    "reasoning_content_present": false,
+    "completion_tokens_reported": 716,
+    "output_token_limit": 1200,
+    "output_budget_exceeded": false
+  },
+  "finish_reason": "stop"
+}

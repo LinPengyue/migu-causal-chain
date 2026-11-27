@@ -1,0 +1,268 @@
+{
+  "trial": {
+    "trial_id": "a8a7af824acc5aa63d92ab1d",
+    "proposal_ids": [
+      "interval_01:H1"
+    ],
+    "events": [
+      {
+        "event_id": "event_000169",
+        "source_pts_sec": 1300.92,
+        "event_type": "Defensive_action",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "1队10号截获失误的2队4号的球"
+        }
+      },
+      {
+        "event_id": "event_000171",
+        "source_pts_sec": 1305.71,
+        "event_type": "Dribble_past",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "2队21号拿球后盘带过人"
+        }
+      },
+      {
+        "event_id": "event_000172",
+        "source_pts_sec": 1311.0,
+        "event_type": "Defensive_action",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "1队16号抢断了2队21号的球"
+        }
+      },
+      {
+        "event_id": "atom_fill_0003_Shot_1335974",
+        "source_pts_sec": 1335.974,
+        "event_type": "Shot",
+        "known_replay_or_slowmo": false,
+        "annotation": null
+      }
+    ],
+    "relations": [],
+    "story_context": [
+      {
+        "proposal_id": "interval_01:H1",
+        "summary": "断球后快速推进形成射门并进球，构成一次由防守转换到得分的攻势。",
+        "expected_story_contribution": "",
+        "falsification_conditions": [
+          "若断球与射门间无连续控球推进则假设不成立"
+        ]
+      }
+    ],
+    "windows": [
+      {
+        "event_ids": [
+          "event_000169",
+          "event_000171",
+          "event_000172"
+        ],
+        "source_pts_start": 1292.92,
+        "source_pts_end": 1319.0,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_a8a7af824acc5aa63d92ab1d_01",
+        "issue_id": "story_first:a8a7af824acc5aa63d92ab1d"
+      },
+      {
+        "event_ids": [
+          "atom_fill_0003_Shot_1335974"
+        ],
+        "source_pts_start": 1327.974,
+        "source_pts_end": 1343.974,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_a8a7af824acc5aa63d92ab1d_02",
+        "issue_id": "story_first:a8a7af824acc5aa63d92ab1d"
+      }
+    ],
+    "narrative_purpose": "The accepted cut preserves the existing template anchors, including the phase switch from team_2 (seg:2) to team_1 (seg:3). The prior bridge segment already covers the immediate transition interval [1927.24, 1952.7]. To add at most one local story that contributes to the existing template without duplicating tried footage, I evaluated the fresh P1 candidates. interval_01:H1 is the strongest choice: it sits between seg:1 and seg:2, both team_2 attacking_threat anchors, and provides a non-replay, uncovered sequence of defensive recovery, dribble, defensive action, and shot. This reinforces the p"
+  },
+  "review": {
+    "status": "READY_FOR_TRIAL",
+    "feedback": [],
+    "advisory": [],
+    "annotation_supported_event_ids": [
+      "atom_fill_0003_Shot_1335974",
+      "event_000169",
+      "event_000171",
+      "event_000172"
+    ],
+    "event_observations": [
+      {
+        "event_id": "event_000169",
+        "status": "SUPPORTED",
+        "reason": "Frame f2 shows a white-kit player (Team 1) intercepting the ball from a red-kit player (Team 2) at the exact annotated timestamp.",
+        "frame_ids": [
+          "f2"
+        ]
+      },
+      {
+        "event_id": "event_000171",
+        "status": "SUPPORTED",
+        "reason": "Frame f3 captures a red-kit player dribbling past a white-kit defender near the center circle, matching the event description and timing.",
+        "frame_ids": [
+          "f3"
+        ]
+      },
+      {
+        "event_id": "event_000172",
+        "status": "SUPPORTED",
+        "reason": "Frame f4 shows a white-kit player tackling a red-kit player near the penalty area, consistent with the defensive action annotation.",
+        "frame_ids": [
+          "f4"
+        ]
+      },
+      {
+        "event_id": "atom_fill_0003_Shot_1335974",
+        "status": "SUPPORTED",
+        "reason": "Frame f7 clearly depicts a red-kit player striking the ball towards the goal at the specified time.",
+        "frame_ids": [
+          "f7"
+        ]
+      }
+    ],
+    "candidates": [
+      {
+        "event_ids": [
+          "event_000169",
+          "event_000171",
+          "event_000172"
+        ],
+        "source_pts_start": 1292.92,
+        "source_pts_end": 1319.0,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_a8a7af824acc5aa63d92ab1d_01",
+        "issue_id": "story_first:a8a7af824acc5aa63d92ab1d",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "a8a7af824acc5aa63d92ab1d",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      },
+      {
+        "event_ids": [
+          "atom_fill_0003_Shot_1335974"
+        ],
+        "source_pts_start": 1327.974,
+        "source_pts_end": 1343.974,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_a8a7af824acc5aa63d92ab1d_02",
+        "issue_id": "story_first:a8a7af824acc5aa63d92ab1d",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "a8a7af824acc5aa63d92ab1d",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      }
+    ],
+    "intents": [
+      {
+        "intent_id": "story_first_a8a7af824acc5aa63d92ab1d_02",
+        "action": "search_add",
+        "role": "buildup_bridge_action",
+        "issue_id": "story_first:a8a7af824acc5aa63d92ab1d",
+        "story_first_trial_id": "a8a7af824acc5aa63d92ab1d",
+        "story_first_preview_only": true,
+        "anchor_id": "search:story_first_a8a7af824acc5aa63d92ab1d_02",
+        "new_segment_id": "seg_story_first_a8a7af824acc5aa63d92ab1d_02",
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "bound_source_window": {
+          "start": 1327.974,
+          "end": 1343.974
+        },
+        "event_ids": [
+          "atom_fill_0003_Shot_1335974"
+        ],
+        "narrative_purpose": "The accepted cut preserves the existing template anchors, including the phase switch from team_2 (seg:2) to team_1 (seg:3). The prior bridge segment already covers the immediate transition interval [1927.24, 1952.7]. To add at most one local story that contributes to the existing template without duplicating tried footage, I evaluated the fresh P1 candidates. interval_01:H1 is the strongest choice: it sits between seg:1 and seg:2, both team_2 attacking_threat anchors, and provides a non-replay, uncovered sequence of defensive recovery, dribble, defensive action, and shot. This reinforces the p",
+        "source_event_observations": [
+          {
+            "event_id": "atom_fill_0003_Shot_1335974",
+            "status": "SUPPORTED",
+            "reason": "Frame f7 clearly depicts a red-kit player striking the ball towards the goal at the specified time.",
+            "frame_ids": [
+              "f7"
+            ]
+          }
+        ],
+        "expected_observable_improvement": "The accepted cut preserves the existing template anchors, including the phase switch from team_2 (seg:2) to team_1 (seg:3). The prior bridge segment already covers the immediate transition interval [1927.24, 1952.7]. To add at most one local story that contributes to the existing template without duplicating tried footage, I evaluated the fresh P1 candidates. interval_01:H1 is the strongest choice: it sits between seg:1 and seg:2, both team_2 attacking_threat anchors, and provides a non-replay, uncovered sequence of defensive recovery, dribble, defensive action, and shot. This reinforces the p",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "evidence_refs": [
+          {
+            "kind": "story_first_source_review",
+            "ref": "story_first_a8a7af824acc5aa63d92ab1d_02"
+          }
+        ]
+      },
+      {
+        "intent_id": "story_first_a8a7af824acc5aa63d92ab1d_01",
+        "action": "search_add",
+        "role": "buildup_bridge_action",
+        "issue_id": "story_first:a8a7af824acc5aa63d92ab1d",
+        "story_first_trial_id": "a8a7af824acc5aa63d92ab1d",
+        "story_first_preview_only": true,
+        "anchor_id": "search:story_first_a8a7af824acc5aa63d92ab1d_01",
+        "new_segment_id": "seg_story_first_a8a7af824acc5aa63d92ab1d_01",
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "bound_source_window": {
+          "start": 1292.92,
+          "end": 1319.0
+        },
+        "event_ids": [
+          "event_000169",
+          "event_000171",
+          "event_000172"
+        ],
+        "narrative_purpose": "The accepted cut preserves the existing template anchors, including the phase switch from team_2 (seg:2) to team_1 (seg:3). The prior bridge segment already covers the immediate transition interval [1927.24, 1952.7]. To add at most one local story that contributes to the existing template without duplicating tried footage, I evaluated the fresh P1 candidates. interval_01:H1 is the strongest choice: it sits between seg:1 and seg:2, both team_2 attacking_threat anchors, and provides a non-replay, uncovered sequence of defensive recovery, dribble, defensive action, and shot. This reinforces the p",
+        "source_event_observations": [
+          {
+            "event_id": "event_000169",
+            "status": "SUPPORTED",
+            "reason": "Frame f2 shows a white-kit player (Team 1) intercepting the ball from a red-kit player (Team 2) at the exact annotated timestamp.",
+            "frame_ids": [
+              "f2"
+            ]
+          },
+          {
+            "event_id": "event_000171",
+            "status": "SUPPORTED",
+            "reason": "Frame f3 captures a red-kit player dribbling past a white-kit defender near the center circle, matching the event description and timing.",
+            "frame_ids": [
+              "f3"
+            ]
+          },
+          {
+            "event_id": "event_000172",
+            "status": "SUPPORTED",
+            "reason": "Frame f4 shows a white-kit player tackling a red-kit player near the penalty area, consistent with the defensive action annotation.",
+            "frame_ids": [
+              "f4"
+            ]
+          }
+        ],
+        "expected_observable_improvement": "The accepted cut preserves the existing template anchors, including the phase switch from team_2 (seg:2) to team_1 (seg:3). The prior bridge segment already covers the immediate transition interval [1927.24, 1952.7]. To add at most one local story that contributes to the existing template without duplicating tried footage, I evaluated the fresh P1 candidates. interval_01:H1 is the strongest choice: it sits between seg:1 and seg:2, both team_2 attacking_threat anchors, and provides a non-replay, uncovered sequence of defensive recovery, dribble, defensive action, and shot. This reinforces the p",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "evidence_refs": [
+          {
+            "kind": "story_first_source_review",
+            "ref": "story_first_a8a7af824acc5aa63d92ab1d_01"
+          }
+        ]
+      }
+    ]
+  }
+}

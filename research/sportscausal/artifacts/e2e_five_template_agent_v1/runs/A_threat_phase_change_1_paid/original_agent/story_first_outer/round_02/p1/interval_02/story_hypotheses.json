@@ -1,0 +1,114 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若视频显示长传后无对抗或拦截由他方完成则推翻"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "long_pass_physical_duel_interception_chain",
+      "narrative_summary": "阿曼长传发起后，白队连续身体对抗并拦截，攻势在换手前被逐步瓦解。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "对抗双方球衣颜色与接触",
+          "question": "长传后是否立即出现身体对抗？",
+          "target_id": "event:event_000279"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "长传可能引发后续对抗与拦截，但未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000278",
+          "target_event_id": "event_000280"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000278",
+        "event_000279",
+        "event_000280"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若两次防守动作间球权未变或仍属红队则推翻"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "defensive_sequence_denies_attacking_threat",
+      "narrative_summary": "红队攻势在两次防守动作间被终结，白队由此获得由守转攻的起点。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "拦截后控球方球衣颜色",
+          "question": "拦截后球权是否转给白队？",
+          "target_id": "event:event_000280"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "对抗后可能转为拦截，攻势归属或改变",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "state_transition",
+          "source_event_id": "event_000279",
+          "target_event_id": "event_000280"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000279",
+        "event_000280"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若长传与拦截分属不同回合或不同队则推翻"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "failed_attacking_attempt_precedes_phase_switch",
+      "narrative_summary": "红队一次长传进攻未果，随后白队防守成功，攻势主体在换手前已现端倪。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "传球方球衣颜色与方向",
+          "question": "长传是否由红队发起并指向进攻方向？",
+          "target_id": "event:event_000278"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "长传与拦截或构成同一未果攻势，但不确定",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000278",
+          "target_event_id": "event_000280"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000278",
+        "event_000280"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

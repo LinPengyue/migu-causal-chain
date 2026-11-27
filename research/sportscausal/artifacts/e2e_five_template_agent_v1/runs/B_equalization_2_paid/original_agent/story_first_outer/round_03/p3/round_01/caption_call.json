@@ -1,0 +1,86 @@
+{
+  "error": null,
+  "parsed": {
+    "observations": [
+      {
+        "phase_id": "1:before",
+        "clip_id": "part_01",
+        "story_range_sec": [
+          0,
+          3.698
+        ],
+        "description": "Wide shot of a football match showing a goal being scored by the team in red jerseys. The scoreboard reads OSA 1 - CEL 1 at 45:08. A player in red celebrates with arms outstretched near the goal."
+      },
+      {
+        "phase_id": "1:insert",
+        "clip_id": "part_01",
+        "story_range_sec": [
+          3.698,
+          22.658
+        ],
+        "description": "Cut to a wide view of the pitch with the score now OSA 2 - CEL 1 at 61:12. Players in light blue pass the ball in midfield. A foul occurs, and the referee shows a yellow card to a player in light blue. Players from both teams gather around the referee."
+      },
+      {
+        "phase_id": "1:after",
+        "clip_id": "part_01",
+        "story_range_sec": [
+          22.658,
+          37.658
+        ],
+        "description": "The scene cuts to a restart at the center circle with the score still 2-1 at 65:19. The team in light blue kicks off and passes the ball backwards. Play continues in the midfield with players moving into position."
+      },
+      {
+        "phase_id": "2:before",
+        "clip_id": "part_01",
+        "story_range_sec": [
+          17.658,
+          22.658
+        ],
+        "description": "Close-up shots of players arguing with the referee after the yellow card incident. A player in light blue with a beard gestures while talking to the referee. Another player in red is also visible nearby."
+      },
+      {
+        "phase_id": "2:insert",
+        "clip_id": "part_02",
+        "story_range_sec": [
+          22.658,
+          42.548
+        ],
+        "description": "Wide shot of gameplay continuing with the score 2-1 at 66:51. The team in light blue maintains possession, passing the ball across the midfield and towards the opponent's half. A QR code graphic appears in the top left corner."
+      },
+      {
+        "phase_id": "2:after",
+        "clip_id": "part_02",
+        "story_range_sec": [
+          42.548,
+          57.548
+        ],
+        "description": "The play results in a corner kick for the team in light blue at 67:54. Players gather in the penalty box. The corner is taken, leading to a scramble in front of the goal where a player in light blue heads the ball towards the net, resulting in a goal as indicated by the on-screen text 'equalizer_goal_action'."
+      }
+    ],
+    "uncertainties": [
+      "Exact identity of players due to resolution and distance.",
+      "Specific dialogue during arguments with the referee is inaudible.",
+      "Precise trajectory of the ball during the corner kick header is partially obscured by players."
+    ]
+  },
+  "call_audit": {
+    "model": "Qwen3.7-Plus",
+    "provider_mode": "real",
+    "logical_role": "story_first_p3_caption",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "prompt_tokens": 24007,
+    "completion_tokens": 788,
+    "reasoning_tokens": null,
+    "text_tokens": 788,
+    "finish_reason": "stop",
+    "visible_output_chars": 2665,
+    "est_cost_usd": 0.0040738499999999995,
+    "http_ok": true,
+    "empty_content": false
+  }
+}

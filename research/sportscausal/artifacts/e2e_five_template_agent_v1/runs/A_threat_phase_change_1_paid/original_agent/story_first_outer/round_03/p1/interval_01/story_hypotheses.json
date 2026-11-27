@@ -1,0 +1,187 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若抢断与射门间无控球推进画面则证伪"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "turnover_chain_to_shot_goal",
+      "narrative_summary": "中场连续拦截与突破后，球权转换最终导向一次射门并进球。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "抢断到射门的连续控球",
+          "question": "射门前是否有抢断后推进？",
+          "target_id": "event:atom_fill_0003_Shot_1335974"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "抢断后可能转化为射门，但未验证",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000172",
+          "target_event_id": "atom_fill_0003_Shot_1335974"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000169",
+        "event_000171",
+        "event_000172",
+        "atom_fill_0003_Shot_1335974"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若两次突破方向与区域明显不同则证伪"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "repeated_dribble_break_pattern",
+      "narrative_summary": "两次突破过人相隔较远，或反映同一侧持续的个人突破尝试。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "突破发生区域是否一致",
+          "question": "突破是否与早前突破同侧？",
+          "target_id": "event:event_000231"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "两次突破或属同类模式，非因果",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000104",
+          "target_event_id": "event_000231"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000104",
+        "event_000171",
+        "event_000231"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若犯规间无身体对抗画面则证伪"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "foul_replay_cluster",
+      "narrative_summary": "多次危险动作犯规集中出现，可能标志对抗强度上升的时段。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "犯规前身体接触频率",
+          "question": "该犯规前是否有连续对抗？",
+          "target_id": "event:event_000243"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "犯规聚集或反映对抗升级，未验证",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000216",
+          "target_event_id": "event_000243"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000216",
+        "event_000243",
+        "event_000244"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若解围与失误间无关联画面则证伪"
+      ],
+      "hypothesis_id": "H4",
+      "mechanism_key": "clearance_mistake_sequence",
+      "narrative_summary": "解围后紧接传球失误，可能形成危险区域的球权转换。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "解围到失误的时间与位置",
+          "question": "失误是否紧随解围发生？",
+          "target_id": "event:event_000271"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "解围后失误或致危险，属推测",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000270",
+          "target_event_id": "event_000271"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000270",
+        "event_000271",
+        "event_000274"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若长传落点无接应画面则证伪"
+      ],
+      "hypothesis_id": "H5",
+      "mechanism_key": "long_pass_switch_attempts",
+      "narrative_summary": "多次长传尝试分布全场，或反映反复的转移进攻意图。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "长传落点与接应球员",
+          "question": "长传是否有明确接应目标？",
+          "target_id": "event:event_000260"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "长传重复或属转移模式，非因果",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000131",
+          "target_event_id": "event_000260"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000108",
+        "event_000131",
+        "event_000260"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

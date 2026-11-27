@@ -1,0 +1,136 @@
+{
+  "release_authorized": false,
+  "delivery_label": "BLOCKED",
+  "delivery_status": "BLOCKED",
+  "blocked_reasons": [
+    "no_release_and_no_safe_human_review_preview"
+  ],
+  "human_review": {
+    "required": false
+  },
+  "final_mp4": null,
+  "final_edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/99_final/final_edl.json",
+  "decision": "KEEP",
+  "release_gate": {
+    "release_authorized": false,
+    "reasons": [
+      "edl_unchanged",
+      "candidate_not_rendered",
+      "candidate_not_accepted",
+      "semantic_verification_not_passed",
+      "decision_not_revise",
+      "fixture_or_offline_source_not_releasable"
+    ],
+    "final_mp4_duration_sec": 16.789,
+    "edl_hard_ok": true,
+    "blocking_issue_ids": [],
+    "note": "workflow_completed/final_mp4_exists/semantic_verification_passed alone never authorize formal release.",
+    "delivery_version_id": "v0",
+    "delivery_snapshot": {
+      "version_id": "v0",
+      "parent_version_id": null,
+      "safety": "UNKNOWN",
+      "quality": "BASELINE_UNVERIFIED",
+      "verdict_provenance": "OFFLINE_RULE",
+      "semantic_verification_passed": false,
+      "candidate_rendered": true,
+      "compared_against_best": null,
+      "mp4_path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/01_initial_story/story_clean.mp4",
+      "edl_path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/01_initial_story/candidate_edl.json"
+    },
+    "delivery_source": "OFFLINE_RULE",
+    "last_round_ignored_for_release": true,
+    "last_verifier_version_id": "v1",
+    "note_phase8": "Release authorization is version-specific from delivery snapshot; a later rejected/uncertain round does not revoke or grant release of selected best.",
+    "delivery_digest_check": {
+      "source_sha256_expected": "67462dbafb7aa73240230aacce4aa07cc61b6cd60c7f7d59fc60f9b023e6e978",
+      "edl_sha256_expected": "8e4add32769affa4f8bd730b5570a33206ccbb2591af3d32d76b469dce555890",
+      "mp4_sha256_expected": "1de6b60ca99ec0f315d73a6a8575457b92bb53cac787a6e917030360c3f73ab3",
+      "edl_sha256_now": "8e4add32769affa4f8bd730b5570a33206ccbb2591af3d32d76b469dce555890",
+      "mp4_sha256_now": "1de6b60ca99ec0f315d73a6a8575457b92bb53cac787a6e917030360c3f73ab3",
+      "ok": true,
+      "reasons": []
+    }
+  },
+  "metrics": {
+    "revise_proposed": 0,
+    "edl_changed_rounds": 0,
+    "candidate_rendered": 0,
+    "candidate_accepted": 0,
+    "search_success_rounds": 0,
+    "invalid_candidate": 0,
+    "goal_damage_flags": 0,
+    "false_or_unverified_improve_claims": 0
+  },
+  "timeline_mp4_alignment": {
+    "aligned": true,
+    "mp4_duration_sec": 16.789,
+    "story_duration_sec": 16.667,
+    "media_duration_sec": 16.667,
+    "placeholder_duration_sec": 0.0,
+    "delta_sec": 0.122,
+    "root_cause_hint": "media_only"
+  },
+  "first_live_visual": {
+    "authority": "final_delivery_edl",
+    "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/99_final/final_goal_evidence_manifest.json",
+    "status_counts": {
+      "FIRST_LIVE_VERIFIED": 0,
+      "POSSIBLE_FIRST_LIVE": 0,
+      "REPLAY_DETECTED": 0,
+      "UNRESOLVED": 1
+    },
+    "n_goal_anchors": 1,
+    "any_first_live_verified": false,
+    "any_replay_on_retained": false,
+    "n_inherited": 0,
+    "n_reverified": 1,
+    "goals": [
+      {
+        "segment_id": "seg:3",
+        "role": "scoring_goal_action",
+        "first_live_status": "UNRESOLVED",
+        "source_media_in": 2407.334,
+        "source_media_out": 2412.091,
+        "evidence_binding": "reverified_after_window_or_subject_change",
+        "inherited": false
+      }
+    ],
+    "candidate_separate": {
+      "path": null,
+      "status_counts": null,
+      "n_goal_anchors": null
+    },
+    "v3r_historical_ref": null
+  },
+  "final_goal_evidence_manifest": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/99_final/final_goal_evidence_manifest.json",
+  "goal_lineage_report": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/99_final/goal_lineage_report.json",
+  "goal_lineage": {
+    "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/99_final/goal_lineage_report.json",
+    "n_final_goal_segments": 1,
+    "n_strict_complete": 0,
+    "n_inferred": 0,
+    "n_unresolved": 1,
+    "n_structurally_traced_to_mp4": 0,
+    "duplicate_segment_ids": [],
+    "prior_source_trust": {
+      "prior_provided": false,
+      "prior_has_trusted_sha": false,
+      "stamped_current_sha_onto_prior": false
+    },
+    "candidate_delivery_binding": {
+      "schema": "v3a_candidate_delivery_video_binding_v1",
+      "same_source_video_sha256": true,
+      "delivery_sha256": "67462dbafb7aa73240230aacce4aa07cc61b6cd60c7f7d59fc60f9b023e6e978",
+      "candidate_sha256": null,
+      "shared_goal_segments": [],
+      "window_changed_segments": [],
+      "candidate_only_goal_segments": [],
+      "delivery_only_goal_segments": [
+        "seg:3"
+      ],
+      "note": "Candidate and delivery manifests must not share verification conclusions across changed windows; both must bind to the same source video SHA."
+    }
+  },
+  "note": "Formal delivery requires release_authorized=true under full conjunction gates. workflow_completed / final_mp4_exists / semantic_verification_passed alone never authorize. HUMAN_REVIEW_REQUIRED means a safe candidate preview exists for human judgment. RELEASE_READY requires FIRST_LIVE_VERIFIED on every final-delivery EDL goal (final_goal_evidence_manifest), not V3-R historical first-live stats."
+}

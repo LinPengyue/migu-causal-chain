@@ -1,0 +1,40 @@
+{
+  "error": null,
+  "parsed": {
+    "selection": {
+      "selections": [
+        {
+          "proposal_id": "interval_01:H1",
+          "event_ids": [
+            "event_000169",
+            "event_000171",
+            "event_000172",
+            "atom_fill_0003_Shot_1335974"
+          ],
+          "relation_ids": []
+        }
+      ],
+      "rationale": "The accepted cut preserves the existing template anchors, including the phase switch from team_2 (seg:2) to team_1 (seg:3). The prior bridge segment already covers the immediate transition interval [1927.24, 1952.7]. To add at most one local story that contributes to the existing template without duplicating tried footage, I evaluated the fresh P1 candidates. interval_01:H1 is the strongest choice: it sits between seg:1 and seg:2, both team_2 attacking_threat anchors, and provides a non-replay, uncovered sequence of defensive recovery, dribble, defensive action, and shot. This reinforces the phase:1 team_2 threat run before the observed phase switch, without introducing causal claims beyond the supplied evidence. Other interval_01 candidates are weaker because they either rely on looser narrative associations (H2, H5), include replay events (H3), or describe a less direct attacking continuation (H4). interval_03 and interval_04 candidates are less suitable because they fall after the phase switch and would dilute the template's focus on the team_2-to-team_1 handoff. Therefore, interval_01:H1 is selected as the single additional local story."
+    }
+  },
+  "call_audit": {
+    "model": "DeepSeek-V4-Pro-0813",
+    "provider_mode": "real",
+    "logical_role": "story_first_p35_planner",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "prompt_tokens": 13345,
+    "completion_tokens": 347,
+    "reasoning_tokens": 0,
+    "text_tokens": null,
+    "finish_reason": "stop",
+    "visible_output_chars": 1477,
+    "est_cost_usd": 0.0022099499999999996,
+    "http_ok": true,
+    "empty_content": false
+  }
+}

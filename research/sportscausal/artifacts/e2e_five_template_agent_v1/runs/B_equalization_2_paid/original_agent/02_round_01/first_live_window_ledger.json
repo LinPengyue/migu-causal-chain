@@ -1,0 +1,65 @@
+{
+  "schema": "v3a_first_live_window_ledger_v1",
+  "source_sha": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa",
+  "windows": [
+    {
+      "key": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa|5577.630:5593.630",
+      "source_sha": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa",
+      "source_pts_start": 5577.63,
+      "source_pts_end": 5593.63,
+      "status": "NOT_VERIFIED",
+      "binding_status": "BINDING_INVALID",
+      "first_live_status": "NOT_VERIFIED",
+      "method": "unverified_new_window",
+      "segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_01",
+      "claimed_status": "NOT_VERIFIED",
+      "candidate_class": "unbound_or_invalid",
+      "validation": {
+        "ok": false,
+        "binding_valid": false,
+        "first_live_verified": false,
+        "replay_confirmed": false,
+        "reason": "missing_evidence_record",
+        "manifest_digest": null,
+        "frame_sha256": null,
+        "method": "frame_binding_only"
+      },
+      "validated_evidence": null,
+      "broadcast_timeline_review": null,
+      "origin": "apply_report"
+    },
+    {
+      "key": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa|5647.418:5657.158",
+      "source_sha": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa",
+      "source_pts_start": 5647.418,
+      "source_pts_end": 5657.158,
+      "status": "NOT_VERIFIED",
+      "binding_status": "BINDING_INVALID",
+      "first_live_status": "NOT_VERIFIED",
+      "method": "unverified_new_window",
+      "segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_02",
+      "claimed_status": "NOT_VERIFIED",
+      "candidate_class": "unbound_or_invalid",
+      "validation": {
+        "ok": false,
+        "binding_valid": false,
+        "first_live_verified": false,
+        "replay_confirmed": false,
+        "reason": "missing_evidence_record",
+        "manifest_digest": null,
+        "frame_sha256": null,
+        "method": "frame_binding_only"
+      },
+      "validated_evidence": null,
+      "broadcast_timeline_review": null,
+      "origin": "apply_report"
+    }
+  ],
+  "n_windows": 2,
+  "all_windows_verified": false,
+  "any_window_unverified": true,
+  "any_replay_confirmed": false,
+  "any_frame_bound_pending_timeline": false,
+  "aggregate_status": "NOT_VERIFIED",
+  "note": "FRAME_BOUND_VALID ≠ FIRST_LIVE_VERIFIED. Hard-safety PASS needs independent broadcast-timeline review on every new window; binding-only stays UNKNOWN; REPLAY_CONFIRMED ⇒ FAIL."
+}

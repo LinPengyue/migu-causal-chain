@@ -1,0 +1,1290 @@
+{
+  "schema": "v3a_story_diagnosis_v1",
+  "critic_mode": "structural_plus_file_probes+semantic_hypothesis_layer",
+  "inputs": {
+    "initial_story_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/01_initial_story/story_clean.mp4",
+    "source_video": "/mnt/data4/migu/2022年11月23日 法国vs澳大利亚.mp4",
+    "story_mp4_duration_sec": 16.789,
+    "plan_role_hints": [
+      "set_piece_execution",
+      "story_context",
+      "scoring_goal_action",
+      "set_piece_execution",
+      "context",
+      "scoring_goal_action"
+    ]
+  },
+  "timeline": {
+    "schema": "v3a_story_timeline_v1",
+    "story_duration_sec": 16.667,
+    "media_duration_sec": 16.667,
+    "placeholder_duration_sec": 0.0,
+    "segment_count": 3,
+    "media_segment_count": 3,
+    "placeholder_segment_count": 0,
+    "segments": [
+      {
+        "index": 0,
+        "segment_id": "seg:1",
+        "role": "set_piece_execution",
+        "beat": "set_piece_execution",
+        "story_in": 0.0,
+        "story_out": 9.91,
+        "duration_sec": 9.91,
+        "media_in": 2393.95,
+        "media_out": 2403.86,
+        "has_media_window": true,
+        "is_placeholder": false,
+        "placeholder_sec": null,
+        "is_replay": false,
+        "first_live_status": "NOT_VERIFIED",
+        "shot_kind": "live"
+      },
+      {
+        "index": 1,
+        "segment_id": "seg:2",
+        "role": "story_context",
+        "beat": "story_context",
+        "story_in": 9.91,
+        "story_out": 11.91,
+        "duration_sec": 2.0,
+        "media_in": 2405.195,
+        "media_out": 2407.195,
+        "has_media_window": true,
+        "is_placeholder": false,
+        "placeholder_sec": null,
+        "is_replay": false,
+        "first_live_status": "NOT_VERIFIED",
+        "shot_kind": "live"
+      },
+      {
+        "index": 2,
+        "segment_id": "seg:3",
+        "role": "scoring_goal_action",
+        "beat": "scoring_goal_action",
+        "story_in": 11.91,
+        "story_out": 16.667,
+        "duration_sec": 4.757,
+        "media_in": 2407.334,
+        "media_out": 2412.091,
+        "has_media_window": true,
+        "is_placeholder": false,
+        "placeholder_sec": null,
+        "is_replay": false,
+        "first_live_status": "NOT_VERIFIED",
+        "shot_kind": "live"
+      }
+    ],
+    "note": "story_duration_sec includes placeholder title cards using placeholder_sec (or renderer default 2.5s). Compare MP4 duration to story_duration_sec, not media_duration_sec alone."
+  },
+  "coverage": {
+    "has_title_open": false,
+    "has_opponent_opening": false,
+    "has_deficit_or_setup": false,
+    "has_equalizer": false,
+    "has_go_ahead": false,
+    "has_wrap_or_close": false,
+    "roles": [
+      "set_piece_execution",
+      "story_context",
+      "scoring_goal_action"
+    ]
+  },
+  "protected_goal_segment_ids": [
+    "seg:3"
+  ],
+  "issues": [],
+  "notes": [
+    "story_mp4_duration=16.789s timeline_media=16.667s delta=0.122s"
+  ],
+  "disclaimer": "Structural/file probes are not multimodal story understanding. Issues marked needs_video_verify require layered video observation before revision.",
+  "r3_story_context": {
+    "schema": "r3_agent_story_context_v1",
+    "template_id": "set_piece_breakthrough",
+    "category": "关键转折故事链",
+    "subtype": "定位球战术执行与破局",
+    "narrative_goal": [
+      "定位球到比分结果的有序关系路径候选"
+    ],
+    "subjects": [
+      "team_1"
+    ],
+    "teams": {
+      "team_1": {
+        "name": "法国",
+        "color": "蓝色"
+      },
+      "team_2": {
+        "name": "澳大利亚",
+        "color": "黄色"
+      }
+    },
+    "goal_targets": [
+      {
+        "node_id": "outcome",
+        "score_before": "0:1",
+        "score_after": "1:1",
+        "confirmation_t_sec": 2513.29,
+        "action_t_sec": 2410.091,
+        "event_id": "atom_fill_0019_Goal_2410091"
+      }
+    ],
+    "required_nodes": [
+      {
+        "node_id": "start",
+        "type": "anchor",
+        "role": "set_piece_execution",
+        "actor": "team_1",
+        "score": null,
+        "segment_ids": [
+          "seg:1"
+        ]
+      },
+      {
+        "node_id": "path_context",
+        "type": "context",
+        "role": "context",
+        "actor": null,
+        "score": null,
+        "segment_ids": [
+          "seg:1",
+          "seg:2",
+          "seg:3"
+        ]
+      },
+      {
+        "node_id": "outcome",
+        "type": "anchor",
+        "role": "scoring_goal_action",
+        "actor": "team_1",
+        "score": null,
+        "segment_ids": [
+          "seg:3"
+        ]
+      }
+    ],
+    "chain_ids": [
+      "pred_0016",
+      "pred_0017",
+      "pred_0018",
+      "v3_outcome_0069"
+    ],
+    "observation_task_ids": [
+      "observe:2",
+      "observe:r2bc:set_piece_breakthrough:1"
+    ],
+    "causal_relations_are_hypotheses": true
+  },
+  "protected_story_segment_ids": [
+    "seg:1",
+    "seg:2",
+    "seg:3"
+  ],
+  "r3_scope_audit": {
+    "excluded_legacy_issues": [
+      {
+        "issue_id": "goal_coverage_00_to_01",
+        "reason": "score_transition_outside_story_goal"
+      },
+      {
+        "issue_id": "goal_coverage_11_to_21",
+        "reason": "score_transition_outside_story_goal"
+      },
+      {
+        "issue_id": "goal_coverage_21_to_31",
+        "reason": "score_transition_outside_story_goal"
+      },
+      {
+        "issue_id": "goal_coverage_31_to_41",
+        "reason": "score_transition_outside_story_goal"
+      }
+    ],
+    "goal_targets": [
+      {
+        "node_id": "outcome",
+        "score_before": "0:1",
+        "score_after": "1:1",
+        "confirmation_t_sec": 2513.29,
+        "action_t_sec": 2410.091,
+        "event_id": "atom_fill_0019_Goal_2410091"
+      }
+    ],
+    "missing_goal_tasks_without_native_issue": [],
+    "original_goal_recovery_algorithm_unchanged": true
+  },
+  "agent_narrative_graph": {
+    "schema": "v3a_agent_inferred_narrative_graph_v1",
+    "data_role": "AGENT_INFERRED",
+    "edl_sha256": "8e4add32769affa4f8bd730b5570a33206ccbb2591af3d32d76b469dce555890",
+    "source_sha256": "67462dbafb7aa73240230aacce4aa07cc61b6cd60c7f7d59fc60f9b023e6e978",
+    "story_plan_sha256": "981b8c354f6e0b1785d7b72b243214d2e3bce464fb24d3ec2d3c5eb741643a91",
+    "story_goal_hint": "定位球战术执行与破局",
+    "nodes": [
+      {
+        "node_id": "edl:seg:1",
+        "segment_id": "seg:1",
+        "role_hint": "set_piece_execution",
+        "narrative_slot_hint": "other",
+        "story_time_range": [
+          0.0,
+          9.91
+        ],
+        "source_window": [
+          2393.95,
+          2403.86
+        ],
+        "event_ids": [
+          "event_000080",
+          "event_000081"
+        ],
+        "short_chain_ids": [
+          "pred_0016",
+          "pred_0017",
+          "pred_0018",
+          "v3_outcome_0069"
+        ],
+        "typed_reference_provenance": [
+          {
+            "ref_type": "atom_event",
+            "ref_id": "event_000080",
+            "raw_source_ref": "event_000080",
+            "extraction": "explicit_edl_or_plan_event_id",
+            "validated_against_event_inventory": false
+          },
+          {
+            "ref_type": "atom_event",
+            "ref_id": "event_000081",
+            "raw_source_ref": "event_000081",
+            "extraction": "explicit_edl_or_plan_event_id",
+            "validated_against_event_inventory": false
+          },
+          {
+            "ref_type": "predicted_short_chain",
+            "ref_id": "pred_0016",
+            "raw_source_ref": "pred_0016",
+            "extraction": "explicit_edl_or_plan_short_chain_id",
+            "validated_against_short_chain_inventory": false
+          },
+          {
+            "ref_type": "predicted_short_chain",
+            "ref_id": "pred_0017",
+            "raw_source_ref": "pred_0017",
+            "extraction": "explicit_edl_or_plan_short_chain_id",
+            "validated_against_short_chain_inventory": false
+          },
+          {
+            "ref_type": "predicted_short_chain",
+            "ref_id": "pred_0018",
+            "raw_source_ref": "pred_0018",
+            "extraction": "explicit_edl_or_plan_short_chain_id",
+            "validated_against_short_chain_inventory": false
+          },
+          {
+            "ref_type": "predicted_short_chain",
+            "ref_id": "v3_outcome_0069",
+            "raw_source_ref": "v3_outcome_0069",
+            "extraction": "explicit_edl_or_plan_short_chain_id",
+            "validated_against_short_chain_inventory": false
+          }
+        ],
+        "unclassified_source_refs": [],
+        "source_binding": "EDL_WINDOW_NOT_LIVE_VERIFIED",
+        "semantic_status": "UNOBSERVED_ROLE_HYPOTHESIS",
+        "protected_goal_action_hint": false
+      },
+      {
+        "node_id": "edl:seg:2",
+        "segment_id": "seg:2",
+        "role_hint": "story_context",
+        "narrative_slot_hint": "other",
+        "story_time_range": [
+          9.91,
+          11.91
+        ],
+        "source_window": [
+          2405.195,
+          2407.195
+        ],
+        "event_ids": [
+          "atom_fill_0015_Pass_2405195"
+        ],
+        "short_chain_ids": [
+          "pred_0016",
+          "pred_0017",
+          "pred_0018",
+          "v3_outcome_0069"
+        ],
+        "typed_reference_provenance": [
+          {
+            "ref_type": "atom_event",
+            "ref_id": "atom_fill_0015_Pass_2405195",
+            "raw_source_ref": "atom_fill_0015_Pass_2405195",
+            "extraction": "explicit_edl_or_plan_event_id",
+            "validated_against_event_inventory": false
+          },
+          {
+            "ref_type": "predicted_short_chain",
+            "ref_id": "pred_0016",
+            "raw_source_ref": "pred_0016",
+            "extraction": "explicit_edl_or_plan_short_chain_id",
+            "validated_against_short_chain_inventory": false
+          },
+          {
+            "ref_type": "predicted_short_chain",
+            "ref_id": "pred_0017",
+            "raw_source_ref": "pred_0017",
+            "extraction": "explicit_edl_or_plan_short_chain_id",
+            "validated_against_short_chain_inventory": false
+          },
+          {
+            "ref_type": "predicted_short_chain",
+            "ref_id": "pred_0018",
+            "raw_source_ref": "pred_0018",
+            "extraction": "explicit_edl_or_plan_short_chain_id",
+            "validated_against_short_chain_inventory": false
+          },
+          {
+            "ref_type": "predicted_short_chain",
+            "ref_id": "v3_outcome_0069",
+            "raw_source_ref": "v3_outcome_0069",
+            "extraction": "explicit_edl_or_plan_short_chain_id",
+            "validated_against_short_chain_inventory": false
+          }
+        ],
+        "unclassified_source_refs": [],
+        "source_binding": "EDL_WINDOW_NOT_LIVE_VERIFIED",
+        "semantic_status": "UNOBSERVED_ROLE_HYPOTHESIS",
+        "protected_goal_action_hint": false
+      },
+      {
+        "node_id": "edl:seg:3",
+        "segment_id": "seg:3",
+        "role_hint": "scoring_goal_action",
+        "narrative_slot_hint": "climax",
+        "story_time_range": [
+          11.91,
+          16.667
+        ],
+        "source_window": [
+          2407.334,
+          2412.091
+        ],
+        "event_ids": [
+          "atom_fill_0016_Assist_2407334",
+          "atom_fill_0017_Pass_2407522",
+          "atom_fill_0018_Shot_2409235",
+          "atom_fill_0019_Goal_2410091"
+        ],
+        "short_chain_ids": [
+          "pred_0016",
+          "pred_0017",
+          "pred_0018",
+          "v3_outcome_0069"
+        ],
+        "typed_reference_provenance": [
+          {
+            "ref_type": "atom_event",
+            "ref_id": "atom_fill_0016_Assist_2407334",
+            "raw_source_ref": "atom_fill_0016_Assist_2407334",
+            "extraction": "explicit_edl_or_plan_event_id",
+            "validated_against_event_inventory": false
+          },
+          {
+            "ref_type": "atom_event",
+            "ref_id": "atom_fill_0017_Pass_2407522",
+            "raw_source_ref": "atom_fill_0017_Pass_2407522",
+            "extraction": "explicit_edl_or_plan_event_id",
+            "validated_against_event_inventory": false
+          },
+          {
+            "ref_type": "atom_event",
+            "ref_id": "atom_fill_0018_Shot_2409235",
+            "raw_source_ref": "atom_fill_0018_Shot_2409235",
+            "extraction": "explicit_edl_or_plan_event_id",
+            "validated_against_event_inventory": false
+          },
+          {
+            "ref_type": "atom_event",
+            "ref_id": "atom_fill_0019_Goal_2410091",
+            "raw_source_ref": "atom_fill_0019_Goal_2410091",
+            "extraction": "explicit_edl_or_plan_event_id",
+            "validated_against_event_inventory": false
+          },
+          {
+            "ref_type": "predicted_short_chain",
+            "ref_id": "pred_0016",
+            "raw_source_ref": "pred_0016",
+            "extraction": "explicit_edl_or_plan_short_chain_id",
+            "validated_against_short_chain_inventory": false
+          },
+          {
+            "ref_type": "predicted_short_chain",
+            "ref_id": "pred_0017",
+            "raw_source_ref": "pred_0017",
+            "extraction": "explicit_edl_or_plan_short_chain_id",
+            "validated_against_short_chain_inventory": false
+          },
+          {
+            "ref_type": "predicted_short_chain",
+            "ref_id": "pred_0018",
+            "raw_source_ref": "pred_0018",
+            "extraction": "explicit_edl_or_plan_short_chain_id",
+            "validated_against_short_chain_inventory": false
+          },
+          {
+            "ref_type": "predicted_short_chain",
+            "ref_id": "v3_outcome_0069",
+            "raw_source_ref": "v3_outcome_0069",
+            "extraction": "explicit_edl_or_plan_short_chain_id",
+            "validated_against_short_chain_inventory": false
+          }
+        ],
+        "unclassified_source_refs": [],
+        "source_binding": "EDL_WINDOW_NOT_LIVE_VERIFIED",
+        "semantic_status": "UNOBSERVED_ROLE_HYPOTHESIS",
+        "protected_goal_action_hint": true
+      }
+    ],
+    "edges": [
+      {
+        "edge_id": "adj:ad0c1deba694a1f1",
+        "from_node": "edl:seg:1",
+        "to_node": "edl:seg:2",
+        "relation": "editorial_adjacency",
+        "relation_status": "EDL_ORDER_ONLY",
+        "narrative_transition_hypothesis": false,
+        "narrative_evidence_status": "NOT_REVIEWED",
+        "semantic_evidence": [],
+        "is_match_causal_claim": false
+      },
+      {
+        "edge_id": "adj:505f992bf4c39913",
+        "from_node": "edl:seg:2",
+        "to_node": "edl:seg:3",
+        "relation": "editorial_adjacency",
+        "relation_status": "EDL_ORDER_ONLY",
+        "narrative_transition_hypothesis": false,
+        "narrative_evidence_status": "NOT_REVIEWED",
+        "semantic_evidence": [],
+        "is_match_causal_claim": false
+      }
+    ],
+    "evidence_links": [
+      {
+        "from_node": "event:event_000080",
+        "to_node": "edl:seg:1",
+        "relation": "referenced_as_story_material",
+        "relation_status": "INPUT_REFERENCE_ONLY",
+        "raw_source_ref": "event_000080",
+        "extraction": "explicit_edl_or_plan_event_id",
+        "validated_against_source_inventory": false,
+        "is_match_causal_claim": false
+      },
+      {
+        "from_node": "event:event_000081",
+        "to_node": "edl:seg:1",
+        "relation": "referenced_as_story_material",
+        "relation_status": "INPUT_REFERENCE_ONLY",
+        "raw_source_ref": "event_000081",
+        "extraction": "explicit_edl_or_plan_event_id",
+        "validated_against_source_inventory": false,
+        "is_match_causal_claim": false
+      },
+      {
+        "from_node": "short_chain:pred_0016",
+        "to_node": "edl:seg:1",
+        "relation": "referenced_as_story_material",
+        "relation_status": "INPUT_REFERENCE_ONLY",
+        "raw_source_ref": "pred_0016",
+        "extraction": "explicit_edl_or_plan_short_chain_id",
+        "validated_against_source_inventory": false,
+        "is_match_causal_claim": false
+      },
+      {
+        "from_node": "short_chain:pred_0017",
+        "to_node": "edl:seg:1",
+        "relation": "referenced_as_story_material",
+        "relation_status": "INPUT_REFERENCE_ONLY",
+        "raw_source_ref": "pred_0017",
+        "extraction": "explicit_edl_or_plan_short_chain_id",
+        "validated_against_source_inventory": false,
+        "is_match_causal_claim": false
+      },
+      {
+        "from_node": "short_chain:pred_0018",
+        "to_node": "edl:seg:1",
+        "relation": "referenced_as_story_material",
+        "relation_status": "INPUT_REFERENCE_ONLY",
+        "raw_source_ref": "pred_0018",
+        "extraction": "explicit_edl_or_plan_short_chain_id",
+        "validated_against_source_inventory": false,
+        "is_match_causal_claim": false
+      },
+      {
+        "from_node": "short_chain:v3_outcome_0069",
+        "to_node": "edl:seg:1",
+        "relation": "referenced_as_story_material",
+        "relation_status": "INPUT_REFERENCE_ONLY",
+        "raw_source_ref": "v3_outcome_0069",
+        "extraction": "explicit_edl_or_plan_short_chain_id",
+        "validated_against_source_inventory": false,
+        "is_match_causal_claim": false
+      },
+      {
+        "from_node": "event:atom_fill_0015_Pass_2405195",
+        "to_node": "edl:seg:2",
+        "relation": "referenced_as_story_material",
+        "relation_status": "INPUT_REFERENCE_ONLY",
+        "raw_source_ref": "atom_fill_0015_Pass_2405195",
+        "extraction": "explicit_edl_or_plan_event_id",
+        "validated_against_source_inventory": false,
+        "is_match_causal_claim": false
+      },
+      {
+        "from_node": "short_chain:pred_0016",
+        "to_node": "edl:seg:2",
+        "relation": "referenced_as_story_material",
+        "relation_status": "INPUT_REFERENCE_ONLY",
+        "raw_source_ref": "pred_0016",
+        "extraction": "explicit_edl_or_plan_short_chain_id",
+        "validated_against_source_inventory": false,
+        "is_match_causal_claim": false
+      },
+      {
+        "from_node": "short_chain:pred_0017",
+        "to_node": "edl:seg:2",
+        "relation": "referenced_as_story_material",
+        "relation_status": "INPUT_REFERENCE_ONLY",
+        "raw_source_ref": "pred_0017",
+        "extraction": "explicit_edl_or_plan_short_chain_id",
+        "validated_against_source_inventory": false,
+        "is_match_causal_claim": false
+      },
+      {
+        "from_node": "short_chain:pred_0018",
+        "to_node": "edl:seg:2",
+        "relation": "referenced_as_story_material",
+        "relation_status": "INPUT_REFERENCE_ONLY",
+        "raw_source_ref": "pred_0018",
+        "extraction": "explicit_edl_or_plan_short_chain_id",
+        "validated_against_source_inventory": false,
+        "is_match_causal_claim": false
+      },
+      {
+        "from_node": "short_chain:v3_outcome_0069",
+        "to_node": "edl:seg:2",
+        "relation": "referenced_as_story_material",
+        "relation_status": "INPUT_REFERENCE_ONLY",
+        "raw_source_ref": "v3_outcome_0069",
+        "extraction": "explicit_edl_or_plan_short_chain_id",
+        "validated_against_source_inventory": false,
+        "is_match_causal_claim": false
+      },
+      {
+        "from_node": "event:atom_fill_0016_Assist_2407334",
+        "to_node": "edl:seg:3",
+        "relation": "referenced_as_story_material",
+        "relation_status": "INPUT_REFERENCE_ONLY",
+        "raw_source_ref": "atom_fill_0016_Assist_2407334",
+        "extraction": "explicit_edl_or_plan_event_id",
+        "validated_against_source_inventory": false,
+        "is_match_causal_claim": false
+      },
+      {
+        "from_node": "event:atom_fill_0017_Pass_2407522",
+        "to_node": "edl:seg:3",
+        "relation": "referenced_as_story_material",
+        "relation_status": "INPUT_REFERENCE_ONLY",
+        "raw_source_ref": "atom_fill_0017_Pass_2407522",
+        "extraction": "explicit_edl_or_plan_event_id",
+        "validated_against_source_inventory": false,
+        "is_match_causal_claim": false
+      },
+      {
+        "from_node": "event:atom_fill_0018_Shot_2409235",
+        "to_node": "edl:seg:3",
+        "relation": "referenced_as_story_material",
+        "relation_status": "INPUT_REFERENCE_ONLY",
+        "raw_source_ref": "atom_fill_0018_Shot_2409235",
+        "extraction": "explicit_edl_or_plan_event_id",
+        "validated_against_source_inventory": false,
+        "is_match_causal_claim": false
+      },
+      {
+        "from_node": "event:atom_fill_0019_Goal_2410091",
+        "to_node": "edl:seg:3",
+        "relation": "referenced_as_story_material",
+        "relation_status": "INPUT_REFERENCE_ONLY",
+        "raw_source_ref": "atom_fill_0019_Goal_2410091",
+        "extraction": "explicit_edl_or_plan_event_id",
+        "validated_against_source_inventory": false,
+        "is_match_causal_claim": false
+      },
+      {
+        "from_node": "short_chain:pred_0016",
+        "to_node": "edl:seg:3",
+        "relation": "referenced_as_story_material",
+        "relation_status": "INPUT_REFERENCE_ONLY",
+        "raw_source_ref": "pred_0016",
+        "extraction": "explicit_edl_or_plan_short_chain_id",
+        "validated_against_source_inventory": false,
+        "is_match_causal_claim": false
+      },
+      {
+        "from_node": "short_chain:pred_0017",
+        "to_node": "edl:seg:3",
+        "relation": "referenced_as_story_material",
+        "relation_status": "INPUT_REFERENCE_ONLY",
+        "raw_source_ref": "pred_0017",
+        "extraction": "explicit_edl_or_plan_short_chain_id",
+        "validated_against_source_inventory": false,
+        "is_match_causal_claim": false
+      },
+      {
+        "from_node": "short_chain:pred_0018",
+        "to_node": "edl:seg:3",
+        "relation": "referenced_as_story_material",
+        "relation_status": "INPUT_REFERENCE_ONLY",
+        "raw_source_ref": "pred_0018",
+        "extraction": "explicit_edl_or_plan_short_chain_id",
+        "validated_against_source_inventory": false,
+        "is_match_causal_claim": false
+      },
+      {
+        "from_node": "short_chain:v3_outcome_0069",
+        "to_node": "edl:seg:3",
+        "relation": "referenced_as_story_material",
+        "relation_status": "INPUT_REFERENCE_ONLY",
+        "raw_source_ref": "v3_outcome_0069",
+        "extraction": "explicit_edl_or_plan_short_chain_id",
+        "validated_against_source_inventory": false,
+        "is_match_causal_claim": false
+      }
+    ],
+    "summary": {
+      "node_count": 3,
+      "edge_count": 2,
+      "event_or_short_chain_reference_links": 19,
+      "event_reference_links": 7,
+      "short_chain_prediction_reference_links": 12,
+      "unclassified_reference_count": 0,
+      "unreviewed_narrative_transitions": 0,
+      "model_reviewed_transitions": 0
+    },
+    "limitations": [
+      "EDL adjacency/role annotations are not verified match causality or narrative quality.",
+      "Embedded causal:pred_*:atom_fill_* references yield unverified predicted-chain and atom pointers, NOT confirmed 18-class causal labels.",
+      "No Benchmark gold chain, annotated test EDL or human review is an Agent input.",
+      "This graph alone never confirms a story defect or authorizes an edit."
+    ],
+    "prior_graph_reused": false
+  },
+  "graph_observation_targets": [],
+  "layered_observations": {
+    "schema": "v3a_layered_story_observe_v1",
+    "fixture_or_offline": true,
+    "semantic_provider_used": false,
+    "observation_methods": [
+      "global_ordered_multi_frame_spans",
+      "paragraph_ordered_frames",
+      "local_source_boundary_frames"
+    ],
+    "claims_full_video_watch": false,
+    "disclaimer": "Observation uses time-ordered multi-frame sampling and/or short spans. Unless a video-native provider ingested continuous footage, this is not full-video watching. Do not equate sparse frames with complete story comprehension.",
+    "layers": {
+      "global": {
+        "scope": "finished_story_mp4",
+        "story_duration_sec": 16.667,
+        "sample_spans_story_sec": [
+          {
+            "start": 0.0,
+            "end": 8.0
+          },
+          {
+            "start": 5.83345,
+            "end": 9.166850000000002
+          },
+          {
+            "start": 12.000240000000002,
+            "end": 16.667
+          }
+        ],
+        "sample_times_story_sec": [
+          0.0,
+          2.667,
+          5.333,
+          8.0,
+          5.833,
+          6.945,
+          8.056,
+          9.167,
+          12.0,
+          13.556,
+          15.111,
+          16.667
+        ],
+        "frame_count": 12,
+        "frames": [
+          {
+            "frame_id": "f_0000_0",
+            "gap_id": "global_span_0",
+            "requested_media_sec": 0.0,
+            "actual_media_sec": 0.0,
+            "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/02_round_01/observe/global_frames/f_0000_0.jpg",
+            "tool": "story_layered_observe",
+            "pts_status": "pts",
+            "cached": false,
+            "match_logic_sec": null,
+            "match_logic_status": "uncalibrated",
+            "media_start_time_sec": 0.0,
+            "width": 1280,
+            "height": 720,
+            "story_sec": 0.0,
+            "segment_id": "seg:1",
+            "sample_provenance": "global_finished_cut"
+          },
+          {
+            "frame_id": "f_0001_2667",
+            "gap_id": "global_span_0",
+            "requested_media_sec": 2.6666666666666665,
+            "actual_media_sec": 2.68,
+            "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/02_round_01/observe/global_frames/f_0001_2667.jpg",
+            "tool": "story_layered_observe",
+            "pts_status": "pts",
+            "cached": false,
+            "match_logic_sec": null,
+            "match_logic_status": "uncalibrated",
+            "media_start_time_sec": 0.0,
+            "width": 1280,
+            "height": 720,
+            "story_sec": 2.667,
+            "segment_id": "seg:1",
+            "sample_provenance": "global_finished_cut"
+          },
+          {
+            "frame_id": "f_0002_5333",
+            "gap_id": "global_span_0",
+            "requested_media_sec": 5.333333333333333,
+            "actual_media_sec": 5.36,
+            "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/02_round_01/observe/global_frames/f_0002_5333.jpg",
+            "tool": "story_layered_observe",
+            "pts_status": "pts",
+            "cached": false,
+            "match_logic_sec": null,
+            "match_logic_status": "uncalibrated",
+            "media_start_time_sec": 0.0,
+            "width": 1280,
+            "height": 720,
+            "story_sec": 5.333,
+            "segment_id": "seg:1",
+            "sample_provenance": "global_finished_cut"
+          },
+          {
+            "frame_id": "f_0003_8000",
+            "gap_id": "global_span_0",
+            "requested_media_sec": 8.0,
+            "actual_media_sec": 8.0,
+            "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/02_round_01/observe/global_frames/f_0003_8000.jpg",
+            "tool": "story_layered_observe",
+            "pts_status": "pts",
+            "cached": false,
+            "match_logic_sec": null,
+            "match_logic_status": "uncalibrated",
+            "media_start_time_sec": 0.0,
+            "width": 1280,
+            "height": 720,
+            "story_sec": 8.0,
+            "segment_id": "seg:1",
+            "sample_provenance": "global_finished_cut"
+          },
+          {
+            "frame_id": "f_0004_5833",
+            "gap_id": "global_span_1",
+            "requested_media_sec": 5.83345,
+            "actual_media_sec": 5.84,
+            "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/02_round_01/observe/global_frames/f_0004_5833.jpg",
+            "tool": "story_layered_observe",
+            "pts_status": "pts",
+            "cached": false,
+            "match_logic_sec": null,
+            "match_logic_status": "uncalibrated",
+            "media_start_time_sec": 0.0,
+            "width": 1280,
+            "height": 720,
+            "story_sec": 5.833,
+            "segment_id": "seg:1",
+            "sample_provenance": "global_finished_cut"
+          },
+          {
+            "frame_id": "f_0005_6945",
+            "gap_id": "global_span_1",
+            "requested_media_sec": 6.944583333333334,
+            "actual_media_sec": 6.96,
+            "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/02_round_01/observe/global_frames/f_0005_6945.jpg",
+            "tool": "story_layered_observe",
+            "pts_status": "pts",
+            "cached": false,
+            "match_logic_sec": null,
+            "match_logic_status": "uncalibrated",
+            "media_start_time_sec": 0.0,
+            "width": 1280,
+            "height": 720,
+            "story_sec": 6.945,
+            "segment_id": "seg:1",
+            "sample_provenance": "global_finished_cut"
+          },
+          {
+            "frame_id": "f_0006_8056",
+            "gap_id": "global_span_1",
+            "requested_media_sec": 8.055716666666669,
+            "actual_media_sec": 8.08,
+            "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/02_round_01/observe/global_frames/f_0006_8056.jpg",
+            "tool": "story_layered_observe",
+            "pts_status": "pts",
+            "cached": false,
+            "match_logic_sec": null,
+            "match_logic_status": "uncalibrated",
+            "media_start_time_sec": 0.0,
+            "width": 1280,
+            "height": 720,
+            "story_sec": 8.056,
+            "segment_id": "seg:1",
+            "sample_provenance": "global_finished_cut"
+          },
+          {
+            "frame_id": "f_0007_9167",
+            "gap_id": "global_span_1",
+            "requested_media_sec": 9.166850000000002,
+            "actual_media_sec": 9.2,
+            "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/02_round_01/observe/global_frames/f_0007_9167.jpg",
+            "tool": "story_layered_observe",
+            "pts_status": "pts",
+            "cached": false,
+            "match_logic_sec": null,
+            "match_logic_status": "uncalibrated",
+            "media_start_time_sec": 0.0,
+            "width": 1280,
+            "height": 720,
+            "story_sec": 9.167,
+            "segment_id": "seg:1",
+            "sample_provenance": "global_finished_cut"
+          },
+          {
+            "frame_id": "f_0008_12000",
+            "gap_id": "global_span_2",
+            "requested_media_sec": 12.000240000000002,
+            "actual_media_sec": 12.0,
+            "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/02_round_01/observe/global_frames/f_0008_12000.jpg",
+            "tool": "story_layered_observe",
+            "pts_status": "pts",
+            "cached": false,
+            "match_logic_sec": null,
+            "match_logic_status": "uncalibrated",
+            "media_start_time_sec": 0.0,
+            "width": 1280,
+            "height": 720,
+            "story_sec": 12.0,
+            "segment_id": "seg:3",
+            "sample_provenance": "global_finished_cut"
+          },
+          {
+            "frame_id": "f_0009_13556",
+            "gap_id": "global_span_2",
+            "requested_media_sec": 13.555826666666668,
+            "actual_media_sec": 13.56,
+            "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/02_round_01/observe/global_frames/f_0009_13556.jpg",
+            "tool": "story_layered_observe",
+            "pts_status": "pts",
+            "cached": false,
+            "match_logic_sec": null,
+            "match_logic_status": "uncalibrated",
+            "media_start_time_sec": 0.0,
+            "width": 1280,
+            "height": 720,
+            "story_sec": 13.556,
+            "segment_id": "seg:3",
+            "sample_provenance": "global_finished_cut"
+          },
+          {
+            "frame_id": "f_0010_15111",
+            "gap_id": "global_span_2",
+            "requested_media_sec": 15.111413333333335,
+            "actual_media_sec": 15.12,
+            "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/02_round_01/observe/global_frames/f_0010_15111.jpg",
+            "tool": "story_layered_observe",
+            "pts_status": "pts",
+            "cached": false,
+            "match_logic_sec": null,
+            "match_logic_status": "uncalibrated",
+            "media_start_time_sec": 0.0,
+            "width": 1280,
+            "height": 720,
+            "story_sec": 15.111,
+            "segment_id": "seg:3",
+            "sample_provenance": "global_finished_cut"
+          },
+          {
+            "frame_id": "f_0011_16289",
+            "gap_id": "global_span_2",
+            "requested_media_sec": 16.289,
+            "actual_media_sec": 16.32,
+            "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/02_round_01/observe/global_frames/f_0011_16289.jpg",
+            "tool": "story_layered_observe",
+            "pts_status": "pts",
+            "cached": false,
+            "match_logic_sec": null,
+            "match_logic_status": "uncalibrated",
+            "media_start_time_sec": 0.0,
+            "width": 1280,
+            "height": 720,
+            "story_sec": 16.667,
+            "segment_id": "seg:3",
+            "sample_provenance": "global_finished_cut"
+          }
+        ],
+        "frame_budget_exhausted": false,
+        "errors": null,
+        "observation_method": "ordered_multi_frame_spans",
+        "claims_full_video_watch": false,
+        "note": "Global layer samples open/mid/late contiguous spans of the finished cut; not equivalent to watching every frame. FrameBudgetExhausted is soft-fail."
+      },
+      "paragraph": [
+        {
+          "issue_id": "targeted_post_climax_tail",
+          "category": "ending",
+          "story_time_range": [
+            13.00026,
+            16.667
+          ],
+          "sample_times_story_sec": [
+            13.0,
+            13.734,
+            14.467,
+            15.2,
+            15.934,
+            16.667
+          ],
+          "frame_count": 6,
+          "frames": [
+            {
+              "frame_id": "f_0000_13000",
+              "gap_id": "para_targeted_post_climax_tail",
+              "requested_media_sec": 13.00026,
+              "actual_media_sec": 13.0,
+              "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/02_round_01/observe/paragraph_frames/f_0000_13000.jpg",
+              "tool": "story_layered_observe",
+              "pts_status": "pts",
+              "cached": false,
+              "match_logic_sec": null,
+              "match_logic_status": "uncalibrated",
+              "media_start_time_sec": 0.0,
+              "width": 1280,
+              "height": 720,
+              "story_sec": 13.0,
+              "segment_id": "seg:3",
+              "sample_provenance": "paragraph_finished_cut"
+            },
+            {
+              "frame_id": "f_0001_13734",
+              "gap_id": "para_targeted_post_climax_tail",
+              "requested_media_sec": 13.733608,
+              "actual_media_sec": 13.76,
+              "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/02_round_01/observe/paragraph_frames/f_0001_13734.jpg",
+              "tool": "story_layered_observe",
+              "pts_status": "pts",
+              "cached": false,
+              "match_logic_sec": null,
+              "match_logic_status": "uncalibrated",
+              "media_start_time_sec": 0.0,
+              "width": 1280,
+              "height": 720,
+              "story_sec": 13.734,
+              "segment_id": "seg:3",
+              "sample_provenance": "paragraph_finished_cut"
+            },
+            {
+              "frame_id": "f_0002_14467",
+              "gap_id": "para_targeted_post_climax_tail",
+              "requested_media_sec": 14.466956000000001,
+              "actual_media_sec": 14.48,
+              "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/02_round_01/observe/paragraph_frames/f_0002_14467.jpg",
+              "tool": "story_layered_observe",
+              "pts_status": "pts",
+              "cached": false,
+              "match_logic_sec": null,
+              "match_logic_status": "uncalibrated",
+              "media_start_time_sec": 0.0,
+              "width": 1280,
+              "height": 720,
+              "story_sec": 14.467,
+              "segment_id": "seg:3",
+              "sample_provenance": "paragraph_finished_cut"
+            },
+            {
+              "frame_id": "f_0003_15200",
+              "gap_id": "para_targeted_post_climax_tail",
+              "requested_media_sec": 15.200304000000001,
+              "actual_media_sec": 15.2,
+              "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/02_round_01/observe/paragraph_frames/f_0003_15200.jpg",
+              "tool": "story_layered_observe",
+              "pts_status": "pts",
+              "cached": false,
+              "match_logic_sec": null,
+              "match_logic_status": "uncalibrated",
+              "media_start_time_sec": 0.0,
+              "width": 1280,
+              "height": 720,
+              "story_sec": 15.2,
+              "segment_id": "seg:3",
+              "sample_provenance": "paragraph_finished_cut"
+            },
+            {
+              "frame_id": "f_0004_15934",
+              "gap_id": "para_targeted_post_climax_tail",
+              "requested_media_sec": 15.933652000000002,
+              "actual_media_sec": 15.96,
+              "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/02_round_01/observe/paragraph_frames/f_0004_15934.jpg",
+              "tool": "story_layered_observe",
+              "pts_status": "pts",
+              "cached": false,
+              "match_logic_sec": null,
+              "match_logic_status": "uncalibrated",
+              "media_start_time_sec": 0.0,
+              "width": 1280,
+              "height": 720,
+              "story_sec": 15.934,
+              "segment_id": "seg:3",
+              "sample_provenance": "paragraph_finished_cut"
+            },
+            {
+              "frame_id": "f_0005_16289",
+              "gap_id": "para_targeted_post_climax_tail",
+              "requested_media_sec": 16.289,
+              "actual_media_sec": 16.32,
+              "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/02_round_01/observe/paragraph_frames/f_0005_16289.jpg",
+              "tool": "story_layered_observe",
+              "pts_status": "pts",
+              "cached": false,
+              "match_logic_sec": null,
+              "match_logic_status": "uncalibrated",
+              "media_start_time_sec": 0.0,
+              "width": 1280,
+              "height": 720,
+              "story_sec": 16.667,
+              "segment_id": "seg:3",
+              "sample_provenance": "paragraph_finished_cut"
+            }
+          ],
+          "frame_budget_exhausted": false,
+          "error": null,
+          "observation_method": "ordered_multi_frame_paragraph",
+          "claims_full_video_watch": false
+        }
+      ],
+      "local": [
+        {
+          "segment_id": "seg:3",
+          "role": "scoring_goal_action",
+          "media_window": [
+            2407.334,
+            2412.091
+          ],
+          "story_time_range": [
+            11.91,
+            16.667
+          ],
+          "sample_times_media_sec": [
+            2407.634,
+            2409.712,
+            2411.791
+          ],
+          "frame_count": 3,
+          "frames": [
+            {
+              "frame_id": "f_0000_2407634",
+              "gap_id": "local_seg:3",
+              "requested_media_sec": 2407.634,
+              "actual_media_sec": 2407.64,
+              "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/02_round_01/observe/local_frames/f_0000_2407634.jpg",
+              "tool": "story_layered_observe",
+              "pts_status": "pts",
+              "cached": false,
+              "match_logic_sec": null,
+              "match_logic_status": "uncalibrated",
+              "media_start_time_sec": 0.0,
+              "width": 1920,
+              "height": 1080
+            },
+            {
+              "frame_id": "f_0001_2409712",
+              "gap_id": "local_seg:3",
+              "requested_media_sec": 2409.7124999999996,
+              "actual_media_sec": 2409.72,
+              "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/02_round_01/observe/local_frames/f_0001_2409712.jpg",
+              "tool": "story_layered_observe",
+              "pts_status": "pts",
+              "cached": false,
+              "match_logic_sec": null,
+              "match_logic_status": "uncalibrated",
+              "media_start_time_sec": 0.0,
+              "width": 1920,
+              "height": 1080
+            },
+            {
+              "frame_id": "f_0002_2411791",
+              "gap_id": "local_seg:3",
+              "requested_media_sec": 2411.7909999999997,
+              "actual_media_sec": 2411.8,
+              "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/FRA_set_piece_breakthrough_1_paid/original_agent/02_round_01/observe/local_frames/f_0002_2411791.jpg",
+              "tool": "story_layered_observe",
+              "pts_status": "pts",
+              "cached": false,
+              "match_logic_sec": null,
+              "match_logic_status": "uncalibrated",
+              "media_start_time_sec": 0.0,
+              "width": 1920,
+              "height": 1080
+            }
+          ],
+          "frame_budget_exhausted": false,
+          "error": null,
+          "observation_method": "ordered_boundary_and_mid_frames",
+          "claims_full_video_watch": false
+        }
+      ]
+    },
+    "vlm_results": [],
+    "derived_issues": [],
+    "story_to_media_map_sample": [
+      {
+        "segment_id": "seg:1",
+        "role": "set_piece_execution",
+        "story_sec": 0.0,
+        "media_sec": 2393.95,
+        "is_placeholder": false,
+        "segment": {
+          "index": 0,
+          "segment_id": "seg:1",
+          "role": "set_piece_execution",
+          "beat": "set_piece_execution",
+          "story_in": 0.0,
+          "story_out": 9.91,
+          "duration_sec": 9.91,
+          "media_in": 2393.95,
+          "media_out": 2403.86,
+          "has_media_window": true,
+          "is_placeholder": false,
+          "placeholder_sec": null,
+          "is_replay": false,
+          "first_live_status": "NOT_VERIFIED",
+          "shot_kind": "live"
+        }
+      },
+      {
+        "segment_id": "seg:1",
+        "role": "set_piece_execution",
+        "story_sec": 4.167,
+        "media_sec": 2398.117,
+        "is_placeholder": false,
+        "segment": {
+          "index": 0,
+          "segment_id": "seg:1",
+          "role": "set_piece_execution",
+          "beat": "set_piece_execution",
+          "story_in": 0.0,
+          "story_out": 9.91,
+          "duration_sec": 9.91,
+          "media_in": 2393.95,
+          "media_out": 2403.86,
+          "has_media_window": true,
+          "is_placeholder": false,
+          "placeholder_sec": null,
+          "is_replay": false,
+          "first_live_status": "NOT_VERIFIED",
+          "shot_kind": "live"
+        }
+      },
+      {
+        "segment_id": "seg:1",
+        "role": "set_piece_execution",
+        "story_sec": 8.334,
+        "media_sec": 2402.284,
+        "is_placeholder": false,
+        "segment": {
+          "index": 0,
+          "segment_id": "seg:1",
+          "role": "set_piece_execution",
+          "beat": "set_piece_execution",
+          "story_in": 0.0,
+          "story_out": 9.91,
+          "duration_sec": 9.91,
+          "media_in": 2393.95,
+          "media_out": 2403.86,
+          "has_media_window": true,
+          "is_placeholder": false,
+          "placeholder_sec": null,
+          "is_replay": false,
+          "first_live_status": "NOT_VERIFIED",
+          "shot_kind": "live"
+        }
+      },
+      {
+        "segment_id": "seg:3",
+        "role": "scoring_goal_action",
+        "story_sec": 12.5,
+        "media_sec": 2407.924,
+        "is_placeholder": false,
+        "segment": {
+          "index": 2,
+          "segment_id": "seg:3",
+          "role": "scoring_goal_action",
+          "beat": "scoring_goal_action",
+          "story_in": 11.91,
+          "story_out": 16.667,
+          "duration_sec": 4.757,
+          "media_in": 2407.334,
+          "media_out": 2412.091,
+          "has_media_window": true,
+          "is_placeholder": false,
+          "placeholder_sec": null,
+          "is_replay": false,
+          "first_live_status": "NOT_VERIFIED",
+          "shot_kind": "live"
+        }
+      },
+      {
+        "segment_id": "seg:3",
+        "role": "scoring_goal_action",
+        "story_sec": 16.667,
+        "media_sec": 2412.091,
+        "is_placeholder": false,
+        "segment": {
+          "index": 2,
+          "segment_id": "seg:3",
+          "role": "scoring_goal_action",
+          "beat": "scoring_goal_action",
+          "story_in": 11.91,
+          "story_out": 16.667,
+          "duration_sec": 4.757,
+          "media_in": 2407.334,
+          "media_out": 2412.091,
+          "has_media_window": true,
+          "is_placeholder": false,
+          "placeholder_sec": null,
+          "is_replay": false,
+          "first_live_status": "NOT_VERIFIED",
+          "shot_kind": "live"
+        }
+      }
+    ]
+  },
+  "story_diagnosis_valid": true,
+  "semantic_observation_claimed": false,
+  "semantic_diagnosis_layer": {
+    "schema": "v3a_semantic_diagnosis_layer_v1",
+    "hypothesis_count": 0,
+    "confirmed_story_defect_count": 0,
+    "confirmed_structure_defect_count": 0,
+    "rule": "Without video semantic evidence, structural anomalies remain HYPOTHESIS_NEEDS_VIDEO and must not drive story-quality ACCEPT/IMPROVED."
+  }
+}

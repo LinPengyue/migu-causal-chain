@@ -1,0 +1,191 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若视频显示扑救与关键传球非同一进攻波则否证"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "post_goal_live_pressure_sequence",
+      "narrative_summary": "主队进球后短时间内出现连续射门与扑救，可能形成一段被压制的叙事片段。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "同一进攻波连续镜头",
+          "question": "该射门是否紧接关键传球形成连续进攻？",
+          "target_id": "event:event_000458"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "关键传球到扑救或属同一进攻波，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000457",
+          "target_event_id": "atom_fill_0087_Save_3271452"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000457",
+        "event_000458",
+        "atom_fill_0086_Shot_3270442",
+        "atom_fill_0087_Save_3271452"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若换人画面与失误射门无时间或叙事衔接则否证"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "repeated_shot_mistake_cluster",
+      "narrative_summary": "中段出现多次被标记为失误的射门，可能构成一段反复受挫的进攻叙事。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "射门与换人同段连续画面",
+          "question": "该失误射门是否发生在换人前同一段比赛？",
+          "target_id": "event:event_000531"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "失误射门与随后换人时间相邻，关联未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000531",
+          "target_event_id": "event_000536"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000531",
+        "event_000534",
+        "event_000535",
+        "event_000536"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若视频显示黄牌与前述犯规无连续对抗关系则否证"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "foul_card_escalation_phase",
+      "narrative_summary": "下半场多次犯规与黄牌交替出现，可能形成一段对抗升级的叙事。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "犯规与黄牌连续对抗镜头",
+          "question": "该犯规是否紧接此前黄牌后的同一对抗段？",
+          "target_id": "event:event_000549"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "连续犯规与黄牌或构成对抗升级，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000538",
+          "target_event_id": "event_000553"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000538",
+        "event_000539",
+        "event_000549",
+        "event_000553"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若角球与任意球非同一连续进攻段则否证"
+      ],
+      "hypothesis_id": "H4",
+      "mechanism_key": "late_setpiece_sequence_before_equalizer",
+      "narrative_summary": "扳平前出现任意球、争顶与角球序列，可能构成定位球铺垫叙事。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "任意球到角球连续进攻镜头",
+          "question": "该角球是否紧接此前任意球进攻形成连续压迫？",
+          "target_id": "event:atom_fill_0114_Corner_kick_5655418"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "任意球到角球或属同一压迫段，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000555",
+          "target_event_id": "atom_fill_0114_Corner_kick_5655418"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000555",
+        "event_000544",
+        "atom_fill_0114_Corner_kick_5655418",
+        "event_000559"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若视频显示解围之间无连续防守压力则否证"
+      ],
+      "hypothesis_id": "H5",
+      "mechanism_key": "defensive_clearance_chain_midgame",
+      "narrative_summary": "中段多次解围与拦截交替，可能形成一段防守承压的叙事片段。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "连续解围与拦截画面",
+          "question": "该解围是否处于连续防守承压段中？",
+          "target_id": "event:event_000510"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "多次解围或反映持续防守承压，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000483",
+          "target_event_id": "event_000519"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000483",
+        "event_000510",
+        "event_000514",
+        "event_000519"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

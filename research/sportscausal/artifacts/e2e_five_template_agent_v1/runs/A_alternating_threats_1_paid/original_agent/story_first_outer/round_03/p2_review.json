@@ -1,0 +1,281 @@
+{
+  "trial": {
+    "trial_id": "d817694ff8c3a7234280ec4c",
+    "proposal_ids": [
+      "interval_01:H2"
+    ],
+    "events": [
+      {
+        "event_id": "event_000100",
+        "source_pts_sec": 1062.51,
+        "event_type": "Defensive_action",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "2队球员的传球被队球员截获"
+        }
+      },
+      {
+        "event_id": "event_000112",
+        "source_pts_sec": 1108.92,
+        "event_type": "Defensive_action",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "1队球员的传球被2队球员用头截获"
+        }
+      },
+      {
+        "event_id": "event_000169",
+        "source_pts_sec": 1300.92,
+        "event_type": "Defensive_action",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "1队10号截获失误的2队4号的球"
+        }
+      },
+      {
+        "event_id": "event_000197",
+        "source_pts_sec": 1506.84,
+        "event_type": "Defensive_action",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "面对1队球员的传球，2队球员使用头部解围"
+        }
+      }
+    ],
+    "relations": [],
+    "story_context": [
+      {
+        "proposal_id": "interval_01:H2",
+        "summary": "中场多次传球被拦截，双方反复夺回球权，形成持续的攻防转换。",
+        "expected_story_contribution": "",
+        "falsification_conditions": [
+          "若拦截后无任何后续传球或推进，则争夺模式不成立"
+        ]
+      }
+    ],
+    "windows": [
+      {
+        "source_pts_start": 1060.64,
+        "source_pts_end": 1075.63,
+        "event_ids": [
+          "event_000100"
+        ],
+        "existing_segment_id": "seg_story_first_b77d6bbefa2c6e5096b89420_01",
+        "candidate_id": "story_first_d817694ff8c3a7234280ec4c_01",
+        "issue_id": "story_first:d817694ff8c3a7234280ec4c"
+      },
+      {
+        "event_ids": [
+          "event_000112"
+        ],
+        "source_pts_start": 1100.92,
+        "source_pts_end": 1116.92,
+        "insert_after_segment_id": "seg_story_first_b77d6bbefa2c6e5096b89420_01",
+        "before_segment_id": "seg_story_first_b77d6bbefa2c6e5096b89420_02",
+        "candidate_id": "story_first_d817694ff8c3a7234280ec4c_02",
+        "issue_id": "story_first:d817694ff8c3a7234280ec4c"
+      },
+      {
+        "source_pts_start": 1297.71,
+        "source_pts_end": 1319.0,
+        "event_ids": [
+          "event_000169"
+        ],
+        "existing_segment_id": "seg_story_first_b77d6bbefa2c6e5096b89420_02",
+        "candidate_id": "story_first_d817694ff8c3a7234280ec4c_03",
+        "issue_id": "story_first:d817694ff8c3a7234280ec4c"
+      },
+      {
+        "event_ids": [
+          "event_000197"
+        ],
+        "source_pts_start": 1498.84,
+        "source_pts_end": 1514.84,
+        "insert_after_segment_id": "seg_story_first_b77d6bbefa2c6e5096b89420_02",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_d817694ff8c3a7234280ec4c_04",
+        "issue_id": "story_first:d817694ff8c3a7234280ec4c"
+      }
+    ],
+    "narrative_purpose": "The accepted cut preserves the alternating_threats template with anchors at seg:1 through seg:10. The largest narrative gap is between seg:1 (1049.71-1060.64) and seg:2 (1912.32-1922.55), a span of over 850 seconds. Within this interval, interval_01:H2 offers the strongest contribution to the existing template: it presents a repeated midfield interception pattern (event_000100, event_000112, event_000169, event_000197), which directly reinforces the 'alternating threats' narrative by showing both teams disrupting each other's attacking moves. All four events are uncovered, non-replay events fr"
+  },
+  "review": {
+    "status": "READY_FOR_TRIAL",
+    "feedback": [],
+    "advisory": [
+      {
+        "event_id": "event_000197",
+        "status": "UNCERTAIN",
+        "reason": "Frame f11 shows players in position but does not clearly capture the specific moment of a header or interception action described in the event.",
+        "frame_ids": [
+          "f11"
+        ],
+        "event_ids": [
+          "event_000197"
+        ]
+      }
+    ],
+    "annotation_supported_event_ids": [
+      "event_000100",
+      "event_000112",
+      "event_000169",
+      "event_000197"
+    ],
+    "event_observations": [
+      {
+        "event_id": "event_000100",
+        "status": "SUPPORTED",
+        "reason": "Frame f1 shows a white-kit player (Team 1) intercepting a pass from a red-kit player (Team 2) near the penalty area, consistent with the annotation.",
+        "frame_ids": [
+          "f1"
+        ]
+      },
+      {
+        "event_id": "event_000112",
+        "status": "SUPPORTED",
+        "reason": "Frame f5 captures a red-kit player (Team 2) heading the ball away from a white-kit player (Team 1) in the center circle, matching the defensive header description.",
+        "frame_ids": [
+          "f5"
+        ]
+      },
+      {
+        "event_id": "event_000169",
+        "status": "SUPPORTED",
+        "reason": "Frame f7 depicts a white-kit player (Team 1) tackling/intercepting the ball from a red-kit player (Team 2) who is losing possession, supporting the interception claim.",
+        "frame_ids": [
+          "f7"
+        ]
+      },
+      {
+        "event_id": "event_000197",
+        "status": "UNCERTAIN",
+        "reason": "Frame f11 shows players in position but does not clearly capture the specific moment of a header or interception action described in the event.",
+        "frame_ids": [
+          "f11"
+        ]
+      }
+    ],
+    "candidates": [
+      {
+        "event_ids": [
+          "event_000112"
+        ],
+        "source_pts_start": 1100.92,
+        "source_pts_end": 1116.92,
+        "insert_after_segment_id": "seg_story_first_b77d6bbefa2c6e5096b89420_01",
+        "before_segment_id": "seg_story_first_b77d6bbefa2c6e5096b89420_02",
+        "candidate_id": "story_first_d817694ff8c3a7234280ec4c_02",
+        "issue_id": "story_first:d817694ff8c3a7234280ec4c",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "d817694ff8c3a7234280ec4c",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      },
+      {
+        "event_ids": [
+          "event_000197"
+        ],
+        "source_pts_start": 1498.84,
+        "source_pts_end": 1514.84,
+        "insert_after_segment_id": "seg_story_first_b77d6bbefa2c6e5096b89420_02",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_d817694ff8c3a7234280ec4c_04",
+        "issue_id": "story_first:d817694ff8c3a7234280ec4c",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "d817694ff8c3a7234280ec4c",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      }
+    ],
+    "intents": [
+      {
+        "intent_id": "story_first_d817694ff8c3a7234280ec4c_04",
+        "action": "search_add",
+        "role": "buildup_bridge_action",
+        "issue_id": "story_first:d817694ff8c3a7234280ec4c",
+        "story_first_trial_id": "d817694ff8c3a7234280ec4c",
+        "story_first_preview_only": true,
+        "anchor_id": "search:story_first_d817694ff8c3a7234280ec4c_04",
+        "new_segment_id": "seg_story_first_d817694ff8c3a7234280ec4c_04",
+        "insert_after_segment_id": "seg_story_first_b77d6bbefa2c6e5096b89420_02",
+        "before_segment_id": "seg:2",
+        "bound_source_window": {
+          "start": 1498.84,
+          "end": 1514.84
+        },
+        "event_ids": [
+          "event_000197"
+        ],
+        "narrative_purpose": "The accepted cut preserves the alternating_threats template with anchors at seg:1 through seg:10. The largest narrative gap is between seg:1 (1049.71-1060.64) and seg:2 (1912.32-1922.55), a span of over 850 seconds. Within this interval, interval_01:H2 offers the strongest contribution to the existing template: it presents a repeated midfield interception pattern (event_000100, event_000112, event_000169, event_000197), which directly reinforces the 'alternating threats' narrative by showing both teams disrupting each other's attacking moves. All four events are uncovered, non-replay events fr",
+        "source_event_observations": [
+          {
+            "event_id": "event_000197",
+            "status": "UNCERTAIN",
+            "reason": "Frame f11 shows players in position but does not clearly capture the specific moment of a header or interception action described in the event.",
+            "frame_ids": [
+              "f11"
+            ]
+          }
+        ],
+        "expected_observable_improvement": "The accepted cut preserves the alternating_threats template with anchors at seg:1 through seg:10. The largest narrative gap is between seg:1 (1049.71-1060.64) and seg:2 (1912.32-1922.55), a span of over 850 seconds. Within this interval, interval_01:H2 offers the strongest contribution to the existing template: it presents a repeated midfield interception pattern (event_000100, event_000112, event_000169, event_000197), which directly reinforces the 'alternating threats' narrative by showing both teams disrupting each other's attacking moves. All four events are uncovered, non-replay events fr",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "evidence_refs": [
+          {
+            "kind": "story_first_source_review",
+            "ref": "story_first_d817694ff8c3a7234280ec4c_04"
+          }
+        ]
+      },
+      {
+        "intent_id": "story_first_d817694ff8c3a7234280ec4c_02",
+        "action": "search_add",
+        "role": "buildup_bridge_action",
+        "issue_id": "story_first:d817694ff8c3a7234280ec4c",
+        "story_first_trial_id": "d817694ff8c3a7234280ec4c",
+        "story_first_preview_only": true,
+        "anchor_id": "search:story_first_d817694ff8c3a7234280ec4c_02",
+        "new_segment_id": "seg_story_first_d817694ff8c3a7234280ec4c_02",
+        "insert_after_segment_id": "seg_story_first_b77d6bbefa2c6e5096b89420_01",
+        "before_segment_id": "seg_story_first_b77d6bbefa2c6e5096b89420_02",
+        "bound_source_window": {
+          "start": 1100.92,
+          "end": 1116.92
+        },
+        "event_ids": [
+          "event_000112"
+        ],
+        "narrative_purpose": "The accepted cut preserves the alternating_threats template with anchors at seg:1 through seg:10. The largest narrative gap is between seg:1 (1049.71-1060.64) and seg:2 (1912.32-1922.55), a span of over 850 seconds. Within this interval, interval_01:H2 offers the strongest contribution to the existing template: it presents a repeated midfield interception pattern (event_000100, event_000112, event_000169, event_000197), which directly reinforces the 'alternating threats' narrative by showing both teams disrupting each other's attacking moves. All four events are uncovered, non-replay events fr",
+        "source_event_observations": [
+          {
+            "event_id": "event_000112",
+            "status": "SUPPORTED",
+            "reason": "Frame f5 captures a red-kit player (Team 2) heading the ball away from a white-kit player (Team 1) in the center circle, matching the defensive header description.",
+            "frame_ids": [
+              "f5"
+            ]
+          }
+        ],
+        "expected_observable_improvement": "The accepted cut preserves the alternating_threats template with anchors at seg:1 through seg:10. The largest narrative gap is between seg:1 (1049.71-1060.64) and seg:2 (1912.32-1922.55), a span of over 850 seconds. Within this interval, interval_01:H2 offers the strongest contribution to the existing template: it presents a repeated midfield interception pattern (event_000100, event_000112, event_000169, event_000197), which directly reinforces the 'alternating threats' narrative by showing both teams disrupting each other's attacking moves. All four events are uncovered, non-replay events fr",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "evidence_refs": [
+          {
+            "kind": "story_first_source_review",
+            "ref": "story_first_d817694ff8c3a7234280ec4c_02"
+          }
+        ]
+      }
+    ]
+  }
+}

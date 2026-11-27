@@ -1,0 +1,305 @@
+{
+  "schema": "story_first_outer_comparison_v1",
+  "preview_only": true,
+  "release_authorized": false,
+  "requested_outer_rounds": 3,
+  "attempted_outer_rounds": 3,
+  "accepted_changes": 3,
+  "http_calls_added_by_continuation": 10,
+  "api_usage": {
+    "http_attempts": 15,
+    "max_calls": 24,
+    "max_cost_usd": 0.1,
+    "est_cost_usd_real": 0.037347,
+    "by_role": {
+      "revision_planner": {
+        "http_attempts": 1,
+        "tokens": 7567,
+        "est_cost_usd": 0.001334,
+        "output_budget_exceeded": false
+      },
+      "story_first_generator": {
+        "http_attempts": 3,
+        "tokens": 83434,
+        "est_cost_usd": 0.014004,
+        "output_budget_exceeded": false
+      },
+      "story_first_p35_planner": {
+        "http_attempts": 2,
+        "tokens": 11266,
+        "est_cost_usd": 0.001992,
+        "output_budget_exceeded": false
+      },
+      "story_first_p3_caption": {
+        "http_attempts": 3,
+        "tokens": 48589,
+        "est_cost_usd": 0.008175,
+        "output_budget_exceeded": false
+      },
+      "story_first_p3_planner": {
+        "http_attempts": 3,
+        "tokens": 19660,
+        "est_cost_usd": 0.003554,
+        "output_budget_exceeded": false
+      },
+      "vision": {
+        "http_attempts": 3,
+        "tokens": 52544,
+        "est_cost_usd": 0.008287,
+        "output_budget_exceeded": false
+      }
+    },
+    "cost_is_estimate_not_invoice_cap": true,
+    "max_retries": 0,
+    "request_preflight": {
+      "planner": {
+        "model": "DeepSeek-V4-Pro-0813",
+        "thinking_in_body": {
+          "type": "disabled"
+        },
+        "max_tokens_in_body": 1200,
+        "max_completion_tokens_in_body": null,
+        "enable_thinking_in_body": null,
+        "thinking_budget_in_body": null,
+        "request_audit": {
+          "role": "planner",
+          "model": "DeepSeek-V4-Pro-0813",
+          "request_profile": "default",
+          "token_param_configured": "max_tokens",
+          "token_param_sent": "max_tokens",
+          "token_limit_sent": 1200,
+          "temperature_sent": 0.0,
+          "stream_sent": false,
+          "thinking_params_sent": false,
+          "thinking_object_disabled_sent": true,
+          "enable_thinking_sent": null,
+          "thinking_budget_sent": null,
+          "sends_both_token_params": false,
+          "sends_both_thinking_formats": false,
+          "message_count": 1,
+          "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+          "paratera_thinking_object_documented": false
+        },
+        "thinking_object_disabled_cfg": true,
+        "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+      },
+      "vision": {
+        "model": "Qwen3.7-Plus",
+        "thinking_in_body": {
+          "type": "disabled"
+        },
+        "max_tokens_in_body": 1200,
+        "max_completion_tokens_in_body": null,
+        "enable_thinking_in_body": null,
+        "thinking_budget_in_body": null,
+        "request_audit": {
+          "role": "vision",
+          "model": "Qwen3.7-Plus",
+          "request_profile": "video_rsi",
+          "token_param_configured": "max_tokens",
+          "token_param_sent": "max_tokens",
+          "token_limit_sent": 1200,
+          "temperature_sent": 0.0,
+          "stream_sent": false,
+          "thinking_params_sent": false,
+          "thinking_object_disabled_sent": true,
+          "enable_thinking_sent": null,
+          "thinking_budget_sent": null,
+          "sends_both_token_params": false,
+          "sends_both_thinking_formats": false,
+          "message_count": 1,
+          "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+          "paratera_thinking_object_documented": false
+        },
+        "thinking_object_disabled_cfg": true,
+        "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+      }
+    },
+    "env_thinking_overrides": {
+      "before": {
+        "STORY_API_MAX_CALLS": "24",
+        "STORY_API_MAX_COST_USD": "0.10",
+        "STORY_API_MAX_COMPLETION_TOKENS": "512",
+        "STORY_VLM_MAX_COMPLETION_TOKENS": null,
+        "STORY_VLM_REQUEST_PROFILE": null,
+        "STORY_VLM_SEND_THINKING": null,
+        "STORY_VLM_ENABLE_THINKING": null,
+        "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+        "STORY_VLM_TOKEN_PARAM": null,
+        "STORY_API_TOKEN_PARAM": "max_tokens"
+      },
+      "after": {
+        "STORY_API_MAX_CALLS": "24",
+        "STORY_API_MAX_COST_USD": "0.1",
+        "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+        "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+        "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+        "STORY_VLM_SEND_THINKING": null,
+        "STORY_VLM_ENABLE_THINKING": null,
+        "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+        "STORY_VLM_TOKEN_PARAM": "max_tokens",
+        "STORY_API_TOKEN_PARAM": "max_tokens",
+        "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+        "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+        "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+      },
+      "disable_thinking": true
+    }
+  },
+  "round_history": [
+    {
+      "round": 1,
+      "status": "ACCEPTED_PREVIEW",
+      "source_advisory": [],
+      "p3_stop_reason": "PLANNER_KEEP",
+      "local_trims": 0,
+      "accepted_source_windows_sec": [
+        [
+          5577.63,
+          5593.63
+        ],
+        [
+          5647.418,
+          5657.158
+        ]
+      ],
+      "local_decisions": [
+        {
+          "action": "KEEP",
+          "rationale": "The first bridge segment (seg_story_first_b47e4b6a45d1a02720cf0385_01) provides a clear visual transition from the opening goal to the equalizer build-up. The working cut caption shows a sideline bench scene with the scoreboard reading OSA 2 - CEL 1 at 66:43, which establishes the score state and the passage of time between the two goals. This functions as setup and context for the equalizer, and the visible observation supports its inclusion without claiming any unseen action. No concrete pacing or clarity improvement justifies a trim."
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "parent_mp4_sha256": "acc1e575b973369f1d83519ebf1a9777e053ca8804c3261cc8edb6b2b8731319",
+      "p1_proposals": 4,
+      "new_proposals": 4,
+      "trial_id": "7ffdeab55407af24c1ea0eaa",
+      "source_windows_sec": [
+        [
+          5599.36,
+          5630.136
+        ]
+      ],
+      "event_ids": [
+        "atom_fill_0112_Ball_possession_5615435",
+        "atom_fill_0113_Defensive_action_5622136",
+        "event_000559"
+      ],
+      "status": "ACCEPTED_PREVIEW",
+      "source_feedback": [],
+      "source_advisory": [],
+      "p3_stop_reason": "PLANNER_KEEP",
+      "local_trims": 0,
+      "accepted_source_windows_sec": [
+        [
+          5599.36,
+          5630.136
+        ]
+      ],
+      "local_decisions": [
+        {
+          "action": "KEEP",
+          "rationale": "The working cut caption for seg_story_first_7ffdeab55407af24c1ea0eaa_01 shows a wide shot of midfield passing with the scoreboard OSA 2 - CEL 1 at 66:58 in the 'before' phase, and the corner kick leading to the equalizer with the scoreboard updating to OSA 2 - CEL 2 at 68:04 in the 'after' phase. The 'insert' phase between 19.698 and 50.474 is MISSING, so the clip's internal continuity is not fully verified. However, the visible observations provide clear setup and context for the equalizer without claiming unseen action. The clip functions as a bridge between the opening goal and the equalizer, and no concrete pacing or clarity improvement justifies a trim."
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "parent_mp4_sha256": "87dd00c5e4908ac2410bc12b85b43d7031c474ef9db766f8fd1503c17388df80",
+      "p1_proposals": 5,
+      "new_proposals": 5,
+      "trial_id": "942add53ba3893580a1cf17d",
+      "source_windows_sec": [
+        [
+          5246.38,
+          5265.34
+        ],
+        [
+          5493.22,
+          5513.11
+        ]
+      ],
+      "event_ids": [
+        "event_000538",
+        "event_000539",
+        "event_000552",
+        "event_000553"
+      ],
+      "status": "ACCEPTED_PREVIEW",
+      "source_feedback": [],
+      "source_advisory": [],
+      "p3_stop_reason": "PLANNER_KEEP",
+      "local_trims": 0,
+      "accepted_source_windows_sec": [
+        [
+          5246.38,
+          5265.34
+        ],
+        [
+          5493.22,
+          5513.11
+        ]
+      ],
+      "local_decisions": [
+        {
+          "action": "KEEP",
+          "rationale": "The first bridge segment (seg_story_first_942add53ba3893580a1cf17d_01) provides a clear visual transition from the opening goal to the equalizer build-up. The working cut caption shows a wide view of the pitch with the scoreboard reading OSA 2 - CEL 1 at 61:12, followed by a foul and yellow card incident. This establishes the score state and the passage of time between the two goals, functioning as setup and context for the equalizer. The visible observations support its inclusion without claiming any unseen action. No concrete pacing or clarity improvement justifies a trim."
+        }
+      ]
+    }
+  ],
+  "comparison": [
+    {
+      "outer_rounds": 0,
+      "status": "V3_R",
+      "accepted_changes": 0,
+      "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/story_first_outer/v0_edl.json",
+      "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/01_initial_story/story_clean.mp4",
+      "mp4_sha256": "b66d17baf9aefafb49cd4eeaeac10265e95aefab6624905835f11690614e6efe",
+      "duration_sec": 6.247
+    },
+    {
+      "outer_rounds": 1,
+      "status": "ACCEPTED_PREVIEW",
+      "accepted_changes": 1,
+      "local_trims": 0,
+      "p3_stop_reason": "PLANNER_KEEP",
+      "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/story_first_outer/v1_edl.json",
+      "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/02_round_01/candidate_render/story_clean.mp4",
+      "mp4_sha256": "acc1e575b973369f1d83519ebf1a9777e053ca8804c3261cc8edb6b2b8731319",
+      "duration_sec": 32.067
+    },
+    {
+      "outer_rounds": 2,
+      "status": "ACCEPTED_PREVIEW",
+      "accepted_changes": 2,
+      "changed_from_previous_round": true,
+      "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/story_first_outer/v2_edl.json",
+      "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/story_first_outer/round_02/trial_render/story_clean.mp4",
+      "mp4_sha256": "87dd00c5e4908ac2410bc12b85b43d7031c474ef9db766f8fd1503c17388df80",
+      "duration_sec": 62.857
+    },
+    {
+      "outer_rounds": 3,
+      "status": "ACCEPTED_PREVIEW",
+      "accepted_changes": 3,
+      "changed_from_previous_round": true,
+      "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/story_first_outer/v3_edl.json",
+      "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/story_first_outer/round_03/trial_render/story_clean.mp4",
+      "mp4_sha256": "9851cb43f07c198ccd5ac5d2d3fcc046571864ef9e7eecf9a61aecd75f11edb7",
+      "duration_sec": 101.774
+    }
+  ],
+  "selected_preview": {
+    "outer_rounds": 3,
+    "status": "ACCEPTED_PREVIEW",
+    "accepted_changes": 3,
+    "changed_from_previous_round": true,
+    "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/story_first_outer/v3_edl.json",
+    "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/B_equalization_2_paid/original_agent/story_first_outer/round_03/trial_render/story_clean.mp4",
+    "mp4_sha256": "9851cb43f07c198ccd5ac5d2d3fcc046571864ef9e7eecf9a61aecd75f11edb7",
+    "duration_sec": 101.774
+  }
+}

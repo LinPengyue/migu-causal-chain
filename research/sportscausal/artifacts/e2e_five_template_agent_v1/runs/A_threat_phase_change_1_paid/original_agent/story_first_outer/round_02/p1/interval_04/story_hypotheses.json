@@ -1,0 +1,186 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "检查3446秒射门前是否同一队连续控球"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "live_shot_sequence_after_replay_corner",
+      "narrative_summary": "回放角球与门线事件后，直播中连续出现传球、突破与一次一对一射门，构成同一进攻波次的延续。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "射门前同队连续传递次数",
+          "question": "这次一对一射门是否源自先前传球组织？",
+          "target_id": "event:event_000411"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "传球到射门或属同一波次，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000403",
+          "target_event_id": "event_000411"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000403",
+        "event_000407",
+        "event_000411"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "核对3398秒突破前球权是否因抢断易手"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "defensive_tackles_interrupting_buildup",
+      "narrative_summary": "两次抢断与一次界外球打断进攻组织，随后出现突破与传球，形成受阻后重启的叙事。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "突破前最后触球队伍",
+          "question": "突破前球权是否由抢断转换而来？",
+          "target_id": "event:event_000407"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "抢断后突破或为攻防转换，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "state_transition",
+          "source_event_id": "event_000405",
+          "target_event_id": "event_000407"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000404",
+        "event_000405",
+        "event_000407"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "检查3446秒射门是否紧接该传球且同队"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "possession_chain_to_live_shot",
+      "narrative_summary": "两次控球与一次传球串联，随后出现直播一对一射门，可能构成由控球推进到射门的链条。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "传球到射门间隔与同队触球",
+          "question": "射门是否紧接3437秒传球？",
+          "target_id": "event:event_000411"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "传球或直接导致射门，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000410",
+          "target_event_id": "event_000411"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000409",
+        "event_000410",
+        "event_000411"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "确认门线事件与后续射门是否同一队进攻"
+      ],
+      "hypothesis_id": "H4",
+      "mechanism_key": "replay_goal_line_then_live_pressure",
+      "narrative_summary": "回放门线事件后直播出现多次传球与射门，可能显示同一方在门线险情后继续施压。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "两事件进攻方向与队伍",
+          "question": "门线事件后射门是否同队延续进攻？",
+          "target_id": "event:event_000411"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "门线事件后直播射门或延续压力，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000402",
+          "target_event_id": "event_000411"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000402",
+        "event_000408",
+        "event_000411"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "核对3501秒抢断是否针对先前射门方"
+      ],
+      "hypothesis_id": "H5",
+      "mechanism_key": "late_tackle_after_live_shot_phase",
+      "narrative_summary": "直播射门与控球之后出现一次回放抢断，可能标志该进攻波次被防守终结。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "抢断前最后控球队伍",
+          "question": "控球后是否被抢断终结？",
+          "target_id": "event:event_000413"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "控球后抢断或终结进攻，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "state_transition",
+          "source_event_id": "event_000413",
+          "target_event_id": "event_000415"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000411",
+        "event_000413",
+        "event_000415"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

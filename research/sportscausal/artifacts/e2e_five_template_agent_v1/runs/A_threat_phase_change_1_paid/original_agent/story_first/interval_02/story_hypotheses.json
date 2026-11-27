@@ -1,0 +1,80 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若event_000280画面非拦截该长传落点则假设不成立"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "long_pass_then_duel_then_interception",
+      "narrative_summary": "阿曼长传发起后经身体对抗被拦截，攻势在换手前被终结。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "拦截方向与长传落点一致",
+          "question": "该拦截是否针对长传落点？",
+          "target_id": "event:event_000280"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "长传后经对抗被拦截，或为攻势终结序列",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000278",
+          "target_event_id": "event_000280"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000278",
+        "event_000279",
+        "event_000280"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若两事件分属不同球队或不同回合则假设不成立"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "duel_then_interception_defensive_sequence",
+      "narrative_summary": "身体对抗后紧接拦截，防守动作连续出现或标志阿曼攻势受阻。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "同队或异队对抗",
+          "question": "对抗双方球衣颜色是否一致？",
+          "target_id": "event:event_000279"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "对抗后拦截或显示防守方连续夺回球权",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "state_transition",
+          "source_event_id": "event_000279",
+          "target_event_id": "event_000280"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000279",
+        "event_000280"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

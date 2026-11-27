@@ -1,0 +1,129 @@
+{
+  "ok": true,
+  "provider_mode": "real",
+  "decision": "UNRESOLVED",
+  "revision_intents": [],
+  "story_first_trial": {
+    "selections": [
+      {
+        "proposal_id": "interval_03:H1",
+        "event_ids": [
+          "event_000285",
+          "event_000287",
+          "event_000311",
+          "event_000313"
+        ],
+        "relation_ids": [
+          "r1"
+        ]
+      }
+    ],
+    "rationale": "seg:3 到 seg:4 之间存在 1371.9s 源时间跳跃，interval_03:H1 覆盖该区间内角球、空中争夺、任意球与射门的潜在叙事关联，可用于验证跳跃前后是否存在可理解的攻防延续。选择该 trial 以观察定位球施压序列是否构成可插入的叙事桥接。",
+    "revised_relations": [
+      {
+        "source_event_id": "event_000285",
+        "target_event_id": "event_000313",
+        "relation_type": "narrative_association",
+        "claim": "角球后的空中争夺或与后续射门相关，未证实"
+      }
+    ]
+  },
+  "exploratory_intents": [],
+  "rationale": "两个诊断问题均为 HYPOTHESIS_NEEDS_VIDEO，story_defect_confirmed=false，且 video_critic_observations 为 UNAVAILABLE。所有 search_candidates 的 narrative_fit_status 均为 NEEDS_VIDEO_REVIEW，first_live_status 均为 NOT_VERIFIED，不满足 search_add 的 FIRST_LIVE_VERIFIED AND REVIEW_SUPPORTED 条件。没有可执行的证据支持编辑。",
+  "est_cost_usd": 0.0033966,
+  "usage": {
+    "prompt_tokens": 21208,
+    "completion_tokens": 359,
+    "total_tokens": 21567,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "parsed": {
+    "decision": "UNRESOLVED",
+    "rationale": "两个诊断问题均为 HYPOTHESIS_NEEDS_VIDEO，story_defect_confirmed=false，且 video_critic_observations 为 UNAVAILABLE。所有 search_candidates 的 narrative_fit_status 均为 NEEDS_VIDEO_REVIEW，first_live_status 均为 NOT_VERIFIED，不满足 search_add 的 FIRST_LIVE_VERIFIED AND REVIEW_SUPPORTED 条件。没有可执行的证据支持编辑。",
+    "revision_intents": [],
+    "story_first_trial": {
+      "selections": [
+        {
+          "proposal_id": "interval_03:H1",
+          "event_ids": [
+            "event_000285",
+            "event_000287",
+            "event_000311",
+            "event_000313"
+          ],
+          "relation_ids": [
+            "r1"
+          ]
+        }
+      ],
+      "rationale": "seg:3 到 seg:4 之间存在 1371.9s 源时间跳跃，interval_03:H1 覆盖该区间内角球、空中争夺、任意球与射门的潜在叙事关联，可用于验证跳跃前后是否存在可理解的攻防延续。选择该 trial 以观察定位球施压序列是否构成可插入的叙事桥接。",
+      "revised_relations": [
+        {
+          "source_event_id": "event_000285",
+          "target_event_id": "event_000313",
+          "relation_type": "narrative_association",
+          "claim": "角球后的空中争夺或与后续射门相关，未证实"
+        }
+      ]
+    }
+  },
+  "call_audit": {
+    "model": "DeepSeek-V4-Pro-0813",
+    "provider_mode": "real",
+    "logical_role": "revision_planner",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "prompt_tokens": 21208,
+    "completion_tokens": 359,
+    "reasoning_tokens": 0,
+    "text_tokens": null,
+    "finish_reason": "stop",
+    "visible_output_chars": 1031,
+    "est_cost_usd": 0.0033966,
+    "http_ok": true,
+    "empty_content": false
+  },
+  "request_audit": {
+    "role": "planner",
+    "model": "DeepSeek-V4-Pro-0813",
+    "request_profile": "default",
+    "token_param_configured": "max_tokens",
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "temperature_sent": 0.1,
+    "stream_sent": false,
+    "thinking_params_sent": false,
+    "thinking_object_disabled_sent": true,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "sends_both_token_params": false,
+    "sends_both_thinking_formats": false,
+    "message_count": 2,
+    "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+    "paratera_thinking_object_documented": false
+  },
+  "response_audit": {
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "visible_output_chars": 1031,
+    "usage_keys_present": [
+      "completion_tokens",
+      "completion_tokens_details",
+      "prompt_tokens",
+      "prompt_tokens_details",
+      "total_tokens"
+    ],
+    "has_completion_tokens_details": true,
+    "reasoning_content_present": false,
+    "completion_tokens_reported": 359,
+    "output_token_limit": 1200,
+    "output_budget_exceeded": false
+  },
+  "finish_reason": "stop"
+}

@@ -1,0 +1,140 @@
+{
+  "trial": {
+    "trial_id": "5b503c8dab061ba2f81d7fc9",
+    "proposal_ids": [
+      "interval_03:H1"
+    ],
+    "events": [
+      {
+        "event_id": "event_000285",
+        "source_pts_sec": 1989.0,
+        "event_type": "Corner_kick",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "1队14号发出角球"
+        }
+      },
+      {
+        "event_id": "event_000287",
+        "source_pts_sec": 1993.18,
+        "event_type": "Win_an_aerial_duel",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "2队球员争顶成功"
+        }
+      },
+      {
+        "event_id": "event_000311",
+        "source_pts_sec": 2277.94,
+        "event_type": "Free_kick",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "1队球员发任意球"
+        }
+      },
+      {
+        "event_id": "event_000313",
+        "source_pts_sec": 2285.84,
+        "event_type": "Shot",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "1队球员外围一脚远射，射偏"
+        }
+      }
+    ],
+    "relations": [
+      {
+        "relation_id": "interval_03:H1:r1",
+        "source_event_id": "event_000285",
+        "target_event_id": "event_000313",
+        "relation_type": "narrative_association",
+        "claim": "角球后的空中争夺或与后续射门相关，未证实",
+        "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+      }
+    ],
+    "story_context": [
+      {
+        "proposal_id": "interval_03:H1",
+        "summary": "角球与任意球连续制造空中争夺，随后出现一次射门，构成定位球施压的叙事关联。",
+        "expected_story_contribution": "",
+        "falsification_conditions": [
+          "若event_000313前无任何定位球或空中争夺画面则假设不成立"
+        ]
+      }
+    ],
+    "windows": [
+      {
+        "event_ids": [
+          "event_000285",
+          "event_000287"
+        ],
+        "source_pts_start": 1981.0,
+        "source_pts_end": 2001.18,
+        "insert_after_segment_id": "seg:3",
+        "before_segment_id": "seg:4",
+        "candidate_id": "story_first_5b503c8dab061ba2f81d7fc9_01",
+        "issue_id": "story_first:5b503c8dab061ba2f81d7fc9"
+      },
+      {
+        "event_ids": [
+          "event_000311",
+          "event_000313"
+        ],
+        "source_pts_start": 2269.94,
+        "source_pts_end": 2293.84,
+        "insert_after_segment_id": "seg:3",
+        "before_segment_id": "seg:4",
+        "candidate_id": "story_first_5b503c8dab061ba2f81d7fc9_02",
+        "issue_id": "story_first:5b503c8dab061ba2f81d7fc9"
+      }
+    ],
+    "narrative_purpose": "seg:3 到 seg:4 之间存在 1371.9s 源时间跳跃，interval_03:H1 覆盖该区间内角球、空中争夺、任意球与射门的潜在叙事关联，可用于验证跳跃前后是否存在可理解的攻防延续。选择该 trial 以观察定位球施压序列是否构成可插入的叙事桥接。"
+  },
+  "review": {
+    "status": "NEEDS_REVISION",
+    "feedback": [
+      {
+        "window_id": "story_first_5b503c8dab061ba2f81d7fc9_01",
+        "event_ids": [
+          "event_000285",
+          "event_000287"
+        ],
+        "status": "REPLAY_CONFIRMED",
+        "reason": "window_overlaps_replay_or_slowmo_annotation",
+        "replay_event_ids": [
+          "event_000288"
+        ]
+      }
+    ],
+    "advisory": [],
+    "annotation_supported_event_ids": [],
+    "event_observations": [],
+    "candidates": [
+      {
+        "event_ids": [
+          "event_000311",
+          "event_000313"
+        ],
+        "source_pts_start": 2269.94,
+        "source_pts_end": 2293.84,
+        "insert_after_segment_id": "seg:3",
+        "before_segment_id": "seg:4",
+        "candidate_id": "story_first_5b503c8dab061ba2f81d7fc9_02",
+        "issue_id": "story_first:5b503c8dab061ba2f81d7fc9",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "5b503c8dab061ba2f81d7fc9",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      }
+    ],
+    "intents": []
+  }
+}

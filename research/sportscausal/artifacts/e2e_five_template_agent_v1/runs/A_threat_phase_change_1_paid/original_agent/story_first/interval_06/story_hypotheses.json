@@ -1,0 +1,158 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若换人后首次触球非长传或争顶则假设不成立"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "dead_ball_sequence_to_live_restart",
+      "narrative_summary": "上半场末段疑似死球与换人打断后，下半场以长传与争顶重新启动攻势。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "长传落点与争顶衔接",
+          "question": "换人后是否立即出现长传重启？",
+          "target_id": "event:event_000464"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "死球后经换人再由长传重启，属推测",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000451",
+          "target_event_id": "event_000464"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000451",
+        "event_000458",
+        "event_000464",
+        "event_000465"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若争顶后未出现长传或拦截则链条不成立"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "aerial_duel_chain_after_restart",
+      "narrative_summary": "下半场连续争顶与长传构成空中对抗链，可能延续上半场末段的进攻节奏。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "争顶到长传的间隔",
+          "question": "争顶后是否紧接长传？",
+          "target_id": "event:event_000467"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "连续争顶后长传再被拦截，关联性待验证",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000460",
+          "target_event_id": "event_000467"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000460",
+        "event_000465",
+        "event_000467",
+        "event_000468"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若控球与过人之间无球权变化则假设不成立"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "possession_switch_via_dribble",
+      "narrative_summary": "下半场控球与过人交替出现，可能标志球权在双方间反复转换。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "控球到过人的连续性",
+          "question": "控球后是否立即出现过人？",
+          "target_id": "event:event_000469"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "控球后出现过人，或为球权转换节点",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "state_transition",
+          "source_event_id": "event_000466",
+          "target_event_id": "event_000469"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000466",
+        "event_000469",
+        "event_000470"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若争顶后未出现抢断则转换假设不成立"
+      ],
+      "hypothesis_id": "H5",
+      "mechanism_key": "long_ball_contest_to_tackle",
+      "narrative_summary": "下半场长传与争顶后紧接抢断，可能显示由空中对抗转入地面防守。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "争顶到抢断的间隔",
+          "question": "争顶后是否紧接抢断？",
+          "target_id": "event:event_000468"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "争顶后转为抢断，或为攻防转换节点",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "state_transition",
+          "source_event_id": "event_000465",
+          "target_event_id": "event_000468"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000464",
+        "event_000465",
+        "event_000468"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [
+    {
+      "index": 3,
+      "reason": "invalid_observation_probe"
+    }
+  ],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

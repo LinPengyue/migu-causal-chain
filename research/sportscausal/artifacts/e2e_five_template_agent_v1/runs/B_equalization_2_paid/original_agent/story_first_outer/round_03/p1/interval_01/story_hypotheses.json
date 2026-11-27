@@ -1,0 +1,191 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若两次黄牌间无任何对抗升级画面则假设不成立"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "foul_card_escalation_before_equalizer",
+      "narrative_summary": "塞尔塔维戈在追平前经历多次犯规与黄牌累积，比赛对抗强度逐步升高。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "对抗强度与判罚连续性",
+          "question": "这次犯规是否紧接前次黄牌后的对抗升级？",
+          "target_id": "event:event_000552"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "犯规与黄牌交替出现或反映对抗升级",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000538",
+          "target_event_id": "event_000553"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000538",
+        "event_000539",
+        "event_000552",
+        "event_000553"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若换人后至角球前无任何进攻组织变化则假设不成立"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "substitution_then_pressure_shift",
+      "narrative_summary": "三次换人后塞尔塔维戈的进攻组织出现变化，为后续角球与追平埋下伏笔。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "换人后进攻参与度变化",
+          "question": "角球前是否可见换人带来的进攻组织变化？",
+          "target_id": "event:atom_fill_0114_Corner_kick_5655418"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "换人调整或与随后角球进攻存在关联",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000536",
+          "target_event_id": "atom_fill_0114_Corner_kick_5655418"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000534",
+        "event_000535",
+        "event_000536",
+        "atom_fill_0114_Corner_kick_5655418"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若失误后至角球前无任何进攻延续画面则假设不成立"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "repeated_mistake_shots_then_corner",
+      "narrative_summary": "塞尔塔维戈连续出现射门失误后，通过角球机会继续施压并最终追平。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "控球方向与进攻推进",
+          "question": "失误后球队是否仍保持进攻控球？",
+          "target_id": "event:atom_fill_0112_Ball_possession_5615435"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "射门失误后球队仍持续获得进攻机会",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000531",
+          "target_event_id": "atom_fill_0114_Corner_kick_5655418"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000531",
+        "event_000534",
+        "atom_fill_0112_Ball_possession_5615435",
+        "atom_fill_0114_Corner_kick_5655418"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若定位球与角球间无进攻延续画面则假设不成立"
+      ],
+      "hypothesis_id": "H4",
+      "mechanism_key": "free_kick_sequence_to_corner",
+      "narrative_summary": "塞尔塔维戈在追平前多次获得定位球机会，最终由角球完成追平。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "定位球进攻组织相似性",
+          "question": "这次任意球是否延续了此前的定位球进攻模式？",
+          "target_id": "event:event_000555"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "连续定位球机会或为角球追平积累前奏",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000555",
+          "target_event_id": "atom_fill_0114_Corner_kick_5655418"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000542",
+        "event_000551",
+        "event_000555",
+        "atom_fill_0114_Corner_kick_5655418"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若解围与拦截间无攻防转换画面则假设不成立"
+      ],
+      "hypothesis_id": "H5",
+      "mechanism_key": "defensive_clearance_cycle_before_equalizer",
+      "narrative_summary": "塞尔塔维戈追平前经历多次防守解围与拦截，比赛在攻防转换中反复拉锯。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "攻防转换节奏与方向",
+          "question": "这次拦截是否紧接前次解围后的攻防转换？",
+          "target_id": "event:event_000556"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "防守解围与拦截交替或反映攻防拉锯状态",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000545",
+          "target_event_id": "event_000557"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000545",
+        "event_000548",
+        "event_000556",
+        "event_000557"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

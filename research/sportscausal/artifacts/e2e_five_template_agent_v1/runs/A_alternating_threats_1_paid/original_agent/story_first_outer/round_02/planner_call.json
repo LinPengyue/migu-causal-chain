@@ -1,0 +1,40 @@
+{
+  "error": null,
+  "parsed": {
+    "selection": {
+      "selections": [
+        {
+          "proposal_id": "interval_01:H2",
+          "event_ids": [
+            "event_000104",
+            "event_000105",
+            "event_000171",
+            "event_000172"
+          ],
+          "relation_ids": []
+        }
+      ],
+      "rationale": "The accepted cut preserves the alternating_threats template with anchors at seg:1 through seg:10. The largest narrative gap is between seg:1 (1049.71-1060.64) and seg:2 (1912.32-1922.55), a span of over 850 seconds. Within this interval, interval_01:H2 offers the strongest contribution to the existing template: it presents a repeated 'breakthrough then dispossession' pattern (event_000104→event_000105 and event_000171→event_000172), which directly reinforces the 'alternating threats' narrative by showing both teams creating and disrupting attacking moves. All four events are uncovered, non-replay, and from the fresh P1 pool. The other interval_01 candidates are less aligned: H1 and H4 emphasize defensive actions and turnovers without a clear attacking threat, H3 focuses on aerial duels and long passes rather than direct threat creation, and H5 centers on restarts after fouls. Interval_02 is too short (33 seconds) and already adjacent to two anchors, while interval_03 and interval_04 candidates either overlap with the previously tried bridge window or are less thematically distinct. No relations are included because the supplied evidence only supports hypothetical associations, and the instruction requires relations to remain hypothetical unless evidence supports them."
+    }
+  },
+  "call_audit": {
+    "model": "DeepSeek-V4-Pro-0813",
+    "provider_mode": "real",
+    "logical_role": "story_first_p35_planner",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "prompt_tokens": 14917,
+    "completion_tokens": 359,
+    "reasoning_tokens": 0,
+    "text_tokens": null,
+    "finish_reason": "stop",
+    "visible_output_chars": 1592,
+    "est_cost_usd": 0.00245295,
+    "http_ok": true,
+    "empty_content": false
+  }
+}

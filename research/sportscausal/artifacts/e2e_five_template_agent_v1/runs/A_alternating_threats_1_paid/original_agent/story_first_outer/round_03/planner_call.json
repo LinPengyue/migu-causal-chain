@@ -1,0 +1,40 @@
+{
+  "error": null,
+  "parsed": {
+    "selection": {
+      "selections": [
+        {
+          "proposal_id": "interval_01:H2",
+          "event_ids": [
+            "event_000100",
+            "event_000112",
+            "event_000169",
+            "event_000197"
+          ],
+          "relation_ids": []
+        }
+      ],
+      "rationale": "The accepted cut preserves the alternating_threats template with anchors at seg:1 through seg:10. The largest narrative gap is between seg:1 (1049.71-1060.64) and seg:2 (1912.32-1922.55), a span of over 850 seconds. Within this interval, interval_01:H2 offers the strongest contribution to the existing template: it presents a repeated midfield interception pattern (event_000100, event_000112, event_000169, event_000197), which directly reinforces the 'alternating threats' narrative by showing both teams disrupting each other's attacking moves. All four events are uncovered, non-replay events from the fresh P1 pool, and none overlap with prior tried source windows or tried event IDs. The retained source windows are judged together as a coherent sequence of defensive actions that sustains the back-and-forth tension between the two anchor threats."
+    }
+  },
+  "call_audit": {
+    "model": "DeepSeek-V4-Pro-0813",
+    "provider_mode": "real",
+    "logical_role": "story_first_p35_planner",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "prompt_tokens": 8889,
+    "completion_tokens": 269,
+    "reasoning_tokens": 0,
+    "text_tokens": null,
+    "finish_reason": "stop",
+    "visible_output_chars": 1109,
+    "est_cost_usd": 0.0014947499999999998,
+    "http_ok": true,
+    "empty_content": false
+  }
+}

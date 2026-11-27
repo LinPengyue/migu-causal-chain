@@ -1,0 +1,191 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若视频显示射门与任意球无同一进攻序列则推翻"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "setpiece_chain_to_open_play_shot",
+      "narrative_summary": "阿联酋在定位球与空中争顶后连续形成射门，威胁由死球延续到运动战。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "同一进攻序列的连续画面",
+          "question": "该射门是否源自此前任意球进攻？",
+          "target_id": "event:event_000313"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "任意球后争顶可能促成随后射门，尚未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000311",
+          "target_event_id": "event_000313"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000311",
+        "event_000313",
+        "event_000340",
+        "event_000374"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若争顶与射门分属不同回合则推翻"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "repeated_aerial_duel_then_shot",
+      "narrative_summary": "多次空中争顶获胜后出现射门，可能反映高空球争夺向射门机会的过渡。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "争顶后球权延续至射门",
+          "question": "射门前是否有本方争顶获胜？",
+          "target_id": "event:event_000340"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "争顶获胜与随后射门或属同一进攻，待验证",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000333",
+          "target_event_id": "event_000340"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000309",
+        "event_000315",
+        "event_000333",
+        "event_000340"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若解围并非来自该任意球则推翻"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "foul_free_kick_clearance_cycle",
+      "narrative_summary": "连续犯规与任意球后出现解围，可能形成攻方施压与守方化解的循环。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "任意球飞行轨迹接解围动作",
+          "question": "该解围是否处理此前任意球来球？",
+          "target_id": "event:event_000367"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "任意球可能直接导致随后解围，尚属推测",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000366",
+          "target_event_id": "event_000367"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000363",
+        "event_000366",
+        "event_000367",
+        "event_000370"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若换人后进攻组织无可见变化则推翻"
+      ],
+      "hypothesis_id": "H4",
+      "mechanism_key": "substitution_then_shot_sequence",
+      "narrative_summary": "换人之后出现连续传球与射门，可能暗示调整后进攻组织有所变化。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "换人前后传球与射门模式差异",
+          "question": "换人后进攻组织是否明显改变？",
+          "target_id": "event:event_000374"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "换人与随后射门或有关联，但无因果证据",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000357",
+          "target_event_id": "event_000374"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000357",
+        "event_000362",
+        "event_000374",
+        "event_000375"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若解围与传中非同一回合则推翻"
+      ],
+      "hypothesis_id": "H5",
+      "mechanism_key": "cross_aerial_clearance_ending",
+      "narrative_summary": "传中与争顶后以解围收尾，可能构成一次由边路发起的完整进攻回合。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "传中落点与解围动作连续",
+          "question": "解围是否来自此前传中争顶？",
+          "target_id": "event:event_000397"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "传中经争顶后可能被解围，属未验证推测",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000395",
+          "target_event_id": "event_000397"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000395",
+        "event_000396",
+        "event_000397",
+        "event_000393"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

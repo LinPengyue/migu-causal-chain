@@ -1,0 +1,47 @@
+[
+  {
+    "round": 1,
+    "selection": {
+      "selections": [
+        {
+          "proposal_id": "interval_03:H1",
+          "event_ids": [
+            "event_000285",
+            "event_000287",
+            "event_000311",
+            "event_000313"
+          ],
+          "relation_ids": [
+            "r1"
+          ]
+        }
+      ],
+      "rationale": "seg:3 到 seg:4 之间存在 1371.9s 源时间跳跃，interval_03:H1 覆盖该区间内角球、空中争夺、任意球与射门的潜在叙事关联，可用于验证跳跃前后是否存在可理解的攻防延续。选择该 trial 以观察定位球施压序列是否构成可插入的叙事桥接。",
+      "revised_relations": [
+        {
+          "source_event_id": "event_000285",
+          "target_event_id": "event_000313",
+          "relation_type": "narrative_association",
+          "claim": "角球后的空中争夺或与后续射门相关，未证实"
+        }
+      ]
+    },
+    "stage": "SOURCE_REVIEW",
+    "status": "NEEDS_REVISION",
+    "findings": [
+      {
+        "window_id": "story_first_5b503c8dab061ba2f81d7fc9_01",
+        "event_ids": [
+          "event_000285",
+          "event_000287"
+        ],
+        "status": "REPLAY_CONFIRMED",
+        "reason": "window_overlaps_replay_or_slowmo_annotation",
+        "replay_event_ids": [
+          "event_000288"
+        ]
+      }
+    ],
+    "advisory": []
+  }
+]

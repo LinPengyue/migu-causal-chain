@@ -1,0 +1,186 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若VAR回放显示与617无关的另一次犯规，则假设不成立"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "penalty_claim_var_denial_sequence",
+      "narrative_summary": "禁区内多次倒地申诉后，VAR介入判定点球被取消，威胁未能兑现。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "接触位置与犯规性质",
+          "question": "禁区内接触是否构成点球判罚依据？",
+          "target_id": "event:event_000617"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "申诉倒地或引发随后VAR复核，尚不确定",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000617",
+          "target_event_id": "event_000622"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000617",
+        "event_000622",
+        "event_000627"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若593射门来自与584无关的定位球，则关联不成立"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "repeated_dribble_break_shot_sequence",
+      "narrative_summary": "连续突破过人后制造射门，进攻方多次尝试撕开防线但未果。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "射门前最后触球方式",
+          "question": "该射门是否源自此前突破推进？",
+          "target_id": "event:event_000593"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "突破后紧接射门，或为同一进攻波次，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000584",
+          "target_event_id": "event_000593"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000575",
+        "event_000584",
+        "event_000593"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若换人前后拦截频率无差异，则假设不成立"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "substitution_then_defensive_lockout",
+      "narrative_summary": "换人调整后对方防守拦截增多，进攻威胁被逐步化解。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "拦截位置与防守阵型",
+          "question": "该拦截是否发生在换人后的防守组织中？",
+          "target_id": "event:event_000582"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "换人后防守拦截增多，或为调整结果，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "state_transition",
+          "source_event_id": "event_000563",
+          "target_event_id": "event_000582"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000563",
+        "event_000571",
+        "event_000582"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若黄牌针对的是另一名球员的另一次犯规，则假设不成立"
+      ],
+      "hypothesis_id": "H4",
+      "mechanism_key": "foul_escalation_to_card",
+      "narrative_summary": "危险动作犯规累积后出现黄牌，对抗强度上升但未改变比分。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "裁判手势与犯规球员",
+          "question": "黄牌是否因547的犯规而出示？",
+          "target_id": "event:event_000548"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "危险犯规或直接导致黄牌，因果关系未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000547",
+          "target_event_id": "event_000548"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000547",
+        "event_000548",
+        "event_000565"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若回放显示不同球员不同时间进球，则假设不成立"
+      ],
+      "hypothesis_id": "H5",
+      "mechanism_key": "late_goal_then_replay_goals",
+      "narrative_summary": "一次进球后连续出现多次进球回放，或为同一进球的重复呈现。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "画面切换与慢动作标志",
+          "question": "该时段是否包含进球后的连续回放？",
+          "target_id": "gap:001"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "后续进球事件或为同一进球的回放，未证实",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "atom_fill_0075_Goal_6449644",
+          "target_event_id": "atom_fill_0079_Goal_6492706"
+        }
+      ],
+      "supporting_event_ids": [
+        "atom_fill_0075_Goal_6449644",
+        "atom_fill_0079_Goal_6492706",
+        "atom_fill_0085_Goal_6506107"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

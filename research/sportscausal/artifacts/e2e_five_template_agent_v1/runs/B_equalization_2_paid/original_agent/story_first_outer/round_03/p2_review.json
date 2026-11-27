@@ -1,0 +1,275 @@
+{
+  "trial": {
+    "trial_id": "942add53ba3893580a1cf17d",
+    "proposal_ids": [
+      "interval_01:H1"
+    ],
+    "events": [
+      {
+        "event_id": "event_000538",
+        "source_pts_sec": 5254.38,
+        "event_type": "Foul_Being_fouled",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "1队球员在防守三区犯规2队9号球员倒地"
+        }
+      },
+      {
+        "event_id": "event_000539",
+        "source_pts_sec": 5257.34,
+        "event_type": "Receive_a_card",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "1队球员在防守三区犯规2队9号球员倒地，裁判向1队24号球员出示黄牌"
+        }
+      },
+      {
+        "event_id": "event_000552",
+        "source_pts_sec": 5501.22,
+        "event_type": "Foul_Being_fouled",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "2队7号球员犯规1队24号球员倒地"
+        }
+      },
+      {
+        "event_id": "event_000553",
+        "source_pts_sec": 5505.11,
+        "event_type": "Receive_a_card",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "2队7号球员犯规1队24号球员倒地，裁判向2队7号球员出示黄牌"
+        }
+      }
+    ],
+    "relations": [],
+    "story_context": [
+      {
+        "proposal_id": "interval_01:H1",
+        "summary": "塞尔塔维戈在追平前经历多次犯规与黄牌累积，比赛对抗强度逐步升高。",
+        "expected_story_contribution": "",
+        "falsification_conditions": [
+          "若两次黄牌间无任何对抗升级画面则假设不成立"
+        ]
+      }
+    ],
+    "windows": [
+      {
+        "event_ids": [
+          "event_000538",
+          "event_000539"
+        ],
+        "source_pts_start": 5246.38,
+        "source_pts_end": 5265.34,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_01",
+        "candidate_id": "story_first_942add53ba3893580a1cf17d_01",
+        "issue_id": "story_first:942add53ba3893580a1cf17d"
+      },
+      {
+        "event_ids": [
+          "event_000552",
+          "event_000553"
+        ],
+        "source_pts_start": 5493.22,
+        "source_pts_end": 5513.11,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_01",
+        "candidate_id": "story_first_942add53ba3893580a1cf17d_02",
+        "issue_id": "story_first:942add53ba3893580a1cf17d"
+      }
+    ],
+    "narrative_purpose": "H1 is selected because it introduces fresh, uncovered, non-replay events (event_000538, event_000539, event_000552, event_000553) that contribute to the existing '落后追平' template by showing escalating match intensity through fouls and yellow cards before the equalizer. These events are not in the tried_event_ids list and their source windows do not overlap with the accepted cut or previously tried windows. The narrative contribution is a plausible tension-building bridge between the opening goal and the equalizer, without asserting unverified causality. Other candidates either rely on already t"
+  },
+  "review": {
+    "status": "READY_FOR_TRIAL",
+    "feedback": [],
+    "advisory": [],
+    "annotation_supported_event_ids": [
+      "event_000538",
+      "event_000539",
+      "event_000552",
+      "event_000553"
+    ],
+    "event_observations": [
+      {
+        "event_id": "event_000538",
+        "status": "SUPPORTED",
+        "reason": "Frame f2 shows a red-shirted player tackling a blue-shirted player who is falling, consistent with a foul in the defensive third.",
+        "frame_ids": [
+          "f2"
+        ]
+      },
+      {
+        "event_id": "event_000539",
+        "status": "SUPPORTED",
+        "reason": "Frame f3 shows the referee raising a yellow card towards a red-shirted player; frame f4 confirms the recipient is wearing number 24.",
+        "frame_ids": [
+          "f3",
+          "f4"
+        ]
+      },
+      {
+        "event_id": "event_000552",
+        "status": "SUPPORTED",
+        "reason": "Frame f6 captures a blue-shirted player challenging a red-shirted player, resulting in the latter falling, matching the foul description.",
+        "frame_ids": [
+          "f6"
+        ]
+      },
+      {
+        "event_id": "event_000553",
+        "status": "SUPPORTED",
+        "reason": "Frame f7 shows a red player on the ground and the referee approaching; frame f8 shows the referee displaying a yellow card to a blue-shirted player.",
+        "frame_ids": [
+          "f7",
+          "f8"
+        ]
+      }
+    ],
+    "candidates": [
+      {
+        "event_ids": [
+          "event_000538",
+          "event_000539"
+        ],
+        "source_pts_start": 5246.38,
+        "source_pts_end": 5265.34,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_01",
+        "candidate_id": "story_first_942add53ba3893580a1cf17d_01",
+        "issue_id": "story_first:942add53ba3893580a1cf17d",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "942add53ba3893580a1cf17d",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      },
+      {
+        "event_ids": [
+          "event_000552",
+          "event_000553"
+        ],
+        "source_pts_start": 5493.22,
+        "source_pts_end": 5513.11,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_01",
+        "candidate_id": "story_first_942add53ba3893580a1cf17d_02",
+        "issue_id": "story_first:942add53ba3893580a1cf17d",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "942add53ba3893580a1cf17d",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      }
+    ],
+    "intents": [
+      {
+        "intent_id": "story_first_942add53ba3893580a1cf17d_02",
+        "action": "search_add",
+        "role": "buildup_bridge_action",
+        "issue_id": "story_first:942add53ba3893580a1cf17d",
+        "story_first_trial_id": "942add53ba3893580a1cf17d",
+        "story_first_preview_only": true,
+        "anchor_id": "search:story_first_942add53ba3893580a1cf17d_02",
+        "new_segment_id": "seg_story_first_942add53ba3893580a1cf17d_02",
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_01",
+        "bound_source_window": {
+          "start": 5493.22,
+          "end": 5513.11
+        },
+        "event_ids": [
+          "event_000552",
+          "event_000553"
+        ],
+        "narrative_purpose": "H1 is selected because it introduces fresh, uncovered, non-replay events (event_000538, event_000539, event_000552, event_000553) that contribute to the existing '落后追平' template by showing escalating match intensity through fouls and yellow cards before the equalizer. These events are not in the tried_event_ids list and their source windows do not overlap with the accepted cut or previously tried windows. The narrative contribution is a plausible tension-building bridge between the opening goal and the equalizer, without asserting unverified causality. Other candidates either rely on already t",
+        "source_event_observations": [
+          {
+            "event_id": "event_000552",
+            "status": "SUPPORTED",
+            "reason": "Frame f6 captures a blue-shirted player challenging a red-shirted player, resulting in the latter falling, matching the foul description.",
+            "frame_ids": [
+              "f6"
+            ]
+          },
+          {
+            "event_id": "event_000553",
+            "status": "SUPPORTED",
+            "reason": "Frame f7 shows a red player on the ground and the referee approaching; frame f8 shows the referee displaying a yellow card to a blue-shirted player.",
+            "frame_ids": [
+              "f7",
+              "f8"
+            ]
+          }
+        ],
+        "expected_observable_improvement": "H1 is selected because it introduces fresh, uncovered, non-replay events (event_000538, event_000539, event_000552, event_000553) that contribute to the existing '落后追平' template by showing escalating match intensity through fouls and yellow cards before the equalizer. These events are not in the tried_event_ids list and their source windows do not overlap with the accepted cut or previously tried windows. The narrative contribution is a plausible tension-building bridge between the opening goal and the equalizer, without asserting unverified causality. Other candidates either rely on already t",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "evidence_refs": [
+          {
+            "kind": "story_first_source_review",
+            "ref": "story_first_942add53ba3893580a1cf17d_02"
+          }
+        ]
+      },
+      {
+        "intent_id": "story_first_942add53ba3893580a1cf17d_01",
+        "action": "search_add",
+        "role": "buildup_bridge_action",
+        "issue_id": "story_first:942add53ba3893580a1cf17d",
+        "story_first_trial_id": "942add53ba3893580a1cf17d",
+        "story_first_preview_only": true,
+        "anchor_id": "search:story_first_942add53ba3893580a1cf17d_01",
+        "new_segment_id": "seg_story_first_942add53ba3893580a1cf17d_01",
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_01",
+        "bound_source_window": {
+          "start": 5246.38,
+          "end": 5265.34
+        },
+        "event_ids": [
+          "event_000538",
+          "event_000539"
+        ],
+        "narrative_purpose": "H1 is selected because it introduces fresh, uncovered, non-replay events (event_000538, event_000539, event_000552, event_000553) that contribute to the existing '落后追平' template by showing escalating match intensity through fouls and yellow cards before the equalizer. These events are not in the tried_event_ids list and their source windows do not overlap with the accepted cut or previously tried windows. The narrative contribution is a plausible tension-building bridge between the opening goal and the equalizer, without asserting unverified causality. Other candidates either rely on already t",
+        "source_event_observations": [
+          {
+            "event_id": "event_000538",
+            "status": "SUPPORTED",
+            "reason": "Frame f2 shows a red-shirted player tackling a blue-shirted player who is falling, consistent with a foul in the defensive third.",
+            "frame_ids": [
+              "f2"
+            ]
+          },
+          {
+            "event_id": "event_000539",
+            "status": "SUPPORTED",
+            "reason": "Frame f3 shows the referee raising a yellow card towards a red-shirted player; frame f4 confirms the recipient is wearing number 24.",
+            "frame_ids": [
+              "f3",
+              "f4"
+            ]
+          }
+        ],
+        "expected_observable_improvement": "H1 is selected because it introduces fresh, uncovered, non-replay events (event_000538, event_000539, event_000552, event_000553) that contribute to the existing '落后追平' template by showing escalating match intensity through fouls and yellow cards before the equalizer. These events are not in the tried_event_ids list and their source windows do not overlap with the accepted cut or previously tried windows. The narrative contribution is a plausible tension-building bridge between the opening goal and the equalizer, without asserting unverified causality. Other candidates either rely on already t",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "evidence_refs": [
+          {
+            "kind": "story_first_source_review",
+            "ref": "story_first_942add53ba3893580a1cf17d_01"
+          }
+        ]
+      }
+    ]
+  }
+}

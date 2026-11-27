@@ -1,0 +1,94 @@
+{
+  "all_searchable_probes": [
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000473",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000473",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        4735.29,
+        4751.29
+      ]
+    },
+    {
+      "contains_uncertified_live_only": false,
+      "event_id": "event_000474",
+      "first_live_status": "UNRESOLVED",
+      "not_a_verified_event_action": true,
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "overlaps_existing_edl": false,
+      "probe_id": "event:event_000474",
+      "requires_video_caption": true,
+      "source_interval_sec": [
+        4741.59,
+        4755.79
+      ]
+    }
+  ],
+  "edl_modified": false,
+  "first_live_certified": false,
+  "observation_is_not_causal_proof": true,
+  "schema": "story_first_hypotheses_poc_v1",
+  "targets": [
+    {
+      "automatic_edl_insert": false,
+      "discriminating_signal": "回放结束与回传间隔",
+      "first_live_status": "UNRESOLVED",
+      "hypothesis_id": "H1",
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "probe_id": "event:event_000473",
+      "question": "回传是否紧接扑救回放后出现？",
+      "source_interval_sec": [
+        4735.29,
+        4751.29
+      ],
+      "video_caption_status": "NOT_OBSERVED"
+    },
+    {
+      "automatic_edl_insert": false,
+      "discriminating_signal": "争顶与回放的时间衔接",
+      "first_live_status": "UNRESOLVED",
+      "hypothesis_id": "H2",
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "probe_id": "event:event_000474",
+      "question": "争顶是否发生在射门回放之后？",
+      "source_interval_sec": [
+        4741.59,
+        4755.79
+      ],
+      "video_caption_status": "NOT_OBSERVED"
+    },
+    {
+      "automatic_edl_insert": false,
+      "discriminating_signal": "回传与争顶的间隔",
+      "first_live_status": "UNRESOLVED",
+      "hypothesis_id": "H4",
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "probe_id": "event:event_000474",
+      "question": "争顶是否紧接回传之后？",
+      "source_interval_sec": [
+        4741.59,
+        4755.79
+      ],
+      "video_caption_status": "NOT_OBSERVED"
+    },
+    {
+      "automatic_edl_insert": false,
+      "discriminating_signal": "回放与直播事件的结构相似性",
+      "first_live_status": "UNRESOLVED",
+      "hypothesis_id": "H5",
+      "origin": "real_event_pts_plus_fixed_probe_margin",
+      "probe_id": "event:event_000474",
+      "question": "直播争顶是否与回放扑救形成对应？",
+      "source_interval_sec": [
+        4741.59,
+        4755.79
+      ],
+      "video_caption_status": "NOT_OBSERVED"
+    }
+  ]
+}

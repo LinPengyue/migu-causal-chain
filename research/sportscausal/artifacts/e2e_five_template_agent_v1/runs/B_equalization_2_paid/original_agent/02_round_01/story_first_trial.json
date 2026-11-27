@@ -1,0 +1,217 @@
+{
+  "trial": {
+    "trial_id": "b47e4b6a45d1a02720cf0385",
+    "proposal_ids": [
+      "interval_01:H4"
+    ],
+    "events": [
+      {
+        "event_id": "event_000555",
+        "source_pts_sec": 5585.63,
+        "event_type": "Free_kick",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "1队球员在中场三区开出任意球"
+        }
+      },
+      {
+        "event_id": "atom_fill_0114_Corner_kick_5655418",
+        "source_pts_sec": 5655.418,
+        "event_type": "Corner_kick",
+        "known_replay_or_slowmo": false,
+        "annotation": null
+      }
+    ],
+    "relations": [
+      {
+        "relation_id": "interval_01:H4:r1",
+        "source_event_id": "event_000555",
+        "target_event_id": "atom_fill_0114_Corner_kick_5655418",
+        "relation_type": "narrative_association",
+        "claim": "任意球到角球或属同一压迫段，未证实",
+        "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+      }
+    ],
+    "story_context": [
+      {
+        "proposal_id": "interval_01:H4",
+        "summary": "扳平前出现任意球、争顶与角球序列，可能构成定位球铺垫叙事。",
+        "expected_story_contribution": "",
+        "falsification_conditions": [
+          "若角球与任意球非同一连续进攻段则否证"
+        ]
+      }
+    ],
+    "windows": [
+      {
+        "event_ids": [
+          "event_000555"
+        ],
+        "source_pts_start": 5577.63,
+        "source_pts_end": 5593.63,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_b47e4b6a45d1a02720cf0385_01",
+        "issue_id": "story_first:b47e4b6a45d1a02720cf0385"
+      },
+      {
+        "event_ids": [
+          "atom_fill_0114_Corner_kick_5655418"
+        ],
+        "source_pts_start": 5647.418,
+        "source_pts_end": 5657.158,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_b47e4b6a45d1a02720cf0385_02",
+        "issue_id": "story_first:b47e4b6a45d1a02720cf0385"
+      }
+    ],
+    "narrative_purpose": "H4 is the most compact proposal with the clearest potential narrative link to the equalizer: a free kick at 5585.63s and a corner kick at 5655.418s immediately precede the equalizer goal at 5657.621s. If video shows these belong to the same attacking sequence, this could provide a concrete causal/emotional bridge across the source-time jump. The selection is limited to two events and one hypothesized relation, minimizing observation cost while directly testing whether the gap hides meaningful build-up to the equalizer."
+  },
+  "review": {
+    "status": "READY_FOR_TRIAL",
+    "feedback": [],
+    "advisory": [],
+    "annotation_supported_event_ids": [
+      "atom_fill_0114_Corner_kick_5655418",
+      "event_000555"
+    ],
+    "event_observations": [
+      {
+        "event_id": "event_000555",
+        "status": "SUPPORTED",
+        "reason": "Frame f2 shows a player in red (Team 1) kicking the ball from a stationary position in the midfield circle, consistent with a free kick execution at the annotated timestamp.",
+        "frame_ids": [
+          "f2"
+        ]
+      },
+      {
+        "event_id": "atom_fill_0114_Corner_kick_5655418",
+        "status": "SUPPORTED",
+        "reason": "Frame f6 captures the moment of a corner kick being taken from the corner arc into the penalty area, matching the event type and timing.",
+        "frame_ids": [
+          "f6"
+        ]
+      }
+    ],
+    "candidates": [
+      {
+        "event_ids": [
+          "event_000555"
+        ],
+        "source_pts_start": 5577.63,
+        "source_pts_end": 5593.63,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_b47e4b6a45d1a02720cf0385_01",
+        "issue_id": "story_first:b47e4b6a45d1a02720cf0385",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "b47e4b6a45d1a02720cf0385",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      },
+      {
+        "event_ids": [
+          "atom_fill_0114_Corner_kick_5655418"
+        ],
+        "source_pts_start": 5647.418,
+        "source_pts_end": 5657.158,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_b47e4b6a45d1a02720cf0385_02",
+        "issue_id": "story_first:b47e4b6a45d1a02720cf0385",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "b47e4b6a45d1a02720cf0385",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      }
+    ],
+    "intents": [
+      {
+        "intent_id": "story_first_b47e4b6a45d1a02720cf0385_02",
+        "action": "search_add",
+        "role": "buildup_bridge_action",
+        "issue_id": "story_first:b47e4b6a45d1a02720cf0385",
+        "story_first_trial_id": "b47e4b6a45d1a02720cf0385",
+        "story_first_preview_only": true,
+        "anchor_id": "search:story_first_b47e4b6a45d1a02720cf0385_02",
+        "new_segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_02",
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "bound_source_window": {
+          "start": 5647.418,
+          "end": 5657.158
+        },
+        "event_ids": [
+          "atom_fill_0114_Corner_kick_5655418"
+        ],
+        "narrative_purpose": "H4 is the most compact proposal with the clearest potential narrative link to the equalizer: a free kick at 5585.63s and a corner kick at 5655.418s immediately precede the equalizer goal at 5657.621s. If video shows these belong to the same attacking sequence, this could provide a concrete causal/emotional bridge across the source-time jump. The selection is limited to two events and one hypothesized relation, minimizing observation cost while directly testing whether the gap hides meaningful build-up to the equalizer.",
+        "source_event_observations": [
+          {
+            "event_id": "atom_fill_0114_Corner_kick_5655418",
+            "status": "SUPPORTED",
+            "reason": "Frame f6 captures the moment of a corner kick being taken from the corner arc into the penalty area, matching the event type and timing.",
+            "frame_ids": [
+              "f6"
+            ]
+          }
+        ],
+        "expected_observable_improvement": "H4 is the most compact proposal with the clearest potential narrative link to the equalizer: a free kick at 5585.63s and a corner kick at 5655.418s immediately precede the equalizer goal at 5657.621s. If video shows these belong to the same attacking sequence, this could provide a concrete causal/emotional bridge across the source-time jump. The selection is limited to two events and one hypothesized relation, minimizing observation cost while directly testing whether the gap hides meaningful build-up to the equalizer.",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "evidence_refs": [
+          {
+            "kind": "story_first_source_review",
+            "ref": "story_first_b47e4b6a45d1a02720cf0385_02"
+          }
+        ]
+      },
+      {
+        "intent_id": "story_first_b47e4b6a45d1a02720cf0385_01",
+        "action": "search_add",
+        "role": "buildup_bridge_action",
+        "issue_id": "story_first:b47e4b6a45d1a02720cf0385",
+        "story_first_trial_id": "b47e4b6a45d1a02720cf0385",
+        "story_first_preview_only": true,
+        "anchor_id": "search:story_first_b47e4b6a45d1a02720cf0385_01",
+        "new_segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_01",
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "bound_source_window": {
+          "start": 5577.63,
+          "end": 5593.63
+        },
+        "event_ids": [
+          "event_000555"
+        ],
+        "narrative_purpose": "H4 is the most compact proposal with the clearest potential narrative link to the equalizer: a free kick at 5585.63s and a corner kick at 5655.418s immediately precede the equalizer goal at 5657.621s. If video shows these belong to the same attacking sequence, this could provide a concrete causal/emotional bridge across the source-time jump. The selection is limited to two events and one hypothesized relation, minimizing observation cost while directly testing whether the gap hides meaningful build-up to the equalizer.",
+        "source_event_observations": [
+          {
+            "event_id": "event_000555",
+            "status": "SUPPORTED",
+            "reason": "Frame f2 shows a player in red (Team 1) kicking the ball from a stationary position in the midfield circle, consistent with a free kick execution at the annotated timestamp.",
+            "frame_ids": [
+              "f2"
+            ]
+          }
+        ],
+        "expected_observable_improvement": "H4 is the most compact proposal with the clearest potential narrative link to the equalizer: a free kick at 5585.63s and a corner kick at 5655.418s immediately precede the equalizer goal at 5657.621s. If video shows these belong to the same attacking sequence, this could provide a concrete causal/emotional bridge across the source-time jump. The selection is limited to two events and one hypothesized relation, minimizing observation cost while directly testing whether the gap hides meaningful build-up to the equalizer.",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "evidence_refs": [
+          {
+            "kind": "story_first_source_review",
+            "ref": "story_first_b47e4b6a45d1a02720cf0385_01"
+          }
+        ]
+      }
+    ]
+  }
+}

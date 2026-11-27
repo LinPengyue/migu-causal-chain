@@ -1,0 +1,45 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若拦截发生在长传之前或与长传无球权关联则证伪"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "long_pass_then_interception_break",
+      "narrative_summary": "阿联酋一次长传尝试后随即被拦截，攻势在推进环节被打断。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "拦截者与落点位置关系",
+          "question": "拦截是否针对该长传落点？",
+          "target_id": "event:event_000419"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "长传可能直接导致随后的拦截",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000418",
+          "target_event_id": "event_000419"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000418",
+        "event_000419"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

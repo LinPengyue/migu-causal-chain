@@ -1,0 +1,190 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若断球与射门间无连续控球推进则假设不成立"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "turnover_chain_to_shot_goal",
+      "narrative_summary": "断球后快速推进形成射门并进球，构成一次由防守转换到得分的攻势。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "连续传球或带球推进",
+          "question": "射门前是否有连续控球推进？",
+          "target_id": "event:atom_fill_0003_Shot_1335974"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "断球后推进可能促成后续射门",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000169",
+          "target_event_id": "atom_fill_0003_Shot_1335974"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000169",
+        "event_000171",
+        "event_000172",
+        "atom_fill_0003_Shot_1335974"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若两次突破后均无防守方抢断回应则关联不成立"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "repeated_dribble_break_tackle_duels",
+      "narrative_summary": "多次带球突破与抢断交替出现，形成反复的攻防对抗节奏。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "突破后紧接防守抢断",
+          "question": "突破后是否立即出现抢断？",
+          "target_id": "event:event_000171"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "两次突破被断可能属同类对抗模式",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000104",
+          "target_event_id": "event_000171"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000104",
+        "event_000121",
+        "event_000171",
+        "event_000172"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若犯规后未出现界外球或长传重启则假设不成立"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "foul_replay_then_live_restart",
+      "narrative_summary": "犯规判罚经回放后比赛以界外球重新开始，构成中断与恢复的序列。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "犯规后紧接长传重启",
+          "question": "犯规后是否以长传重启？",
+          "target_id": "event:event_000245"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "犯规判罚后比赛可能以长传重新开始",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "state_transition",
+          "source_event_id": "event_000243",
+          "target_event_id": "event_000245"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000243",
+        "event_000244",
+        "event_000245",
+        "event_000246"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若长传后无争顶或身体对抗则假设不成立"
+      ],
+      "hypothesis_id": "H4",
+      "mechanism_key": "long_pass_aerial_duel_sequence",
+      "narrative_summary": "长传后出现争顶与身体对抗，构成高空球争夺的连续片段。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "长传落点发生争顶",
+          "question": "长传后是否出现争顶？",
+          "target_id": "event:event_000240"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "长传可能引发随后的争顶对抗",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000239",
+          "target_event_id": "event_000240"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000239",
+        "event_000240",
+        "event_000241",
+        "event_000242"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若失误后无对抗或抢断回应则关联不成立"
+      ],
+      "hypothesis_id": "H5",
+      "mechanism_key": "clearance_mistake_tackle_sequence",
+      "narrative_summary": "解围后出现传球失误并紧接抢断，构成防守端失误与补救的片段。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "失误后紧接身体对抗",
+          "question": "失误后是否出现对抗？",
+          "target_id": "event:event_000274"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "失误后可能紧接身体对抗补救",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000271",
+          "target_event_id": "event_000274"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000270",
+        "event_000271",
+        "event_000274"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

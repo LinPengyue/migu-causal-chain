@@ -1,0 +1,191 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若1062-1133秒间无任何一方连续两次以上控球推进则假设不成立"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "interception_chain_alternating_possession",
+      "narrative_summary": "阿曼一次拦截后阿联酋连续短传推进，随后又被拦截，形成攻防交替的片段。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "突破前是否刚发生拦截",
+          "question": "此突破是否紧接前次拦截后发生？",
+          "target_id": "event:event_000104"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "拦截后双方多次攻防转换，或非单向压制",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000100",
+          "target_event_id": "event_000121"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000100",
+        "event_000104",
+        "event_000112",
+        "event_000121"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若两次突破之间无任何铲断或防守动作则关联不成立"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "dribble_break_then_tackle_recovery",
+      "narrative_summary": "阿联酋一次突破被铲断后，随后又出现新的突破与铲断，呈现反复受阻与再尝试。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "突破后是否紧接铲断",
+          "question": "此突破是否再次以被铲断告终？",
+          "target_id": "event:event_000171"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "两次突破-铲断组合或显示重复受阻模式",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000104",
+          "target_event_id": "event_000171"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000104",
+        "event_000105",
+        "event_000171",
+        "event_000172"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若长传后未出现任何争顶或身体对抗则关联不成立"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "long_pass_switch_then_aerial_duel",
+      "narrative_summary": "阿联酋多次长传转移后出现争顶与身体对抗，或反映由地面转向空中推进的尝试。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "争顶前是否刚有长传",
+          "question": "此争顶是否紧接一次长传之后？",
+          "target_id": "event:event_000221"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "长传后出现争顶，或为空中推进的延续",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000139",
+          "target_event_id": "event_000221"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000131",
+        "event_000139",
+        "event_000221",
+        "event_000240"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若失误后未出现任何拦截或铲断则关联不成立"
+      ],
+      "hypothesis_id": "H4",
+      "mechanism_key": "mistake_then_defensive_recovery",
+      "narrative_summary": "阿联酋数次传球失误后随即出现拦截或铲断，或显示失误后立即回防的片段。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "拦截前是否刚有失误",
+          "question": "此拦截是否紧接一次传球失误？",
+          "target_id": "event:event_000169"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "失误后多次出现防守动作，或为失误-回防重复模式",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000134",
+          "target_event_id": "event_000214"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000134",
+        "event_000169",
+        "event_000198",
+        "event_000214"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若犯规后未出现任何界外球或争顶则关联不成立"
+      ],
+      "hypothesis_id": "H5",
+      "mechanism_key": "foul_sequence_then_throw_in_restart",
+      "narrative_summary": "危险动作犯规后出现掷界外球与争顶，或显示犯规中断后重新组织进攻的片段。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "界外球前是否刚有犯规",
+          "question": "此界外球是否紧接一次犯规之后？",
+          "target_id": "event:event_000228"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "犯规后多次出现界外球重启，或为中断-重启重复模式",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000243",
+          "target_event_id": "event_000228"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000243",
+        "event_000220",
+        "event_000221",
+        "event_000228"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

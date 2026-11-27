@@ -1,0 +1,172 @@
+{
+  "schema": "story_first_p3_caption_revision_v1",
+  "release_authorized": false,
+  "promote_best": false,
+  "preview_only": true,
+  "baseline_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/01_initial_story/story_clean.mp4",
+  "baseline_mp4_sha256": "dcedaeee59281392aeebfa7f7179f5ef22736072ecddcb7b6da31350118b3190",
+  "selected_preview_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02/candidate_render/story_clean.mp4",
+  "rounds": [
+    {
+      "round": 1,
+      "working_mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02/candidate_render/story_clean.mp4",
+      "rejected_actions": [],
+      "action": "KEEP",
+      "rationale": "The bridge segment seg_story_first_919c8d9c0f04e984b2c0ba12_01 is placed between seg:2 (team_2 attacking threat at 1912.32-1922.55) and seg:3 (team_1 attacking threat at 1955.54-1966.45), directly covering the template's observed_phase_switch transition. The working cut caption shows part_01 (story 16.16-21.16) visually confirms a corner kick by the white team being cleared, and part_02 (story 46.62-57.53) visually confirms a white-team shot saved by the yellow-kit goalkeeper. These observations provide concrete setup and context for the phase switch without claiming an outcome for the MISSING insert phase (story 21.16-46.62). The bridge preserves the baseline mainline order and does not int"
+    }
+  ],
+  "http_calls": 2,
+  "edit_count_comparison": [
+    {
+      "completed_edits": 0,
+      "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02/candidate_render/story_clean.mp4",
+      "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02/story_first_p3/initial_trial_edl.json",
+      "duration_sec": 129.614
+    }
+  ],
+  "stop_reason": "PLANNER_KEEP",
+  "preview_accepted": true,
+  "max_local_trims": 3,
+  "api_usage": {
+    "http_attempts": 13,
+    "max_calls": 24,
+    "max_cost_usd": 0.1,
+    "est_cost_usd_real": 0.039939,
+    "by_role": {
+      "revision_planner": {
+        "http_attempts": 1,
+        "tokens": 21567,
+        "est_cost_usd": 0.003397,
+        "output_budget_exceeded": false
+      },
+      "story_first_generator": {
+        "http_attempts": 8,
+        "tokens": 136573,
+        "est_cost_usd": 0.023435,
+        "output_budget_exceeded": false
+      },
+      "story_first_p35_planner": {
+        "http_attempts": 1,
+        "tokens": 19535,
+        "est_cost_usd": 0.003039,
+        "output_budget_exceeded": false
+      },
+      "story_first_p3_caption": {
+        "http_attempts": 1,
+        "tokens": 30475,
+        "est_cost_usd": 0.004762,
+        "output_budget_exceeded": false
+      },
+      "story_first_p3_planner": {
+        "http_attempts": 1,
+        "tokens": 20814,
+        "est_cost_usd": 0.003376,
+        "output_budget_exceeded": false
+      },
+      "vision": {
+        "http_attempts": 1,
+        "tokens": 12049,
+        "est_cost_usd": 0.00193,
+        "output_budget_exceeded": false
+      }
+    },
+    "cost_is_estimate_not_invoice_cap": true,
+    "max_retries": 0,
+    "request_preflight": {
+      "planner": {
+        "model": "DeepSeek-V4-Pro-0813",
+        "thinking_in_body": {
+          "type": "disabled"
+        },
+        "max_tokens_in_body": 1200,
+        "max_completion_tokens_in_body": null,
+        "enable_thinking_in_body": null,
+        "thinking_budget_in_body": null,
+        "request_audit": {
+          "role": "planner",
+          "model": "DeepSeek-V4-Pro-0813",
+          "request_profile": "default",
+          "token_param_configured": "max_tokens",
+          "token_param_sent": "max_tokens",
+          "token_limit_sent": 1200,
+          "temperature_sent": 0.0,
+          "stream_sent": false,
+          "thinking_params_sent": false,
+          "thinking_object_disabled_sent": true,
+          "enable_thinking_sent": null,
+          "thinking_budget_sent": null,
+          "sends_both_token_params": false,
+          "sends_both_thinking_formats": false,
+          "message_count": 1,
+          "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+          "paratera_thinking_object_documented": false
+        },
+        "thinking_object_disabled_cfg": true,
+        "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+      },
+      "vision": {
+        "model": "Qwen3.7-Plus",
+        "thinking_in_body": {
+          "type": "disabled"
+        },
+        "max_tokens_in_body": 1200,
+        "max_completion_tokens_in_body": null,
+        "enable_thinking_in_body": null,
+        "thinking_budget_in_body": null,
+        "request_audit": {
+          "role": "vision",
+          "model": "Qwen3.7-Plus",
+          "request_profile": "video_rsi",
+          "token_param_configured": "max_tokens",
+          "token_param_sent": "max_tokens",
+          "token_limit_sent": 1200,
+          "temperature_sent": 0.0,
+          "stream_sent": false,
+          "thinking_params_sent": false,
+          "thinking_object_disabled_sent": true,
+          "enable_thinking_sent": null,
+          "thinking_budget_sent": null,
+          "sends_both_token_params": false,
+          "sends_both_thinking_formats": false,
+          "message_count": 1,
+          "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+          "paratera_thinking_object_documented": false
+        },
+        "thinking_object_disabled_cfg": true,
+        "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+      }
+    },
+    "env_thinking_overrides": {
+      "before": {
+        "STORY_API_MAX_CALLS": "24",
+        "STORY_API_MAX_COST_USD": "0.10",
+        "STORY_API_MAX_COMPLETION_TOKENS": "512",
+        "STORY_VLM_MAX_COMPLETION_TOKENS": null,
+        "STORY_VLM_REQUEST_PROFILE": null,
+        "STORY_VLM_SEND_THINKING": null,
+        "STORY_VLM_ENABLE_THINKING": null,
+        "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+        "STORY_VLM_TOKEN_PARAM": null,
+        "STORY_API_TOKEN_PARAM": "max_tokens"
+      },
+      "after": {
+        "STORY_API_MAX_CALLS": "24",
+        "STORY_API_MAX_COST_USD": "0.1",
+        "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+        "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+        "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+        "STORY_VLM_SEND_THINKING": null,
+        "STORY_VLM_ENABLE_THINKING": null,
+        "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+        "STORY_VLM_TOKEN_PARAM": "max_tokens",
+        "STORY_API_TOKEN_PARAM": "max_tokens",
+        "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+        "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+        "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+      },
+      "disable_thinking": true
+    }
+  },
+  "selected_preview_mp4_sha256": "3fb4d4e113ded309633c2bb5501a671e14e6fc50f76c07c3a680f13669bb49ee",
+  "completed_edits": 0
+}

@@ -1,0 +1,204 @@
+{
+  "trial": {
+    "trial_id": "7ffdeab55407af24c1ea0eaa",
+    "proposal_ids": [
+      "interval_01:H5"
+    ],
+    "events": [
+      {
+        "event_id": "event_000559",
+        "source_pts_sec": 5607.36,
+        "event_type": "Ball_possession",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "2队球员在防守三区控球前进"
+        }
+      },
+      {
+        "event_id": "atom_fill_0112_Ball_possession_5615435",
+        "source_pts_sec": 5615.435,
+        "event_type": "Ball_possession",
+        "known_replay_or_slowmo": false,
+        "annotation": null
+      },
+      {
+        "event_id": "atom_fill_0113_Defensive_action_5622136",
+        "source_pts_sec": 5622.136,
+        "event_type": "Defensive_action",
+        "known_replay_or_slowmo": false,
+        "annotation": null
+      },
+      {
+        "event_id": "atom_fill_0114_Corner_kick_5655418",
+        "source_pts_sec": 5655.418,
+        "event_type": "Corner_kick",
+        "known_replay_or_slowmo": false,
+        "annotation": null
+      }
+    ],
+    "relations": [],
+    "story_context": [
+      {
+        "proposal_id": "interval_01:H5",
+        "summary": "塞尔塔在尾声阶段夺回控球并制造角球，最终由角球攻势扳平比分。",
+        "expected_story_contribution": "",
+        "falsification_conditions": [
+          "若控球方非塞尔塔则假设不成立"
+        ]
+      }
+    ],
+    "windows": [
+      {
+        "event_ids": [
+          "atom_fill_0112_Ball_possession_5615435",
+          "atom_fill_0113_Defensive_action_5622136",
+          "event_000559"
+        ],
+        "source_pts_start": 5599.36,
+        "source_pts_end": 5630.136,
+        "insert_after_segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_01",
+        "before_segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_02",
+        "candidate_id": "story_first_7ffdeab55407af24c1ea0eaa_01",
+        "issue_id": "story_first:7ffdeab55407af24c1ea0eaa"
+      },
+      {
+        "source_pts_start": 5647.418,
+        "source_pts_end": 5657.158,
+        "event_ids": [
+          "atom_fill_0114_Corner_kick_5655418"
+        ],
+        "existing_segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_02",
+        "candidate_id": "story_first_7ffdeab55407af24c1ea0eaa_02",
+        "issue_id": "story_first:7ffdeab55407af24c1ea0eaa"
+      }
+    ],
+    "narrative_purpose": "H5 is the strongest candidate because it provides the most direct narrative bridge to the equalizer: a sequence of Celta Vigo possession and defensive recovery in the final minutes, leading to the corner kick that immediately precedes the goal. The events at 5607.36s, 5615.435s, and 5622.136s are all uncovered and non-replay, satisfying the requirement for fresh footage. The corner kick at 5655.418s is already covered by the accepted cut, but including it here as the endpoint of the new footage creates a seamless transition into the existing equalizer segment. The relation is kept hypothetical"
+  },
+  "review": {
+    "status": "READY_FOR_TRIAL",
+    "feedback": [],
+    "advisory": [],
+    "annotation_supported_event_ids": [
+      "atom_fill_0112_Ball_possession_5615435",
+      "atom_fill_0113_Defensive_action_5622136",
+      "atom_fill_0114_Corner_kick_5655418",
+      "event_000559"
+    ],
+    "event_observations": [
+      {
+        "event_id": "event_000559",
+        "status": "SUPPORTED",
+        "reason": "Frame f1 shows a player in blue (Team 2) controlling the ball and advancing in their own defensive half, matching the annotation.",
+        "frame_ids": [
+          "f1"
+        ]
+      },
+      {
+        "event_id": "atom_fill_0112_Ball_possession_5615435",
+        "status": "SUPPORTED",
+        "reason": "Frame f3 shows a player in blue maintaining possession of the ball near the center circle.",
+        "frame_ids": [
+          "f3"
+        ]
+      },
+      {
+        "event_id": "atom_fill_0113_Defensive_action_5622136",
+        "status": "SUPPORTED",
+        "reason": "Frame f5 captures a physical challenge where a red-shirted player tackles a blue-shirted player near the penalty area.",
+        "frame_ids": [
+          "f5"
+        ]
+      },
+      {
+        "event_id": "atom_fill_0114_Corner_kick_5655418",
+        "status": "SUPPORTED",
+        "reason": "Frame f8 shows players positioned in the penalty box and a player at the corner flag preparing to take a corner kick.",
+        "frame_ids": [
+          "f8"
+        ]
+      }
+    ],
+    "candidates": [
+      {
+        "event_ids": [
+          "atom_fill_0112_Ball_possession_5615435",
+          "atom_fill_0113_Defensive_action_5622136",
+          "event_000559"
+        ],
+        "source_pts_start": 5599.36,
+        "source_pts_end": 5630.136,
+        "insert_after_segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_01",
+        "before_segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_02",
+        "candidate_id": "story_first_7ffdeab55407af24c1ea0eaa_01",
+        "issue_id": "story_first:7ffdeab55407af24c1ea0eaa",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "7ffdeab55407af24c1ea0eaa",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      }
+    ],
+    "intents": [
+      {
+        "intent_id": "story_first_7ffdeab55407af24c1ea0eaa_01",
+        "action": "search_add",
+        "role": "buildup_bridge_action",
+        "issue_id": "story_first:7ffdeab55407af24c1ea0eaa",
+        "story_first_trial_id": "7ffdeab55407af24c1ea0eaa",
+        "story_first_preview_only": true,
+        "anchor_id": "search:story_first_7ffdeab55407af24c1ea0eaa_01",
+        "new_segment_id": "seg_story_first_7ffdeab55407af24c1ea0eaa_01",
+        "insert_after_segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_01",
+        "before_segment_id": "seg_story_first_b47e4b6a45d1a02720cf0385_02",
+        "bound_source_window": {
+          "start": 5599.36,
+          "end": 5630.136
+        },
+        "event_ids": [
+          "atom_fill_0112_Ball_possession_5615435",
+          "atom_fill_0113_Defensive_action_5622136",
+          "event_000559"
+        ],
+        "narrative_purpose": "H5 is the strongest candidate because it provides the most direct narrative bridge to the equalizer: a sequence of Celta Vigo possession and defensive recovery in the final minutes, leading to the corner kick that immediately precedes the goal. The events at 5607.36s, 5615.435s, and 5622.136s are all uncovered and non-replay, satisfying the requirement for fresh footage. The corner kick at 5655.418s is already covered by the accepted cut, but including it here as the endpoint of the new footage creates a seamless transition into the existing equalizer segment. The relation is kept hypothetical",
+        "source_event_observations": [
+          {
+            "event_id": "event_000559",
+            "status": "SUPPORTED",
+            "reason": "Frame f1 shows a player in blue (Team 2) controlling the ball and advancing in their own defensive half, matching the annotation.",
+            "frame_ids": [
+              "f1"
+            ]
+          },
+          {
+            "event_id": "atom_fill_0112_Ball_possession_5615435",
+            "status": "SUPPORTED",
+            "reason": "Frame f3 shows a player in blue maintaining possession of the ball near the center circle.",
+            "frame_ids": [
+              "f3"
+            ]
+          },
+          {
+            "event_id": "atom_fill_0113_Defensive_action_5622136",
+            "status": "SUPPORTED",
+            "reason": "Frame f5 captures a physical challenge where a red-shirted player tackles a blue-shirted player near the penalty area.",
+            "frame_ids": [
+              "f5"
+            ]
+          }
+        ],
+        "expected_observable_improvement": "H5 is the strongest candidate because it provides the most direct narrative bridge to the equalizer: a sequence of Celta Vigo possession and defensive recovery in the final minutes, leading to the corner kick that immediately precedes the goal. The events at 5607.36s, 5615.435s, and 5622.136s are all uncovered and non-replay, satisfying the requirement for fresh footage. The corner kick at 5655.418s is already covered by the accepted cut, but including it here as the endpoint of the new footage creates a seamless transition into the existing equalizer segment. The relation is kept hypothetical",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "evidence_refs": [
+          {
+            "kind": "story_first_source_review",
+            "ref": "story_first_7ffdeab55407af24c1ea0eaa_01"
+          }
+        ]
+      }
+    ]
+  }
+}

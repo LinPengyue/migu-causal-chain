@@ -1,0 +1,72 @@
+{
+  "frame_refs": [
+    {
+      "actual_media_sec": 2277.12,
+      "event_ids": [],
+      "frame_id": "f1",
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_alternating_threats_1_paid/original_agent/02_round_01/story_first_source_review/source_frames/f_0000_2277110.jpg",
+      "pts_status": "pts",
+      "requested_media_sec": 2277.11,
+      "role": "candidate",
+      "sha256": "7d3c1c3bc0668bdb1354aca945fb910e8eb3a7e457ff99d06b0b75f44fc19d70",
+      "source_pts_sec": 2277.12,
+      "window_id": "story_first_4268996b2fb5cc4e177e1ede_01"
+    },
+    {
+      "actual_media_sec": 2277.96,
+      "event_ids": [
+        "event_000311"
+      ],
+      "frame_id": "f2",
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_alternating_threats_1_paid/original_agent/02_round_01/story_first_source_review/source_frames/f_0001_2277940.jpg",
+      "pts_status": "pts",
+      "requested_media_sec": 2277.94,
+      "role": "candidate",
+      "sha256": "bd141eab512cb6485bd446af9f6c2a35a80573899d70fd45615f5fbe9031c29b",
+      "source_pts_sec": 2277.96,
+      "window_id": "story_first_4268996b2fb5cc4e177e1ede_01"
+    },
+    {
+      "actual_media_sec": 2279.96,
+      "event_ids": [
+        "event_000312"
+      ],
+      "frame_id": "f3",
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_alternating_threats_1_paid/original_agent/02_round_01/story_first_source_review/source_frames/f_0002_2279930.jpg",
+      "pts_status": "pts",
+      "requested_media_sec": 2279.93,
+      "role": "candidate",
+      "sha256": "24ea8eae7042ecf73e4d523bd76426fc0ec4025201a67638ecbecfdc8dc433b5",
+      "source_pts_sec": 2279.96,
+      "window_id": "story_first_4268996b2fb5cc4e177e1ede_01"
+    },
+    {
+      "actual_media_sec": 2285.84,
+      "event_ids": [
+        "event_000313"
+      ],
+      "frame_id": "f4",
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_alternating_threats_1_paid/original_agent/02_round_01/story_first_source_review/source_frames/f_0003_2285840.jpg",
+      "pts_status": "pts",
+      "requested_media_sec": 2285.84,
+      "role": "candidate",
+      "sha256": "1292573e4c16fe95a36f5cf11388f747e7e870b6a0bc467158aa04bdeb497079",
+      "source_pts_sec": 2285.84,
+      "window_id": "story_first_4268996b2fb5cc4e177e1ede_01"
+    },
+    {
+      "actual_media_sec": 2286.68,
+      "event_ids": [],
+      "frame_id": "f5",
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_alternating_threats_1_paid/original_agent/02_round_01/story_first_source_review/source_frames/f_0004_2286670.jpg",
+      "pts_status": "pts",
+      "requested_media_sec": 2286.67,
+      "role": "candidate",
+      "sha256": "247f5d865826389407de7a34628fa6a8edc32f019be52f748122f9a91ed4c580",
+      "source_pts_sec": 2286.68,
+      "window_id": "story_first_4268996b2fb5cc4e177e1ede_01"
+    }
+  ],
+  "prompt": "Verify the listed events from source-bound stills in original time order. Use the surrounding source event timeline, including human annotations, for event facts and timing. Report what the sampled frames support or clearly contradict. Cite candidate frames bound to each selected event. Use UNCERTAIN if the sampled frames do not show the action or attribution clearly. Do not infer team numbers from kit color without a supplied mapping. If an event is visible only as a replay or slow-motion shot, mark it CONTRADICTED. First-live certification requires separate evidence. Return one compact JSON object with one row per event. Use short frame IDs and one brief, factual reason. {events:[{event_id,status:SUPPORTED|CONTRADICTED|UNCERTAIN,reason,frame_ids}]}\n{\"events\":[{\"event_id\":\"event_000311\",\"source_pts_sec\":2277.94,\"event_type\":\"Free_kick\",\"known_replay_or_slowmo\":false,\"annotation\":{\"description\":\"\",\"notes\":\"1队球员发任意球\"}},{\"event_id\":\"event_000312\",\"source_pts_sec\":2279.93,\"event_type\":\"Win_an_aerial_duel\",\"known_replay_or_slowmo\":false,\"annotation\":{\"description\":\"\",\"notes\":\"2队球员头球争顶成功\"}},{\"event_id\":\"event_000313\",\"source_pts_sec\":2285.84,\"event_type\":\"Shot\",\"known_replay_or_slowmo\":false,\"annotation\":{\"description\":\"\",\"notes\":\"1队球员外围一脚远射，射偏\"}}],\"source_event_context\":[{\"event_id\":\"event_000309\",\"source_pts_sec\":2219.61,\"event_type\":\"Win_an_aerial_duel\",\"label\":\"Win_an_aerial_duel\",\"notes\":\"1队10号头球争顶成功\",\"attributes\":{},\"broadcast_phase\":\"LIVE\",\"annotation_source\":\"annotated_delivery_event\",\"annotator_confidence\":1.0},{\"event_id\":\"event_000310\",\"source_pts_sec\":2234.0,\"event_type\":\"Foul_Being_fouled\",\"label\":\"Dangerous_Play\",\"notes\":\"2队4号抢球过程中踢到1队6号，造成犯规\",\"attributes\":{},\"broadcast_phase\":\"REPLAY\",\"annotation_source\":\"annotated_delivery_event\",\"annotator_confidence\":1.0},{\"event_id\":\"event_000311\",\"source_pts_sec\":2277.94,\"event_type\":\"Free_kick\",\"label\":\"Direct_Free_Kick\",\"notes\":\"1队球员发任意球\",\"attributes\":{},\"broadcast_phase\":\"LIVE\",\"annotation_source\":\"annotated_delivery_event\",\"annotator_confidence\":1.0},{\"event_id\":\"event_000312\",\"source_pts_sec\":2279.93,\"event_type\":\"Win_an_aerial_duel\",\"label\":\"Win_an_aerial_duel\",\"notes\":\"2队球员头球争顶成功\",\"attributes\":{},\"broadcast_phase\":\"LIVE\",\"annotation_source\":\"annotated_delivery_event\",\"annotator_confidence\":1.0},{\"event_id\":\"event_000313\",\"source_pts_sec\":2285.84,\"event_type\":\"Shot\",\"label\":\"Regular_Shot\",\"notes\":\"1队球员外围一脚远射，射偏\",\"attributes\":{},\"broadcast_phase\":\"LIVE\",\"annotation_source\":\"annotated_delivery_event\",\"annotator_confidence\":1.0},{\"event_id\":\"event_000314\",\"source_pts_sec\":2315.61,\"event_type\":\"Pass\",\"label\":\"Long_Pass\",\"notes\":\"2队守门员长传\",\"attributes\":{},\"broadcast_phase\":\"LIVE\",\"annotation_source\":\"annotated_delivery_event\",\"annotator_confidence\":1.0},{\"event_id\":\"event_000315\",\"source_pts_sec\":2319.02,\"event_type\":\"Win_an_aerial_duel\",\"label\":\"Win_an_aerial_duel\",\"notes\":\"1队球员头球争顶成功\",\"attributes\":{},\"broadcast_phase\":\"LIVE\",\"annotation_source\":\"annotated_delivery_event\",\"annotator_confidence\":1.0}],\"teams\":{\"team_1\":{\"name\":\"阿联酋\",\"color\":\"白色\"},\"team_2\":{\"name\":\"阿曼\",\"color\":\"红色\"}},\"windows\":[{\"candidate_id\":\"story_first_4268996b2fb5cc4e177e1ede_01\",\"source_pts_start\":2269.94,\"source_pts_end\":2293.84,\"event_ids\":[\"event_000311\",\"event_000312\",\"event_000313\"],\"existing_segment_id\":null}],\"frame_refs\":[{\"frame_id\":\"f1\",\"role\":\"candidate\",\"window_id\":\"story_first_4268996b2fb5cc4e177e1ede_01\",\"event_ids\":[],\"source_pts_sec\":2277.12},{\"frame_id\":\"f2\",\"role\":\"candidate\",\"window_id\":\"story_first_4268996b2fb5cc4e177e1ede_01\",\"event_ids\":[\"event_000311\"],\"source_pts_sec\":2277.96},{\"frame_id\":\"f3\",\"role\":\"candidate\",\"window_id\":\"story_first_4268996b2fb5cc4e177e1ede_01\",\"event_ids\":[\"event_000312\"],\"source_pts_sec\":2279.96},{\"frame_id\":\"f4\",\"role\":\"candidate\",\"window_id\":\"story_first_4268996b2fb5cc4e177e1ede_01\",\"event_ids\":[\"event_000313\"],\"source_pts_sec\":2285.84},{\"frame_id\":\"f5\",\"role\":\"candidate\",\"window_id\":\"story_first_4268996b2fb5cc4e177e1ede_01\",\"event_ids\":[],\"source_pts_sec\":2286.68}]}",
+  "source_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c"
+}

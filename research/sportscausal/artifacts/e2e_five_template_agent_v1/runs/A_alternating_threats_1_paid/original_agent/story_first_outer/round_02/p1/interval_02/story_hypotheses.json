@@ -1,0 +1,114 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若长传后无对抗或拦截，则假设不成立"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "long_pass_then_physical_duel_then_interception",
+      "narrative_summary": "阿曼长传发起进攻，随后出现身体对抗，最终被拦截，构成一次被化解的威胁序列。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "传球方向与接应点",
+          "question": "长传是否指向进攻方向？",
+          "target_id": "event:event_000278"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "长传可能引发对抗并最终被拦截",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000278",
+          "target_event_id": "event_000280"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000278",
+        "event_000279",
+        "event_000280"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若对抗后未出现拦截或球权未变，则假设不成立"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "defensive_sequence_physical_then_interception",
+      "narrative_summary": "防守方先进行身体对抗，随后完成拦截，可能是一次连续的防守化解过程。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "球权归属变化",
+          "question": "对抗后球权是否转换？",
+          "target_id": "event:event_000279"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "身体对抗后可能转为拦截成功",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "state_transition",
+          "source_event_id": "event_000279",
+          "target_event_id": "event_000280"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000279",
+        "event_000280"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若长传后无对抗或对抗与落点无关，则假设不成立"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "long_pass_to_physical_challenge",
+      "narrative_summary": "长传后立即出现身体对抗，可能表明进攻方试图争抢长传落点。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "对抗位置与传球落点",
+          "question": "对抗是否发生在长传落点？",
+          "target_id": "event:event_000279"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "长传落点可能引发身体对抗",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000278",
+          "target_event_id": "event_000279"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000278",
+        "event_000279"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

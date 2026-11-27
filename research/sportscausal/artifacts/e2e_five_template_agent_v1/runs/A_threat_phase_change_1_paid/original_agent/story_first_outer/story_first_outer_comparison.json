@@ -1,0 +1,331 @@
+{
+  "schema": "story_first_outer_comparison_v1",
+  "preview_only": true,
+  "release_authorized": false,
+  "requested_outer_rounds": 3,
+  "attempted_outer_rounds": 3,
+  "accepted_changes": 3,
+  "http_calls_added_by_continuation": 11,
+  "api_usage": {
+    "http_attempts": 24,
+    "max_calls": 24,
+    "max_cost_usd": 0.1,
+    "est_cost_usd_real": 0.076406,
+    "by_role": {
+      "revision_planner": {
+        "http_attempts": 1,
+        "tokens": 21567,
+        "est_cost_usd": 0.003397,
+        "output_budget_exceeded": false
+      },
+      "story_first_generator": {
+        "http_attempts": 13,
+        "tokens": 246606,
+        "est_cost_usd": 0.041949,
+        "output_budget_exceeded": false
+      },
+      "story_first_p35_planner": {
+        "http_attempts": 3,
+        "tokens": 41759,
+        "est_cost_usd": 0.006645,
+        "output_budget_exceeded": false
+      },
+      "story_first_p3_caption": {
+        "http_attempts": 3,
+        "tokens": 83890,
+        "est_cost_usd": 0.013442,
+        "output_budget_exceeded": false
+      },
+      "story_first_p3_planner": {
+        "http_attempts": 1,
+        "tokens": 20814,
+        "est_cost_usd": 0.003376,
+        "output_budget_exceeded": false
+      },
+      "vision": {
+        "http_attempts": 3,
+        "tokens": 48006,
+        "est_cost_usd": 0.007597,
+        "output_budget_exceeded": false
+      }
+    },
+    "cost_is_estimate_not_invoice_cap": true,
+    "max_retries": 0,
+    "request_preflight": {
+      "planner": {
+        "model": "DeepSeek-V4-Pro-0813",
+        "thinking_in_body": {
+          "type": "disabled"
+        },
+        "max_tokens_in_body": 1200,
+        "max_completion_tokens_in_body": null,
+        "enable_thinking_in_body": null,
+        "thinking_budget_in_body": null,
+        "request_audit": {
+          "role": "planner",
+          "model": "DeepSeek-V4-Pro-0813",
+          "request_profile": "default",
+          "token_param_configured": "max_tokens",
+          "token_param_sent": "max_tokens",
+          "token_limit_sent": 1200,
+          "temperature_sent": 0.0,
+          "stream_sent": false,
+          "thinking_params_sent": false,
+          "thinking_object_disabled_sent": true,
+          "enable_thinking_sent": null,
+          "thinking_budget_sent": null,
+          "sends_both_token_params": false,
+          "sends_both_thinking_formats": false,
+          "message_count": 1,
+          "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+          "paratera_thinking_object_documented": false
+        },
+        "thinking_object_disabled_cfg": true,
+        "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+      },
+      "vision": {
+        "model": "Qwen3.7-Plus",
+        "thinking_in_body": {
+          "type": "disabled"
+        },
+        "max_tokens_in_body": 1200,
+        "max_completion_tokens_in_body": null,
+        "enable_thinking_in_body": null,
+        "thinking_budget_in_body": null,
+        "request_audit": {
+          "role": "vision",
+          "model": "Qwen3.7-Plus",
+          "request_profile": "video_rsi",
+          "token_param_configured": "max_tokens",
+          "token_param_sent": "max_tokens",
+          "token_limit_sent": 1200,
+          "temperature_sent": 0.0,
+          "stream_sent": false,
+          "thinking_params_sent": false,
+          "thinking_object_disabled_sent": true,
+          "enable_thinking_sent": null,
+          "thinking_budget_sent": null,
+          "sends_both_token_params": false,
+          "sends_both_thinking_formats": false,
+          "message_count": 1,
+          "video_rsi_compat_note": "Video-RSI PinnedProvider.chat sends temperature, max_tokens, thinking={'type':'disabled'}, stream=false. Official max_tokens=8192 must NOT be copied into this project; local HTTP/token/cost caps still apply.",
+          "paratera_thinking_object_documented": false
+        },
+        "thinking_object_disabled_cfg": true,
+        "note": "Paratera docs do not document thinking object; we still send thinking={type:disabled} via STORY_*_THINKING_OBJECT_DISABLED / video_rsi because prior Qwen runs returned text_tokens without reasoning_tokens when this was set."
+      }
+    },
+    "env_thinking_overrides": {
+      "before": {
+        "STORY_API_MAX_CALLS": "24",
+        "STORY_API_MAX_COST_USD": "0.10",
+        "STORY_API_MAX_COMPLETION_TOKENS": "512",
+        "STORY_VLM_MAX_COMPLETION_TOKENS": null,
+        "STORY_VLM_REQUEST_PROFILE": null,
+        "STORY_VLM_SEND_THINKING": null,
+        "STORY_VLM_ENABLE_THINKING": null,
+        "STORY_VLM_THINKING_OBJECT_DISABLED": null,
+        "STORY_VLM_TOKEN_PARAM": null,
+        "STORY_API_TOKEN_PARAM": "max_tokens"
+      },
+      "after": {
+        "STORY_API_MAX_CALLS": "24",
+        "STORY_API_MAX_COST_USD": "0.1",
+        "STORY_API_MAX_COMPLETION_TOKENS": "1200",
+        "STORY_VLM_MAX_COMPLETION_TOKENS": "1200",
+        "STORY_VLM_REQUEST_PROFILE": "video_rsi",
+        "STORY_VLM_SEND_THINKING": null,
+        "STORY_VLM_ENABLE_THINKING": null,
+        "STORY_VLM_THINKING_OBJECT_DISABLED": "1",
+        "STORY_VLM_TOKEN_PARAM": "max_tokens",
+        "STORY_API_TOKEN_PARAM": "max_tokens",
+        "STORY_VERIFIER_THINKING_OBJECT_DISABLED": "1",
+        "STORY_PLANNER_THINKING_OBJECT_DISABLED": "1",
+        "STORY_REVISION_PLANNER_THINKING_OBJECT_DISABLED": "1"
+      },
+      "disable_thinking": true
+    }
+  },
+  "round_history": [
+    {
+      "round": 1,
+      "status": "ACCEPTED_PREVIEW",
+      "source_advisory": [],
+      "p3_stop_reason": "PLANNER_KEEP",
+      "local_trims": 0,
+      "accepted_source_windows_sec": [
+        [
+          1927.24,
+          1952.7
+        ]
+      ],
+      "local_decisions": [
+        {
+          "action": "KEEP",
+          "rationale": "The bridge segment seg_story_first_919c8d9c0f04e984b2c0ba12_01 is placed between seg:2 (team_2 attacking threat at 1912.32-1922.55) and seg:3 (team_1 attacking threat at 1955.54-1966.45), directly covering the template's observed_phase_switch transition. The working cut caption shows part_01 (story 16.16-21.16) visually confirms a corner kick by the white team being cleared, and part_02 (story 46.62-57.53) visually confirms a white-team shot saved by the yellow-kit goalkeeper. These observations provide concrete setup and context for the phase switch without claiming an outcome for the MISSING insert phase (story 21.16-46.62). The bridge preserves the baseline mainline order and does not int"
+        }
+      ],
+      "replay_replacements": [
+        {
+          "proposal_id": "interval_03:H1",
+          "status": "REPLACED",
+          "removed_event_ids": [],
+          "window_edits": [
+            {
+              "event_ids": [
+                "event_000285",
+                "event_000287"
+              ],
+              "removed_event_ids": [],
+              "original_source_window_sec": [
+                1981.0,
+                2001.18
+              ],
+              "removed_source_windows_sec": [
+                [
+                  2000.13,
+                  2011.73
+                ]
+              ],
+              "retained_source_windows_sec": [
+                [
+                  1981.0,
+                  2000.13
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "parent_mp4_sha256": "3fb4d4e113ded309633c2bb5501a671e14e6fc50f76c07c3a680f13669bb49ee",
+      "p1_proposals": 18,
+      "new_proposals": 15,
+      "trial_id": "a8a7af824acc5aa63d92ab1d",
+      "source_windows_sec": [
+        [
+          1292.92,
+          1319.0
+        ],
+        [
+          1327.974,
+          1343.974
+        ]
+      ],
+      "event_ids": [
+        "atom_fill_0003_Shot_1335974",
+        "event_000169",
+        "event_000171",
+        "event_000172"
+      ],
+      "status": "ACCEPTED_PREVIEW",
+      "source_feedback": [],
+      "source_advisory": [],
+      "p3_stop_reason": "API_BUDGET",
+      "local_trims": 0,
+      "accepted_source_windows_sec": [
+        [
+          1292.92,
+          1319.0
+        ],
+        [
+          1327.974,
+          1343.974
+        ]
+      ],
+      "local_decisions": []
+    },
+    {
+      "round": 3,
+      "parent_mp4_sha256": "21c8a58ef6ed6c05364c81fa339c7cd13e6c23cf5b5820cccb9733e485305086",
+      "p1_proposals": 5,
+      "new_proposals": 4,
+      "trial_id": "fc564198b612763049ada617",
+      "source_windows_sec": [
+        [
+          1823.07,
+          1842.28
+        ],
+        [
+          1866.76,
+          1882.76
+        ]
+      ],
+      "event_ids": [
+        "event_000270",
+        "event_000271",
+        "event_000274"
+      ],
+      "status": "ACCEPTED_PREVIEW",
+      "source_feedback": [],
+      "source_advisory": [],
+      "p3_stop_reason": "API_BUDGET",
+      "local_trims": 0,
+      "accepted_source_windows_sec": [
+        [
+          1823.07,
+          1842.28
+        ],
+        [
+          1866.76,
+          1882.76
+        ]
+      ],
+      "local_decisions": []
+    }
+  ],
+  "comparison": [
+    {
+      "outer_rounds": 0,
+      "status": "V3_R",
+      "accepted_changes": 0,
+      "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/story_first_outer/v0_edl.json",
+      "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/01_initial_story/story_clean.mp4",
+      "mp4_sha256": "dcedaeee59281392aeebfa7f7179f5ef22736072ecddcb7b6da31350118b3190",
+      "duration_sec": 104.142
+    },
+    {
+      "outer_rounds": 1,
+      "status": "ACCEPTED_PREVIEW",
+      "accepted_changes": 1,
+      "local_trims": 0,
+      "p3_stop_reason": "PLANNER_KEEP",
+      "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/story_first_outer/v1_edl.json",
+      "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/02_round_02/candidate_render/story_clean.mp4",
+      "mp4_sha256": "3fb4d4e113ded309633c2bb5501a671e14e6fc50f76c07c3a680f13669bb49ee",
+      "duration_sec": 129.614
+    },
+    {
+      "outer_rounds": 2,
+      "status": "ACCEPTED_PREVIEW",
+      "accepted_changes": 2,
+      "changed_from_previous_round": true,
+      "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/story_first_outer/v2_edl.json",
+      "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/story_first_outer/round_02/trial_render/story_clean.mp4",
+      "mp4_sha256": "21c8a58ef6ed6c05364c81fa339c7cd13e6c23cf5b5820cccb9733e485305086",
+      "duration_sec": 171.782
+    },
+    {
+      "outer_rounds": 3,
+      "status": "ACCEPTED_PREVIEW",
+      "accepted_changes": 3,
+      "changed_from_previous_round": true,
+      "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/story_first_outer/v3_edl.json",
+      "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/story_first_outer/round_03/trial_render/story_clean.mp4",
+      "mp4_sha256": "b3c5d524cac6b34308a38b2727900976cef4676170f9f4a1283640b84952182e",
+      "duration_sec": 207.053
+    }
+  ],
+  "selected_preview": {
+    "outer_rounds": 3,
+    "status": "ACCEPTED_PREVIEW",
+    "accepted_changes": 3,
+    "changed_from_previous_round": true,
+    "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/story_first_outer/v3_edl.json",
+    "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/e2e_five_template_agent_v1/runs/A_threat_phase_change_1_paid/original_agent/story_first_outer/round_03/trial_render/story_clean.mp4",
+    "mp4_sha256": "b3c5d524cac6b34308a38b2727900976cef4676170f9f4a1283640b84952182e",
+    "duration_sec": 207.053
+  }
+}

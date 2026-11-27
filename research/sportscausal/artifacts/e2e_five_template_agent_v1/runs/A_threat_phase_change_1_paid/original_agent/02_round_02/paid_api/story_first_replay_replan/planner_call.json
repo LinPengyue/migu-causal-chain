@@ -1,0 +1,39 @@
+{
+  "error": null,
+  "parsed": {
+    "selection": {
+      "selections": [
+        {
+          "proposal_id": "interval_02:H1",
+          "event_ids": [
+            "event_000278",
+            "event_000279",
+            "event_000280"
+          ],
+          "relation_ids": []
+        }
+      ],
+      "rationale": "seg:2 到 seg:3 是模板中攻势换手的关键过渡区间（team_2 攻势结束，team_1 攻势开始）。interval_02:H1 覆盖该区间内长传、身体对抗与拦截的连续事件，且所有事件均为非回放、未覆盖的新素材。该候选不引入因果断言，仅以叙事关联呈现攻势在换手前被终结的过程，与模板的 observed_phase_switch 节点形成自然衔接。其他候选要么包含已确认的回放事件（如 interval_03:H1 的 event_000285/event_000287 被标记为 REPLAY_CONFIRMED），要么事件间隔过大或与模板攻防换手主题关联较弱。因此选择 interval_02:H1 作为唯一新增局部故事。"
+    }
+  },
+  "call_audit": {
+    "model": "DeepSeek-V4-Pro-0813",
+    "provider_mode": "real",
+    "logical_role": "story_first_p35_planner",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "prompt_tokens": 19293,
+    "completion_tokens": 242,
+    "reasoning_tokens": 0,
+    "text_tokens": null,
+    "finish_reason": "stop",
+    "visible_output_chars": 556,
+    "est_cost_usd": 0.00303915,
+    "http_ok": true,
+    "empty_content": false
+  }
+}

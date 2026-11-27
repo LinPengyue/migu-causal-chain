@@ -1,0 +1,271 @@
+{
+  "trial": {
+    "trial_id": "b77d6bbefa2c6e5096b89420",
+    "proposal_ids": [
+      "interval_01:H2"
+    ],
+    "events": [
+      {
+        "event_id": "event_000104",
+        "source_pts_sec": 1066.8,
+        "event_type": "Dribble_past",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "2队6号截获球之后带球过人"
+        }
+      },
+      {
+        "event_id": "event_000105",
+        "source_pts_sec": 1067.63,
+        "event_type": "Defensive_action",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "2队6号带球被1队球员抢断"
+        }
+      },
+      {
+        "event_id": "event_000171",
+        "source_pts_sec": 1305.71,
+        "event_type": "Dribble_past",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "2队21号拿球后盘带过人"
+        }
+      },
+      {
+        "event_id": "event_000172",
+        "source_pts_sec": 1311.0,
+        "event_type": "Defensive_action",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "1队16号抢断了2队21号的球"
+        }
+      }
+    ],
+    "relations": [],
+    "story_context": [
+      {
+        "proposal_id": "interval_01:H2",
+        "summary": "阿联酋一次突破被铲断后，随后又出现新的突破与铲断，呈现反复受阻与再尝试。",
+        "expected_story_contribution": "",
+        "falsification_conditions": [
+          "若两次突破之间无任何铲断或防守动作则关联不成立"
+        ]
+      }
+    ],
+    "windows": [
+      {
+        "event_ids": [
+          "event_000104",
+          "event_000105"
+        ],
+        "source_pts_start": 1060.64,
+        "source_pts_end": 1075.63,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_b77d6bbefa2c6e5096b89420_01",
+        "issue_id": "story_first:b77d6bbefa2c6e5096b89420"
+      },
+      {
+        "event_ids": [
+          "event_000171",
+          "event_000172"
+        ],
+        "source_pts_start": 1297.71,
+        "source_pts_end": 1319.0,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_b77d6bbefa2c6e5096b89420_02",
+        "issue_id": "story_first:b77d6bbefa2c6e5096b89420"
+      }
+    ],
+    "narrative_purpose": "The accepted cut preserves the alternating_threats template with anchors at seg:1 through seg:10. The largest narrative gap is between seg:1 (1049.71-1060.64) and seg:2 (1912.32-1922.55), a span of over 850 seconds. Within this interval, interval_01:H2 offers the strongest contribution to the existing template: it presents a repeated 'breakthrough then dispossession' pattern (event_000104→event_000105 and event_000171→event_000172), which directly reinforces the 'alternating threats' narrative by showing both teams creating and disrupting attacking moves. All four events are uncovered, non-rep"
+  },
+  "review": {
+    "status": "READY_FOR_TRIAL",
+    "feedback": [],
+    "advisory": [],
+    "annotation_supported_event_ids": [
+      "event_000104",
+      "event_000105",
+      "event_000171",
+      "event_000172"
+    ],
+    "event_observations": [
+      {
+        "event_id": "event_000104",
+        "status": "SUPPORTED",
+        "reason": "Frame f2 shows a red-shirted player (Team 2) dribbling the ball past a white-shirted defender, consistent with the annotation for Team 2 #6.",
+        "frame_ids": [
+          "f2"
+        ]
+      },
+      {
+        "event_id": "event_000105",
+        "status": "SUPPORTED",
+        "reason": "Frame f3 captures a white-shirted player tackling the red-shirted ball carrier, resulting in a challenge for possession as described.",
+        "frame_ids": [
+          "f3"
+        ]
+      },
+      {
+        "event_id": "event_000171",
+        "status": "SUPPORTED",
+        "reason": "Frame f6 depicts a red-shirted player (Team 2) maneuvering the ball around a white-shirted opponent near the center circle.",
+        "frame_ids": [
+          "f6"
+        ]
+      },
+      {
+        "event_id": "event_000172",
+        "status": "SUPPORTED",
+        "reason": "Frame f7 shows a white-shirted player (Team 1) making contact with the red-shirted player (Team 2 #21 visible in subsequent frame f8), executing a tackle.",
+        "frame_ids": [
+          "f7"
+        ]
+      }
+    ],
+    "candidates": [
+      {
+        "event_ids": [
+          "event_000104",
+          "event_000105"
+        ],
+        "source_pts_start": 1060.64,
+        "source_pts_end": 1075.63,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_b77d6bbefa2c6e5096b89420_01",
+        "issue_id": "story_first:b77d6bbefa2c6e5096b89420",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "b77d6bbefa2c6e5096b89420",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      },
+      {
+        "event_ids": [
+          "event_000171",
+          "event_000172"
+        ],
+        "source_pts_start": 1297.71,
+        "source_pts_end": 1319.0,
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "candidate_id": "story_first_b77d6bbefa2c6e5096b89420_02",
+        "issue_id": "story_first:b77d6bbefa2c6e5096b89420",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "b77d6bbefa2c6e5096b89420",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      }
+    ],
+    "intents": [
+      {
+        "intent_id": "story_first_b77d6bbefa2c6e5096b89420_02",
+        "action": "search_add",
+        "role": "buildup_bridge_action",
+        "issue_id": "story_first:b77d6bbefa2c6e5096b89420",
+        "story_first_trial_id": "b77d6bbefa2c6e5096b89420",
+        "story_first_preview_only": true,
+        "anchor_id": "search:story_first_b77d6bbefa2c6e5096b89420_02",
+        "new_segment_id": "seg_story_first_b77d6bbefa2c6e5096b89420_02",
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "bound_source_window": {
+          "start": 1297.71,
+          "end": 1319.0
+        },
+        "event_ids": [
+          "event_000171",
+          "event_000172"
+        ],
+        "narrative_purpose": "The accepted cut preserves the alternating_threats template with anchors at seg:1 through seg:10. The largest narrative gap is between seg:1 (1049.71-1060.64) and seg:2 (1912.32-1922.55), a span of over 850 seconds. Within this interval, interval_01:H2 offers the strongest contribution to the existing template: it presents a repeated 'breakthrough then dispossession' pattern (event_000104→event_000105 and event_000171→event_000172), which directly reinforces the 'alternating threats' narrative by showing both teams creating and disrupting attacking moves. All four events are uncovered, non-rep",
+        "source_event_observations": [
+          {
+            "event_id": "event_000171",
+            "status": "SUPPORTED",
+            "reason": "Frame f6 depicts a red-shirted player (Team 2) maneuvering the ball around a white-shirted opponent near the center circle.",
+            "frame_ids": [
+              "f6"
+            ]
+          },
+          {
+            "event_id": "event_000172",
+            "status": "SUPPORTED",
+            "reason": "Frame f7 shows a white-shirted player (Team 1) making contact with the red-shirted player (Team 2 #21 visible in subsequent frame f8), executing a tackle.",
+            "frame_ids": [
+              "f7"
+            ]
+          }
+        ],
+        "expected_observable_improvement": "The accepted cut preserves the alternating_threats template with anchors at seg:1 through seg:10. The largest narrative gap is between seg:1 (1049.71-1060.64) and seg:2 (1912.32-1922.55), a span of over 850 seconds. Within this interval, interval_01:H2 offers the strongest contribution to the existing template: it presents a repeated 'breakthrough then dispossession' pattern (event_000104→event_000105 and event_000171→event_000172), which directly reinforces the 'alternating threats' narrative by showing both teams creating and disrupting attacking moves. All four events are uncovered, non-rep",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "evidence_refs": [
+          {
+            "kind": "story_first_source_review",
+            "ref": "story_first_b77d6bbefa2c6e5096b89420_02"
+          }
+        ]
+      },
+      {
+        "intent_id": "story_first_b77d6bbefa2c6e5096b89420_01",
+        "action": "search_add",
+        "role": "buildup_bridge_action",
+        "issue_id": "story_first:b77d6bbefa2c6e5096b89420",
+        "story_first_trial_id": "b77d6bbefa2c6e5096b89420",
+        "story_first_preview_only": true,
+        "anchor_id": "search:story_first_b77d6bbefa2c6e5096b89420_01",
+        "new_segment_id": "seg_story_first_b77d6bbefa2c6e5096b89420_01",
+        "insert_after_segment_id": "seg:1",
+        "before_segment_id": "seg:2",
+        "bound_source_window": {
+          "start": 1060.64,
+          "end": 1075.63
+        },
+        "event_ids": [
+          "event_000104",
+          "event_000105"
+        ],
+        "narrative_purpose": "The accepted cut preserves the alternating_threats template with anchors at seg:1 through seg:10. The largest narrative gap is between seg:1 (1049.71-1060.64) and seg:2 (1912.32-1922.55), a span of over 850 seconds. Within this interval, interval_01:H2 offers the strongest contribution to the existing template: it presents a repeated 'breakthrough then dispossession' pattern (event_000104→event_000105 and event_000171→event_000172), which directly reinforces the 'alternating threats' narrative by showing both teams creating and disrupting attacking moves. All four events are uncovered, non-rep",
+        "source_event_observations": [
+          {
+            "event_id": "event_000104",
+            "status": "SUPPORTED",
+            "reason": "Frame f2 shows a red-shirted player (Team 2) dribbling the ball past a white-shirted defender, consistent with the annotation for Team 2 #6.",
+            "frame_ids": [
+              "f2"
+            ]
+          },
+          {
+            "event_id": "event_000105",
+            "status": "SUPPORTED",
+            "reason": "Frame f3 captures a white-shirted player tackling the red-shirted ball carrier, resulting in a challenge for possession as described.",
+            "frame_ids": [
+              "f3"
+            ]
+          }
+        ],
+        "expected_observable_improvement": "The accepted cut preserves the alternating_threats template with anchors at seg:1 through seg:10. The largest narrative gap is between seg:1 (1049.71-1060.64) and seg:2 (1912.32-1922.55), a span of over 850 seconds. Within this interval, interval_01:H2 offers the strongest contribution to the existing template: it presents a repeated 'breakthrough then dispossession' pattern (event_000104→event_000105 and event_000171→event_000172), which directly reinforces the 'alternating threats' narrative by showing both teams creating and disrupting attacking moves. All four events are uncovered, non-rep",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "evidence_refs": [
+          {
+            "kind": "story_first_source_review",
+            "ref": "story_first_b77d6bbefa2c6e5096b89420_01"
+          }
+        ]
+      }
+    ]
+  }
+}

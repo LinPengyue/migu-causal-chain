@@ -1,0 +1,116 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若视频显示长传后无对抗或拦截，则假设不成立"
+      ],
+      "hypothesis_id": "H1",
+      "mechanism_key": "long_pass_then_physical_duel_then_interception",
+      "narrative_summary": "阿曼长传发起进攻，随后经历身体对抗，最终被拦截，构成一次未果的威胁序列。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "长传落点与对抗发生位置一致",
+          "question": "长传是否直接导致后续对抗？",
+          "target_id": "event:event_000278"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "长传可能引发后续对抗并最终被拦截",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "causal_hypothesis",
+          "source_event_id": "event_000278",
+          "target_event_id": "event_000280"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000278",
+        "event_000279",
+        "event_000280"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若对抗与长传无时间或空间关联，则假设不成立"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "defensive_sequence_after_opponent_build_up",
+      "narrative_summary": "阿曼长传后，阿联酋连续两次防守动作，可能形成由攻转守的防守回应。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "对抗发生在长传落点附近",
+          "question": "对抗是否紧接长传发生？",
+          "target_id": "event:event_000279"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "长传后紧接身体对抗，或为防守回应",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000278",
+          "target_event_id": "event_000279"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000278",
+        "event_000279",
+        "event_000280"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若拦截后球权未转换，则假设不成立"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "interception_as_turning_point",
+      "narrative_summary": "阿曼长传与对抗后，阿联酋拦截成功，可能成为攻防转换的节点。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "拦截后阿联酋控球",
+          "question": "拦截后球权是否转换？",
+          "target_id": "event:event_000280"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "对抗后拦截或标志球权转换",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "state_transition",
+          "source_event_id": "event_000279",
+          "target_event_id": "event_000280"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000278",
+        "event_000279",
+        "event_000280"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

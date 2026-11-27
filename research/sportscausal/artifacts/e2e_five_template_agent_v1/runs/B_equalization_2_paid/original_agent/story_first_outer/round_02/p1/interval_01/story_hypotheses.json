@@ -1,0 +1,160 @@
+{
+  "edl_modified": false,
+  "first_live_certified": false,
+  "hypotheses": [
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若黄牌后无塞尔塔控球推进镜头则假设不成立"
+      ],
+      "hypothesis_id": "H2",
+      "mechanism_key": "sustained_fouls_cards_then_late_pressure",
+      "narrative_summary": "下半场多次犯规与黄牌打断节奏，塞尔塔在尾声阶段重新组织并扳平。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "恢复后控球方颜色",
+          "question": "黄牌后球权归属哪队？",
+          "target_id": "event:event_000553"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "黄牌后比赛恢复，塞尔塔随后获角球，属推测",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000553",
+          "target_event_id": "atom_fill_0114_Corner_kick_5655418"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000539",
+        "event_000553",
+        "event_000555",
+        "atom_fill_0114_Corner_kick_5655418"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若此前定位球均非塞尔塔主罚则假设不成立"
+      ],
+      "hypothesis_id": "H3",
+      "mechanism_key": "repeated_setpieces_culminating_in_corner",
+      "narrative_summary": "塞尔塔多次定位球机会未果，最终由角球完成扳平，形成重复尝试模式。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "主罚方球衣颜色",
+          "question": "该任意球由哪队主罚？",
+          "target_id": "event:event_000555"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "连续定位球尝试后角球得分，属推测",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000555",
+          "target_event_id": "atom_fill_0114_Corner_kick_5655418"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000542",
+        "event_000551",
+        "event_000555",
+        "atom_fill_0114_Corner_kick_5655418"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若解围方非塞尔塔则假设不成立"
+      ],
+      "hypothesis_id": "H4",
+      "mechanism_key": "defensive_clearances_absorbing_then_breakthrough",
+      "narrative_summary": "塞尔塔多次解围化解对方攻势，随后由角球机会完成扳平进球。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "拦截方球衣颜色",
+          "question": "该拦截由哪队完成？",
+          "target_id": "event:event_000556"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "解围后塞尔塔获角球，攻防转换属推测",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "event_000556",
+          "target_event_id": "atom_fill_0114_Corner_kick_5655418"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000545",
+        "event_000548",
+        "event_000556",
+        "atom_fill_0114_Corner_kick_5655418"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    },
+    {
+      "causal_claim_validated": false,
+      "eligible_for_edl": false,
+      "expected_story_contribution": "",
+      "falsification_conditions": [
+        "若控球方非塞尔塔则假设不成立"
+      ],
+      "hypothesis_id": "H5",
+      "mechanism_key": "possession_switch_then_corner_equalizer",
+      "narrative_summary": "塞尔塔在尾声阶段夺回控球并制造角球，最终由角球攻势扳平比分。",
+      "observation_queries": [
+        {
+          "discriminating_signal": "控球方球衣颜色",
+          "question": "该控球由哪队保持？",
+          "target_id": "event:atom_fill_0112_Ball_possession_5615435"
+        }
+      ],
+      "possible_intermediate_states": [],
+      "proposed_long_range_relations": [
+        {
+          "claim": "控球后连续推进获角球，属推测",
+          "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS",
+          "relation_type": "narrative_association",
+          "source_event_id": "atom_fill_0112_Ball_possession_5615435",
+          "target_event_id": "atom_fill_0114_Corner_kick_5655418"
+        }
+      ],
+      "supporting_event_ids": [
+        "event_000559",
+        "atom_fill_0112_Ball_possession_5615435",
+        "atom_fill_0113_Defensive_action_5622136",
+        "atom_fill_0114_Corner_kick_5655418"
+      ],
+      "uncertain_claims": [],
+      "video_observed": false
+    }
+  ],
+  "insufficient_evidence_reason": "",
+  "rejected": [
+    {
+      "index": 0,
+      "reason": "unrecognized_event_id"
+    }
+  ],
+  "schema": "story_first_hypotheses_poc_v1",
+  "status": "UNVERIFIED_HYPOTHESES",
+  "truth_claim": false
+}

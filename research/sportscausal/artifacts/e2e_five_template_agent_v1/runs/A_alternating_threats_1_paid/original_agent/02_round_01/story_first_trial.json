@@ -1,0 +1,201 @@
+{
+  "trial": {
+    "trial_id": "4268996b2fb5cc4e177e1ede",
+    "proposal_ids": [
+      "interval_03:H2"
+    ],
+    "events": [
+      {
+        "event_id": "event_000311",
+        "source_pts_sec": 2277.94,
+        "event_type": "Free_kick",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "1队球员发任意球"
+        }
+      },
+      {
+        "event_id": "event_000312",
+        "source_pts_sec": 2279.93,
+        "event_type": "Win_an_aerial_duel",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "2队球员头球争顶成功"
+        }
+      },
+      {
+        "event_id": "event_000313",
+        "source_pts_sec": 2285.84,
+        "event_type": "Shot",
+        "known_replay_or_slowmo": false,
+        "annotation": {
+          "description": "",
+          "notes": "1队球员外围一脚远射，射偏"
+        }
+      }
+    ],
+    "relations": [
+      {
+        "relation_id": "interval_03:H2:r1",
+        "source_event_id": "event_000311",
+        "target_event_id": "event_000313",
+        "relation_type": "causal_hypothesis",
+        "claim": "任意球进攻或导致随后射门，但未证实",
+        "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+      },
+      {
+        "relation_id": "revised:1",
+        "source_event_id": "event_000311",
+        "target_event_id": "event_000313",
+        "relation_type": "causal_hypothesis",
+        "claim": "任意球进攻可能直接导致随后射门，需视频确认同一进攻序列。",
+        "evidence_status": "UNVERIFIED_MODEL_HYPOTHESIS"
+      }
+    ],
+    "story_context": [
+      {
+        "proposal_id": "interval_03:H2",
+        "summary": "犯规获任意球后空中争顶，随后形成射门，构成定位球威胁链。",
+        "expected_story_contribution": "",
+        "falsification_conditions": [
+          "若任意球后无射门或射门来自其他进攻则推翻"
+        ]
+      }
+    ],
+    "windows": [
+      {
+        "event_ids": [
+          "event_000311",
+          "event_000312",
+          "event_000313"
+        ],
+        "source_pts_start": 2269.94,
+        "source_pts_end": 2293.84,
+        "insert_after_segment_id": "seg:3",
+        "before_segment_id": "seg:4",
+        "candidate_id": "story_first_4268996b2fb5cc4e177e1ede_01",
+        "issue_id": "story_first:4268996b2fb5cc4e177e1ede"
+      }
+    ],
+    "narrative_purpose": "该提案覆盖 seg:3→seg:4 大跳跃区间内的局部子故事：任意球→空中争顶→射门，事件时间紧凑（2277.94–2285.84s），且 event_000313 与 search_candidate cand_event_000313_2273 重叠，观察结果可直接服务于未来是否插入该候选的决策。选择此单一紧凑试验以最小化观察成本。"
+  },
+  "review": {
+    "status": "READY_FOR_TRIAL",
+    "feedback": [],
+    "advisory": [],
+    "annotation_supported_event_ids": [
+      "event_000311",
+      "event_000312",
+      "event_000313"
+    ],
+    "event_observations": [
+      {
+        "event_id": "event_000311",
+        "status": "SUPPORTED",
+        "reason": "Frame f2 shows a player in white (Team 1) striking the ball from a stationary position outside the penalty area, consistent with a free kick execution at the annotated timestamp.",
+        "frame_ids": [
+          "f2"
+        ]
+      },
+      {
+        "event_id": "event_000312",
+        "status": "SUPPORTED",
+        "reason": "Frame f3 captures a player in red (Team 2) jumping and making contact with the ball via header amidst opponents, confirming the aerial duel win.",
+        "frame_ids": [
+          "f3"
+        ]
+      },
+      {
+        "event_id": "event_000313",
+        "status": "SUPPORTED",
+        "reason": "Frame f4 depicts a player in white (Team 1) executing a long-range shot from outside the box, matching the description of an外围 (peripheral/long-range) shot.",
+        "frame_ids": [
+          "f4"
+        ]
+      }
+    ],
+    "candidates": [
+      {
+        "event_ids": [
+          "event_000311",
+          "event_000312",
+          "event_000313"
+        ],
+        "source_pts_start": 2269.94,
+        "source_pts_end": 2293.84,
+        "insert_after_segment_id": "seg:3",
+        "before_segment_id": "seg:4",
+        "candidate_id": "story_first_4268996b2fb5cc4e177e1ede_01",
+        "issue_id": "story_first:4268996b2fb5cc4e177e1ede",
+        "evidence_tier": "EVENT_PTS_CANDIDATE",
+        "first_live_status": "NOT_VERIFIED",
+        "first_live_available": false,
+        "executable_safe_revision": false,
+        "reject_or_defer_reason": "no_first_live_evidence_pack_for_window",
+        "story_first_trial_id": "4268996b2fb5cc4e177e1ede",
+        "replay_overlap_status": "NO_ANNOTATED_REPLAY_OVERLAP",
+        "preview_only": true
+      }
+    ],
+    "intents": [
+      {
+        "intent_id": "story_first_4268996b2fb5cc4e177e1ede_01",
+        "action": "search_add",
+        "role": "buildup_bridge_action",
+        "issue_id": "story_first:4268996b2fb5cc4e177e1ede",
+        "story_first_trial_id": "4268996b2fb5cc4e177e1ede",
+        "story_first_preview_only": true,
+        "anchor_id": "search:story_first_4268996b2fb5cc4e177e1ede_01",
+        "new_segment_id": "seg_story_first_4268996b2fb5cc4e177e1ede_01",
+        "insert_after_segment_id": "seg:3",
+        "before_segment_id": "seg:4",
+        "bound_source_window": {
+          "start": 2269.94,
+          "end": 2293.84
+        },
+        "event_ids": [
+          "event_000311",
+          "event_000312",
+          "event_000313"
+        ],
+        "narrative_purpose": "该提案覆盖 seg:3→seg:4 大跳跃区间内的局部子故事：任意球→空中争顶→射门，事件时间紧凑（2277.94–2285.84s），且 event_000313 与 search_candidate cand_event_000313_2273 重叠，观察结果可直接服务于未来是否插入该候选的决策。选择此单一紧凑试验以最小化观察成本。",
+        "source_event_observations": [
+          {
+            "event_id": "event_000311",
+            "status": "SUPPORTED",
+            "reason": "Frame f2 shows a player in white (Team 1) striking the ball from a stationary position outside the penalty area, consistent with a free kick execution at the annotated timestamp.",
+            "frame_ids": [
+              "f2"
+            ]
+          },
+          {
+            "event_id": "event_000312",
+            "status": "SUPPORTED",
+            "reason": "Frame f3 captures a player in red (Team 2) jumping and making contact with the ball via header amidst opponents, confirming the aerial duel win.",
+            "frame_ids": [
+              "f3"
+            ]
+          },
+          {
+            "event_id": "event_000313",
+            "status": "SUPPORTED",
+            "reason": "Frame f4 depicts a player in white (Team 1) executing a long-range shot from outside the box, matching the description of an外围 (peripheral/long-range) shot.",
+            "frame_ids": [
+              "f4"
+            ]
+          }
+        ],
+        "expected_observable_improvement": "该提案覆盖 seg:3→seg:4 大跳跃区间内的局部子故事：任意球→空中争顶→射门，事件时间紧凑（2277.94–2285.84s），且 event_000313 与 search_candidate cand_event_000313_2273 重叠，观察结果可直接服务于未来是否插入该候选的决策。选择此单一紧凑试验以最小化观察成本。",
+        "falsification_evidence": "Added footage does not convey the expected story information, duplicates an existing beat, or breaks the continuity of the full cut.",
+        "evidence_refs": [
+          {
+            "kind": "story_first_source_review",
+            "ref": "story_first_4268996b2fb5cc4e177e1ede_01"
+          }
+        ]
+      }
+    ]
+  }
+}

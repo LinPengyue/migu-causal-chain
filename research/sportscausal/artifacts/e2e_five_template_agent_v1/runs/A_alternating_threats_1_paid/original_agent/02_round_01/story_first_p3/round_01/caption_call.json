@@ -1,0 +1,58 @@
+{
+  "error": null,
+  "parsed": {
+    "observations": [
+      {
+        "phase_id": "3:before",
+        "clip_id": "part_01",
+        "story_range_sec": [
+          27.07,
+          32.07
+        ],
+        "description": "Wide shot of the penalty area showing players in white and red jerseys positioned for a set piece. The scoreboard reads UAE 0 - 1 OMA at 27:03. A player in white prepares to take a free kick from outside the box while defenders form a wall."
+      },
+      {
+        "phase_id": "3:insert",
+        "clip_id": "part_02",
+        "story_range_sec": [
+          32.07,
+          55.97
+        ],
+        "description": "The free kick is taken; the ball curves over the wall towards the goal. The goalkeeper in yellow dives to his left and catches the ball securely. The camera cuts to a close-up of the goalkeeper holding the ball, then to a reaction shot of a fan in the stands wearing a white headscarf and red scarf looking tense."
+      },
+      {
+        "phase_id": "3:after",
+        "clip_id": "part_02",
+        "story_range_sec": [
+          55.97,
+          68.88
+        ],
+        "description": "The scene cuts to open play with the score still UAE 0 - 1 OMA at 48:16. A player in white dribbles down the right flank and crosses the ball into the box. A teammate attempts a shot which is blocked, and the ball goes out of play near the goal line as the goalkeeper retrieves it."
+      }
+    ],
+    "uncertainties": [
+      "Exact identity of the player taking the free kick is unclear due to distance.",
+      "Specific facial expression details of the fan are subjective but appear tense/concerned."
+    ]
+  },
+  "call_audit": {
+    "model": "Qwen3.7-Plus",
+    "provider_mode": "real",
+    "logical_role": "story_first_p3_caption",
+    "thinking_object_disabled_sent": true,
+    "thinking_params_sent": false,
+    "enable_thinking_sent": null,
+    "thinking_budget_sent": null,
+    "token_param_sent": "max_tokens",
+    "token_limit_sent": 1200,
+    "prompt_tokens": 32104,
+    "completion_tokens": 449,
+    "reasoning_tokens": null,
+    "text_tokens": 449,
+    "finish_reason": "stop",
+    "visible_output_chars": 1557,
+    "est_cost_usd": 0.005085,
+    "http_ok": true,
+    "empty_content": false
+  }
+}
