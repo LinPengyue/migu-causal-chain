@@ -1,0 +1,588 @@
+{
+  "a_story_template_context": {
+    "schema": "r3_agent_story_context_v1",
+    "template_id": "set_piece_breakthrough",
+    "category": "关键转折故事链",
+    "subtype": "定位球战术执行与破局",
+    "narrative_goal": [
+      "定位球到比分结果的有序关系路径候选"
+    ],
+    "subjects": [
+      "team_1"
+    ],
+    "teams": {
+      "team_1": {
+        "name": "法国",
+        "color": "蓝色"
+      },
+      "team_2": {
+        "name": "澳大利亚",
+        "color": "黄色"
+      }
+    }
+  },
+  "agent_story_context": {
+    "schema": "r3_agent_story_context_v1",
+    "template_id": "set_piece_breakthrough",
+    "category": "关键转折故事链",
+    "subtype": "定位球战术执行与破局",
+    "narrative_goal": [
+      "定位球到比分结果的有序关系路径候选"
+    ],
+    "subjects": [
+      "team_1"
+    ],
+    "teams": {
+      "team_1": {
+        "name": "法国",
+        "color": "蓝色"
+      },
+      "team_2": {
+        "name": "澳大利亚",
+        "color": "黄色"
+      }
+    },
+    "goal_targets": [
+      {
+        "node_id": "outcome",
+        "score_before": "3:1",
+        "score_after": "4:1",
+        "confirmation_t_sec": 5820.46,
+        "action_t_sec": 5662.164,
+        "event_id": "atom_fill_0066_Goal_5662164"
+      }
+    ],
+    "required_nodes": [
+      {
+        "node_id": "start",
+        "type": "anchor",
+        "role": "set_piece_execution",
+        "actor": "team_1",
+        "score": null,
+        "segment_ids": [
+          "seg:1"
+        ]
+      },
+      {
+        "node_id": "path_context",
+        "type": "context",
+        "role": "context",
+        "actor": null,
+        "score": null,
+        "segment_ids": [
+          "seg:2",
+          "seg:3"
+        ]
+      },
+      {
+        "node_id": "outcome",
+        "type": "anchor",
+        "role": "scoring_goal_action",
+        "actor": "team_1",
+        "score": null,
+        "segment_ids": [
+          "seg:3"
+        ]
+      }
+    ],
+    "chain_ids": [
+      "pred_0052",
+      "pred_0053",
+      "v3_outcome_0072"
+    ],
+    "observation_task_ids": [
+      "observe:5",
+      "observe:r2bc:set_piece_breakthrough:2"
+    ],
+    "causal_relations_are_hypotheses": true
+  },
+  "schema_version": "r3_legacy_agent_input_v1",
+  "algorithm": "R3",
+  "template_id": "set_piece_breakthrough",
+  "template_name": "定位球战术执行与破局",
+  "template": {
+    "category": "关键转折故事链",
+    "subtype": "定位球战术执行与破局",
+    "narrative_goal": [
+      "定位球到比分结果的有序关系路径候选"
+    ],
+    "subjects": [
+      "team_1"
+    ],
+    "narrative_edges": [
+      {
+        "from": "start",
+        "to": "outcome",
+        "edge_type": "predicted_relation_path_hypothesis",
+        "relation": "predicted_relation_path_hypothesis",
+        "causal_verified": false
+      },
+      {
+        "from": "start",
+        "to": "path_context",
+        "edge_type": "predicted_path_context",
+        "causal_verified": false
+      },
+      {
+        "from": "path_context",
+        "to": "outcome",
+        "edge_type": "predicted_path_context",
+        "causal_verified": false
+      }
+    ]
+  },
+  "title": "定位球战术执行与破局",
+  "match_id": "2022年11月23日 法国vs澳大利亚",
+  "protagonist": {
+    "side": "left",
+    "team_name": "法国",
+    "teams": {
+      "left": "法国",
+      "right": "澳大利亚"
+    }
+  },
+  "beats": [
+    {
+      "node_id": "start",
+      "node_type": "anchor",
+      "kind": "relation_start",
+      "predicate": "set_piece_execution",
+      "actor": "team_1",
+      "actor_role": "restart_executor",
+      "required": true,
+      "event_ids": [
+        "event_000262"
+      ],
+      "media_windows": [
+        [
+          5638.46,
+          5648.61
+        ]
+      ],
+      "observation_task_ids": [],
+      "role": "set_piece_execution"
+    },
+    {
+      "node_id": "path_context",
+      "node_type": "context",
+      "required": true,
+      "event_ids": [
+        "event_000263",
+        "atom_fill_0065_Shot_5661612"
+      ],
+      "media_windows": [],
+      "observation_task_ids": [
+        "observe:5",
+        "observe:r2bc:set_piece_breakthrough:2"
+      ],
+      "role": "context"
+    },
+    {
+      "node_id": "outcome",
+      "node_type": "anchor",
+      "kind": "score_outcome",
+      "predicate": "scoring_outcome",
+      "actor": "team_1",
+      "actor_role": "score_beneficiary",
+      "required": true,
+      "event_ids": [
+        "atom_fill_0066_Goal_5662164"
+      ],
+      "media_windows": [
+        [
+          5662.164,
+          5664.164
+        ]
+      ],
+      "observation_task_ids": [],
+      "role": "scoring_goal_action"
+    }
+  ],
+  "story_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "missing_evidence": [],
+  "segments": [
+    {
+      "segment_id": "seg:1",
+      "source_material_id": "material:1",
+      "video_id": "2022年11月23日 法国vs澳大利亚",
+      "media_in": 5638.46,
+      "media_out": 5648.61,
+      "event_ids": [
+        "event_000262"
+      ],
+      "short_chain_ids": [
+        "pred_0052",
+        "pred_0053",
+        "v3_outcome_0072"
+      ],
+      "story_node_ids": [
+        "start"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 1,
+      "narrative_order": 1,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "start"
+      ],
+      "role": "set_piece_execution",
+      "beat": "set_piece_execution",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 5638.46,
+      "adapter_seed_basis": "r3_anchor_materials"
+    },
+    {
+      "segment_id": "seg:2",
+      "source_material_id": "material:2",
+      "video_id": "2022年11月23日 法国vs澳大利亚",
+      "media_in": 5650.43,
+      "media_out": 5660.32,
+      "event_ids": [
+        "event_000263"
+      ],
+      "short_chain_ids": [
+        "pred_0052",
+        "pred_0053",
+        "v3_outcome_0072"
+      ],
+      "story_node_ids": [
+        "path_context"
+      ],
+      "story_anchor": false,
+      "include_in_cut": true,
+      "edl_index": 2,
+      "narrative_order": 2,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "path_context"
+      ],
+      "role": "story_context",
+      "beat": "story_context",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 5650.43,
+      "adapter_seed_basis": "r3_anchor_materials"
+    },
+    {
+      "segment_id": "seg:3",
+      "source_material_id": "material:3",
+      "video_id": "2022年11月23日 法国vs澳大利亚",
+      "media_in": 5661.612,
+      "media_out": 5664.164,
+      "event_ids": [
+        "atom_fill_0065_Shot_5661612",
+        "atom_fill_0066_Goal_5662164"
+      ],
+      "short_chain_ids": [
+        "pred_0052",
+        "pred_0053",
+        "v3_outcome_0072"
+      ],
+      "story_node_ids": [
+        "path_context",
+        "outcome"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 3,
+      "narrative_order": 3,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "path_context",
+        "outcome"
+      ],
+      "role": "scoring_goal_action",
+      "beat": "scoring_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 5661.612,
+      "adapter_seed_basis": "r3_anchor_materials"
+    }
+  ],
+  "edl": [
+    {
+      "segment_id": "seg:1",
+      "source_material_id": "material:1",
+      "video_id": "2022年11月23日 法国vs澳大利亚",
+      "media_in": 5638.46,
+      "media_out": 5648.61,
+      "event_ids": [
+        "event_000262"
+      ],
+      "short_chain_ids": [
+        "pred_0052",
+        "pred_0053",
+        "v3_outcome_0072"
+      ],
+      "story_node_ids": [
+        "start"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 1,
+      "narrative_order": 1,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "start"
+      ],
+      "role": "set_piece_execution",
+      "beat": "set_piece_execution",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 5638.46,
+      "adapter_seed_basis": "r3_anchor_materials"
+    },
+    {
+      "segment_id": "seg:2",
+      "source_material_id": "material:2",
+      "video_id": "2022年11月23日 法国vs澳大利亚",
+      "media_in": 5650.43,
+      "media_out": 5660.32,
+      "event_ids": [
+        "event_000263"
+      ],
+      "short_chain_ids": [
+        "pred_0052",
+        "pred_0053",
+        "v3_outcome_0072"
+      ],
+      "story_node_ids": [
+        "path_context"
+      ],
+      "story_anchor": false,
+      "include_in_cut": true,
+      "edl_index": 2,
+      "narrative_order": 2,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "path_context"
+      ],
+      "role": "story_context",
+      "beat": "story_context",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 5650.43,
+      "adapter_seed_basis": "r3_anchor_materials"
+    },
+    {
+      "segment_id": "seg:3",
+      "source_material_id": "material:3",
+      "video_id": "2022年11月23日 法国vs澳大利亚",
+      "media_in": 5661.612,
+      "media_out": 5664.164,
+      "event_ids": [
+        "atom_fill_0065_Shot_5661612",
+        "atom_fill_0066_Goal_5662164"
+      ],
+      "short_chain_ids": [
+        "pred_0052",
+        "pred_0053",
+        "v3_outcome_0072"
+      ],
+      "story_node_ids": [
+        "path_context",
+        "outcome"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 3,
+      "narrative_order": 3,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "path_context",
+        "outcome"
+      ],
+      "role": "scoring_goal_action",
+      "beat": "scoring_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 5661.612,
+      "adapter_seed_basis": "r3_anchor_materials"
+    }
+  ],
+  "candidate_edl": [
+    {
+      "segment_id": "seg:1",
+      "source_material_id": "material:1",
+      "video_id": "2022年11月23日 法国vs澳大利亚",
+      "media_in": 5638.46,
+      "media_out": 5648.61,
+      "event_ids": [
+        "event_000262"
+      ],
+      "short_chain_ids": [
+        "pred_0052",
+        "pred_0053",
+        "v3_outcome_0072"
+      ],
+      "story_node_ids": [
+        "start"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 1,
+      "narrative_order": 1,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "start"
+      ],
+      "role": "set_piece_execution",
+      "beat": "set_piece_execution",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 5638.46,
+      "adapter_seed_basis": "r3_anchor_materials"
+    },
+    {
+      "segment_id": "seg:2",
+      "source_material_id": "material:2",
+      "video_id": "2022年11月23日 法国vs澳大利亚",
+      "media_in": 5650.43,
+      "media_out": 5660.32,
+      "event_ids": [
+        "event_000263"
+      ],
+      "short_chain_ids": [
+        "pred_0052",
+        "pred_0053",
+        "v3_outcome_0072"
+      ],
+      "story_node_ids": [
+        "path_context"
+      ],
+      "story_anchor": false,
+      "include_in_cut": true,
+      "edl_index": 2,
+      "narrative_order": 2,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "path_context"
+      ],
+      "role": "story_context",
+      "beat": "story_context",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 5650.43,
+      "adapter_seed_basis": "r3_anchor_materials"
+    },
+    {
+      "segment_id": "seg:3",
+      "source_material_id": "material:3",
+      "video_id": "2022年11月23日 法国vs澳大利亚",
+      "media_in": 5661.612,
+      "media_out": 5664.164,
+      "event_ids": [
+        "atom_fill_0065_Shot_5661612",
+        "atom_fill_0066_Goal_5662164"
+      ],
+      "short_chain_ids": [
+        "pred_0052",
+        "pred_0053",
+        "v3_outcome_0072"
+      ],
+      "story_node_ids": [
+        "path_context",
+        "outcome"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 3,
+      "narrative_order": 3,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "path_context",
+        "outcome"
+      ],
+      "role": "scoring_goal_action",
+      "beat": "scoring_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 5661.612,
+      "adapter_seed_basis": "r3_anchor_materials"
+    }
+  ],
+  "render_ready_edl": [],
+  "render_ready": false,
+  "first_live_verified": false,
+  "release_authorized": false,
+  "verification_status": "not_render_ready",
+  "r3_adapter": {
+    "schema": "sportscausal_r3_legacy_adapter_v1",
+    "story_id": "set_piece_breakthrough:2",
+    "seed_basis": "r3_anchor_materials",
+    "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+    "anchor_bindings": [
+      {
+        "node_id": "start",
+        "segment_id": "seg:1",
+        "all_segment_ids": [
+          "seg:1"
+        ]
+      },
+      {
+        "node_id": "outcome",
+        "segment_id": "seg:3",
+        "all_segment_ids": [
+          "seg:3"
+        ]
+      }
+    ],
+    "missing_node_ids": []
+  }
+}

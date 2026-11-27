@@ -1,0 +1,668 @@
+{
+  "a_story_template_context": {
+    "schema": "r3_agent_story_context_v1",
+    "template_id": "lead_preservation",
+    "category": "战局故事链",
+    "subtype": "领先守成",
+    "narrative_goal": [
+      "最后一段领先状态及后续守成素材候选"
+    ],
+    "subjects": [
+      "team_2"
+    ],
+    "teams": {
+      "team_1": {
+        "name": "莱万特",
+        "color": "蓝色"
+      },
+      "team_2": {
+        "name": "巴列卡诺",
+        "color": "白色"
+      }
+    }
+  },
+  "agent_story_context": {
+    "schema": "r3_agent_story_context_v1",
+    "template_id": "lead_preservation",
+    "category": "战局故事链",
+    "subtype": "领先守成",
+    "narrative_goal": [
+      "最后一段领先状态及后续守成素材候选"
+    ],
+    "subjects": [
+      "team_2"
+    ],
+    "teams": {
+      "team_1": {
+        "name": "莱万特",
+        "color": "蓝色"
+      },
+      "team_2": {
+        "name": "巴列卡诺",
+        "color": "白色"
+      }
+    },
+    "goal_targets": [
+      {
+        "node_id": "score:1",
+        "score_before": "0:0",
+        "score_after": "0:1",
+        "confirmation_t_sec": 1359.22,
+        "action_t_sec": 1281.935,
+        "event_id": "atom_fill_0004_Goal_1281935"
+      },
+      {
+        "node_id": "score:2",
+        "score_before": "0:1",
+        "score_after": "0:2",
+        "confirmation_t_sec": 2163.38,
+        "action_t_sec": 2080.78,
+        "event_id": "atom_fill_0019_Goal_2080780"
+      },
+      {
+        "node_id": "score:3",
+        "score_before": "0:2",
+        "score_after": "0:3",
+        "confirmation_t_sec": 5789.37,
+        "action_t_sec": 5690.415,
+        "event_id": "atom_fill_0096_Goal_5690415"
+      }
+    ],
+    "required_nodes": [
+      {
+        "node_id": "score:1",
+        "type": "anchor",
+        "role": "go_ahead_goal_action",
+        "actor": "team_2",
+        "score": "0:1",
+        "segment_ids": [
+          "seg:1"
+        ]
+      },
+      {
+        "node_id": "score:2",
+        "type": "anchor",
+        "role": "go_ahead_goal_action",
+        "actor": "team_2",
+        "score": "0:2",
+        "segment_ids": [
+          "seg:2"
+        ]
+      },
+      {
+        "node_id": "score:3",
+        "type": "anchor",
+        "role": "go_ahead_goal_action",
+        "actor": "team_2",
+        "score": "0:3",
+        "segment_ids": [
+          "seg:3"
+        ]
+      }
+    ],
+    "chain_ids": [
+      "pred_0008",
+      "pred_0009",
+      "pred_0010",
+      "pred_0017",
+      "pred_0018",
+      "pred_0019",
+      "v3_outcome_0083",
+      "pred_0057",
+      "pred_0058"
+    ],
+    "observation_task_ids": [
+      "observe:1",
+      "observe:2",
+      "observe:3",
+      "observe:4",
+      "observe:5"
+    ],
+    "causal_relations_are_hypotheses": true
+  },
+  "schema_version": "r3_legacy_agent_input_v1",
+  "algorithm": "R3",
+  "template_id": "lead_preservation",
+  "template_name": "领先守成",
+  "template": {
+    "category": "战局故事链",
+    "subtype": "领先守成",
+    "narrative_goal": [
+      "最后一段领先状态及后续守成素材候选"
+    ],
+    "subjects": [
+      "team_2"
+    ],
+    "narrative_edges": [
+      {
+        "from": "score:0",
+        "to": "score:1",
+        "edge_type": "confirmed_score_state_transition",
+        "relation": "confirmed_score_state_transition",
+        "causal_verified": false
+      },
+      {
+        "from": "score:1",
+        "to": "score:2",
+        "edge_type": "confirmed_score_state_transition",
+        "relation": "confirmed_score_state_transition",
+        "causal_verified": false
+      },
+      {
+        "from": "score:2",
+        "to": "score:3",
+        "edge_type": "confirmed_score_state_transition",
+        "relation": "confirmed_score_state_transition",
+        "causal_verified": false
+      }
+    ]
+  },
+  "title": "领先守成",
+  "match_id": "10月20日 25-26赛季西甲第9轮 莱万特VS巴列卡诺 国语",
+  "protagonist": {
+    "side": "right",
+    "team_name": "巴列卡诺",
+    "teams": {
+      "left": "莱万特",
+      "right": "巴列卡诺"
+    }
+  },
+  "beats": [
+    {
+      "node_id": "score:0",
+      "node_type": "transition",
+      "kind": "score_state",
+      "actor": "team_2",
+      "actor_role": "state_subject",
+      "required": false,
+      "score": "0:0",
+      "state_sign": 0,
+      "score_beneficiary": null,
+      "event_ids": [],
+      "media_windows": [],
+      "action_time_interval": [
+        614.01,
+        614.01
+      ],
+      "observation_task_ids": [],
+      "localization_status": "opening_state_only",
+      "role": "transition"
+    },
+    {
+      "node_id": "score:1",
+      "node_type": "anchor",
+      "kind": "score_state",
+      "actor": "team_2",
+      "actor_role": "state_subject",
+      "required": true,
+      "score": "0:1",
+      "state_sign": 1,
+      "score_beneficiary": "team_2",
+      "event_ids": [
+        "atom_fill_0004_Goal_1281935"
+      ],
+      "media_windows": [
+        [
+          1281.935,
+          1283.935
+        ]
+      ],
+      "action_time_interval": [
+        1281.935,
+        1281.935
+      ],
+      "observation_task_ids": [
+        "observe:1"
+      ],
+      "localization_status": "localized_annotation_candidate",
+      "role": "go_ahead_goal_action"
+    },
+    {
+      "node_id": "score:2",
+      "node_type": "anchor",
+      "kind": "score_state",
+      "actor": "team_2",
+      "actor_role": "state_subject",
+      "required": true,
+      "score": "0:2",
+      "state_sign": 1,
+      "score_beneficiary": "team_2",
+      "event_ids": [
+        "atom_fill_0018_Shot_2080397",
+        "atom_fill_0019_Goal_2080780"
+      ],
+      "media_windows": [
+        [
+          2080.397,
+          2082.78
+        ]
+      ],
+      "action_time_interval": [
+        2080.78,
+        2080.78
+      ],
+      "observation_task_ids": [
+        "observe:3"
+      ],
+      "localization_status": "localized_annotation_candidate",
+      "role": "go_ahead_goal_action"
+    },
+    {
+      "node_id": "score:3",
+      "node_type": "anchor",
+      "kind": "score_state",
+      "actor": "team_2",
+      "actor_role": "state_subject",
+      "required": true,
+      "score": "0:3",
+      "state_sign": 1,
+      "score_beneficiary": "team_2",
+      "event_ids": [
+        "atom_fill_0096_Goal_5690415"
+      ],
+      "media_windows": [
+        [
+          5690.415,
+          5692.415
+        ]
+      ],
+      "action_time_interval": [
+        5690.415,
+        5690.415
+      ],
+      "observation_task_ids": [
+        "observe:4"
+      ],
+      "localization_status": "localized_annotation_candidate",
+      "role": "go_ahead_goal_action"
+    }
+  ],
+  "story_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "missing_evidence": [],
+  "segments": [
+    {
+      "segment_id": "seg:1",
+      "source_material_id": "material:1",
+      "video_id": "10月20日 25-26赛季西甲第9轮 莱万特VS巴列卡诺 国语",
+      "media_in": 1281.935,
+      "media_out": 1283.935,
+      "event_ids": [
+        "atom_fill_0004_Goal_1281935"
+      ],
+      "short_chain_ids": [
+        "pred_0008",
+        "pred_0009",
+        "pred_0010"
+      ],
+      "story_node_ids": [
+        "score:1"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 1,
+      "narrative_order": 1,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "score:1"
+      ],
+      "role": "go_ahead_goal_action",
+      "beat": "go_ahead_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 1281.935,
+      "adapter_seed_basis": "r3_anchor_materials"
+    },
+    {
+      "segment_id": "seg:2",
+      "source_material_id": "material:2",
+      "video_id": "10月20日 25-26赛季西甲第9轮 莱万特VS巴列卡诺 国语",
+      "media_in": 2080.397,
+      "media_out": 2082.78,
+      "event_ids": [
+        "atom_fill_0018_Shot_2080397",
+        "atom_fill_0019_Goal_2080780"
+      ],
+      "short_chain_ids": [
+        "pred_0017",
+        "pred_0018",
+        "pred_0019",
+        "v3_outcome_0083"
+      ],
+      "story_node_ids": [
+        "score:2"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 2,
+      "narrative_order": 2,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "score:2"
+      ],
+      "role": "go_ahead_goal_action",
+      "beat": "go_ahead_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 2080.397,
+      "adapter_seed_basis": "r3_anchor_materials"
+    },
+    {
+      "segment_id": "seg:3",
+      "source_material_id": "material:3",
+      "video_id": "10月20日 25-26赛季西甲第9轮 莱万特VS巴列卡诺 国语",
+      "media_in": 5690.415,
+      "media_out": 5692.415,
+      "event_ids": [
+        "atom_fill_0096_Goal_5690415"
+      ],
+      "short_chain_ids": [
+        "pred_0057",
+        "pred_0058"
+      ],
+      "story_node_ids": [
+        "score:3"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 3,
+      "narrative_order": 3,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "score:3"
+      ],
+      "role": "go_ahead_goal_action",
+      "beat": "go_ahead_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 5690.415,
+      "adapter_seed_basis": "r3_anchor_materials"
+    }
+  ],
+  "edl": [
+    {
+      "segment_id": "seg:1",
+      "source_material_id": "material:1",
+      "video_id": "10月20日 25-26赛季西甲第9轮 莱万特VS巴列卡诺 国语",
+      "media_in": 1281.935,
+      "media_out": 1283.935,
+      "event_ids": [
+        "atom_fill_0004_Goal_1281935"
+      ],
+      "short_chain_ids": [
+        "pred_0008",
+        "pred_0009",
+        "pred_0010"
+      ],
+      "story_node_ids": [
+        "score:1"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 1,
+      "narrative_order": 1,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "score:1"
+      ],
+      "role": "go_ahead_goal_action",
+      "beat": "go_ahead_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 1281.935,
+      "adapter_seed_basis": "r3_anchor_materials"
+    },
+    {
+      "segment_id": "seg:2",
+      "source_material_id": "material:2",
+      "video_id": "10月20日 25-26赛季西甲第9轮 莱万特VS巴列卡诺 国语",
+      "media_in": 2080.397,
+      "media_out": 2082.78,
+      "event_ids": [
+        "atom_fill_0018_Shot_2080397",
+        "atom_fill_0019_Goal_2080780"
+      ],
+      "short_chain_ids": [
+        "pred_0017",
+        "pred_0018",
+        "pred_0019",
+        "v3_outcome_0083"
+      ],
+      "story_node_ids": [
+        "score:2"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 2,
+      "narrative_order": 2,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "score:2"
+      ],
+      "role": "go_ahead_goal_action",
+      "beat": "go_ahead_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 2080.397,
+      "adapter_seed_basis": "r3_anchor_materials"
+    },
+    {
+      "segment_id": "seg:3",
+      "source_material_id": "material:3",
+      "video_id": "10月20日 25-26赛季西甲第9轮 莱万特VS巴列卡诺 国语",
+      "media_in": 5690.415,
+      "media_out": 5692.415,
+      "event_ids": [
+        "atom_fill_0096_Goal_5690415"
+      ],
+      "short_chain_ids": [
+        "pred_0057",
+        "pred_0058"
+      ],
+      "story_node_ids": [
+        "score:3"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 3,
+      "narrative_order": 3,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "score:3"
+      ],
+      "role": "go_ahead_goal_action",
+      "beat": "go_ahead_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 5690.415,
+      "adapter_seed_basis": "r3_anchor_materials"
+    }
+  ],
+  "candidate_edl": [
+    {
+      "segment_id": "seg:1",
+      "source_material_id": "material:1",
+      "video_id": "10月20日 25-26赛季西甲第9轮 莱万特VS巴列卡诺 国语",
+      "media_in": 1281.935,
+      "media_out": 1283.935,
+      "event_ids": [
+        "atom_fill_0004_Goal_1281935"
+      ],
+      "short_chain_ids": [
+        "pred_0008",
+        "pred_0009",
+        "pred_0010"
+      ],
+      "story_node_ids": [
+        "score:1"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 1,
+      "narrative_order": 1,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "score:1"
+      ],
+      "role": "go_ahead_goal_action",
+      "beat": "go_ahead_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 1281.935,
+      "adapter_seed_basis": "r3_anchor_materials"
+    },
+    {
+      "segment_id": "seg:2",
+      "source_material_id": "material:2",
+      "video_id": "10月20日 25-26赛季西甲第9轮 莱万特VS巴列卡诺 国语",
+      "media_in": 2080.397,
+      "media_out": 2082.78,
+      "event_ids": [
+        "atom_fill_0018_Shot_2080397",
+        "atom_fill_0019_Goal_2080780"
+      ],
+      "short_chain_ids": [
+        "pred_0017",
+        "pred_0018",
+        "pred_0019",
+        "v3_outcome_0083"
+      ],
+      "story_node_ids": [
+        "score:2"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 2,
+      "narrative_order": 2,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "score:2"
+      ],
+      "role": "go_ahead_goal_action",
+      "beat": "go_ahead_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 2080.397,
+      "adapter_seed_basis": "r3_anchor_materials"
+    },
+    {
+      "segment_id": "seg:3",
+      "source_material_id": "material:3",
+      "video_id": "10月20日 25-26赛季西甲第9轮 莱万特VS巴列卡诺 国语",
+      "media_in": 5690.415,
+      "media_out": 5692.415,
+      "event_ids": [
+        "atom_fill_0096_Goal_5690415"
+      ],
+      "short_chain_ids": [
+        "pred_0057",
+        "pred_0058"
+      ],
+      "story_node_ids": [
+        "score:3"
+      ],
+      "story_anchor": true,
+      "include_in_cut": true,
+      "edl_index": 3,
+      "narrative_order": 3,
+      "time_provenance": {
+        "basis": "union_of_source_atomic_windows"
+      },
+      "verification_status": "draft",
+      "first_live_status": "NOT_VERIFIED",
+      "first_live_verified": false,
+      "preview_only": true,
+      "required_story_node_ids": [
+        "score:3"
+      ],
+      "role": "go_ahead_goal_action",
+      "beat": "go_ahead_goal_action",
+      "shot_kind": "live",
+      "is_replay": false,
+      "source_media_order": 5690.415,
+      "adapter_seed_basis": "r3_anchor_materials"
+    }
+  ],
+  "render_ready_edl": [],
+  "render_ready": false,
+  "first_live_verified": false,
+  "release_authorized": false,
+  "verification_status": "not_render_ready",
+  "r3_adapter": {
+    "schema": "sportscausal_r3_legacy_adapter_v1",
+    "story_id": "lead_preservation:1",
+    "seed_basis": "r3_anchor_materials",
+    "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+    "anchor_bindings": [
+      {
+        "node_id": "score:1",
+        "segment_id": "seg:1",
+        "all_segment_ids": [
+          "seg:1"
+        ]
+      },
+      {
+        "node_id": "score:2",
+        "segment_id": "seg:2",
+        "all_segment_ids": [
+          "seg:2"
+        ]
+      },
+      {
+        "node_id": "score:3",
+        "segment_id": "seg:3",
+        "all_segment_ids": [
+          "seg:3"
+        ]
+      }
+    ],
+    "missing_node_ids": []
+  }
+}

@@ -1,0 +1,223 @@
+{
+  "schema": "e2e_five_template_prep_v1",
+  "commit_artifacts_pushed": "1391e82622c10368bf564b395a6315ef4b7106d9",
+  "policy": {
+    "no_v3r_rerun": true,
+    "no_algo_change": true,
+    "zero_paid_until_budget_approved": true,
+    "main_rounds": 3,
+    "outer_rounds": 3,
+    "max_calls": 24,
+    "max_cost_usd": 0.1,
+    "no_auto_retry": true
+  },
+  "preflight_status": "ALL_6_PACKS_PASS_INCLUDING_FRA_BOTH_SET_PIECE",
+  "cases": [
+    {
+      "case_id": "A_alternating_threats_1",
+      "template_id": "alternating_threats",
+      "story_id": "alternating_threats:1",
+      "match": "A",
+      "r3_dir": "artifacts/fresh_v3r_compatibility_v1/A/r3/alternating_threats__1",
+      "critic_pack": "artifacts/e2e_five_template_prep_v1/critic_packs/A_alternating_threats_1",
+      "preflight": "PASS_ZERO_HTTP",
+      "n_segments": 10,
+      "duration_sec": 115.26
+    },
+    {
+      "case_id": "FRA_set_piece_breakthrough_preferred",
+      "template_id": "set_piece_breakthrough",
+      "story_id": "set_piece_breakthrough:2",
+      "match": "FRA",
+      "r3_dir": "artifacts/v3r_general_FRA_france_australia/fresh_general_v1/08_r3/set_piece_breakthrough__2",
+      "critic_pack": "artifacts/e2e_five_template_prep_v1/critic_packs/FRA_set_piece_breakthrough_2",
+      "alternate_pack": "artifacts/e2e_five_template_prep_v1/critic_packs/FRA_set_piece_breakthrough_1",
+      "set_piece_comparison": [
+        {
+          "story_id": "set_piece_breakthrough:1",
+          "n_segments": 3,
+          "duration_sec": 16.66700000000037,
+          "subjects": [
+            "team_1"
+          ],
+          "structurally_complete": true,
+          "start_events": [
+            "event_000080"
+          ],
+          "start_predicate": "set_piece_execution",
+          "outcome_score": null,
+          "outcome_events": [
+            "atom_fill_0019_Goal_2410091"
+          ],
+          "media_spans": [
+            [
+              2393.95,
+              2403.86
+            ],
+            [
+              2405.195,
+              2407.195
+            ],
+            [
+              2407.334,
+              2412.091
+            ]
+          ],
+          "pack": "artifacts/e2e_five_template_prep_v1/critic_packs/FRA_set_piece_breakthrough_1"
+        },
+        {
+          "story_id": "set_piece_breakthrough:2",
+          "n_segments": 3,
+          "duration_sec": 22.591999999998734,
+          "subjects": [
+            "team_1"
+          ],
+          "structurally_complete": true,
+          "start_events": [
+            "event_000262"
+          ],
+          "start_predicate": "set_piece_execution",
+          "outcome_score": null,
+          "outcome_events": [
+            "atom_fill_0066_Goal_5662164"
+          ],
+          "media_spans": [
+            [
+              5638.46,
+              5648.61
+            ],
+            [
+              5650.43,
+              5660.32
+            ],
+            [
+              5661.612,
+              5664.164
+            ]
+          ],
+          "pack": "artifacts/e2e_five_template_prep_v1/critic_packs/FRA_set_piece_breakthrough_2"
+        }
+      ],
+      "preflight": "PASS_ZERO_HTTP",
+      "selection": "prefer :2 longer complete path; :1 also preflight OK"
+    },
+    {
+      "case_id": "B_equalization_2",
+      "template_id": "equalization",
+      "story_id": "equalization:2",
+      "match": "B",
+      "r3_dir": "artifacts/fresh_v3r_compatibility_v1/B/r3/equalization__2",
+      "critic_pack": "artifacts/e2e_five_template_prep_v1/critic_packs/B_equalization_2",
+      "preflight": "PASS_ZERO_HTTP",
+      "n_segments": 2,
+      "duration_sec": 6.161
+    },
+    {
+      "case_id": "A_threat_phase_change_1",
+      "template_id": "threat_phase_change",
+      "story_id": "threat_phase_change:1",
+      "match": "A",
+      "r3_dir": "artifacts/fresh_v3r_compatibility_v1/A/r3/threat_phase_change__1",
+      "critic_pack": "artifacts/e2e_five_template_prep_v1/critic_packs/A_threat_phase_change_1",
+      "preflight": "PASS_ZERO_HTTP",
+      "n_segments": 9,
+      "duration_sec": 103.84
+    },
+    {
+      "case_id": "C_lead_preservation_1",
+      "template_id": "lead_preservation",
+      "story_id": "lead_preservation:1",
+      "match": "C",
+      "r3_dir": "artifacts/v3r_general_C_levante_rayo/fresh_general_v1/08_r3/lead_preservation__1",
+      "critic_pack": "artifacts/e2e_five_template_prep_v1/critic_packs/C_lead_preservation_1",
+      "preflight": "PASS_ZERO_HTTP",
+      "lead_choice": {
+        "selected": "C_lead_preservation:1",
+        "reason": "C is a pure lead-preservation match (Rayo 0:1→0:3, subject team_2) with structurally_complete multi-score chain; A/B are short 2-seg; FRA/CRO lead_preservation occurs inside comeback matches and is less clean as 守成-only narrative",
+        "rejected_alternates": [
+          "A_lead(~6.35s)",
+          "B_lead(~5.60s)",
+          "FRA_lead(comeback context)",
+          "CRO_lead(comeback context)"
+        ]
+      }
+    }
+  ],
+  "inputs_by_match": {
+    "A": {
+      "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+      "sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+      "path": "/mnt/data4/migu/10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语.mp4",
+      "match_json": "data/交付_out/10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语.json",
+      "events": "/data2/lpy1/_story_va_outputs/v3/plan2/full_e2e_A_strict_lin_20261108_095704/01_to_04_fresh_v3r/01_enrich/events_enriched.json",
+      "evidence": "artifacts/stage1_2_evidence_preflight_20261125/A_uae_oman/keeper_rescue/evidence.json"
+    },
+    "B": {
+      "video_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+      "path": "/mnt/data4/migu/10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语.mp4",
+      "match_json": "data/交付_out/10月27日_25-26赛季西甲第10轮_奥萨苏纳VS塞尔塔_国语.json",
+      "events": "/data2/lpy1/_story_va_outputs/v3/plan2/full_e2e_B_strict_lin_20261108_095704/01_to_04_fresh_v3r/01_enrich/events_enriched.json",
+      "evidence": "artifacts/stage1_2_evidence_preflight_20261125/B_osasuna_celta/keeper_rescue/evidence.json",
+      "sha256_from_freeze": [
+        {
+          "key": "A_events",
+          "path": "/data2/lpy1/worktrees/migu-story-va-v3-plan2/10.27scasual_chain/data/交付_out/10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语.json",
+          "sha256": "ddae99b21cbfcd1c75ddf620d957578e57c2c013d607ac893655c4d52b7e779e",
+          "bytes": 1147562
+        },
+        {
+          "key": "A_causal_atoms_only",
+          "path": "/data2/lpy1/worktrees/migu-story-va-v3-plan2/10.27scasual_chain/data/交付_out/10月12日_2025世预赛亚洲区_阿联酋VS阿曼_国语_causal.json",
+          "sha256": "818ab2a46cd40c997cc79310a9b925068cf00a5e30221518c956fc538bb25a21",
+          "bytes": 42626
+        },
+        {
+          "key": "A_video",
+          "path": "/mnt/data4/migu/10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语.mp4",
+          "sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+          "bytes": 6113318593
+        },
+        {
+          "key": "B_events",
+          "path": "/data2/lpy1/worktrees/migu-story-va-v3-plan2/10.27scasual_chain/data/交付_out/10月27日_25-26赛季西甲第10轮_奥萨苏纳VS塞尔塔_国语.json",
+          "sha256": "e75c2ad5e394d0e87db098b111600eb7565d66d5c5b054ddc65f37a26b205bb2",
+          "bytes": 1037635
+        },
+        {
+          "key": "B_causal_atoms_only",
+          "path": "/data2/lpy1/worktrees/migu-story-va-v3-plan2/10.27scasual_chain/data/交付_out/10月27日_25-26赛季西甲第10轮_奥萨苏纳VS塞尔塔_国语_causal.json",
+          "sha256": "3d36c39e370a35143fb67921d2cd0400f4ac453d0b52866e7f5eae89887f88a9",
+          "bytes": 56353
+        },
+        {
+          "key": "B_video",
+          "path": "/mnt/data4/migu/10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语.mp4",
+          "sha256": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa",
+          "bytes": 5418520942
+        }
+      ],
+      "sha256": "0d422f60e2999cc200d52fa145b1e10439cf89541cb6b627c2df117bf9e3bfaa"
+    },
+    "C": {
+      "video_id": "10月20日 25-26赛季西甲第9轮 莱万特VS巴列卡诺 国语",
+      "sha256": "5ab8ee77ed0d0cb56f020348d4c73b4c27c738f6285db941e1797f87bb1d4d73",
+      "path": "/mnt/data4/migu/10月20日 25-26赛季西甲第9轮 莱万特VS巴列卡诺 国语.mp4",
+      "match_json": "data/交付_out/10月20日_25-26赛季西甲第9轮_莱万特VS巴列卡诺_国语.json",
+      "events": "artifacts/v3r_general_C_levante_rayo/fresh_general_v1/01_enrich/events_enriched.json",
+      "evidence": "artifacts/v3r_general_C_levante_rayo/fresh_general_v1/04_evidence/evidence.json"
+    },
+    "FRA": {
+      "video_id": "2022年11月23日 法国vs澳大利亚",
+      "sha256": "67462dbafb7aa73240230aacce4aa07cc61b6cd60c7f7d59fc60f9b023e6e978",
+      "path": "/mnt/data4/migu/2022年11月23日 法国vs澳大利亚.mp4",
+      "match_json": "data/交付_out/2022年11月23日 法国vs澳大利亚.json",
+      "events": "artifacts/v3r_general_FRA_france_australia/fresh_general_v1/01_enrich/events_enriched.json",
+      "evidence": "artifacts/v3r_general_FRA_france_australia/fresh_general_v1/04_evidence/evidence.json"
+    }
+  },
+  "awaiting_budget_approval_for_paid_agent": true,
+  "paid_invocation_template": "python run_r3_original_agent.py \\\n  --pack \"$CRITIC_PACK\" --evidence \"$EVIDENCE\" --events \"$EVENTS\" \\\n  --match-json \"$MATCH_JSON\" --source \"$SOURCE_MP4\" --source-manifest \"$SOURCE_MANIFEST\" \\\n  --original-algo ../../11.20sstory_chain/algo --allow-dev \\\n  --out-dir \"$NEW_RUN_DIR\" \\\n  --main-rounds 3 --outer-rounds 3 \\\n  --enable-real-api --approve-budget --max-calls 24 --max-cost-usd 0.10",
+  "post_run_archive": "build_fanedit_export_spec + export_fanedit_predictions into validation/prediction_repository/exports/",
+  "source_manifests_dir": "artifacts/e2e_five_template_prep_v1/source_manifests",
+  "status": "ZERO_PAID_PREFLIGHT_COMPLETE_AWAITING_BUDGET"
+}

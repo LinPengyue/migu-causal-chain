@@ -1,0 +1,89 @@
+{
+  "story_id": "set_piece_breakthrough:2",
+  "video_id": "2022年11月23日 法国vs澳大利亚",
+  "template_context_survives_actual_p1_cap": true,
+  "p1_request_prepared": true,
+  "n_p1_pairs": 1,
+  "original_goal_issues": [
+    "goal_coverage_00_to_01",
+    "goal_coverage_01_to_11",
+    "goal_coverage_11_to_21",
+    "goal_coverage_21_to_31"
+  ],
+  "native_goal_search_targets": [],
+  "scope_audit": {
+    "excluded_legacy_issues": [
+      {
+        "issue_id": "goal_coverage_00_to_01",
+        "reason": "score_transition_outside_story_goal"
+      },
+      {
+        "issue_id": "goal_coverage_01_to_11",
+        "reason": "score_transition_outside_story_goal"
+      },
+      {
+        "issue_id": "goal_coverage_11_to_21",
+        "reason": "score_transition_outside_story_goal"
+      },
+      {
+        "issue_id": "goal_coverage_21_to_31",
+        "reason": "score_transition_outside_story_goal"
+      }
+    ],
+    "goal_targets": [
+      {
+        "node_id": "outcome",
+        "score_before": "3:1",
+        "score_after": "4:1",
+        "confirmation_t_sec": 5820.46,
+        "action_t_sec": 5662.164,
+        "event_id": "atom_fill_0066_Goal_5662164"
+      }
+    ],
+    "missing_goal_tasks_without_native_issue": [],
+    "original_goal_recovery_algorithm_unchanged": true
+  },
+  "protected_story_segment_ids": [
+    "seg:1",
+    "seg:2",
+    "seg:3"
+  ],
+  "original_goal_segment_ids": [
+    "seg:3"
+  ],
+  "planner_protection_fixture": {
+    "decision": "UNRESOLVED",
+    "revision_intents": [
+      {
+        "intent_id": "fixture_drop",
+        "action": "keep",
+        "target_segment_id": "seg:1",
+        "blocked_original_action": "drop",
+        "block_reason": "protected_goal_anchor_without_overturn_evidence",
+        "narrative_purpose": "preserve_confirmed_goal_action"
+      }
+    ],
+    "r3_required_anchor_protection": {
+      "protected_segment_ids": [
+        "seg:1",
+        "seg:2"
+      ],
+      "blocked_intent_ids": [
+        "fixture_drop"
+      ]
+    }
+  },
+  "input_hashes": {
+    "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_FRA_france_australia/fresh_general_v1/04_evidence/evidence.json": "3da16ffb6c96173d079a583c9feaf2b9cea009ec03fbd26fc0d0ce7ab3be5239",
+    "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_FRA_france_australia/fresh_general_v1/01_enrich/events_enriched.json": "2d49a1db0e3e2262714926d019ed9f62a89acf8eeb8a9a49e7a3df9f13e422df",
+    "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_FRA_france_australia/fresh_general_v1/08_r3/set_piece_breakthrough__2/story_graph.json": "bdcf2c68857f920558b7ce9277de0a65f436f24e4a88dd3dfa881fe8ead6499b",
+    "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_FRA_france_australia/fresh_general_v1/08_r3/set_piece_breakthrough__2/initial_edl.json": "4a1b5c19d48c97f15406bac2a74caffe3804aae072aeb122db0f28a80c4d8e36",
+    "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_FRA_france_australia/fresh_general_v1/08_r3/set_piece_breakthrough__2/observation_tasks.json": "38c05fbbe8f95a39dabf38d88aa33d9bbb00187db77122b42716e9b180f98e32",
+    "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_FRA_france_australia/fresh_general_v1/08_r3/set_piece_breakthrough__2/context_pool.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+  },
+  "http_calls": 0,
+  "video_decoded": false,
+  "quality_verified": false,
+  "first_live_verified": false,
+  "release_authorized": false
+}
