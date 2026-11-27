@@ -1,0 +1,420 @@
+{
+  "schema": "sportscausal_e2e_validation_registry_v1",
+  "frozen_as_of": "2026-11-27",
+  "research_baseline": "69f0c4d2ce36cb9ba2e9493d041e8a80138d5dc6",
+  "fanedit": {
+    "ref": "e67d7c9f596db5b3cd5618f4692733126e68b1c1",
+    "version": "v1.1-provisional",
+    "scope": "development audit, not formal scores or gold",
+    "match_count": 84,
+    "story_count": 173
+  },
+  "policy": {
+    "append_only_runs": true,
+    "no_repeat_paid_runs": true,
+    "full_input_and_artifact_hashes_required": true,
+    "formal_eval_requires_independent_inputs_and_exposure_audit": true,
+    "selected_reference_labels_for_case_selection_only": true,
+    "do_not_change_frozen_benchmark": true,
+    "all_media_archive_pending_server_verification": true
+  },
+  "dev_exposure": [
+    {
+      "match_id": "FH-E57877ED",
+      "case": "A"
+    },
+    {
+      "match_id": "FH-723B1912",
+      "case": "B"
+    },
+    {
+      "match_id": "FH-34B9C8A4",
+      "case": "France-Australia"
+    },
+    {
+      "match_id": "FH-5DA0F989",
+      "case": "Croatia-Canada"
+    },
+    {
+      "match_id": "FH-35DA83FD",
+      "case": "C",
+      "note": "new development exposure; exclude from formal holdout even if original v1.1 marks unverified"
+    }
+  ],
+  "compatibility": {
+    "path": "artifacts/fresh_v3r_compatibility_v1/summary.json",
+    "counts": {
+      "A": {
+        "pass": 43,
+        "total": 44
+      },
+      "B": {
+        "pass": 36,
+        "total": 37
+      }
+    },
+    "difference": "regenerated_full_score_rows additive previous_score_observed_t_sec; no full downstream replay with new score doc yet"
+  },
+  "c_fresh": {
+    "run_manifest": "artifacts/v3r_general_C_levante_rayo/fresh_general_v1/run_manifest.json",
+    "status": "COMPLETE",
+    "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+    "stages": [
+      {
+        "stage": "01_enrich",
+        "n_raw": 443,
+        "n_enriched": 567,
+        "n_injected": 124,
+        "sha256": "8dd1dce98898dfbd9c0ae1bcb3bda0e8034e5b226de814ae328dde7acce4eff6"
+      },
+      {
+        "stage": "02_strip831",
+        "n_events": 567,
+        "n_chains": 78,
+        "sha256": "dccef2e76ab61659f501c8e80deeaab4b47f1acb086149703183c83e462c54d9"
+      },
+      {
+        "stage": "03_v1_adapt",
+        "n_chains": 80,
+        "sha256": "27da952886846cc7df375e0ae609a09cbf440b1ac099a5b74947d7d44b825f34"
+      },
+      {
+        "stage": "04_evidence",
+        "n_atoms": 409,
+        "n_chains": 80,
+        "n_score_nodes": 4,
+        "sha256": "69b1c04072bd6d63f1b709096d6ddeebd302906f75c94074f83794f4eff24548"
+      },
+      {
+        "stage": "05_r1",
+        "n_atoms": 409
+      },
+      {
+        "stage": "06_r2a4"
+      },
+      {
+        "stage": "07_r2bc",
+        "candidate_counts": {
+          "comeback": 0,
+          "equalization": 0,
+          "lead_preservation": 1,
+          "set_piece_breakthrough": 0,
+          "turnover_to_goal": 0,
+          "threat_phase_change": 0
+        }
+      },
+      {
+        "stage": "08_r3",
+        "n_stories": 1,
+        "template_counts": {
+          "keeper_rescue": 0,
+          "alternating_threats": 0,
+          "alternating_threats_score_context": 0,
+          "comeback": 0,
+          "equalization": 0,
+          "lead_preservation": 1,
+          "set_piece_breakthrough": 0,
+          "turnover_to_goal": 0,
+          "threat_phase_change": 0
+        }
+      }
+    ]
+  },
+  "templates": [
+    {
+      "template_id": "comeback",
+      "category": "战局故事链",
+      "subtype": "逆风翻盘",
+      "status": "LEGACY_E2E_PREVIEWS_AND_COMPATIBILITY_VERIFIED",
+      "formal_fanedit_eligible": false,
+      "notes": "11.20 delivery README records V0/V1/V2 previews on four development matches. New general runner has not independently completed a full comeback paid loop; legacy seed preservation is verified.",
+      "evidence": [
+        {
+          "ref": "93804fbf9591b54d86fb170385491ed4ced024bd",
+          "path": "11.20sstory_chain/README.md"
+        },
+        {
+          "ref": "7235ca7f326cefba8853867c64ca6fee5956c60d",
+          "path": "10.27scasual_chain/docs/artifacts_story_first_v2_croatia_h4_split_render_20261120/REPORT.md"
+        }
+      ],
+      "cases": [
+        {
+          "match_id": "FH-E57877ED",
+          "video_id": "FH-E57877ED-Ve7cf822b12da",
+          "case": "A",
+          "seed_sha256": "dec28e8e9d82825167e1ef0ac56f068a0b84578a7116f683e17b625d9f4a9274",
+          "seed_duration_sec": 89,
+          "seed_path": "artifacts/v3r_general_r3_preflight/A/comeback__1/legacy_seed.json",
+          "compatibility_checks": "43/44; only additive score-row field differs"
+        },
+        {
+          "match_id": "FH-723B1912",
+          "video_id": "FH-723B1912-Vd77c22bf8626",
+          "case": "B",
+          "seed_sha256": "5ba76074c2d08727c4eb800251775b50dfd8e0b3925895809e935ecde11c14e4",
+          "seed_duration_sec": 89,
+          "seed_path": "artifacts/v3r_general_r3_preflight/B/comeback__1/legacy_seed.json",
+          "compatibility_checks": "36/37; only additive score-row field differs"
+        },
+        {
+          "match_id": "FH-34B9C8A4",
+          "video_id": "FH-34B9C8A4-Vdb63a4c31513",
+          "case": "France-Australia",
+          "status": "delivery README records previews; detailed media archive pending"
+        },
+        {
+          "match_id": "FH-5DA0F989",
+          "video_id": "FH-5DA0F989-V07b51a9276b3",
+          "case": "Croatia-Canada",
+          "status": "delivery README and 7235ca7 record previews; detailed media archive pending"
+        }
+      ],
+      "first_live_verified": false,
+      "release_authorized": false
+    },
+    {
+      "template_id": "keeper_rescue",
+      "category": "人物故事链",
+      "subtype": "同队门将多次化险",
+      "status": "E2E_RESEARCH_PREVIEW_HUMAN_POSITIVE",
+      "match_id": "FH-E57877ED",
+      "video_id": "FH-E57877ED-Ve7cf822b12da",
+      "story_candidate_id": "keeper_rescue:2",
+      "subject": [
+        "team_2"
+      ],
+      "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+      "formal_fanedit_eligible": false,
+      "code_ref": "5bc5922",
+      "artifact_ref": "db36d19",
+      "report_path": "artifacts/v3r_original_agent_A_keeper_rescue_20261126_r4r5_3c/REPORT.md",
+      "comparison_path": "artifacts/v3r_original_agent_A_keeper_rescue_20261126_r4r5_3c/original_agent/story_first_outer/story_first_outer_comparison.json",
+      "input_provenance": {
+        "schema": "sportscausal_original_agent_run_v1",
+        "story_id": "keeper_rescue:2",
+        "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+        "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+        "source_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+        "source_manifest": {
+          "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+          "sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+          "provenance": {
+            "trusted_historical_records": [
+              {
+                "path": "/data2/lpy1/_story_va_outputs/v3/plan2/freeze_p2_closed_loop/inputs_hashes/INPUT_HASHES.json",
+                "key": "A_video",
+                "recorded_path": "/mnt/data4/migu/10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语.mp4",
+                "recorded_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+                "recorded_bytes": 6113318593
+              },
+              {
+                "path": "/data2/lpy1/_story_va_outputs/v3/plan2/unified_cli_joe8b3h4/99_final/goal_evidence/source_video.sha256.json",
+                "recorded_path": "/mnt/data4/migu/10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语.mp4",
+                "recorded_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+                "recorded_bytes": 6113318593
+              },
+              {
+                "path": "/data2/lpy1/_story_va_outputs/v3/plan2/unified_cli_lnsr7429/99_final/goal_evidence/source_video.sha256.json",
+                "recorded_sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c"
+              }
+            ],
+            "local_recompute_20261126": {
+              "path": "/mnt/data4/migu/10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语.mp4",
+              "sha256": "a66147f79609c8fbf831a8bd29de4c6d7f746b314b2b18a88ffb1fc5f319da9c",
+              "matches_trusted": true,
+              "size": 6113318593
+            },
+            "note": "Identity pinned by trusted historical SHA256 records, not by filename/duration alone."
+          }
+        },
+        "source_manifest_sha256": "b6cd2138083b94338f92e7b9abda2769f90de5bff5a2cea533fc6d97c557d577",
+        "evidence_sha256": "9322933a9c3ef15a990c9377ed498e97b73cb20350bbfe279114bf2f3b4043fc",
+        "events_sha256": "33958b106f3daddd8830e8735f7583527b3aa3f39ca4b6a805b6b3cfe0fb0299",
+        "match_json_sha256": "ddae99b21cbfcd1c75ddf620d957578e57c2c013d607ac893655c4d52b7e779e",
+        "plan_sha256": "526482f7cc542019b36430ccc2a0d927bb0eaacbc3401531761e8a23c8d9ea8c",
+        "edl_sha256": "bfdbfe963b5cb4f34b50a848b4fd291e4440e387e5119568985d608b9d0388c5",
+        "original_algorithm": "run_story_e2e",
+        "fresh_v3r": false,
+        "legacy_single_loop": false,
+        "research_preview_only": true,
+        "requested_main_rounds": 3,
+        "requested_outer_rounds": 3,
+        "phase8_paid_multi_round": true,
+        "reuse_prior_story_first_hypotheses": false
+      },
+      "versions": [
+        {
+          "outer_rounds": 0,
+          "status": "V3_R",
+          "accepted_changes": 0,
+          "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_original_agent_A_keeper_rescue_20261126_r4r5_3c/original_agent/story_first_outer/v0_edl.json",
+          "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_original_agent_A_keeper_rescue_20261126_r4r5_3c/original_agent/01_initial_story/story_clean.mp4",
+          "mp4_sha256": "338e842499cb2d60df0de42d68e2fa05b9e2948f7a8350a3baa30c62eac4ff91",
+          "duration_sec": 70.752
+        },
+        {
+          "outer_rounds": 1,
+          "status": "ACCEPTED_PREVIEW",
+          "accepted_changes": 1,
+          "local_trims": 0,
+          "p3_stop_reason": "API_BUDGET",
+          "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_original_agent_A_keeper_rescue_20261126_r4r5_3c/original_agent/story_first_outer/v1_edl.json",
+          "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_original_agent_A_keeper_rescue_20261126_r4r5_3c/original_agent/02_round_03/candidate_render/story_clean.mp4",
+          "mp4_sha256": "2c1e022caae646edfe46c0a50a22be6ad91a90f1a52cd6a41d26a8202a8c1fbc",
+          "duration_sec": 134.885
+        },
+        {
+          "outer_rounds": 2,
+          "status": "P1_BUDGET_EXHAUSTED",
+          "accepted_changes": 1,
+          "changed_from_previous_round": false,
+          "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_original_agent_A_keeper_rescue_20261126_r4r5_3c/original_agent/story_first_outer/v2_edl.json",
+          "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_original_agent_A_keeper_rescue_20261126_r4r5_3c/original_agent/02_round_03/candidate_render/story_clean.mp4",
+          "mp4_sha256": "2c1e022caae646edfe46c0a50a22be6ad91a90f1a52cd6a41d26a8202a8c1fbc",
+          "duration_sec": 134.885
+        },
+        {
+          "outer_rounds": 3,
+          "status": "ACCEPTED_PREVIEW",
+          "accepted_changes": 2,
+          "changed_from_previous_round": true,
+          "edl": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_original_agent_A_keeper_rescue_20261126_r4r5_3c/original_agent/story_first_outer/v3_edl.json",
+          "mp4": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_original_agent_A_keeper_rescue_20261126_r4r5_3c/original_agent/story_first_outer/round_03/trial_render/story_clean.mp4",
+          "mp4_sha256": "916f59830dacd912e2521bb0dcdaa4fdaff6dad13bc5d7a098f9028a6126cbb3",
+          "duration_sec": 150.93
+        }
+      ],
+      "http_calls": 17,
+      "estimated_cost_usd": 0.051478,
+      "initial_r3_duration_sec": 70.53,
+      "accepted_preview_changes": 2,
+      "human_review": {
+        "status": "POSITIVE_OVERALL_REPORTED_IN_PROJECT_CONVERSATION",
+        "notes": "Residual transitions and first-live not fully verified; no new independent human score."
+      },
+      "native_delivery_status": "BLOCKED",
+      "native_blocked_reason": "final_edl_missing_goal_anchors",
+      "first_live_verified": false,
+      "release_authorized": false,
+      "archive_status": "GIT_JSON_INDEXED_SERVER_MEDIA_NOT_REHASHED_THIS_TURN"
+    },
+    {
+      "template_id": "alternating_threats",
+      "category": "攻防战术故事链",
+      "subtype": "双方交替威胁",
+      "status": "CANDIDATE_ONLY",
+      "existing_candidates": [
+        {
+          "case": "A",
+          "story_id": "alternating_threats:1",
+          "segments": 10,
+          "duration_sec": 115.26
+        }
+      ],
+      "formal_fanedit_eligible": false
+    },
+    {
+      "template_id": "equalization",
+      "category": "战局故事链",
+      "subtype": "落后追平",
+      "status": "CANDIDATE_ONLY",
+      "existing_candidates": [
+        {
+          "case": "A",
+          "story_id": "equalization:1",
+          "segments": 2,
+          "duration_sec": 5.869
+        },
+        {
+          "case": "B",
+          "story_id": "equalization:1",
+          "segments": 1,
+          "missing": [
+            "score:2"
+          ]
+        },
+        {
+          "case": "B",
+          "story_id": "equalization:2",
+          "segments": 2,
+          "duration_sec": 6.161
+        }
+      ],
+      "formal_fanedit_eligible": false
+    },
+    {
+      "template_id": "lead_preservation",
+      "category": "战局故事链",
+      "subtype": "领先守成",
+      "status": "CANDIDATE_ONLY",
+      "existing_candidates": [
+        {
+          "case": "A",
+          "story_id": "lead_preservation:1",
+          "segments": 2,
+          "duration_sec": 6.352
+        },
+        {
+          "case": "B",
+          "story_id": "lead_preservation:1",
+          "segments": 2,
+          "duration_sec": 5.602
+        },
+        {
+          "case": "C",
+          "story_id": "lead_preservation:1",
+          "manifest": "artifacts/v3r_general_C_levante_rayo/fresh_general_v1/run_manifest.json"
+        }
+      ],
+      "formal_fanedit_eligible": false
+    },
+    {
+      "template_id": "threat_phase_change",
+      "category": "攻防战术故事链",
+      "subtype": "攻势换手",
+      "status": "CANDIDATE_ONLY",
+      "existing_candidates": [
+        {
+          "case": "A",
+          "story_id": "threat_phase_change:1",
+          "segments": 9,
+          "duration_sec": 103.84
+        }
+      ],
+      "formal_fanedit_eligible": false
+    },
+    {
+      "template_id": "set_piece_breakthrough",
+      "category": "关键转折故事链",
+      "subtype": "定位球战术执行与破局",
+      "status": "NO_POSITIVE_CANDIDATE_YET",
+      "formal_fanedit_eligible": false
+    },
+    {
+      "template_id": "turnover_to_goal",
+      "category": "关键转折故事链",
+      "subtype": "攻守转换与关键破门",
+      "status": "RENDER_ONLY_QUALITY_NOT_PASSED",
+      "formal_fanedit_eligible": false,
+      "existing_candidates": [
+        {
+          "case": "A",
+          "story_id": "turnover_to_goal:1",
+          "segments": 5,
+          "edl_duration_sec": 23.542,
+          "mp4_duration_sec": 23.731,
+          "mp4_sha256": "6b60cafd26fee9d321d97b08a849afa14edbf014beeca105d785a3b51793c618",
+          "report_path": "artifacts/v3r_original_agent_A_turnover_to_goal_r4r5_4a/REPORT.md",
+          "continuity_gaps_sec": 11.386
+        },
+        {
+          "case": "C",
+          "match_id": "FH-35DA83FD",
+          "status": "ZERO_CANDIDATES",
+          "report_path": "artifacts/v3r_general_C_levante_rayo/turnover_zero_candidate_audit.json"
+        }
+      ]
+    }
+  ]
+}
