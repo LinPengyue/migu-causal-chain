@@ -1,0 +1,123 @@
+{
+  "match": "C_levante_rayo",
+  "fanedit_match_id": "FH-35DA83FD",
+  "freeze_commit": "372070553561a0c56364542c8235ff4ed4985fda",
+  "branch": "research/sportscausal-template-generalization",
+  "protocol": {
+    "zero_paid_http": true,
+    "no_algo_or_template_param_edits": true,
+    "no_story_agent_p1p2p3": true,
+    "no_AB_rerun": true,
+    "forbid_human_causal_as_prediction": true,
+    "forbid_human_story_nodes_as_candidates": true,
+    "on_missing_inputs": "report_and_stop_no_paid_regen"
+  },
+  "present": {
+    "video": {
+      "path": "/mnt/data4/migu/10月20日 25-26赛季西甲第9轮 莱万特VS巴列卡诺 国语.mp4",
+      "sha256": "5ab8ee77ed0d0cb56f020348d4c73b4c27c738f6285db941e1797f87bb1d4d73",
+      "duration_sec": 7764.074
+    },
+    "atoms_delivery": {
+      "path": "/data2/lpy1/causal-chain2/11.23casual_chain/data/交付_out/10月20日_25-26赛季西甲第9轮_莱万特VS巴列卡诺_国语.json",
+      "n_events": 443,
+      "teams": {
+        "team_1": {
+          "name": "莱万特",
+          "color": "蓝色"
+        },
+        "team_2": {
+          "name": "巴列卡诺",
+          "color": "白色"
+        }
+      },
+      "sha256": "cffe1f86aa386e668b6ad3ce8a654113a814783b9343db4ce63bb6ebb5f2e9c6"
+    },
+    "human_causal_present_but_forbidden_as_prediction": {
+      "path": "/data2/lpy1/causal-chain2/11.23casual_chain/data/交付_out/10月20日_25-26赛季西甲第9轮_莱万特VS巴列卡诺_国语_causal.json",
+      "n_chains": 30
+    },
+    "strip_dump_gold_clips_eval": {
+      "path": "/data2/lpy1/causal-chain2/11.23casual_chain/reports/strip_dump/10月20日_25-26赛季西甲第9轮_莱万特VS巴列卡诺_国语.json",
+      "mode": "gold_clips",
+      "algo": "causal_chain6",
+      "use_llm": false,
+      "event_source": "gold_events",
+      "n_clips": 8,
+      "n_all_preds": 6,
+      "pred_templates": [
+        "corner_cross_goal",
+        "outcome_other",
+        "shot_save_chain",
+        "turnover_counter_goal"
+      ],
+      "why_not_usable_as_A_style_predicted_input": [
+        "Eval dump aligned to gold clips (mode=gold_clips), not reinfer_atom_enriched full-match strip",
+        "Only 6 algorithm preds vs A strip n_chains=81",
+        "Lacks v3_adapter document schema required by evidence_representation.build_evidence",
+        "Converting gold-clip eval preds would still not recreate closed-loop predicted_causal coverage"
+      ],
+      "sha256": "e72c06cbe3d878e5bef9bb3c591789199581ea3e10c9037ae3af601f2f5cf136"
+    },
+    "strip_dump_online_eval": {
+      "path": "/data2/lpy1/causal-chain2/11.23casual_chain/reports/strip_dump_online/10月20日_25-26赛季西甲第9轮_莱万特VS巴列卡诺_国语.json",
+      "mode": "online",
+      "n_clips": 8,
+      "note": "Online eval vs gold clips; not full reinfer strip."
+    },
+    "score_path_from_t01": {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_C_levante_rayo/inputs/C_score_path_from_t01.json",
+      "n_points": 4,
+      "scores": [
+        "0:0",
+        "0:1",
+        "0:2",
+        "0:3"
+      ]
+    }
+  },
+  "missing_blocking_Evidence_to_R3": [
+    {
+      "id": "events_enriched",
+      "required_for": "Evidence Representation (events + enrich_report)",
+      "A_B_reference": "/data2/lpy1/_story_va_outputs/v3/plan2/closed_loop_A_uae_oman/01_enrich/events_enriched.json",
+      "C_status": "MISSING",
+      "note": "No closed_loop 01_enrich for C under _story_va_outputs or sportscausal artifacts."
+    },
+    {
+      "id": "enrich_report",
+      "required_for": "Evidence Representation",
+      "A_B_reference": "/data2/lpy1/_story_va_outputs/v3/plan2/closed_loop_A_uae_oman/01_enrich/enrich_report.json",
+      "C_status": "MISSING"
+    },
+    {
+      "id": "reinfer_atom_enriched_strip",
+      "required_for": "V1 adapt → predicted shortchains (A mode reinfer_atom_enriched, n≈81)",
+      "A_B_reference": "/data2/lpy1/_story_va_outputs/v3/plan2/closed_loop_A_uae_oman/02_strip831/strip_A_original.json",
+      "C_status": "MISSING",
+      "note": "Only gold_clips/online eval strip_dump exists (n_clips=8, n_all_preds=6). Not equivalent to full-match reinfer strip."
+    },
+    {
+      "id": "predicted_causal_v3_adapter",
+      "required_for": "Evidence --predicted-causal (requires v3_adapter + causal_chains, is_benchmark_gold≠true)",
+      "A_B_reference": "/data2/lpy1/_story_va_outputs/v3/plan2/closed_loop_A_uae_oman/03_v1_adapt/predicted_causal.json",
+      "C_status": "MISSING",
+      "searched": [
+        "/data2/lpy1/_story_va_outputs/**/predicted_causal.json (no Levante/Rayo hits)",
+        "research/sportscausal/artifacts/**",
+        "causal-chain2/** strip reinfer products"
+      ]
+    }
+  ],
+  "pipeline_status": {
+    "Evidence_Representation": "NOT_RUN",
+    "R1_semantic_normalization": "NOT_RUN",
+    "R2a4_causal_episode_graph": "NOT_RUN",
+    "R2bc_operators_templates": "NOT_RUN",
+    "R3_story_graph_initial_EDL": "NOT_RUN",
+    "turnover_to_goal_audit": "NOT_APPLICABLE_NO_CANDIDATES_PIPELINE_NOT_RUN",
+    "EDL_render": "NOT_RUN",
+    "reason": "Blocking inputs missing: events_enriched + enrich_report + predicted_causal (v3_adapter). Per protocol: report missing; do not start paid HTTP; do not fabricate predicted chains from human causal/strip_gold/gold-clip eval dumps."
+  },
+  "http_calls": 0
+}
