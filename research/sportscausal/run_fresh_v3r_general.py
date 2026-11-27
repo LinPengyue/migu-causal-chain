@@ -13,7 +13,7 @@ from pathlib import Path
 import subprocess
 import sys
 
-from template_graph import check, read, write, number
+from template_graph import check, read, write, number, event_window
 from evidence_representation import build_evidence
 from episode_semantics import normalize_for_episodes
 import r2a4_patterns
@@ -128,6 +128,17 @@ def run(args):
     closed, enrich, scores = load_upstream()
     duration, media = probe_video(video)
     source_sha = sha256(video)
+    raw_sha = sha256(events_path)
+    atom_path = causal or independent
+    atom_sha = sha256(atom_path) if atom_path else None
+    check(not args.expected_events_sha256 or raw_sha == args.expected_events_sha256.lower(),
+          "native event input hash mismatch")
+    check(not args.expected_atom_source_sha256 or atom_sha == args.expected_atom_source_sha256.lower(),
+          "atom supplement input hash mismatch")
+    # Preserve invalid-window diagnostics in Evidence, but reject an entirely
+    # incompatible source timeline before doing strip inference.
+    n_valid_raw_windows = sum(event_window(e, duration) is not None for e in raw["events"])
+    check(n_valid_raw_windows > 0, "no native event windows on supplied video timeline")
     check(not args.expected_source_sha256 or source_sha == args.expected_source_sha256.lower(),
           "source video hash mismatch")
     out = Path(args.out_dir).resolve()
@@ -137,10 +148,14 @@ def run(args):
         "git_head": git("rev-parse", "HEAD"), "delivery_ref": DELIVERY_REF,
         "video_id": video_id, "duration_sec": duration,
         "inputs": {k: {"path": str(p), "sha256": h} for k,p,h in [
-            ("match_json", events_path, sha256(events_path)), ("source_mp4", video, source_sha),
-            ("causal_atoms_json", causal, sha256(causal) if causal else None),
-            ("independent_atoms_json", independent, sha256(independent) if independent else None)] if p},
+            ("match_json", events_path, raw_sha), ("source_mp4", video, source_sha),
+            ("causal_atoms_json", causal, atom_sha if causal else None),
+            ("independent_atoms_json", independent, atom_sha if independent else None)] if p},
         "score_side_mapping": mapping, "score_mapping_provenance": mapping_source,
+        "n_raw_valid_media_windows": n_valid_raw_windows,
+        "n_raw_events": len(raw["events"]),
+        "identity_note": "Input paths and hashes record caller-selected pairing; not visual identity proof.",
+        "entry_sha256": sha256(Path(__file__).resolve()),
         "requested_templates": sorted(selected) if selected else sorted(supported),
         "stages": [], "paid_api_enabled": False, "http_calls": 0,
         "quality_verified": False, "first_live_verified": False, "release_authorized": False,
@@ -166,6 +181,10 @@ def run(args):
                          "INDEPENDENT_ATOMIC_ANNOTATED" if independent else "RAW_EVENTS_ONLY")
         check(report["input_mode"] == expected_mode, "unexpected enrichment provenance")
         check(enriched["teams"] == raw["teams"], "enrichment changed teams")
+        original_by_id = {e["event_id"]: e for e in raw["events"]}
+        merged_by_id = {e["event_id"]: e for e in enriched["events"]}
+        check(all(merged_by_id.get(eid) == e for eid, e in original_by_id.items()),
+              "enrichment lost or altered native events")
         audit["input_tier"] = expected_mode
         completed("01_enrich", n_raw=len(raw["events"]), n_enriched=len(enriched["events"]),
                   n_injected=report.get("n_injected"), sha256=sha256(enriched_path))
@@ -249,6 +268,8 @@ def parser():
     p.add_argument("--score-left-team", choices=["team_1", "team_2"])
     p.add_argument("--score-mapping-provenance", help="How scoreboard column attribution was verified")
     p.add_argument("--expected-source-sha256")
+    p.add_argument("--expected-events-sha256")
+    p.add_argument("--expected-atom-source-sha256")
     p.add_argument("--template-id", action="append", help="Optional output filter; default all 8 + separate mixed hypothesis")
     return p
 
