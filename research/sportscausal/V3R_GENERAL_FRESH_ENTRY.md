@@ -40,7 +40,9 @@ rule-only, sliding recall; no paid LLM)
 06_r2a4: role-safe fresh graph, no historical score-contaminated graph or cache
 07_r2bc: unchanged six templates
 08_r3: unchanged compiler and materializer, all 8 supported template types plus
-separate mixed score-context hypothesis. No legacy seed for a new match.
+separate mixed score-context hypothesis. By default no legacy seed; optional
+--legacy-seed-manifest preserves an existing original comeback seed byte-for-byte.
+It does not automatically generate a new T01 seed or replace the original delivery entry.
 
 The old Phase5-only replay-goal filter is not inserted into the research
 pipeline; the full adapted prediction is consumed by the existing Evidence
@@ -91,3 +93,22 @@ separate mixed hypothesis. New matches need no A/B paths, T01 file, or manually
 prepared predicted-causal file.
 
 GitHub code written and reviewed; actual server tests and C run are pending.
+
+## Compatibility audit (frozen A/B, not a new experiment)
+
+Run only the new regression audit against the frozen evidence and R1–R3 artifacts:
+
+    python audit_fresh_v3r_compatibility.py --out-dir artifacts/fresh_v3r_compatibility_v1
+
+Optionally add --a-events "$A_EVENTS_ENRICHED" --b-events "$B_EVENTS_ENRICHED"
+using the exact historical enriched event files, not newly enriched copies.
+This adds a comparison of regenerated score rows, including carrier IDs and
+previous observations. Without those paths score regeneration is explicitly
+not checked. The upstream enrich/strip/adapter, videos, and paid Agent are
+not rerun. The audit recomputes only in-memory research stages and writes
+separate outputs. Inspect all differences, not only the exit status.
+The new fresh entry accepts --legacy-seed-manifest using the existing R3 schema;
+it rejects a filter excluding comeback and retains the original seed bytes.
+For new comeback matches lacking a legacy seed, continue using the original
+11.20 delivery workflow for its verified behavior; the new R3 anchor preview
+is not an equivalent substitute.
