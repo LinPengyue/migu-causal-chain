@@ -1,0 +1,192 @@
+{
+  "schema": "sportscausal_fresh_v3r_general_v1",
+  "status": "COMPLETE",
+  "git_head": "cc86f2c7609706cab4cc8c5f57650ef477575024",
+  "delivery_ref": "93804fbf9591b54d86fb170385491ed4ced024bd",
+  "video_id": "2022年11月23日 法国vs澳大利亚",
+  "duration_sec": 7305.68,
+  "inputs": {
+    "match_json": {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/data/交付_out/2022年11月23日 法国vs澳大利亚.json",
+      "sha256": "8756bb820e92a9970a772583966058f53563b6f50d2b9fe0d9e6489561797d3f"
+    },
+    "source_mp4": {
+      "path": "/mnt/data4/migu/2022年11月23日 法国vs澳大利亚.mp4",
+      "sha256": "67462dbafb7aa73240230aacce4aa07cc61b6cd60c7f7d59fc60f9b023e6e978"
+    },
+    "causal_atoms_json": {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/data/交付_out/2022年11月23日 法国vs澳大利亚_causal.json",
+      "sha256": "86c19aec3a7a1d5b51d3c2a0110200ba05be3ce192dd6f451d7ca8d2516e2390"
+    }
+  },
+  "score_side_mapping": {
+    "left": "team_1",
+    "right": "team_2"
+  },
+  "score_mapping_provenance": "phase5 france_australia_first_run FIRST_RUN_NOTES: left scoreboard=法国=team_1; score_recognition 0:0→0:1(澳大利亚)→1:1→2:1→3:1→4:1 matches team_1 France comeback; right=team_2 Australia",
+  "n_raw_valid_media_windows": 302,
+  "n_raw_events": 302,
+  "identity_note": "Input paths and hashes record caller-selected pairing; not visual identity proof.",
+  "entry_sha256": "8beb83601cf6dd20ec75e96982e4444f584657648127293442459443f832e313",
+  "requested_templates": [
+    "alternating_threats",
+    "comeback",
+    "equalization",
+    "keeper_rescue",
+    "lead_preservation",
+    "set_piece_breakthrough",
+    "threat_phase_change",
+    "turnover_to_goal"
+  ],
+  "legacy_seed_manifest": null,
+  "legacy_seed_policy": "explicit_existing_source_matched_seed_only; no automatic T01 rerun",
+  "stages": [
+    {
+      "stage": "01_enrich",
+      "n_raw": 302,
+      "n_enriched": 375,
+      "n_injected": 73,
+      "sha256": "2d49a1db0e3e2262714926d019ed9f62a89acf8eeb8a9a49e7a3df9f13e422df"
+    },
+    {
+      "stage": "02_strip831",
+      "n_events": 375,
+      "n_chains": 68,
+      "sha256": "f28e9af6c28b92ab4f4ffce4e5e340b34ce62782f95dbfc157390942bba4dba8"
+    },
+    {
+      "stage": "03_v1_adapt",
+      "n_chains": 72,
+      "sha256": "b2b99479c2c987e26a6da647375e48ca32a82f78bc44b836169976440acbefdf"
+    },
+    {
+      "stage": "04_evidence",
+      "n_atoms": 287,
+      "n_chains": 72,
+      "n_score_nodes": 6,
+      "sha256": "3da16ffb6c96173d079a583c9feaf2b9cea009ec03fbd26fc0d0ce7ab3be5239"
+    },
+    {
+      "stage": "05_r1",
+      "n_atoms": 287
+    },
+    {
+      "stage": "06_r2a4"
+    },
+    {
+      "stage": "07_r2bc",
+      "candidate_counts": {
+        "comeback": 1,
+        "equalization": 1,
+        "lead_preservation": 1,
+        "set_piece_breakthrough": 2,
+        "turnover_to_goal": 0,
+        "threat_phase_change": 0
+      }
+    },
+    {
+      "stage": "08_r3",
+      "n_stories": 5,
+      "template_counts": {
+        "keeper_rescue": 0,
+        "alternating_threats": 0,
+        "alternating_threats_score_context": 0,
+        "comeback": 1,
+        "equalization": 1,
+        "lead_preservation": 1,
+        "set_piece_breakthrough": 2,
+        "turnover_to_goal": 0,
+        "threat_phase_change": 0
+      }
+    }
+  ],
+  "paid_api_enabled": false,
+  "http_calls": 0,
+  "quality_verified": false,
+  "first_live_verified": false,
+  "release_authorized": false,
+  "argv": [
+    "run_fresh_v3r_general.py",
+    "--match-json",
+    "/data2/lpy1/worktrees/migu-sportscausal-template-gen/data/交付_out/2022年11月23日 法国vs澳大利亚.json",
+    "--causal-atoms-json",
+    "/data2/lpy1/worktrees/migu-sportscausal-template-gen/data/交付_out/2022年11月23日 法国vs澳大利亚_causal.json",
+    "--allow-dev",
+    "--source-mp4",
+    "/mnt/data4/migu/2022年11月23日 法国vs澳大利亚.mp4",
+    "--expected-source-sha256",
+    "67462dbafb7aa73240230aacce4aa07cc61b6cd60c7f7d59fc60f9b023e6e978",
+    "--score-left-team",
+    "team_1",
+    "--score-mapping-provenance",
+    "phase5 france_australia_first_run FIRST_RUN_NOTES: left scoreboard=法国=team_1; score_recognition 0:0→0:1(澳大利亚)→1:1→2:1→3:1→4:1 matches team_1 France comeback; right=team_2 Australia",
+    "--out-dir",
+    "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_FRA_france_australia/fresh_general_v1"
+  ],
+  "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "artifacts": {
+    "01_enrich/enrich_report.json": "13464c777086da31691ae43a5df84fb6dfd2cc439e6da84b35e2c4310a0170b2",
+    "01_enrich/events_enriched.json": "2d49a1db0e3e2262714926d019ed9f62a89acf8eeb8a9a49e7a3df9f13e422df",
+    "02_strip831/strip_A_original.json": "f28e9af6c28b92ab4f4ffce4e5e340b34ce62782f95dbfc157390942bba4dba8",
+    "02_strip831/timeline_enriched.json": "9999d9c67fdb30315dc2f9f1df4f62788cba4b67fef36b5e23acba49ece064a0",
+    "03_v1_adapt/goal_recovery.json": "09464b597550bdc76f23944f53261167451f508cb23ffe20473075636a7a0ea3",
+    "03_v1_adapt/predicted_causal.json": "b2b99479c2c987e26a6da647375e48ca32a82f78bc44b836169976440acbefdf",
+    "04_evidence/evidence.json": "3da16ffb6c96173d079a583c9feaf2b9cea009ec03fbd26fc0d0ce7ab3be5239",
+    "04_evidence/score_path.json": "29d91ab21484d94c03951d47e091b5835c94e314c5d1918ac86702d26657892c",
+    "05_r1/normalized_semantics.json": "8e50f2567cdb4251e581b4601ec2ec788288fd212a9b8e71db8d7e3332ac7fb1",
+    "06_r2a4/alternating_threats.json": "944c70ce872793f8084d834665bc0b242b2e989831c86e4341bc92c260e23ea5",
+    "06_r2a4/alternating_threats_score_context.json": "9418caa55c15e4603995ab7286c92e1762a03df1a286d9e698611d8f47308b10",
+    "06_r2a4/causal_episodes.json": "cfa8a519fa291252b642aafa9580bd5fa256f91807952b1ac2142692195de48d",
+    "06_r2a4/keeper_rescue.json": "02d2e041701b8b5dadd26d6f8970d3de659a6cdca5735ec93cdb5b52a28091fc",
+    "06_r2a4/observation_tasks.json": "b6ffad42d9c21cd089c92677973730319a167c8b98206a06412b148ce6b1624b",
+    "06_r2a4/relation_graph.json": "e9751b264d1abd8ef0a042923a5c1fe7efd7af4aba12f0315abc646afec94183",
+    "06_r2a4/scoring_outcomes.json": "3dce31ae5f29d277aa7ce462b99b6a0f7966d217397e12f7490b2c84366b511f",
+    "06_r2a4/summary.json": "ca9bfbf1ec295b81581a65735f4c6520bbabd5addb5d4c2da1b8d9953c9a347c",
+    "07_r2bc/anchor_pack.json": "29e637c03bbbaabdbb53ff37e22d86d984d7ae3e7e274e80dace7d1dd24c330d",
+    "07_r2bc/comeback.json": "880c9bb167821b2265015ee7417a9b8360114c1c7b0dc0e4d04d82d579c706f7",
+    "07_r2bc/equalization.json": "eaebd823e9d3e833f3cd87795df09e41fb954c22258584242abf54775d3b0b73",
+    "07_r2bc/lead_preservation.json": "d4fbca1ea7b9dec2e4eaa2ba6a1c232d2e7be1c25c1a47725f0bbc82f2b8475e",
+    "07_r2bc/observation_tasks.json": "72fd065231c0ad6622b48f23f200495bdf50bb0f2b686f6213ed0686050e5492",
+    "07_r2bc/set_piece_breakthrough.json": "7a779c7c9b4528ec786150958d4faf5781a8d54dc6669724e3b7a1fac12a8202",
+    "07_r2bc/threat_phase_change.json": "8cf684e33e6d2191b247795bcead75bb54992bebdd822b3880d0bae22287c153",
+    "07_r2bc/turnover_to_goal.json": "d92d5149e5a090f43b41d1eaf35496186a314d2bceb59552d18dcef3cbae6754",
+    "08_r3/comeback__1/context_pool.json": "2afa13149965f3902610247d01ade86b84872ec3165600bdf95c1746e5928c92",
+    "08_r3/comeback__1/initial_edl.json": "71b4e081aa2a1535143364790c20d168199675c2ef20b294da1dc47615fd7551",
+    "08_r3/comeback__1/legacy_seed_metadata.json": "bc4d92d374bb0989e816cf0b5f71ffd33a4f068482320d885290690b9172d379",
+    "08_r3/comeback__1/materials.json": "077d237724ae310970b1298aea680c714b88738ffa8366f265b300cef17b560e",
+    "08_r3/comeback__1/observation_tasks.json": "c21c42e18b160c1c16e1732805f7b8caee6bd088da93bb4574a1ac6346684da7",
+    "08_r3/comeback__1/story_diagnostics.json": "d4f9e11d4b219bc866904038864f9a07a4615a7c791e496b22f5a6738d65a3f0",
+    "08_r3/comeback__1/story_graph.json": "99e3bbaac4f5aea04ebf70c142ad6f207f4e4ab0953904e260e2f84b4746e745",
+    "08_r3/equalization__1/context_pool.json": "1912512bcadb887fb3358271aea8a423534498fcc9e4b748177e3bc8a994a1b9",
+    "08_r3/equalization__1/initial_edl.json": "ccfa436d63c47bc441bc80962c5cf94cc8bfe6cd9902b9d951ad043b75c4afd5",
+    "08_r3/equalization__1/legacy_seed_metadata.json": "90a604aca928e5a1443130f40b9e8ce670e3c07b7de298ed69fa180a77783cea",
+    "08_r3/equalization__1/materials.json": "a750ac5fadac74391fcf9e51759bde03741f58c9f8e17e04efafd240c49abb62",
+    "08_r3/equalization__1/observation_tasks.json": "6a7209f3a52a394828346fba0903b5dd96d513f2ceab1ad3391d0d6eb9125a6d",
+    "08_r3/equalization__1/story_diagnostics.json": "aa5490fb244fa0612fb2f1c1fa5a7aff62cc98dd2885421244fb6267521bcb34",
+    "08_r3/equalization__1/story_graph.json": "dfc9882285c79d6fe281ccc75b067b1fd83232c7e2fef7b1b3582e1ca8dbb02c",
+    "08_r3/lead_preservation__1/context_pool.json": "2afa13149965f3902610247d01ade86b84872ec3165600bdf95c1746e5928c92",
+    "08_r3/lead_preservation__1/initial_edl.json": "71b4e081aa2a1535143364790c20d168199675c2ef20b294da1dc47615fd7551",
+    "08_r3/lead_preservation__1/legacy_seed_metadata.json": "90a604aca928e5a1443130f40b9e8ce670e3c07b7de298ed69fa180a77783cea",
+    "08_r3/lead_preservation__1/materials.json": "077d237724ae310970b1298aea680c714b88738ffa8366f265b300cef17b560e",
+    "08_r3/lead_preservation__1/observation_tasks.json": "3b34bf7ae156e25196c255e665d374523012c19141792011eecabec87a3ed875",
+    "08_r3/lead_preservation__1/story_diagnostics.json": "5cbddecf5c63ca9d39ccac132bf8df1aa70ee69566a5a6212dc059773689ab28",
+    "08_r3/lead_preservation__1/story_graph.json": "d7085d201bf5b955845482f034b0231d3ac24945c650c814c4518418088955fd",
+    "08_r3/observation_tasks.json": "26f4da7f1efa664c05e0f6a9e94c2e773cc56f7191e656e245cf45602ecbbccc",
+    "08_r3/set_piece_breakthrough__1/context_pool.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "08_r3/set_piece_breakthrough__1/initial_edl.json": "8b8c32b126fb920be5249a055444d0276e45fc3ad2f3f91309f42ae56086775a",
+    "08_r3/set_piece_breakthrough__1/legacy_seed_metadata.json": "90a604aca928e5a1443130f40b9e8ce670e3c07b7de298ed69fa180a77783cea",
+    "08_r3/set_piece_breakthrough__1/materials.json": "b6a92642e5eb22b5c80937afb13ec2bc006831238cd06e45a32bfe487d4cbfa8",
+    "08_r3/set_piece_breakthrough__1/observation_tasks.json": "987f2b0c93cace8fe4e5757c11847b9740ad542e7104ced03c6e9a7da8b1e8ba",
+    "08_r3/set_piece_breakthrough__1/story_diagnostics.json": "2882c87509354790b543f264b5c3dbdf739ff84d527d2d00b6e84591653c5c89",
+    "08_r3/set_piece_breakthrough__1/story_graph.json": "6f1289f7c5c1ebfadec0e41a5f214efbdcba1d124cc8d583da63fe09610f8d5e",
+    "08_r3/set_piece_breakthrough__2/context_pool.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "08_r3/set_piece_breakthrough__2/initial_edl.json": "4a1b5c19d48c97f15406bac2a74caffe3804aae072aeb122db0f28a80c4d8e36",
+    "08_r3/set_piece_breakthrough__2/legacy_seed_metadata.json": "90a604aca928e5a1443130f40b9e8ce670e3c07b7de298ed69fa180a77783cea",
+    "08_r3/set_piece_breakthrough__2/materials.json": "5e82c4af17489a1b53790bee5df4411da910ad9a7504f915644395f0daaf961b",
+    "08_r3/set_piece_breakthrough__2/observation_tasks.json": "38c05fbbe8f95a39dabf38d88aa33d9bbb00187db77122b42716e9b180f98e32",
+    "08_r3/set_piece_breakthrough__2/story_diagnostics.json": "4fc82a8ec77ebd0cbaa35287195116f88fe410c244b9d9315a215ca855c568e3",
+    "08_r3/set_piece_breakthrough__2/story_graph.json": "bdcf2c68857f920558b7ce9277de0a65f436f24e4a88dd3dfa881fe8ead6499b",
+    "08_r3/summary.json": "cbe2a7465c86b133a52beb3ee6c1eb7b1fb21e2f08982bb1f1d90410205ba82c",
+    "ffprobe.json": "c8a71e9a1a1c01e6d91657ee7ba2ebe19e1ae707e07e76d267a9c004bd9cd221"
+  }
+}

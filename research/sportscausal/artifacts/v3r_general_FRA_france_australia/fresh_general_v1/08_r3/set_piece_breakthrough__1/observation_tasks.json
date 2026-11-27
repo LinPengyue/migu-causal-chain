@@ -1,0 +1,270 @@
+[
+  {
+    "task_type": "goal_execution_roles",
+    "event_ids": [
+      "atom_fill_0018_Shot_2409235",
+      "atom_fill_0019_Goal_2410091"
+    ],
+    "goal_event_id": "atom_fill_0019_Goal_2410091",
+    "score_beneficiary": "team_1",
+    "goal_kind": "untyped_goal",
+    "known_executor": null,
+    "known_attacking_team": null,
+    "role_conflict": false,
+    "media_windows": [
+      [
+        2409.235,
+        2412.091
+      ]
+    ],
+    "questions": [
+      "identify actual ball-striking team",
+      "identify attacking team",
+      "ordinary goal, own goal, or other deflection",
+      "confirm first live footage"
+    ],
+    "reason": "separate execution, attack and score roles",
+    "resolved": false,
+    "task_id": "observe:2",
+    "video_id": "2022年11月23日 法国vs澳大利亚",
+    "preview_only": true
+  },
+  {
+    "task_id": "observe:r2bc:set_piece_breakthrough:1",
+    "video_id": "2022年11月23日 法国vs澳大利亚",
+    "candidate_id": "set_piece_breakthrough:1",
+    "preview_only": true,
+    "resolved": false,
+    "media_windows": [],
+    "task_type": "relation_path_verification",
+    "path_alternatives": [
+      {
+        "event_ids": [
+          "event_000080",
+          "event_000081",
+          "atom_fill_0015_Pass_2405195",
+          "atom_fill_0016_Assist_2407334",
+          "atom_fill_0017_Pass_2407522",
+          "atom_fill_0018_Shot_2409235",
+          "atom_fill_0019_Goal_2410091"
+        ],
+        "path_chain_ids": [
+          "pred_0016",
+          "pred_0017",
+          "pred_0018"
+        ],
+        "media_windows": [
+          [
+            2393.95,
+            2403.86
+          ],
+          [
+            2405.195,
+            2407.195
+          ],
+          [
+            2407.334,
+            2412.091
+          ]
+        ],
+        "links": [
+          {
+            "from": "event_000080",
+            "to": "event_000081",
+            "relation": "ordered_predicted_members",
+            "chain_support": [
+              {
+                "chain_id": "pred_0016",
+                "state": "PARTIAL",
+                "subtype": "corner_coop_goal"
+              },
+              {
+                "chain_id": "pred_0017",
+                "state": "PARTIAL",
+                "subtype": "rebound_follow_up_goal"
+              },
+              {
+                "chain_id": "pred_0018",
+                "state": "PARTIAL",
+                "subtype": "team_buildup_goal"
+              }
+            ],
+            "typed_local_relation": null,
+            "causal_verified": false
+          },
+          {
+            "from": "event_000081",
+            "to": "atom_fill_0015_Pass_2405195",
+            "relation": "ordered_predicted_members",
+            "chain_support": [
+              {
+                "chain_id": "pred_0016",
+                "state": "PARTIAL",
+                "subtype": "corner_coop_goal"
+              },
+              {
+                "chain_id": "pred_0017",
+                "state": "PARTIAL",
+                "subtype": "rebound_follow_up_goal"
+              },
+              {
+                "chain_id": "pred_0018",
+                "state": "PARTIAL",
+                "subtype": "team_buildup_goal"
+              }
+            ],
+            "typed_local_relation": null,
+            "causal_verified": false
+          },
+          {
+            "from": "atom_fill_0015_Pass_2405195",
+            "to": "atom_fill_0016_Assist_2407334",
+            "relation": "ordered_predicted_members",
+            "chain_support": [
+              {
+                "chain_id": "pred_0016",
+                "state": "PARTIAL",
+                "subtype": "corner_coop_goal"
+              },
+              {
+                "chain_id": "pred_0017",
+                "state": "PARTIAL",
+                "subtype": "rebound_follow_up_goal"
+              },
+              {
+                "chain_id": "pred_0018",
+                "state": "PARTIAL",
+                "subtype": "team_buildup_goal"
+              }
+            ],
+            "typed_local_relation": null,
+            "causal_verified": false
+          },
+          {
+            "from": "atom_fill_0016_Assist_2407334",
+            "to": "atom_fill_0017_Pass_2407522",
+            "relation": "ordered_predicted_members",
+            "chain_support": [
+              {
+                "chain_id": "pred_0016",
+                "state": "PARTIAL",
+                "subtype": "corner_coop_goal"
+              },
+              {
+                "chain_id": "pred_0017",
+                "state": "PARTIAL",
+                "subtype": "rebound_follow_up_goal"
+              },
+              {
+                "chain_id": "pred_0018",
+                "state": "PARTIAL",
+                "subtype": "team_buildup_goal"
+              }
+            ],
+            "typed_local_relation": null,
+            "causal_verified": false
+          },
+          {
+            "from": "atom_fill_0017_Pass_2407522",
+            "to": "atom_fill_0018_Shot_2409235",
+            "relation": "ordered_predicted_members",
+            "chain_support": [
+              {
+                "chain_id": "pred_0016",
+                "state": "PARTIAL",
+                "subtype": "corner_coop_goal"
+              },
+              {
+                "chain_id": "pred_0017",
+                "state": "PARTIAL",
+                "subtype": "rebound_follow_up_goal"
+              },
+              {
+                "chain_id": "pred_0018",
+                "state": "PARTIAL",
+                "subtype": "team_buildup_goal"
+              }
+            ],
+            "typed_local_relation": null,
+            "causal_verified": false
+          },
+          {
+            "from": "atom_fill_0018_Shot_2409235",
+            "to": "atom_fill_0019_Goal_2410091",
+            "relation": "ordered_predicted_members",
+            "chain_support": [
+              {
+                "chain_id": "pred_0016",
+                "state": "PARTIAL",
+                "subtype": "corner_coop_goal"
+              },
+              {
+                "chain_id": "pred_0017",
+                "state": "PARTIAL",
+                "subtype": "rebound_follow_up_goal"
+              },
+              {
+                "chain_id": "pred_0018",
+                "state": "PARTIAL",
+                "subtype": "team_buildup_goal"
+              }
+            ],
+            "typed_local_relation": {
+              "kind": "shot_goal_context",
+              "event_ids": [
+                "atom_fill_0018_Shot_2409235",
+                "atom_fill_0019_Goal_2410091"
+              ],
+              "chain_support": [
+                {
+                  "chain_id": "pred_0016",
+                  "state": "PARTIAL",
+                  "subtype": "corner_coop_goal"
+                },
+                {
+                  "chain_id": "pred_0017",
+                  "state": "PARTIAL",
+                  "subtype": "rebound_follow_up_goal"
+                },
+                {
+                  "chain_id": "pred_0018",
+                  "state": "PARTIAL",
+                  "subtype": "team_buildup_goal"
+                }
+              ],
+              "shooter": null,
+              "goal_executor": null,
+              "score_beneficiary": "team_1",
+              "attacking_team": null,
+              "basis": "ordered_local_predicted_members_context_only",
+              "causal_verified": false,
+              "first_live_verified": false
+            },
+            "causal_verified": false
+          }
+        ],
+        "intermediate_event_ids": [
+          "event_000081",
+          "atom_fill_0015_Pass_2405195",
+          "atom_fill_0016_Assist_2407334",
+          "atom_fill_0017_Pass_2407522",
+          "atom_fill_0018_Shot_2409235"
+        ]
+      }
+    ],
+    "event_ids": [
+      "atom_fill_0015_Pass_2405195",
+      "atom_fill_0016_Assist_2407334",
+      "atom_fill_0017_Pass_2407522",
+      "atom_fill_0018_Shot_2409235",
+      "atom_fill_0019_Goal_2410091",
+      "event_000080",
+      "event_000081"
+    ],
+    "questions": [
+      "verify continuity and actual action roles",
+      "verify tactical or turnover-to-goal relationship",
+      "confirm first live footage"
+    ]
+  }
+]

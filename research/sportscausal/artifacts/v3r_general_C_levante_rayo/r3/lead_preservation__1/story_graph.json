@@ -1,0 +1,469 @@
+{
+  "schema": "sportscausal_story_graph_v1",
+  "video_id": "10月20日 25-26赛季西甲第9轮 莱万特VS巴列卡诺 国语",
+  "input_tier": "RAW_EVENTS_ONLY",
+  "story_id": "lead_preservation:1",
+  "template_id": "lead_preservation",
+  "category": "战局故事链",
+  "subtype": "领先守成",
+  "narrative_goal": [
+    "最后一段领先状态及后续守成素材候选"
+  ],
+  "operator": "state_transition",
+  "subjects": [
+    "team_2"
+  ],
+  "nodes": [
+    {
+      "node_id": "score:0",
+      "kind": "score_state",
+      "actor": "team_2",
+      "actor_role": "state_subject",
+      "state_sign": 0,
+      "score": "0:0",
+      "score_path_index": 0,
+      "confirmation_t_sec": 614.01,
+      "event_ids": [],
+      "media_windows": [],
+      "story_anchor": false,
+      "score_beneficiary": null,
+      "action_time_interval": [
+        614.01,
+        614.01
+      ],
+      "observation_task_ids": [],
+      "localization_status": "opening_state_only",
+      "node_type": "transition",
+      "source_node_id": "score:0",
+      "required": false,
+      "material_ids": []
+    },
+    {
+      "node_id": "score:1",
+      "kind": "score_state",
+      "actor": "team_2",
+      "actor_role": "state_subject",
+      "state_sign": 1,
+      "score": "0:1",
+      "score_path_index": 1,
+      "confirmation_t_sec": 1359.22,
+      "event_ids": [],
+      "media_windows": [],
+      "story_anchor": true,
+      "score_beneficiary": "team_2",
+      "action_time_interval": [
+        1179.22,
+        1374.22
+      ],
+      "observation_task_ids": [
+        "observe:1"
+      ],
+      "localization_status": "missing_action",
+      "anchor_t": null,
+      "node_type": "missing",
+      "source_node_id": "score:1",
+      "required": true,
+      "material_ids": []
+    },
+    {
+      "node_id": "score:2",
+      "kind": "score_state",
+      "actor": "team_2",
+      "actor_role": "state_subject",
+      "state_sign": 1,
+      "score": "0:2",
+      "score_path_index": 2,
+      "confirmation_t_sec": 2163.38,
+      "event_ids": [],
+      "media_windows": [],
+      "story_anchor": true,
+      "score_beneficiary": "team_2",
+      "action_time_interval": [
+        1983.38,
+        2178.38
+      ],
+      "observation_task_ids": [
+        "observe:2"
+      ],
+      "localization_status": "missing_action",
+      "anchor_t": null,
+      "node_type": "missing",
+      "source_node_id": "score:2",
+      "required": true,
+      "material_ids": []
+    },
+    {
+      "node_id": "score:3",
+      "kind": "score_state",
+      "actor": "team_2",
+      "actor_role": "state_subject",
+      "state_sign": 1,
+      "score": "0:3",
+      "score_path_index": 3,
+      "confirmation_t_sec": 5789.37,
+      "event_ids": [],
+      "media_windows": [],
+      "story_anchor": true,
+      "score_beneficiary": "team_2",
+      "action_time_interval": [
+        5609.37,
+        5804.37
+      ],
+      "observation_task_ids": [
+        "observe:3"
+      ],
+      "localization_status": "missing_action",
+      "anchor_t": null,
+      "node_type": "missing",
+      "source_node_id": "score:3",
+      "required": true,
+      "material_ids": []
+    },
+    {
+      "node_id": "context:1",
+      "node_type": "context",
+      "required": false,
+      "event_ids": [
+        "event_000306"
+      ],
+      "media_windows": [
+        [
+          4812.59,
+          4833.97
+        ]
+      ],
+      "material_ids": [],
+      "selected": false,
+      "perspectives": [
+        {
+          "episode_id": "episode:5",
+          "predicate": "goalkeeper_rescue",
+          "actor": "team_2",
+          "actor_role": "goalkeeper_team",
+          "context_role": "inter_anchor",
+          "from": "score:2",
+          "to": "score:3"
+        }
+      ],
+      "observation_task_ids": []
+    }
+  ],
+  "edges": [
+    {
+      "from": "score:0",
+      "to": "score:1",
+      "relation": "confirmed_score_state_transition",
+      "causal_verified": false,
+      "edge_type": "confirmed_score_state_transition"
+    },
+    {
+      "from": "score:1",
+      "to": "score:2",
+      "relation": "confirmed_score_state_transition",
+      "causal_verified": false,
+      "edge_type": "confirmed_score_state_transition"
+    },
+    {
+      "from": "score:2",
+      "to": "score:3",
+      "relation": "confirmed_score_state_transition",
+      "causal_verified": false,
+      "edge_type": "confirmed_score_state_transition"
+    },
+    {
+      "from": "score:2",
+      "to": "context:1",
+      "edge_type": "potential_editorial_context",
+      "causal_verified": false,
+      "selected": false
+    },
+    {
+      "from": "context:1",
+      "to": "score:3",
+      "edge_type": "potential_editorial_context",
+      "causal_verified": false,
+      "selected": false
+    }
+  ],
+  "context_candidates": [
+    {
+      "episode_id": "episode:5",
+      "predicate": "goalkeeper_rescue",
+      "actor": "team_2",
+      "actor_role": "goalkeeper_team",
+      "event_ids": [
+        "event_000306"
+      ],
+      "media_windows": [
+        [
+          4812.59,
+          4833.97
+        ]
+      ],
+      "context_role": "inter_anchor",
+      "from": "score:2",
+      "to": "score:3"
+    }
+  ],
+  "path_alternatives": [],
+  "direct_observation_task_ids": [
+    "observe:1",
+    "observe:2",
+    "observe:3"
+  ],
+  "source_candidate": {
+    "candidate_id": "lead_preservation:1",
+    "subjects": [
+      "team_2"
+    ],
+    "nodes": [
+      {
+        "node_id": "score:0",
+        "kind": "score_state",
+        "actor": "team_2",
+        "actor_role": "state_subject",
+        "state_sign": 0,
+        "score": "0:0",
+        "score_path_index": 0,
+        "confirmation_t_sec": 614.01,
+        "event_ids": [],
+        "media_windows": [],
+        "story_anchor": false,
+        "score_beneficiary": null,
+        "action_time_interval": [
+          614.01,
+          614.01
+        ],
+        "observation_task_ids": [],
+        "localization_status": "opening_state_only"
+      },
+      {
+        "node_id": "score:1",
+        "kind": "score_state",
+        "actor": "team_2",
+        "actor_role": "state_subject",
+        "state_sign": 1,
+        "score": "0:1",
+        "score_path_index": 1,
+        "confirmation_t_sec": 1359.22,
+        "event_ids": [],
+        "media_windows": [],
+        "story_anchor": true,
+        "score_beneficiary": "team_2",
+        "action_time_interval": [
+          1179.22,
+          1374.22
+        ],
+        "observation_task_ids": [
+          "observe:1"
+        ],
+        "localization_status": "missing_action",
+        "anchor_t": null
+      },
+      {
+        "node_id": "score:2",
+        "kind": "score_state",
+        "actor": "team_2",
+        "actor_role": "state_subject",
+        "state_sign": 1,
+        "score": "0:2",
+        "score_path_index": 2,
+        "confirmation_t_sec": 2163.38,
+        "event_ids": [],
+        "media_windows": [],
+        "story_anchor": true,
+        "score_beneficiary": "team_2",
+        "action_time_interval": [
+          1983.38,
+          2178.38
+        ],
+        "observation_task_ids": [
+          "observe:2"
+        ],
+        "localization_status": "missing_action",
+        "anchor_t": null
+      },
+      {
+        "node_id": "score:3",
+        "kind": "score_state",
+        "actor": "team_2",
+        "actor_role": "state_subject",
+        "state_sign": 1,
+        "score": "0:3",
+        "score_path_index": 3,
+        "confirmation_t_sec": 5789.37,
+        "event_ids": [],
+        "media_windows": [],
+        "story_anchor": true,
+        "score_beneficiary": "team_2",
+        "action_time_interval": [
+          5609.37,
+          5804.37
+        ],
+        "observation_task_ids": [
+          "observe:3"
+        ],
+        "localization_status": "missing_action",
+        "anchor_t": null
+      }
+    ],
+    "edges": [
+      {
+        "from": "score:0",
+        "to": "score:1",
+        "relation": "confirmed_score_state_transition",
+        "causal_verified": false
+      },
+      {
+        "from": "score:1",
+        "to": "score:2",
+        "relation": "confirmed_score_state_transition",
+        "causal_verified": false
+      },
+      {
+        "from": "score:2",
+        "to": "score:3",
+        "relation": "confirmed_score_state_transition",
+        "causal_verified": false
+      }
+    ],
+    "narrative_goal": [
+      "最后一段领先状态及后续守成素材候选"
+    ],
+    "quality_verified": false,
+    "first_live_verified": false,
+    "release_authorized": false,
+    "interval_context": [
+      {
+        "from": "score:0",
+        "to": "score:1",
+        "certain_interior": [
+          614.01,
+          1179.22
+        ],
+        "context_candidates": [],
+        "causal_verified": false
+      },
+      {
+        "from": "score:1",
+        "to": "score:2",
+        "certain_interior": [
+          1374.22,
+          1983.38
+        ],
+        "context_candidates": [],
+        "causal_verified": false
+      },
+      {
+        "from": "score:2",
+        "to": "score:3",
+        "certain_interior": [
+          2178.38,
+          5609.37
+        ],
+        "context_candidates": [
+          {
+            "episode_id": "episode:5",
+            "predicate": "goalkeeper_rescue",
+            "actor": "team_2",
+            "actor_role": "goalkeeper_team",
+            "event_ids": [
+              "event_000306"
+            ],
+            "media_windows": [
+              [
+                4812.59,
+                4833.97
+              ]
+            ]
+          }
+        ],
+        "causal_verified": false
+      }
+    ],
+    "terminal_basis": "last_confirmed_score_not_independent_final_whistle",
+    "post_last_anchor_context_candidates": [],
+    "unlocalized_state_indices": [
+      1,
+      2,
+      3
+    ]
+  },
+  "strict_threat_metric_eligible": true,
+  "diagnostics": [
+    {
+      "kind": "missing_required_action",
+      "node_id": "score:1",
+      "observation_task_ids": [
+        "observe:1"
+      ]
+    },
+    {
+      "kind": "missing_required_action",
+      "node_id": "score:2",
+      "observation_task_ids": [
+        "observe:2"
+      ]
+    },
+    {
+      "kind": "missing_required_action",
+      "node_id": "score:3",
+      "observation_task_ids": [
+        "observe:3"
+      ]
+    },
+    {
+      "kind": "empty_inter_anchor_context",
+      "from": "score:0",
+      "to": "score:1",
+      "search_interval": [
+        614.01,
+        1179.22
+      ]
+    },
+    {
+      "kind": "empty_inter_anchor_context",
+      "from": "score:1",
+      "to": "score:2",
+      "search_interval": [
+        1374.22,
+        1983.38
+      ]
+    },
+    {
+      "kind": "terminal_score_not_final_whistle",
+      "basis": "last_confirmed_score_not_independent_final_whistle"
+    },
+    {
+      "kind": "lead_signature_requires_post_lead_defensive_evidence",
+      "note": "level-to-lead alone does not establish preservation"
+    }
+  ],
+  "quality_verified": false,
+  "first_live_verified": false,
+  "release_authorized": false,
+  "observation_task_refs": [
+    {
+      "task_id": "observe:1",
+      "relevance": "direct"
+    },
+    {
+      "task_id": "observe:2",
+      "relevance": "direct"
+    },
+    {
+      "task_id": "observe:3",
+      "relevance": "direct"
+    }
+  ],
+  "draft_policy": "anchor_first_not_narrative_complete",
+  "legacy_seed": {
+    "status": "not_applicable"
+  },
+  "agent_seed": {
+    "file": "initial_edl.json",
+    "status": "anchor_preview",
+    "first_live_verified": false,
+    "release_authorized": false
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "schema": "v3_atomic_enrich_v1",
+  "n_raw_events": 302,
+  "n_causal_atoms_unique": 73,
+  "n_injected": 73,
+  "n_skipped_duplicate": 0,
+  "injected_by_type": {
+    "Dribble_past": 1,
+    "Pass": 8,
+    "Assist": 11,
+    "Shot": 25,
+    "Goal": 24,
+    "Corner_kick": 1,
+    "Win_an_aerial_duel": 1,
+    "Defensive_action": 1,
+    "Goal_line_clearance": 1
+  },
+  "n_goal_injected": 24,
+  "n_goal_injected_live": 5,
+  "n_goal_injected_replay": 19,
+  "note": "Atoms only; no chain_category/subtype/windows/edges. is_replay prefers LIVE when any non-replay occurrence exists.",
+  "out_events": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_FRA_france_australia/fresh_general_v1/01_enrich/events_enriched.json",
+  "source_events": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/data/交付_out/2022年11月23日 法国vs澳大利亚.json",
+  "source_causal_atoms_only": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/data/交付_out/2022年11月23日 法国vs澳大利亚_causal.json",
+  "input_mode": "HUMAN_ATOM_ENRICHED_DEV",
+  "human_annotation_atoms_used": true,
+  "independent_atomic_annotations_used": false,
+  "source_independent_atoms": null,
+  "eligible_for_raw_only_evaluation": false,
+  "eligible_for_event_annotated_evaluation": false,
+  "goal_recovery_reliance": "human_atoms_plus_raw_events_dev_only"
+}

@@ -1,0 +1,26 @@
+{
+  "schema": "sportscausal_story_anchors_v2",
+  "video_id": "2022-11-28 克罗地亚vs加拿大",
+  "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "template": {
+    "template_id": "threat_phase_change",
+    "category": "攻防故事链",
+    "subtype": "攻势换手",
+    "narrative_goal": [
+      "连续观测到的攻防威胁序列发生主体切换"
+    ],
+    "pattern": {
+      "operator": "phase_change",
+      "predicate": "attacking_threat",
+      "min_episodes_per_phase": 2
+    }
+  },
+  "operator": "phase_change",
+  "candidates": [],
+  "ambiguous_episode_ids": [],
+  "n_observed_episodes": 5,
+  "min_episodes_per_phase": 2,
+  "quality_verified": false,
+  "first_live_verified": false,
+  "release_authorized": false
+}

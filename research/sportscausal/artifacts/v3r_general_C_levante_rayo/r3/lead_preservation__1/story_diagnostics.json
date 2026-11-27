@@ -1,0 +1,63 @@
+{
+  "missing_required_nodes": [
+    "score:1",
+    "score:2",
+    "score:3"
+  ],
+  "diagnostics": [
+    {
+      "kind": "missing_required_action",
+      "node_id": "score:1",
+      "observation_task_ids": [
+        "observe:1"
+      ]
+    },
+    {
+      "kind": "missing_required_action",
+      "node_id": "score:2",
+      "observation_task_ids": [
+        "observe:2"
+      ]
+    },
+    {
+      "kind": "missing_required_action",
+      "node_id": "score:3",
+      "observation_task_ids": [
+        "observe:3"
+      ]
+    },
+    {
+      "kind": "empty_inter_anchor_context",
+      "from": "score:0",
+      "to": "score:1",
+      "search_interval": [
+        614.01,
+        1179.22
+      ]
+    },
+    {
+      "kind": "empty_inter_anchor_context",
+      "from": "score:1",
+      "to": "score:2",
+      "search_interval": [
+        1374.22,
+        1983.38
+      ]
+    },
+    {
+      "kind": "terminal_score_not_final_whistle",
+      "basis": "last_confirmed_score_not_independent_final_whistle"
+    },
+    {
+      "kind": "lead_signature_requires_post_lead_defensive_evidence",
+      "note": "level-to-lead alone does not establish preservation"
+    }
+  ],
+  "n_segments": 0,
+  "duration_sec": 0,
+  "structurally_complete": false,
+  "n_context_candidates": 1,
+  "quality_verified": false,
+  "first_live_verified": false,
+  "release_authorized": false
+}

@@ -1,0 +1,152 @@
+{
+  "video_id": "2022年11月23日 法国vs澳大利亚",
+  "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "template_counts": {
+    "keeper_rescue": 0,
+    "alternating_threats": 0,
+    "alternating_threats_score_context": 0,
+    "comeback": 1,
+    "equalization": 1,
+    "lead_preservation": 1,
+    "set_piece_breakthrough": 2,
+    "turnover_to_goal": 0,
+    "threat_phase_change": 0
+  },
+  "stories": [
+    {
+      "story_id": "comeback:1",
+      "template_id": "comeback",
+      "operator": "state_transition",
+      "subjects": [
+        "team_1"
+      ],
+      "n_segments": 4,
+      "duration_sec": 10.749000000000251,
+      "missing_required_nodes": [
+        "score:1"
+      ],
+      "structurally_complete": false,
+      "n_context_candidates": 4,
+      "n_observation_tasks": 7,
+      "strict_threat_metric_eligible": true,
+      "legacy_seed": {
+        "status": "legacy_seed_not_supplied",
+        "use_policy": "anchor_only_comparison_not_legacy_replacement"
+      },
+      "agent_seed": {
+        "file": "initial_edl.json",
+        "status": "anchor_preview",
+        "first_live_verified": false,
+        "release_authorized": false
+      },
+      "folder": "comeback__1"
+    },
+    {
+      "story_id": "equalization:1",
+      "template_id": "equalization",
+      "operator": "state_transition",
+      "subjects": [
+        "team_1"
+      ],
+      "n_segments": 1,
+      "duration_sec": 2.855999999999767,
+      "missing_required_nodes": [
+        "score:1"
+      ],
+      "structurally_complete": false,
+      "n_context_candidates": 4,
+      "n_observation_tasks": 3,
+      "strict_threat_metric_eligible": true,
+      "legacy_seed": {
+        "status": "not_applicable"
+      },
+      "agent_seed": {
+        "file": "initial_edl.json",
+        "status": "anchor_preview",
+        "first_live_verified": false,
+        "release_authorized": false
+      },
+      "folder": "equalization__1"
+    },
+    {
+      "story_id": "lead_preservation:1",
+      "template_id": "lead_preservation",
+      "operator": "state_transition",
+      "subjects": [
+        "team_1"
+      ],
+      "n_segments": 4,
+      "duration_sec": 10.749000000000251,
+      "missing_required_nodes": [],
+      "structurally_complete": true,
+      "n_context_candidates": 4,
+      "n_observation_tasks": 6,
+      "strict_threat_metric_eligible": true,
+      "legacy_seed": {
+        "status": "not_applicable"
+      },
+      "agent_seed": {
+        "file": "initial_edl.json",
+        "status": "anchor_preview",
+        "first_live_verified": false,
+        "release_authorized": false
+      },
+      "folder": "lead_preservation__1"
+    },
+    {
+      "story_id": "set_piece_breakthrough:1",
+      "template_id": "set_piece_breakthrough",
+      "operator": "relation_path",
+      "subjects": [
+        "team_1"
+      ],
+      "n_segments": 3,
+      "duration_sec": 16.66700000000037,
+      "missing_required_nodes": [],
+      "structurally_complete": true,
+      "n_context_candidates": 0,
+      "n_observation_tasks": 2,
+      "strict_threat_metric_eligible": true,
+      "legacy_seed": {
+        "status": "not_applicable"
+      },
+      "agent_seed": {
+        "file": "initial_edl.json",
+        "status": "anchor_preview",
+        "first_live_verified": false,
+        "release_authorized": false
+      },
+      "folder": "set_piece_breakthrough__1"
+    },
+    {
+      "story_id": "set_piece_breakthrough:2",
+      "template_id": "set_piece_breakthrough",
+      "operator": "relation_path",
+      "subjects": [
+        "team_1"
+      ],
+      "n_segments": 3,
+      "duration_sec": 22.591999999998734,
+      "missing_required_nodes": [],
+      "structurally_complete": true,
+      "n_context_candidates": 0,
+      "n_observation_tasks": 2,
+      "strict_threat_metric_eligible": true,
+      "legacy_seed": {
+        "status": "not_applicable"
+      },
+      "agent_seed": {
+        "file": "initial_edl.json",
+        "status": "anchor_preview",
+        "first_live_verified": false,
+        "release_authorized": false
+      },
+      "folder": "set_piece_breakthrough__2"
+    }
+  ],
+  "n_global_observation_tasks": 8,
+  "http_calls": 0,
+  "quality_verified": false,
+  "first_live_verified": false,
+  "release_authorized": false
+}

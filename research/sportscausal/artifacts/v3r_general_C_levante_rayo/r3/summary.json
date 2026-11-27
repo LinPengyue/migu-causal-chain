@@ -1,0 +1,51 @@
+{
+  "video_id": "10月20日 25-26赛季西甲第9轮 莱万特VS巴列卡诺 国语",
+  "input_tier": "RAW_EVENTS_ONLY",
+  "template_counts": {
+    "keeper_rescue": 0,
+    "alternating_threats": 0,
+    "alternating_threats_score_context": 0,
+    "comeback": 0,
+    "equalization": 0,
+    "lead_preservation": 1,
+    "set_piece_breakthrough": 0,
+    "turnover_to_goal": 0,
+    "threat_phase_change": 0
+  },
+  "stories": [
+    {
+      "story_id": "lead_preservation:1",
+      "template_id": "lead_preservation",
+      "operator": "state_transition",
+      "subjects": [
+        "team_2"
+      ],
+      "n_segments": 0,
+      "duration_sec": 0,
+      "missing_required_nodes": [
+        "score:1",
+        "score:2",
+        "score:3"
+      ],
+      "structurally_complete": false,
+      "n_context_candidates": 1,
+      "n_observation_tasks": 3,
+      "strict_threat_metric_eligible": true,
+      "legacy_seed": {
+        "status": "not_applicable"
+      },
+      "agent_seed": {
+        "file": "initial_edl.json",
+        "status": "anchor_preview",
+        "first_live_verified": false,
+        "release_authorized": false
+      },
+      "folder": "lead_preservation__1"
+    }
+  ],
+  "n_global_observation_tasks": 3,
+  "http_calls": 0,
+  "quality_verified": false,
+  "first_live_verified": false,
+  "release_authorized": false
+}

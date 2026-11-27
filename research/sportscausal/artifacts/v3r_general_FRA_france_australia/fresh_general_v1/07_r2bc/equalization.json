@@ -1,0 +1,237 @@
+{
+  "schema": "sportscausal_story_anchors_v2",
+  "video_id": "2022年11月23日 法国vs澳大利亚",
+  "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "template": {
+    "template_id": "equalization",
+    "category": "战局故事链",
+    "subtype": "落后追平",
+    "narrative_goal": [
+      "落后到追平的阶段性战局变化"
+    ],
+    "pattern": {
+      "operator": "state_transition",
+      "signs": [
+        -1,
+        0
+      ],
+      "terminal_sign": null,
+      "selection": "all"
+    }
+  },
+  "operator": "state_transition",
+  "candidates": [
+    {
+      "candidate_id": "equalization:1",
+      "subjects": [
+        "team_1"
+      ],
+      "nodes": [
+        {
+          "node_id": "score:1",
+          "kind": "score_state",
+          "actor": "team_1",
+          "actor_role": "state_subject",
+          "state_sign": -1,
+          "score": "0:1",
+          "score_path_index": 1,
+          "confirmation_t_sec": 1535.65,
+          "event_ids": [],
+          "media_windows": [],
+          "story_anchor": true,
+          "score_beneficiary": "team_2",
+          "action_time_interval": [
+            1355.65,
+            1550.65
+          ],
+          "observation_task_ids": [
+            "observe:6"
+          ],
+          "localization_status": "missing_action",
+          "anchor_t": null
+        },
+        {
+          "node_id": "score:2",
+          "kind": "score_state",
+          "actor": "team_1",
+          "actor_role": "state_subject",
+          "state_sign": 0,
+          "score": "1:1",
+          "score_path_index": 2,
+          "confirmation_t_sec": 2513.29,
+          "event_ids": [
+            "atom_fill_0018_Shot_2409235",
+            "atom_fill_0019_Goal_2410091"
+          ],
+          "media_windows": [
+            [
+              2409.235,
+              2412.091
+            ]
+          ],
+          "story_anchor": true,
+          "score_beneficiary": "team_1",
+          "action_time_interval": [
+            2410.091,
+            2410.091
+          ],
+          "observation_task_ids": [
+            "observe:2"
+          ],
+          "outcome_episode_id": "score_outcome:2",
+          "goal_roles": [
+            {
+              "score_beneficiary": "team_1",
+              "goal_executor": null,
+              "attacking_team": null,
+              "goal_kind": "untyped_goal",
+              "execution_status": "UNRESOLVED",
+              "execution_claims": [],
+              "role_conflict": false,
+              "score_binding": {
+                "path_index": 2,
+                "score_beneficiary": "team_1",
+                "score_before": "0:1",
+                "score_after": "1:1",
+                "confirmation_t_sec": 2513.29,
+                "carrier_event_id": "event_000082",
+                "previous_score_observed_t_sec": 2401.99,
+                "candidate_ids": [
+                  "atom_fill_0019_Goal_2410091"
+                ],
+                "search_interval": [
+                  2333.29,
+                  2528.29
+                ],
+                "event_id": "atom_fill_0019_Goal_2410091",
+                "action_t_sec": 2410.091,
+                "media_window": [
+                  2410.091,
+                  2412.091
+                ],
+                "basis": "unique_live_goal_and_v3r_score_increment",
+                "causal_verified": false,
+                "first_live_verified": false
+              },
+              "first_live_verified": false
+            }
+          ],
+          "anchor_t": 2410.091,
+          "localization_status": "localized_annotation_candidate"
+        }
+      ],
+      "edges": [
+        {
+          "from": "score:1",
+          "to": "score:2",
+          "relation": "confirmed_score_state_transition",
+          "causal_verified": false
+        }
+      ],
+      "narrative_goal": [
+        "落后到追平的阶段性战局变化"
+      ],
+      "quality_verified": false,
+      "first_live_verified": false,
+      "release_authorized": false,
+      "interval_context": [
+        {
+          "from": "score:1",
+          "to": "score:2",
+          "certain_interior": [
+            1550.65,
+            2410.091
+          ],
+          "context_candidates": [],
+          "causal_verified": false
+        }
+      ],
+      "terminal_basis": "last_confirmed_score_not_independent_final_whistle",
+      "post_last_anchor_context_candidates": [
+        {
+          "episode_id": "episode:5",
+          "predicate": "attacking_threat",
+          "actor": "team_1",
+          "actor_role": "attacking_team",
+          "event_ids": [
+            "event_000115"
+          ],
+          "media_windows": [
+            [
+              3002.19,
+              3012.49
+            ]
+          ]
+        },
+        {
+          "episode_id": "episode:15",
+          "predicate": "attacking_threat",
+          "actor": "team_1",
+          "actor_role": "attacking_team",
+          "event_ids": [
+            "event_000251"
+          ],
+          "media_windows": [
+            [
+              5239.09,
+              5249.03
+            ]
+          ]
+        },
+        {
+          "episode_id": "episode:17",
+          "predicate": "attacking_threat",
+          "actor": "team_1",
+          "actor_role": "attacking_team",
+          "event_ids": [
+            "event_000256"
+          ],
+          "media_windows": [
+            [
+              5398.24,
+              5407.72
+            ]
+          ]
+        },
+        {
+          "episode_id": "episode:19",
+          "predicate": "attacking_threat",
+          "actor": "team_1",
+          "actor_role": "attacking_team",
+          "event_ids": [
+            "event_000285",
+            "event_000286"
+          ],
+          "media_windows": [
+            [
+              6748.85,
+              6759.52
+            ]
+          ]
+        },
+        {
+          "episode_id": "episode:21",
+          "predicate": "goalkeeper_rescue",
+          "actor": "team_2",
+          "actor_role": "goalkeeper_team",
+          "event_ids": [
+            "event_000285",
+            "event_000286"
+          ],
+          "media_windows": [
+            [
+              6748.85,
+              6759.52
+            ]
+          ]
+        }
+      ],
+      "unlocalized_state_indices": [
+        1
+      ]
+    }
+  ],
+  "quality_verified": false,
+  "first_live_verified": false,
+  "release_authorized": false
+}

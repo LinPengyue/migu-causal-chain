@@ -1,0 +1,68 @@
+{
+  "video_id": "2022年11月23日 法国vs澳大利亚",
+  "score_side_mapping": {
+    "left": "team_1",
+    "right": "team_2"
+  },
+  "score_mapping_provenance": "phase5 france_australia_first_run FIRST_RUN_NOTES: left scoreboard=法国=team_1; score_recognition 0:0→0:1(澳大利亚)→1:1→2:1→3:1→4:1 matches team_1 France comeback; right=team_2 Australia",
+  "score_path": [
+    {
+      "t_sec": 882.74,
+      "score": "0:0",
+      "opening": true,
+      "delta_side": null,
+      "carrier_event_id": "event_000005"
+    },
+    {
+      "t_sec": 1535.65,
+      "score": "0:1",
+      "opening": false,
+      "delta_side": "right",
+      "carrier_event_id": "event_000027",
+      "previous_score_observed_t_sec": 1333.08
+    },
+    {
+      "t_sec": 2513.29,
+      "score": "1:1",
+      "opening": false,
+      "delta_side": "left",
+      "carrier_event_id": "event_000082",
+      "previous_score_observed_t_sec": 2401.99
+    },
+    {
+      "t_sec": 2904.31,
+      "score": "2:1",
+      "opening": false,
+      "delta_side": "left",
+      "carrier_event_id": "event_000091",
+      "previous_score_observed_t_sec": 2698.08
+    },
+    {
+      "t_sec": 5594.3,
+      "score": "3:1",
+      "opening": false,
+      "delta_side": "left",
+      "carrier_event_id": "event_000260",
+      "previous_score_observed_t_sec": 5402.36
+    },
+    {
+      "t_sec": 5820.46,
+      "score": "4:1",
+      "opening": false,
+      "delta_side": "left",
+      "carrier_event_id": "event_000264",
+      "previous_score_observed_t_sec": 5654.36
+    }
+  ],
+  "source": "11.20 story_chain.score_path.build_score_path on enriched native events",
+  "teams_from_evidence": {
+    "team_1": {
+      "name": "法国",
+      "color": "蓝色"
+    },
+    "team_2": {
+      "name": "澳大利亚",
+      "color": "黄色"
+    }
+  }
+}

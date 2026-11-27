@@ -1,0 +1,123 @@
+{
+  "video_id": "2022-11-28 克罗地亚vs加拿大",
+  "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "template_counts": {
+    "keeper_rescue": 1,
+    "alternating_threats": 0,
+    "alternating_threats_score_context": 0,
+    "comeback": 1,
+    "equalization": 1,
+    "lead_preservation": 1,
+    "set_piece_breakthrough": 0,
+    "turnover_to_goal": 0,
+    "threat_phase_change": 0
+  },
+  "stories": [
+    {
+      "story_id": "keeper_rescue:1",
+      "template_id": "keeper_rescue",
+      "operator": "repeat",
+      "subjects": [
+        "team_2"
+      ],
+      "n_segments": 4,
+      "duration_sec": 25.460000000000036,
+      "missing_required_nodes": [],
+      "structurally_complete": true,
+      "n_context_candidates": 0,
+      "n_observation_tasks": 0,
+      "strict_threat_metric_eligible": true,
+      "legacy_seed": {
+        "status": "not_applicable"
+      },
+      "agent_seed": {
+        "file": "initial_edl.json",
+        "status": "anchor_preview",
+        "first_live_verified": false,
+        "release_authorized": false
+      },
+      "folder": "keeper_rescue__1"
+    },
+    {
+      "story_id": "comeback:1",
+      "template_id": "comeback",
+      "operator": "state_transition",
+      "subjects": [
+        "team_1"
+      ],
+      "n_segments": 4,
+      "duration_sec": 17.359999999999673,
+      "missing_required_nodes": [],
+      "structurally_complete": true,
+      "n_context_candidates": 4,
+      "n_observation_tasks": 6,
+      "strict_threat_metric_eligible": true,
+      "legacy_seed": {
+        "status": "legacy_seed_not_supplied",
+        "use_policy": "anchor_only_comparison_not_legacy_replacement"
+      },
+      "agent_seed": {
+        "file": "initial_edl.json",
+        "status": "anchor_preview",
+        "first_live_verified": false,
+        "release_authorized": false
+      },
+      "folder": "comeback__1"
+    },
+    {
+      "story_id": "equalization:1",
+      "template_id": "equalization",
+      "operator": "state_transition",
+      "subjects": [
+        "team_1"
+      ],
+      "n_segments": 1,
+      "duration_sec": 2.0,
+      "missing_required_nodes": [],
+      "structurally_complete": true,
+      "n_context_candidates": 5,
+      "n_observation_tasks": 3,
+      "strict_threat_metric_eligible": true,
+      "legacy_seed": {
+        "status": "not_applicable"
+      },
+      "agent_seed": {
+        "file": "initial_edl.json",
+        "status": "anchor_preview",
+        "first_live_verified": false,
+        "release_authorized": false
+      },
+      "folder": "equalization__1"
+    },
+    {
+      "story_id": "lead_preservation:1",
+      "template_id": "lead_preservation",
+      "operator": "state_transition",
+      "subjects": [
+        "team_1"
+      ],
+      "n_segments": 4,
+      "duration_sec": 17.359999999999673,
+      "missing_required_nodes": [],
+      "structurally_complete": true,
+      "n_context_candidates": 2,
+      "n_observation_tasks": 4,
+      "strict_threat_metric_eligible": true,
+      "legacy_seed": {
+        "status": "not_applicable"
+      },
+      "agent_seed": {
+        "file": "initial_edl.json",
+        "status": "anchor_preview",
+        "first_live_verified": false,
+        "release_authorized": false
+      },
+      "folder": "lead_preservation__1"
+    }
+  ],
+  "n_global_observation_tasks": 7,
+  "http_calls": 0,
+  "quality_verified": false,
+  "first_live_verified": false,
+  "release_authorized": false
+}

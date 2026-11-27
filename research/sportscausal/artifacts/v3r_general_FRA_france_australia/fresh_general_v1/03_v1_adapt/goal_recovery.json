@@ -1,0 +1,1118 @@
+{
+  "schema": "v3_goal_recovery_v1",
+  "n_candidates": 5,
+  "n_single_goal": 5,
+  "n_with_goal_action_sec": 4,
+  "n_unresolved_single_goals": 1,
+  "pending_goal_video_search": [
+    {
+      "candidate_id": "goalcand_00_00_to_01",
+      "score_before": [
+        0,
+        0
+      ],
+      "score_after": [
+        0,
+        1
+      ],
+      "score_confirmation_sec": 1535.65,
+      "search_interval": {
+        "media_in": 1333.08,
+        "media_out": 1535.65
+      },
+      "observation_windows": [
+        {
+          "media_in": 1345.337,
+          "media_out": 1361.337,
+          "supporting_strip_clip_ids": [],
+          "visual_goal_action_confirmed": false,
+          "first_live_verified": false
+        },
+        {
+          "media_in": 1385.851,
+          "media_out": 1401.851,
+          "supporting_strip_clip_ids": [
+            "clip06"
+          ],
+          "visual_goal_action_confirmed": false,
+          "first_live_verified": false
+        },
+        {
+          "media_in": 1426.365,
+          "media_out": 1442.365,
+          "supporting_strip_clip_ids": [
+            "clip06"
+          ],
+          "visual_goal_action_confirmed": false,
+          "first_live_verified": false
+        },
+        {
+          "media_in": 1466.879,
+          "media_out": 1482.879,
+          "supporting_strip_clip_ids": [
+            "clip06"
+          ],
+          "visual_goal_action_confirmed": false,
+          "first_live_verified": false
+        },
+        {
+          "media_in": 1507.393,
+          "media_out": 1523.393,
+          "supporting_strip_clip_ids": [
+            "clip06"
+          ],
+          "visual_goal_action_confirmed": false,
+          "first_live_verified": false
+        }
+      ],
+      "status": "VIDEO_EVIDENCE_REQUIRED",
+      "no_action_time_inferred": true,
+      "no_automatic_edl_insertion": true,
+      "note": "Sampled windows are search requests, not verified goal shots; score board and strip class cannot certify first LIVE."
+    }
+  ],
+  "all_single_goal_actions_located": false,
+  "candidates": [
+    {
+      "candidate_id": "goalcand_00_00_to_01",
+      "score_before": [
+        0,
+        0
+      ],
+      "score_after": [
+        0,
+        1
+      ],
+      "delta": [
+        0,
+        1
+      ],
+      "single_goal_increment": true,
+      "scoring_side": "away_or_right",
+      "score_confirmation_sec": 1535.65,
+      "score_confirmation_reliability": "high",
+      "score_confirmation_event_id": "event_000027",
+      "score_confirmation_event_type": "Win_an_aerial_duel",
+      "last_before_score_obs_sec": 1333.08,
+      "last_before_live_score_obs_sec": 1333.08,
+      "first_after_score_obs_sec": 1535.65,
+      "possible_action_interval": {
+        "media_in": 1333.08,
+        "media_out": 1535.65,
+        "note": "Board lag window from Score_Recognition; NOT the action time itself"
+      },
+      "nearby_events": [
+        {
+          "event_id": "event_000026",
+          "event_type": "Throw_in",
+          "media_sec": 1333.08,
+          "is_replay": false,
+          "media_start_sec": 1330.04,
+          "media_end_sec": 1340.1
+        },
+        {
+          "event_id": "atom_fill_0000_Dribble_past_1348094",
+          "event_type": "Dribble_past",
+          "media_sec": 1348.094,
+          "is_replay": false,
+          "media_start_sec": 1348.094,
+          "media_end_sec": 1350.094
+        },
+        {
+          "event_id": "atom_fill_0003_Shot_1351434",
+          "event_type": "Shot",
+          "media_sec": 1351.434,
+          "is_replay": false,
+          "media_start_sec": 1351.434,
+          "media_end_sec": 1353.434
+        },
+        {
+          "event_id": "atom_fill_0005_Shot_1395764",
+          "event_type": "Shot",
+          "media_sec": 1395.764,
+          "is_replay": true,
+          "media_start_sec": 1395.764,
+          "media_end_sec": 1397.764
+        },
+        {
+          "event_id": "atom_fill_0007_Shot_1408301",
+          "event_type": "Shot",
+          "media_sec": 1408.301,
+          "is_replay": true,
+          "media_start_sec": 1408.301,
+          "media_end_sec": 1410.301
+        },
+        {
+          "event_id": "atom_fill_0009_Shot_1414147",
+          "event_type": "Shot",
+          "media_sec": 1414.147,
+          "is_replay": true,
+          "media_start_sec": 1414.147,
+          "media_end_sec": 1416.147
+        },
+        {
+          "event_id": "atom_fill_0011_Shot_1484419",
+          "event_type": "Shot",
+          "media_sec": 1484.419,
+          "is_replay": true,
+          "media_start_sec": 1484.419,
+          "media_end_sec": 1486.419
+        },
+        {
+          "event_id": "atom_fill_0013_Shot_1487915",
+          "event_type": "Shot",
+          "media_sec": 1487.915,
+          "is_replay": true,
+          "media_start_sec": 1487.915,
+          "media_end_sec": 1489.915
+        },
+        {
+          "event_id": "event_000028",
+          "event_type": "Dribble_past",
+          "media_sec": 1550.89,
+          "is_replay": false,
+          "media_start_sec": 1549.12,
+          "media_end_sec": 1559.45
+        }
+      ],
+      "goal_action_sec": null,
+      "goal_action_interval": null,
+      "is_replay": false,
+      "evidence_sources": [
+        "score_recognition"
+      ],
+      "verification_status": "unresolved_goal_action",
+      "linked_strip_chain_ids": [
+        {
+          "strip_index": 6,
+          "clip_id": "clip06",
+          "chain_category": "outcome",
+          "template_id": "rebound_follow_up_goal",
+          "t0_sec": 1395.764,
+          "t1_sec": 1535.65,
+          "event_ids": [
+            "atom_fill_0005_Shot_1395764",
+            "atom_fill_0006_Goal_1396454",
+            "atom_fill_0007_Shot_1408301",
+            "atom_fill_0008_Goal_1409830",
+            "atom_fill_0009_Shot_1414147",
+            "atom_fill_0010_Goal_1416209",
+            "atom_fill_0011_Shot_1484419",
+            "atom_fill_0012_Goal_1486051",
+            "atom_fill_0013_Shot_1487915",
+            "atom_fill_0014_Goal_1489453",
+            "event_000027"
+          ]
+        },
+        {
+          "strip_index": 7,
+          "clip_id": "clip07",
+          "chain_category": "danger",
+          "template_id": "second_phase_after_frame_chain",
+          "t0_sec": 1535.65,
+          "t1_sec": 1601.95,
+          "event_ids": [
+            "event_000027",
+            "event_000028",
+            "event_000029",
+            "event_000030",
+            "event_000031",
+            "event_000032",
+            "event_000033"
+          ]
+        }
+      ],
+      "notes": []
+    },
+    {
+      "candidate_id": "goalcand_01_01_to_11",
+      "score_before": [
+        0,
+        1
+      ],
+      "score_after": [
+        1,
+        1
+      ],
+      "delta": [
+        1,
+        0
+      ],
+      "single_goal_increment": true,
+      "scoring_side": "home_or_left",
+      "score_confirmation_sec": 2513.29,
+      "score_confirmation_reliability": "high",
+      "score_confirmation_event_id": "event_000082",
+      "score_confirmation_event_type": "Win_an_aerial_duel",
+      "last_before_score_obs_sec": 2401.99,
+      "last_before_live_score_obs_sec": 2401.99,
+      "first_after_score_obs_sec": 2513.29,
+      "possible_action_interval": {
+        "media_in": 2401.99,
+        "media_out": 2513.29,
+        "note": "Board lag window from Score_Recognition; NOT the action time itself"
+      },
+      "nearby_events": [
+        {
+          "event_id": "event_000080",
+          "event_type": "Corner_kick",
+          "media_sec": 2400.85,
+          "is_replay": false,
+          "media_start_sec": 2393.95,
+          "media_end_sec": 2403.86
+        },
+        {
+          "event_id": "atom_fill_0018_Shot_2409235",
+          "event_type": "Shot",
+          "media_sec": 2409.235,
+          "is_replay": false,
+          "media_start_sec": 2409.235,
+          "media_end_sec": 2411.235
+        },
+        {
+          "event_id": "atom_fill_0020_Corner_kick_2437291",
+          "event_type": "Corner_kick",
+          "media_sec": 2437.291,
+          "is_replay": true,
+          "media_start_sec": 2437.291,
+          "media_end_sec": 2439.291
+        },
+        {
+          "event_id": "atom_fill_0024_Shot_2446197",
+          "event_type": "Shot",
+          "media_sec": 2446.197,
+          "is_replay": true,
+          "media_start_sec": 2446.197,
+          "media_end_sec": 2448.197
+        },
+        {
+          "event_id": "atom_fill_0028_Shot_2452408",
+          "event_type": "Shot",
+          "media_sec": 2452.408,
+          "is_replay": true,
+          "media_start_sec": 2452.408,
+          "media_end_sec": 2454.408
+        },
+        {
+          "event_id": "atom_fill_0030_Shot_2455092",
+          "event_type": "Shot",
+          "media_sec": 2455.092,
+          "is_replay": true,
+          "media_start_sec": 2455.092,
+          "media_end_sec": 2457.092
+        },
+        {
+          "event_id": "event_000083",
+          "event_type": "Throw_in",
+          "media_sec": 2520.6,
+          "is_replay": false,
+          "media_start_sec": 2512.26,
+          "media_end_sec": 2522.17
+        }
+      ],
+      "goal_action_sec": 2409.235,
+      "goal_action_interval": {
+        "media_in": 2407.235,
+        "media_out": 2415.235
+      },
+      "is_replay": false,
+      "evidence_sources": [
+        "score_recognition",
+        "nearby_detector_event"
+      ],
+      "verification_status": "provisional_from_nearby_event",
+      "linked_strip_chain_ids": [
+        {
+          "strip_index": 18,
+          "clip_id": "clip18",
+          "chain_category": "outcome",
+          "template_id": "team_buildup_goal",
+          "t0_sec": 2400.85,
+          "t1_sec": 2456.441,
+          "event_ids": [
+            "event_000080",
+            "event_000081",
+            "atom_fill_0015_Pass_2405195",
+            "atom_fill_0016_Assist_2407334",
+            "atom_fill_0017_Pass_2407522",
+            "atom_fill_0018_Shot_2409235",
+            "atom_fill_0019_Goal_2410091",
+            "atom_fill_0020_Corner_kick_2437291",
+            "atom_fill_0021_Win_an_aerial_duel_2438761",
+            "atom_fill_0022_Pass_2444608",
+            "atom_fill_0023_Assist_2444814",
+            "atom_fill_0024_Shot_2446197",
+            "atom_fill_0025_Goal_2446837",
+            "atom_fill_0026_Assist_2450817",
+            "atom_fill_0027_Pass_2450850",
+            "atom_fill_0028_Shot_2452408",
+            "atom_fill_0029_Goal_2453099",
+            "atom_fill_0030_Shot_2455092",
+            "atom_fill_0031_Goal_2456441"
+          ]
+        },
+        {
+          "strip_index": 16,
+          "clip_id": "clip16",
+          "chain_category": "outcome",
+          "template_id": "corner_coop_goal",
+          "t0_sec": 2306.22,
+          "t1_sec": 2456.441,
+          "event_ids": [
+            "event_000078",
+            "event_000079",
+            "event_000080",
+            "event_000081",
+            "atom_fill_0015_Pass_2405195",
+            "atom_fill_0016_Assist_2407334",
+            "atom_fill_0017_Pass_2407522",
+            "atom_fill_0018_Shot_2409235",
+            "atom_fill_0019_Goal_2410091",
+            "atom_fill_0020_Corner_kick_2437291",
+            "atom_fill_0021_Win_an_aerial_duel_2438761",
+            "atom_fill_0022_Pass_2444608",
+            "atom_fill_0023_Assist_2444814",
+            "atom_fill_0024_Shot_2446197",
+            "atom_fill_0025_Goal_2446837",
+            "atom_fill_0026_Assist_2450817",
+            "atom_fill_0027_Pass_2450850",
+            "atom_fill_0028_Shot_2452408",
+            "atom_fill_0029_Goal_2453099",
+            "atom_fill_0030_Shot_2455092",
+            "atom_fill_0031_Goal_2456441"
+          ]
+        },
+        {
+          "strip_index": 17,
+          "clip_id": "clip17",
+          "chain_category": "outcome",
+          "template_id": "rebound_follow_up_goal",
+          "t0_sec": 2400.85,
+          "t1_sec": 2513.29,
+          "event_ids": [
+            "event_000080",
+            "event_000081",
+            "atom_fill_0015_Pass_2405195",
+            "atom_fill_0016_Assist_2407334",
+            "atom_fill_0017_Pass_2407522",
+            "atom_fill_0018_Shot_2409235",
+            "atom_fill_0019_Goal_2410091",
+            "atom_fill_0020_Corner_kick_2437291",
+            "atom_fill_0021_Win_an_aerial_duel_2438761",
+            "atom_fill_0022_Pass_2444608",
+            "atom_fill_0023_Assist_2444814",
+            "atom_fill_0024_Shot_2446197",
+            "atom_fill_0025_Goal_2446837",
+            "atom_fill_0026_Assist_2450817",
+            "atom_fill_0027_Pass_2450850",
+            "atom_fill_0028_Shot_2452408",
+            "atom_fill_0029_Goal_2453099",
+            "atom_fill_0030_Shot_2455092",
+            "atom_fill_0031_Goal_2456441",
+            "event_000082"
+          ]
+        },
+        {
+          "strip_index": 19,
+          "clip_id": "clip19",
+          "chain_category": "danger",
+          "template_id": "shot_save_chain",
+          "t0_sec": 2513.29,
+          "t1_sec": 2651.83,
+          "event_ids": [
+            "event_000082",
+            "event_000083",
+            "event_000084",
+            "event_000085",
+            "event_000086",
+            "event_000087",
+            "event_000088",
+            "event_000089"
+          ]
+        }
+      ],
+      "notes": [
+        "weak_prior_from_Shot; not ball-over-line proof"
+      ],
+      "provisional_event_id": "atom_fill_0018_Shot_2409235"
+    },
+    {
+      "candidate_id": "goalcand_02_11_to_21",
+      "score_before": [
+        1,
+        1
+      ],
+      "score_after": [
+        2,
+        1
+      ],
+      "delta": [
+        1,
+        0
+      ],
+      "single_goal_increment": true,
+      "scoring_side": "home_or_left",
+      "score_confirmation_sec": 2904.31,
+      "score_confirmation_reliability": "high",
+      "score_confirmation_event_id": "event_000091",
+      "score_confirmation_event_type": "Ball_possession",
+      "last_before_score_obs_sec": 2698.08,
+      "last_before_live_score_obs_sec": 2698.08,
+      "first_after_score_obs_sec": 2904.31,
+      "possible_action_interval": {
+        "media_in": 2698.08,
+        "media_out": 2904.31,
+        "note": "Board lag window from Score_Recognition; NOT the action time itself"
+      },
+      "nearby_events": [
+        {
+          "event_id": "event_000090",
+          "event_type": "Save",
+          "media_sec": 2698.08,
+          "is_replay": false,
+          "media_start_sec": 2694.49,
+          "media_end_sec": 2704.6
+        },
+        {
+          "event_id": "atom_fill_0035_Shot_2725100",
+          "event_type": "Shot",
+          "media_sec": 2725.1,
+          "is_replay": false,
+          "media_start_sec": 2725.1,
+          "media_end_sec": 2727.1
+        },
+        {
+          "event_id": "atom_fill_0038_Shot_2775978",
+          "event_type": "Shot",
+          "media_sec": 2775.978,
+          "is_replay": true,
+          "media_start_sec": 2775.978,
+          "media_end_sec": 2777.978
+        },
+        {
+          "event_id": "atom_fill_0041_Shot_2782217",
+          "event_type": "Shot",
+          "media_sec": 2782.217,
+          "is_replay": true,
+          "media_start_sec": 2782.217,
+          "media_end_sec": 2784.217
+        },
+        {
+          "event_id": "atom_fill_0044_Shot_2790392",
+          "event_type": "Shot",
+          "media_sec": 2790.392,
+          "is_replay": true,
+          "media_start_sec": 2790.392,
+          "media_end_sec": 2792.392
+        },
+        {
+          "event_id": "atom_fill_0047_Shot_2883030",
+          "event_type": "Shot",
+          "media_sec": 2883.03,
+          "is_replay": true,
+          "media_start_sec": 2883.03,
+          "media_end_sec": 2885.03
+        },
+        {
+          "event_id": "event_000091",
+          "event_type": "Ball_possession",
+          "media_sec": 2904.31,
+          "is_replay": false,
+          "media_start_sec": 2902.12,
+          "media_end_sec": 2911.58
+        },
+        {
+          "event_id": "event_000092",
+          "event_type": "Ball_possession",
+          "media_sec": 2906.65,
+          "is_replay": false,
+          "media_start_sec": 2902.12,
+          "media_end_sec": 2911.58
+        },
+        {
+          "event_id": "event_000093",
+          "event_type": "Ball_possession",
+          "media_sec": 2908.27,
+          "is_replay": false,
+          "media_start_sec": 2902.12,
+          "media_end_sec": 2911.58
+        },
+        {
+          "event_id": "event_000094",
+          "event_type": "Ball_possession",
+          "media_sec": 2911.02,
+          "is_replay": false,
+          "media_start_sec": 2902.12,
+          "media_end_sec": 2911.58
+        },
+        {
+          "event_id": "event_000095",
+          "event_type": "Ball_possession",
+          "media_sec": 2912.88,
+          "is_replay": false,
+          "media_start_sec": 2911.78,
+          "media_end_sec": 2921.56
+        },
+        {
+          "event_id": "event_000096",
+          "event_type": "Ball_possession",
+          "media_sec": 2915.47,
+          "is_replay": false,
+          "media_start_sec": 2911.78,
+          "media_end_sec": 2921.56
+        },
+        {
+          "event_id": "event_000097",
+          "event_type": "Ball_possession",
+          "media_sec": 2916.63,
+          "is_replay": false,
+          "media_start_sec": 2911.78,
+          "media_end_sec": 2921.56
+        },
+        {
+          "event_id": "event_000098",
+          "event_type": "Ball_possession",
+          "media_sec": 2917.56,
+          "is_replay": false,
+          "media_start_sec": 2911.78,
+          "media_end_sec": 2921.56
+        },
+        {
+          "event_id": "event_000099",
+          "event_type": "Ball_possession",
+          "media_sec": 2920.47,
+          "is_replay": false,
+          "media_start_sec": 2911.78,
+          "media_end_sec": 2921.56
+        },
+        {
+          "event_id": "event_000100",
+          "event_type": "Ball_possession",
+          "media_sec": 2922.59,
+          "is_replay": false,
+          "media_start_sec": 2921.95,
+          "media_end_sec": 2933.82
+        }
+      ],
+      "goal_action_sec": 2725.1,
+      "goal_action_interval": {
+        "media_in": 2723.1,
+        "media_out": 2731.1
+      },
+      "is_replay": false,
+      "evidence_sources": [
+        "score_recognition",
+        "nearby_detector_event"
+      ],
+      "verification_status": "provisional_from_nearby_event",
+      "linked_strip_chain_ids": [
+        {
+          "strip_index": 21,
+          "clip_id": "clip21",
+          "chain_category": "outcome",
+          "template_id": "team_buildup_goal",
+          "t0_sec": 2647.2,
+          "t1_sec": 2782.472,
+          "event_ids": [
+            "event_000088",
+            "event_000089",
+            "event_000090",
+            "atom_fill_0032_Defensive_action_2722043",
+            "atom_fill_0033_Assist_2723661",
+            "atom_fill_0034_Pass_2724317",
+            "atom_fill_0035_Shot_2725100",
+            "atom_fill_0036_Goal_2726188",
+            "atom_fill_0037_Assist_2775240",
+            "atom_fill_0038_Shot_2775978",
+            "atom_fill_0039_Goal_2776647",
+            "atom_fill_0040_Assist_2781586",
+            "atom_fill_0041_Shot_2782217",
+            "atom_fill_0042_Goal_2782472"
+          ]
+        },
+        {
+          "strip_index": 22,
+          "clip_id": "clip22",
+          "chain_category": "outcome",
+          "template_id": "rebound_follow_up_goal",
+          "t0_sec": 2698.08,
+          "t1_sec": 2792.152,
+          "event_ids": [
+            "event_000090",
+            "atom_fill_0032_Defensive_action_2722043",
+            "atom_fill_0033_Assist_2723661",
+            "atom_fill_0034_Pass_2724317",
+            "atom_fill_0035_Shot_2725100",
+            "atom_fill_0036_Goal_2726188",
+            "atom_fill_0037_Assist_2775240",
+            "atom_fill_0038_Shot_2775978",
+            "atom_fill_0039_Goal_2776647",
+            "atom_fill_0040_Assist_2781586",
+            "atom_fill_0041_Shot_2782217",
+            "atom_fill_0042_Goal_2782472",
+            "atom_fill_0043_Assist_2788163",
+            "atom_fill_0044_Shot_2790392",
+            "atom_fill_0045_Goal_2792152"
+          ]
+        },
+        {
+          "strip_index": 20,
+          "clip_id": "clip20",
+          "chain_category": "outcome",
+          "template_id": "turnover_counter_goal",
+          "t0_sec": 2585.92,
+          "t1_sec": 2726.188,
+          "event_ids": [
+            "event_000085",
+            "event_000086",
+            "event_000087",
+            "event_000088",
+            "event_000089",
+            "event_000090",
+            "atom_fill_0032_Defensive_action_2722043",
+            "atom_fill_0033_Assist_2723661",
+            "atom_fill_0034_Pass_2724317",
+            "atom_fill_0035_Shot_2725100",
+            "atom_fill_0036_Goal_2726188"
+          ]
+        },
+        {
+          "strip_index": 23,
+          "clip_id": "clip23",
+          "chain_category": "outcome",
+          "template_id": "outcome_other",
+          "t0_sec": 2775.24,
+          "t1_sec": 2932.62,
+          "event_ids": [
+            "atom_fill_0037_Assist_2775240",
+            "atom_fill_0038_Shot_2775978",
+            "atom_fill_0039_Goal_2776647",
+            "atom_fill_0040_Assist_2781586",
+            "atom_fill_0041_Shot_2782217",
+            "atom_fill_0042_Goal_2782472",
+            "atom_fill_0043_Assist_2788163",
+            "atom_fill_0044_Shot_2790392",
+            "atom_fill_0045_Goal_2792152",
+            "atom_fill_0046_Assist_2882466",
+            "atom_fill_0047_Shot_2883030",
+            "atom_fill_0048_Goal_2883530",
+            "event_000091",
+            "event_000092",
+            "event_000093",
+            "event_000094",
+            "event_000095",
+            "event_000096",
+            "event_000097",
+            "event_000098",
+            "event_000099",
+            "event_000100",
+            "event_000101",
+            "event_000102",
+            "event_000103",
+            "event_000104",
+            "event_000105"
+          ]
+        },
+        {
+          "strip_index": 24,
+          "clip_id": "clip24",
+          "chain_category": "special",
+          "template_id": "quick_restart_set_piece_chain",
+          "t0_sec": 2882.466,
+          "t1_sec": 3023.58,
+          "event_ids": [
+            "atom_fill_0046_Assist_2882466",
+            "atom_fill_0047_Shot_2883030",
+            "atom_fill_0048_Goal_2883530",
+            "event_000091",
+            "event_000092",
+            "event_000093",
+            "event_000094",
+            "event_000095",
+            "event_000096",
+            "event_000097",
+            "event_000098",
+            "event_000099",
+            "event_000100",
+            "event_000101",
+            "event_000102",
+            "event_000103",
+            "event_000104",
+            "event_000105",
+            "event_000106",
+            "event_000107",
+            "event_000108",
+            "event_000109",
+            "event_000110",
+            "event_000111",
+            "event_000112",
+            "event_000113",
+            "event_000114",
+            "event_000115",
+            "event_000116",
+            "event_000117"
+          ]
+        }
+      ],
+      "notes": [
+        "weak_prior_from_Shot; not ball-over-line proof"
+      ],
+      "provisional_event_id": "atom_fill_0035_Shot_2725100"
+    },
+    {
+      "candidate_id": "goalcand_03_21_to_31",
+      "score_before": [
+        2,
+        1
+      ],
+      "score_after": [
+        3,
+        1
+      ],
+      "delta": [
+        1,
+        0
+      ],
+      "single_goal_increment": true,
+      "scoring_side": "home_or_left",
+      "score_confirmation_sec": 5594.3,
+      "score_confirmation_reliability": "high",
+      "score_confirmation_event_id": "event_000260",
+      "score_confirmation_event_type": "Throw_in",
+      "last_before_score_obs_sec": 5402.36,
+      "last_before_live_score_obs_sec": 5402.36,
+      "first_after_score_obs_sec": 5594.3,
+      "possible_action_interval": {
+        "media_in": 5402.36,
+        "media_out": 5594.3,
+        "note": "Board lag window from Score_Recognition; NOT the action time itself"
+      },
+      "nearby_events": [
+        {
+          "event_id": "event_000256",
+          "event_type": "Shot",
+          "media_sec": 5401.69,
+          "is_replay": false,
+          "media_start_sec": 5398.24,
+          "media_end_sec": 5407.72
+        },
+        {
+          "event_id": "atom_fill_0049_Shot_5425002",
+          "event_type": "Shot",
+          "media_sec": 5425.002,
+          "is_replay": false,
+          "media_start_sec": 5425.002,
+          "media_end_sec": 5427.002
+        },
+        {
+          "event_id": "atom_fill_0052_Shot_5434490",
+          "event_type": "Shot",
+          "media_sec": 5434.49,
+          "is_replay": false,
+          "media_start_sec": 5434.49,
+          "media_end_sec": 5436.49
+        },
+        {
+          "event_id": "event_000258",
+          "event_type": "Shot",
+          "media_sec": 5481.56,
+          "is_replay": true,
+          "media_start_sec": 5477.04,
+          "media_end_sec": 5487.11
+        },
+        {
+          "event_id": "atom_fill_0054_Shot_5490769",
+          "event_type": "Shot",
+          "media_sec": 5490.769,
+          "is_replay": true,
+          "media_start_sec": 5490.769,
+          "media_end_sec": 5492.769
+        },
+        {
+          "event_id": "atom_fill_0056_Shot_5497410",
+          "event_type": "Shot",
+          "media_sec": 5497.41,
+          "is_replay": true,
+          "media_start_sec": 5497.41,
+          "media_end_sec": 5499.41
+        },
+        {
+          "event_id": "atom_fill_0058_Shot_5504210",
+          "event_type": "Shot",
+          "media_sec": 5504.21,
+          "is_replay": true,
+          "media_start_sec": 5504.21,
+          "media_end_sec": 5506.21
+        },
+        {
+          "event_id": "event_000260",
+          "event_type": "Throw_in",
+          "media_sec": 5594.3,
+          "is_replay": false,
+          "media_start_sec": 5589.68,
+          "media_end_sec": 5599.89
+        }
+      ],
+      "goal_action_sec": 5434.49,
+      "goal_action_interval": {
+        "media_in": 5432.49,
+        "media_out": 5440.49
+      },
+      "is_replay": false,
+      "evidence_sources": [
+        "score_recognition",
+        "nearby_detector_event"
+      ],
+      "verification_status": "provisional_from_nearby_event",
+      "linked_strip_chain_ids": [
+        {
+          "strip_index": 50,
+          "clip_id": "clip50",
+          "chain_category": "outcome",
+          "template_id": "rebound_follow_up_goal",
+          "t0_sec": 5343.82,
+          "t1_sec": 5491.386,
+          "event_ids": [
+            "event_000255",
+            "event_000256",
+            "event_000257",
+            "atom_fill_0049_Shot_5425002",
+            "atom_fill_0050_Pass_5432681",
+            "atom_fill_0051_Assist_5433313",
+            "atom_fill_0052_Shot_5434490",
+            "atom_fill_0053_Goal_5434743",
+            "event_000258",
+            "atom_fill_0054_Shot_5490769",
+            "atom_fill_0055_Goal_5491386"
+          ]
+        },
+        {
+          "strip_index": 51,
+          "clip_id": "clip51",
+          "chain_category": "outcome",
+          "template_id": "rebound_follow_up_goal",
+          "t0_sec": 5401.69,
+          "t1_sec": 5524.22,
+          "event_ids": [
+            "event_000256",
+            "event_000257",
+            "atom_fill_0049_Shot_5425002",
+            "atom_fill_0050_Pass_5432681",
+            "atom_fill_0051_Assist_5433313",
+            "atom_fill_0052_Shot_5434490",
+            "atom_fill_0053_Goal_5434743",
+            "event_000258",
+            "atom_fill_0054_Shot_5490769",
+            "atom_fill_0055_Goal_5491386",
+            "atom_fill_0056_Shot_5497410",
+            "atom_fill_0057_Goal_5498810",
+            "atom_fill_0058_Shot_5504210",
+            "atom_fill_0059_Goal_5505217",
+            "event_000259"
+          ]
+        },
+        {
+          "strip_index": 52,
+          "clip_id": "clip52",
+          "chain_category": "outcome",
+          "template_id": "outcome_other",
+          "t0_sec": 5505.217,
+          "t1_sec": 5662.164,
+          "event_ids": [
+            "atom_fill_0059_Goal_5505217",
+            "event_000259",
+            "event_000260",
+            "event_000261",
+            "atom_fill_0060_Pass_5619281",
+            "atom_fill_0061_Assist_5619830",
+            "atom_fill_0062_Shot_5623284",
+            "atom_fill_0063_Goal_5624796",
+            "atom_fill_0064_Goal_line_clearance_5630516",
+            "event_000262",
+            "event_000263",
+            "atom_fill_0065_Shot_5661612",
+            "atom_fill_0066_Goal_5662164"
+          ]
+        }
+      ],
+      "notes": [
+        "weak_prior_from_Shot; not ball-over-line proof"
+      ],
+      "provisional_event_id": "atom_fill_0052_Shot_5434490"
+    },
+    {
+      "candidate_id": "goalcand_04_31_to_41",
+      "score_before": [
+        3,
+        1
+      ],
+      "score_after": [
+        4,
+        1
+      ],
+      "delta": [
+        1,
+        0
+      ],
+      "single_goal_increment": true,
+      "scoring_side": "home_or_left",
+      "score_confirmation_sec": 5820.46,
+      "score_confirmation_reliability": "high",
+      "score_confirmation_event_id": "event_000264",
+      "score_confirmation_event_type": "Substitution",
+      "last_before_score_obs_sec": 5654.36,
+      "last_before_live_score_obs_sec": 5654.36,
+      "first_after_score_obs_sec": 5820.46,
+      "possible_action_interval": {
+        "media_in": 5654.36,
+        "media_out": 5820.46,
+        "note": "Board lag window from Score_Recognition; NOT the action time itself"
+      },
+      "nearby_events": [
+        {
+          "event_id": "event_000263",
+          "event_type": "Dribble_past",
+          "media_sec": 5654.36,
+          "is_replay": false,
+          "media_start_sec": 5650.43,
+          "media_end_sec": 5660.32
+        },
+        {
+          "event_id": "atom_fill_0065_Shot_5661612",
+          "event_type": "Shot",
+          "media_sec": 5661.612,
+          "is_replay": false,
+          "media_start_sec": 5661.612,
+          "media_end_sec": 5663.612
+        },
+        {
+          "event_id": "atom_fill_0067_Shot_5719526",
+          "event_type": "Shot",
+          "media_sec": 5719.526,
+          "is_replay": true,
+          "media_start_sec": 5719.526,
+          "media_end_sec": 5721.526
+        },
+        {
+          "event_id": "atom_fill_0069_Shot_5730286",
+          "event_type": "Shot",
+          "media_sec": 5730.286,
+          "is_replay": true,
+          "media_start_sec": 5730.286,
+          "media_end_sec": 5732.286
+        },
+        {
+          "event_id": "atom_fill_0071_Shot_5734286",
+          "event_type": "Shot",
+          "media_sec": 5734.286,
+          "is_replay": true,
+          "media_start_sec": 5734.286,
+          "media_end_sec": 5736.286
+        }
+      ],
+      "goal_action_sec": 5661.612,
+      "goal_action_interval": {
+        "media_in": 5659.612,
+        "media_out": 5667.612
+      },
+      "is_replay": false,
+      "evidence_sources": [
+        "score_recognition",
+        "nearby_detector_event"
+      ],
+      "verification_status": "provisional_from_nearby_event",
+      "linked_strip_chain_ids": [
+        {
+          "strip_index": 53,
+          "clip_id": "clip53",
+          "chain_category": "outcome",
+          "template_id": "outcome_other",
+          "t0_sec": 5608.34,
+          "t1_sec": 5734.966,
+          "event_ids": [
+            "event_000261",
+            "atom_fill_0060_Pass_5619281",
+            "atom_fill_0061_Assist_5619830",
+            "atom_fill_0062_Shot_5623284",
+            "atom_fill_0063_Goal_5624796",
+            "atom_fill_0064_Goal_line_clearance_5630516",
+            "event_000262",
+            "event_000263",
+            "atom_fill_0065_Shot_5661612",
+            "atom_fill_0066_Goal_5662164",
+            "atom_fill_0067_Shot_5719526",
+            "atom_fill_0068_Goal_5719966",
+            "atom_fill_0069_Shot_5730286",
+            "atom_fill_0070_Goal_5732016",
+            "atom_fill_0071_Shot_5734286",
+            "atom_fill_0072_Goal_5734966"
+          ]
+        },
+        {
+          "strip_index": 52,
+          "clip_id": "clip52",
+          "chain_category": "outcome",
+          "template_id": "outcome_other",
+          "t0_sec": 5505.217,
+          "t1_sec": 5662.164,
+          "event_ids": [
+            "atom_fill_0059_Goal_5505217",
+            "event_000259",
+            "event_000260",
+            "event_000261",
+            "atom_fill_0060_Pass_5619281",
+            "atom_fill_0061_Assist_5619830",
+            "atom_fill_0062_Shot_5623284",
+            "atom_fill_0063_Goal_5624796",
+            "atom_fill_0064_Goal_line_clearance_5630516",
+            "event_000262",
+            "event_000263",
+            "atom_fill_0065_Shot_5661612",
+            "atom_fill_0066_Goal_5662164"
+          ]
+        },
+        {
+          "strip_index": 54,
+          "clip_id": "clip54",
+          "chain_category": "outcome",
+          "template_id": "rebound_follow_up_goal",
+          "t0_sec": 5730.286,
+          "t1_sec": 5881.42,
+          "event_ids": [
+            "atom_fill_0069_Shot_5730286",
+            "atom_fill_0070_Goal_5732016",
+            "atom_fill_0071_Shot_5734286",
+            "atom_fill_0072_Goal_5734966",
+            "event_000264",
+            "event_000265"
+          ]
+        },
+        {
+          "strip_index": 55,
+          "clip_id": "clip55",
+          "chain_category": "danger",
+          "template_id": "goal_line_extreme_save_chain",
+          "t0_sec": 5820.46,
+          "t1_sec": 5991.07,
+          "event_ids": [
+            "event_000264",
+            "event_000265",
+            "event_000266",
+            "event_000267"
+          ]
+        }
+      ],
+      "notes": [
+        "weak_prior_from_Shot; not ball-over-line proof"
+      ],
+      "provisional_event_id": "atom_fill_0065_Shot_5661612"
+    }
+  ],
+  "paid_api_calls": 0,
+  "forbidden_inputs": [
+    "*_causal.json",
+    "strip_gold.json"
+  ],
+  "render_ready": false,
+  "note": "score_confirmation_sec is never copied into goal_action_sec"
+}

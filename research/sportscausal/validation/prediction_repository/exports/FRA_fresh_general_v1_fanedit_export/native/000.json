@@ -1,0 +1,4693 @@
+{
+  "schema": "v2_upstream_strip_json_v1",
+  "match_id": "2022年11月23日 法国vs澳大利亚",
+  "safe_id": "2022年11月23日_法国vs澳大利亚",
+  "mode": "reinfer_atom_enriched",
+  "profile": "production",
+  "use_llm": false,
+  "n_events": 375,
+  "n_chains": 68,
+  "chains": [
+    {
+      "chain_category": "danger",
+      "first_event": "match_start",
+      "last_event": "shot",
+      "t0_ms": 847200,
+      "t1_ms": 939340,
+      "template_id": "shot_post_bar_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000004",
+        "event_000005",
+        "event_000006",
+        "event_000007",
+        "event_000008",
+        "event_000009"
+      ],
+      "event_keys": [
+        [
+          847200,
+          "match_start"
+        ],
+        [
+          882740,
+          "dribble_past"
+        ],
+        [
+          895470,
+          "aerial_won"
+        ],
+        [
+          935530,
+          "corner"
+        ],
+        [
+          937220,
+          "aerial_won"
+        ],
+        [
+          939340,
+          "shot"
+        ]
+      ],
+      "clip_id": "clip00"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "dribble_past",
+      "last_event": "throw_in",
+      "t0_ms": 882740,
+      "t1_ms": 1036349,
+      "template_id": "throw_in_build_up_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000005",
+        "event_000006",
+        "event_000007",
+        "event_000008",
+        "event_000009",
+        "event_000010",
+        "event_000011",
+        "event_000012",
+        "event_000013",
+        "event_000014",
+        "event_000015",
+        "event_000016",
+        "event_000017",
+        "event_000018"
+      ],
+      "event_keys": [
+        [
+          882740,
+          "dribble_past"
+        ],
+        [
+          895470,
+          "aerial_won"
+        ],
+        [
+          935530,
+          "corner"
+        ],
+        [
+          937220,
+          "aerial_won"
+        ],
+        [
+          939340,
+          "shot"
+        ],
+        [
+          965750,
+          "pass"
+        ],
+        [
+          969270,
+          "pass"
+        ],
+        [
+          971380,
+          "pass"
+        ],
+        [
+          991760,
+          "shot"
+        ],
+        [
+          1013960,
+          "successful_tackle"
+        ],
+        [
+          1018580,
+          "successful_tackle"
+        ],
+        [
+          1023570,
+          "throw_in"
+        ],
+        [
+          1028250,
+          "successful_tackle"
+        ],
+        [
+          1036349,
+          "throw_in"
+        ]
+      ],
+      "clip_id": "clip01"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "pass",
+      "last_event": "dribble_past",
+      "t0_ms": 965750,
+      "t1_ms": 1133010,
+      "template_id": "throw_in_build_up_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000010",
+        "event_000011",
+        "event_000012",
+        "event_000013",
+        "event_000014",
+        "event_000015",
+        "event_000016",
+        "event_000017",
+        "event_000018",
+        "event_000019",
+        "event_000020"
+      ],
+      "event_keys": [
+        [
+          965750,
+          "pass"
+        ],
+        [
+          969270,
+          "pass"
+        ],
+        [
+          971380,
+          "pass"
+        ],
+        [
+          991760,
+          "shot"
+        ],
+        [
+          1013960,
+          "successful_tackle"
+        ],
+        [
+          1018580,
+          "successful_tackle"
+        ],
+        [
+          1023570,
+          "throw_in"
+        ],
+        [
+          1028250,
+          "successful_tackle"
+        ],
+        [
+          1036349,
+          "throw_in"
+        ],
+        [
+          1056470,
+          "aerial_won"
+        ],
+        [
+          1133010,
+          "dribble_past"
+        ]
+      ],
+      "clip_id": "clip02"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "aerial_won",
+      "last_event": "throw_in",
+      "t0_ms": 1056470,
+      "t1_ms": 1204670,
+      "template_id": "throw_in_build_up_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000019",
+        "event_000020",
+        "event_000021",
+        "event_000022",
+        "event_000023",
+        "event_000024"
+      ],
+      "event_keys": [
+        [
+          1056470,
+          "aerial_won"
+        ],
+        [
+          1133010,
+          "dribble_past"
+        ],
+        [
+          1138200,
+          "successful_tackle"
+        ],
+        [
+          1187340,
+          "throw_in"
+        ],
+        [
+          1194680,
+          "aerial_won"
+        ],
+        [
+          1204670,
+          "throw_in"
+        ]
+      ],
+      "clip_id": "clip03"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "successful_tackle",
+      "last_event": "throw_in",
+      "t0_ms": 1138200,
+      "t1_ms": 1278930,
+      "template_id": "throw_in_build_up_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000021",
+        "event_000022",
+        "event_000023",
+        "event_000024",
+        "event_000025"
+      ],
+      "event_keys": [
+        [
+          1138200,
+          "successful_tackle"
+        ],
+        [
+          1187340,
+          "throw_in"
+        ],
+        [
+          1194680,
+          "aerial_won"
+        ],
+        [
+          1204670,
+          "throw_in"
+        ],
+        [
+          1278930,
+          "throw_in"
+        ]
+      ],
+      "clip_id": "clip04"
+    },
+    {
+      "chain_category": "outcome",
+      "first_event": "throw_in",
+      "last_event": "goal",
+      "t0_ms": 1278930,
+      "t1_ms": 1409830,
+      "template_id": "outcome_other",
+      "source": "anchor",
+      "event_ids": [
+        "event_000025",
+        "event_000026",
+        "atom_fill_0000_Dribble_past_1348094",
+        "atom_fill_0001_Pass_1349945",
+        "atom_fill_0002_Assist_1350279",
+        "atom_fill_0003_Shot_1351434",
+        "atom_fill_0004_Goal_1351642",
+        "atom_fill_0005_Shot_1395764",
+        "atom_fill_0006_Goal_1396454",
+        "atom_fill_0007_Shot_1408301",
+        "atom_fill_0008_Goal_1409830"
+      ],
+      "event_keys": [
+        [
+          1278930,
+          "throw_in"
+        ],
+        [
+          1333080,
+          "throw_in"
+        ],
+        [
+          1348094,
+          "dribble_past"
+        ],
+        [
+          1349945,
+          "pass"
+        ],
+        [
+          1350279,
+          "assist"
+        ],
+        [
+          1351434,
+          "shot"
+        ],
+        [
+          1351642,
+          "goal"
+        ],
+        [
+          1395764,
+          "shot"
+        ],
+        [
+          1396454,
+          "goal"
+        ],
+        [
+          1408301,
+          "shot"
+        ],
+        [
+          1409830,
+          "goal"
+        ]
+      ],
+      "clip_id": "clip05"
+    },
+    {
+      "chain_category": "outcome",
+      "first_event": "shot",
+      "last_event": "aerial_won",
+      "t0_ms": 1395764,
+      "t1_ms": 1535650,
+      "template_id": "rebound_follow_up_goal",
+      "source": "anchor",
+      "event_ids": [
+        "atom_fill_0005_Shot_1395764",
+        "atom_fill_0006_Goal_1396454",
+        "atom_fill_0007_Shot_1408301",
+        "atom_fill_0008_Goal_1409830",
+        "atom_fill_0009_Shot_1414147",
+        "atom_fill_0010_Goal_1416209",
+        "atom_fill_0011_Shot_1484419",
+        "atom_fill_0012_Goal_1486051",
+        "atom_fill_0013_Shot_1487915",
+        "atom_fill_0014_Goal_1489453",
+        "event_000027"
+      ],
+      "event_keys": [
+        [
+          1395764,
+          "shot"
+        ],
+        [
+          1396454,
+          "goal"
+        ],
+        [
+          1408301,
+          "shot"
+        ],
+        [
+          1409830,
+          "goal"
+        ],
+        [
+          1414147,
+          "shot"
+        ],
+        [
+          1416209,
+          "goal"
+        ],
+        [
+          1484419,
+          "shot"
+        ],
+        [
+          1486051,
+          "goal"
+        ],
+        [
+          1487915,
+          "shot"
+        ],
+        [
+          1489453,
+          "goal"
+        ],
+        [
+          1535650,
+          "aerial_won"
+        ]
+      ],
+      "clip_id": "clip06"
+    },
+    {
+      "chain_category": "danger",
+      "first_event": "aerial_won",
+      "last_event": "aerial_won",
+      "t0_ms": 1535650,
+      "t1_ms": 1601950,
+      "template_id": "second_phase_after_frame_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000027",
+        "event_000028",
+        "event_000029",
+        "event_000030",
+        "event_000031",
+        "event_000032",
+        "event_000033"
+      ],
+      "event_keys": [
+        [
+          1535650,
+          "aerial_won"
+        ],
+        [
+          1550890,
+          "dribble_past"
+        ],
+        [
+          1557510,
+          "aerial_won"
+        ],
+        [
+          1577930,
+          "substitution"
+        ],
+        [
+          1589900,
+          "corner"
+        ],
+        [
+          1591200,
+          "aerial_won"
+        ],
+        [
+          1601950,
+          "aerial_won"
+        ]
+      ],
+      "clip_id": "clip07"
+    },
+    {
+      "chain_category": "danger",
+      "first_event": "corner",
+      "last_event": "successful_tackle",
+      "t0_ms": 1589900,
+      "t1_ms": 1756630,
+      "template_id": "goal_line_extreme_save_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000031",
+        "event_000032",
+        "event_000033",
+        "event_000034",
+        "event_000035",
+        "event_000036",
+        "event_000037",
+        "event_000038"
+      ],
+      "event_keys": [
+        [
+          1589900,
+          "corner"
+        ],
+        [
+          1591200,
+          "aerial_won"
+        ],
+        [
+          1601950,
+          "aerial_won"
+        ],
+        [
+          1675820,
+          "successful_tackle"
+        ],
+        [
+          1721990,
+          "successful_tackle"
+        ],
+        [
+          1728110,
+          "successful_tackle"
+        ],
+        [
+          1742350,
+          "aerial_won"
+        ],
+        [
+          1756630,
+          "successful_tackle"
+        ]
+      ],
+      "clip_id": "clip08"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "successful_tackle",
+      "last_event": "foul",
+      "t0_ms": 1675820,
+      "t1_ms": 1848300,
+      "template_id": "quick_restart_set_piece_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000034",
+        "event_000035",
+        "event_000036",
+        "event_000037",
+        "event_000038",
+        "event_000039",
+        "event_000040",
+        "event_000041",
+        "event_000042",
+        "event_000043",
+        "event_000044",
+        "event_000045",
+        "event_000046"
+      ],
+      "event_keys": [
+        [
+          1675820,
+          "successful_tackle"
+        ],
+        [
+          1721990,
+          "successful_tackle"
+        ],
+        [
+          1728110,
+          "successful_tackle"
+        ],
+        [
+          1742350,
+          "aerial_won"
+        ],
+        [
+          1756630,
+          "successful_tackle"
+        ],
+        [
+          1770210,
+          "foul"
+        ],
+        [
+          1784800,
+          "free_kick"
+        ],
+        [
+          1796340,
+          "pass"
+        ],
+        [
+          1800660,
+          "pass"
+        ],
+        [
+          1805140,
+          "pass"
+        ],
+        [
+          1807380,
+          "pass"
+        ],
+        [
+          1809820,
+          "pass"
+        ],
+        [
+          1848300,
+          "foul"
+        ]
+      ],
+      "clip_id": "clip09"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "foul",
+      "last_event": "successful_tackle",
+      "t0_ms": 1770210,
+      "t1_ms": 1939550,
+      "template_id": "throw_in_build_up_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000039",
+        "event_000040",
+        "event_000041",
+        "event_000042",
+        "event_000043",
+        "event_000044",
+        "event_000045",
+        "event_000046",
+        "event_000047",
+        "event_000048",
+        "event_000049",
+        "event_000050",
+        "event_000051",
+        "event_000052",
+        "event_000053"
+      ],
+      "event_keys": [
+        [
+          1770210,
+          "foul"
+        ],
+        [
+          1784800,
+          "free_kick"
+        ],
+        [
+          1796340,
+          "pass"
+        ],
+        [
+          1800660,
+          "pass"
+        ],
+        [
+          1805140,
+          "pass"
+        ],
+        [
+          1807380,
+          "pass"
+        ],
+        [
+          1809820,
+          "pass"
+        ],
+        [
+          1848300,
+          "foul"
+        ],
+        [
+          1862300,
+          "foul"
+        ],
+        [
+          1869090,
+          "successful_tackle"
+        ],
+        [
+          1880640,
+          "dribble_past"
+        ],
+        [
+          1885290,
+          "successful_tackle"
+        ],
+        [
+          1911950,
+          "successful_tackle"
+        ],
+        [
+          1933980,
+          "dribble_past"
+        ],
+        [
+          1939550,
+          "successful_tackle"
+        ]
+      ],
+      "clip_id": "clip10"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "foul",
+      "last_event": "throw_in",
+      "t0_ms": 1862300,
+      "t1_ms": 2026200,
+      "template_id": "quick_restart_set_piece_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000047",
+        "event_000048",
+        "event_000049",
+        "event_000050",
+        "event_000051",
+        "event_000052",
+        "event_000053",
+        "event_000054",
+        "event_000055",
+        "event_000056",
+        "event_000057",
+        "event_000058",
+        "event_000059",
+        "event_000060",
+        "event_000061",
+        "event_000062",
+        "event_000063",
+        "event_000064",
+        "event_000065",
+        "event_000066",
+        "event_000067"
+      ],
+      "event_keys": [
+        [
+          1862300,
+          "foul"
+        ],
+        [
+          1869090,
+          "successful_tackle"
+        ],
+        [
+          1880640,
+          "dribble_past"
+        ],
+        [
+          1885290,
+          "successful_tackle"
+        ],
+        [
+          1911950,
+          "successful_tackle"
+        ],
+        [
+          1933980,
+          "dribble_past"
+        ],
+        [
+          1939550,
+          "successful_tackle"
+        ],
+        [
+          1948050,
+          "successful_tackle"
+        ],
+        [
+          1954420,
+          "pass"
+        ],
+        [
+          1958940,
+          "pass"
+        ],
+        [
+          1962090,
+          "pass"
+        ],
+        [
+          1967480,
+          "pass"
+        ],
+        [
+          1970780,
+          "pass"
+        ],
+        [
+          1973620,
+          "pass"
+        ],
+        [
+          1975520,
+          "pass"
+        ],
+        [
+          1978920,
+          "pass"
+        ],
+        [
+          1981910,
+          "pass"
+        ],
+        [
+          1998820,
+          "successful_tackle"
+        ],
+        [
+          2011590,
+          "successful_tackle"
+        ],
+        [
+          2016560,
+          "successful_tackle"
+        ],
+        [
+          2026200,
+          "throw_in"
+        ]
+      ],
+      "clip_id": "clip11"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "successful_tackle",
+      "last_event": "shot",
+      "t0_ms": 1948050,
+      "t1_ms": 2111890,
+      "template_id": "throw_in_build_up_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000054",
+        "event_000055",
+        "event_000056",
+        "event_000057",
+        "event_000058",
+        "event_000059",
+        "event_000060",
+        "event_000061",
+        "event_000062",
+        "event_000063",
+        "event_000064",
+        "event_000065",
+        "event_000066",
+        "event_000067",
+        "event_000068",
+        "event_000069",
+        "event_000070",
+        "event_000071",
+        "event_000072"
+      ],
+      "event_keys": [
+        [
+          1948050,
+          "successful_tackle"
+        ],
+        [
+          1954420,
+          "pass"
+        ],
+        [
+          1958940,
+          "pass"
+        ],
+        [
+          1962090,
+          "pass"
+        ],
+        [
+          1967480,
+          "pass"
+        ],
+        [
+          1970780,
+          "pass"
+        ],
+        [
+          1973620,
+          "pass"
+        ],
+        [
+          1975520,
+          "pass"
+        ],
+        [
+          1978920,
+          "pass"
+        ],
+        [
+          1981910,
+          "pass"
+        ],
+        [
+          1998820,
+          "successful_tackle"
+        ],
+        [
+          2011590,
+          "successful_tackle"
+        ],
+        [
+          2016560,
+          "successful_tackle"
+        ],
+        [
+          2026200,
+          "throw_in"
+        ],
+        [
+          2062360,
+          "aerial_won"
+        ],
+        [
+          2071770,
+          "aerial_won"
+        ],
+        [
+          2080739,
+          "successful_tackle"
+        ],
+        [
+          2104690,
+          "successful_tackle"
+        ],
+        [
+          2111890,
+          "shot"
+        ]
+      ],
+      "clip_id": "clip12"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "aerial_won",
+      "last_event": "foul",
+      "t0_ms": 2062360,
+      "t1_ms": 2197300,
+      "template_id": "throw_in_build_up_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000068",
+        "event_000069",
+        "event_000070",
+        "event_000071",
+        "event_000072",
+        "event_000073",
+        "event_000074",
+        "event_000075"
+      ],
+      "event_keys": [
+        [
+          2062360,
+          "aerial_won"
+        ],
+        [
+          2071770,
+          "aerial_won"
+        ],
+        [
+          2080739,
+          "successful_tackle"
+        ],
+        [
+          2104690,
+          "successful_tackle"
+        ],
+        [
+          2111890,
+          "shot"
+        ],
+        [
+          2131760,
+          "shot"
+        ],
+        [
+          2137320,
+          "shot"
+        ],
+        [
+          2197300,
+          "foul"
+        ]
+      ],
+      "clip_id": "clip13"
+    },
+    {
+      "chain_category": "danger",
+      "first_event": "shot",
+      "last_event": "successful_tackle",
+      "t0_ms": 2131760,
+      "t1_ms": 2244720,
+      "template_id": "shot_post_bar_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000073",
+        "event_000074",
+        "event_000075",
+        "event_000076",
+        "event_000077"
+      ],
+      "event_keys": [
+        [
+          2131760,
+          "shot"
+        ],
+        [
+          2137320,
+          "shot"
+        ],
+        [
+          2197300,
+          "foul"
+        ],
+        [
+          2237580,
+          "dribble_past"
+        ],
+        [
+          2244720,
+          "successful_tackle"
+        ]
+      ],
+      "clip_id": "clip14"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "dribble_past",
+      "last_event": "dribble_past",
+      "t0_ms": 2237580,
+      "t1_ms": 2315840,
+      "template_id": "throw_in_build_up_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000076",
+        "event_000077",
+        "event_000078",
+        "event_000079"
+      ],
+      "event_keys": [
+        [
+          2237580,
+          "dribble_past"
+        ],
+        [
+          2244720,
+          "successful_tackle"
+        ],
+        [
+          2306220,
+          "aerial_won"
+        ],
+        [
+          2315840,
+          "dribble_past"
+        ]
+      ],
+      "clip_id": "clip15"
+    },
+    {
+      "chain_category": "outcome",
+      "first_event": "aerial_won",
+      "last_event": "goal",
+      "t0_ms": 2306220,
+      "t1_ms": 2456441,
+      "template_id": "corner_coop_goal",
+      "source": "sliding",
+      "event_ids": [
+        "event_000078",
+        "event_000079",
+        "event_000080",
+        "event_000081",
+        "atom_fill_0015_Pass_2405195",
+        "atom_fill_0016_Assist_2407334",
+        "atom_fill_0017_Pass_2407522",
+        "atom_fill_0018_Shot_2409235",
+        "atom_fill_0019_Goal_2410091",
+        "atom_fill_0020_Corner_kick_2437291",
+        "atom_fill_0021_Win_an_aerial_duel_2438761",
+        "atom_fill_0022_Pass_2444608",
+        "atom_fill_0023_Assist_2444814",
+        "atom_fill_0024_Shot_2446197",
+        "atom_fill_0025_Goal_2446837",
+        "atom_fill_0026_Assist_2450817",
+        "atom_fill_0027_Pass_2450850",
+        "atom_fill_0028_Shot_2452408",
+        "atom_fill_0029_Goal_2453099",
+        "atom_fill_0030_Shot_2455092",
+        "atom_fill_0031_Goal_2456441"
+      ],
+      "event_keys": [
+        [
+          2306220,
+          "aerial_won"
+        ],
+        [
+          2315840,
+          "dribble_past"
+        ],
+        [
+          2400850,
+          "corner"
+        ],
+        [
+          2401990,
+          "aerial_won"
+        ],
+        [
+          2405195,
+          "pass"
+        ],
+        [
+          2407334,
+          "assist"
+        ],
+        [
+          2407522,
+          "pass"
+        ],
+        [
+          2409235,
+          "shot"
+        ],
+        [
+          2410091,
+          "goal"
+        ],
+        [
+          2437291,
+          "corner"
+        ],
+        [
+          2438761,
+          "aerial_won"
+        ],
+        [
+          2444608,
+          "pass"
+        ],
+        [
+          2444814,
+          "assist"
+        ],
+        [
+          2446197,
+          "shot"
+        ],
+        [
+          2446837,
+          "goal"
+        ],
+        [
+          2450817,
+          "assist"
+        ],
+        [
+          2450850,
+          "pass"
+        ],
+        [
+          2452408,
+          "shot"
+        ],
+        [
+          2453099,
+          "goal"
+        ],
+        [
+          2455092,
+          "shot"
+        ],
+        [
+          2456441,
+          "goal"
+        ]
+      ],
+      "clip_id": "clip16"
+    },
+    {
+      "chain_category": "outcome",
+      "first_event": "corner",
+      "last_event": "aerial_won",
+      "t0_ms": 2400850,
+      "t1_ms": 2513290,
+      "template_id": "rebound_follow_up_goal",
+      "source": "anchor",
+      "event_ids": [
+        "event_000080",
+        "event_000081",
+        "atom_fill_0015_Pass_2405195",
+        "atom_fill_0016_Assist_2407334",
+        "atom_fill_0017_Pass_2407522",
+        "atom_fill_0018_Shot_2409235",
+        "atom_fill_0019_Goal_2410091",
+        "atom_fill_0020_Corner_kick_2437291",
+        "atom_fill_0021_Win_an_aerial_duel_2438761",
+        "atom_fill_0022_Pass_2444608",
+        "atom_fill_0023_Assist_2444814",
+        "atom_fill_0024_Shot_2446197",
+        "atom_fill_0025_Goal_2446837",
+        "atom_fill_0026_Assist_2450817",
+        "atom_fill_0027_Pass_2450850",
+        "atom_fill_0028_Shot_2452408",
+        "atom_fill_0029_Goal_2453099",
+        "atom_fill_0030_Shot_2455092",
+        "atom_fill_0031_Goal_2456441",
+        "event_000082"
+      ],
+      "event_keys": [
+        [
+          2400850,
+          "corner"
+        ],
+        [
+          2401990,
+          "aerial_won"
+        ],
+        [
+          2405195,
+          "pass"
+        ],
+        [
+          2407334,
+          "assist"
+        ],
+        [
+          2407522,
+          "pass"
+        ],
+        [
+          2409235,
+          "shot"
+        ],
+        [
+          2410091,
+          "goal"
+        ],
+        [
+          2437291,
+          "corner"
+        ],
+        [
+          2438761,
+          "aerial_won"
+        ],
+        [
+          2444608,
+          "pass"
+        ],
+        [
+          2444814,
+          "assist"
+        ],
+        [
+          2446197,
+          "shot"
+        ],
+        [
+          2446837,
+          "goal"
+        ],
+        [
+          2450817,
+          "assist"
+        ],
+        [
+          2450850,
+          "pass"
+        ],
+        [
+          2452408,
+          "shot"
+        ],
+        [
+          2453099,
+          "goal"
+        ],
+        [
+          2455092,
+          "shot"
+        ],
+        [
+          2456441,
+          "goal"
+        ],
+        [
+          2513290,
+          "aerial_won"
+        ]
+      ],
+      "clip_id": "clip17"
+    },
+    {
+      "chain_category": "outcome",
+      "first_event": "corner",
+      "last_event": "goal",
+      "t0_ms": 2400850,
+      "t1_ms": 2456441,
+      "template_id": "team_buildup_goal",
+      "source": "anchor",
+      "event_ids": [
+        "event_000080",
+        "event_000081",
+        "atom_fill_0015_Pass_2405195",
+        "atom_fill_0016_Assist_2407334",
+        "atom_fill_0017_Pass_2407522",
+        "atom_fill_0018_Shot_2409235",
+        "atom_fill_0019_Goal_2410091",
+        "atom_fill_0020_Corner_kick_2437291",
+        "atom_fill_0021_Win_an_aerial_duel_2438761",
+        "atom_fill_0022_Pass_2444608",
+        "atom_fill_0023_Assist_2444814",
+        "atom_fill_0024_Shot_2446197",
+        "atom_fill_0025_Goal_2446837",
+        "atom_fill_0026_Assist_2450817",
+        "atom_fill_0027_Pass_2450850",
+        "atom_fill_0028_Shot_2452408",
+        "atom_fill_0029_Goal_2453099",
+        "atom_fill_0030_Shot_2455092",
+        "atom_fill_0031_Goal_2456441"
+      ],
+      "event_keys": [
+        [
+          2400850,
+          "corner"
+        ],
+        [
+          2401990,
+          "aerial_won"
+        ],
+        [
+          2405195,
+          "pass"
+        ],
+        [
+          2407334,
+          "assist"
+        ],
+        [
+          2407522,
+          "pass"
+        ],
+        [
+          2409235,
+          "shot"
+        ],
+        [
+          2410091,
+          "goal"
+        ],
+        [
+          2437291,
+          "corner"
+        ],
+        [
+          2438761,
+          "aerial_won"
+        ],
+        [
+          2444608,
+          "pass"
+        ],
+        [
+          2444814,
+          "assist"
+        ],
+        [
+          2446197,
+          "shot"
+        ],
+        [
+          2446837,
+          "goal"
+        ],
+        [
+          2450817,
+          "assist"
+        ],
+        [
+          2450850,
+          "pass"
+        ],
+        [
+          2452408,
+          "shot"
+        ],
+        [
+          2453099,
+          "goal"
+        ],
+        [
+          2455092,
+          "shot"
+        ],
+        [
+          2456441,
+          "goal"
+        ]
+      ],
+      "clip_id": "clip18"
+    },
+    {
+      "chain_category": "danger",
+      "first_event": "aerial_won",
+      "last_event": "pass",
+      "t0_ms": 2513290,
+      "t1_ms": 2651830,
+      "template_id": "shot_save_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000082",
+        "event_000083",
+        "event_000084",
+        "event_000085",
+        "event_000086",
+        "event_000087",
+        "event_000088",
+        "event_000089"
+      ],
+      "event_keys": [
+        [
+          2513290,
+          "aerial_won"
+        ],
+        [
+          2520600,
+          "throw_in"
+        ],
+        [
+          2571190,
+          "corner"
+        ],
+        [
+          2585920,
+          "shot"
+        ],
+        [
+          2600140,
+          "shot"
+        ],
+        [
+          2604420,
+          "shot"
+        ],
+        [
+          2647200,
+          "pass"
+        ],
+        [
+          2651830,
+          "pass"
+        ]
+      ],
+      "clip_id": "clip19"
+    },
+    {
+      "chain_category": "outcome",
+      "first_event": "shot",
+      "last_event": "goal",
+      "t0_ms": 2585920,
+      "t1_ms": 2726188,
+      "template_id": "turnover_counter_goal",
+      "source": "sliding",
+      "event_ids": [
+        "event_000085",
+        "event_000086",
+        "event_000087",
+        "event_000088",
+        "event_000089",
+        "event_000090",
+        "atom_fill_0032_Defensive_action_2722043",
+        "atom_fill_0033_Assist_2723661",
+        "atom_fill_0034_Pass_2724317",
+        "atom_fill_0035_Shot_2725100",
+        "atom_fill_0036_Goal_2726188"
+      ],
+      "event_keys": [
+        [
+          2585920,
+          "shot"
+        ],
+        [
+          2600140,
+          "shot"
+        ],
+        [
+          2604420,
+          "shot"
+        ],
+        [
+          2647200,
+          "pass"
+        ],
+        [
+          2651830,
+          "pass"
+        ],
+        [
+          2698080,
+          "keeper_save"
+        ],
+        [
+          2722043,
+          "successful_tackle"
+        ],
+        [
+          2723661,
+          "assist"
+        ],
+        [
+          2724317,
+          "pass"
+        ],
+        [
+          2725100,
+          "shot"
+        ],
+        [
+          2726188,
+          "goal"
+        ]
+      ],
+      "clip_id": "clip20"
+    },
+    {
+      "chain_category": "outcome",
+      "first_event": "pass",
+      "last_event": "goal",
+      "t0_ms": 2647200,
+      "t1_ms": 2782472,
+      "template_id": "team_buildup_goal",
+      "source": "anchor",
+      "event_ids": [
+        "event_000088",
+        "event_000089",
+        "event_000090",
+        "atom_fill_0032_Defensive_action_2722043",
+        "atom_fill_0033_Assist_2723661",
+        "atom_fill_0034_Pass_2724317",
+        "atom_fill_0035_Shot_2725100",
+        "atom_fill_0036_Goal_2726188",
+        "atom_fill_0037_Assist_2775240",
+        "atom_fill_0038_Shot_2775978",
+        "atom_fill_0039_Goal_2776647",
+        "atom_fill_0040_Assist_2781586",
+        "atom_fill_0041_Shot_2782217",
+        "atom_fill_0042_Goal_2782472"
+      ],
+      "event_keys": [
+        [
+          2647200,
+          "pass"
+        ],
+        [
+          2651830,
+          "pass"
+        ],
+        [
+          2698080,
+          "keeper_save"
+        ],
+        [
+          2722043,
+          "successful_tackle"
+        ],
+        [
+          2723661,
+          "assist"
+        ],
+        [
+          2724317,
+          "pass"
+        ],
+        [
+          2725100,
+          "shot"
+        ],
+        [
+          2726188,
+          "goal"
+        ],
+        [
+          2775240,
+          "assist"
+        ],
+        [
+          2775978,
+          "shot"
+        ],
+        [
+          2776647,
+          "goal"
+        ],
+        [
+          2781586,
+          "assist"
+        ],
+        [
+          2782217,
+          "shot"
+        ],
+        [
+          2782472,
+          "goal"
+        ]
+      ],
+      "clip_id": "clip21"
+    },
+    {
+      "chain_category": "outcome",
+      "first_event": "keeper_save",
+      "last_event": "goal",
+      "t0_ms": 2698080,
+      "t1_ms": 2792152,
+      "template_id": "rebound_follow_up_goal",
+      "source": "anchor",
+      "event_ids": [
+        "event_000090",
+        "atom_fill_0032_Defensive_action_2722043",
+        "atom_fill_0033_Assist_2723661",
+        "atom_fill_0034_Pass_2724317",
+        "atom_fill_0035_Shot_2725100",
+        "atom_fill_0036_Goal_2726188",
+        "atom_fill_0037_Assist_2775240",
+        "atom_fill_0038_Shot_2775978",
+        "atom_fill_0039_Goal_2776647",
+        "atom_fill_0040_Assist_2781586",
+        "atom_fill_0041_Shot_2782217",
+        "atom_fill_0042_Goal_2782472",
+        "atom_fill_0043_Assist_2788163",
+        "atom_fill_0044_Shot_2790392",
+        "atom_fill_0045_Goal_2792152"
+      ],
+      "event_keys": [
+        [
+          2698080,
+          "keeper_save"
+        ],
+        [
+          2722043,
+          "successful_tackle"
+        ],
+        [
+          2723661,
+          "assist"
+        ],
+        [
+          2724317,
+          "pass"
+        ],
+        [
+          2725100,
+          "shot"
+        ],
+        [
+          2726188,
+          "goal"
+        ],
+        [
+          2775240,
+          "assist"
+        ],
+        [
+          2775978,
+          "shot"
+        ],
+        [
+          2776647,
+          "goal"
+        ],
+        [
+          2781586,
+          "assist"
+        ],
+        [
+          2782217,
+          "shot"
+        ],
+        [
+          2782472,
+          "goal"
+        ],
+        [
+          2788163,
+          "assist"
+        ],
+        [
+          2790392,
+          "shot"
+        ],
+        [
+          2792152,
+          "goal"
+        ]
+      ],
+      "clip_id": "clip22"
+    },
+    {
+      "chain_category": "outcome",
+      "first_event": "assist",
+      "last_event": "pass",
+      "t0_ms": 2775240,
+      "t1_ms": 2932620,
+      "template_id": "outcome_other",
+      "source": "anchor",
+      "event_ids": [
+        "atom_fill_0037_Assist_2775240",
+        "atom_fill_0038_Shot_2775978",
+        "atom_fill_0039_Goal_2776647",
+        "atom_fill_0040_Assist_2781586",
+        "atom_fill_0041_Shot_2782217",
+        "atom_fill_0042_Goal_2782472",
+        "atom_fill_0043_Assist_2788163",
+        "atom_fill_0044_Shot_2790392",
+        "atom_fill_0045_Goal_2792152",
+        "atom_fill_0046_Assist_2882466",
+        "atom_fill_0047_Shot_2883030",
+        "atom_fill_0048_Goal_2883530",
+        "event_000091",
+        "event_000092",
+        "event_000093",
+        "event_000094",
+        "event_000095",
+        "event_000096",
+        "event_000097",
+        "event_000098",
+        "event_000099",
+        "event_000100",
+        "event_000101",
+        "event_000102",
+        "event_000103",
+        "event_000104",
+        "event_000105"
+      ],
+      "event_keys": [
+        [
+          2775240,
+          "assist"
+        ],
+        [
+          2775978,
+          "shot"
+        ],
+        [
+          2776647,
+          "goal"
+        ],
+        [
+          2781586,
+          "assist"
+        ],
+        [
+          2782217,
+          "shot"
+        ],
+        [
+          2782472,
+          "goal"
+        ],
+        [
+          2788163,
+          "assist"
+        ],
+        [
+          2790392,
+          "shot"
+        ],
+        [
+          2792152,
+          "goal"
+        ],
+        [
+          2882466,
+          "assist"
+        ],
+        [
+          2883030,
+          "shot"
+        ],
+        [
+          2883530,
+          "goal"
+        ],
+        [
+          2904310,
+          "pass"
+        ],
+        [
+          2906650,
+          "pass"
+        ],
+        [
+          2908270,
+          "pass"
+        ],
+        [
+          2911020,
+          "pass"
+        ],
+        [
+          2912880,
+          "pass"
+        ],
+        [
+          2915470,
+          "pass"
+        ],
+        [
+          2916630,
+          "pass"
+        ],
+        [
+          2917560,
+          "pass"
+        ],
+        [
+          2920470,
+          "pass"
+        ],
+        [
+          2922590,
+          "pass"
+        ],
+        [
+          2924390,
+          "pass"
+        ],
+        [
+          2926790,
+          "pass"
+        ],
+        [
+          2929520,
+          "pass"
+        ],
+        [
+          2930410,
+          "pass"
+        ],
+        [
+          2932620,
+          "pass"
+        ]
+      ],
+      "clip_id": "clip23"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "assist",
+      "last_event": "dribble_past",
+      "t0_ms": 2882466,
+      "t1_ms": 3023580,
+      "template_id": "quick_restart_set_piece_chain",
+      "source": "sliding",
+      "event_ids": [
+        "atom_fill_0046_Assist_2882466",
+        "atom_fill_0047_Shot_2883030",
+        "atom_fill_0048_Goal_2883530",
+        "event_000091",
+        "event_000092",
+        "event_000093",
+        "event_000094",
+        "event_000095",
+        "event_000096",
+        "event_000097",
+        "event_000098",
+        "event_000099",
+        "event_000100",
+        "event_000101",
+        "event_000102",
+        "event_000103",
+        "event_000104",
+        "event_000105",
+        "event_000106",
+        "event_000107",
+        "event_000108",
+        "event_000109",
+        "event_000110",
+        "event_000111",
+        "event_000112",
+        "event_000113",
+        "event_000114",
+        "event_000115",
+        "event_000116",
+        "event_000117"
+      ],
+      "event_keys": [
+        [
+          2882466,
+          "assist"
+        ],
+        [
+          2883030,
+          "shot"
+        ],
+        [
+          2883530,
+          "goal"
+        ],
+        [
+          2904310,
+          "pass"
+        ],
+        [
+          2906650,
+          "pass"
+        ],
+        [
+          2908270,
+          "pass"
+        ],
+        [
+          2911020,
+          "pass"
+        ],
+        [
+          2912880,
+          "pass"
+        ],
+        [
+          2915470,
+          "pass"
+        ],
+        [
+          2916630,
+          "pass"
+        ],
+        [
+          2917560,
+          "pass"
+        ],
+        [
+          2920470,
+          "pass"
+        ],
+        [
+          2922590,
+          "pass"
+        ],
+        [
+          2924390,
+          "pass"
+        ],
+        [
+          2926790,
+          "pass"
+        ],
+        [
+          2929520,
+          "pass"
+        ],
+        [
+          2930410,
+          "pass"
+        ],
+        [
+          2932620,
+          "pass"
+        ],
+        [
+          2966000,
+          "successful_tackle"
+        ],
+        [
+          2972400,
+          "pass"
+        ],
+        [
+          2974790,
+          "pass"
+        ],
+        [
+          2982400,
+          "pass"
+        ],
+        [
+          2983860,
+          "pass"
+        ],
+        [
+          2985890,
+          "pass"
+        ],
+        [
+          2987940,
+          "pass"
+        ],
+        [
+          3002860,
+          "pass"
+        ],
+        [
+          3006590,
+          "dribble_past"
+        ],
+        [
+          3010740,
+          "shot"
+        ],
+        [
+          3011710,
+          "shot"
+        ],
+        [
+          3023580,
+          "dribble_past"
+        ]
+      ],
+      "clip_id": "clip24"
+    },
+    {
+      "chain_category": "danger",
+      "first_event": "successful_tackle",
+      "last_event": "throw_in",
+      "t0_ms": 2966000,
+      "t1_ms": 3102710,
+      "template_id": "shot_post_bar_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000106",
+        "event_000107",
+        "event_000108",
+        "event_000109",
+        "event_000110",
+        "event_000111",
+        "event_000112",
+        "event_000113",
+        "event_000114",
+        "event_000115",
+        "event_000116",
+        "event_000117",
+        "event_000118",
+        "event_000119",
+        "event_000120",
+        "event_000121"
+      ],
+      "event_keys": [
+        [
+          2966000,
+          "successful_tackle"
+        ],
+        [
+          2972400,
+          "pass"
+        ],
+        [
+          2974790,
+          "pass"
+        ],
+        [
+          2982400,
+          "pass"
+        ],
+        [
+          2983860,
+          "pass"
+        ],
+        [
+          2985890,
+          "pass"
+        ],
+        [
+          2987940,
+          "pass"
+        ],
+        [
+          3002860,
+          "pass"
+        ],
+        [
+          3006590,
+          "dribble_past"
+        ],
+        [
+          3010740,
+          "shot"
+        ],
+        [
+          3011710,
+          "shot"
+        ],
+        [
+          3023580,
+          "dribble_past"
+        ],
+        [
+          3027310,
+          "shot"
+        ],
+        [
+          3028410,
+          "shot"
+        ],
+        [
+          3057810,
+          "aerial_won"
+        ],
+        [
+          3102710,
+          "throw_in"
+        ]
+      ],
+      "clip_id": "clip25"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "shot",
+      "last_event": "pass",
+      "t0_ms": 3027310,
+      "t1_ms": 3164070,
+      "template_id": "quick_restart_set_piece_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000118",
+        "event_000119",
+        "event_000120",
+        "event_000121",
+        "event_000122",
+        "event_000123",
+        "event_000124",
+        "event_000125",
+        "event_000126",
+        "event_000127",
+        "event_000128",
+        "event_000129",
+        "event_000130",
+        "event_000131",
+        "event_000132",
+        "event_000133",
+        "event_000134",
+        "event_000135",
+        "event_000136",
+        "event_000137",
+        "event_000138",
+        "event_000139"
+      ],
+      "event_keys": [
+        [
+          3027310,
+          "shot"
+        ],
+        [
+          3028410,
+          "shot"
+        ],
+        [
+          3057810,
+          "aerial_won"
+        ],
+        [
+          3102710,
+          "throw_in"
+        ],
+        [
+          3114980,
+          "pass"
+        ],
+        [
+          3117820,
+          "pass"
+        ],
+        [
+          3121090,
+          "pass"
+        ],
+        [
+          3123690,
+          "pass"
+        ],
+        [
+          3127770,
+          "pass"
+        ],
+        [
+          3130640,
+          "pass"
+        ],
+        [
+          3131450,
+          "pass"
+        ],
+        [
+          3132800,
+          "pass"
+        ],
+        [
+          3135200,
+          "pass"
+        ],
+        [
+          3140280,
+          "pass"
+        ],
+        [
+          3141150,
+          "pass"
+        ],
+        [
+          3142390,
+          "pass"
+        ],
+        [
+          3143930,
+          "pass"
+        ],
+        [
+          3148070,
+          "pass"
+        ],
+        [
+          3150400,
+          "pass"
+        ],
+        [
+          3157500,
+          "pass"
+        ],
+        [
+          3160620,
+          "pass"
+        ],
+        [
+          3164070,
+          "pass"
+        ]
+      ],
+      "clip_id": "clip26"
+    },
+    {
+      "chain_category": "danger",
+      "first_event": "pass",
+      "last_event": "pass",
+      "t0_ms": 3114980,
+      "t1_ms": 3290780,
+      "template_id": "shot_post_bar_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000122",
+        "event_000123",
+        "event_000124",
+        "event_000125",
+        "event_000126",
+        "event_000127",
+        "event_000128",
+        "event_000129",
+        "event_000130",
+        "event_000131",
+        "event_000132",
+        "event_000133",
+        "event_000134",
+        "event_000135",
+        "event_000136",
+        "event_000137",
+        "event_000138",
+        "event_000139",
+        "event_000140",
+        "event_000141",
+        "event_000142",
+        "event_000143",
+        "event_000144",
+        "event_000145",
+        "event_000146",
+        "event_000147",
+        "event_000148",
+        "event_000149",
+        "event_000150"
+      ],
+      "event_keys": [
+        [
+          3114980,
+          "pass"
+        ],
+        [
+          3117820,
+          "pass"
+        ],
+        [
+          3121090,
+          "pass"
+        ],
+        [
+          3123690,
+          "pass"
+        ],
+        [
+          3127770,
+          "pass"
+        ],
+        [
+          3130640,
+          "pass"
+        ],
+        [
+          3131450,
+          "pass"
+        ],
+        [
+          3132800,
+          "pass"
+        ],
+        [
+          3135200,
+          "pass"
+        ],
+        [
+          3140280,
+          "pass"
+        ],
+        [
+          3141150,
+          "pass"
+        ],
+        [
+          3142390,
+          "pass"
+        ],
+        [
+          3143930,
+          "pass"
+        ],
+        [
+          3148070,
+          "pass"
+        ],
+        [
+          3150400,
+          "pass"
+        ],
+        [
+          3157500,
+          "pass"
+        ],
+        [
+          3160620,
+          "pass"
+        ],
+        [
+          3164070,
+          "pass"
+        ],
+        [
+          3216570,
+          "shot"
+        ],
+        [
+          3234800,
+          "shot"
+        ],
+        [
+          3240080,
+          "shot"
+        ],
+        [
+          3266550,
+          "pass"
+        ],
+        [
+          3267310,
+          "pass"
+        ],
+        [
+          3269480,
+          "pass"
+        ],
+        [
+          3274810,
+          "pass"
+        ],
+        [
+          3279560,
+          "pass"
+        ],
+        [
+          3285200,
+          "pass"
+        ],
+        [
+          3288240,
+          "pass"
+        ],
+        [
+          3290780,
+          "pass"
+        ]
+      ],
+      "clip_id": "clip27"
+    },
+    {
+      "chain_category": "danger",
+      "first_event": "shot",
+      "last_event": "shot",
+      "t0_ms": 3216570,
+      "t1_ms": 3382890,
+      "template_id": "shot_post_bar_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000140",
+        "event_000141",
+        "event_000142",
+        "event_000143",
+        "event_000144",
+        "event_000145",
+        "event_000146",
+        "event_000147",
+        "event_000148",
+        "event_000149",
+        "event_000150",
+        "event_000151",
+        "event_000152",
+        "event_000153"
+      ],
+      "event_keys": [
+        [
+          3216570,
+          "shot"
+        ],
+        [
+          3234800,
+          "shot"
+        ],
+        [
+          3240080,
+          "shot"
+        ],
+        [
+          3266550,
+          "pass"
+        ],
+        [
+          3267310,
+          "pass"
+        ],
+        [
+          3269480,
+          "pass"
+        ],
+        [
+          3274810,
+          "pass"
+        ],
+        [
+          3279560,
+          "pass"
+        ],
+        [
+          3285200,
+          "pass"
+        ],
+        [
+          3288240,
+          "pass"
+        ],
+        [
+          3290780,
+          "pass"
+        ],
+        [
+          3294420,
+          "pass"
+        ],
+        [
+          3362110,
+          "shot"
+        ],
+        [
+          3382890,
+          "shot"
+        ]
+      ],
+      "clip_id": "clip28"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "pass",
+      "last_event": "throw_in",
+      "t0_ms": 3294420,
+      "t1_ms": 3423750,
+      "template_id": "throw_in_build_up_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000151",
+        "event_000152",
+        "event_000153",
+        "event_000154"
+      ],
+      "event_keys": [
+        [
+          3294420,
+          "pass"
+        ],
+        [
+          3362110,
+          "shot"
+        ],
+        [
+          3382890,
+          "shot"
+        ],
+        [
+          3423750,
+          "throw_in"
+        ]
+      ],
+      "clip_id": "clip29"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "throw_in",
+      "last_event": "shot",
+      "t0_ms": 3423750,
+      "t1_ms": 3555440,
+      "template_id": "quick_restart_set_piece_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000154",
+        "event_000155",
+        "event_000156",
+        "event_000157",
+        "event_000158",
+        "event_000159",
+        "event_000160",
+        "event_000161",
+        "event_000162",
+        "event_000163",
+        "event_000164",
+        "event_000165",
+        "event_000166",
+        "event_000167",
+        "event_000168",
+        "event_000169",
+        "event_000170",
+        "event_000171",
+        "event_000172"
+      ],
+      "event_keys": [
+        [
+          3423750,
+          "throw_in"
+        ],
+        [
+          3479750,
+          "pass"
+        ],
+        [
+          3482420,
+          "pass"
+        ],
+        [
+          3485300,
+          "pass"
+        ],
+        [
+          3488360,
+          "pass"
+        ],
+        [
+          3490530,
+          "pass"
+        ],
+        [
+          3495320,
+          "pass"
+        ],
+        [
+          3495690,
+          "pass"
+        ],
+        [
+          3498440,
+          "pass"
+        ],
+        [
+          3500470,
+          "pass"
+        ],
+        [
+          3502750,
+          "pass"
+        ],
+        [
+          3506400,
+          "pass"
+        ],
+        [
+          3509700,
+          "pass"
+        ],
+        [
+          3512320,
+          "pass"
+        ],
+        [
+          3514820,
+          "pass"
+        ],
+        [
+          3516770,
+          "pass"
+        ],
+        [
+          3526090,
+          "shot"
+        ],
+        [
+          3549720,
+          "shot"
+        ],
+        [
+          3555440,
+          "shot"
+        ]
+      ],
+      "clip_id": "clip30"
+    },
+    {
+      "chain_category": "danger",
+      "first_event": "pass",
+      "last_event": "shot",
+      "t0_ms": 3479750,
+      "t1_ms": 3637850,
+      "template_id": "shot_post_bar_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000155",
+        "event_000156",
+        "event_000157",
+        "event_000158",
+        "event_000159",
+        "event_000160",
+        "event_000161",
+        "event_000162",
+        "event_000163",
+        "event_000164",
+        "event_000165",
+        "event_000166",
+        "event_000167",
+        "event_000168",
+        "event_000169",
+        "event_000170",
+        "event_000171",
+        "event_000172",
+        "event_000173",
+        "event_000174",
+        "event_000175"
+      ],
+      "event_keys": [
+        [
+          3479750,
+          "pass"
+        ],
+        [
+          3482420,
+          "pass"
+        ],
+        [
+          3485300,
+          "pass"
+        ],
+        [
+          3488360,
+          "pass"
+        ],
+        [
+          3490530,
+          "pass"
+        ],
+        [
+          3495320,
+          "pass"
+        ],
+        [
+          3495690,
+          "pass"
+        ],
+        [
+          3498440,
+          "pass"
+        ],
+        [
+          3500470,
+          "pass"
+        ],
+        [
+          3502750,
+          "pass"
+        ],
+        [
+          3506400,
+          "pass"
+        ],
+        [
+          3509700,
+          "pass"
+        ],
+        [
+          3512320,
+          "pass"
+        ],
+        [
+          3514820,
+          "pass"
+        ],
+        [
+          3516770,
+          "pass"
+        ],
+        [
+          3526090,
+          "shot"
+        ],
+        [
+          3549720,
+          "shot"
+        ],
+        [
+          3555440,
+          "shot"
+        ],
+        [
+          3609460,
+          "shot"
+        ],
+        [
+          3631680,
+          "shot"
+        ],
+        [
+          3637850,
+          "shot"
+        ]
+      ],
+      "clip_id": "clip31"
+    },
+    {
+      "chain_category": "danger",
+      "first_event": "shot",
+      "last_event": "throw_in",
+      "t0_ms": 3609460,
+      "t1_ms": 3742880,
+      "template_id": "shot_post_bar_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000173",
+        "event_000174",
+        "event_000175",
+        "event_000176",
+        "event_000177",
+        "event_000178",
+        "event_000179",
+        "event_000180",
+        "event_000181",
+        "event_000182",
+        "event_000183",
+        "event_000184",
+        "event_000185"
+      ],
+      "event_keys": [
+        [
+          3609460,
+          "shot"
+        ],
+        [
+          3631680,
+          "shot"
+        ],
+        [
+          3637850,
+          "shot"
+        ],
+        [
+          3658760,
+          "pass"
+        ],
+        [
+          3661180,
+          "pass"
+        ],
+        [
+          3664170,
+          "pass"
+        ],
+        [
+          3666950,
+          "pass"
+        ],
+        [
+          3670820,
+          "pass"
+        ],
+        [
+          3672390,
+          "pass"
+        ],
+        [
+          3673720,
+          "pass"
+        ],
+        [
+          3736660,
+          "throw_in"
+        ],
+        [
+          3738420,
+          "aerial_won"
+        ],
+        [
+          3742880,
+          "throw_in"
+        ]
+      ],
+      "clip_id": "clip32"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "pass",
+      "last_event": "successful_tackle",
+      "t0_ms": 3658760,
+      "t1_ms": 3793810,
+      "template_id": "throw_in_build_up_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000176",
+        "event_000177",
+        "event_000178",
+        "event_000179",
+        "event_000180",
+        "event_000181",
+        "event_000182",
+        "event_000183",
+        "event_000184",
+        "event_000185",
+        "event_000186",
+        "event_000187",
+        "event_000188"
+      ],
+      "event_keys": [
+        [
+          3658760,
+          "pass"
+        ],
+        [
+          3661180,
+          "pass"
+        ],
+        [
+          3664170,
+          "pass"
+        ],
+        [
+          3666950,
+          "pass"
+        ],
+        [
+          3670820,
+          "pass"
+        ],
+        [
+          3672390,
+          "pass"
+        ],
+        [
+          3673720,
+          "pass"
+        ],
+        [
+          3736660,
+          "throw_in"
+        ],
+        [
+          3738420,
+          "aerial_won"
+        ],
+        [
+          3742880,
+          "throw_in"
+        ],
+        [
+          3764530,
+          "successful_tackle"
+        ],
+        [
+          3781930,
+          "throw_in"
+        ],
+        [
+          3793810,
+          "successful_tackle"
+        ]
+      ],
+      "clip_id": "clip33"
+    },
+    {
+      "chain_category": "danger",
+      "first_event": "successful_tackle",
+      "last_event": "full_time",
+      "t0_ms": 3764530,
+      "t1_ms": 3916840,
+      "template_id": "shot_save_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000186",
+        "event_000187",
+        "event_000188",
+        "event_000189",
+        "event_000190",
+        "event_000191",
+        "event_000192",
+        "event_000193",
+        "event_000194",
+        "event_000195",
+        "event_000196",
+        "event_000197",
+        "event_000198",
+        "event_000199",
+        "event_000200"
+      ],
+      "event_keys": [
+        [
+          3764530,
+          "successful_tackle"
+        ],
+        [
+          3781930,
+          "throw_in"
+        ],
+        [
+          3793810,
+          "successful_tackle"
+        ],
+        [
+          3843650,
+          "pass"
+        ],
+        [
+          3847770,
+          "pass"
+        ],
+        [
+          3851600,
+          "pass"
+        ],
+        [
+          3855220,
+          "pass"
+        ],
+        [
+          3878670,
+          "keeper_save"
+        ],
+        [
+          3892930,
+          "pass"
+        ],
+        [
+          3897370,
+          "pass"
+        ],
+        [
+          3900400,
+          "pass"
+        ],
+        [
+          3903190,
+          "pass"
+        ],
+        [
+          3904020,
+          "pass"
+        ],
+        [
+          3912700,
+          "successful_tackle"
+        ],
+        [
+          3916840,
+          "full_time"
+        ]
+      ],
+      "clip_id": "clip34"
+    },
+    {
+      "chain_category": "danger",
+      "first_event": "pass",
+      "last_event": "full_time",
+      "t0_ms": 3843650,
+      "t1_ms": 3916840,
+      "template_id": "shot_save_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000189",
+        "event_000190",
+        "event_000191",
+        "event_000192",
+        "event_000193",
+        "event_000194",
+        "event_000195",
+        "event_000196",
+        "event_000197",
+        "event_000198",
+        "event_000199",
+        "event_000200"
+      ],
+      "event_keys": [
+        [
+          3843650,
+          "pass"
+        ],
+        [
+          3847770,
+          "pass"
+        ],
+        [
+          3851600,
+          "pass"
+        ],
+        [
+          3855220,
+          "pass"
+        ],
+        [
+          3878670,
+          "keeper_save"
+        ],
+        [
+          3892930,
+          "pass"
+        ],
+        [
+          3897370,
+          "pass"
+        ],
+        [
+          3900400,
+          "pass"
+        ],
+        [
+          3903190,
+          "pass"
+        ],
+        [
+          3904020,
+          "pass"
+        ],
+        [
+          3912700,
+          "successful_tackle"
+        ],
+        [
+          3916840,
+          "full_time"
+        ]
+      ],
+      "clip_id": "clip35"
+    },
+    {
+      "chain_category": "danger",
+      "first_event": "player_entrance",
+      "last_event": "successful_tackle",
+      "t0_ms": 4038670,
+      "t1_ms": 4182569,
+      "template_id": "goal_line_extreme_save_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000201",
+        "event_000202",
+        "event_000203",
+        "event_000204",
+        "event_000205",
+        "event_000206"
+      ],
+      "event_keys": [
+        [
+          4038670,
+          "player_entrance"
+        ],
+        [
+          4111600,
+          "match_start"
+        ],
+        [
+          4123560,
+          "successful_tackle"
+        ],
+        [
+          4154430,
+          "aerial_won"
+        ],
+        [
+          4173770,
+          "free_kick"
+        ],
+        [
+          4182569,
+          "successful_tackle"
+        ]
+      ],
+      "clip_id": "clip36"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "match_start",
+      "last_event": "aerial_won",
+      "t0_ms": 4111600,
+      "t1_ms": 4265600,
+      "template_id": "throw_in_build_up_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000202",
+        "event_000203",
+        "event_000204",
+        "event_000205",
+        "event_000206",
+        "event_000207",
+        "event_000208"
+      ],
+      "event_keys": [
+        [
+          4111600,
+          "match_start"
+        ],
+        [
+          4123560,
+          "successful_tackle"
+        ],
+        [
+          4154430,
+          "aerial_won"
+        ],
+        [
+          4173770,
+          "free_kick"
+        ],
+        [
+          4182569,
+          "successful_tackle"
+        ],
+        [
+          4264420,
+          "corner"
+        ],
+        [
+          4265600,
+          "aerial_won"
+        ]
+      ],
+      "clip_id": "clip37"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "corner",
+      "last_event": "shot",
+      "t0_ms": 4264420,
+      "t1_ms": 4362970,
+      "template_id": "throw_in_build_up_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000207",
+        "event_000208",
+        "event_000209",
+        "event_000210",
+        "event_000211"
+      ],
+      "event_keys": [
+        [
+          4264420,
+          "corner"
+        ],
+        [
+          4265600,
+          "aerial_won"
+        ],
+        [
+          4315080,
+          "throw_in"
+        ],
+        [
+          4322470,
+          "foul"
+        ],
+        [
+          4362970,
+          "shot"
+        ]
+      ],
+      "clip_id": "clip38"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "throw_in",
+      "last_event": "foul",
+      "t0_ms": 4315080,
+      "t1_ms": 4463570,
+      "template_id": "throw_in_build_up_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000209",
+        "event_000210",
+        "event_000211",
+        "event_000212",
+        "event_000213",
+        "event_000214",
+        "event_000215",
+        "event_000216"
+      ],
+      "event_keys": [
+        [
+          4315080,
+          "throw_in"
+        ],
+        [
+          4322470,
+          "foul"
+        ],
+        [
+          4362970,
+          "shot"
+        ],
+        [
+          4379480,
+          "shot"
+        ],
+        [
+          4403910,
+          "shot"
+        ],
+        [
+          4409390,
+          "shot"
+        ],
+        [
+          4447550,
+          "foul"
+        ],
+        [
+          4463570,
+          "foul"
+        ]
+      ],
+      "clip_id": "clip39"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "shot",
+      "last_event": "foul",
+      "t0_ms": 4379480,
+      "t1_ms": 4546380,
+      "template_id": "throw_in_build_up_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000212",
+        "event_000213",
+        "event_000214",
+        "event_000215",
+        "event_000216",
+        "event_000217",
+        "event_000218",
+        "event_000219"
+      ],
+      "event_keys": [
+        [
+          4379480,
+          "shot"
+        ],
+        [
+          4403910,
+          "shot"
+        ],
+        [
+          4409390,
+          "shot"
+        ],
+        [
+          4447550,
+          "foul"
+        ],
+        [
+          4463570,
+          "foul"
+        ],
+        [
+          4495080,
+          "successful_tackle"
+        ],
+        [
+          4505820,
+          "aerial_won"
+        ],
+        [
+          4546380,
+          "foul"
+        ]
+      ],
+      "clip_id": "clip40"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "successful_tackle",
+      "last_event": "pass",
+      "t0_ms": 4495080,
+      "t1_ms": 4636920,
+      "template_id": "quick_restart_set_piece_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000217",
+        "event_000218",
+        "event_000219",
+        "event_000220",
+        "event_000221",
+        "event_000222",
+        "event_000223",
+        "event_000224",
+        "event_000225",
+        "event_000226"
+      ],
+      "event_keys": [
+        [
+          4495080,
+          "successful_tackle"
+        ],
+        [
+          4505820,
+          "aerial_won"
+        ],
+        [
+          4546380,
+          "foul"
+        ],
+        [
+          4560650,
+          "foul"
+        ],
+        [
+          4590090,
+          "free_kick"
+        ],
+        [
+          4611210,
+          "successful_tackle"
+        ],
+        [
+          4631070,
+          "pass"
+        ],
+        [
+          4634070,
+          "pass"
+        ],
+        [
+          4635590,
+          "pass"
+        ],
+        [
+          4636920,
+          "pass"
+        ]
+      ],
+      "clip_id": "clip41"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "foul",
+      "last_event": "foul",
+      "t0_ms": 4560650,
+      "t1_ms": 4680100,
+      "template_id": "throw_in_build_up_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000220",
+        "event_000221",
+        "event_000222",
+        "event_000223",
+        "event_000224",
+        "event_000225",
+        "event_000226",
+        "event_000227",
+        "event_000228",
+        "event_000229",
+        "event_000230"
+      ],
+      "event_keys": [
+        [
+          4560650,
+          "foul"
+        ],
+        [
+          4590090,
+          "free_kick"
+        ],
+        [
+          4611210,
+          "successful_tackle"
+        ],
+        [
+          4631070,
+          "pass"
+        ],
+        [
+          4634070,
+          "pass"
+        ],
+        [
+          4635590,
+          "pass"
+        ],
+        [
+          4636920,
+          "pass"
+        ],
+        [
+          4655390,
+          "foul"
+        ],
+        [
+          4665870,
+          "receive_a_card"
+        ],
+        [
+          4674020,
+          "foul"
+        ],
+        [
+          4680100,
+          "foul"
+        ]
+      ],
+      "clip_id": "clip42"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "foul",
+      "last_event": "throw_in",
+      "t0_ms": 4655390,
+      "t1_ms": 4808290,
+      "template_id": "throw_in_build_up_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000227",
+        "event_000228",
+        "event_000229",
+        "event_000230",
+        "event_000231",
+        "event_000232",
+        "event_000233"
+      ],
+      "event_keys": [
+        [
+          4655390,
+          "foul"
+        ],
+        [
+          4665870,
+          "receive_a_card"
+        ],
+        [
+          4674020,
+          "foul"
+        ],
+        [
+          4680100,
+          "foul"
+        ],
+        [
+          4744360,
+          "substitution"
+        ],
+        [
+          4777610,
+          "throw_in"
+        ],
+        [
+          4808290,
+          "throw_in"
+        ]
+      ],
+      "clip_id": "clip43"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "substitution",
+      "last_event": "aerial_won",
+      "t0_ms": 4744360,
+      "t1_ms": 4859030,
+      "template_id": "throw_in_build_up_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000231",
+        "event_000232",
+        "event_000233",
+        "event_000234"
+      ],
+      "event_keys": [
+        [
+          4744360,
+          "substitution"
+        ],
+        [
+          4777610,
+          "throw_in"
+        ],
+        [
+          4808290,
+          "throw_in"
+        ],
+        [
+          4859030,
+          "aerial_won"
+        ]
+      ],
+      "clip_id": "clip44"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "aerial_won",
+      "last_event": "throw_in",
+      "t0_ms": 4859030,
+      "t1_ms": 4978080,
+      "template_id": "throw_in_build_up_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000234",
+        "event_000235",
+        "event_000236"
+      ],
+      "event_keys": [
+        [
+          4859030,
+          "aerial_won"
+        ],
+        [
+          4956540,
+          "dribble_past"
+        ],
+        [
+          4978080,
+          "throw_in"
+        ]
+      ],
+      "clip_id": "clip45"
+    },
+    {
+      "chain_category": "danger",
+      "first_event": "dribble_past",
+      "last_event": "pass",
+      "t0_ms": 4956540,
+      "t1_ms": 5091810,
+      "template_id": "second_phase_after_frame_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000235",
+        "event_000236",
+        "event_000237",
+        "event_000238",
+        "event_000239",
+        "event_000240",
+        "event_000241"
+      ],
+      "event_keys": [
+        [
+          4956540,
+          "dribble_past"
+        ],
+        [
+          4978080,
+          "throw_in"
+        ],
+        [
+          5023110,
+          "shot"
+        ],
+        [
+          5048540,
+          "shot"
+        ],
+        [
+          5060850,
+          "referees_decision"
+        ],
+        [
+          5079160,
+          "corner"
+        ],
+        [
+          5091810,
+          "pass"
+        ]
+      ],
+      "clip_id": "clip46"
+    },
+    {
+      "chain_category": "danger",
+      "first_event": "shot",
+      "last_event": "shot",
+      "t0_ms": 5023110,
+      "t1_ms": 5177850,
+      "template_id": "shot_post_bar_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000237",
+        "event_000238",
+        "event_000239",
+        "event_000240",
+        "event_000241",
+        "event_000242",
+        "event_000243",
+        "event_000244",
+        "event_000245",
+        "event_000246",
+        "event_000247",
+        "event_000248"
+      ],
+      "event_keys": [
+        [
+          5023110,
+          "shot"
+        ],
+        [
+          5048540,
+          "shot"
+        ],
+        [
+          5060850,
+          "referees_decision"
+        ],
+        [
+          5079160,
+          "corner"
+        ],
+        [
+          5091810,
+          "pass"
+        ],
+        [
+          5095610,
+          "pass"
+        ],
+        [
+          5098330,
+          "pass"
+        ],
+        [
+          5104310,
+          "pass"
+        ],
+        [
+          5105670,
+          "pass"
+        ],
+        [
+          5161010,
+          "corner"
+        ],
+        [
+          5162870,
+          "shot"
+        ],
+        [
+          5177850,
+          "shot"
+        ]
+      ],
+      "clip_id": "clip47"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "pass",
+      "last_event": "foul",
+      "t0_ms": 5095610,
+      "t1_ms": 5273350,
+      "template_id": "throw_in_build_up_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000242",
+        "event_000243",
+        "event_000244",
+        "event_000245",
+        "event_000246",
+        "event_000247",
+        "event_000248",
+        "event_000249",
+        "event_000250",
+        "event_000251",
+        "event_000252"
+      ],
+      "event_keys": [
+        [
+          5095610,
+          "pass"
+        ],
+        [
+          5098330,
+          "pass"
+        ],
+        [
+          5104310,
+          "pass"
+        ],
+        [
+          5105670,
+          "pass"
+        ],
+        [
+          5161010,
+          "corner"
+        ],
+        [
+          5162870,
+          "shot"
+        ],
+        [
+          5177850,
+          "shot"
+        ],
+        [
+          5207310,
+          "throw_in"
+        ],
+        [
+          5230430,
+          "foul"
+        ],
+        [
+          5242930,
+          "shot"
+        ],
+        [
+          5273350,
+          "foul"
+        ]
+      ],
+      "clip_id": "clip48"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "throw_in",
+      "last_event": "throw_in",
+      "t0_ms": 5207310,
+      "t1_ms": 5343820,
+      "template_id": "throw_in_build_up_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000249",
+        "event_000250",
+        "event_000251",
+        "event_000252",
+        "event_000253",
+        "event_000254",
+        "event_000255"
+      ],
+      "event_keys": [
+        [
+          5207310,
+          "throw_in"
+        ],
+        [
+          5230430,
+          "foul"
+        ],
+        [
+          5242930,
+          "shot"
+        ],
+        [
+          5273350,
+          "foul"
+        ],
+        [
+          5298840,
+          "foul"
+        ],
+        [
+          5304740,
+          "foul"
+        ],
+        [
+          5343820,
+          "throw_in"
+        ]
+      ],
+      "clip_id": "clip49"
+    },
+    {
+      "chain_category": "outcome",
+      "first_event": "throw_in",
+      "last_event": "goal",
+      "t0_ms": 5343820,
+      "t1_ms": 5491386,
+      "template_id": "rebound_follow_up_goal",
+      "source": "anchor",
+      "event_ids": [
+        "event_000255",
+        "event_000256",
+        "event_000257",
+        "atom_fill_0049_Shot_5425002",
+        "atom_fill_0050_Pass_5432681",
+        "atom_fill_0051_Assist_5433313",
+        "atom_fill_0052_Shot_5434490",
+        "atom_fill_0053_Goal_5434743",
+        "event_000258",
+        "atom_fill_0054_Shot_5490769",
+        "atom_fill_0055_Goal_5491386"
+      ],
+      "event_keys": [
+        [
+          5343820,
+          "throw_in"
+        ],
+        [
+          5401690,
+          "shot"
+        ],
+        [
+          5402360,
+          "goal_line_clearance"
+        ],
+        [
+          5425002,
+          "shot"
+        ],
+        [
+          5432681,
+          "pass"
+        ],
+        [
+          5433313,
+          "assist"
+        ],
+        [
+          5434490,
+          "shot"
+        ],
+        [
+          5434743,
+          "goal"
+        ],
+        [
+          5481560,
+          "shot"
+        ],
+        [
+          5490769,
+          "shot"
+        ],
+        [
+          5491386,
+          "goal"
+        ]
+      ],
+      "clip_id": "clip50"
+    },
+    {
+      "chain_category": "outcome",
+      "first_event": "shot",
+      "last_event": "aerial_won",
+      "t0_ms": 5401690,
+      "t1_ms": 5524220,
+      "template_id": "rebound_follow_up_goal",
+      "source": "anchor",
+      "event_ids": [
+        "event_000256",
+        "event_000257",
+        "atom_fill_0049_Shot_5425002",
+        "atom_fill_0050_Pass_5432681",
+        "atom_fill_0051_Assist_5433313",
+        "atom_fill_0052_Shot_5434490",
+        "atom_fill_0053_Goal_5434743",
+        "event_000258",
+        "atom_fill_0054_Shot_5490769",
+        "atom_fill_0055_Goal_5491386",
+        "atom_fill_0056_Shot_5497410",
+        "atom_fill_0057_Goal_5498810",
+        "atom_fill_0058_Shot_5504210",
+        "atom_fill_0059_Goal_5505217",
+        "event_000259"
+      ],
+      "event_keys": [
+        [
+          5401690,
+          "shot"
+        ],
+        [
+          5402360,
+          "goal_line_clearance"
+        ],
+        [
+          5425002,
+          "shot"
+        ],
+        [
+          5432681,
+          "pass"
+        ],
+        [
+          5433313,
+          "assist"
+        ],
+        [
+          5434490,
+          "shot"
+        ],
+        [
+          5434743,
+          "goal"
+        ],
+        [
+          5481560,
+          "shot"
+        ],
+        [
+          5490769,
+          "shot"
+        ],
+        [
+          5491386,
+          "goal"
+        ],
+        [
+          5497410,
+          "shot"
+        ],
+        [
+          5498810,
+          "goal"
+        ],
+        [
+          5504210,
+          "shot"
+        ],
+        [
+          5505217,
+          "goal"
+        ],
+        [
+          5524220,
+          "aerial_won"
+        ]
+      ],
+      "clip_id": "clip51"
+    },
+    {
+      "chain_category": "outcome",
+      "first_event": "goal",
+      "last_event": "goal",
+      "t0_ms": 5505217,
+      "t1_ms": 5662164,
+      "template_id": "outcome_other",
+      "source": "anchor",
+      "event_ids": [
+        "atom_fill_0059_Goal_5505217",
+        "event_000259",
+        "event_000260",
+        "event_000261",
+        "atom_fill_0060_Pass_5619281",
+        "atom_fill_0061_Assist_5619830",
+        "atom_fill_0062_Shot_5623284",
+        "atom_fill_0063_Goal_5624796",
+        "atom_fill_0064_Goal_line_clearance_5630516",
+        "event_000262",
+        "event_000263",
+        "atom_fill_0065_Shot_5661612",
+        "atom_fill_0066_Goal_5662164"
+      ],
+      "event_keys": [
+        [
+          5505217,
+          "goal"
+        ],
+        [
+          5524220,
+          "aerial_won"
+        ],
+        [
+          5594300,
+          "throw_in"
+        ],
+        [
+          5608340,
+          "foul"
+        ],
+        [
+          5619281,
+          "pass"
+        ],
+        [
+          5619830,
+          "assist"
+        ],
+        [
+          5623284,
+          "shot"
+        ],
+        [
+          5624796,
+          "goal"
+        ],
+        [
+          5630516,
+          "goal_line_clearance"
+        ],
+        [
+          5642050,
+          "free_kick"
+        ],
+        [
+          5654360,
+          "dribble_past"
+        ],
+        [
+          5661612,
+          "shot"
+        ],
+        [
+          5662164,
+          "goal"
+        ]
+      ],
+      "clip_id": "clip52"
+    },
+    {
+      "chain_category": "outcome",
+      "first_event": "foul",
+      "last_event": "goal",
+      "t0_ms": 5608340,
+      "t1_ms": 5734966,
+      "template_id": "outcome_other",
+      "source": "anchor",
+      "event_ids": [
+        "event_000261",
+        "atom_fill_0060_Pass_5619281",
+        "atom_fill_0061_Assist_5619830",
+        "atom_fill_0062_Shot_5623284",
+        "atom_fill_0063_Goal_5624796",
+        "atom_fill_0064_Goal_line_clearance_5630516",
+        "event_000262",
+        "event_000263",
+        "atom_fill_0065_Shot_5661612",
+        "atom_fill_0066_Goal_5662164",
+        "atom_fill_0067_Shot_5719526",
+        "atom_fill_0068_Goal_5719966",
+        "atom_fill_0069_Shot_5730286",
+        "atom_fill_0070_Goal_5732016",
+        "atom_fill_0071_Shot_5734286",
+        "atom_fill_0072_Goal_5734966"
+      ],
+      "event_keys": [
+        [
+          5608340,
+          "foul"
+        ],
+        [
+          5619281,
+          "pass"
+        ],
+        [
+          5619830,
+          "assist"
+        ],
+        [
+          5623284,
+          "shot"
+        ],
+        [
+          5624796,
+          "goal"
+        ],
+        [
+          5630516,
+          "goal_line_clearance"
+        ],
+        [
+          5642050,
+          "free_kick"
+        ],
+        [
+          5654360,
+          "dribble_past"
+        ],
+        [
+          5661612,
+          "shot"
+        ],
+        [
+          5662164,
+          "goal"
+        ],
+        [
+          5719526,
+          "shot"
+        ],
+        [
+          5719966,
+          "goal"
+        ],
+        [
+          5730286,
+          "shot"
+        ],
+        [
+          5732016,
+          "goal"
+        ],
+        [
+          5734286,
+          "shot"
+        ],
+        [
+          5734966,
+          "goal"
+        ]
+      ],
+      "clip_id": "clip53"
+    },
+    {
+      "chain_category": "outcome",
+      "first_event": "shot",
+      "last_event": "successful_tackle",
+      "t0_ms": 5730286,
+      "t1_ms": 5881420,
+      "template_id": "rebound_follow_up_goal",
+      "source": "sliding",
+      "event_ids": [
+        "atom_fill_0069_Shot_5730286",
+        "atom_fill_0070_Goal_5732016",
+        "atom_fill_0071_Shot_5734286",
+        "atom_fill_0072_Goal_5734966",
+        "event_000264",
+        "event_000265"
+      ],
+      "event_keys": [
+        [
+          5730286,
+          "shot"
+        ],
+        [
+          5732016,
+          "goal"
+        ],
+        [
+          5734286,
+          "shot"
+        ],
+        [
+          5734966,
+          "goal"
+        ],
+        [
+          5820460,
+          "substitution"
+        ],
+        [
+          5881420,
+          "successful_tackle"
+        ]
+      ],
+      "clip_id": "clip54"
+    },
+    {
+      "chain_category": "danger",
+      "first_event": "substitution",
+      "last_event": "substitution",
+      "t0_ms": 5820460,
+      "t1_ms": 5991070,
+      "template_id": "goal_line_extreme_save_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000264",
+        "event_000265",
+        "event_000266",
+        "event_000267"
+      ],
+      "event_keys": [
+        [
+          5820460,
+          "substitution"
+        ],
+        [
+          5881420,
+          "successful_tackle"
+        ],
+        [
+          5960440,
+          "substitution"
+        ],
+        [
+          5991070,
+          "substitution"
+        ]
+      ],
+      "clip_id": "clip55"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "substitution",
+      "last_event": "foul",
+      "t0_ms": 5960440,
+      "t1_ms": 6082650,
+      "template_id": "throw_in_build_up_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000266",
+        "event_000267",
+        "event_000268",
+        "event_000269",
+        "event_000270",
+        "event_000271"
+      ],
+      "event_keys": [
+        [
+          5960440,
+          "substitution"
+        ],
+        [
+          5991070,
+          "substitution"
+        ],
+        [
+          6018900,
+          "aerial_won"
+        ],
+        [
+          6035950,
+          "throw_in"
+        ],
+        [
+          6069470,
+          "foul"
+        ],
+        [
+          6082650,
+          "foul"
+        ]
+      ],
+      "clip_id": "clip56"
+    },
+    {
+      "chain_category": "special",
+      "first_event": "aerial_won",
+      "last_event": "foul",
+      "t0_ms": 6018900,
+      "t1_ms": 6172870,
+      "template_id": "throw_in_build_up_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000268",
+        "event_000269",
+        "event_000270",
+        "event_000271",
+        "event_000272",
+        "event_000273",
+        "event_000274",
+        "event_000275"
+      ],
+      "event_keys": [
+        [
+          6018900,
+          "aerial_won"
+        ],
+        [
+          6035950,
+          "throw_in"
+        ],
+        [
+          6069470,
+          "foul"
+        ],
+        [
+          6082650,
+          "foul"
+        ],
+        [
+          6106550,
+          "free_kick"
+        ],
+        [
+          6159070,
+          "foul"
+        ],
+        [
+          6166110,
+          "receive_a_card"
+        ],
+        [
+          6172870,
+          "foul"
+        ]
+      ],
+      "clip_id": "clip57"
+    },
+    {
+      "chain_category": "correction",
+      "first_event": "free_kick",
+      "last_event": "free_kick",
+      "t0_ms": 6106550,
+      "t1_ms": 6190010,
+      "template_id": "var_penalty_cancelled_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000272",
+        "event_000273",
+        "event_000274",
+        "event_000275",
+        "event_000276"
+      ],
+      "event_keys": [
+        [
+          6106550,
+          "free_kick"
+        ],
+        [
+          6159070,
+          "foul"
+        ],
+        [
+          6166110,
+          "receive_a_card"
+        ],
+        [
+          6172870,
+          "foul"
+        ],
+        [
+          6190010,
+          "free_kick"
+        ]
+      ],
+      "clip_id": "clip58"
+    },
+    {
+      "chain_category": "danger",
+      "first_event": "free_kick",
+      "last_event": "keeper_save",
+      "t0_ms": 6190010,
+      "t1_ms": 6348230,
+      "template_id": "shot_save_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000276",
+        "event_000277",
+        "event_000278"
+      ],
+      "event_keys": [
+        [
+          6190010,
+          "free_kick"
+        ],
+        [
+          6292330,
+          "aerial_won"
+        ],
+        [
+          6348230,
+          "keeper_save"
+        ]
+      ],
+      "clip_id": "clip59"
+    },
+    {
+      "chain_category": "danger",
+      "first_event": "aerial_won",
+      "last_event": "keeper_save",
+      "t0_ms": 6292330,
+      "t1_ms": 6378760,
+      "template_id": "shot_save_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000277",
+        "event_000278",
+        "event_000279"
+      ],
+      "event_keys": [
+        [
+          6292330,
+          "aerial_won"
+        ],
+        [
+          6348230,
+          "keeper_save"
+        ],
+        [
+          6378760,
+          "keeper_save"
+        ]
+      ],
+      "clip_id": "clip60"
+    },
+    {
+      "chain_category": "danger",
+      "first_event": "keeper_save",
+      "last_event": "throw_in",
+      "t0_ms": 6378760,
+      "t1_ms": 6529680,
+      "template_id": "shot_save_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000279",
+        "event_000280",
+        "event_000281"
+      ],
+      "event_keys": [
+        [
+          6378760,
+          "keeper_save"
+        ],
+        [
+          6454090,
+          "substitution"
+        ],
+        [
+          6529680,
+          "throw_in"
+        ]
+      ],
+      "clip_id": "clip61"
+    },
+    {
+      "chain_category": "danger",
+      "first_event": "substitution",
+      "last_event": "keeper_save",
+      "t0_ms": 6454090,
+      "t1_ms": 6616460,
+      "template_id": "shot_save_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000280",
+        "event_000281",
+        "event_000282"
+      ],
+      "event_keys": [
+        [
+          6454090,
+          "substitution"
+        ],
+        [
+          6529680,
+          "throw_in"
+        ],
+        [
+          6616460,
+          "keeper_save"
+        ]
+      ],
+      "clip_id": "clip62"
+    },
+    {
+      "chain_category": "danger",
+      "first_event": "keeper_save",
+      "last_event": "substitution",
+      "t0_ms": 6616460,
+      "t1_ms": 6685670,
+      "template_id": "shot_save_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000282",
+        "event_000283"
+      ],
+      "event_keys": [
+        [
+          6616460,
+          "keeper_save"
+        ],
+        [
+          6685670,
+          "substitution"
+        ]
+      ],
+      "clip_id": "clip63"
+    },
+    {
+      "chain_category": "danger",
+      "first_event": "substitution",
+      "last_event": "keeper_save",
+      "t0_ms": 6685670,
+      "t1_ms": 6803250,
+      "template_id": "shot_save_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000283",
+        "event_000284",
+        "event_000285",
+        "event_000286",
+        "event_000287",
+        "event_000288",
+        "event_000289"
+      ],
+      "event_keys": [
+        [
+          6685670,
+          "substitution"
+        ],
+        [
+          6751950,
+          "corner"
+        ],
+        [
+          6753350,
+          "shot"
+        ],
+        [
+          6754100,
+          "keeper_save"
+        ],
+        [
+          6781410,
+          "aerial_won"
+        ],
+        [
+          6801240,
+          "shot"
+        ],
+        [
+          6803250,
+          "keeper_save"
+        ]
+      ],
+      "clip_id": "clip64"
+    },
+    {
+      "chain_category": "danger",
+      "first_event": "corner",
+      "last_event": "throw_in",
+      "t0_ms": 6751950,
+      "t1_ms": 6865490,
+      "template_id": "shot_save_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000284",
+        "event_000285",
+        "event_000286",
+        "event_000287",
+        "event_000288",
+        "event_000289",
+        "event_000290",
+        "event_000291",
+        "event_000292",
+        "event_000293"
+      ],
+      "event_keys": [
+        [
+          6751950,
+          "corner"
+        ],
+        [
+          6753350,
+          "shot"
+        ],
+        [
+          6754100,
+          "keeper_save"
+        ],
+        [
+          6781410,
+          "aerial_won"
+        ],
+        [
+          6801240,
+          "shot"
+        ],
+        [
+          6803250,
+          "keeper_save"
+        ],
+        [
+          6807060,
+          "shot"
+        ],
+        [
+          6808840,
+          "keeper_save"
+        ],
+        [
+          6837300,
+          "keeper_save"
+        ],
+        [
+          6865490,
+          "throw_in"
+        ]
+      ],
+      "clip_id": "clip65"
+    },
+    {
+      "chain_category": "correction",
+      "first_event": "aerial_won",
+      "last_event": "foul",
+      "t0_ms": 6994430,
+      "t1_ms": 7070270,
+      "template_id": "var_overturn_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000294",
+        "event_000295",
+        "event_000296",
+        "event_000297",
+        "event_000298"
+      ],
+      "event_keys": [
+        [
+          6994430,
+          "aerial_won"
+        ],
+        [
+          7042920,
+          "foul"
+        ],
+        [
+          7053780,
+          "receive_a_card"
+        ],
+        [
+          7063620,
+          "foul"
+        ],
+        [
+          7070270,
+          "foul"
+        ]
+      ],
+      "clip_id": "clip66"
+    },
+    {
+      "chain_category": "danger",
+      "first_event": "referees_decision",
+      "last_event": "full_time",
+      "t0_ms": 7180210,
+      "t1_ms": 7241800,
+      "template_id": "shot_save_chain",
+      "source": "sliding",
+      "event_ids": [
+        "event_000299",
+        "event_000300",
+        "event_000301",
+        "event_000302"
+      ],
+      "event_keys": [
+        [
+          7180210,
+          "referees_decision"
+        ],
+        [
+          7194580,
+          "free_kick"
+        ],
+        [
+          7235690,
+          "keeper_save"
+        ],
+        [
+          7241800,
+          "full_time"
+        ]
+      ],
+      "clip_id": "clip67"
+    }
+  ],
+  "category_counts": {
+    "danger": 24,
+    "special": 28,
+    "outcome": 14,
+    "correction": 2
+  },
+  "template_counts": {
+    "shot_post_bar_chain": 8,
+    "throw_in_build_up_chain": 22,
+    "outcome_other": 4,
+    "rebound_follow_up_goal": 6,
+    "second_phase_after_frame_chain": 2,
+    "goal_line_extreme_save_chain": 3,
+    "quick_restart_set_piece_chain": 6,
+    "corner_coop_goal": 1,
+    "team_buildup_goal": 2,
+    "shot_save_chain": 11,
+    "turnover_counter_goal": 1,
+    "var_penalty_cancelled_chain": 1,
+    "var_overturn_chain": 1
+  },
+  "adapter_config": {
+    "adapter": "AlgoStripAdapter",
+    "backend": "causal_chain6.strip_pipeline",
+    "profile": "production",
+    "llm_enabled": false,
+    "classify_backend": "chain4_agent_rule",
+    "qwen_scope": "template/category only; geometry/stream unchanged",
+    "pre_ms": 120000,
+    "post_ms": 60000,
+    "window_ms": 180000,
+    "step_ms": 90000,
+    "sliding_merge_mode": "none",
+    "sliding_post_nms": "off",
+    "min_margin": 0.08,
+    "use_sliding_recall": true,
+    "note": "窗参来自算法 profile.strip；评测不内置触发/lookback"
+  },
+  "algo_root": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/11.20sstory_chain",
+  "forbidden_inputs": [
+    "*_causal.json",
+    "strip_gold.json"
+  ],
+  "note": "production profile unchanged; no margin retuning"
+}

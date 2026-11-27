@@ -1,0 +1,73 @@
+{
+  "schema": "sportscausal_prediction_export_v1",
+  "run_id": "C_levante_rayo_fresh_general_v1",
+  "algorithm_commit": "0e83213f2850d3e2cddc0b8291c197c9a83ef425",
+  "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "match_id": "FH-35DA83FD",
+  "source": {
+    "match_id": "FH-35DA83FD",
+    "video_id": "FH-35DA83FD-Vf6d7ce5566bc",
+    "native_video_id": "10月20日 25-26赛季西甲第9轮 莱万特VS巴列卡诺 国语",
+    "source_sha256": "5ab8ee77ed0d0cb56f020348d4c73b4c27c738f6285db941e1797f87bb1d4d73",
+    "identity_provenance": "verified intake and frozen source inventory; confirm actual pairing on server",
+    "timeline": "source_video_media_seconds"
+  },
+  "fresh_manifest": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_C_levante_rayo/fresh_general_v1/run_manifest.json",
+  "fresh_manifest_sha256": "b4bbcf1b2623c863ee03cd15744121f63bc13349ee5f69029a75625759736dd5",
+  "input_hashes": {
+    "match_json": {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/data/交付_out/10月20日_25-26赛季西甲第9轮_莱万特VS巴列卡诺_国语.json",
+      "sha256": "cffe1f86aa386e668b6ad3ce8a654113a814783b9343db4ce63bb6ebb5f2e9c6"
+    },
+    "source_mp4": {
+      "path": "/mnt/data4/migu/10月20日 25-26赛季西甲第9轮 莱万特VS巴列卡诺 国语.mp4",
+      "sha256": "5ab8ee77ed0d0cb56f020348d4c73b4c27c738f6285db941e1797f87bb1d4d73"
+    },
+    "causal_atoms_json": {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/data/交付_out/10月20日_25-26赛季西甲第9轮_莱万特VS巴列卡诺_国语_causal.json",
+      "sha256": "e88ce072fcd22c2a723abd3374b9c29f6ef5584fe8ac0bd6431e4c84decfdbd1"
+    }
+  },
+  "r3_template_counts": {
+    "keeper_rescue": 0,
+    "alternating_threats": 0,
+    "alternating_threats_score_context": 0,
+    "comeback": 0,
+    "equalization": 0,
+    "lead_preservation": 1,
+    "set_piece_breakthrough": 0,
+    "turnover_to_goal": 0,
+    "threat_phase_change": 0
+  },
+  "n_r3_predictions": 1,
+  "n_agent_attempts": 0,
+  "agent_coverage_complete": false,
+  "unattempted_candidate_ids": [
+    "lead_preservation:1"
+  ],
+  "agent_runs": [],
+  "mixed_diagnostic_artifacts": [],
+  "scope": "template-conditioned development if known reference type selected; do not treat missing runs as complete batch",
+  "artifacts": [
+    {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_C_levante_rayo/fresh_general_v1/02_strip831/strip_A_original.json",
+      "sha256": "dccef2e76ab61659f501c8e80deeaab4b47f1acb086149703183c83e462c54d9",
+      "stage": "strip831",
+      "variant": "all"
+    },
+    {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_C_levante_rayo/fresh_general_v1/03_v1_adapt/predicted_causal.json",
+      "sha256": "27da952886846cc7df375e0ae609a09cbf440b1ac099a5b74947d7d44b825f34",
+      "stage": "adapted_causal",
+      "variant": "all"
+    },
+    {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_C_levante_rayo/fresh_general_v1/08_r3/lead_preservation__1/initial_edl.json",
+      "sha256": "92cc5cc63604f5faf7c725a5be127a6631b7d6542d4eb2c47332129d5c8a7d9a",
+      "stage": "r3_initial",
+      "variant": "all",
+      "template_id": "lead_preservation",
+      "candidate_id": "lead_preservation:1"
+    }
+  ]
+}

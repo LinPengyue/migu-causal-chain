@@ -1,0 +1,29 @@
+{
+  "schema": "v3_atomic_enrich_v1",
+  "n_raw_events": 159,
+  "n_causal_atoms_unique": 35,
+  "n_injected": 35,
+  "n_skipped_duplicate": 0,
+  "injected_by_type": {
+    "Pass": 16,
+    "Goal": 5,
+    "Defensive_action": 1,
+    "Save": 8,
+    "Shot": 4,
+    "Dribble_past": 1
+  },
+  "n_goal_injected": 5,
+  "n_goal_injected_live": 5,
+  "n_goal_injected_replay": 0,
+  "note": "Atoms only; no chain_category/subtype/windows/edges. is_replay prefers LIVE when any non-replay occurrence exists.",
+  "out_events": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_CRO_croatia_canada/fresh_general_v1/01_enrich/events_enriched.json",
+  "source_events": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/data/交付_out/2022-11-28 克罗地亚vs加拿大.json",
+  "source_causal_atoms_only": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/data/交付_out/2022-11-28 克罗地亚vs加拿大_causal.json",
+  "input_mode": "HUMAN_ATOM_ENRICHED_DEV",
+  "human_annotation_atoms_used": true,
+  "independent_atomic_annotations_used": false,
+  "source_independent_atoms": null,
+  "eligible_for_raw_only_evaluation": false,
+  "eligible_for_event_annotated_evaluation": false,
+  "goal_recovery_reliance": "human_atoms_plus_raw_events_dev_only"
+}

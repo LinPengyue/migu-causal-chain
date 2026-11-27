@@ -1,0 +1,14 @@
+{
+  "existing_strip_dump": "/data2/lpy1/causal-chain2/11.23casual_chain/reports/strip_dump/10月20日_25-26赛季西甲第9轮_莱万特VS巴列卡诺_国语.json",
+  "mode": "gold_clips",
+  "pipeline": "gold_clip(gold_events)→causal_chain6.strip",
+  "n_clips": 8,
+  "n_all_preds": 6,
+  "unique_event_ids_in_preds": 30,
+  "reuse_decision": "REJECT",
+  "reasons": [
+    "mode=gold_clips eval dump aligned to gold clip windows, not full-match reinfer",
+    "v1_causal_adapter.build_from_paths refuses mode==gold_clips",
+    "coverage 30 event_ids / 6 preds vs expected full-timeline reinfer"
+  ]
+}

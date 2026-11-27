@@ -1,0 +1,100 @@
+{
+  "schema": "sportscausal_prediction_export_v1",
+  "run_id": "CRO_croatia_canada_fresh_general_v1",
+  "algorithm_commit": "cc86f2c7609706cab4cc8c5f57650ef477575024",
+  "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "match_id": "FH-5DA0F989",
+  "source": {
+    "match_id": "FH-5DA0F989",
+    "video_id": "FH-5DA0F989-V07b51a9276b3",
+    "native_video_id": "2022-11-28 克罗地亚vs加拿大",
+    "source_sha256": "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725",
+    "identity_provenance": "FanEdit match_id FH-5DA0F989 paired to native 交付_out + /mnt/data4/migu/2022-11-28 克罗地亚vs加拿大.mp4; sha recomputed 2026-11-27; score left=team_1 from historical 0-1→4-1 comeback narrative",
+    "timeline": "source_video_media_seconds"
+  },
+  "fresh_manifest": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_CRO_croatia_canada/fresh_general_v1/run_manifest.json",
+  "fresh_manifest_sha256": "e0d3c2945b543e9371c2f9bc309086e983d628d300e06ea1b43e72c9cfddea97",
+  "input_hashes": {
+    "match_json": {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/data/交付_out/2022-11-28 克罗地亚vs加拿大.json",
+      "sha256": "66645845a3d1d414ef6a39a35f8aa23725c1a4d96f7055b968fe8d78b42fe7eb"
+    },
+    "source_mp4": {
+      "path": "/mnt/data4/migu/2022-11-28 克罗地亚vs加拿大.mp4",
+      "sha256": "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725"
+    },
+    "causal_atoms_json": {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/data/交付_out/2022-11-28 克罗地亚vs加拿大_causal.json",
+      "sha256": "c9c9ef3b30814b1530cc58552c850ec770a9b6beaf0fc5248c94c42c2d5a9fa6"
+    }
+  },
+  "r3_template_counts": {
+    "keeper_rescue": 1,
+    "alternating_threats": 0,
+    "alternating_threats_score_context": 0,
+    "comeback": 1,
+    "equalization": 1,
+    "lead_preservation": 1,
+    "set_piece_breakthrough": 0,
+    "turnover_to_goal": 0,
+    "threat_phase_change": 0
+  },
+  "n_r3_predictions": 4,
+  "n_agent_attempts": 0,
+  "agent_coverage_complete": false,
+  "unattempted_candidate_ids": [
+    "comeback:1",
+    "equalization:1",
+    "keeper_rescue:1",
+    "lead_preservation:1"
+  ],
+  "agent_runs": [],
+  "mixed_diagnostic_artifacts": [],
+  "scope": "template-conditioned development if known reference type selected; do not treat missing runs as complete batch",
+  "artifacts": [
+    {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_CRO_croatia_canada/fresh_general_v1/02_strip831/strip_A_original.json",
+      "sha256": "ab82cddb68c3bdb09329b047ffee4bc1482404d9fc16afcb582acfd006cd605b",
+      "stage": "strip831",
+      "variant": "all"
+    },
+    {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_CRO_croatia_canada/fresh_general_v1/03_v1_adapt/predicted_causal.json",
+      "sha256": "8e2bf52ad24a4997631053be23242f00c60657f1de47e6814da2d31ecd58c3fd",
+      "stage": "adapted_causal",
+      "variant": "all"
+    },
+    {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_CRO_croatia_canada/fresh_general_v1/08_r3/keeper_rescue__1/initial_edl.json",
+      "sha256": "4146ae61ef1959f30589e38c594c8e4f50101ebd9abd4cd4071142cc6c9c0c05",
+      "stage": "r3_initial",
+      "variant": "all",
+      "template_id": "keeper_rescue",
+      "candidate_id": "keeper_rescue:1"
+    },
+    {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_CRO_croatia_canada/fresh_general_v1/08_r3/comeback__1/initial_edl.json",
+      "sha256": "11f8ce3fa6b9fcc2ebf30aa6dd00dee3fac69306a5f4731dae129d530bd090e1",
+      "stage": "r3_initial",
+      "variant": "all",
+      "template_id": "comeback",
+      "candidate_id": "comeback:1"
+    },
+    {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_CRO_croatia_canada/fresh_general_v1/08_r3/equalization__1/initial_edl.json",
+      "sha256": "aecf27062ba20a7d30ffcebd1ac1aed381af0571f4332be7d20873cda7254484",
+      "stage": "r3_initial",
+      "variant": "all",
+      "template_id": "equalization",
+      "candidate_id": "equalization:1"
+    },
+    {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_CRO_croatia_canada/fresh_general_v1/08_r3/lead_preservation__1/initial_edl.json",
+      "sha256": "11f8ce3fa6b9fcc2ebf30aa6dd00dee3fac69306a5f4731dae129d530bd090e1",
+      "stage": "r3_initial",
+      "variant": "all",
+      "template_id": "lead_preservation",
+      "candidate_id": "lead_preservation:1"
+    }
+  ]
+}

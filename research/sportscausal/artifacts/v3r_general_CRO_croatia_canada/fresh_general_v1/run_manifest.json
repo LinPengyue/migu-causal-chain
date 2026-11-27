@@ -1,0 +1,185 @@
+{
+  "schema": "sportscausal_fresh_v3r_general_v1",
+  "status": "COMPLETE",
+  "git_head": "cc86f2c7609706cab4cc8c5f57650ef477575024",
+  "delivery_ref": "93804fbf9591b54d86fb170385491ed4ced024bd",
+  "video_id": "2022-11-28 克罗地亚vs加拿大",
+  "duration_sec": 8034.703,
+  "inputs": {
+    "match_json": {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/data/交付_out/2022-11-28 克罗地亚vs加拿大.json",
+      "sha256": "66645845a3d1d414ef6a39a35f8aa23725c1a4d96f7055b968fe8d78b42fe7eb"
+    },
+    "source_mp4": {
+      "path": "/mnt/data4/migu/2022-11-28 克罗地亚vs加拿大.mp4",
+      "sha256": "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725"
+    },
+    "causal_atoms_json": {
+      "path": "/data2/lpy1/worktrees/migu-sportscausal-template-gen/data/交付_out/2022-11-28 克罗地亚vs加拿大_causal.json",
+      "sha256": "c9c9ef3b30814b1530cc58552c850ec770a9b6beaf0fc5248c94c42c2d5a9fa6"
+    }
+  },
+  "score_side_mapping": {
+    "left": "team_1",
+    "right": "team_2"
+  },
+  "score_mapping_provenance": "historical Croatia comeback 0-1→4-1; score_recognition starts 0:1 (Canada) then 1:1→2:1→3:1→4:1 with left=克罗地亚=team_1, right=加拿大=team_2; matches 11.20 delivery Croatia-Canada narrative",
+  "n_raw_valid_media_windows": 159,
+  "n_raw_events": 159,
+  "identity_note": "Input paths and hashes record caller-selected pairing; not visual identity proof.",
+  "entry_sha256": "8beb83601cf6dd20ec75e96982e4444f584657648127293442459443f832e313",
+  "requested_templates": [
+    "alternating_threats",
+    "comeback",
+    "equalization",
+    "keeper_rescue",
+    "lead_preservation",
+    "set_piece_breakthrough",
+    "threat_phase_change",
+    "turnover_to_goal"
+  ],
+  "legacy_seed_manifest": null,
+  "legacy_seed_policy": "explicit_existing_source_matched_seed_only; no automatic T01 rerun",
+  "stages": [
+    {
+      "stage": "01_enrich",
+      "n_raw": 159,
+      "n_enriched": 194,
+      "n_injected": 35,
+      "sha256": "6bc3ab653c97bdbca4f28dd5c225341cbd4e50cc05177eed5de1b1fa1f5e22d2"
+    },
+    {
+      "stage": "02_strip831",
+      "n_events": 194,
+      "n_chains": 61,
+      "sha256": "ab82cddb68c3bdb09329b047ffee4bc1482404d9fc16afcb582acfd006cd605b"
+    },
+    {
+      "stage": "03_v1_adapt",
+      "n_chains": 61,
+      "sha256": "8e2bf52ad24a4997631053be23242f00c60657f1de47e6814da2d31ecd58c3fd"
+    },
+    {
+      "stage": "04_evidence",
+      "n_atoms": 177,
+      "n_chains": 61,
+      "n_score_nodes": 5,
+      "sha256": "2447c8dfb057f32ab95d7b3f0b928ecf24c5f1b2e755441cef21878bd7700159"
+    },
+    {
+      "stage": "05_r1",
+      "n_atoms": 177
+    },
+    {
+      "stage": "06_r2a4"
+    },
+    {
+      "stage": "07_r2bc",
+      "candidate_counts": {
+        "comeback": 1,
+        "equalization": 1,
+        "lead_preservation": 1,
+        "set_piece_breakthrough": 0,
+        "turnover_to_goal": 0,
+        "threat_phase_change": 0
+      }
+    },
+    {
+      "stage": "08_r3",
+      "n_stories": 4,
+      "template_counts": {
+        "keeper_rescue": 1,
+        "alternating_threats": 0,
+        "alternating_threats_score_context": 0,
+        "comeback": 1,
+        "equalization": 1,
+        "lead_preservation": 1,
+        "set_piece_breakthrough": 0,
+        "turnover_to_goal": 0,
+        "threat_phase_change": 0
+      }
+    }
+  ],
+  "paid_api_enabled": false,
+  "http_calls": 0,
+  "quality_verified": false,
+  "first_live_verified": false,
+  "release_authorized": false,
+  "argv": [
+    "run_fresh_v3r_general.py",
+    "--match-json",
+    "/data2/lpy1/worktrees/migu-sportscausal-template-gen/data/交付_out/2022-11-28 克罗地亚vs加拿大.json",
+    "--causal-atoms-json",
+    "/data2/lpy1/worktrees/migu-sportscausal-template-gen/data/交付_out/2022-11-28 克罗地亚vs加拿大_causal.json",
+    "--allow-dev",
+    "--source-mp4",
+    "/mnt/data4/migu/2022-11-28 克罗地亚vs加拿大.mp4",
+    "--expected-source-sha256",
+    "6640b236677be804c116efe8b506715bfdd8a0b2896ad7a6b5d63897d7a77725",
+    "--score-left-team",
+    "team_1",
+    "--score-mapping-provenance",
+    "historical Croatia comeback 0-1→4-1; score_recognition starts 0:1 (Canada) then 1:1→2:1→3:1→4:1 with left=克罗地亚=team_1, right=加拿大=team_2; matches 11.20 delivery Croatia-Canada narrative",
+    "--out-dir",
+    "/data2/lpy1/worktrees/migu-sportscausal-template-gen/research/sportscausal/artifacts/v3r_general_CRO_croatia_canada/fresh_general_v1"
+  ],
+  "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "artifacts": {
+    "01_enrich/enrich_report.json": "11a924ac372921d1326b995af0e2d38d7f09599fe84c67465ae1c0947c2baf14",
+    "01_enrich/events_enriched.json": "6bc3ab653c97bdbca4f28dd5c225341cbd4e50cc05177eed5de1b1fa1f5e22d2",
+    "02_strip831/strip_A_original.json": "ab82cddb68c3bdb09329b047ffee4bc1482404d9fc16afcb582acfd006cd605b",
+    "02_strip831/timeline_enriched.json": "04bbb33bec24eba59b79f728665937bb9c86dec448e92f4b4cffa0d3c819c0bc",
+    "03_v1_adapt/goal_recovery.json": "227df4103915582866e5a97733b0ef8475acb7091b296976de4d68fbd78f3f9b",
+    "03_v1_adapt/predicted_causal.json": "8e2bf52ad24a4997631053be23242f00c60657f1de47e6814da2d31ecd58c3fd",
+    "04_evidence/evidence.json": "2447c8dfb057f32ab95d7b3f0b928ecf24c5f1b2e755441cef21878bd7700159",
+    "04_evidence/score_path.json": "0f65d8419355e9e4ffe8126cb5eadf4c8c035bf9928d65386841bd8de694d408",
+    "05_r1/normalized_semantics.json": "aa1acd10dd327675b62d096979bfae929d3ff93831171a8f70c83b8be9cde350",
+    "06_r2a4/alternating_threats.json": "61db65b686cb1142b39e00197ca7c203b51907ce0da8c6fa43beb636e08fec1e",
+    "06_r2a4/alternating_threats_score_context.json": "a06863a4a9efac8ff9ca7f9516603e58198adaf1310a361f1276b51e0324cdee",
+    "06_r2a4/causal_episodes.json": "ff0ec0631ffac676413af1605898fb212b0e766cff239996893147328dad76d1",
+    "06_r2a4/keeper_rescue.json": "a32b3cf74536e0534123bc7bbebe4fd3c51c213f891a3c13dc0436ae5d6656a6",
+    "06_r2a4/observation_tasks.json": "416fec9073b91ea424bfd47a5fe10e75fa9408dc77d8be2c12418b52eab32b93",
+    "06_r2a4/relation_graph.json": "dbcf4dc7d54489a79c32f008f1a51882ca0e64bb676bec741bba829d5b21c2ca",
+    "06_r2a4/scoring_outcomes.json": "339d501cb43650025057223c94485b57181236ad5ba1b8b62ab9649c3e52a6b3",
+    "06_r2a4/summary.json": "c3c40f4330ee0da30f026d8897c62e30b066567f70630a96d1036e37698923ce",
+    "07_r2bc/anchor_pack.json": "f2ab2fe71cae1f9997ba9f8000c18c33446d6eb008af64628b42890ceee96d6f",
+    "07_r2bc/comeback.json": "b9e0eab37b8a0027fe513d9d08caf58f065803f61b11371023e2e1a818ceb9ef",
+    "07_r2bc/equalization.json": "e606298f5f2780ca2e3809ff8b87849e68ed0c6078b1be2bba4f217e390dda66",
+    "07_r2bc/lead_preservation.json": "d6be74e72976485eb4ddcf7c10aff69a29ae1542111a79a74a9dfcda50044fd7",
+    "07_r2bc/observation_tasks.json": "8340c87f822df881a3da55ac6024afdc100b43dd4c97c329b0fd16284fce6b1c",
+    "07_r2bc/set_piece_breakthrough.json": "6737f2f4a8a2a8adb621390a0bfd58c3afa3e6ea629b35e0d27ececa6c416df4",
+    "07_r2bc/threat_phase_change.json": "2268ab83a6cdfc7230a6efe4641e12527c641b8f590899dcb76a25a4fd0daa6a",
+    "07_r2bc/turnover_to_goal.json": "67a1b82e1b4c7b44e091ce266552809a2cc763d96de6de293ed60a91d1f5f5ac",
+    "08_r3/comeback__1/context_pool.json": "1209658497adeb29dcbb9244824ee35a99304d9a12af81ef879ed78ecb0bde17",
+    "08_r3/comeback__1/initial_edl.json": "11f8ce3fa6b9fcc2ebf30aa6dd00dee3fac69306a5f4731dae129d530bd090e1",
+    "08_r3/comeback__1/legacy_seed_metadata.json": "bc4d92d374bb0989e816cf0b5f71ffd33a4f068482320d885290690b9172d379",
+    "08_r3/comeback__1/materials.json": "6e49c772a9504c2d023859d087a77b49f96ac29a7d771029b9752c43ae20b70f",
+    "08_r3/comeback__1/observation_tasks.json": "8e355bed166eb3f303ea61665cf89b882e717dca84d658f1b0238d994a193f3e",
+    "08_r3/comeback__1/story_diagnostics.json": "3d28a91b8cc8e100db44161ed62440e3df46f5e82e50038e9a289736746a7ea4",
+    "08_r3/comeback__1/story_graph.json": "80a08842fd4d18a8fb563c5083ba2ad4697c3a163167a7741a366ae2ce6a9a95",
+    "08_r3/equalization__1/context_pool.json": "f3f3328206ac20291af5fb24949992b6aca6cf645272eb4e90dd108c0bf8204e",
+    "08_r3/equalization__1/initial_edl.json": "aecf27062ba20a7d30ffcebd1ac1aed381af0571f4332be7d20873cda7254484",
+    "08_r3/equalization__1/legacy_seed_metadata.json": "90a604aca928e5a1443130f40b9e8ce670e3c07b7de298ed69fa180a77783cea",
+    "08_r3/equalization__1/materials.json": "a5a98cfadef1af9a3c6d4fa19a339e257beb22f10cda7bbb8c2c31697de0bbff",
+    "08_r3/equalization__1/observation_tasks.json": "c5194aab24ffcbfaa771fe74ab67efa7b0a7e406e0dce79a3d2e2772cc5774a7",
+    "08_r3/equalization__1/story_diagnostics.json": "6aaeffe63851638befbb0ae8f4cf5aa01d218e32700f1919743844a507e93f3e",
+    "08_r3/equalization__1/story_graph.json": "b6e79bf0e88c2b8fad991fc04077e78d7a3ab4ff7ddfae9989f9a11d528b2e6e",
+    "08_r3/keeper_rescue__1/context_pool.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "08_r3/keeper_rescue__1/initial_edl.json": "4146ae61ef1959f30589e38c594c8e4f50101ebd9abd4cd4071142cc6c9c0c05",
+    "08_r3/keeper_rescue__1/legacy_seed_metadata.json": "90a604aca928e5a1443130f40b9e8ce670e3c07b7de298ed69fa180a77783cea",
+    "08_r3/keeper_rescue__1/materials.json": "cdb6245ab9a7881aa64d1d27d515df83506860d51e76ecc7026670d246558043",
+    "08_r3/keeper_rescue__1/observation_tasks.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "08_r3/keeper_rescue__1/story_diagnostics.json": "688893ba574577ac20a43ffb12904e36b5d0ec9e9317cef4454fb37d91c6edd8",
+    "08_r3/keeper_rescue__1/story_graph.json": "e2597f4552ea7a65df40945b892c17465f7e0af6cbe5976abba8d3ffab72ecb6",
+    "08_r3/lead_preservation__1/context_pool.json": "d83c48b9752ebf9125c18cc6f1aa86ad88efa8e1ca35d3faab5392de6afb1a97",
+    "08_r3/lead_preservation__1/initial_edl.json": "11f8ce3fa6b9fcc2ebf30aa6dd00dee3fac69306a5f4731dae129d530bd090e1",
+    "08_r3/lead_preservation__1/legacy_seed_metadata.json": "90a604aca928e5a1443130f40b9e8ce670e3c07b7de298ed69fa180a77783cea",
+    "08_r3/lead_preservation__1/materials.json": "6e49c772a9504c2d023859d087a77b49f96ac29a7d771029b9752c43ae20b70f",
+    "08_r3/lead_preservation__1/observation_tasks.json": "c993c489bc4eb897924d3c831d08a563fe5393ff9da34273bbc452ba220d2838",
+    "08_r3/lead_preservation__1/story_diagnostics.json": "3a808d621066b9fd090e51a24eba39843072c6821c2e4f3f1a2284bcde555d8e",
+    "08_r3/lead_preservation__1/story_graph.json": "72b53ab0ec491b2a8afb02fce535a2d2d72c45fd5fc9765b118cc72d70638772",
+    "08_r3/observation_tasks.json": "2df5f1156005fa49f7c83473179fbed616f17de84fb072036d678a7cb2cd0ad5",
+    "08_r3/summary.json": "c5c64a7b625c4b70dcb733da8b9ada1acd98ae94a0cab41c26a21389e6bfbdc3",
+    "ffprobe.json": "f7e27149209361e7e43f97684653aa950688a5bc1dc857e5e72df989578bf4b6"
+  }
+}

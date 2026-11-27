@@ -1,0 +1,81 @@
+{
+  "video_id": "10月20日 25-26赛季西甲第9轮 莱万特VS巴列卡诺 国语",
+  "input_tier": "RAW_EVENTS_ONLY",
+  "http_calls": 0,
+  "frozen_r2a4_reused": true,
+  "n_observation_tasks": 3,
+  "templates": {
+    "comeback": {
+      "operator": "state_transition",
+      "n_candidates": 0,
+      "candidates": []
+    },
+    "equalization": {
+      "operator": "state_transition",
+      "n_candidates": 0,
+      "candidates": []
+    },
+    "lead_preservation": {
+      "operator": "state_transition",
+      "n_candidates": 1,
+      "candidates": [
+        {
+          "candidate_id": "lead_preservation:1",
+          "subjects": [
+            "team_2"
+          ],
+          "nodes": [
+            {
+              "event_ids": [],
+              "actor": "team_2",
+              "actor_role": "state_subject",
+              "kind": "score_state"
+            },
+            {
+              "event_ids": [],
+              "actor": "team_2",
+              "actor_role": "state_subject",
+              "kind": "score_state"
+            },
+            {
+              "event_ids": [],
+              "actor": "team_2",
+              "actor_role": "state_subject",
+              "kind": "score_state"
+            },
+            {
+              "event_ids": [],
+              "actor": "team_2",
+              "actor_role": "state_subject",
+              "kind": "score_state"
+            }
+          ],
+          "unlocalized_state_indices": [
+            1,
+            2,
+            3
+          ],
+          "path_alternatives": null,
+          "switch_search_interval": null
+        }
+      ]
+    },
+    "set_piece_breakthrough": {
+      "operator": "relation_path",
+      "n_candidates": 0,
+      "candidates": []
+    },
+    "turnover_to_goal": {
+      "operator": "relation_path",
+      "n_candidates": 0,
+      "candidates": []
+    },
+    "threat_phase_change": {
+      "operator": "phase_change",
+      "n_candidates": 0,
+      "candidates": []
+    }
+  },
+  "quality_verified": false,
+  "first_live_verified": false
+}

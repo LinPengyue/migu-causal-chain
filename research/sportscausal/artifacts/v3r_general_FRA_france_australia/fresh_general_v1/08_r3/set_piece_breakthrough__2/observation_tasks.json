@@ -1,0 +1,168 @@
+[
+  {
+    "task_type": "goal_execution_roles",
+    "event_ids": [
+      "atom_fill_0065_Shot_5661612",
+      "atom_fill_0066_Goal_5662164"
+    ],
+    "goal_event_id": "atom_fill_0066_Goal_5662164",
+    "score_beneficiary": "team_1",
+    "goal_kind": "untyped_goal",
+    "known_executor": null,
+    "known_attacking_team": null,
+    "role_conflict": false,
+    "media_windows": [
+      [
+        5661.612,
+        5664.164
+      ]
+    ],
+    "questions": [
+      "identify actual ball-striking team",
+      "identify attacking team",
+      "ordinary goal, own goal, or other deflection",
+      "confirm first live footage"
+    ],
+    "reason": "separate execution, attack and score roles",
+    "resolved": false,
+    "task_id": "observe:5",
+    "video_id": "2022年11月23日 法国vs澳大利亚",
+    "preview_only": true
+  },
+  {
+    "task_id": "observe:r2bc:set_piece_breakthrough:2",
+    "video_id": "2022年11月23日 法国vs澳大利亚",
+    "candidate_id": "set_piece_breakthrough:2",
+    "preview_only": true,
+    "resolved": false,
+    "media_windows": [],
+    "task_type": "relation_path_verification",
+    "path_alternatives": [
+      {
+        "event_ids": [
+          "event_000262",
+          "event_000263",
+          "atom_fill_0065_Shot_5661612",
+          "atom_fill_0066_Goal_5662164"
+        ],
+        "path_chain_ids": [
+          "pred_0052",
+          "pred_0053"
+        ],
+        "media_windows": [
+          [
+            5638.46,
+            5648.61
+          ],
+          [
+            5650.43,
+            5660.32
+          ],
+          [
+            5661.612,
+            5664.164
+          ]
+        ],
+        "links": [
+          {
+            "from": "event_000262",
+            "to": "event_000263",
+            "relation": "ordered_predicted_members",
+            "chain_support": [
+              {
+                "chain_id": "pred_0052",
+                "state": "PARTIAL",
+                "subtype": "outcome_other"
+              },
+              {
+                "chain_id": "pred_0053",
+                "state": "PARTIAL",
+                "subtype": "outcome_other"
+              }
+            ],
+            "typed_local_relation": null,
+            "causal_verified": false
+          },
+          {
+            "from": "event_000263",
+            "to": "atom_fill_0065_Shot_5661612",
+            "relation": "ordered_predicted_members",
+            "chain_support": [
+              {
+                "chain_id": "pred_0052",
+                "state": "PARTIAL",
+                "subtype": "outcome_other"
+              },
+              {
+                "chain_id": "pred_0053",
+                "state": "PARTIAL",
+                "subtype": "outcome_other"
+              }
+            ],
+            "typed_local_relation": null,
+            "causal_verified": false
+          },
+          {
+            "from": "atom_fill_0065_Shot_5661612",
+            "to": "atom_fill_0066_Goal_5662164",
+            "relation": "ordered_predicted_members",
+            "chain_support": [
+              {
+                "chain_id": "pred_0052",
+                "state": "PARTIAL",
+                "subtype": "outcome_other"
+              },
+              {
+                "chain_id": "pred_0053",
+                "state": "PARTIAL",
+                "subtype": "outcome_other"
+              }
+            ],
+            "typed_local_relation": {
+              "kind": "shot_goal_context",
+              "event_ids": [
+                "atom_fill_0065_Shot_5661612",
+                "atom_fill_0066_Goal_5662164"
+              ],
+              "chain_support": [
+                {
+                  "chain_id": "pred_0052",
+                  "state": "PARTIAL",
+                  "subtype": "outcome_other"
+                },
+                {
+                  "chain_id": "pred_0053",
+                  "state": "PARTIAL",
+                  "subtype": "outcome_other"
+                }
+              ],
+              "shooter": null,
+              "goal_executor": null,
+              "score_beneficiary": "team_1",
+              "attacking_team": null,
+              "basis": "ordered_local_predicted_members_context_only",
+              "causal_verified": false,
+              "first_live_verified": false
+            },
+            "causal_verified": false
+          }
+        ],
+        "intermediate_event_ids": [
+          "event_000263",
+          "atom_fill_0065_Shot_5661612"
+        ]
+      }
+    ],
+    "event_ids": [
+      "atom_fill_0065_Shot_5661612",
+      "atom_fill_0066_Goal_5662164",
+      "event_000262",
+      "event_000263"
+    ],
+    "questions": [
+      "verify continuity and actual action roles",
+      "verify tactical or turnover-to-goal relationship",
+      "confirm first live footage"
+    ]
+  }
+]
