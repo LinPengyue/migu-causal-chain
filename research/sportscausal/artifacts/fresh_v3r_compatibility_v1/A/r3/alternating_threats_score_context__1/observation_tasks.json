@@ -1,0 +1,343 @@
+[
+  {
+    "task_type": "goal_execution_roles",
+    "event_ids": [
+      "atom_fill_0003_Shot_1335974",
+      "atom_fill_0004_Goal_1337123"
+    ],
+    "goal_event_id": "atom_fill_0004_Goal_1337123",
+    "score_beneficiary": "team_2",
+    "goal_kind": "untyped_goal",
+    "known_executor": null,
+    "known_attacking_team": null,
+    "role_conflict": false,
+    "media_windows": [
+      [
+        1335.974,
+        1339.123
+      ]
+    ],
+    "questions": [
+      "identify actual ball-striking team",
+      "identify attacking team",
+      "ordinary goal, own goal, or other deflection",
+      "confirm first live footage"
+    ],
+    "reason": "separate execution, attack and score roles",
+    "resolved": false,
+    "task_id": "observe:1",
+    "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+    "preview_only": true
+  },
+  {
+    "task_type": "goal_execution_roles",
+    "event_ids": [
+      "atom_fill_0074_Shot_6448924",
+      "atom_fill_0075_Goal_6449644"
+    ],
+    "goal_event_id": "atom_fill_0075_Goal_6449644",
+    "score_beneficiary": "team_1",
+    "goal_kind": "untyped_goal",
+    "known_executor": null,
+    "known_attacking_team": null,
+    "role_conflict": false,
+    "media_windows": [
+      [
+        6448.924,
+        6451.644
+      ]
+    ],
+    "questions": [
+      "identify actual ball-striking team",
+      "identify attacking team",
+      "ordinary goal, own goal, or other deflection",
+      "confirm first live footage"
+    ],
+    "reason": "separate execution, attack and score roles",
+    "resolved": false,
+    "task_id": "observe:2",
+    "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+    "preview_only": true
+  },
+  {
+    "task_type": "goal_execution_roles",
+    "event_ids": [
+      "atom_fill_0103_Shot_6841456",
+      "atom_fill_0104_Goal_6843088"
+    ],
+    "goal_event_id": "atom_fill_0104_Goal_6843088",
+    "score_beneficiary": "team_1",
+    "goal_kind": "untyped_goal",
+    "known_executor": null,
+    "known_attacking_team": null,
+    "role_conflict": false,
+    "media_windows": [
+      [
+        6841.456,
+        6845.088
+      ]
+    ],
+    "questions": [
+      "identify actual ball-striking team",
+      "identify attacking team",
+      "ordinary goal, own goal, or other deflection",
+      "confirm first live footage"
+    ],
+    "reason": "separate execution, attack and score roles",
+    "resolved": false,
+    "task_id": "observe:3",
+    "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+    "preview_only": true
+  },
+  {
+    "task_id": "observe:r2bc:turnover_to_goal:1",
+    "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+    "candidate_id": "turnover_to_goal:1",
+    "preview_only": true,
+    "resolved": false,
+    "media_windows": [],
+    "task_type": "relation_path_verification",
+    "path_alternatives": [
+      {
+        "event_ids": [
+          "event_000668",
+          "event_000669",
+          "atom_fill_0100_Pass_6829010",
+          "atom_fill_0101_Win_an_aerial_duel_6831837",
+          "atom_fill_0102_Assist_6836608",
+          "atom_fill_0103_Shot_6841456",
+          "atom_fill_0104_Goal_6843088"
+        ],
+        "path_chain_ids": [
+          "pred_0067",
+          "pred_0068"
+        ],
+        "media_windows": [
+          [
+            6810.16,
+            6824.07
+          ],
+          [
+            6829.01,
+            6831.01
+          ],
+          [
+            6831.837,
+            6833.837
+          ],
+          [
+            6836.608,
+            6838.608
+          ],
+          [
+            6841.456,
+            6845.088
+          ]
+        ],
+        "links": [
+          {
+            "from": "event_000668",
+            "to": "event_000669",
+            "relation": "ordered_predicted_members",
+            "chain_support": [
+              {
+                "chain_id": "pred_0067",
+                "state": "PARTIAL",
+                "subtype": "outcome_other"
+              },
+              {
+                "chain_id": "pred_0068",
+                "state": "PARTIAL",
+                "subtype": "rebound_follow_up_goal"
+              }
+            ],
+            "typed_local_relation": null,
+            "causal_verified": false
+          },
+          {
+            "from": "event_000669",
+            "to": "atom_fill_0100_Pass_6829010",
+            "relation": "ordered_predicted_members",
+            "chain_support": [
+              {
+                "chain_id": "pred_0067",
+                "state": "PARTIAL",
+                "subtype": "outcome_other"
+              },
+              {
+                "chain_id": "pred_0068",
+                "state": "PARTIAL",
+                "subtype": "rebound_follow_up_goal"
+              }
+            ],
+            "typed_local_relation": null,
+            "causal_verified": false
+          },
+          {
+            "from": "atom_fill_0100_Pass_6829010",
+            "to": "atom_fill_0101_Win_an_aerial_duel_6831837",
+            "relation": "ordered_predicted_members",
+            "chain_support": [
+              {
+                "chain_id": "pred_0067",
+                "state": "PARTIAL",
+                "subtype": "outcome_other"
+              },
+              {
+                "chain_id": "pred_0068",
+                "state": "PARTIAL",
+                "subtype": "rebound_follow_up_goal"
+              }
+            ],
+            "typed_local_relation": null,
+            "causal_verified": false
+          },
+          {
+            "from": "atom_fill_0101_Win_an_aerial_duel_6831837",
+            "to": "atom_fill_0102_Assist_6836608",
+            "relation": "ordered_predicted_members",
+            "chain_support": [
+              {
+                "chain_id": "pred_0067",
+                "state": "PARTIAL",
+                "subtype": "outcome_other"
+              },
+              {
+                "chain_id": "pred_0068",
+                "state": "PARTIAL",
+                "subtype": "rebound_follow_up_goal"
+              }
+            ],
+            "typed_local_relation": null,
+            "causal_verified": false
+          },
+          {
+            "from": "atom_fill_0102_Assist_6836608",
+            "to": "atom_fill_0103_Shot_6841456",
+            "relation": "ordered_predicted_members",
+            "chain_support": [
+              {
+                "chain_id": "pred_0067",
+                "state": "PARTIAL",
+                "subtype": "outcome_other"
+              },
+              {
+                "chain_id": "pred_0068",
+                "state": "PARTIAL",
+                "subtype": "rebound_follow_up_goal"
+              }
+            ],
+            "typed_local_relation": null,
+            "causal_verified": false
+          },
+          {
+            "from": "atom_fill_0103_Shot_6841456",
+            "to": "atom_fill_0104_Goal_6843088",
+            "relation": "ordered_predicted_members",
+            "chain_support": [
+              {
+                "chain_id": "pred_0067",
+                "state": "PARTIAL",
+                "subtype": "outcome_other"
+              },
+              {
+                "chain_id": "pred_0068",
+                "state": "PARTIAL",
+                "subtype": "rebound_follow_up_goal"
+              }
+            ],
+            "typed_local_relation": {
+              "kind": "shot_goal_context",
+              "event_ids": [
+                "atom_fill_0103_Shot_6841456",
+                "atom_fill_0104_Goal_6843088"
+              ],
+              "chain_support": [
+                {
+                  "chain_id": "pred_0067",
+                  "state": "PARTIAL",
+                  "subtype": "outcome_other"
+                },
+                {
+                  "chain_id": "pred_0068",
+                  "state": "PARTIAL",
+                  "subtype": "rebound_follow_up_goal"
+                },
+                {
+                  "chain_id": "pred_0069",
+                  "state": "PARTIAL",
+                  "subtype": "rebound_follow_up_goal"
+                }
+              ],
+              "shooter": null,
+              "goal_executor": null,
+              "score_beneficiary": "team_1",
+              "attacking_team": null,
+              "basis": "ordered_local_predicted_members_context_only",
+              "causal_verified": false,
+              "first_live_verified": false
+            },
+            "causal_verified": false
+          }
+        ],
+        "intermediate_event_ids": [
+          "event_000669",
+          "atom_fill_0100_Pass_6829010",
+          "atom_fill_0101_Win_an_aerial_duel_6831837",
+          "atom_fill_0102_Assist_6836608",
+          "atom_fill_0103_Shot_6841456"
+        ]
+      }
+    ],
+    "event_ids": [
+      "atom_fill_0100_Pass_6829010",
+      "atom_fill_0101_Win_an_aerial_duel_6831837",
+      "atom_fill_0102_Assist_6836608",
+      "atom_fill_0103_Shot_6841456",
+      "atom_fill_0104_Goal_6843088",
+      "event_000668",
+      "event_000669"
+    ],
+    "questions": [
+      "verify continuity and actual action roles",
+      "verify tactical or turnover-to-goal relationship",
+      "confirm first live footage"
+    ]
+  },
+  {
+    "task_id": "observe:r2bc:threat_phase_change:1",
+    "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+    "candidate_id": "threat_phase_change:1",
+    "preview_only": true,
+    "resolved": false,
+    "media_windows": [],
+    "task_type": "phase_switch_verification",
+    "search_interval": [
+      1922.55,
+      1955.54
+    ],
+    "event_ids": [
+      "event_000096",
+      "event_000097",
+      "event_000276",
+      "event_000277",
+      "event_000282",
+      "event_000398",
+      "event_000399",
+      "event_000400",
+      "event_000416",
+      "event_000417",
+      "event_000421",
+      "event_000472",
+      "event_000476",
+      "event_000477",
+      "event_000640",
+      "event_000641"
+    ],
+    "questions": [
+      "inspect whether the observed threat runs indicate a meaningful attack shift",
+      "identify the transition or intervening story event",
+      "confirm first live footage"
+    ]
+  }
+]

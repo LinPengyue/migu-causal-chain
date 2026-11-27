@@ -1,0 +1,406 @@
+{
+  "schema": "sportscausal_story_graph_v1",
+  "video_id": "10月12日 2025世预赛亚洲区 阿联酋VS阿曼 国语",
+  "input_tier": "HUMAN_ATOM_ENRICHED_DEV",
+  "story_id": "keeper_rescue:1",
+  "template_id": "keeper_rescue",
+  "category": "人物故事链",
+  "subtype": "同队门将多次化险",
+  "narrative_goal": [
+    "表现同队门将反复化解威胁",
+    "挖掘比赛阶段及后续发展"
+  ],
+  "operator": "repeat",
+  "subjects": [
+    "team_1"
+  ],
+  "nodes": [
+    {
+      "node_id": "anchor:1",
+      "predicate": "goalkeeper_rescue",
+      "actor": "team_1",
+      "event_ids": [
+        "event_000096",
+        "event_000097"
+      ],
+      "core_event_ids": [
+        "event_000097"
+      ],
+      "anchor_t": 1056.03,
+      "window": [
+        1049.71,
+        1060.64
+      ],
+      "media_windows": [
+        [
+          1049.71,
+          1060.64
+        ]
+      ],
+      "score_observations": [
+        {
+          "event_id": "event_000096",
+          "score": [
+            0,
+            0
+          ]
+        },
+        {
+          "event_id": "event_000097",
+          "score": [
+            0,
+            0
+          ]
+        }
+      ],
+      "relation": {
+        "kind": "typed_relation_path",
+        "edges": [
+          {
+            "kind": "delivery_keeper",
+            "event_ids": [
+              "event_000096",
+              "event_000097"
+            ],
+            "attacker": "team_2",
+            "keeper": "team_1",
+            "basis": "local_role_compatible_action_pair",
+            "chain_support": [
+              {
+                "chain_id": "pred_0004",
+                "state": "PARTIAL",
+                "subtype": "quick_restart_set_piece_chain"
+              },
+              {
+                "chain_id": "pred_0005",
+                "state": "PARTIAL",
+                "subtype": "quick_restart_set_piece_chain"
+              }
+            ],
+            "causal_verified": false,
+            "inferred_shooter": false,
+            "inferred_keeper": false
+          }
+        ],
+        "causal_verified": false
+      },
+      "causal_verified": false,
+      "distinct_episode_basis": "local_predicted_relation",
+      "component_id": "attack:event_000096",
+      "predicate_evidence": [
+        {
+          "event_id": "event_000097",
+          "actor": "team_1",
+          "basis": "explicit_opponent_action_in_keeper_note"
+        }
+      ],
+      "goal_score_bindings": [],
+      "episode_id": "episode:3",
+      "actor_role": "goalkeeper_team",
+      "goal_roles": [],
+      "story_anchor": true,
+      "node_type": "anchor",
+      "source_node_id": "anchor:1",
+      "required": true,
+      "material_ids": [
+        "material:1"
+      ],
+      "observation_task_ids": []
+    },
+    {
+      "node_id": "anchor:2",
+      "predicate": "goalkeeper_rescue",
+      "actor": "team_1",
+      "event_ids": [
+        "event_000276",
+        "event_000277"
+      ],
+      "core_event_ids": [
+        "event_000277"
+      ],
+      "anchor_t": 1918.41,
+      "window": [
+        1912.32,
+        1922.55
+      ],
+      "media_windows": [
+        [
+          1912.32,
+          1922.55
+        ]
+      ],
+      "score_observations": [],
+      "relation": {
+        "kind": "typed_relation_path",
+        "edges": [
+          {
+            "kind": "delivery_keeper",
+            "event_ids": [
+              "event_000276",
+              "event_000277"
+            ],
+            "attacker": "team_2",
+            "keeper": "team_1",
+            "basis": "local_role_compatible_action_pair",
+            "chain_support": [
+              {
+                "chain_id": "pred_0015",
+                "state": "PARTIAL",
+                "subtype": "goal_line_extreme_save_chain"
+              },
+              {
+                "chain_id": "pred_0016",
+                "state": "PARTIAL",
+                "subtype": "shot_save_chain"
+              }
+            ],
+            "causal_verified": false,
+            "inferred_shooter": false,
+            "inferred_keeper": false
+          }
+        ],
+        "causal_verified": false
+      },
+      "causal_verified": false,
+      "distinct_episode_basis": "local_predicted_relation",
+      "component_id": "attack:event_000276",
+      "predicate_evidence": [
+        {
+          "event_id": "event_000277",
+          "actor": "team_1",
+          "basis": "explicit_opponent_action_in_keeper_note"
+        }
+      ],
+      "goal_score_bindings": [],
+      "episode_id": "episode:6",
+      "actor_role": "goalkeeper_team",
+      "goal_roles": [],
+      "story_anchor": true,
+      "node_type": "anchor",
+      "source_node_id": "anchor:2",
+      "required": true,
+      "material_ids": [
+        "material:2"
+      ],
+      "observation_task_ids": []
+    }
+  ],
+  "edges": [
+    {
+      "from": "anchor:1",
+      "to": "anchor:2",
+      "relation": "temporal_episode_order",
+      "causal_verified": false,
+      "edge_type": "temporal_episode_order"
+    }
+  ],
+  "context_candidates": [],
+  "path_alternatives": [],
+  "direct_observation_task_ids": [],
+  "source_candidate": {
+    "candidate_id": "keeper_rescue:1",
+    "subjects": [
+      "team_1"
+    ],
+    "actor_runs": null,
+    "nodes": [
+      {
+        "node_id": "anchor:1",
+        "predicate": "goalkeeper_rescue",
+        "actor": "team_1",
+        "event_ids": [
+          "event_000096",
+          "event_000097"
+        ],
+        "core_event_ids": [
+          "event_000097"
+        ],
+        "anchor_t": 1056.03,
+        "window": [
+          1049.71,
+          1060.64
+        ],
+        "media_windows": [
+          [
+            1049.71,
+            1060.64
+          ]
+        ],
+        "score_observations": [
+          {
+            "event_id": "event_000096",
+            "score": [
+              0,
+              0
+            ]
+          },
+          {
+            "event_id": "event_000097",
+            "score": [
+              0,
+              0
+            ]
+          }
+        ],
+        "relation": {
+          "kind": "typed_relation_path",
+          "edges": [
+            {
+              "kind": "delivery_keeper",
+              "event_ids": [
+                "event_000096",
+                "event_000097"
+              ],
+              "attacker": "team_2",
+              "keeper": "team_1",
+              "basis": "local_role_compatible_action_pair",
+              "chain_support": [
+                {
+                  "chain_id": "pred_0004",
+                  "state": "PARTIAL",
+                  "subtype": "quick_restart_set_piece_chain"
+                },
+                {
+                  "chain_id": "pred_0005",
+                  "state": "PARTIAL",
+                  "subtype": "quick_restart_set_piece_chain"
+                }
+              ],
+              "causal_verified": false,
+              "inferred_shooter": false,
+              "inferred_keeper": false
+            }
+          ],
+          "causal_verified": false
+        },
+        "causal_verified": false,
+        "distinct_episode_basis": "local_predicted_relation",
+        "component_id": "attack:event_000096",
+        "predicate_evidence": [
+          {
+            "event_id": "event_000097",
+            "actor": "team_1",
+            "basis": "explicit_opponent_action_in_keeper_note"
+          }
+        ],
+        "goal_score_bindings": [],
+        "episode_id": "episode:3",
+        "actor_role": "goalkeeper_team",
+        "goal_roles": [],
+        "story_anchor": true
+      },
+      {
+        "node_id": "anchor:2",
+        "predicate": "goalkeeper_rescue",
+        "actor": "team_1",
+        "event_ids": [
+          "event_000276",
+          "event_000277"
+        ],
+        "core_event_ids": [
+          "event_000277"
+        ],
+        "anchor_t": 1918.41,
+        "window": [
+          1912.32,
+          1922.55
+        ],
+        "media_windows": [
+          [
+            1912.32,
+            1922.55
+          ]
+        ],
+        "score_observations": [],
+        "relation": {
+          "kind": "typed_relation_path",
+          "edges": [
+            {
+              "kind": "delivery_keeper",
+              "event_ids": [
+                "event_000276",
+                "event_000277"
+              ],
+              "attacker": "team_2",
+              "keeper": "team_1",
+              "basis": "local_role_compatible_action_pair",
+              "chain_support": [
+                {
+                  "chain_id": "pred_0015",
+                  "state": "PARTIAL",
+                  "subtype": "goal_line_extreme_save_chain"
+                },
+                {
+                  "chain_id": "pred_0016",
+                  "state": "PARTIAL",
+                  "subtype": "shot_save_chain"
+                }
+              ],
+              "causal_verified": false,
+              "inferred_shooter": false,
+              "inferred_keeper": false
+            }
+          ],
+          "causal_verified": false
+        },
+        "causal_verified": false,
+        "distinct_episode_basis": "local_predicted_relation",
+        "component_id": "attack:event_000276",
+        "predicate_evidence": [
+          {
+            "event_id": "event_000277",
+            "actor": "team_1",
+            "basis": "explicit_opponent_action_in_keeper_note"
+          }
+        ],
+        "goal_score_bindings": [],
+        "episode_id": "episode:6",
+        "actor_role": "goalkeeper_team",
+        "goal_roles": [],
+        "story_anchor": true
+      }
+    ],
+    "edges": [
+      {
+        "from": "anchor:1",
+        "to": "anchor:2",
+        "relation": "temporal_episode_order",
+        "causal_verified": false
+      }
+    ],
+    "first_live_verified": false,
+    "quality_verified": false,
+    "release_authorized": false
+  },
+  "strict_threat_metric_eligible": true,
+  "diagnostics": [
+    {
+      "kind": "unselected_source_gap",
+      "from": "material:1",
+      "to": "material:2",
+      "interval": [
+        1060.64,
+        1912.32
+      ]
+    }
+  ],
+  "quality_verified": false,
+  "first_live_verified": false,
+  "release_authorized": false,
+  "observation_task_refs": [
+    {
+      "task_id": "observe:r2bc:threat_phase_change:1",
+      "relevance": "shared_event_evidence"
+    }
+  ],
+  "draft_policy": "anchor_first_not_narrative_complete",
+  "legacy_seed": {
+    "status": "not_applicable"
+  },
+  "agent_seed": {
+    "file": "initial_edl.json",
+    "status": "anchor_preview",
+    "first_live_verified": false,
+    "release_authorized": false
+  }
+}

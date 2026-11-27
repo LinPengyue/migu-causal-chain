@@ -1,0 +1,107 @@
+[
+  {
+    "task_type": "goal_execution_roles",
+    "event_ids": [
+      "atom_fill_0036_Shot_1977587",
+      "atom_fill_0037_Goal_1979427"
+    ],
+    "goal_event_id": "atom_fill_0037_Goal_1979427",
+    "score_beneficiary": "team_2",
+    "goal_kind": "untyped_goal",
+    "known_executor": null,
+    "known_attacking_team": null,
+    "role_conflict": false,
+    "media_windows": [
+      [
+        1977.587,
+        1981.427
+      ]
+    ],
+    "questions": [
+      "identify actual ball-striking team",
+      "identify attacking team",
+      "ordinary goal, own goal, or other deflection",
+      "confirm first live footage"
+    ],
+    "reason": "separate execution, attack and score roles",
+    "resolved": false,
+    "task_id": "observe:1",
+    "video_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+    "preview_only": true
+  },
+  {
+    "task_type": "missing_goal_localization",
+    "event_ids": [],
+    "score_beneficiary": "team_1",
+    "score_path_index": 2,
+    "score_before": "0:1",
+    "score_after": "1:1",
+    "search_interval": [
+      2480.82,
+      2675.82
+    ],
+    "confirmation_t_sec": 2660.82,
+    "carrier_event_id": "event_000382",
+    "media_windows": [],
+    "reason": "missing_or_nonunique_goal_localization",
+    "questions": [
+      "locate actual goal action and its buildup",
+      "verify first live footage",
+      "identify execution and attack roles"
+    ],
+    "resolved": false,
+    "task_id": "observe:5",
+    "video_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+    "preview_only": true
+  },
+  {
+    "task_type": "shot_save_roles",
+    "event_ids": [
+      "atom_fill_0051_Shot_2241199",
+      "atom_fill_0052_Save_2242332"
+    ],
+    "media_windows": [
+      [
+        2241.199,
+        2244.332
+      ]
+    ],
+    "actor_hypotheses": [
+      {
+        "attacker": "team_1",
+        "keeper": "team_2",
+        "conditionally_compatible_clues": [],
+        "conditionally_contrary_clues": []
+      },
+      {
+        "attacker": "team_2",
+        "keeper": "team_1",
+        "conditionally_compatible_clues": [],
+        "conditionally_contrary_clues": []
+      }
+    ],
+    "context_clues": [],
+    "chain_support": [
+      {
+        "chain_id": "pred_0020",
+        "state": "PARTIAL",
+        "subtype": "shot_post_bar_chain"
+      },
+      {
+        "chain_id": "pred_0021",
+        "state": "PARTIAL",
+        "subtype": "quick_restart_set_piece_chain"
+      }
+    ],
+    "reason": "context_continuity_not_established",
+    "questions": [
+      "identify shooting and saving teams",
+      "verify action relation",
+      "confirm first live footage"
+    ],
+    "resolved": false,
+    "task_id": "observe:9",
+    "video_id": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔 国语",
+    "preview_only": true
+  }
+]

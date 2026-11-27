@@ -1,0 +1,1059 @@
+{
+  "schema": "c_turnover_zero_candidate_audit_v1",
+  "http_calls": 0,
+  "note": "Read-only audit on fresh_general_v1 artifacts; relation_path uses turnover_actor on atoms, not turnover_recovery episodes.",
+  "pattern": {
+    "operator": "relation_path",
+    "start_predicate": "turnover_recovery",
+    "end_predicate": "scoring_outcome",
+    "max_span_sec": 45,
+    "max_edge_gap_sec": 15
+  },
+  "n_strip_turnover_counter_goal": 2,
+  "n_predicted_turnover_counter_goal": 2,
+  "official_relation_candidates": 0,
+  "chains": [
+    {
+      "predicted_annotation_id": "pred_0057",
+      "evidence_chain_id": "pred_0057",
+      "chain_state": "PARTIAL",
+      "n_unavailable": 6,
+      "unavailable": [
+        {
+          "event_id": "event_000347",
+          "reason": "annotated_nonlive"
+        },
+        {
+          "event_id": "atom_fill_0097_Assist_5734265",
+          "reason": "annotated_nonlive"
+        },
+        {
+          "event_id": "atom_fill_0098_Goal_5736421",
+          "reason": "annotated_nonlive"
+        },
+        {
+          "event_id": "atom_fill_0099_Assist_5739379",
+          "reason": "annotated_nonlive"
+        },
+        {
+          "event_id": "atom_fill_0100_Goal_5741680",
+          "reason": "annotated_nonlive"
+        },
+        {
+          "event_id": "atom_fill_0101_Goal_5745960",
+          "reason": "annotated_nonlive"
+        }
+      ],
+      "template_id": "turnover_counter_goal",
+      "t0_ms": 5598360,
+      "t1_ms": 5745960,
+      "n_members": 17,
+      "members": [
+        {
+          "event_id": "event_000341",
+          "in_evidence_atoms": true,
+          "excluded_reason": null,
+          "type": "Defensive_action",
+          "notes": "2队球员拦截1队球员传球获得球权",
+          "attributes": {
+            "Attacker": [
+              "1队球员"
+            ],
+            "Body_Part": [
+              "Leg"
+            ],
+            "Defender": [
+              "2队球员"
+            ],
+            "Defensive_Action": [
+              "Tackle"
+            ],
+            "Match_Phase": [
+              "Regular_Time"
+            ],
+            "Pitch_Area": [
+              "Midfield_Third"
+            ],
+            "Score_Recognition": [
+              "0:2"
+            ],
+            "Shot_Type_Camera_Angle": [
+              "Medium_Shot"
+            ]
+          },
+          "broadcast_phase": "LIVE",
+          "t": 5598.36,
+          "window": [
+            5582.06,
+            5608.74
+          ],
+          "goal_roles": null,
+          "enrichment": null,
+          "turnover_actor": null
+        },
+        {
+          "event_id": "event_000342",
+          "in_evidence_atoms": true,
+          "excluded_reason": null,
+          "type": "Defensive_action",
+          "notes": "1队23号球员截获球权",
+          "attributes": {
+            "Attacker": [
+              "2队球员"
+            ],
+            "Body_Part": [
+              "Leg"
+            ],
+            "Defender": [
+              "team_1_player_23"
+            ],
+            "Defensive_Action": [
+              "Interception"
+            ],
+            "Match_Phase": [
+              "Regular_Time"
+            ],
+            "Pitch_Area": [
+              "Midfield_Third"
+            ],
+            "Score_Recognition": [
+              "0:2"
+            ],
+            "Shot_Type_Camera_Angle": [
+              "Medium_Shot"
+            ]
+          },
+          "broadcast_phase": "LIVE",
+          "t": 5605.61,
+          "window": [
+            5582.06,
+            5608.74
+          ],
+          "goal_roles": null,
+          "enrichment": null,
+          "turnover_actor": "team_1"
+        },
+        {
+          "event_id": "event_000343",
+          "in_evidence_atoms": true,
+          "excluded_reason": null,
+          "type": "Defensive_action",
+          "notes": "1队球员拦截2队球员传球获得球权",
+          "attributes": {
+            "Attacker": [
+              "1队球员"
+            ],
+            "Body_Part": [
+              "Leg"
+            ],
+            "Defender": [
+              "2队球员"
+            ],
+            "Defensive_Action": [
+              "Tackle"
+            ],
+            "Match_Phase": [
+              "Regular_Time"
+            ],
+            "Pitch_Area": [
+              "Midfield_Third"
+            ],
+            "Score_Recognition": [
+              "0:2"
+            ],
+            "Shot_Type_Camera_Angle": [
+              "Medium_Shot"
+            ]
+          },
+          "broadcast_phase": "LIVE",
+          "t": 5628.37,
+          "window": [
+            5610.23,
+            5633.01
+          ],
+          "goal_roles": null,
+          "enrichment": null,
+          "turnover_actor": null
+        },
+        {
+          "event_id": "event_000344",
+          "in_evidence_atoms": true,
+          "excluded_reason": null,
+          "type": "Defensive_action",
+          "notes": "2队球员拦截1队球员传球获得球权",
+          "attributes": {
+            "Attacker": [
+              "2队球员"
+            ],
+            "Body_Part": [
+              "Leg"
+            ],
+            "Defender": [
+              "1队球员"
+            ],
+            "Defensive_Action": [
+              "Tackle"
+            ],
+            "Match_Phase": [
+              "Regular_Time"
+            ],
+            "Pitch_Area": [
+              "Midfield_Third"
+            ],
+            "Score_Recognition": [
+              "0:2"
+            ],
+            "Shot_Type_Camera_Angle": [
+              "Medium_Shot"
+            ]
+          },
+          "broadcast_phase": "LIVE",
+          "t": 5629.81,
+          "window": [
+            5610.23,
+            5633.01
+          ],
+          "goal_roles": null,
+          "enrichment": null,
+          "turnover_actor": null
+        },
+        {
+          "event_id": "event_000345",
+          "in_evidence_atoms": true,
+          "excluded_reason": null,
+          "type": "Defensive_action",
+          "notes": "2队中后卫解围成功",
+          "attributes": {
+            "Attacker": [
+              "1队球员"
+            ],
+            "Body_Part": [
+              "Leg"
+            ],
+            "Defender": [
+              "2队中后卫"
+            ],
+            "Defensive_Action": [
+              "Clearance"
+            ],
+            "Match_Phase": [
+              "Regular_Time"
+            ],
+            "Pitch_Area": [
+              "Defensive_Third"
+            ],
+            "Score_Recognition": [
+              "0:2"
+            ],
+            "Shot_Type_Camera_Angle": [
+              "Medium_Shot"
+            ]
+          },
+          "broadcast_phase": "LIVE",
+          "t": 5643.35,
+          "window": [
+            5634.61,
+            5645.7
+          ],
+          "goal_roles": null,
+          "enrichment": null,
+          "turnover_actor": null
+        },
+        {
+          "event_id": "event_000346",
+          "in_evidence_atoms": true,
+          "excluded_reason": null,
+          "type": "Foul_Being_fouled",
+          "notes": "1队球16号员对2队7号球员造成犯规",
+          "attributes": {
+            "Active_Player": [
+              "1队球16号员"
+            ],
+            "Body_Part": [
+              "Leg"
+            ],
+            "Foul_Type": [
+              "Dangerous_Play"
+            ],
+            "Match_Phase": [
+              "Regular_Time"
+            ],
+            "Opponent_Player": [
+              "2队7号球员"
+            ],
+            "Pitch_Area": [
+              "Defensive_Third"
+            ],
+            "Shot_Type_Camera_Angle": [
+              "Medium_Shot"
+            ],
+            "Time_Score_Recognition": [
+              "0:2"
+            ]
+          },
+          "broadcast_phase": "LIVE",
+          "t": 5649.71,
+          "window": [
+            5646.8,
+            5657.58
+          ],
+          "goal_roles": null,
+          "enrichment": null,
+          "turnover_actor": null
+        },
+        {
+          "event_id": "event_000347",
+          "in_evidence_atoms": false,
+          "excluded_reason": "annotated_nonlive",
+          "type": "Foul_Being_fouled",
+          "notes": "1队球16号员对2队7号球员造成犯规",
+          "attributes": {
+            "Active_Player": [
+              "1队球16号员"
+            ],
+            "Body_Part": [
+              "Leg"
+            ],
+            "Foul_Type": [
+              "Dangerous_Play"
+            ],
+            "Match_Phase": [
+              "Regular_Time"
+            ],
+            "Opponent_Player": [
+              "2队7号球员"
+            ],
+            "Pitch_Area": [
+              "Defensive_Third"
+            ],
+            "Shot_Type_Camera_Angle": [
+              "Replay"
+            ],
+            "Time_Score_Recognition": [
+              "0:2"
+            ]
+          },
+          "broadcast_phase": "REPLAY",
+          "t": 5663.63,
+          "window": null,
+          "goal_roles": null,
+          "enrichment": null,
+          "turnover_actor": null
+        },
+        {
+          "event_id": "atom_fill_0092_Substitution_5674071",
+          "in_evidence_atoms": true,
+          "excluded_reason": null,
+          "type": "Substitution",
+          "notes": "",
+          "attributes": {},
+          "broadcast_phase": "LIVE",
+          "t": 5674.071,
+          "window": [
+            5674.071,
+            5676.071
+          ],
+          "goal_roles": null,
+          "enrichment": "causal_atom_fill",
+          "turnover_actor": null
+        },
+        {
+          "event_id": "atom_fill_0093_Win_an_aerial_duel_5680904",
+          "in_evidence_atoms": true,
+          "excluded_reason": null,
+          "type": "Win_an_aerial_duel",
+          "notes": "",
+          "attributes": {},
+          "broadcast_phase": "LIVE",
+          "t": 5680.904,
+          "window": [
+            5680.904,
+            5682.904
+          ],
+          "goal_roles": null,
+          "enrichment": "causal_atom_fill",
+          "turnover_actor": null
+        },
+        {
+          "event_id": "atom_fill_0094_Defensive_action_5683594",
+          "in_evidence_atoms": true,
+          "excluded_reason": null,
+          "type": "Defensive_action",
+          "notes": "",
+          "attributes": {},
+          "broadcast_phase": "LIVE",
+          "t": 5683.594,
+          "window": [
+            5683.594,
+            5685.594
+          ],
+          "goal_roles": null,
+          "enrichment": "causal_atom_fill",
+          "turnover_actor": null
+        },
+        {
+          "event_id": "atom_fill_0095_Assist_5686329",
+          "in_evidence_atoms": true,
+          "excluded_reason": null,
+          "type": "Assist",
+          "notes": "",
+          "attributes": {},
+          "broadcast_phase": "LIVE",
+          "t": 5686.329,
+          "window": [
+            5686.329,
+            5688.329
+          ],
+          "goal_roles": null,
+          "enrichment": "causal_atom_fill",
+          "turnover_actor": null
+        },
+        {
+          "event_id": "atom_fill_0096_Goal_5690415",
+          "in_evidence_atoms": true,
+          "excluded_reason": null,
+          "type": "Goal",
+          "notes": "",
+          "attributes": {},
+          "broadcast_phase": "LIVE",
+          "t": 5690.415,
+          "window": [
+            5690.415,
+            5692.415
+          ],
+          "goal_roles": {
+            "score_beneficiary": "team_2",
+            "goal_executor": null,
+            "attacking_team": null,
+            "goal_kind": "untyped_goal",
+            "execution_status": "UNRESOLVED",
+            "execution_claims": [],
+            "role_conflict": false,
+            "score_binding": {
+              "path_index": 3,
+              "score_beneficiary": "team_2",
+              "score_before": "0:2",
+              "score_after": "0:3",
+              "confirmation_t_sec": 5789.37,
+              "carrier_event_id": "event_000349",
+              "previous_score_observed_t_sec": 5649.71,
+              "candidate_ids": [
+                "atom_fill_0096_Goal_5690415"
+              ],
+              "search_interval": [
+                5609.37,
+                5804.37
+              ],
+              "event_id": "atom_fill_0096_Goal_5690415",
+              "action_t_sec": 5690.415,
+              "media_window": [
+                5690.415,
+                5692.415
+              ],
+              "basis": "unique_live_goal_and_v3r_score_increment",
+              "causal_verified": false,
+              "first_live_verified": false
+            },
+            "first_live_verified": false
+          },
+          "enrichment": "causal_atom_fill",
+          "turnover_actor": null
+        },
+        {
+          "event_id": "atom_fill_0097_Assist_5734265",
+          "in_evidence_atoms": false,
+          "excluded_reason": "annotated_nonlive",
+          "type": "Assist",
+          "notes": "",
+          "attributes": {},
+          "broadcast_phase": "REPLAY",
+          "t": 5734.265,
+          "window": null,
+          "goal_roles": null,
+          "enrichment": "causal_atom_fill",
+          "turnover_actor": null
+        },
+        {
+          "event_id": "atom_fill_0098_Goal_5736421",
+          "in_evidence_atoms": false,
+          "excluded_reason": "annotated_nonlive",
+          "type": "Goal",
+          "notes": "",
+          "attributes": {},
+          "broadcast_phase": "REPLAY",
+          "t": 5736.421,
+          "window": null,
+          "goal_roles": null,
+          "enrichment": "causal_atom_fill",
+          "turnover_actor": null
+        },
+        {
+          "event_id": "atom_fill_0099_Assist_5739379",
+          "in_evidence_atoms": false,
+          "excluded_reason": "annotated_nonlive",
+          "type": "Assist",
+          "notes": "",
+          "attributes": {},
+          "broadcast_phase": "REPLAY",
+          "t": 5739.379,
+          "window": null,
+          "goal_roles": null,
+          "enrichment": "causal_atom_fill",
+          "turnover_actor": null
+        },
+        {
+          "event_id": "atom_fill_0100_Goal_5741680",
+          "in_evidence_atoms": false,
+          "excluded_reason": "annotated_nonlive",
+          "type": "Goal",
+          "notes": "",
+          "attributes": {},
+          "broadcast_phase": "REPLAY",
+          "t": 5741.68,
+          "window": null,
+          "goal_roles": null,
+          "enrichment": "causal_atom_fill",
+          "turnover_actor": null
+        },
+        {
+          "event_id": "atom_fill_0101_Goal_5745960",
+          "in_evidence_atoms": false,
+          "excluded_reason": "annotated_nonlive",
+          "type": "Goal",
+          "notes": "",
+          "attributes": {},
+          "broadcast_phase": "REPLAY",
+          "t": 5745.96,
+          "window": null,
+          "goal_roles": null,
+          "enrichment": "causal_atom_fill",
+          "turnover_actor": null
+        }
+      ],
+      "turnover_starts": [
+        {
+          "event_id": "event_000342",
+          "actor": "team_1",
+          "t": 5605.61,
+          "notes": "1队23号球员截获球权",
+          "type": "Defensive_action"
+        }
+      ],
+      "goals": [
+        {
+          "event_id": "atom_fill_0096_Goal_5690415",
+          "t": 5690.415,
+          "goal_roles": {
+            "score_beneficiary": "team_2",
+            "goal_executor": null,
+            "attacking_team": null,
+            "goal_kind": "untyped_goal",
+            "execution_status": "UNRESOLVED",
+            "execution_claims": [],
+            "role_conflict": false,
+            "score_binding": {
+              "path_index": 3,
+              "score_beneficiary": "team_2",
+              "score_before": "0:2",
+              "score_after": "0:3",
+              "confirmation_t_sec": 5789.37,
+              "carrier_event_id": "event_000349",
+              "previous_score_observed_t_sec": 5649.71,
+              "candidate_ids": [
+                "atom_fill_0096_Goal_5690415"
+              ],
+              "search_interval": [
+                5609.37,
+                5804.37
+              ],
+              "event_id": "atom_fill_0096_Goal_5690415",
+              "action_t_sec": 5690.415,
+              "media_window": [
+                5690.415,
+                5692.415
+              ],
+              "basis": "unique_live_goal_and_v3r_score_increment",
+              "causal_verified": false,
+              "first_live_verified": false
+            },
+            "first_live_verified": false
+          },
+          "score_beneficiary": "team_2",
+          "role_conflict": false,
+          "attacking_team": null,
+          "goal_kind": "untyped_goal"
+        }
+      ],
+      "member_gaps_sec": [
+        {
+          "from": "event_000341",
+          "to": "event_000342",
+          "gap": 7.25,
+          "types": [
+            "Defensive_action",
+            "Defensive_action"
+          ]
+        },
+        {
+          "from": "event_000342",
+          "to": "event_000343",
+          "gap": 22.76000000000022,
+          "types": [
+            "Defensive_action",
+            "Defensive_action"
+          ]
+        },
+        {
+          "from": "event_000343",
+          "to": "event_000344",
+          "gap": 1.4400000000005093,
+          "types": [
+            "Defensive_action",
+            "Defensive_action"
+          ]
+        },
+        {
+          "from": "event_000344",
+          "to": "event_000345",
+          "gap": 13.539999999999964,
+          "types": [
+            "Defensive_action",
+            "Defensive_action"
+          ]
+        },
+        {
+          "from": "event_000345",
+          "to": "event_000346",
+          "gap": 6.359999999999673,
+          "types": [
+            "Defensive_action",
+            "Foul_Being_fouled"
+          ]
+        },
+        {
+          "from": "event_000346",
+          "to": "atom_fill_0092_Substitution_5674071",
+          "gap": 24.360999999999876,
+          "types": [
+            "Foul_Being_fouled",
+            "Substitution"
+          ]
+        },
+        {
+          "from": "atom_fill_0092_Substitution_5674071",
+          "to": "atom_fill_0093_Win_an_aerial_duel_5680904",
+          "gap": 6.833000000000538,
+          "types": [
+            "Substitution",
+            "Win_an_aerial_duel"
+          ]
+        },
+        {
+          "from": "atom_fill_0093_Win_an_aerial_duel_5680904",
+          "to": "atom_fill_0094_Defensive_action_5683594",
+          "gap": 2.6899999999996,
+          "types": [
+            "Win_an_aerial_duel",
+            "Defensive_action"
+          ]
+        },
+        {
+          "from": "atom_fill_0094_Defensive_action_5683594",
+          "to": "atom_fill_0095_Assist_5686329",
+          "gap": 2.7349999999996726,
+          "types": [
+            "Defensive_action",
+            "Assist"
+          ]
+        },
+        {
+          "from": "atom_fill_0095_Assist_5686329",
+          "to": "atom_fill_0096_Goal_5690415",
+          "gap": 4.08600000000024,
+          "types": [
+            "Assist",
+            "Goal"
+          ]
+        }
+      ],
+      "path_attempts": [
+        {
+          "start": {
+            "event_id": "event_000342",
+            "actor": "team_1",
+            "t": 5605.61,
+            "notes": "1队23号球员截获球权",
+            "type": "Defensive_action"
+          },
+          "n_out_edges": 0,
+          "out_edge_chain_sets": [],
+          "n_found": 0,
+          "found": [],
+          "n_blocked": 0,
+          "blocked_reasons": {},
+          "blocked_samples": []
+        }
+      ],
+      "exclusion_summary": [
+        "path_search_found_zero_under_frozen_bounds_or_interrupts_or_beneficiary_mismatch"
+      ]
+    },
+    {
+      "predicted_annotation_id": "pred_0060",
+      "evidence_chain_id": "pred_0060",
+      "chain_state": "PARTIAL",
+      "n_unavailable": 5,
+      "unavailable": [
+        {
+          "event_id": "atom_fill_0102_Win_an_aerial_duel_5978243",
+          "reason": "annotated_nonlive"
+        },
+        {
+          "event_id": "atom_fill_0103_Defensive_action_5981363",
+          "reason": "annotated_nonlive"
+        },
+        {
+          "event_id": "atom_fill_0104_Assist_5983776",
+          "reason": "annotated_nonlive"
+        },
+        {
+          "event_id": "atom_fill_0105_Goal_5985456",
+          "reason": "annotated_nonlive"
+        },
+        {
+          "event_id": "atom_fill_0106_Goal_5990164",
+          "reason": "annotated_nonlive"
+        }
+      ],
+      "template_id": "turnover_counter_goal",
+      "t0_ms": 5876350,
+      "t1_ms": 5990164,
+      "n_members": 8,
+      "members": [
+        {
+          "event_id": "event_000358",
+          "in_evidence_atoms": true,
+          "excluded_reason": null,
+          "type": "Defensive_action",
+          "notes": "1队球员抢断2队球员传球",
+          "attributes": {
+            "Attacker": [
+              "2队球员"
+            ],
+            "Body_Part": [
+              "Leg"
+            ],
+            "Defender": [
+              "1队球员"
+            ],
+            "Defensive_Action": [
+              "Tackle"
+            ],
+            "Match_Phase": [
+              "Regular_Time"
+            ],
+            "Pitch_Area": [
+              "Defensive_Third"
+            ],
+            "Score_Recognition": [
+              "0:3"
+            ],
+            "Shot_Type_Camera_Angle": [
+              "Medium_Shot"
+            ]
+          },
+          "broadcast_phase": "LIVE",
+          "t": 5876.35,
+          "window": [
+            5870.0,
+            5883.31
+          ],
+          "goal_roles": null,
+          "enrichment": null,
+          "turnover_actor": "team_1"
+        },
+        {
+          "event_id": "event_000359",
+          "in_evidence_atoms": true,
+          "excluded_reason": null,
+          "type": "Defensive_action",
+          "notes": "2队球抢断1队球员球权",
+          "attributes": {
+            "Attacker": [
+              "1队球员"
+            ],
+            "Body_Part": [
+              "Leg"
+            ],
+            "Defender": [
+              "2队球员"
+            ],
+            "Defensive_Action": [
+              "Tackle"
+            ],
+            "Match_Phase": [
+              "Regular_Time"
+            ],
+            "Pitch_Area": [
+              "Defensive_Third"
+            ],
+            "Score_Recognition": [
+              "0:3"
+            ],
+            "Shot_Type_Camera_Angle": [
+              "Medium_Shot"
+            ]
+          },
+          "broadcast_phase": "LIVE",
+          "t": 5895.54,
+          "window": [
+            5884.98,
+            5897.79
+          ],
+          "goal_roles": null,
+          "enrichment": null,
+          "turnover_actor": "team_2"
+        },
+        {
+          "event_id": "event_000360",
+          "in_evidence_atoms": true,
+          "excluded_reason": null,
+          "type": "Defensive_action",
+          "notes": "1队23号球员抓住2队27号失误截获球权",
+          "attributes": {
+            "Attacker": [
+              "team_2_player_27"
+            ],
+            "Body_Part": [
+              "Leg"
+            ],
+            "Defender": [
+              "team_1_player_23"
+            ],
+            "Defensive_Action": [
+              "Interception"
+            ],
+            "Match_Phase": [
+              "Regular_Time"
+            ],
+            "Pitch_Area": [
+              "Midfield_Third"
+            ],
+            "Score_Recognition": [
+              "0:3"
+            ],
+            "Shot_Type_Camera_Angle": [
+              "Medium_Shot"
+            ],
+            "BallController_team": [
+              "team_2"
+            ],
+            "BallController_player": [
+              "team_2_player_27"
+            ]
+          },
+          "broadcast_phase": "LIVE",
+          "t": 5900.74,
+          "window": [
+            5898.45,
+            5963.61
+          ],
+          "goal_roles": null,
+          "enrichment": null,
+          "turnover_actor": null
+        },
+        {
+          "event_id": "atom_fill_0102_Win_an_aerial_duel_5978243",
+          "in_evidence_atoms": false,
+          "excluded_reason": "annotated_nonlive",
+          "type": "Win_an_aerial_duel",
+          "notes": "",
+          "attributes": {},
+          "broadcast_phase": "REPLAY",
+          "t": 5978.243,
+          "window": null,
+          "goal_roles": null,
+          "enrichment": "causal_atom_fill",
+          "turnover_actor": null
+        },
+        {
+          "event_id": "atom_fill_0103_Defensive_action_5981363",
+          "in_evidence_atoms": false,
+          "excluded_reason": "annotated_nonlive",
+          "type": "Defensive_action",
+          "notes": "",
+          "attributes": {},
+          "broadcast_phase": "REPLAY",
+          "t": 5981.363,
+          "window": null,
+          "goal_roles": null,
+          "enrichment": "causal_atom_fill",
+          "turnover_actor": null
+        },
+        {
+          "event_id": "atom_fill_0104_Assist_5983776",
+          "in_evidence_atoms": false,
+          "excluded_reason": "annotated_nonlive",
+          "type": "Assist",
+          "notes": "",
+          "attributes": {},
+          "broadcast_phase": "REPLAY",
+          "t": 5983.776,
+          "window": null,
+          "goal_roles": null,
+          "enrichment": "causal_atom_fill",
+          "turnover_actor": null
+        },
+        {
+          "event_id": "atom_fill_0105_Goal_5985456",
+          "in_evidence_atoms": false,
+          "excluded_reason": "annotated_nonlive",
+          "type": "Goal",
+          "notes": "",
+          "attributes": {},
+          "broadcast_phase": "REPLAY",
+          "t": 5985.456,
+          "window": null,
+          "goal_roles": null,
+          "enrichment": "causal_atom_fill",
+          "turnover_actor": null
+        },
+        {
+          "event_id": "atom_fill_0106_Goal_5990164",
+          "in_evidence_atoms": false,
+          "excluded_reason": "annotated_nonlive",
+          "type": "Goal",
+          "notes": "",
+          "attributes": {},
+          "broadcast_phase": "REPLAY",
+          "t": 5990.164,
+          "window": null,
+          "goal_roles": null,
+          "enrichment": "causal_atom_fill",
+          "turnover_actor": null
+        }
+      ],
+      "turnover_starts": [
+        {
+          "event_id": "event_000358",
+          "actor": "team_1",
+          "t": 5876.35,
+          "notes": "1队球员抢断2队球员传球",
+          "type": "Defensive_action"
+        },
+        {
+          "event_id": "event_000359",
+          "actor": "team_2",
+          "t": 5895.54,
+          "notes": "2队球抢断1队球员球权",
+          "type": "Defensive_action"
+        }
+      ],
+      "goals": [],
+      "member_gaps_sec": [
+        {
+          "from": "event_000358",
+          "to": "event_000359",
+          "gap": 19.1899999999996,
+          "types": [
+            "Defensive_action",
+            "Defensive_action"
+          ]
+        },
+        {
+          "from": "event_000359",
+          "to": "event_000360",
+          "gap": 5.199999999999818,
+          "types": [
+            "Defensive_action",
+            "Defensive_action"
+          ]
+        }
+      ],
+      "path_attempts": [
+        {
+          "start": {
+            "event_id": "event_000358",
+            "actor": "team_1",
+            "t": 5876.35,
+            "notes": "1队球员抢断2队球员传球",
+            "type": "Defensive_action"
+          },
+          "n_out_edges": 0,
+          "out_edge_chain_sets": [],
+          "n_found": 0,
+          "found": [],
+          "n_blocked": 0,
+          "blocked_reasons": {},
+          "blocked_samples": []
+        },
+        {
+          "start": {
+            "event_id": "event_000359",
+            "actor": "team_2",
+            "t": 5895.54,
+            "notes": "2队球抢断1队球员球权",
+            "type": "Defensive_action"
+          },
+          "n_out_edges": 1,
+          "out_edge_chain_sets": [
+            [
+              "pred_0059",
+              "pred_0060"
+            ]
+          ],
+          "n_found": 0,
+          "found": [],
+          "n_blocked": 0,
+          "blocked_reasons": {},
+          "blocked_samples": []
+        }
+      ],
+      "exclusion_summary": [
+        "no_LIVE_goal_endpoint_in_evidence_atoms_or_goals_lack_roles"
+      ]
+    }
+  ],
+  "precise_exclusions": {
+    "pred_0057": {
+      "chain_state": "PARTIAL",
+      "primary_exclusion": "start_has_no_adjacency_out_edge_under_max_edge_gap_sec",
+      "detail": [
+        "turnover_actor(start=event_000342)=team_1 via notes「1队23号球员截获球权」",
+        "sole predicted next member edge event_000342→event_000343 has Δt=22.760s > max_edge_gap_sec=15 → dropped from adjacency",
+        "path search therefore never expands (0 blocked samples because 0 out-edges)",
+        "even if gap were waived: span start→LIVE goal atom_fill_0096 = 84.805s > max_span_sec=45",
+        "intervening LIVE atoms include Foul_Being_fouled (STOP) and Substitution (RESTART) which interrupt",
+        "LIVE goal atom_fill_0096_Goal_5690415 has score_beneficiary=team_2, role_conflict=False; beneficiary≠start actor team_1 would also reject endpoint",
+        "replay goals/assists on chain excluded by Evidence as annotated_nonlive (PARTIAL unavailable)"
+      ],
+      "member_exclusions": {
+        "event_000347": "annotated_nonlive",
+        "atom_fill_0097_Assist_5734265": "annotated_nonlive",
+        "atom_fill_0098_Goal_5736421": "annotated_nonlive",
+        "atom_fill_0099_Assist_5739379": "annotated_nonlive",
+        "atom_fill_0100_Goal_5741680": "annotated_nonlive",
+        "atom_fill_0101_Goal_5745960": "annotated_nonlive"
+      }
+    },
+    "pred_0060": {
+      "chain_state": "PARTIAL",
+      "primary_exclusion": "no_LIVE_goal_endpoint_in_evidence_atoms",
+      "detail": [
+        "turnover_actor starts: event_000358→team_1 (抢断); event_000359→team_2 (抢断)",
+        "event_000360 notes contain 截获 but turnover_actor=None because pattern cannot cross opposing-side token「2队」before 截获",
+        "all Goal/Assist/etc after event_000360 are REPLAY → Evidence excluded annotated_nonlive; available_event_ids only [358,359,360]",
+        "predicted edge 358→359 Δt=19.190s > max_edge_gap_sec=15 (secondary; moot without LIVE goal)",
+        "official relation_candidates remains 0"
+      ],
+      "member_exclusions": {
+        "atom_fill_0102_Win_an_aerial_duel_5978243": "annotated_nonlive",
+        "atom_fill_0103_Defensive_action_5981363": "annotated_nonlive",
+        "atom_fill_0104_Assist_5983776": "annotated_nonlive",
+        "atom_fill_0105_Goal_5985456": "annotated_nonlive",
+        "atom_fill_0106_Goal_5990164": "annotated_nonlive"
+      }
+    }
+  },
+  "corrected_prior_attribution": "Prior report blamed missing turnover_recovery episodes; relation_path actually calls turnover_actor on atoms. Re-audit shows starts are recognized; exclusions are adjacency gap / nonlive goals / beneficiary mismatch under frozen bounds."
+}
