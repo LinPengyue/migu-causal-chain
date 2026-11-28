@@ -1,0 +1,331 @@
+{
+  "schema": "sportscausal_miss_audit_v1",
+  "audit_id": "B_set_piece_breakthrough_miss_ST089_v1",
+  "created_at": "2026-11-28T10:00:24.183415+00:00",
+  "git_head": "23b4f60ac14c04746c92c685b7c2f8add12eebf4",
+  "scope": {
+    "match": "B_osasuna_celta",
+    "match_name": "10月27日 25-26赛季西甲第10轮 奥萨苏纳VS塞尔塔",
+    "template_id": "set_piece_breakthrough",
+    "fanedit_offline_ref": "ST-089-723B1912",
+    "fanedit_policy": "OFFLINE_ACCEPTANCE_AND_DIAGNOSIS_ONLY_NOT_USED_IN_INFERENCE",
+    "zero_paid": true,
+    "read_only": true,
+    "no_algo_change": true,
+    "no_rerun": true,
+    "other_matches": "not_processed_except_contrast_reads"
+  },
+  "verdict": {
+    "summary": "B场 set_piece_breakthrough 漏检的直接原因是：8.31已预测 corner_coop_goal，且 causal_atom_fill 注入了进球前角球事件，但这些 atom_fill Corner_kick 无 notes/attributes/球队，R2a 无法生成 set_piece_execution 谓词，R2bc relation_path 因此没有任何合法起点，R3 候选为 0。",
+    "primary_failure_stage": "R2a_semantic_normalization → missing set_piece_execution on atom_fill restarts",
+    "secondary_failure_stage": "R2bc relation_candidates never enters path search for those restarts",
+    "not_primary": "R3 story generation / Story Agent / FanEdit gold leakage",
+    "hardcoding_risk": "Issue is generic for atom_fill restarts lacking role-bound team; do not special-case B."
+  },
+  "pipeline_trace": [
+    {
+      "stage": "8.31_short_chain",
+      "status": "PRESENT",
+      "detail": "predicted_causal.json 含 3 条 corner_coop_goal；evidence.chains 同步为 pred_0030/0053/0054（PARTIAL）。",
+      "artifacts": [
+        {
+          "path": "/data2/lpy1/_story_va_outputs/v3/plan2/closed_loop_B_osasuna_celta/03_v1_adapt/predicted_causal.json",
+          "sha256": "22a179b6fccb33ade76ae328999c7c7025f98757b014a550b3516ef57501037e",
+          "bytes": 543131
+        },
+        {
+          "path": "research/sportscausal/artifacts/stage1_2_evidence_preflight_20261125/B_osasuna_celta/keeper_rescue/evidence.json",
+          "sha256": "a673769fe1b81f93a34f9c987302af49f8988cbf02c429ad97b1317bf7b33292",
+          "bytes": 908903
+        }
+      ],
+      "key_chains": [
+        {
+          "chain_id": "pred_0030",
+          "subtype": "corner_coop_goal",
+          "state": "PARTIAL",
+          "critical_events": [
+            "atom_fill_0070_Corner_kick_3130930",
+            "atom_fill_0071_Shot_3132270",
+            "atom_fill_0072_Goal_3133968"
+          ],
+          "goal_t": 3133.968,
+          "beneficiary": "team_1",
+          "score_story": "Osasuna opening via corner coop"
+        },
+        {
+          "chain_id": "pred_0053",
+          "subtype": "corner_coop_goal",
+          "state": "PARTIAL",
+          "critical_events": [
+            "atom_fill_0114_Corner_kick_5655418",
+            "atom_fill_0115_Shot_5657158",
+            "atom_fill_0116_Goal_5657621"
+          ],
+          "note": "also lists earlier event_000555 Free_kick (team_1) at 5585.63, Δt to goal≈72s > max_span_sec=45",
+          "goal_t": 5657.621,
+          "beneficiary": "team_2",
+          "score_story": "Celta equalizer via corner coop"
+        },
+        {
+          "chain_id": "pred_0054",
+          "subtype": "corner_coop_goal",
+          "state": "PARTIAL",
+          "critical_events": [
+            "atom_fill_0114_Corner_kick_5655418",
+            "atom_fill_0115_Shot_5657158",
+            "atom_fill_0116_Goal_5657621"
+          ],
+          "goal_t": 5657.621,
+          "beneficiary": "team_2"
+        }
+      ]
+    },
+    {
+      "stage": "atom_event_enrichment",
+      "status": "PARTIAL_INJECT_WITHOUT_TEAM",
+      "detail": "corner→shot→goal 成员由 causal_atom_fill 注入；Corner_kick 的 notes=\"\"、attributes={}，无球队/控球人。",
+      "events": [
+        {
+          "event_id": "atom_fill_0070_Corner_kick_3130930",
+          "type": "Corner_kick",
+          "t": 3130.93,
+          "enrichment_provenance": "causal_atom_fill",
+          "notes": "",
+          "attributes": {},
+          "delta_to_goal_sec": 3.038
+        },
+        {
+          "event_id": "atom_fill_0114_Corner_kick_5655418",
+          "type": "Corner_kick",
+          "t": 5655.418,
+          "enrichment_provenance": "causal_atom_fill",
+          "notes": "",
+          "attributes": {},
+          "delta_to_goal_sec": 2.203
+        },
+        {
+          "event_id": "atom_fill_0050_Corner_kick_2240110",
+          "type": "Corner_kick",
+          "t": 2240.11,
+          "enrichment_provenance": "causal_atom_fill",
+          "notes": "",
+          "attributes": {},
+          "note": "no scoring_outcome within 45s; not ST-089 critical"
+        }
+      ],
+      "code": [
+        {
+          "file": "research/sportscausal/scripts/stage1_1_data_audit.py",
+          "note": "documents atom_fill provenance from flattened human causal chain members"
+        },
+        {
+          "file": "legacy enrich path atomic_event_enrich.extract_atomic_events",
+          "note": "injects missing chain members as atom_fill_* with empty annotation payload"
+        }
+      ]
+    },
+    {
+      "stage": "R2a_semantic_extraction",
+      "status": "REJECT_SET_PIECE_PREDICATE",
+      "detail": "normalize_atom 仅在 LIVE 且 execution.team 可解析时写入 set_piece_execution；atom_fill 角球因无 note/attr claims → execution.team=None → predicates 不含 set_piece_execution。",
+      "code": [
+        {
+          "file": "research/sportscausal/semantic_normalization.py",
+          "lines": "128-155",
+          "logic": "Corner_kick/Free_kick/Penalty → note_claims(set_piece_action)+claims(BallController_*/Related_Player); require execution.team for predicate"
+        },
+        {
+          "file": "research/sportscausal/causal_episodes.py",
+          "lines": "20-21",
+          "logic": "_actor(a,key) reads predicates[key].actor"
+        }
+      ],
+      "observed": {
+        "n_restart_atoms": 18,
+        "n_with_set_piece_execution": 15,
+        "n_atom_fill_restarts_without_predicate": 3,
+        "r2a4_set_piece_execution_episodes": 0,
+        "note": "R2a.4 episode projection focuses attack/save/score roles; set_piece stories depend on relation_path over graph atoms, not set_piece episodes."
+      },
+      "artifacts": [
+        {
+          "path": "research/sportscausal/artifacts/v3r_general_r2a2_preflight/B/normalized_semantics.json",
+          "sha256": "f1e8c222e6faeba704eb90b94e2f0470f2101f4c40c84b9132e33dcc7aaaa439",
+          "bytes": 1125380
+        },
+        {
+          "path": "research/sportscausal/artifacts/v3r_general_r2a4_preflight/B/causal_episodes.json",
+          "sha256": "91610d0cd3517f399dd4a5e5287444c7d77c4b46d4ff806db44d4716ba824d40",
+          "bytes": 79502
+        },
+        {
+          "path": "research/sportscausal/artifacts/v3r_general_r2a4_preflight/B/relation_graph.json",
+          "sha256": "71baf210706ea081002f6c27b61592e964daa61df1f5fd1aeec53bd75c3e56c8",
+          "bytes": 1169430
+        }
+      ]
+    },
+    {
+      "stage": "R2bc_relation_path",
+      "status": "ZERO_CANDIDATES",
+      "detail": "relation_candidates 对每个 LIVE restart 调用 _start→set_piece_execution；atom_fill 角球 _start=None，永不入栈。官方结果 candidates=[]。",
+      "pattern": {
+        "operator": "relation_path",
+        "start_predicate": "set_piece_execution",
+        "end_predicate": "scoring_outcome",
+        "max_span_sec": 45,
+        "max_edge_gap_sec": 15
+      },
+      "code": [
+        {
+          "file": "research/sportscausal/r2bc_patterns.py",
+          "lines": "23-24",
+          "logic": "default template path(\"set_piece_execution\")"
+        },
+        {
+          "file": "research/sportscausal/relation_story_patterns.py",
+          "lines": "34-36",
+          "logic": "_start only if type in {Corner_kick,Free_kick,Penalty} AND _actor(set_piece_execution)"
+        },
+        {
+          "file": "research/sportscausal/relation_story_patterns.py",
+          "lines": "58-175",
+          "logic": "DAG path on predicted chain edges; require same-chain continuity, actor==score_beneficiary, span/gap bounds"
+        }
+      ],
+      "candidate_reject_reasons": [
+        {
+          "candidate_proxy": "atom_fill_0070 → Goal_3133968",
+          "reason": "no_set_piece_execution_predicate",
+          "because": "empty notes/attrs on causal_atom_fill Corner_kick",
+          "despite": "Δt=3.04s < 45 and co-members on pred_0030/0031/0032"
+        },
+        {
+          "candidate_proxy": "atom_fill_0114 → Goal_5657621",
+          "reason": "no_set_piece_execution_predicate",
+          "because": "empty notes/attrs on causal_atom_fill Corner_kick",
+          "despite": "Δt=2.20s < 45 and co-members on pred_0053/0054"
+        },
+        {
+          "candidate_proxy": "event_000555 Free_kick → Goal_5657621",
+          "reason": "span_exceeded_and_or_actor_mismatch",
+          "because": "Δt≈71.99s > max_span_sec=45; Free_kick actor=team_1 while goal beneficiary=team_2"
+        },
+        {
+          "candidate_proxy": "other human restarts near non-matching goals",
+          "reason": "no_same_side_goal_within_span_or_no_shared_chain_path",
+          "because": "15 human restarts have set_piece_execution but do not form valid same-actor path to a scoring_outcome under gap/span/interrupt rules"
+        }
+      ],
+      "counterfactual_read_only": {
+        "method": "Inject set_piece_execution.actor from unique score_beneficiary of corner_coop_goal co-membership (NOT applied to artifacts; in-memory only).",
+        "result_candidates": 2,
+        "would_emit": [
+          {
+            "candidate_id": "set_piece_breakthrough:1",
+            "start": "atom_fill_0070_Corner_kick_3130930",
+            "end": "atom_fill_0072_Goal_3133968",
+            "actor": "team_1",
+            "path": [
+              "atom_fill_0070_Corner_kick_3130930",
+              "atom_fill_0071_Shot_3132270",
+              "atom_fill_0072_Goal_3133968"
+            ],
+            "path_chain_ids": [
+              "pred_0030",
+              "pred_0031",
+              "pred_0032"
+            ]
+          },
+          {
+            "candidate_id": "set_piece_breakthrough:2",
+            "start": "atom_fill_0114_Corner_kick_5655418",
+            "end": "atom_fill_0116_Goal_5657621",
+            "actor": "team_2",
+            "path": [
+              "atom_fill_0114_Corner_kick_5655418",
+              "atom_fill_0115_Shot_5657158",
+              "atom_fill_0116_Goal_5657621"
+            ],
+            "path_chain_ids": [
+              "pred_0053",
+              "pred_0054"
+            ]
+          }
+        ],
+        "implication": "Once actor binding exists, existing relation_path machinery already recovers both stories; no B-specific path logic required."
+      },
+      "artifact": {
+        "path": "research/sportscausal/artifacts/v3r_general_r2bc_preflight/B/set_piece_breakthrough.json",
+        "sha256": "d5f539ec11e821825ca550b3f24c4660eb14d25fc753ed32fff670eaaf7b19c8",
+        "bytes": 769
+      }
+    },
+    {
+      "stage": "R3_story_generation",
+      "status": "ZERO_STORIES",
+      "detail": "R3 preflight template_counts.set_piece_breakthrough=0；无 set_piece_* 故事目录。属上游零候选的直接后果，不是 R3 渲染/seed 问题。",
+      "artifact": {
+        "path": "research/sportscausal/artifacts/v3r_general_r3_preflight/B/summary.json",
+        "sha256": "5e1252ff590fe1e130c07f6e930e7239373ed6b4461bbd02f6f7363f6740070e",
+        "bytes": 5869
+      }
+    }
+  ],
+  "fanedit_st089_offline": {
+    "story_id": "ST-089-723B1912",
+    "match_id": "FH-723B1912",
+    "reference_segments": 10,
+    "plan_status": "ZERO_CANDIDATE_ON_MATCHED_EXISTING_B_AUDIT_FIRST",
+    "source": "validation/fanedit_v1_1_reference_case_plan.json @ 23b4f60",
+    "usage": "diagnostic alignment only; gold segments/timestamps not loaded into algorithm inference this round",
+    "aligned_predicted_events_for_diagnosis": [
+      {
+        "approx_story": "corner coop opening",
+        "corner": "atom_fill_0070_Corner_kick_3130930",
+        "goal": "atom_fill_0072_Goal_3133968",
+        "t_goal": 3133.968,
+        "team": "team_1/奥萨苏纳"
+      },
+      {
+        "approx_story": "corner coop equalizer",
+        "corner": "atom_fill_0114_Corner_kick_5655418",
+        "goal": "atom_fill_0116_Goal_5657621",
+        "t_goal": 5657.621,
+        "team": "team_2/塞尔塔维戈"
+      }
+    ]
+  },
+  "generality": {
+    "is_generic": true,
+    "mechanism": "Any corner_coop_goal / set-piece→goal whose restart member exists only as causal_atom_fill without role-bound team will miss set_piece_execution and thus miss relation_path.",
+    "contrast": [
+      {
+        "match": "FRA_france_australia",
+        "set_piece_candidates": 2,
+        "why_works": "start events are human-annotated Corner_kick/Free_kick with notes + BallController_* attributes (e.g. event_000080)"
+      },
+      {
+        "match": "A_uae_oman r2bc preflight",
+        "set_piece_candidates": 0,
+        "note": "separate failure modes possible; not deep-audited this round beyond zero-candidate contrast"
+      },
+      {
+        "match": "C_levante_rayo fresh_general",
+        "set_piece_candidates": 0,
+        "note": "also zero; consistent with generic miss risk when starts lack bindable execution actors"
+      }
+    ],
+    "forbidden_fix": "Do not hardcode Osasuna/Celta event IDs, times, or ST-089 gold into inference.",
+    "fix_direction_for_downstream_design": [
+      "Generic actor binding for atom_fill restarts that are co-members of predicted set-piece/goal chains (without treating chain subtype as proven causality).",
+      "Or enrich atom_fill restart payloads with transferable team claims when source chain/member provides them.",
+      "Keep relation_path actor==beneficiary and span/gap checks; counterfactual shows they already fire once actor exists.",
+      "Preserve observation/verification requirements; do not auto-authorize release."
+    ]
+  },
+  "reused_artifacts_only": true,
+  "http_calls": 0,
+  "paid_usd": 0
+}
