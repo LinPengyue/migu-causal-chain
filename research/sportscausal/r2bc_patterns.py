@@ -78,6 +78,9 @@ def run(evidence,graph,bundle,score,templates):
                     event_ids=sorted({eid for a in c["path_alternatives"] for eid in a["event_ids"]}),
                     questions=["verify continuity and actual action roles",
                                "verify tactical or turnover-to-goal relationship","confirm first live footage"])
+                if c.get("restart_actor_hypothesis"):
+                    task["restart_actor_hypothesis"]=deepcopy(c["restart_actor_hypothesis"])
+                    task["questions"].insert(0,"identify the actual corner-taking team independently; test the conditional actor hypothesis rather than assume it")
             else:
                 task.update(task_type="phase_switch_verification",
                     search_interval=c["switch_search_interval"],
