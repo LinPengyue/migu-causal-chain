@@ -124,5 +124,18 @@ class AdapterTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             _role(wrong,"lead_preservation")
 
+    def test_conditional_restart_actor_visible_in_essential_agent_context(self):
+        g,r,e,events=fixture()
+        g["template_id"]="set_piece_breakthrough"
+        h={"status":"CONDITIONAL_UNVERIFIED","actor_hypothesis":"team_2",
+           "event_id":"a","goal_event_id":"b","execution_verified":False}
+        g["nodes"][0].update(predicate="set_piece_execution",actor="team_2",
+                              actor_role="restart_executor_hypothesis",actor_hypothesis=h)
+        b=adapt(g,r,None,[],[],e,events)
+        ctx=b["plan"]["a_story_template_context"]
+        self.assertEqual(ctx["unverified_actor_hypotheses"],[h])
+        self.assertIn("not observed execution",ctx["hypothesis_policy"])
+        self.assertFalse(b["release_authorized"])
+
 if __name__=="__main__":
     unittest.main()
