@@ -123,6 +123,69 @@ class PathTests(unittest.TestCase):
         spec["pattern"]["max_edge_gap_sec"]=8
         self.assertFalse(relation_candidates(spec,graph(e,s),e))
 
+
+    def unlabelled_corner(self, *, note="", attrs=None, phase="LIVE", subtype="corner_coop_goal"):
+        restart=atom("r",80,note,"Corner_kick",attrs,phase=phase)
+        restart["enrichment_provenance"]="causal_atom_fill"
+        e=evidence(restart,atom("s",82,"","Shot"),atom("g",84,"","Goal"))
+        e["input_tier"]="HUMAN_ATOM_ENRICHED_DEV"
+        chain(e,["missing","r","s","g"],state="PARTIAL",available=["r","s","g"],subtype=subtype)
+        return e,score((100,"0:1"))
+
+    def test_unlabelled_corner_is_hypothesis_not_execution_predicate(self):
+        e,s=self.unlabelled_corner()
+        g=graph(e,s); b=project_roles(g); before=deepcopy((e,g,b))
+        result=run(e,g,b,s,[t("set_piece_breakthrough")])
+        c=result["results"]["set_piece_breakthrough"]["candidates"][0]
+        h=c["restart_actor_hypothesis"]
+        self.assertEqual(h["actor_hypothesis"],"team_2")
+        self.assertEqual(h["status"],"CONDITIONAL_UNVERIFIED")
+        self.assertEqual(h["support_chain_ids"],["p"])
+        self.assertFalse(h["execution_verified"])
+        self.assertEqual(c["nodes"][0]["actor_role"],"restart_executor_hypothesis")
+        self.assertEqual(c["path_alternatives"][0]["event_ids"],["r","s","g"])
+        task=next(x for x in result["observation_tasks"] if x["task_type"]=="relation_path_verification")
+        self.assertEqual(task["restart_actor_hypothesis"],h)
+        self.assertFalse(task["resolved"])
+        self.assertNotIn("set_piece_execution",next(x for x in g["atoms"] if x["event_id"]=="r")["predicates"])
+        self.assertEqual((e,g,b),before)
+        self.assertFalse(c["release_authorized"])
+
+    def test_unlabelled_corner_rejects_untyped_support_and_missing_middle(self):
+        e,s=self.unlabelled_corner(subtype="outcome_other")
+        self.assertFalse(relation_candidates(t("set_piece_breakthrough"),graph(e,s),e))
+        e,s=self.unlabelled_corner()
+        chain(e,["r","missing","s","g"],state="PARTIAL",available=["r","s","g"],subtype="corner_coop_goal")
+        self.assertFalse(relation_candidates(t("set_piece_breakthrough"),graph(e,s),e))
+
+    def test_unlabelled_corner_no_override_or_nonlive(self):
+        for kwargs in ({"note":"1队球员发角球","attrs":{"BallController_team":["team_2"]}},
+                       {"phase":"REPLAY"},{"note":"1队球员发角球"}):
+            e,s=self.unlabelled_corner(**kwargs)
+            self.assertFalse(relation_candidates(t("set_piece_breakthrough"),graph(e,s),e))
+
+    def test_unlabelled_corner_rejects_opponent_possession_and_shot(self):
+        for extra in (atom("x",81,"1队球员控球","Ball_possession"),
+                      atom("x",81,"1队球员射门","Shot")):
+            e,s=self.unlabelled_corner()
+            e["atoms"]["x"]=extra
+            self.assertFalse(relation_candidates(t("set_piece_breakthrough"),graph(e,s),e))
+
+    def test_unlabelled_corner_needs_bound_non_own_goal_and_shot(self):
+        e,s=self.unlabelled_corner()
+        self.assertFalse(relation_candidates(t("set_piece_breakthrough"),graph(e),e))
+        e["atoms"]["g"]["notes"]="1队球员自摆乌龙"
+        self.assertFalse(relation_candidates(t("set_piece_breakthrough"),graph(e,s),e))
+        e,s=self.unlabelled_corner()
+        e["atoms"].pop("s")
+        chain(e,["r","g"],subtype="corner_coop_goal")
+        self.assertFalse(relation_candidates(t("set_piece_breakthrough"),graph(e,s),e))
+
+    def test_unlabelled_corner_not_general_score_propagation(self):
+        e,s=self.unlabelled_corner()
+        e["atoms"]["r"].pop("enrichment_provenance")
+        self.assertFalse(relation_candidates(t("set_piece_breakthrough"),graph(e,s),e))
+
 class PhaseTests(unittest.TestCase):
     def test_two_independent_threats_each_side(self):
         e=evidence(shot("a",10,1),shot("b",20,1),shot("c",40,2),shot("d",50,2))
