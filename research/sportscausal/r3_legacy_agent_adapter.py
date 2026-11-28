@@ -84,7 +84,7 @@ def _role(n, template_id=None):
 
 def _node_summary(n):
     return {k:deepcopy(n[k]) for k in ("node_id","node_type","kind","predicate","actor","actor_role",
-        "required","score","state_sign","score_beneficiary","event_ids","media_windows",
+        "required","score","state_sign","score_beneficiary","actor_hypothesis","event_ids","media_windows",
         "action_time_interval","observation_task_ids","localization_status") if k in n}
 
 def _span(r,duration):
@@ -233,6 +233,13 @@ def adapt(graph,initial,legacy,tasks,context,evidence,events,*,seed="auto"):
     # graph/tasks/short chains remain separately archived for traceability.
     agent_context=compact_story_context(graph,rows,tasks,evidence)
     essential={k:agent_context[k] for k in ("schema","template_id","category","subtype","narrative_goal","subjects","teams")}
+    # Conditional restart actors are not observations. Keep the distinction
+    # in the actual bounded P1 prompt, not only in a separately archived task.
+    hypotheses=[deepcopy(n["actor_hypothesis"]) for n in nodes.values()
+                if n.get("actor_hypothesis")]
+    if hypotheses:
+        essential["unverified_actor_hypotheses"]=hypotheses
+        essential["hypothesis_policy"]="Hypothesized team is not observed execution; verify from source footage independently before accepting."
     plan={"a_story_template_context":essential,"agent_story_context":agent_context,
           "schema_version":"r3_legacy_agent_input_v1","algorithm":"R3",
           "template_id":graph["template_id"],"template_name":graph["subtype"],
