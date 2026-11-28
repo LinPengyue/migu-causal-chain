@@ -40,6 +40,16 @@ def _start(a,p,roles):
         return _actor(a,p)
     raise ValueError("unsupported relation start "+p)
 
+def _unbound_corner(a, raw, predicate):
+    """A path-local hypothesis, never a normalized execution claim."""
+    execution=a.get("execution_actor") or {}
+    return (predicate=="set_piece_execution" and a["type"]=="Corner_kick"
+            and raw.get("enrichment_provenance")=="causal_atom_fill"
+            and not raw.get("notes") and not raw.get("attributes")
+            and execution.get("team_status")=="UNRESOLVED"
+            and not execution.get("team") and not execution.get("claims"))
+
+
 def _goal_endpoint(a):
     r=a.get("goal_roles") or {}
     if not is_goal(a) or r.get("goal_kind")=="cancelled":
@@ -81,12 +91,25 @@ def relation_candidates(template,graph,evidence):
             continue
         adjacency[x].append((y,{z["chain_id"] for z in support}))
     pairs={}
+    starts=[]
     for start in order:
-        actor=_start(start,p["start_predicate"],roles)
-        if not actor or start["broadcast_phase"]!="LIVE":
+        if start["broadcast_phase"]!="LIVE":
             continue
+        actor=_start(start,p["start_predicate"],roles)
+        if actor:
+            starts.append((start,actor,False,None))
+        elif _unbound_corner(start,evidence["atoms"][start["event_id"]],p["start_predicate"]):
+            # Only a compatible predicted corner-to-goal chain can propose
+            # this hypothesis. Enumerate both teams; no score-to-actor
+            # propagation into evidence, normalized predicates or episodes.
+            support={cid for cid,c in evidence["chains"].items()
+                     if c.get("subtype")=="corner_coop_goal"
+                     and start["event_id"] in c.get("available_event_ids",[])}
+            if support:
+                starts.extend((start,side,True,support) for side in ("team_1","team_2"))
+    for start,actor,conditional,initial_support in starts:
         # A DAG path must maintain a common original predicted chain ID.
-        stack=[([start["event_id"]],None)]
+        stack=[([start["event_id"]],initial_support)]
         while stack:
             ids,common=stack.pop()
             a=by[ids[-1]]
@@ -115,10 +138,14 @@ def relation_candidates(template,graph,evidence):
                         continue
                     if r.get("attacking_team") and r["attacking_team"]!=actor:
                         continue
+                    if conditional and (r.get("goal_kind") not in {"untyped_goal","ordinary_goal_annotation"}
+                            or not r.get("score_binding")
+                            or not any(by[x]["type"]=="Shot" for x in trail[1:-1])):
+                        continue
                     key=tuple(trail)
                     if key not in pairs:
                         pairs[key]={"actor":actor,"ids":trail,"chain_ids":set(),
-                                    "endpoint_roles":deepcopy(r)}
+                                    "endpoint_roles":deepcopy(r),"conditional":conditional}
                     pairs[key]["chain_ids"].update(shared)
                     continue
                 if interrupts(b):
@@ -136,8 +163,16 @@ def relation_candidates(template,graph,evidence):
     endpoints=defaultdict(list)
     for r in pairs.values():
         endpoints[(r["ids"][0],r["ids"][-1])].append(r)
+    # Conflicting feasible assignments for the same unknown restart must
+    # not be collapsed into an arbitrary actor.
+    assignments=defaultdict(set)
+    for r in pairs.values():
+        if r["conditional"]:
+            assignments[r["ids"][0]].add(r["actor"])
     result=[]
     for key,alts in sorted(endpoints.items(),key=lambda kv:(by[kv[0][0]]["t"],by[kv[0][1]]["t"],kv[0])):
+        if len(assignments[key[0]])>1:
+            continue
         alternatives=[]
         for r in sorted(alts,key=lambda x:x["ids"]):
             ids=r["ids"]
@@ -162,6 +197,17 @@ def relation_candidates(template,graph,evidence):
              "actor_role":"score_beneficiary","predicate":"scoring_outcome","event_ids":[key[1]],
              "anchor_t":end["t"],"media_windows":[end["window"]],"goal_roles":[r["endpoint_roles"]],
              "story_anchor":True}]
+        hypothesis=None
+        if r["conditional"]:
+            hypothesis={"status":"CONDITIONAL_UNVERIFIED",
+                        "basis":"same_predicted_corner_coop_goal_contiguous_path_to_unique_score_binding",
+                        "assumption":"restart_execution_and_subsequent_attack_continuity",
+                        "event_id":key[0],"actor_hypothesis":r["actor"],
+                        "goal_event_id":key[1],
+                        "support_chain_ids":sorted({cid for alt in alternatives for cid in alt["path_chain_ids"]}),
+                        "execution_verified":False,"causal_verified":False,"first_live_verified":False}
+            nodes[0]["actor_role"]="restart_executor_hypothesis"
+            nodes[0]["actor_hypothesis"]=deepcopy(hypothesis)
         task_ids=[t["task_id"] for t in graph["observation_tasks"]
                   if t.get("goal_event_id")==key[1]]
         result.append({"candidate_id":template["template_id"]+":"+str(len(result)+1),
@@ -170,6 +216,9 @@ def relation_candidates(template,graph,evidence):
                       "causal_verified":False}],"path_alternatives":alternatives,
             "observation_task_ids":task_ids,
             "requires_path_video_verification":True,
-            "scope":"start actor and score beneficiary align; execution and tactical causal link require observation",
+            **({"restart_actor_hypothesis":hypothesis} if hypothesis else {}),
+            "scope":("conditional restart actor hypothesis; verify actual team and continuity"
+                     if hypothesis else
+                     "start actor and score beneficiary align; execution and tactical causal link require observation"),
             "quality_verified":False,"first_live_verified":False,"release_authorized":False})
     return result
